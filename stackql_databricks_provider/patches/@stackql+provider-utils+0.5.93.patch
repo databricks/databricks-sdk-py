@@ -1,0 +1,108 @@
+diff --git a/node_modules/@stackql/provider-utils/src/docgen/resource/examples/insert-example.js b/node_modules/@stackql/provider-utils/src/docgen/resource/examples/insert-example.js
+index da69f95..6124811 100755
+--- a/node_modules/@stackql/provider-utils/src/docgen/resource/examples/insert-example.js
++++ b/node_modules/@stackql/provider-utils/src/docgen/resource/examples/insert-example.js
+@@ -4,6 +4,63 @@ import {
+     sanitizeHtml
+ } from '../../helpers.js';
+ 
++/**
++ * Recursively generates manifest YAML props for a set of schema properties.
++ * - For objects with sub-properties, emits nested `props:` blocks.
++ * - For arrays, emits the item schema's properties as a prototype of the first element.
++ * @param {Object} properties - Schema properties object (name -> details)
++ * @param {string} indent - Current indentation string
++ * @param {number} depth - Current recursion depth
++ * @param {number} maxDepth - Maximum recursion depth (default 4)
++ * @returns {string} YAML string for the props
++ */
++function generateManifestPropsYaml(properties, indent, depth = 0, maxDepth = 4) {
++    let content = '';
++    Object.entries(properties).forEach(([name, details]) => {
++        if (!details) return;
++        const type = details.type || 'string';
++        const description = details.description || '';
++
++        content += indent + '- name: ' + name + '\n';
++        content += indent + '  value: ' + type + '\n';
++
++        if (description) {
++            content += indent + '  description: |\n';
++            const lines = description.split(/\n/).filter(line => line.trim() !== '');
++            lines.forEach(line => {
++                content += indent + '    ' + line.trim() + '\n';
++            });
++        }
++
++        // Add enum values if available
++        if (details.enum) {
++            content += indent + '  valid_values: [\'' + details.enum.join('\', \'') + '\']\n';
++        }
++
++        // Add default value if available
++        if (details.default !== undefined) {
++            content += indent + '  default: ' + details.default + '\n';
++        }
++
++        // Recursively expand object sub-properties
++        if (depth < maxDepth && type === 'object' && details.properties && Object.keys(details.properties).length > 0) {
++            content += indent + '  props:\n';
++            content += generateManifestPropsYaml(details.properties, indent + '  ', depth + 1, maxDepth);
++        }
++        // For arrays, show prototype of the first element
++        else if (depth < maxDepth && type === 'array' && details.items) {
++            if (details.items.properties && Object.keys(details.items.properties).length > 0) {
++                content += indent + '  props:\n';
++                content += generateManifestPropsYaml(details.items.properties, indent + '  ', depth + 1, maxDepth);
++            } else if (details.items.type && details.items.type !== 'object') {
++                content += indent + '  items:\n';
++                content += indent + '    type: ' + details.items.type + '\n';
++            }
++        }
++    });
++    return content;
++}
++
+ export function createInsertExamples(providerName, serviceName, resourceName, resourceData, dereferencedAPI, succinct = false) {
+     const insertMethods = getSqlMethodsWithOrderedFields(resourceData, dereferencedAPI, 'insert');
+ 
+@@ -164,37 +221,8 @@ export function createInsertExamples(providerName, serviceName, resourceName, re
+             content += '      description: Required parameter for the ' + resourceName + ' resource.\n';
+         });
+     
+-    // Add request body props
+-    Object.entries(allRequestBodyProps).forEach(([name, details]) => {
+-        const type = details.type || 'string';
+-        const description = details.description || '';
+-        content += '    - name: ' + name + '\n';
+-        content += '      value: ' + type + '\n';
+-        
+-        if (description) {
+-            content += '      description: |\n';
+-            
+-            // Split by lines and remove empty lines
+-            const lines = description
+-                .split(/\n/)
+-                .filter(line => line.trim() !== ''); // Remove completely empty lines
+-            
+-            // Process each line with proper indentation
+-            lines.forEach(line => {
+-                content += '        ' + line.trim() + '\n'; // trim each line to remove extra spaces
+-            });
+-        }
+-        
+-        // Add enum values if available
+-        if (details.enum) {
+-            content += '      valid_values: [\'' + details.enum.join('\', \'') + '\']\n';
+-        }
+-        
+-        // Add default value if available
+-        if (details.default !== undefined) {
+-            content += '      default: ' + details.default + '\n';
+-        }
+-    });
++    // Add request body props (with recursive expansion of objects and arrays)
++    content += generateManifestPropsYaml(allRequestBodyProps, '    ');
+     
+     // Add optional params last
+     Object.entries(allParams)

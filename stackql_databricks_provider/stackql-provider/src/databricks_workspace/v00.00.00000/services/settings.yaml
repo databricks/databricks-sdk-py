@@ -5,7 +5,7 @@ info:
     Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.settings
 servers:
 - url: https://{deployment_name}.cloud.databricks.com
@@ -144,7 +144,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/AibiDashboardEmbeddingAccessPolicySetting'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -308,7 +308,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/AibiDashboardEmbeddingApprovedDomainsSetting'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -426,7 +426,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/AutomaticClusterUpdateSetting'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -544,7 +544,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/ComplianceSecurityProfileSetting'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -603,13 +603,17 @@ paths:
               type: object
               properties:
                 partition_id:
-                  type: string
+                  $ref: '#/components/schemas/PartitionId'
                   description: The partition of Credentials store
                 token_type:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TokenType'
                   description: A list of token types being requested
                 scopes:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: Array of scopes for the token request.
               required:
               - partition_id
@@ -727,7 +731,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/CspEnablementAccountSetting'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -889,7 +893,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/DashboardEmailSubscriptions'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -1059,7 +1063,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/DefaultNamespaceSetting'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -1221,7 +1225,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/DefaultWarehouseId'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -1383,7 +1387,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/DisableLegacyAccess'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -1545,7 +1549,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/DisableLegacyDbfs'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -1723,7 +1727,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/DisableLegacyFeatures'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -1822,7 +1826,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/EnableExportNotebook'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -2000,7 +2004,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/AccountIpAccessEnable'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -2099,7 +2103,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/EnableNotebookTableClipboard'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -2198,7 +2202,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/EnableResultsDownloading'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -2316,7 +2320,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/EnhancedSecurityMonitoringSetting'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -2442,7 +2446,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/EsmEnablementAccountSetting'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -2514,10 +2518,12 @@ paths:
                   type: string
                   description: Label for the IP access list. This **cannot** be empty.
                 list_type:
-                  type: string
+                  $ref: '#/components/schemas/ListType'
                   description: ':param ip_addresses: List[str] (optional)'
                 ip_addresses:
-                  type: string
+                  type: array
+                  items:
+                    type: string
               required:
               - label
               - list_type
@@ -2686,12 +2692,14 @@ paths:
                   type: string
                   description: Label for the IP access list. This **cannot** be empty.
                 list_type:
-                  type: string
+                  $ref: '#/components/schemas/ListType'
                   description: ':param enabled: bool Specifies whether this IP access list is enabled.'
                 enabled:
                   type: boolean
                 ip_addresses:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: List[str] (optional)
               required:
               - label
@@ -2756,15 +2764,17 @@ paths:
               type: object
               properties:
                 enabled:
-                  type: string
+                  type: boolean
                   description: Specifies whether this IP access list is enabled.
                 ip_addresses:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: ':param label: str (optional) Label for the IP access list. This **cannot** be empty.'
                 label:
                   type: string
                 list_type:
-                  type: string
+                  $ref: '#/components/schemas/ListType'
                   description: :class:`ListType` (optional)
       responses:
         '200':
@@ -2874,7 +2884,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/LlmProxyPartnerPoweredAccount'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -3000,7 +3010,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/LlmProxyPartnerPoweredEnforce'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -3162,7 +3172,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/LlmProxyPartnerPoweredWorkspace'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -3218,7 +3228,7 @@ paths:
               type: object
               properties:
                 config:
-                  type: string
+                  $ref: '#/components/schemas/Config'
                   description: The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
                 display_name:
                   type: string
@@ -3260,7 +3270,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: ':param page_token: str (optional)'
       - name: page_token
         in: query
@@ -3389,7 +3399,7 @@ paths:
               type: object
               properties:
                 config:
-                  type: string
+                  $ref: '#/components/schemas/Config'
                   description: The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
                 display_name:
                   type: string
@@ -3558,7 +3568,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/PersonalComputeSetting'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -3726,7 +3736,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/RestrictWorkspaceAdminsSetting'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -3888,7 +3898,7 @@ paths:
                   type: boolean
                   description: This should always be set to true for Settings API. Added for AIP compliance.
                 setting:
-                  type: string
+                  $ref: '#/components/schemas/SqlResultsDownload'
                   description: ':param field_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -3952,7 +3962,7 @@ paths:
                   type: string
                   description: Comment that describes the purpose of the token.
                 lifetime_seconds:
-                  type: string
+                  type: integer
                   description: The number of seconds before the token expires.
               required:
               - application_id
@@ -4130,7 +4140,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TokenAccessControlRequest'
                   description: ':returns: :class:`TokenPermissions`'
       responses:
         '200':
@@ -4170,7 +4182,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TokenAccessControlRequest'
                   description: ':returns: :class:`TokenPermissions`'
       responses:
         '200':
@@ -4212,7 +4226,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: User ID of the user that created the token.
       - name: created_by_username
         in: query
@@ -4269,7 +4283,7 @@ paths:
                   type: string
                   description: Optional description to attach to the token.
                 lifetime_seconds:
-                  type: string
+                  type: integer
                   description: The lifetime of the token, in seconds. If the lifetime is not specified, this token remains
                     valid for 2 years.
       responses:
@@ -4570,7 +4584,7 @@ paths:
               type: object
               properties:
                 contents:
-                  type: string
+                  type: object
               required:
               - contents
       responses:
@@ -6261,20 +6275,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6308,20 +6322,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6355,20 +6369,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6423,20 +6437,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6468,20 +6482,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6518,20 +6532,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6560,20 +6574,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6622,20 +6636,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6663,20 +6677,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6711,20 +6725,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6764,20 +6778,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6830,20 +6844,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6877,20 +6891,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6930,20 +6944,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.sharing
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -52,7 +52,7 @@ paths:
                   type: string
                   description: The name of the Provider.
                 authentication_type:
-                  type: string
+                  $ref: '#/components/schemas/AuthenticationType'
                   description: >-
                     :param comment: str (optional) Description about the
                     provider.
@@ -135,7 +135,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of providers to return. - when set to 0, the page
             length is set to a server configured value (recommended); - when set
@@ -381,25 +381,25 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Maximum number of functions to return.
         - name: notebook_max_results
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Maximum number of notebooks to return.
         - name: table_max_results
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Maximum number of tables to return.
         - name: volume_max_results
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Maximum number of volumes to return.
       responses:
         '200':
@@ -462,7 +462,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of shares to return. - when set to 0, the page length
             is set to a server configured value (recommended); - when set to a
@@ -661,7 +661,7 @@ paths:
               type: object
               properties:
                 policy:
-                  type: string
+                  $ref: '#/components/schemas/FederationPolicy'
                   description: >-
                     Name of the policy. This is the name of the policy to be
                     created.
@@ -723,7 +723,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -910,7 +910,7 @@ paths:
                   type: string
                   description: Name of Recipient.
                 authentication_type:
-                  type: string
+                  $ref: '#/components/schemas/AuthenticationType'
                   description: >-
                     :param comment: str (optional) Description about the
                     recipient.
@@ -924,19 +924,19 @@ paths:
                     __authentication_type__ is **DATABRICKS**. The identifier is
                     of format __cloud__:__region__:__metastore-uuid__.
                 expiration_time:
-                  type: string
+                  type: integer
                   description: Expiration timestamp of the token, in epoch milliseconds.
                 id:
                   type: string
                   description: '[Create,Update:IGN] common - id of the recipient'
                 ip_access_list:
-                  type: string
+                  $ref: '#/components/schemas/IpAccessList'
                   description: IP Access List
                 owner:
                   type: string
                   description: Username of the recipient owner.
                 properties_kvpairs:
-                  type: string
+                  $ref: '#/components/schemas/SecurablePropertiesKvPairs'
                   description: >-
                     Recipient properties as map of string key-value pairs. When
                     provided in update request, the specified properties will
@@ -1017,7 +1017,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of recipients to return. - when set to 0, the page
             length is set to a server configured value (recommended); - when set
@@ -1194,13 +1194,13 @@ paths:
                   type: string
                   description: Description about the recipient.
                 expiration_time:
-                  type: string
+                  type: integer
                   description: Expiration timestamp of the token, in epoch milliseconds.
                 id:
                   type: string
                   description: '[Create,Update:IGN] common - id of the recipient'
                 ip_access_list:
-                  type: string
+                  $ref: '#/components/schemas/IpAccessList'
                   description: IP Access List
                 new_name:
                   type: string
@@ -1209,7 +1209,7 @@ paths:
                   type: string
                   description: Username of the recipient owner.
                 properties_kvpairs:
-                  type: string
+                  $ref: '#/components/schemas/SecurablePropertiesKvPairs'
                   description: >-
                     Recipient properties as map of string key-value pairs. When
                     provided in update request, the specified properties will
@@ -1341,7 +1341,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of permissions to return. - when set to 0, the page
             length is set to a server configured value (recommended); - when set
@@ -1474,7 +1474,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of shares to return. - when set to 0, the page length
             is set to a server configured value (recommended); - when set to a
@@ -1580,7 +1580,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Query for data to include in the share.
       responses:
         '200':
@@ -1682,7 +1682,9 @@ paths:
                   type: string
                   description: Storage root URL for the share.
                 updates:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/SharedDataObjectUpdate'
                   description: Array of shared data object updates.
       responses:
         '200':
@@ -1744,7 +1746,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of permissions to return. - when set to 0, the page
             length is set to a server configured value (recommended); - when set
@@ -1825,10 +1827,12 @@ paths:
               type: object
               properties:
                 changes:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PermissionsChange'
                   description: Array of permissions change objects.
                 omit_permissions_list:
-                  type: string
+                  type: boolean
                   description: >-
                     Optional. Whether to return the latest permissions list of
                     the share in the response.
@@ -2811,20 +2815,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2853,20 +2857,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2895,20 +2899,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2980,20 +2984,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3031,20 +3035,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3073,20 +3077,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3115,20 +3119,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3158,20 +3162,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3214,20 +3218,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

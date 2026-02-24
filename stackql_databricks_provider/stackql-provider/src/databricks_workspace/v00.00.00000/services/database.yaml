@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.database
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -34,7 +34,7 @@ paths:
               type: object
               properties:
                 catalog:
-                  type: string
+                  $ref: '#/components/schemas/DatabaseCatalog'
                   description: ':returns: :class:`DatabaseCatalog`'
               required:
                 - catalog
@@ -79,7 +79,7 @@ paths:
               type: object
               properties:
                 database_instance:
-                  type: string
+                  $ref: '#/components/schemas/DatabaseInstance'
                   description: Instance to create.
               required:
                 - database_instance
@@ -121,7 +121,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Upper bound for items returned.
         - name: page_token
           in: query
@@ -184,7 +184,7 @@ paths:
               type: object
               properties:
                 database_instance_role:
-                  type: string
+                  $ref: '#/components/schemas/DatabaseInstanceRole'
               required:
                 - database_instance_role
       responses:
@@ -243,7 +243,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: page_token
           in: query
           required: false
@@ -298,7 +298,7 @@ paths:
               type: object
               properties:
                 table:
-                  type: string
+                  $ref: '#/components/schemas/DatabaseTable'
                   description: ':returns: :class:`DatabaseTable`'
               required:
                 - table
@@ -340,7 +340,7 @@ paths:
               type: object
               properties:
                 synced_table:
-                  type: string
+                  $ref: '#/components/schemas/SyncedDatabaseTable'
                   description: ':returns: :class:`SyncedDatabaseTable`'
               required:
                 - synced_table
@@ -470,7 +470,7 @@ paths:
               type: object
               properties:
                 database_catalog:
-                  type: string
+                  $ref: '#/components/schemas/DatabaseCatalog'
                   description: Note that updating a database catalog is not yet supported.
               required:
                 - database_catalog
@@ -521,7 +521,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             By default, a instance cannot be deleted if it has descendant
             instances created via PITR. If this flag is specified as true, all
@@ -530,7 +530,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Deprecated. Omitting the field or setting it to true will result in
             the field being hard deleted. Setting a value of false will throw a
@@ -625,7 +625,7 @@ paths:
               type: object
               properties:
                 database_instance:
-                  type: string
+                  $ref: '#/components/schemas/DatabaseInstance'
                   description: >-
                     :param update_mask: str The list of fields to update. If
                     unspecified, all fields will be updated when possible. To
@@ -682,7 +682,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             This is the AIP standard name for the equivalent of Postgres' `IF
             EXISTS` option
@@ -844,7 +844,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
       responses:
         '200':
           description: Success
@@ -935,7 +935,7 @@ paths:
               type: object
               properties:
                 synced_table:
-                  type: string
+                  $ref: '#/components/schemas/SyncedDatabaseTable'
                   description: >-
                     Note that updating a synced database table is not yet
                     supported.
@@ -1023,13 +1023,17 @@ paths:
               type: object
               properties:
                 claims:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RequestedClaims'
                   description: >-
                     The returned token will be scoped to the union of
                     instance_names and instances containing the specified UC
                     tables, so instance_names is allowed to be empty.
                 instance_names:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: Instances to which the token will be scoped.
                 request_id:
                   type: string
@@ -1081,7 +1085,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Upper bound for items returned.
         - name: page_token
           in: query
@@ -1138,7 +1142,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Upper bound for items returned.
         - name: page_token
           in: query
@@ -1845,20 +1849,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1896,20 +1900,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1942,20 +1946,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1985,20 +1989,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2033,20 +2037,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

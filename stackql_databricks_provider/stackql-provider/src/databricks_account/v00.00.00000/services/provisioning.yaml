@@ -5,7 +5,7 @@ info:
     Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.provisioning
 servers:
 - url: https://accounts.cloud.databricks.com
@@ -52,7 +52,7 @@ paths:
                   type: string
                   description: The human-readable name of the credential configuration object.
                 aws_credentials:
-                  type: string
+                  $ref: '#/components/schemas/CreateCredentialAwsCredentials'
                   description: ':returns: :class:`Credential`'
               required:
               - credentials_name
@@ -243,13 +243,15 @@ paths:
               type: object
               properties:
                 use_cases:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/KeyUseCase'
                   description: The cases that the key can be used for.
                 aws_key_info:
-                  type: string
+                  $ref: '#/components/schemas/CreateAwsKeyInfo'
                   description: ':param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)'
                 gcp_key_info:
-                  type: string
+                  $ref: '#/components/schemas/CreateGcpKeyInfo'
               required:
               - use_cases
       responses:
@@ -447,20 +449,24 @@ paths:
               type: object
               properties:
                 gcp_network_info:
-                  type: string
+                  $ref: '#/components/schemas/GcpNetworkInfo'
                   description: ':param network_name: str (optional) The human-readable name of the network configuration.'
                 network_name:
                   type: string
                 security_group_ids:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: IDs of one to five security groups associated with this network. Security group IDs **cannot**
                     be used in multiple network configurations.
                 subnet_ids:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: IDs of at least two subnets associated with this network. Subnet IDs **cannot** be used in
                     multiple network configurations.
                 vpc_endpoints:
-                  type: string
+                  $ref: '#/components/schemas/NetworkVpcEndpoints'
                   description: ':param vpc_id: str (optional) The ID of the VPC associated with this network configuration.
                     VPC IDs can be used in multiple networks.'
                 vpc_id:
@@ -661,7 +667,9 @@ paths:
               type: object
               properties:
                 allowed_vpc_endpoint_ids:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: 'An array of Databricks VPC endpoint IDs. This is the Databricks ID returned when registering
                     the VPC endpoint configuration in your Databricks account. This is not the ID of the VPC endpoint in AWS.
                     Only used when private_access_level is set to ENDPOINT. This is an allow list of VPC endpoints registered
@@ -669,7 +677,7 @@ paths:
                     to your workspace is enabled by setting public_access_enabled to true, this control only works for PrivateLink
                     connections. To control how your workspace is accessed via public internet, see IP access lists.'
                 private_access_level:
-                  type: string
+                  $ref: '#/components/schemas/PrivateAccessLevel'
                   description: The private access level controls which VPC endpoints can connect to the UI or API of any workspace
                     that attaches this private access settings object. `ACCOUNT` level access (the default) allows only VPC
                     endpoints that are registered in your Databricks account connect to your workspace. `ENDPOINT` level access
@@ -678,7 +686,7 @@ paths:
                   type: string
                   description: The human-readable name of the private access settings object.
                 public_access_enabled:
-                  type: string
+                  type: boolean
                   description: Determines if the workspace can be accessed over public internet. For fully private workspaces,
                     you can optionally specify false, but only if you implement both the front-end and the back-end PrivateLink
                     connections. Otherwise, specify true, which means that public access is enabled.
@@ -870,7 +878,7 @@ paths:
               type: object
               properties:
                 customer_facing_private_access_settings:
-                  type: string
+                  $ref: '#/components/schemas/PrivateAccessSettings'
                   description: Properties of the new private access settings object.
               required:
               - customer_facing_private_access_settings
@@ -931,7 +939,7 @@ paths:
                   type: string
                   description: The human-readable name of the storage configuration.
                 root_bucket_info:
-                  type: string
+                  $ref: '#/components/schemas/RootBucketInfo'
                   description: Root S3 bucket information.
                 role_arn:
                   type: string
@@ -1132,7 +1140,7 @@ paths:
                   type: string
                   description: The ID of the VPC endpoint object in AWS.
                 gcp_vpc_endpoint_info:
-                  type: string
+                  $ref: '#/components/schemas/GcpVpcEndpointInfo'
                   description: The cloud info of this vpc endpoint.
                 region:
                   type: string
@@ -1413,19 +1421,19 @@ paths:
                 cloud:
                   type: string
                 cloud_resource_container:
-                  type: string
+                  $ref: '#/components/schemas/CloudResourceContainer'
                   description: ':param compute_mode: :class:`CustomerFacingComputeMode` (optional) If the compute mode is
                     `SERVERLESS`, a serverless workspace is created that comes pre-configured with serverless compute and
                     default storage, providing a fully-managed, enterprise-ready SaaS experience. This means you don''t need
                     to provide any resources managed by you, such as credentials, storage, or network. If the compute mode
                     is `HYBRID` (which is the default option), a classic workspace is created that uses customer-managed resources.'
                 compute_mode:
-                  type: string
+                  $ref: '#/components/schemas/CustomerFacingComputeMode'
                 credentials_id:
                   type: string
                   description: ID of the workspace's credential configuration object.
                 custom_tags:
-                  type: string
+                  type: object
                   description: The custom tags key-value pairing that is attached to this workspace. The key-value pair is
                     a string of utf-8 characters. The value can be an empty string, with maximum length of 255 characters.
                     The key can be of maximum length of 127 characters, and cannot be empty.
@@ -1445,10 +1453,10 @@ paths:
                     This value must be unique across all non-deleted deployments across all AWS regions. If a new workspace
                     omits this property, the server generates a unique deployment name for you with the pattern dbc-xxxxxxxx-xxxx.
                 gcp_managed_network_config:
-                  type: string
+                  $ref: '#/components/schemas/GcpManagedNetworkConfig'
                   description: ':param gke_config: :class:`GkeConfig` (optional)'
                 gke_config:
-                  type: string
+                  $ref: '#/components/schemas/GkeConfig'
                 location:
                   type: string
                   description: The Google Cloud region of the workspace data plane in your Google account (for example, `us-east4`).
@@ -1466,7 +1474,7 @@ paths:
                   description: The ID of the workspace's network configuration object. To use AWS PrivateLink, this field
                     is required.
                 pricing_tier:
-                  type: string
+                  $ref: '#/components/schemas/PricingTier'
                   description: ':param private_access_settings_id: str (optional) ID of the workspace''s private access settings
                     object. Only used for PrivateLink. You must specify this ID if you are using [AWS PrivateLink] for either
                     front-end (user-to-workspace connection), back-end (data plane to control plane connection), or both connection
@@ -1684,7 +1692,7 @@ paths:
               type: object
               properties:
                 customer_facing_workspace:
-                  type: string
+                  $ref: '#/components/schemas/Workspace'
                   description: ':param update_mask: str (optional) The field mask must be a single string, with multiple fields
                     separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`)
                     to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields
@@ -2273,20 +2281,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2315,20 +2323,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2381,20 +2389,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2427,20 +2435,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2469,20 +2477,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2513,20 +2521,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2555,20 +2563,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

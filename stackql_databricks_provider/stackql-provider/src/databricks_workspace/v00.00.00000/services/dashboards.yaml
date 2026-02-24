@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.dashboards
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -124,7 +124,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Maximum number of messages to return per page
         - name: page_token
           in: query
@@ -245,7 +245,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Maximum number of spaces to return per page
         - name: page_token
           in: query
@@ -1028,7 +1028,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include the serialized space export in the response.
             Requires at least CAN EDIT permission on the space.
@@ -1190,7 +1190,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Include all conversations in the space across all users. Requires at
             least CAN MANAGE permission on the space.
@@ -1198,7 +1198,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Maximum number of conversations to return per page
         - name: page_token
           in: query
@@ -1269,7 +1269,7 @@ paths:
               type: object
               properties:
                 rating:
-                  type: string
+                  $ref: '#/components/schemas/GenieFeedbackRating'
                   description: The rating (POSITIVE, NEGATIVE, or NONE).
               required:
                 - rating
@@ -1389,7 +1389,7 @@ paths:
               type: object
               properties:
                 dashboard:
-                  type: string
+                  $ref: '#/components/schemas/Dashboard'
                   description: >-
                     :param dataset_catalog: str (optional) Sets the default
                     catalog for all datasets in this dashboard. Does not impact
@@ -1443,7 +1443,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: The number of dashboards to return per page.
         - name: page_token
           in: query
@@ -1457,7 +1457,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             The flag to include dashboards located in the trash. If unspecified,
             only active dashboards will be returned.
@@ -1465,7 +1465,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/DashboardView'
           description: >-
             `DASHBOARD_VIEW_BASIC`only includes summary metadata from the
             dashboard.
@@ -1518,7 +1518,7 @@ paths:
               type: object
               properties:
                 schedule:
-                  type: string
+                  $ref: '#/components/schemas/Schedule'
                   description: >-
                     The schedule to create. A dashboard is limited to 10
                     schedules.
@@ -1572,7 +1572,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: The number of schedules to return per page.
         - name: page_token
           in: query
@@ -1639,7 +1639,7 @@ paths:
               type: object
               properties:
                 subscription:
-                  type: string
+                  $ref: '#/components/schemas/Subscription'
                   description: >-
                     The subscription to create. A schedule is limited to 100
                     subscriptions.
@@ -1701,7 +1701,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: The number of subscriptions to return per page.
         - name: page_token
           in: query
@@ -1867,7 +1867,7 @@ paths:
               type: object
               properties:
                 schedule:
-                  type: string
+                  $ref: '#/components/schemas/Schedule'
                   description: The schedule to update.
               required:
                 - schedule
@@ -2130,7 +2130,7 @@ paths:
               type: object
               properties:
                 dashboard:
-                  type: string
+                  $ref: '#/components/schemas/Dashboard'
                   description: >-
                     :param dataset_catalog: str (optional) Sets the default
                     catalog for all datasets in this dashboard. Does not impact
@@ -2230,7 +2230,7 @@ paths:
               type: object
               properties:
                 embed_credentials:
-                  type: string
+                  type: boolean
                   description: >-
                     Flag to indicate if the publisher's credentials should be
                     embedded in the published dashboard. These embedded
@@ -2332,7 +2332,7 @@ paths:
                     The workspace path of the folder to contain the migrated
                     Lakeview dashboard.
                 update_parameter_syntax:
-                  type: string
+                  type: boolean
                   description: >-
                     Flag to indicate if mustache parameter syntax ({{ param }})
                     should be auto-updated to named syntax (:param) when
@@ -2987,20 +2987,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3036,20 +3036,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3136,20 +3136,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3230,20 +3230,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

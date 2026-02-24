@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks database service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.database"
   },
   "servers": [
@@ -36,7 +36,7 @@
                 "type": "object",
                 "properties": {
                   "catalog": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/DatabaseCatalog",
                     "description": ":returns: :class:`DatabaseCatalog`"
                   }
                 },
@@ -95,7 +95,7 @@
                 "type": "object",
                 "properties": {
                   "database_instance": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/DatabaseInstance",
                     "description": "Instance to create."
                   }
                 },
@@ -151,7 +151,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Upper bound for items returned."
           },
@@ -233,7 +233,7 @@
                 "type": "object",
                 "properties": {
                   "database_instance_role": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/DatabaseInstanceRole"
                   }
                 },
                 "required": [
@@ -297,7 +297,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           },
           {
@@ -358,7 +358,7 @@
                 "type": "object",
                 "properties": {
                   "table": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/DatabaseTable",
                     "description": ":returns: :class:`DatabaseTable`"
                   }
                 },
@@ -417,7 +417,7 @@
                 "type": "object",
                 "properties": {
                   "synced_table": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/SyncedDatabaseTable",
                     "description": ":returns: :class:`SyncedDatabaseTable`"
                   }
                 },
@@ -589,7 +589,7 @@
                 "type": "object",
                 "properties": {
                   "database_catalog": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/DatabaseCatalog",
                     "description": "Note that updating a database catalog is not yet supported."
                   }
                 },
@@ -656,7 +656,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "By default, a instance cannot be deleted if it has descendant instances created via PITR. If this flag is specified as true, all descendent instances will be deleted as well."
           },
@@ -665,7 +665,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Deprecated. Omitting the field or setting it to true will result in the field being hard deleted. Setting a value of false will throw a bad request."
           }
@@ -778,7 +778,7 @@
                 "type": "object",
                 "properties": {
                   "database_instance": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/DatabaseInstance",
                     "description": ":param update_mask: str The list of fields to update. If unspecified, all fields will be updated when possible. To wipe out custom_tags, specify custom_tags in the update_mask with an empty custom_tags map."
                   }
                 },
@@ -853,7 +853,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "This is the AIP standard name for the equivalent of Postgres' `IF EXISTS` option"
           },
@@ -1069,7 +1069,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           }
         ],
@@ -1182,7 +1182,7 @@
                 "type": "object",
                 "properties": {
                   "synced_table": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/SyncedDatabaseTable",
                     "description": "Note that updating a synced database table is not yet supported."
                   }
                 },
@@ -1293,11 +1293,17 @@
                 "type": "object",
                 "properties": {
                   "claims": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RequestedClaims"
+                    },
                     "description": "The returned token will be scoped to the union of instance_names and instances containing the specified UC tables, so instance_names is allowed to be empty."
                   },
                   "instance_names": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "Instances to which the token will be scoped."
                   },
                   "request_id": {
@@ -1365,7 +1371,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Upper bound for items returned."
           },
@@ -1435,7 +1441,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Upper bound for items returned."
           },
@@ -2090,7 +2096,7 @@
           "SERVICE_PRINCIPAL",
           "USER"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "DatabaseInstanceRoleMembershipRole": {
         "type": "string",
@@ -2109,7 +2115,7 @@
           "STOPPED",
           "UPDATING"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ProvisioningInfoState": {
         "type": "string",
@@ -2121,7 +2127,7 @@
           "PROVISIONING",
           "UPDATING"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ProvisioningPhase": {
         "type": "string",
@@ -2130,7 +2136,7 @@
           "PROVISIONING_PHASE_INDEX_SORT",
           "PROVISIONING_PHASE_MAIN"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "RequestedClaimsPermissionSet": {
         "type": "string",
@@ -2146,7 +2152,7 @@
           "SNAPSHOT",
           "TRIGGERED"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "SyncedTableState": {
         "type": "string",

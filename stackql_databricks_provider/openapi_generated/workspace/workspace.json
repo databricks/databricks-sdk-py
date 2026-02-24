@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks workspace service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.workspace"
   },
   "servers": [
@@ -49,7 +49,7 @@
                     "description": "The username provided with your Git provider account and associated with the credential. For most Git providers it is only used to set the Git committer & author names for commits, however it may be required for authentication depending on your Git provider / token requirements. Required for AWS CodeCommit."
                   },
                   "is_default_for_provider": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "if the credential is the default for the given provider"
                   },
                   "name": {
@@ -61,7 +61,7 @@
                     "description": "The personal access token used to authenticate to the corresponding Git provider. For certain providers, support may exist for other types of scoped access tokens. [Learn more]. [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"
                   },
                   "principal_id": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The ID of the service principal whose credentials will be modified. Only service principal managers can perform this action."
                   }
                 },
@@ -118,7 +118,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The ID of the service principal whose credentials will be listed. Only service principal managers can perform this action."
           }
@@ -180,7 +180,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The ID of the service principal whose credentials will be modified. Only service principal managers can perform this action."
           }
@@ -233,7 +233,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The ID of the service principal whose credentials will be modified. Only service principal managers can perform this action."
           }
@@ -308,7 +308,7 @@
                     "description": "The username provided with your Git provider account and associated with the credential. For most Git providers it is only used to set the Git committer & author names for commits, however it may be required for authentication depending on your Git provider / token requirements. Required for AWS CodeCommit."
                   },
                   "is_default_for_provider": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "if the credential is the default for the given provider"
                   },
                   "name": {
@@ -320,7 +320,7 @@
                     "description": "The personal access token used to authenticate to the corresponding Git provider. For certain providers, support may exist for other types of scoped access tokens. [Learn more]. [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"
                   },
                   "principal_id": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The ID of the service principal whose credentials will be modified. Only service principal managers can perform this action."
                   }
                 },
@@ -385,7 +385,7 @@
                     "description": "Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`."
                   },
                   "sparse_checkout": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/SparseCheckout",
                     "description": "If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable sparse checkout after the repo is created."
                   }
                 },
@@ -616,7 +616,7 @@
                     "description": "Branch that the local version of the repo is checked out to."
                   },
                   "sparse_checkout": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/SparseCheckoutUpdate",
                     "description": "If specified, update the sparse checkout settings. The update will fail if sparse checkout is not enabled for the repo."
                   },
                   "tag": {
@@ -785,7 +785,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RepoAccessControlRequest"
+                    },
                     "description": ":returns: :class:`RepoPermissions`"
                   }
                 }
@@ -851,7 +854,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RepoAccessControlRequest"
+                    },
                     "description": ":returns: :class:`RepoPermissions`"
                   }
                 }
@@ -912,7 +918,7 @@
                     "description": "Scope name requested by the user. Scope names are unique."
                   },
                   "backend_azure_keyvault": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AzureKeyVaultSecretScopeMetadata",
                     "description": "The metadata for the secret scope if the type is ``AZURE_KEYVAULT``"
                   },
                   "initial_manage_principal": {
@@ -920,7 +926,7 @@
                     "description": "The principal that is initially granted ``MANAGE`` permission to the created scope."
                   },
                   "scope_backend_type": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ScopeBackendType",
                     "description": "The backend type the scope will be created with. If not specified, will default to ``DATABRICKS``"
                   }
                 },
@@ -1422,7 +1428,7 @@
                     "description": "The principal in which the permission is applied."
                   },
                   "permission": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AclPermission",
                     "description": "The permission level applied to the principal."
                   }
                 },
@@ -1546,7 +1552,7 @@
                     "description": "The absolute path of the notebook or directory."
                   },
                   "recursive": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "The flag that specifies whether to delete the object recursively. It is `false` by default. Please note this deleting directory is not atomic. If it fails in the middle, some of objects under this directory may be deleted and cannot be undone."
                   }
                 },
@@ -1606,7 +1612,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/ExportFormat"
             },
             "description": "This specifies the format of the exported file. By default, this is `SOURCE`. The value is case sensitive. - `SOURCE`: The notebook is exported as source code. Directory exports will not include non-notebook entries. - `HTML`: The notebook is exported as an HTML file. - `JUPYTER`: The notebook is exported as a Jupyter/IPython Notebook file. - `DBC`: The notebook is exported in Databricks archive format. Directory exports will not include non-notebook entries. - `R_MARKDOWN`: The notebook is exported to R Markdown format. - `AUTO`: The object or directory is exported depending on the objects type. Directory exports will include notebooks and workspace files."
           }
@@ -1799,7 +1805,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/WorkspaceObjectAccessControlRequest"
+                    },
                     "description": ":returns: :class:`WorkspaceObjectPermissions`"
                   }
                 }
@@ -1873,7 +1882,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/WorkspaceObjectAccessControlRequest"
+                    },
                     "description": ":returns: :class:`WorkspaceObjectPermissions`"
                   }
                 }
@@ -1989,15 +2001,15 @@
                     "description": "The base64-encoded content. This has a limit of 10 MB. If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown. This parameter might be absent, and instead a posted file is used."
                   },
                   "format": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ImportFormat",
                     "description": "This specifies the format of the file to be imported. The value is case sensitive. - `AUTO`: The item is imported depending on an analysis of the item's extension and the header content provided in the request. If the item is imported as a notebook, then the item's extension is automatically removed. - `SOURCE`: The notebook or directory is imported as source code. - `HTML`: The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in Databricks archive format. Required for directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format."
                   },
                   "language": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/Language",
                     "description": "The language of the object. This value is set only if the object type is `NOTEBOOK`."
                   },
                   "overwrite": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC` format, `overwrite` is not supported since it may contain a directory."
                   }
                 },
@@ -2057,7 +2069,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "UTC timestamp in milliseconds"
           }

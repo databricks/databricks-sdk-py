@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.files
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -162,7 +162,7 @@ paths:
                     The path of the new file. The path should be the absolute
                     DBFS path.
                 overwrite:
-                  type: string
+                  type: boolean
                   description: >-
                     The flag that specifies whether to overwrite existing
                     file/files.
@@ -251,7 +251,7 @@ paths:
                     The path of the file or directory to delete. The path should
                     be the absolute DBFS path.
                 recursive:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether or not to recursively delete the directory's
                     contents. Deleting empty directories can be done without
@@ -554,7 +554,7 @@ paths:
                     This parameter might be absent, and instead a posted file
                     will be used.
                 overwrite:
-                  type: string
+                  type: boolean
                   description: >-
                     The flag that specifies whether to overwrite existing
                     file/files.
@@ -625,7 +625,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The number of bytes to read starting from the offset. This has a
             limit of 1 MB, and a default value of 0.5 MB.
@@ -633,7 +633,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: The offset to read from in bytes.
       responses:
         '200':
@@ -831,7 +831,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The maximum number of directory entries to return. The response may
             contain fewer entries. If the response contains a `next_page_token`,
@@ -1032,7 +1032,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -1041,6 +1041,7 @@ paths:
               properties:
                 contents:
                   type: string
+                  format: binary
                   description: >-
                     :param overwrite: bool (optional) If true or unspecified, an
                     existing file will be overwritten. If false, an error will

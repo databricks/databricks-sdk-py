@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks iam service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.iam"
   },
   "servers": [
@@ -36,7 +36,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/Actor"
             },
             "description": ":param permission: str"
           },
@@ -62,7 +62,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/ConsistencyToken"
             },
             "description": ":param authz_identity: :class:`RequestAuthzIdentity`"
           },
@@ -71,7 +71,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/RequestAuthzIdentity"
             }
           },
           {
@@ -79,7 +79,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/ResourceInfo"
             },
             "description": ":returns: :class:`CheckPolicyResponse`"
           }
@@ -250,7 +250,7 @@
                     "description": "Name of the rule set."
                   },
                   "rule_set": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/RuleSetUpdateRequest",
                     "description": ":returns: :class:`RuleSetResponse`"
                   }
                 },
@@ -357,7 +357,10 @@
                     "description": "String that represents a human-readable group name"
                   },
                   "entitlements": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "Entitlements assigned to the group. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
                   },
                   "external_id": {
@@ -365,25 +368,37 @@
                     "description": ":param groups: List[:class:`ComplexValue`] (optional)"
                   },
                   "groups": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    }
                   },
                   "id": {
                     "type": "string",
                     "description": "Databricks group ID"
                   },
                   "members": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": ":param meta: :class:`ResourceMeta` (optional) Container for the group identifier. Workspace local versus account."
                   },
                   "meta": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/ResourceMeta"
                   },
                   "roles": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "Corresponds to AWS instance profile/arn role."
                   },
                   "schemas": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/GroupSchema"
+                    },
                     "description": "The schema of the group."
                   }
                 }
@@ -446,7 +461,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Desired number of results per page."
           },
@@ -482,7 +497,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/ListSortOrder"
             },
             "description": "The order to sort the results."
           },
@@ -491,7 +506,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Specifies the index of the first result. First item is number 1."
           }
@@ -651,11 +666,17 @@
                 "type": "object",
                 "properties": {
                   "operations": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Patch"
+                    },
                     "description": ":param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must be [\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"]."
                   },
                   "schemas": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PatchSchema"
+                    }
                   }
                 }
               }
@@ -717,7 +738,10 @@
                     "description": "String that represents a human-readable group name"
                   },
                   "entitlements": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "Entitlements assigned to the group. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
                   },
                   "external_id": {
@@ -725,21 +749,33 @@
                     "description": ":param groups: List[:class:`ComplexValue`] (optional)"
                   },
                   "groups": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    }
                   },
                   "members": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": ":param meta: :class:`ResourceMeta` (optional) Container for the group identifier. Workspace local versus account."
                   },
                   "meta": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/ResourceMeta"
                   },
                   "roles": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "Corresponds to AWS instance profile/arn role."
                   },
                   "schemas": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/GroupSchema"
+                    },
                     "description": "The schema of the group."
                   }
                 }
@@ -801,7 +837,7 @@
                     "description": "The name of the account group that permissions will be migrated to."
                   },
                   "size": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The maximum number of permissions that will be migrated."
                   }
                 },
@@ -943,7 +979,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/AccessControlRequest"
+                    },
                     "description": ":returns: :class:`ObjectPermissions`"
                   }
                 }
@@ -1018,7 +1057,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/AccessControlRequest"
+                    },
                     "description": ":returns: :class:`ObjectPermissions`"
                   }
                 }
@@ -1137,7 +1179,7 @@
                 "type": "object",
                 "properties": {
                   "active": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "If this user is active"
                   },
                   "application_id": {
@@ -1149,7 +1191,10 @@
                     "description": "String that represents a concatenation of given and family names."
                   },
                   "entitlements": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "Entitlements assigned to the service principal. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
                   },
                   "external_id": {
@@ -1157,18 +1202,27 @@
                     "description": ":param groups: List[:class:`ComplexValue`] (optional)"
                   },
                   "groups": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    }
                   },
                   "id": {
                     "type": "string",
                     "description": "Databricks service principal ID."
                   },
                   "roles": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "Corresponds to AWS instance profile/arn role."
                   },
                   "schemas": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ServicePrincipalSchema"
+                    },
                     "description": "The schema of the List response."
                   }
                 }
@@ -1231,7 +1285,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Desired number of results per page."
           },
@@ -1267,7 +1321,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/ListSortOrder"
             },
             "description": "The order to sort the results."
           },
@@ -1276,7 +1330,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Specifies the index of the first result. First item is number 1."
           }
@@ -1436,11 +1490,17 @@
                 "type": "object",
                 "properties": {
                   "operations": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Patch"
+                    },
                     "description": ":param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must be [\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"]."
                   },
                   "schemas": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PatchSchema"
+                    }
                   }
                 }
               }
@@ -1498,7 +1558,7 @@
                 "type": "object",
                 "properties": {
                   "active": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "If this user is active"
                   },
                   "application_id": {
@@ -1510,7 +1570,10 @@
                     "description": "String that represents a concatenation of given and family names."
                   },
                   "entitlements": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "Entitlements assigned to the service principal. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
                   },
                   "external_id": {
@@ -1518,14 +1581,23 @@
                     "description": ":param groups: List[:class:`ComplexValue`] (optional)"
                   },
                   "groups": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    }
                   },
                   "roles": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "Corresponds to AWS instance profile/arn role."
                   },
                   "schemas": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ServicePrincipalSchema"
+                    },
                     "description": "The schema of the List response."
                   }
                 }
@@ -1575,7 +1647,7 @@
                 "type": "object",
                 "properties": {
                   "active": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "If this user is active"
                   },
                   "display_name": {
@@ -1583,11 +1655,17 @@
                     "description": "String that represents a concatenation of given and family names. For example `John Smith`. This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to update `displayName`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"
                   },
                   "emails": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "All the emails associated with the Databricks user."
                   },
                   "entitlements": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
                   },
                   "external_id": {
@@ -1595,21 +1673,30 @@
                     "description": "External ID is not currently supported. It is reserved for future use."
                   },
                   "groups": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": ":param id: str (optional) Databricks user ID."
                   },
                   "id": {
                     "type": "string"
                   },
                   "name": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/Name",
                     "description": ":param roles: List[:class:`ComplexValue`] (optional) Corresponds to AWS instance profile/arn role."
                   },
                   "roles": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    }
                   },
                   "schemas": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UserSchema"
+                    },
                     "description": "The schema of the user."
                   },
                   "user_name": {
@@ -1676,7 +1763,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Desired number of results per page."
           },
@@ -1712,7 +1799,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/ListSortOrder"
             },
             "description": "The order to sort the results."
           },
@@ -1721,7 +1808,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Specifies the index of the first result. First item is number 1."
           }
@@ -1836,7 +1923,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Desired number of results per page."
           },
@@ -1872,7 +1959,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/GetSortOrder"
             },
             "description": "The order to sort the results."
           },
@@ -1881,7 +1968,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Specifies the index of the first result. First item is number 1."
           }
@@ -1944,11 +2031,17 @@
                 "type": "object",
                 "properties": {
                   "operations": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Patch"
+                    },
                     "description": ":param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must be [\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"]."
                   },
                   "schemas": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PatchSchema"
+                    }
                   }
                 }
               }
@@ -2006,7 +2099,7 @@
                 "type": "object",
                 "properties": {
                   "active": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "If this user is active"
                   },
                   "display_name": {
@@ -2014,11 +2107,17 @@
                     "description": "String that represents a concatenation of given and family names. For example `John Smith`. This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to update `displayName`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"
                   },
                   "emails": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "All the emails associated with the Databricks user."
                   },
                   "entitlements": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
                   },
                   "external_id": {
@@ -2026,18 +2125,27 @@
                     "description": "External ID is not currently supported. It is reserved for future use."
                   },
                   "groups": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": ":param name: :class:`Name` (optional)"
                   },
                   "name": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/Name"
                   },
                   "roles": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ComplexValue"
+                    },
                     "description": "Corresponds to AWS instance profile/arn role."
                   },
                   "schemas": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UserSchema"
+                    },
                     "description": "The schema of the user."
                   },
                   "user_name": {
@@ -2173,7 +2281,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PasswordAccessControlRequest"
+                    },
                     "description": ":returns: :class:`PasswordPermissions`"
                   }
                 }
@@ -2228,7 +2339,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PasswordAccessControlRequest"
+                    },
                     "description": ":returns: :class:`PasswordPermissions`"
                   }
                 }
@@ -3209,21 +3323,21 @@
           "ascending",
           "descending"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "GroupSchema": {
         "type": "string",
         "x-enum": [
           "urn:ietf:params:scim:schemas:core:2.0:Group"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ListResponseSchema": {
         "type": "string",
         "x-enum": [
           "urn:ietf:params:scim:api:messages:2.0:ListResponse"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ListSortOrder": {
         "type": "string",
@@ -3231,7 +3345,7 @@
           "ascending",
           "descending"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "PasswordPermissionLevel": {
         "type": "string",
@@ -3254,7 +3368,7 @@
         "x-enum": [
           "urn:ietf:params:scim:api:messages:2.0:PatchOp"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "PermissionLevel": {
         "type": "string",
@@ -3294,7 +3408,7 @@
         "x-enum": [
           "urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "UserSchema": {
         "type": "string",
@@ -3302,7 +3416,7 @@
           "urn:ietf:params:scim:schemas:core:2.0:User",
           "urn:ietf:params:scim:schemas:extension:workspace:2.0:User"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "WorkspacePermission": {
         "type": "string",
@@ -3311,7 +3425,7 @@
           "UNKNOWN",
           "USER"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       }
     }
   }

@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks postgres service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.postgres"
   },
   "servers": [
@@ -56,7 +56,7 @@
                 "type": "object",
                 "properties": {
                   "branch": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/Branch",
                     "description": "The Branch to create."
                   }
                 },
@@ -121,7 +121,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Upper bound for items returned. Cannot be negative."
           },
@@ -203,7 +203,7 @@
                 "type": "object",
                 "properties": {
                   "endpoint": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/Endpoint",
                     "description": "The Endpoint to create."
                   }
                 },
@@ -268,7 +268,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Upper bound for items returned. Cannot be negative."
           },
@@ -341,7 +341,7 @@
                 "type": "object",
                 "properties": {
                   "project": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/Project",
                     "description": "The Project to create."
                   }
                 },
@@ -397,7 +397,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Upper bound for items returned. Cannot be negative."
           },
@@ -479,7 +479,7 @@
                 "type": "object",
                 "properties": {
                   "role": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/Role",
                     "description": "The desired specification of a Role."
                   }
                 },
@@ -544,7 +544,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Upper bound for items returned. Cannot be negative."
           },
@@ -723,7 +723,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "object"
             },
             "description": "The list of fields to update. If unspecified, all fields will be updated when possible."
           }
@@ -735,7 +735,7 @@
                 "type": "object",
                 "properties": {
                   "project": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/Project",
                     "description": "The Project to update. The project's `name` field is used to identify the project to update. Format: projects/{project_id}"
                   }
                 },
@@ -798,7 +798,10 @@
                     "description": "This field is not yet supported. The endpoint for which this credential will be generated. Format: projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}"
                   },
                   "claims": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RequestedClaims"
+                    },
                     "description": "The returned token will be scoped to UC tables with the specified permissions."
                   }
                 },
@@ -1536,7 +1539,7 @@
         "x-enum": [
           "READ_ONLY"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "RoleAuthMethod": {
         "type": "string",

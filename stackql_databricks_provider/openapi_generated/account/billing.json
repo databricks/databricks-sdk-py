@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks billing service (account-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.billing"
   },
   "servers": [
@@ -56,7 +56,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Specify whether to include personally identifiable information in the billable usage logs, for example the email addresses of cluster creators. Handle this information with care. Defaults to false."
           }
@@ -125,7 +125,7 @@
                 "type": "object",
                 "properties": {
                   "policy": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/BudgetPolicy",
                     "description": "The policy to create. `policy_id` needs to be empty as it will be generated `policy_name` must be provided, custom_tags may need to be provided depending on the cloud provider. All other fields are optional."
                   },
                   "request_id": {
@@ -191,7 +191,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/Filter"
             },
             "description": "A filter to apply to the list of policies."
           },
@@ -200,7 +200,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The maximum number of budget policies to return. If unspecified, at most 100 budget policies will be returned. The maximum value is 1000; values above 1000 will be coerced to 1000."
           },
@@ -218,7 +218,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/SortSpec"
             },
             "description": "The sort specification."
           }
@@ -399,7 +399,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/LimitConfig"
             },
             "description": "DEPRECATED. This is redundant field as LimitConfig is part of the BudgetPolicy"
           }
@@ -411,7 +411,7 @@
                 "type": "object",
                 "properties": {
                   "policy": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/BudgetPolicy",
                     "description": "The policy to update. `creator_user_id` cannot be specified in the request. All other fields must be specified even if not changed. The `policy_id` is used to identify the policy to update."
                   }
                 },
@@ -481,7 +481,7 @@
                 "type": "object",
                 "properties": {
                   "budget": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/CreateBudgetConfigurationBudget",
                     "description": "Properties of the new budget configuration."
                   }
                 },
@@ -730,7 +730,7 @@
                 "type": "object",
                 "properties": {
                   "budget": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/UpdateBudgetConfigurationBudget",
                     "description": "The updated budget. This will overwrite the budget specified by the budget ID."
                   }
                 },
@@ -800,7 +800,7 @@
                 "type": "object",
                 "properties": {
                   "log_delivery_configuration": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/CreateLogDeliveryConfigurationParams",
                     "description": ":returns: :class:`WrappedLogDeliveryConfiguration`"
                   }
                 },
@@ -883,7 +883,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/LogDeliveryConfigStatus"
             },
             "description": "The log delivery status to filter the search results with"
           },
@@ -1024,7 +1024,7 @@
                 "type": "object",
                 "properties": {
                   "status": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/LogDeliveryConfigStatus",
                     "description": "Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable the configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is not supported, so disable a log delivery configuration that is no longer needed."
                   }
                 },
@@ -1087,15 +1087,15 @@
                 "type": "object",
                 "properties": {
                   "dashboard_type": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/UsageDashboardType",
                     "description": "Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage dashboard shows usage data for all workspaces in the account."
                   },
                   "major_version": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/UsageDashboardMajorVersion",
                     "description": "The major version of the usage dashboard template to use. Defaults to VERSION_1."
                   },
                   "workspace_id": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The workspace ID of the workspace in which the usage dashboard is created."
                   }
                 }
@@ -1157,7 +1157,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/UsageDashboardType"
             },
             "description": "Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage dashboard shows usage data for all workspaces in the account."
           },
@@ -1166,7 +1166,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The workspace ID of the workspace in which the usage dashboard is created."
           }
@@ -1770,35 +1770,35 @@
         "x-enum": [
           "EMAIL_NOTIFICATION"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "AlertConfigurationQuantityType": {
         "type": "string",
         "x-enum": [
           "LIST_PRICE_DOLLARS_USD"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "AlertConfigurationTimePeriod": {
         "type": "string",
         "x-enum": [
           "MONTH"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "AlertConfigurationTriggerType": {
         "type": "string",
         "x-enum": [
           "CUMULATIVE_SPENDING_EXCEEDED"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "BudgetConfigurationFilterOperator": {
         "type": "string",
         "x-enum": [
           "IN"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "DeliveryStatus": {
         "type": "string",
@@ -1840,7 +1840,7 @@
         "x-enum": [
           "POLICY_NAME"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "UsageDashboardMajorVersion": {
         "type": "string",
@@ -1848,7 +1848,7 @@
           "USAGE_DASHBOARD_MAJOR_VERSION_1",
           "USAGE_DASHBOARD_MAJOR_VERSION_2"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "UsageDashboardType": {
         "type": "string",
@@ -1856,7 +1856,7 @@
           "USAGE_DASHBOARD_TYPE_GLOBAL",
           "USAGE_DASHBOARD_TYPE_WORKSPACE"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       }
     }
   }

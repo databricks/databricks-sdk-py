@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.workspace
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -96,7 +96,7 @@ paths:
                     depending on your Git provider / token requirements.
                     Required for AWS CodeCommit.
                 is_default_for_provider:
-                  type: string
+                  type: boolean
                   description: if the credential is the default for the given provider
                 name:
                   type: string
@@ -112,7 +112,7 @@ paths:
                     more]. [Learn more]:
                     https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
                 principal_id:
-                  type: string
+                  type: integer
                   description: >-
                     The ID of the service principal whose credentials will be
                     modified. Only service principal managers can perform this
@@ -157,7 +157,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The ID of the service principal whose credentials will be listed.
             Only service principal managers can perform this action.
@@ -206,7 +206,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The ID of the service principal whose credentials will be modified.
             Only service principal managers can perform this action.
@@ -252,7 +252,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The ID of the service principal whose credentials will be modified.
             Only service principal managers can perform this action.
@@ -352,7 +352,7 @@ paths:
                     depending on your Git provider / token requirements.
                     Required for AWS CodeCommit.
                 is_default_for_provider:
-                  type: string
+                  type: boolean
                   description: if the credential is the default for the given provider
                 name:
                   type: string
@@ -368,7 +368,7 @@ paths:
                     more]. [Learn more]:
                     https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
                 principal_id:
-                  type: string
+                  type: integer
                   description: >-
                     The ID of the service principal whose credentials will be
                     modified. Only service principal managers can perform this
@@ -446,7 +446,7 @@ paths:
                     `/Repos`, path must be in the format
                     `/Repos/{folder}/{repo-name}`.
                 sparse_checkout:
-                  type: string
+                  $ref: '#/components/schemas/SparseCheckout'
                   description: >-
                     If specified, the repo will be created with sparse checkout
                     enabled. You cannot enable/disable sparse checkout after the
@@ -652,7 +652,7 @@ paths:
                   type: string
                   description: Branch that the local version of the repo is checked out to.
                 sparse_checkout:
-                  type: string
+                  $ref: '#/components/schemas/SparseCheckoutUpdate'
                   description: >-
                     If specified, update the sparse checkout settings. The
                     update will fail if sparse checkout is not enabled for the
@@ -800,7 +800,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RepoAccessControlRequest'
                   description: ':returns: :class:`RepoPermissions`'
       responses:
         '200':
@@ -855,7 +857,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RepoAccessControlRequest'
                   description: ':returns: :class:`RepoPermissions`'
       responses:
         '200':
@@ -977,7 +981,7 @@ paths:
                   type: string
                   description: Scope name requested by the user. Scope names are unique.
                 backend_azure_keyvault:
-                  type: string
+                  $ref: '#/components/schemas/AzureKeyVaultSecretScopeMetadata'
                   description: >-
                     The metadata for the secret scope if the type is
                     ``AZURE_KEYVAULT``
@@ -987,7 +991,7 @@ paths:
                     The principal that is initially granted ``MANAGE``
                     permission to the created scope.
                 scope_backend_type:
-                  type: string
+                  $ref: '#/components/schemas/ScopeBackendType'
                   description: >-
                     The backend type the scope will be created with. If not
                     specified, will default to ``DATABRICKS``
@@ -1643,7 +1647,7 @@ paths:
                   type: string
                   description: The principal in which the permission is applied.
                 permission:
-                  type: string
+                  $ref: '#/components/schemas/AclPermission'
                   description: The permission level applied to the principal.
               required:
                 - scope
@@ -1816,7 +1820,7 @@ paths:
                   type: string
                   description: The absolute path of the notebook or directory.
                 recursive:
-                  type: string
+                  type: boolean
                   description: >-
                     The flag that specifies whether to delete the object
                     recursively. It is `false` by default. Please note this
@@ -1889,7 +1893,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/ExportFormat'
           description: >-
             This specifies the format of the exported file. By default, this is
             `SOURCE`. The value is case sensitive. - `SOURCE`: The notebook is
@@ -2086,7 +2090,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/WorkspaceObjectAccessControlRequest'
                   description: ':returns: :class:`WorkspaceObjectPermissions`'
       responses:
         '200':
@@ -2156,7 +2162,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/WorkspaceObjectAccessControlRequest'
                   description: ':returns: :class:`WorkspaceObjectPermissions`'
       responses:
         '200':
@@ -2290,7 +2298,7 @@ paths:
                     **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown. This parameter
                     might be absent, and instead a posted file is used.
                 format:
-                  type: string
+                  $ref: '#/components/schemas/ImportFormat'
                   description: >-
                     This specifies the format of the file to be imported. The
                     value is case sensitive. - `AUTO`: The item is imported
@@ -2305,12 +2313,12 @@ paths:
                     for directories. - `R_MARKDOWN`: The notebook is imported
                     from R Markdown format.
                 language:
-                  type: string
+                  $ref: '#/components/schemas/Language'
                   description: >-
                     The language of the object. This value is set only if the
                     object type is `NOTEBOOK`.
                 overwrite:
-                  type: string
+                  type: boolean
                   description: >-
                     The flag that specifies whether to overwrite existing
                     object. It is `false` by default. For `DBC` format,
@@ -2365,7 +2373,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: UTC timestamp in milliseconds
       responses:
         '200':

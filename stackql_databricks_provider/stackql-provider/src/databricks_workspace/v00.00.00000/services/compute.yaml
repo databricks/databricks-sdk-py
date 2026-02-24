@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.compute
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -73,13 +73,15 @@ paths:
                   type: string
                   description: Additional human-readable description of the cluster policy.
                 libraries:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Library'
                   description: >-
                     A list of libraries to be installed on the next cluster
                     restart that uses this policy. The maximum number of
                     libraries is 500.
                 max_clusters_per_user:
-                  type: string
+                  type: integer
                   description: >-
                     Max number of clusters per user that can be active using
                     this policy. If not present, there is no max limit.
@@ -235,13 +237,15 @@ paths:
                   type: string
                   description: Additional human-readable description of the cluster policy.
                 libraries:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Library'
                   description: >-
                     A list of libraries to be installed on the next cluster
                     restart that uses this policy. The maximum number of
                     libraries is 500.
                 max_clusters_per_user:
-                  type: string
+                  type: integer
                   description: >-
                     Max number of clusters per user that can be active using
                     this policy. If not present, there is no max limit.
@@ -453,7 +457,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ClusterPolicyAccessControlRequest'
                   description: ':returns: :class:`ClusterPolicyPermissions`'
       responses:
         '200':
@@ -510,7 +516,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ClusterPolicyAccessControlRequest'
                   description: ':returns: :class:`ClusterPolicyPermissions`'
       responses:
         '200':
@@ -554,7 +562,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/ListSortColumn'
           description: >-
             The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` -
             Sort result list by policy creation time. * `POLICY_NAME` - Sort
@@ -563,7 +571,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/ListSortOrder'
           description: >-
             The order in which the policies get listed. * `DESC` - Sort result
             list in descending order. * `ASC` - Sort result list in ascending
@@ -840,19 +848,19 @@ paths:
                     list of available Spark versions can be retrieved by using
                     the :method:clusters/sparkVersions API call.
                 apply_policy_default_values:
-                  type: string
+                  type: boolean
                   description: >-
                     When set to true, fixed and default values from the policy
                     will be used for fields that are omitted. When set to false,
                     only fixed values from the policy will be applied.
                 autoscale:
-                  type: string
+                  $ref: '#/components/schemas/AutoScale'
                   description: >-
                     Parameters needed in order to automatically scale clusters
                     up and down based on load. Note: autoscaling works best with
                     DB runtime versions 3.0 or later.
                 autotermination_minutes:
-                  type: string
+                  type: integer
                   description: >-
                     Automatically terminates the cluster after it is inactive
                     for this time in minutes. If not set, this cluster will not
@@ -860,24 +868,24 @@ paths:
                     must be between 10 and 10000 minutes. Users can also set
                     this value to 0 to explicitly disable automatic termination.
                 aws_attributes:
-                  type: string
+                  $ref: '#/components/schemas/AwsAttributes'
                   description: >-
                     Attributes related to clusters running on Amazon Web
                     Services. If not specified at cluster creation, a set of
                     default values will be used.
                 azure_attributes:
-                  type: string
+                  $ref: '#/components/schemas/AzureAttributes'
                   description: >-
                     Attributes related to clusters running on Microsoft Azure.
                     If not specified at cluster creation, a set of default
                     values will be used.
                 clone_from:
-                  type: string
+                  $ref: '#/components/schemas/CloneCluster'
                   description: >-
                     When specified, this clones libraries from a source cluster
                     during the creation of a new cluster.
                 cluster_log_conf:
-                  type: string
+                  $ref: '#/components/schemas/ClusterLogConf'
                   description: >-
                     The configuration for delivering spark logs to a long-term
                     storage destination. Three kinds of destinations (DBFS, S3
@@ -895,7 +903,7 @@ paths:
                     be an empty string. For job clusters, the cluster name is
                     automatically set based on the job and job run IDs.
                 custom_tags:
-                  type: string
+                  type: object
                   description: >-
                     Additional tags for cluster resources. Databricks will tag
                     all cluster resources (e.g., AWS instances and EBS volumes)
@@ -904,12 +912,12 @@ paths:
                     Clusters can only reuse cloud resources if the resources'
                     tags are a subset of the cluster tags
                 data_security_mode:
-                  type: string
+                  $ref: '#/components/schemas/DataSecurityMode'
                   description: >-
                     :param docker_image: :class:`DockerImage` (optional) Custom
                     docker image BYOC
                 docker_image:
-                  type: string
+                  $ref: '#/components/schemas/DockerImage'
                 driver_instance_pool_id:
                   type: string
                   description: >-
@@ -918,7 +926,7 @@ paths:
                     with id (instance_pool_id) if the driver pool is not
                     assigned.
                 driver_node_type_flexibility:
-                  type: string
+                  $ref: '#/components/schemas/NodeTypeFlexibility'
                   description: Flexible node type configuration for the driver node.
                 driver_node_type_id:
                   type: string
@@ -931,22 +939,24 @@ paths:
                     node_type_id, and virtual_cluster_size are specified,
                     driver_node_type_id and node_type_id take precedence.
                 enable_elastic_disk:
-                  type: string
+                  type: boolean
                   description: >-
                     Autoscaling Local Storage: when enabled, this cluster will
                     dynamically acquire additional disk space when its Spark
                     workers are running low on disk space.
                 enable_local_disk_encryption:
-                  type: string
+                  type: boolean
                   description: Whether to enable LUKS on cluster VMs' local disks
                 gcp_attributes:
-                  type: string
+                  $ref: '#/components/schemas/GcpAttributes'
                   description: >-
                     Attributes related to clusters running on Google Cloud
                     Platform. If not specified at cluster creation, a set of
                     default values will be used.
                 init_scripts:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InitScriptInfo'
                   description: >-
                     The configuration for storing init scripts. Any number of
                     destinations can be specified. The scripts are executed
@@ -959,13 +969,13 @@ paths:
                     The optional ID of the instance pool to which the cluster
                     belongs.
                 is_single_node:
-                  type: string
+                  type: boolean
                   description: >-
                     This field can only be used when `kind = CLASSIC_PREVIEW`.
                     When set to true, Databricks will automatically set single
                     node related `custom_tags`, `spark_conf`, and `num_workers`
                 kind:
-                  type: string
+                  $ref: '#/components/schemas/Kind'
                   description: >-
                     :param node_type_id: str (optional) This field encodes,
                     through a single value, the resources available to each of
@@ -977,7 +987,7 @@ paths:
                 node_type_id:
                   type: string
                 num_workers:
-                  type: string
+                  type: integer
                   description: >-
                     Number of worker nodes that this cluster should have. A
                     cluster has one Spark Driver and `num_workers` Executors for
@@ -995,13 +1005,13 @@ paths:
                     The ID of the cluster policy used to create the cluster if
                     applicable.
                 remote_disk_throughput:
-                  type: string
+                  type: integer
                   description: >-
                     If set, what the configurable throughput (in Mb/s) for the
                     remote disk is. Currently only supported for GCP
                     HYPERDISK_BALANCED disks.
                 runtime_engine:
-                  type: string
+                  $ref: '#/components/schemas/RuntimeEngine'
                   description: >-
                     Determines the cluster's runtime engine, either standard or
                     Photon. This field is not compatible with legacy
@@ -1014,7 +1024,7 @@ paths:
                   type: string
                   description: Single user name if data_security_mode is `SINGLE_USER`
                 spark_conf:
-                  type: string
+                  type: object
                   description: >-
                     An object containing a set of optional, user-specified Spark
                     configuration key-value pairs. Users can also pass in a
@@ -1022,7 +1032,7 @@ paths:
                     via `spark.driver.extraJavaOptions` and
                     `spark.executor.extraJavaOptions` respectively.
                 spark_env_vars:
-                  type: string
+                  type: object
                   description: >-
                     An object containing a set of optional, user-specified
                     environment variable key-value pairs. Please note that
@@ -1038,30 +1048,32 @@ paths:
                     `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
                     -Dspark.shuffle.service.enabled=true"}`
                 ssh_public_keys:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     SSH public key contents that will be added to each Spark
                     node in this cluster. The corresponding private keys can be
                     used to login with the user name `ubuntu` on port `2200`. Up
                     to 10 keys can be specified.
                 total_initial_remote_disk_size:
-                  type: string
+                  type: integer
                   description: >-
                     If set, what the total initial volume size (in GB) of the
                     remote disks should be. Currently only supported for GCP
                     HYPERDISK_BALANCED disks.
                 use_ml_runtime:
-                  type: string
+                  type: boolean
                   description: >-
                     This field can only be used when `kind = CLASSIC_PREVIEW`.
                     `effective_spark_version` is determined by `spark_version`
                     (DBR release), this field `use_ml_runtime`, and whether
                     `node_type_id` is gpu node or not.
                 worker_node_type_flexibility:
-                  type: string
+                  $ref: '#/components/schemas/NodeTypeFlexibility'
                   description: Flexible node type configuration for worker nodes.
                 workload_type:
-                  type: string
+                  $ref: '#/components/schemas/WorkloadType'
                   description: >-
                     :returns: Long-running operation waiter for
                     :class:`ClusterDetails`. See
@@ -1335,19 +1347,19 @@ paths:
                     list of available Spark versions can be retrieved by using
                     the :method:clusters/sparkVersions API call.
                 apply_policy_default_values:
-                  type: string
+                  type: boolean
                   description: >-
                     When set to true, fixed and default values from the policy
                     will be used for fields that are omitted. When set to false,
                     only fixed values from the policy will be applied.
                 autoscale:
-                  type: string
+                  $ref: '#/components/schemas/AutoScale'
                   description: >-
                     Parameters needed in order to automatically scale clusters
                     up and down based on load. Note: autoscaling works best with
                     DB runtime versions 3.0 or later.
                 autotermination_minutes:
-                  type: string
+                  type: integer
                   description: >-
                     Automatically terminates the cluster after it is inactive
                     for this time in minutes. If not set, this cluster will not
@@ -1355,19 +1367,19 @@ paths:
                     must be between 10 and 10000 minutes. Users can also set
                     this value to 0 to explicitly disable automatic termination.
                 aws_attributes:
-                  type: string
+                  $ref: '#/components/schemas/AwsAttributes'
                   description: >-
                     Attributes related to clusters running on Amazon Web
                     Services. If not specified at cluster creation, a set of
                     default values will be used.
                 azure_attributes:
-                  type: string
+                  $ref: '#/components/schemas/AzureAttributes'
                   description: >-
                     Attributes related to clusters running on Microsoft Azure.
                     If not specified at cluster creation, a set of default
                     values will be used.
                 cluster_log_conf:
-                  type: string
+                  $ref: '#/components/schemas/ClusterLogConf'
                   description: >-
                     The configuration for delivering spark logs to a long-term
                     storage destination. Three kinds of destinations (DBFS, S3
@@ -1385,7 +1397,7 @@ paths:
                     be an empty string. For job clusters, the cluster name is
                     automatically set based on the job and job run IDs.
                 custom_tags:
-                  type: string
+                  type: object
                   description: >-
                     Additional tags for cluster resources. Databricks will tag
                     all cluster resources (e.g., AWS instances and EBS volumes)
@@ -1394,12 +1406,12 @@ paths:
                     Clusters can only reuse cloud resources if the resources'
                     tags are a subset of the cluster tags
                 data_security_mode:
-                  type: string
+                  $ref: '#/components/schemas/DataSecurityMode'
                   description: >-
                     :param docker_image: :class:`DockerImage` (optional) Custom
                     docker image BYOC
                 docker_image:
-                  type: string
+                  $ref: '#/components/schemas/DockerImage'
                 driver_instance_pool_id:
                   type: string
                   description: >-
@@ -1408,7 +1420,7 @@ paths:
                     with id (instance_pool_id) if the driver pool is not
                     assigned.
                 driver_node_type_flexibility:
-                  type: string
+                  $ref: '#/components/schemas/NodeTypeFlexibility'
                   description: Flexible node type configuration for the driver node.
                 driver_node_type_id:
                   type: string
@@ -1421,22 +1433,24 @@ paths:
                     node_type_id, and virtual_cluster_size are specified,
                     driver_node_type_id and node_type_id take precedence.
                 enable_elastic_disk:
-                  type: string
+                  type: boolean
                   description: >-
                     Autoscaling Local Storage: when enabled, this cluster will
                     dynamically acquire additional disk space when its Spark
                     workers are running low on disk space.
                 enable_local_disk_encryption:
-                  type: string
+                  type: boolean
                   description: Whether to enable LUKS on cluster VMs' local disks
                 gcp_attributes:
-                  type: string
+                  $ref: '#/components/schemas/GcpAttributes'
                   description: >-
                     Attributes related to clusters running on Google Cloud
                     Platform. If not specified at cluster creation, a set of
                     default values will be used.
                 init_scripts:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InitScriptInfo'
                   description: >-
                     The configuration for storing init scripts. Any number of
                     destinations can be specified. The scripts are executed
@@ -1449,13 +1463,13 @@ paths:
                     The optional ID of the instance pool to which the cluster
                     belongs.
                 is_single_node:
-                  type: string
+                  type: boolean
                   description: >-
                     This field can only be used when `kind = CLASSIC_PREVIEW`.
                     When set to true, Databricks will automatically set single
                     node related `custom_tags`, `spark_conf`, and `num_workers`
                 kind:
-                  type: string
+                  $ref: '#/components/schemas/Kind'
                   description: >-
                     :param node_type_id: str (optional) This field encodes,
                     through a single value, the resources available to each of
@@ -1467,7 +1481,7 @@ paths:
                 node_type_id:
                   type: string
                 num_workers:
-                  type: string
+                  type: integer
                   description: >-
                     Number of worker nodes that this cluster should have. A
                     cluster has one Spark Driver and `num_workers` Executors for
@@ -1485,13 +1499,13 @@ paths:
                     The ID of the cluster policy used to create the cluster if
                     applicable.
                 remote_disk_throughput:
-                  type: string
+                  type: integer
                   description: >-
                     If set, what the configurable throughput (in Mb/s) for the
                     remote disk is. Currently only supported for GCP
                     HYPERDISK_BALANCED disks.
                 runtime_engine:
-                  type: string
+                  $ref: '#/components/schemas/RuntimeEngine'
                   description: >-
                     Determines the cluster's runtime engine, either standard or
                     Photon. This field is not compatible with legacy
@@ -1504,7 +1518,7 @@ paths:
                   type: string
                   description: Single user name if data_security_mode is `SINGLE_USER`
                 spark_conf:
-                  type: string
+                  type: object
                   description: >-
                     An object containing a set of optional, user-specified Spark
                     configuration key-value pairs. Users can also pass in a
@@ -1512,7 +1526,7 @@ paths:
                     via `spark.driver.extraJavaOptions` and
                     `spark.executor.extraJavaOptions` respectively.
                 spark_env_vars:
-                  type: string
+                  type: object
                   description: >-
                     An object containing a set of optional, user-specified
                     environment variable key-value pairs. Please note that
@@ -1528,30 +1542,32 @@ paths:
                     `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
                     -Dspark.shuffle.service.enabled=true"}`
                 ssh_public_keys:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     SSH public key contents that will be added to each Spark
                     node in this cluster. The corresponding private keys can be
                     used to login with the user name `ubuntu` on port `2200`. Up
                     to 10 keys can be specified.
                 total_initial_remote_disk_size:
-                  type: string
+                  type: integer
                   description: >-
                     If set, what the total initial volume size (in GB) of the
                     remote disks should be. Currently only supported for GCP
                     HYPERDISK_BALANCED disks.
                 use_ml_runtime:
-                  type: string
+                  type: boolean
                   description: >-
                     This field can only be used when `kind = CLASSIC_PREVIEW`.
                     `effective_spark_version` is determined by `spark_version`
                     (DBR release), this field `use_ml_runtime`, and whether
                     `node_type_id` is gpu node or not.
                 worker_node_type_flexibility:
-                  type: string
+                  $ref: '#/components/schemas/NodeTypeFlexibility'
                   description: Flexible node type configuration for worker nodes.
                 workload_type:
-                  type: string
+                  $ref: '#/components/schemas/WorkloadType'
                   description: >-
                     :returns: Long-running operation waiter for
                     :class:`ClusterDetails`. See
@@ -1635,23 +1651,25 @@ paths:
                   type: string
                   description: The ID of the cluster to retrieve events about.
                 end_time:
-                  type: string
+                  type: integer
                   description: >-
                     The end time in epoch milliseconds. If empty, returns events
                     up to the current time.
                 event_types:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/EventType'
                   description: >-
                     An optional set of event types to filter on. If empty, all
                     event types are returned.
                 limit:
-                  type: string
+                  type: integer
                   description: >-
                     Deprecated: use page_token in combination with page_size
                     instead. The maximum number of events to include in a page
                     of events. Defaults to 50, and maximum allowed value is 500.
                 offset:
-                  type: string
+                  type: integer
                   description: >-
                     Deprecated: use page_token in combination with page_size
                     instead. The offset in the result set. Defaults to 0 (no
@@ -1659,12 +1677,12 @@ paths:
                     requested in descending order, the end_time field is
                     required.
                 order:
-                  type: string
+                  $ref: '#/components/schemas/GetEventsOrder'
                   description: >-
                     The order to list events in; either "ASC" or "DESC".
                     Defaults to "DESC".
                 page_size:
-                  type: string
+                  type: integer
                   description: >-
                     The maximum number of events to include in a page of events.
                     The server may further constrain the maximum number of
@@ -1680,7 +1698,7 @@ paths:
                     respectively. If page_token is empty, the first page is
                     returned.
                 start_time:
-                  type: string
+                  type: integer
                   description: >-
                     The start time in epoch milliseconds. If empty, returns
                     events starting from the beginning of time.
@@ -1872,7 +1890,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ClusterAccessControlRequest'
                   description: ':returns: :class:`ClusterPermissions`'
       responses:
         '200':
@@ -1927,7 +1947,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ClusterAccessControlRequest'
                   description: ':returns: :class:`ClusterPermissions`'
       responses:
         '200':
@@ -1981,13 +2003,13 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/ListClustersFilterBy'
           description: Filters to apply to the list of clusters.
         - name: page_size
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Use this field to specify the maximum number of results to be
             returned by the server. The server may further constrain the maximum
@@ -2004,7 +2026,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/ListClustersSortBy'
           description: Sort the list of clusters by a specific criteria.
       responses:
         '200':
@@ -2235,13 +2257,13 @@ paths:
                   type: string
                   description: The cluster to be resized.
                 autoscale:
-                  type: string
+                  $ref: '#/components/schemas/AutoScale'
                   description: >-
                     Parameters needed in order to automatically scale clusters
                     up and down based on load. Note: autoscaling works best with
                     DB runtime versions 3.0 or later.
                 num_workers:
-                  type: string
+                  type: integer
                   description: >-
                     Number of worker nodes that this cluster should have. A
                     cluster has one Spark Driver and `num_workers` Executors for
@@ -2557,7 +2579,7 @@ paths:
                     wildcards, as it can lead to unintended results if the API
                     changes in the future.
                 cluster:
-                  type: string
+                  $ref: '#/components/schemas/UpdateClusterResource'
                   description: The cluster to be updated.
               required:
                 - cluster_id
@@ -2773,7 +2795,7 @@ paths:
                   type: string
                   description: Running cluster id
                 language:
-                  type: string
+                  $ref: '#/components/schemas/Language'
                   description: >-
                     :returns: Long-running operation waiter for
                     :class:`ContextStatusResponse`. See
@@ -2885,7 +2907,7 @@ paths:
                   type: string
                   description: Running context id
                 language:
-                  type: string
+                  $ref: '#/components/schemas/Language'
                   description: >-
                     :returns: Long-running operation waiter for
                     :class:`CommandStatusResponse`. See
@@ -2951,12 +2973,12 @@ paths:
                   type: string
                   description: The Base64-encoded content of the script.
                 enabled:
-                  type: string
+                  type: boolean
                   description: >-
                     Specifies whether the script is enabled. The script runs
                     only if enabled.
                 position:
-                  type: string
+                  type: integer
                   description: >-
                     The position of a global init script, where 0 represents the
                     first script to run, 1 is the second script to run, in
@@ -3157,12 +3179,12 @@ paths:
                   type: string
                   description: The Base64-encoded content of the script.
                 enabled:
-                  type: string
+                  type: boolean
                   description: >-
                     Specifies whether the script is enabled. The script runs
                     only if enabled.
                 position:
-                  type: string
+                  type: integer
                   description: >-
                     The position of a script, where 0 represents the first
                     script to run, 1 is the second script to run, in ascending
@@ -3280,31 +3302,31 @@ paths:
                     available node types can be retrieved by using the
                     :method:clusters/listNodeTypes API call.
                 aws_attributes:
-                  type: string
+                  $ref: '#/components/schemas/InstancePoolAwsAttributes'
                   description: >-
                     Attributes related to instance pools running on Amazon Web
                     Services. If not specified at pool creation, a set of
                     default values will be used.
                 azure_attributes:
-                  type: string
+                  $ref: '#/components/schemas/InstancePoolAzureAttributes'
                   description: >-
                     Attributes related to instance pools running on Azure. If
                     not specified at pool creation, a set of default values will
                     be used.
                 custom_tags:
-                  type: string
+                  type: object
                   description: >-
                     Additional tags for pool resources. Databricks will tag all
                     pool resources (e.g., AWS instances and EBS volumes) with
                     these tags in addition to `default_tags`. Notes: -
                     Currently, Databricks allows at most 45 custom tags
                 disk_spec:
-                  type: string
+                  $ref: '#/components/schemas/DiskSpec'
                   description: >-
                     Defines the specification of the disks that will be attached
                     to all spark containers.
                 enable_elastic_disk:
-                  type: string
+                  type: boolean
                   description: >-
                     Autoscaling Local Storage: when enabled, this instances in
                     this pool will dynamically acquire additional disk space
@@ -3313,13 +3335,13 @@ paths:
                     function correctly - refer to the User Guide for more
                     details.
                 gcp_attributes:
-                  type: string
+                  $ref: '#/components/schemas/InstancePoolGcpAttributes'
                   description: >-
                     Attributes related to instance pools running on Google Cloud
                     Platform. If not specified at pool creation, a set of
                     default values will be used.
                 idle_instance_autotermination_minutes:
-                  type: string
+                  type: integer
                   description: >-
                     Automatically terminates the extra instances in the pool
                     cache after they are inactive for this time in minutes if
@@ -3330,25 +3352,29 @@ paths:
                     to 0 to instantly remove idle instances from the cache if
                     min cache size could still hold.
                 max_capacity:
-                  type: string
+                  type: integer
                   description: >-
                     Maximum number of outstanding instances to keep in the pool,
                     including both instances used by clusters and idle
                     instances. Clusters that require further instance
                     provisioning will fail during upsize requests.
                 min_idle_instances:
-                  type: string
+                  type: integer
                   description: >-
                     Minimum number of idle instances to keep in the instance
                     pool
                 node_type_flexibility:
-                  type: string
+                  $ref: '#/components/schemas/NodeTypeFlexibility'
                   description: Flexible node type configuration for the pool.
                 preloaded_docker_images:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DockerImage'
                   description: Custom Docker Image BYOC
                 preloaded_spark_versions:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     A list containing at most one preloaded Spark image version
                     for the pool. Pool-backed clusters started with the
@@ -3356,13 +3382,13 @@ paths:
                     available Spark versions can be retrieved by using the
                     :method:clusters/sparkVersions API call.
                 remote_disk_throughput:
-                  type: string
+                  type: integer
                   description: >-
                     If set, what the configurable throughput (in Mb/s) for the
                     remote disk is. Currently only supported for GCP
                     HYPERDISK_BALANCED types.
                 total_initial_remote_disk_size:
-                  type: string
+                  type: integer
                   description: >-
                     If set, what the total initial volume size (in GB) of the
                     remote disks should be. Currently only supported for GCP
@@ -3500,14 +3526,14 @@ paths:
                     available node types can be retrieved by using the
                     :method:clusters/listNodeTypes API call.
                 custom_tags:
-                  type: string
+                  type: object
                   description: >-
                     Additional tags for pool resources. Databricks will tag all
                     pool resources (e.g., AWS instances and EBS volumes) with
                     these tags in addition to `default_tags`. Notes: -
                     Currently, Databricks allows at most 45 custom tags
                 idle_instance_autotermination_minutes:
-                  type: string
+                  type: integer
                   description: >-
                     Automatically terminates the extra instances in the pool
                     cache after they are inactive for this time in minutes if
@@ -3518,28 +3544,28 @@ paths:
                     to 0 to instantly remove idle instances from the cache if
                     min cache size could still hold.
                 max_capacity:
-                  type: string
+                  type: integer
                   description: >-
                     Maximum number of outstanding instances to keep in the pool,
                     including both instances used by clusters and idle
                     instances. Clusters that require further instance
                     provisioning will fail during upsize requests.
                 min_idle_instances:
-                  type: string
+                  type: integer
                   description: >-
                     Minimum number of idle instances to keep in the instance
                     pool
                 node_type_flexibility:
-                  type: string
+                  $ref: '#/components/schemas/NodeTypeFlexibility'
                   description: Flexible node type configuration for the pool.
                 remote_disk_throughput:
-                  type: string
+                  type: integer
                   description: >-
                     If set, what the configurable throughput (in Mb/s) for the
                     remote disk is. Currently only supported for GCP
                     HYPERDISK_BALANCED types.
                 total_initial_remote_disk_size:
-                  type: string
+                  type: integer
                   description: >-
                     If set, what the total initial volume size (in GB) of the
                     remote disks should be. Currently only supported for GCP
@@ -3726,7 +3752,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InstancePoolAccessControlRequest'
                   description: ':returns: :class:`InstancePoolPermissions`'
       responses:
         '200':
@@ -3783,7 +3811,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InstancePoolAccessControlRequest'
                   description: ':returns: :class:`InstancePoolPermissions`'
       responses:
         '200':
@@ -3897,7 +3927,7 @@ paths:
                     Serverless]:
                     https://docs.databricks.com/sql/admin/serverless.html
                 is_meta_instance_profile:
-                  type: string
+                  type: boolean
                   description: >-
                     Boolean flag indicating whether the instance profile should
                     only be used in credential passthrough scenarios. If true,
@@ -3906,7 +3936,7 @@ paths:
                     should always be used with authorization. This field is
                     optional, the default value is `false`.
                 skip_validation:
-                  type: string
+                  type: boolean
                   description: >-
                     By default, Databricks validates that it has sufficient
                     permissions to launch instances with the instance profile.
@@ -4008,7 +4038,7 @@ paths:
                     Serverless]:
                     https://docs.databricks.com/sql/admin/serverless.html
                 is_meta_instance_profile:
-                  type: string
+                  type: boolean
                   description: >-
                     Boolean flag indicating whether the instance profile should
                     only be used in credential passthrough scenarios. If true,
@@ -4244,7 +4274,9 @@ paths:
                     Unique identifier for the cluster on which to install these
                     libraries.
                 libraries:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Library'
                   description: The libraries to install.
               required:
                 - cluster_id
@@ -4297,7 +4329,9 @@ paths:
                     Unique identifier for the cluster on which to uninstall
                     these libraries.
                 libraries:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Library'
                   description: The libraries to uninstall.
               required:
                 - cluster_id
@@ -4371,7 +4405,7 @@ paths:
                     The ID of the cluster you want to enforce policy compliance
                     on.
                 validate_only:
-                  type: string
+                  type: boolean
                   description: >-
                     If set, previews the changes that would be made to a cluster
                     to enforce compliance but does not update the cluster.
@@ -4480,7 +4514,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Use this field to specify the maximum number of results to be
             returned by the server. The server may further constrain the maximum
@@ -4543,7 +4577,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The version number for the family to fetch. Defaults to the latest
             version.
@@ -4593,7 +4627,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Maximum number of policy families to return.
         - name: page_token
           in: query
@@ -7845,20 +7879,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7919,20 +7953,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7962,20 +7996,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8004,20 +8038,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8188,20 +8222,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8242,20 +8276,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8379,20 +8413,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8433,20 +8467,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8475,20 +8509,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8517,20 +8551,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8559,20 +8593,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8604,20 +8638,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8647,20 +8681,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

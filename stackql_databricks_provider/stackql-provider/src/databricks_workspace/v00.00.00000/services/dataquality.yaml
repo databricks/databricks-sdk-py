@@ -6,7 +6,7 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.dataquality
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -173,7 +173,7 @@ paths:
               type: object
               properties:
                 monitor:
-                  type: string
+                  $ref: '#/components/schemas/Monitor'
                   description: The monitor to create.
               required:
                 - monitor
@@ -214,7 +214,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -320,7 +320,7 @@ paths:
               type: object
               properties:
                 refresh:
-                  type: string
+                  $ref: '#/components/schemas/Refresh'
                   description: The refresh to create
               required:
                 - refresh
@@ -430,7 +430,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -748,7 +748,7 @@ paths:
               type: object
               properties:
                 monitor:
-                  type: string
+                  $ref: '#/components/schemas/Monitor'
                   description: The monitor to update.
               required:
                 - monitor
@@ -1026,7 +1026,7 @@ paths:
               type: object
               properties:
                 refresh:
-                  type: string
+                  $ref: '#/components/schemas/Refresh'
                   description: The refresh to update.
               required:
                 - refresh

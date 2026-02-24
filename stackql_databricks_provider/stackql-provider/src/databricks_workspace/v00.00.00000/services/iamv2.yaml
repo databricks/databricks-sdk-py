@@ -5,7 +5,7 @@ info:
     Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.iamv2
 servers:
 - url: https://{deployment_name}.cloud.databricks.com
@@ -46,7 +46,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/WorkspaceAccessDetailView'
         description: Controls what fields are returned.
       responses:
         '200':

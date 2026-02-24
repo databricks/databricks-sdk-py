@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.catalog
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -45,7 +45,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/ArtifactType'
           description: The artifact type of the allowlist.
       responses:
         '200':
@@ -109,13 +109,15 @@ paths:
               type: object
               properties:
                 artifact_type:
-                  type: string
+                  $ref: '#/components/schemas/ArtifactType'
                   description: The artifact type of the allowlist.
                 artifact_matchers:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ArtifactMatcher'
                   description: A list of allowed artifact match patterns.
                 created_at:
-                  type: string
+                  type: integer
                   description: >-
                     Time at which this artifact allowlist was set, in epoch
                     milliseconds.
@@ -199,10 +201,10 @@ paths:
                   type: string
                   description: The name of the connection to an external data source.
                 options:
-                  type: string
+                  type: object
                   description: A map of key-value properties attached to the securable.
                 properties:
-                  type: string
+                  type: object
                   description: A map of key-value properties attached to the securable.
                 provider_name:
                   type: string
@@ -297,7 +299,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include catalogs in the response for which the principal
             can only access selective metadata for
@@ -305,7 +307,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include catalogs not bound to the workspace. Effective
             only if the user has permission to update the catalog–workspace
@@ -314,7 +316,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of catalogs to return. - when set to 0, the page
             length is set to a server configured value (recommended); - when set
@@ -382,7 +384,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Force deletion even if the catalog is not empty.
       responses:
         '200':
@@ -433,7 +435,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include catalogs in the response for which the principal
             can only access selective metadata for
@@ -508,12 +510,12 @@ paths:
                   type: string
                   description: User-provided free-form text description.
                 enable_predictive_optimization:
-                  type: string
+                  $ref: '#/components/schemas/EnablePredictiveOptimization'
                   description: >-
                     Whether predictive optimization should be enabled for this
                     object and objects under it.
                 isolation_mode:
-                  type: string
+                  $ref: '#/components/schemas/CatalogIsolationMode'
                   description: >-
                     Whether the current securable is accessible from all
                     workspaces or a specific set of workspaces.
@@ -521,13 +523,13 @@ paths:
                   type: string
                   description: New name for the catalog.
                 options:
-                  type: string
+                  type: object
                   description: A map of key-value properties attached to the securable.
                 owner:
                   type: string
                   description: Username of current owner of catalog.
                 properties:
-                  type: string
+                  type: object
                   description: A map of key-value properties attached to the securable.
       responses:
         '200':
@@ -589,19 +591,19 @@ paths:
                   type: string
                   description: Name of the connection.
                 connection_type:
-                  type: string
+                  $ref: '#/components/schemas/ConnectionType'
                   description: The type of connection.
                 options:
-                  type: string
+                  type: object
                   description: A map of key-value properties attached to the securable.
                 comment:
                   type: string
                   description: User-provided free-form text description.
                 properties:
-                  type: string
+                  type: object
                   description: A map of key-value properties attached to the securable.
                 read_only:
-                  type: string
+                  type: boolean
                   description: If the connection is read only.
               required:
                 - name
@@ -666,7 +668,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of connections to return. - If not set, all
             connections are returned (not recommended). - when set to a value
@@ -805,7 +807,7 @@ paths:
               type: object
               properties:
                 options:
-                  type: string
+                  type: object
                   description: A map of key-value properties attached to the securable.
                 new_name:
                   type: string
@@ -875,7 +877,7 @@ paths:
               type: object
               properties:
                 tag_assignment:
-                  type: string
+                  $ref: '#/components/schemas/EntityTagAssignment'
                   description: ':returns: :class:`EntityTagAssignment`'
               required:
                 - tag_assignment
@@ -1112,7 +1114,7 @@ paths:
               type: object
               properties:
                 tag_assignment:
-                  type: string
+                  $ref: '#/components/schemas/EntityTagAssignment'
                   description: >-
                     :param update_mask: str The field mask must be a single
                     string, with multiple fields separated by commas (no
@@ -1197,7 +1199,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Optional. Maximum number of tag assignments to return in a single
             page
@@ -1254,7 +1256,7 @@ paths:
               type: object
               properties:
                 external_lineage_relationship:
-                  type: string
+                  $ref: '#/components/schemas/CreateRequestExternalLineage'
                   description: ':returns: :class:`ExternalLineageRelationship`'
               required:
                 - external_lineage_relationship
@@ -1299,7 +1301,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/DeleteRequestExternalLineage'
           description: ':class:`DeleteRequestExternalLineage`'
       responses:
         '200':
@@ -1349,7 +1351,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/ExternalLineageObject'
           description: >-
             The object to query external lineage relationships for. Since this
             field is a query parameter, please flatten the nested fields. For
@@ -1359,13 +1361,13 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/LineageDirection'
           description: The lineage direction to filter on.
         - name: page_size
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Specifies the maximum number of external lineage relationships to
             return in a single response. The value must be less than or equal to
@@ -1438,7 +1440,7 @@ paths:
               type: object
               properties:
                 external_lineage_relationship:
-                  type: string
+                  $ref: '#/components/schemas/UpdateRequestExternalLineage'
                   description: >-
                     :param update_mask: str The field mask must be a single
                     string, with multiple fields separated by commas (no
@@ -1537,30 +1539,30 @@ paths:
                   type: string
                   description: User-provided free-form text description.
                 enable_file_events:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether to enable file events on this external location.
                     Default to `true`. Set to `false` to disable file events.
                 encryption_details:
-                  type: string
+                  $ref: '#/components/schemas/EncryptionDetails'
                   description: >-
                     :param fallback: bool (optional) Indicates whether fallback
                     mode is enabled for this external location. When fallback
                     mode is enabled, the access to the location falls back to
                     cluster credentials if UC credentials are not sufficient.
                 fallback:
-                  type: string
+                  type: boolean
                 file_event_queue:
-                  type: string
+                  $ref: '#/components/schemas/FileEventQueue'
                   description: >-
                     File event queue settings. If `enable_file_events` is not
                     `false`, must be defined and have exactly one of the
                     documented properties.
                 read_only:
-                  type: string
+                  type: boolean
                   description: Indicates whether the external location is read-only.
                 skip_validation:
-                  type: string
+                  type: boolean
                   description: >-
                     Skips validation of the storage credential associated with
                     the external location.
@@ -1642,7 +1644,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include external locations in the response for which the
             principal can only access selective metadata for
@@ -1650,7 +1652,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include external locations not bound to the workspace.
             Effective only if the user has permission to update the
@@ -1659,7 +1661,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of external locations to return. If not set, all the
             external locations are returned (not recommended). - when set to a
@@ -1723,7 +1725,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Force deletion even if there are dependent external tables or
             mounts.
@@ -1776,7 +1778,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include external locations in the response for which the
             principal can only access selective metadata for
@@ -1871,32 +1873,32 @@ paths:
                   type: string
                   description: Name of the storage credential used with this location.
                 enable_file_events:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether to enable file events on this external location.
                     Default to `true`. Set to `false` to disable file events.
                 encryption_details:
-                  type: string
+                  $ref: '#/components/schemas/EncryptionDetails'
                   description: >-
                     :param fallback: bool (optional) Indicates whether fallback
                     mode is enabled for this external location. When fallback
                     mode is enabled, the access to the location falls back to
                     cluster credentials if UC credentials are not sufficient.
                 fallback:
-                  type: string
+                  type: boolean
                 file_event_queue:
-                  type: string
+                  $ref: '#/components/schemas/FileEventQueue'
                   description: >-
                     File event queue settings. If `enable_file_events` is not
                     `false`, must be defined and have exactly one of the
                     documented properties.
                 force:
-                  type: string
+                  type: boolean
                   description: >-
                     Force update even if changing url invalidates dependent
                     external tables or mounts.
                 isolation_mode:
-                  type: string
+                  $ref: '#/components/schemas/IsolationMode'
                   description: >-
                     :param new_name: str (optional) New name for the external
                     location.
@@ -1906,10 +1908,10 @@ paths:
                   type: string
                   description: The owner of the external location.
                 read_only:
-                  type: string
+                  type: boolean
                   description: Indicates whether the external location is read-only.
                 skip_validation:
-                  type: string
+                  type: boolean
                   description: >-
                     Skips validation of the storage credential associated with
                     the external location.
@@ -1965,7 +1967,7 @@ paths:
               type: object
               properties:
                 external_metadata:
-                  type: string
+                  $ref: '#/components/schemas/ExternalMetadata'
                   description: ':returns: :class:`ExternalMetadata`'
               required:
                 - external_metadata
@@ -2021,7 +2023,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Specifies the maximum number of external metadata objects to return
             in a single response. The value must be less than or equal to 1000.
@@ -2192,7 +2194,7 @@ paths:
               type: object
               properties:
                 external_metadata:
-                  type: string
+                  $ref: '#/components/schemas/ExternalMetadata'
                   description: >-
                     :param update_mask: str The field mask must be a single
                     string, with multiple fields separated by commas (no
@@ -2261,7 +2263,7 @@ paths:
               type: object
               properties:
                 function_info:
-                  type: string
+                  $ref: '#/components/schemas/CreateFunction'
                   description: >-
                     Partial __FunctionInfo__ specifying the function to be
                     created.
@@ -2359,7 +2361,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include functions in the response for which the principal
             can only access selective metadata for
@@ -2367,7 +2369,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of functions to return. If not set, all the functions
             are returned (not recommended). - when set to a value greater than
@@ -2443,7 +2445,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Force deletion even if the function is notempty.
       responses:
         '200':
@@ -2508,7 +2510,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include functions in the response for which the principal
             can only access selective metadata for
@@ -2669,7 +2671,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Specifies the maximum number of privileges to return (page length).
             Every PrivilegeAssignment present in a single page response is
@@ -2752,7 +2754,9 @@ paths:
               type: object
               properties:
                 changes:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PermissionsChange'
                   description: Array of permissions change objects.
       responses:
         '200':
@@ -2844,7 +2848,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Specifies the maximum number of privileges to return (page length).
             Every EffectivePrivilegeAssignment present in a single page response
@@ -3108,7 +3112,7 @@ paths:
                   type: string
                   description: The user-specified name of the metastore.
                 external_access_enabled:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether to allow non-DBR clients to directly access entities
                     under the metastore.
@@ -3190,7 +3194,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of metastores to return. - when set to a value
             greater than 0, the page length is the minimum of this value and a
@@ -3283,7 +3287,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Force deletion even if the metastore is not empty. Default is false.
       responses:
         '200':
@@ -3402,13 +3406,13 @@ paths:
                     in Databricks-to-Databricks Delta Sharing as the official
                     name.
                 delta_sharing_recipient_token_lifetime_in_seconds:
-                  type: string
+                  type: integer
                   description: The lifetime of delta sharing recipient token in seconds.
                 delta_sharing_scope:
-                  type: string
+                  $ref: '#/components/schemas/DeltaSharingScopeEnum'
                   description: The scope of Delta Sharing enabled for the metastore.
                 external_access_enabled:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether to allow non-DBR clients to directly access entities
                     under the metastore.
@@ -3589,7 +3593,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include aliases associated with the model version in the
             response
@@ -3597,7 +3601,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include model versions in the response for which the
             principal can only access selective metadata for
@@ -3706,7 +3710,9 @@ paths:
               type: object
               properties:
                 aliases:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RegisteredModelAlias'
                   description: List of aliases associated with the model version
                 catalog_name:
                   type: string
@@ -3715,7 +3721,7 @@ paths:
                   type: string
                   description: The comment attached to the model version
                 created_at:
-                  type: string
+                  type: integer
                   description: >-
                     :param created_by: str (optional) The identifier of the user
                     who created the model version
@@ -3735,7 +3741,7 @@ paths:
                     The name of the parent registered model of the model
                     version, relative to parent schema
                 model_version_dependencies:
-                  type: string
+                  $ref: '#/components/schemas/DependencyList'
                   description: >-
                     Model version dependencies, for feature-store packaged
                     models
@@ -3746,7 +3752,7 @@ paths:
                     ``source`` was generated by an experiment run stored in an
                     MLflow tracking server
                 run_workspace_id:
-                  type: string
+                  type: integer
                   description: >-
                     ID of the Databricks workspace containing the MLflow run
                     that generated this model version, if applicable
@@ -3761,7 +3767,7 @@ paths:
                     URI indicating the location of the source artifacts (files)
                     for the model version
                 status:
-                  type: string
+                  $ref: '#/components/schemas/ModelVersionInfoStatus'
                   description: >-
                     Current status of the model version. Newly created model
                     versions start in PENDING_REGISTRATION status, then move to
@@ -3774,7 +3780,7 @@ paths:
                     The storage location on the cloud under which model version
                     data files are stored
                 updated_at:
-                  type: string
+                  type: integer
                   description: >-
                     :param updated_by: str (optional) The identifier of the user
                     who updated the model version last time
@@ -3845,7 +3851,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include aliases associated with the model version in the
             response
@@ -4066,7 +4072,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include model versions in the response for which the
             principal can only access selective metadata for
@@ -4074,7 +4080,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of model versions to return. If not set, the page
             length is set to a server configured value (100, as of 1/3/2024). -
@@ -4131,7 +4137,7 @@ paths:
               type: object
               properties:
                 table:
-                  type: string
+                  $ref: '#/components/schemas/OnlineTable'
                   description: Specification of the online table to be created.
               required:
                 - table
@@ -4261,7 +4267,7 @@ paths:
               type: object
               properties:
                 policy_info:
-                  type: string
+                  $ref: '#/components/schemas/PolicyInfo'
                   description: Required. The policy to create.
               required:
                 - policy_info
@@ -4462,7 +4468,7 @@ paths:
               type: object
               properties:
                 policy_info:
-                  type: string
+                  $ref: '#/components/schemas/PolicyInfo'
                   description: >-
                     Optional fields to update. This is the request body for
                     updating a policy. Use `update_mask` field to specify which
@@ -4554,7 +4560,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Optional. Whether to include policies defined on parent securables.
             By default, the inherited policies are not included.
@@ -4562,7 +4568,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Optional. Maximum number of policies to return on a single page
             (page length). - When not set or set to 0, the page length is set to
@@ -4759,13 +4765,15 @@ paths:
                     `table_name`. The baseline table and the monitored table
                     shall have the same schema.
                 custom_metrics:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/MonitorMetric'
                   description: '[Create:OPT Update:OPT] Custom metrics.'
                 data_classification_config:
-                  type: string
+                  $ref: '#/components/schemas/MonitorDataClassificationConfig'
                   description: '[Create:OPT Update:OPT] Data classification related config.'
                 inference_log:
-                  type: string
+                  $ref: '#/components/schemas/MonitorInferenceLog'
                   description: >-
                     :param latest_monitor_failure_msg: str (optional)
                     [Create:ERR Update:IGN] The latest error message for a
@@ -4773,20 +4781,22 @@ paths:
                 latest_monitor_failure_msg:
                   type: string
                 notifications:
-                  type: string
+                  $ref: '#/components/schemas/MonitorNotifications'
                   description: >-
                     [Create:OPT Update:OPT] Field for specifying notification
                     settings.
                 schedule:
-                  type: string
+                  $ref: '#/components/schemas/MonitorCronSchedule'
                   description: '[Create:OPT Update:OPT] The monitor schedule.'
                 skip_builtin_dashboard:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether to skip creating a default dashboard summarizing
                     data quality metrics.
                 slicing_exprs:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     [Create:OPT Update:OPT] List of column expressions to slice
                     data with for targeted analysis. The data is grouped by each
@@ -4798,10 +4808,10 @@ paths:
                     high-cardinality columns, only the top 100 unique values by
                     frequency will generate slices.
                 snapshot:
-                  type: string
+                  $ref: '#/components/schemas/MonitorSnapshot'
                   description: Configuration for monitoring snapshot tables.
                 time_series:
-                  type: string
+                  $ref: '#/components/schemas/MonitorTimeSeries'
                   description: Configuration for monitoring time series tables.
                 warehouse_id:
                   type: string
@@ -5073,7 +5083,9 @@ paths:
                     `table_name`. The baseline table and the monitored table
                     shall have the same schema.
                 custom_metrics:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/MonitorMetric'
                   description: '[Create:OPT Update:OPT] Custom metrics.'
                 dashboard_id:
                   type: string
@@ -5082,10 +5094,10 @@ paths:
                     computed metrics. This can be empty if the monitor is in
                     PENDING state.
                 data_classification_config:
-                  type: string
+                  $ref: '#/components/schemas/MonitorDataClassificationConfig'
                   description: '[Create:OPT Update:OPT] Data classification related config.'
                 inference_log:
-                  type: string
+                  $ref: '#/components/schemas/MonitorInferenceLog'
                   description: >-
                     :param latest_monitor_failure_msg: str (optional)
                     [Create:ERR Update:IGN] The latest error message for a
@@ -5093,15 +5105,17 @@ paths:
                 latest_monitor_failure_msg:
                   type: string
                 notifications:
-                  type: string
+                  $ref: '#/components/schemas/MonitorNotifications'
                   description: >-
                     [Create:OPT Update:OPT] Field for specifying notification
                     settings.
                 schedule:
-                  type: string
+                  $ref: '#/components/schemas/MonitorCronSchedule'
                   description: '[Create:OPT Update:OPT] The monitor schedule.'
                 slicing_exprs:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     [Create:OPT Update:OPT] List of column expressions to slice
                     data with for targeted analysis. The data is grouped by each
@@ -5113,10 +5127,10 @@ paths:
                     high-cardinality columns, only the top 100 unique values by
                     frequency will generate slices.
                 snapshot:
-                  type: string
+                  $ref: '#/components/schemas/MonitorSnapshot'
                   description: Configuration for monitoring snapshot tables.
                 time_series:
-                  type: string
+                  $ref: '#/components/schemas/MonitorTimeSeries'
                   description: Configuration for monitoring time series tables.
               required:
                 - output_schema_name
@@ -5492,10 +5506,12 @@ paths:
               type: object
               properties:
                 aliases:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RegisteredModelAlias'
                   description: List of aliases associated with the registered model
                 browse_only:
-                  type: string
+                  type: boolean
                   description: >-
                     Indicates whether the principal is limited to retrieving
                     metadata for the associated object through the BROWSE
@@ -5509,7 +5525,7 @@ paths:
                   type: string
                   description: The comment attached to the registered model
                 created_at:
-                  type: string
+                  type: integer
                   description: >-
                     Creation timestamp of the registered model in milliseconds
                     since the Unix epoch
@@ -5539,7 +5555,7 @@ paths:
                     The storage location on the cloud under which model version
                     data files are stored
                 updated_at:
-                  type: string
+                  type: integer
                   description: >-
                     Last-update timestamp of the registered model in
                     milliseconds since the Unix epoch
@@ -5651,7 +5667,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include registered models in the response for which the
             principal can only access selective metadata for
@@ -5659,7 +5675,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Max number of registered models to return. If both catalog and
             schema are specified: - when max_results is not specified, the page
@@ -5796,13 +5812,13 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Whether to include registered model aliases in the response
         - name: include_browse
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include registered models in the response for which the
             principal can only access selective metadata for
@@ -5895,10 +5911,12 @@ paths:
               type: object
               properties:
                 aliases:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RegisteredModelAlias'
                   description: List of aliases associated with the registered model
                 browse_only:
-                  type: string
+                  type: boolean
                   description: >-
                     Indicates whether the principal is limited to retrieving
                     metadata for the associated object through the BROWSE
@@ -5912,7 +5930,7 @@ paths:
                   type: string
                   description: The comment attached to the registered model
                 created_at:
-                  type: string
+                  type: integer
                   description: >-
                     Creation timestamp of the registered model in milliseconds
                     since the Unix epoch
@@ -5940,7 +5958,7 @@ paths:
                     The storage location on the cloud under which model version
                     data files are stored
                 updated_at:
-                  type: string
+                  type: integer
                   description: >-
                     Last-update timestamp of the registered model in
                     milliseconds since the Unix epoch
@@ -6074,7 +6092,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: The number of quotas to return.
         - name: page_token
           in: query
@@ -6142,7 +6160,9 @@ paths:
               type: object
               properties:
                 requests:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CreateAccessRequest'
                   description: >-
                     A list of individual access requests, where each request
                     corresponds to a set of permissions being requested on a
@@ -6308,7 +6328,7 @@ paths:
               type: object
               properties:
                 access_request_destinations:
-                  type: string
+                  $ref: '#/components/schemas/AccessRequestDestinations'
                   description: >-
                     The access request destinations to assign to the securable.
                     For each destination, a **destination_id** and
@@ -6378,7 +6398,7 @@ paths:
                   type: string
                   description: User-provided free-form text description.
                 properties:
-                  type: string
+                  type: object
                   description: A map of key-value properties attached to the securable.
                 storage_root:
                   type: string
@@ -6468,7 +6488,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include schemas in the response for which the principal
             can only access selective metadata for
@@ -6476,7 +6496,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of schemas to return. If not set, all the schemas are
             returned (not recommended). - when set to a value greater than 0,
@@ -6540,7 +6560,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Force deletion even if the schema is not empty.
       responses:
         '200':
@@ -6590,7 +6610,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include schemas in the response for which the principal
             can only access selective metadata for
@@ -6666,7 +6686,7 @@ paths:
                   type: string
                   description: User-provided free-form text description.
                 enable_predictive_optimization:
-                  type: string
+                  $ref: '#/components/schemas/EnablePredictiveOptimization'
                   description: >-
                     Whether predictive optimization should be enabled for this
                     object and objects under it.
@@ -6677,7 +6697,7 @@ paths:
                   type: string
                   description: Username of current owner of schema.
                 properties:
-                  type: string
+                  type: object
                   description: A map of key-value properties attached to the securable.
       responses:
         '200':
@@ -6752,30 +6772,30 @@ paths:
                     The credential name. The name must be unique among storage
                     and service credentials within the metastore.
                 aws_iam_role:
-                  type: string
+                  $ref: '#/components/schemas/AwsIamRoleRequest'
                   description: The AWS IAM role configuration.
                 azure_managed_identity:
-                  type: string
+                  $ref: '#/components/schemas/AzureManagedIdentityRequest'
                   description: The Azure managed identity configuration.
                 azure_service_principal:
-                  type: string
+                  $ref: '#/components/schemas/AzureServicePrincipal'
                   description: The Azure service principal configuration.
                 cloudflare_api_token:
-                  type: string
+                  $ref: '#/components/schemas/CloudflareApiToken'
                   description: The Cloudflare API token configuration.
                 comment:
                   type: string
                   description: Comment associated with the credential.
                 databricks_gcp_service_account:
-                  type: string
+                  $ref: '#/components/schemas/DatabricksGcpServiceAccountRequest'
                   description: The Databricks managed GCP service account configuration.
                 read_only:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether the credential is usable only for read operations.
                     Only applicable when purpose is **STORAGE**.
                 skip_validation:
-                  type: string
+                  type: boolean
                   description: >-
                     Supplying true to this argument skips validation of the
                     created credential.
@@ -6855,7 +6875,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include credentials not bound to the workspace. Effective
             only if the user has permission to update the credential–workspace
@@ -6864,7 +6884,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of storage credentials to return. If not set, all the
             storage credentials are returned (not recommended). - when set to a
@@ -6929,7 +6949,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Force an update even if there are dependent external locations or
             external tables (when purpose is **STORAGE**) or dependent services
@@ -7056,30 +7076,30 @@ paths:
               type: object
               properties:
                 aws_iam_role:
-                  type: string
+                  $ref: '#/components/schemas/AwsIamRoleRequest'
                   description: The AWS IAM role configuration.
                 azure_managed_identity:
-                  type: string
+                  $ref: '#/components/schemas/AzureManagedIdentityResponse'
                   description: The Azure managed identity configuration.
                 azure_service_principal:
-                  type: string
+                  $ref: '#/components/schemas/AzureServicePrincipal'
                   description: The Azure service principal configuration.
                 cloudflare_api_token:
-                  type: string
+                  $ref: '#/components/schemas/CloudflareApiToken'
                   description: The Cloudflare API token configuration.
                 comment:
                   type: string
                   description: Comment associated with the credential.
                 databricks_gcp_service_account:
-                  type: string
+                  $ref: '#/components/schemas/DatabricksGcpServiceAccountRequest'
                   description: The Databricks managed GCP service account configuration.
                 force:
-                  type: string
+                  type: boolean
                   description: >-
                     Force update even if there are dependent external locations
                     or external tables.
                 isolation_mode:
-                  type: string
+                  $ref: '#/components/schemas/IsolationMode'
                   description: >-
                     Whether the current securable is accessible from all
                     workspaces or a specific set of workspaces.
@@ -7090,12 +7110,12 @@ paths:
                   type: string
                   description: Username of current owner of credential.
                 read_only:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether the credential is usable only for read operations.
                     Only applicable when purpose is **STORAGE**.
                 skip_validation:
-                  type: string
+                  type: boolean
                   description: >-
                     Supplying true to this argument skips validation of the
                     updated credential.
@@ -7181,25 +7201,25 @@ paths:
               type: object
               properties:
                 aws_iam_role:
-                  type: string
+                  $ref: '#/components/schemas/AwsIamRoleRequest'
                   description: The AWS IAM role configuration.
                 azure_managed_identity:
-                  type: string
+                  $ref: '#/components/schemas/AzureManagedIdentityRequest'
                   description: The Azure managed identity configuration.
                 azure_service_principal:
-                  type: string
+                  $ref: '#/components/schemas/AzureServicePrincipal'
                   description: The Azure service principal configuration.
                 cloudflare_api_token:
-                  type: string
+                  $ref: '#/components/schemas/CloudflareApiToken'
                   description: The Cloudflare API token configuration.
                 databricks_gcp_service_account:
-                  type: string
+                  $ref: '#/components/schemas/DatabricksGcpServiceAccountRequest'
                   description: The Databricks created GCP service account configuration.
                 external_location_name:
                   type: string
                   description: The name of an existing external location to validate.
                 read_only:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether the storage credential is only usable for read
                     operations.
@@ -7390,7 +7410,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of schemas to return. - When set to 0, the page
             length is set to a server configured value (recommended); - When set
@@ -7468,7 +7488,7 @@ paths:
                   type: string
                   description: The full name of the table referenced by the constraint.
                 constraint:
-                  type: string
+                  $ref: '#/components/schemas/TableConstraint'
                   description: ':returns: :class:`TableConstraint`'
               required:
                 - full_name_arg
@@ -7653,22 +7673,24 @@ paths:
                   type: string
                   description: Name of parent schema relative to its parent catalog.
                 table_type:
-                  type: string
+                  $ref: '#/components/schemas/TableType'
                   description: ':param data_source_format: :class:`DataSourceFormat`'
                 data_source_format:
-                  type: string
+                  $ref: '#/components/schemas/DataSourceFormat'
                 storage_location:
                   type: string
                   description: >-
                     Storage root URL for table (for **MANAGED**, **EXTERNAL**
                     tables).
                 columns:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ColumnInfo'
                   description: >-
                     The array of __ColumnInfo__ definitions of the table's
                     columns.
                 properties:
-                  type: string
+                  type: object
                   description: A map of key-value properties attached to the securable.
               required:
                 - name
@@ -7782,7 +7804,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include tables in the response for which the principal
             can only access selective metadata for.
@@ -7790,7 +7812,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include a manifest containing table capabilities in the
             response.
@@ -7798,7 +7820,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of tables to return. If not set, all the tables are
             returned (not recommended). - when set to a value greater than 0,
@@ -7810,13 +7832,13 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Whether to omit the columns of the table from the response or not.
         - name: omit_properties
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to omit the properties of the table from the response or
             not.
@@ -7824,7 +7846,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to omit the username of the table (e.g. owner, updated_by,
             created_by) from the response or not.
@@ -7946,7 +7968,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include tables in the response for which the principal
             can only access selective metadata for.
@@ -7954,13 +7976,13 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Whether delta metadata should be included in the response.
         - name: include_manifest_capabilities
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include a manifest containing table capabilities in the
             response.
@@ -8171,7 +8193,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include a manifest containing table capabilities in the
             response.
@@ -8179,7 +8201,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of summaries for tables to return. If not set, the
             page length is set to a server configured value (10000, as of
@@ -8283,10 +8305,10 @@ paths:
                   type: string
                   description: URL for path-based access.
                 operation:
-                  type: string
+                  $ref: '#/components/schemas/PathOperation'
                   description: The operation being performed on the path.
                 dry_run:
-                  type: string
+                  type: boolean
                   description: >-
                     Optional. When set to true, the service will not validate
                     that the generated credentials can perform write operations,
@@ -8350,7 +8372,7 @@ paths:
               type: object
               properties:
                 operation:
-                  type: string
+                  $ref: '#/components/schemas/TableOperation'
                   description: >-
                     The operation performed against the table data, either READ
                     or READ_WRITE. If READ_WRITE is specified, the credentials
@@ -8457,7 +8479,7 @@ paths:
                   type: string
                   description: The name of the volume
                 volume_type:
-                  type: string
+                  $ref: '#/components/schemas/VolumeType'
                   description: >-
                     The type of the volume. An external volume is located in the
                     specified external location. A managed volume is located in
@@ -8577,7 +8599,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include volumes in the response for which the principal
             can only access selective metadata for
@@ -8585,7 +8607,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of volumes to return (page length). If not set, the
             page length is set to a server configured value (10000, as of
@@ -8706,7 +8728,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include volumes in the response for which the principal
             can only access selective metadata for
@@ -8889,10 +8911,14 @@ paths:
               type: object
               properties:
                 assign_workspaces:
-                  type: string
+                  type: array
+                  items:
+                    type: integer
                   description: A list of workspace IDs.
                 unassign_workspaces:
-                  type: string
+                  type: array
+                  items:
+                    type: integer
                   description: A list of workspace IDs.
       responses:
         '200':
@@ -8978,7 +9004,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of workspace bindings to return. - When set to 0, the
             page length is set to a server configured value (recommended); -
@@ -9061,14 +9087,18 @@ paths:
               type: object
               properties:
                 add:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/WorkspaceBinding'
                   description: >-
                     List of workspace bindings to add. If a binding for the
                     workspace already exists with a different binding_type,
                     adding it again with a new binding_type will update the
                     existing binding (e.g., from READ_WRITE to READ_ONLY).
                 remove:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/WorkspaceBinding'
                   description: List of workspace bindings to remove.
       responses:
         '200':
@@ -12818,20 +12848,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -12892,20 +12922,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -12957,20 +12987,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -12999,20 +13029,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13040,20 +13070,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13083,20 +13113,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13125,20 +13155,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13220,20 +13250,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13265,20 +13295,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13307,20 +13337,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13350,20 +13380,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13391,20 +13421,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13433,20 +13463,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13474,20 +13504,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13517,20 +13547,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13558,20 +13588,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13600,20 +13630,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13642,20 +13672,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13684,20 +13714,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13733,20 +13763,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13787,20 +13817,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13832,20 +13862,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -13912,20 +13942,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -14008,20 +14038,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -14050,20 +14080,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -14093,20 +14123,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -14183,20 +14213,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -14229,20 +14259,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -14362,20 +14392,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -14404,20 +14434,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -14467,20 +14497,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -14509,20 +14539,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -14558,20 +14588,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -14627,20 +14657,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

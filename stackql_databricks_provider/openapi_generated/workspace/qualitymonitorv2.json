@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks qualitymonitorv2 service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.qualitymonitorv2"
   },
   "servers": [
@@ -37,7 +37,7 @@
                 "type": "object",
                 "properties": {
                   "quality_monitor": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/QualityMonitor",
                     "description": ":returns: :class:`QualityMonitor`"
                   }
                 },
@@ -94,7 +94,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": ":param page_token: str (optional)"
           },
@@ -289,7 +289,7 @@
                 "type": "object",
                 "properties": {
                   "quality_monitor": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/QualityMonitor",
                     "description": ":returns: :class:`QualityMonitor`"
                   }
                 },

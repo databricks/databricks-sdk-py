@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks tags service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.tags"
   },
   "servers": [
@@ -37,7 +37,7 @@
                 "type": "object",
                 "properties": {
                   "tag_policy": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/TagPolicy",
                     "description": ":returns: :class:`TagPolicy`"
                   }
                 },
@@ -94,7 +94,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The maximum number of results to return in this request. Fewer results may be returned than requested. If unspecified or set to 0, this defaults to 1000. The maximum value is 1000; values above 1000 will be coerced down to 1000."
           },
@@ -272,7 +272,7 @@
                 "type": "object",
                 "properties": {
                   "tag_policy": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/TagPolicy"
                   }
                 },
                 "required": [
@@ -331,7 +331,7 @@
                 "type": "object",
                 "properties": {
                   "tag_assignment": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/TagAssignment",
                     "description": ":returns: :class:`TagAssignment`"
                   }
                 },
@@ -559,7 +559,7 @@
                 "type": "object",
                 "properties": {
                   "tag_assignment": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/TagAssignment",
                     "description": ":param update_mask: str The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
                   }
                 },
@@ -636,7 +636,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Optional. Maximum number of tag assignments to return in a single page"
           },

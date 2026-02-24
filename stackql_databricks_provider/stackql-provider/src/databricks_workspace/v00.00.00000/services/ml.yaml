@@ -6,7 +6,7 @@ info:
     generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.ml
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -66,7 +66,9 @@ paths:
                     If not provided, the remote server will select an
                     appropriate default.
                 tags:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ExperimentTag'
                   description: >-
                     A collection of tags to set on the experiment. Maximum tag
                     size and number of tags per request depends on the storage
@@ -139,13 +141,17 @@ paths:
                     The name of the model (optional). If not specified one will
                     be generated.
                 params:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/LoggedModelParameter'
                   description: Parameters attached to the model.
                 source_run_id:
                   type: string
                   description: The ID of the run that created the model.
                 tags:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/LoggedModelTag'
                   description: Tags attached to the model.
               required:
                 - experiment_id
@@ -213,10 +219,12 @@ paths:
                   type: string
                   description: The name of the run.
                 start_time:
-                  type: string
+                  type: integer
                   description: Unix timestamp in milliseconds of when the run started.
                 tags:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RunTag'
                   description: Additional metadata for run.
                 user_id:
                   type: string
@@ -352,7 +360,7 @@ paths:
               type: object
               properties:
                 status:
-                  type: string
+                  $ref: '#/components/schemas/LoggedModelStatus'
                   description: >-
                     Whether or not the model is ready for use.
                     ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that something
@@ -542,7 +550,7 @@ paths:
                     UNIX epoch for deleting runs. Only runs created prior to or
                     at this timestamp are deleted.
                 max_runs:
-                  type: string
+                  type: integer
                   description: >-
                     An optional positive integer indicating the maximum number
                     of runs to delete. The maximum allowed value for max_runs is
@@ -756,7 +764,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of Metric records to return per paginated request.
             Default is set to 25,000. If set higher than 25,000, a request
@@ -922,7 +930,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ExperimentAccessControlRequest'
                   description: ':returns: :class:`ExperimentPermissions`'
       responses:
         '200':
@@ -977,7 +987,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ExperimentAccessControlRequest'
                   description: ':returns: :class:`ExperimentPermissions`'
       responses:
         '200':
@@ -1178,7 +1190,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of experiments desired. If `max_results` is
             unspecified, return all experiments. If `max_results` is too large,
@@ -1195,7 +1207,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/ViewType'
           description: >-
             Qualifier for type of experiments to be returned. If unspecified,
             return only active experiments.
@@ -1325,12 +1337,16 @@ paths:
               type: object
               properties:
                 metrics:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Metric'
                   description: >-
                     Metrics to log. A single request can contain up to 1000
                     metrics, and up to 1000 metrics, params, and tags in total.
                 params:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Param'
                   description: >-
                     Params to log. A single request can contain up to 100
                     params, and up to 1000 metrics, params, and tags in total.
@@ -1338,7 +1354,9 @@ paths:
                   type: string
                   description: ID of the run to log under
                 tags:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RunTag'
                   description: >-
                     Tags to log. A single request can contain up to 100 tags,
                     and up to 1000 metrics, params, and tags in total.
@@ -1383,10 +1401,14 @@ paths:
                   type: string
                   description: ID of the run to log under
                 datasets:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DatasetInput'
                   description: Dataset inputs
                 models:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ModelInput'
                   description: Model inputs
               required:
                 - run_id
@@ -1443,7 +1465,9 @@ paths:
               type: object
               properties:
                 params:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/LoggedModelParameter'
                   description: Parameters to attach to the model.
       responses:
         '200':
@@ -1545,7 +1569,7 @@ paths:
                     to log the metric. This field will be removed in a future
                     MLflow version.
                 step:
-                  type: string
+                  type: integer
                   description: Step at which to log the metric
               required:
                 - key
@@ -1640,7 +1664,9 @@ paths:
                   type: string
                   description: The ID of the Run from which to log outputs.
                 models:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ModelOutput'
                   description: The model outputs from the Run.
               required:
                 - run_id
@@ -1872,7 +1898,7 @@ paths:
                     UNIX epoch for restoring runs. Only runs deleted no earlier
                     than this timestamp are restored.
                 max_runs:
-                  type: string
+                  type: integer
                   description: >-
                     An optional positive integer indicating the maximum number
                     of runs to restore. The maximum allowed value for max_runs
@@ -1935,12 +1961,14 @@ paths:
                     String representing a SQL filter condition (e.g. "name ILIKE
                     'my-experiment%'")
                 max_results:
-                  type: string
+                  type: integer
                   description: >-
                     Maximum number of experiments desired. Max threshold is
                     3000.
                 order_by:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     List of columns for ordering search results, which can
                     include experiment name and last updated timestamp with an
@@ -1950,7 +1978,7 @@ paths:
                   type: string
                   description: Token indicating the page of experiments to fetch
                 view_type:
-                  type: string
+                  $ref: '#/components/schemas/ViewType'
                   description: >-
                     Qualifier for type of experiments to be returned. If
                     unspecified, return only active experiments.
@@ -2011,7 +2039,9 @@ paths:
               type: object
               properties:
                 datasets:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/SearchLoggedModelsDataset'
                   description: >-
                     List of datasets on which to apply the metrics filter
                     clauses. For example, a filter with `metrics.accuracy > 0.9`
@@ -2021,7 +2051,9 @@ paths:
                     criteria are considered. If no datasets are specified, then
                     metrics across all datasets are considered in the filter.
                 experiment_ids:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     The IDs of the experiments in which to search for logged
                     models.
@@ -2034,12 +2066,14 @@ paths:
                     operations. Example: ``params.alpha < 0.3 AND
                     metrics.accuracy > 0.9``.
                 max_results:
-                  type: string
+                  type: integer
                   description: >-
                     The maximum number of Logged Models to return. The maximum
                     limit is 50.
                 order_by:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/SearchLoggedModelsOrderBy'
                   description: >-
                     The list of columns for ordering the results, with
                     additional fields for sorting criteria.
@@ -2111,7 +2145,9 @@ paths:
               type: object
               properties:
                 experiment_ids:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: List of experiment IDs to search over.
                 filter:
                   type: string
@@ -2127,10 +2163,12 @@ paths:
                     tags."user-name" = 'Tomas'` Supported operators are `=`,
                     `!=`, `>`, `>=`, `<`, and `<=`.
                 max_results:
-                  type: string
+                  type: integer
                   description: Maximum number of runs desired. Max threshold is 50000
                 order_by:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     List of columns to be ordered by, including attributes,
                     params, metrics, and tags with an optional `"DESC"` or
@@ -2144,7 +2182,7 @@ paths:
                   type: string
                   description: Token for the current page of runs.
                 run_view_type:
-                  type: string
+                  $ref: '#/components/schemas/ViewType'
                   description: >-
                     Whether to display only active, only deleted, or all runs.
                     Defaults to only active runs.
@@ -2253,7 +2291,9 @@ paths:
               type: object
               properties:
                 tags:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/LoggedModelTag'
                   description: The tags to set on the logged model.
       responses:
         '200':
@@ -2409,7 +2449,7 @@ paths:
               type: object
               properties:
                 end_time:
-                  type: string
+                  type: integer
                   description: Unix timestamp in milliseconds of when the run ended.
                 run_id:
                   type: string
@@ -2423,7 +2463,7 @@ paths:
                     [Deprecated, use `run_id` instead] ID of the run to update.
                     This field will be removed in a future MLflow version.
                 status:
-                  type: string
+                  $ref: '#/components/schemas/UpdateRunStatus'
                   description: Updated status of the run.
       responses:
         '200':
@@ -2465,7 +2505,9 @@ paths:
               type: object
               properties:
                 requests:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CreateMaterializedFeatureRequest'
                   description: The requests to create materialized features.
               required:
                 - requests
@@ -2509,7 +2551,7 @@ paths:
               type: object
               properties:
                 feature:
-                  type: string
+                  $ref: '#/components/schemas/Feature'
                   description: Feature to create.
               required:
                 - feature
@@ -2552,7 +2594,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: The maximum number of results to return.
         - name: page_token
           in: query
@@ -2607,7 +2649,7 @@ paths:
               type: object
               properties:
                 kafka_config:
-                  type: string
+                  $ref: '#/components/schemas/KafkaConfig'
                   description: ':returns: :class:`KafkaConfig`'
               required:
                 - kafka_config
@@ -2656,7 +2698,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: The maximum number of results to return.
         - name: page_token
           in: query
@@ -2704,7 +2746,7 @@ paths:
               type: object
               properties:
                 materialized_feature:
-                  type: string
+                  $ref: '#/components/schemas/MaterializedFeature'
                   description: The materialized feature to create.
               required:
                 - materialized_feature
@@ -2759,7 +2801,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The maximum number of results to return. Defaults to 100 if not
             specified. Cannot be greater than 1000.
@@ -2898,7 +2940,7 @@ paths:
               type: object
               properties:
                 feature:
-                  type: string
+                  $ref: '#/components/schemas/Feature'
                   description: Feature to update.
               required:
                 - feature
@@ -3048,7 +3090,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: object
           description: The list of fields to update.
       requestBody:
         content:
@@ -3057,7 +3099,7 @@ paths:
               type: object
               properties:
                 kafka_config:
-                  type: string
+                  $ref: '#/components/schemas/KafkaConfig'
                   description: The Kafka config to update.
               required:
                 - kafka_config
@@ -3193,7 +3235,7 @@ paths:
               type: object
               properties:
                 materialized_feature:
-                  type: string
+                  $ref: '#/components/schemas/MaterializedFeature'
                   description: The materialized feature to update.
               required:
                 - materialized_feature
@@ -3237,7 +3279,7 @@ paths:
               type: object
               properties:
                 online_store:
-                  type: string
+                  $ref: '#/components/schemas/OnlineStore'
                   description: Online store to create.
               required:
                 - online_store
@@ -3280,7 +3322,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The maximum number of results to return. Defaults to 100 if not
             specified.
@@ -3421,7 +3463,7 @@ paths:
               type: object
               properties:
                 online_store:
-                  type: string
+                  $ref: '#/components/schemas/OnlineStore'
                   description: Online store to update.
               required:
                 - online_store
@@ -3512,7 +3554,7 @@ paths:
               type: object
               properties:
                 publish_spec:
-                  type: string
+                  $ref: '#/components/schemas/PublishSpec'
                   description: >-
                     The specification for publishing the online table from the
                     source table.
@@ -3652,12 +3694,16 @@ paths:
                     as catalog_name.schema_name.table_name, used to store future
                     feature data for predictions.
                 holiday_regions:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     The region code(s) to automatically add holiday features.
                     Currently supports only one region.
                 include_features:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     Specifies the list of feature columns to include in model
                     training. These columns must exist in the training data and
@@ -3667,7 +3713,7 @@ paths:
                     split_column, target_column, custom_weights_column. -
                     Automatically included: time_column.
                 max_runtime:
-                  type: string
+                  type: integer
                   description: >-
                     The maximum duration for the experiment in minutes. The
                     experiment stops automatically if it exceeds this limit.
@@ -3694,12 +3740,16 @@ paths:
                     // The column in the training table used for custom data
                     splits. Values must be 'train', 'validate', or 'test'.
                 timeseries_identifier_columns:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     The column in the training table used to group the dataset
                     for predicting individual time series.
                 training_frameworks:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     List of frameworks to include for model tuning. Possible
                     values are 'Prophet', 'ARIMA', 'DeepAR'. An empty list
@@ -3803,7 +3853,7 @@ paths:
               type: object
               properties:
                 feature_tag:
-                  type: string
+                  $ref: '#/components/schemas/FeatureTag'
                   description: ':returns: :class:`FeatureTag`'
               required:
                 - feature_tag
@@ -3859,7 +3909,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: The maximum number of results to return.
         - name: page_token
           in: query
@@ -4035,7 +4085,7 @@ paths:
               type: object
               properties:
                 feature_tag:
-                  type: string
+                  $ref: '#/components/schemas/FeatureTag'
               required:
                 - feature_tag
       responses:
@@ -4287,7 +4337,9 @@ paths:
                   type: string
                   description: Optional description for registered model.
                 tags:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ModelTag'
                   description: Additional metadata for registered model.
               required:
                 - name
@@ -4363,7 +4415,9 @@ paths:
                     generated this model version, potentially hosted at another
                     instance of MLflow.
                 tags:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ModelVersionTag'
                   description: Additional metadata for model version.
               required:
                 - name
@@ -4529,7 +4583,9 @@ paths:
               type: object
               properties:
                 events:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RegistryWebhookEvent'
                   description: >-
                     Events that can trigger a registry webhook: *
                     `MODEL_VERSION_CREATED`: A new model version was created for
@@ -4558,12 +4614,12 @@ paths:
                   type: string
                   description: User-specified description for the webhook.
                 http_url_spec:
-                  type: string
+                  $ref: '#/components/schemas/HttpUrlSpec'
                   description: >-
                     External HTTPS URL called on event trigger (by using a POST
                     request).
                 job_spec:
-                  type: string
+                  $ref: '#/components/schemas/JobSpec'
                   description: ID of the job that the webhook runs.
                 model_name:
                   type: string
@@ -4572,7 +4628,7 @@ paths:
                     created that listens for the specified events across all
                     versions of all registered models.
                 status:
-                  type: string
+                  $ref: '#/components/schemas/RegistryWebhookStatus'
                   description: >-
                     Enable or disable triggering the webhook, or put the webhook
                     into test mode. The default is `ACTIVE`: * `ACTIVE`: Webhook
@@ -4961,7 +5017,9 @@ paths:
                   type: string
                   description: Registered model unique name identifier.
                 stages:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: List of stages.
               required:
                 - name
@@ -5257,7 +5315,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RegisteredModelAccessControlRequest'
                   description: ':returns: :class:`RegisteredModelPermissions`'
       responses:
         '200':
@@ -5314,7 +5374,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RegisteredModelAccessControlRequest'
                   description: ':returns: :class:`RegisteredModelPermissions`'
       responses:
         '200':
@@ -5360,7 +5422,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Maximum number of registered models desired. Max threshold is 1000.
         - name: page_token
           in: query
@@ -5495,7 +5557,9 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/RegistryWebhookEvent'
           description: >-
             Events that trigger the webhook. * `MODEL_VERSION_CREATED`: A new
             model version was created for the associated model. *
@@ -5525,7 +5589,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             :param model_name: str (optional) Registered model name If not
             specified, all webhooks associated with the specified events are
@@ -5719,13 +5783,15 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Maximum number of models desired. Max threshold is 10K.
         - name: order_by
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           description: >-
             List of columns to be ordered by including model name, version,
             stage with an optional "DESC" or "ASC" annotation, where "ASC" is
@@ -5795,7 +5861,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of models desired. Default is 100. Max threshold is
             1000.
@@ -5803,7 +5869,9 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           description: >-
             List of columns for ordering search results, which can include model
             name and last updated timestamp with an optional "DESC" or "ASC"
@@ -5991,7 +6059,7 @@ paths:
                   type: string
                   description: Webhook ID
                 event:
-                  type: string
+                  $ref: '#/components/schemas/RegistryWebhookEvent'
                   description: >-
                     If `event` is specified, the test trigger uses the specified
                     event. If `event` is not specified, the test trigger uses a
@@ -6335,7 +6403,9 @@ paths:
                   type: string
                   description: User-specified description for the webhook.
                 events:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RegistryWebhookEvent'
                   description: >-
                     Events that can trigger a registry webhook: *
                     `MODEL_VERSION_CREATED`: A new model version was created for
@@ -6361,12 +6431,12 @@ paths:
                     `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a
                     model version be archived.
                 http_url_spec:
-                  type: string
+                  $ref: '#/components/schemas/HttpUrlSpec'
                   description: ':param job_spec: :class:`JobSpec` (optional)'
                 job_spec:
-                  type: string
+                  $ref: '#/components/schemas/JobSpec'
                 status:
-                  type: string
+                  $ref: '#/components/schemas/RegistryWebhookStatus'
                   description: ':returns: :class:`UpdateWebhookResponse`'
               required:
                 - id
@@ -8408,20 +8478,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8461,20 +8531,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8511,20 +8581,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8575,20 +8645,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8632,20 +8702,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8711,20 +8781,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

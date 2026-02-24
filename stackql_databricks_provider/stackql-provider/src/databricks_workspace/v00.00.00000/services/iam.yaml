@@ -5,7 +5,7 @@ info:
     Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.iam
 servers:
 - url: https://{deployment_name}.cloud.databricks.com
@@ -39,7 +39,7 @@ paths:
         in: query
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/Actor'
         description: ':param permission: str'
       - name: permission
         in: query
@@ -57,18 +57,18 @@ paths:
         in: query
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/ConsistencyToken'
         description: ':param authz_identity: :class:`RequestAuthzIdentity`'
       - name: authz_identity
         in: query
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/RequestAuthzIdentity'
       - name: resource_info
         in: query
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/ResourceInfo'
         description: ':returns: :class:`CheckPolicyResponse`'
       responses:
         '200':
@@ -240,7 +240,7 @@ paths:
                   type: string
                   description: Name of the rule set.
                 rule_set:
-                  type: string
+                  $ref: '#/components/schemas/RuleSetUpdateRequest'
                   description: ':returns: :class:`RuleSetResponse`'
               required:
               - name
@@ -335,28 +335,38 @@ paths:
                   type: string
                   description: String that represents a human-readable group name
                 entitlements:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: 'Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
                     values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
                 external_id:
                   type: string
                   description: ':param groups: List[:class:`ComplexValue`] (optional)'
                 groups:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                 id:
                   type: string
                   description: Databricks group ID
                 members:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: ':param meta: :class:`ResourceMeta` (optional) Container for the group identifier. Workspace
                     local versus account.'
                 meta:
-                  type: string
+                  $ref: '#/components/schemas/ResourceMeta'
                 roles:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: Corresponds to AWS instance profile/arn role.
                 schemas:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/GroupSchema'
                   description: The schema of the group.
       responses:
         '200':
@@ -418,7 +428,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Desired number of results per page.
       - name: excluded_attributes
         in: query
@@ -444,13 +454,13 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/ListSortOrder'
         description: The order to sort the results.
       - name: start_index
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Specifies the index of the first result. First item is number 1.
       responses:
         '200':
@@ -572,11 +582,15 @@ paths:
               type: object
               properties:
                 operations:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Patch'
                   description: ':param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must
                     be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].'
                 schemas:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PatchSchema'
       responses:
         '200':
           description: Success
@@ -636,25 +650,35 @@ paths:
                   type: string
                   description: String that represents a human-readable group name
                 entitlements:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: 'Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
                     values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
                 external_id:
                   type: string
                   description: ':param groups: List[:class:`ComplexValue`] (optional)'
                 groups:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                 members:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: ':param meta: :class:`ResourceMeta` (optional) Container for the group identifier. Workspace
                     local versus account.'
                 meta:
-                  type: string
+                  $ref: '#/components/schemas/ResourceMeta'
                 roles:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: Corresponds to AWS instance profile/arn role.
                 schemas:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/GroupSchema'
                   description: The schema of the group.
       responses:
         '200':
@@ -707,7 +731,7 @@ paths:
                   type: string
                   description: The name of the account group that permissions will be migrated to.
                 size:
-                  type: string
+                  type: integer
                   description: The maximum number of permissions that will be migrated.
               required:
               - workspace_id
@@ -829,7 +853,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/AccessControlRequest'
                   description: ':returns: :class:`ObjectPermissions`'
       responses:
         '200':
@@ -892,7 +918,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/AccessControlRequest'
                   description: ':returns: :class:`ObjectPermissions`'
       responses:
         '200':
@@ -1003,7 +1031,7 @@ paths:
               type: object
               properties:
                 active:
-                  type: string
+                  type: boolean
                   description: If this user is active
                 application_id:
                   type: string
@@ -1012,22 +1040,30 @@ paths:
                   type: string
                   description: String that represents a concatenation of given and family names.
                 entitlements:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: 'Entitlements assigned to the service principal. See [assigning entitlements] for a full list
                     of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
                 external_id:
                   type: string
                   description: ':param groups: List[:class:`ComplexValue`] (optional)'
                 groups:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                 id:
                   type: string
                   description: Databricks service principal ID.
                 roles:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: Corresponds to AWS instance profile/arn role.
                 schemas:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ServicePrincipalSchema'
                   description: The schema of the List response.
       responses:
         '200':
@@ -1089,7 +1125,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Desired number of results per page.
       - name: excluded_attributes
         in: query
@@ -1115,13 +1151,13 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/ListSortOrder'
         description: The order to sort the results.
       - name: start_index
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Specifies the index of the first result. First item is number 1.
       responses:
         '200':
@@ -1243,11 +1279,15 @@ paths:
               type: object
               properties:
                 operations:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Patch'
                   description: ':param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must
                     be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].'
                 schemas:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PatchSchema'
       responses:
         '200':
           description: Success
@@ -1307,7 +1347,7 @@ paths:
               type: object
               properties:
                 active:
-                  type: string
+                  type: boolean
                   description: If this user is active
                 application_id:
                   type: string
@@ -1316,19 +1356,27 @@ paths:
                   type: string
                   description: String that represents a concatenation of given and family names.
                 entitlements:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: 'Entitlements assigned to the service principal. See [assigning entitlements] for a full list
                     of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
                 external_id:
                   type: string
                   description: ':param groups: List[:class:`ComplexValue`] (optional)'
                 groups:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                 roles:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: Corresponds to AWS instance profile/arn role.
                 schemas:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ServicePrincipalSchema'
                   description: The schema of the List response.
       responses:
         '200':
@@ -1391,7 +1439,7 @@ paths:
               type: object
               properties:
                 active:
-                  type: string
+                  type: boolean
                   description: If this user is active
                 display_name:
                   type: string
@@ -1399,28 +1447,38 @@ paths:
                     This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
                     Account SCIM APIs to update `displayName`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation'
                 emails:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: All the emails associated with the Databricks user.
                 entitlements:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: 'Entitlements assigned to the user. See [assigning entitlements] for a full list of supported
                     values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
                 external_id:
                   type: string
                   description: External ID is not currently supported. It is reserved for future use.
                 groups:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: ':param id: str (optional) Databricks user ID.'
                 id:
                   type: string
                 name:
-                  type: string
+                  $ref: '#/components/schemas/Name'
                   description: ':param roles: List[:class:`ComplexValue`] (optional) Corresponds to AWS instance profile/arn
                     role.'
                 roles:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                 schemas:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/UserSchema'
                   description: The schema of the user.
                 user_name:
                   type: string
@@ -1486,7 +1544,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Desired number of results per page.
       - name: excluded_attributes
         in: query
@@ -1513,13 +1571,13 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/ListSortOrder'
         description: The order to sort the results.
       - name: start_index
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Specifies the index of the first result. First item is number 1.
       responses:
         '200':
@@ -1625,7 +1683,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Desired number of results per page.
       - name: excluded_attributes
         in: query
@@ -1652,13 +1710,13 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/GetSortOrder'
         description: The order to sort the results.
       - name: start_index
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Specifies the index of the first result. First item is number 1.
       responses:
         '200':
@@ -1707,11 +1765,15 @@ paths:
               type: object
               properties:
                 operations:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Patch'
                   description: ':param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must
                     be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].'
                 schemas:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PatchSchema'
       responses:
         '200':
           description: Success
@@ -1776,7 +1838,7 @@ paths:
               type: object
               properties:
                 active:
-                  type: string
+                  type: boolean
                   description: If this user is active
                 display_name:
                   type: string
@@ -1784,25 +1846,35 @@ paths:
                     This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
                     Account SCIM APIs to update `displayName`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation'
                 emails:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: All the emails associated with the Databricks user.
                 entitlements:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: 'Entitlements assigned to the user. See [assigning entitlements] for a full list of supported
                     values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
                 external_id:
                   type: string
                   description: External ID is not currently supported. It is reserved for future use.
                 groups:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: ':param name: :class:`Name` (optional)'
                 name:
-                  type: string
+                  $ref: '#/components/schemas/Name'
                 roles:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: Corresponds to AWS instance profile/arn role.
                 schemas:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/UserSchema'
                   description: The schema of the user.
                 user_name:
                   type: string
@@ -1904,7 +1976,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PasswordAccessControlRequest'
                   description: ':returns: :class:`PasswordPermissions`'
       responses:
         '200':
@@ -1944,7 +2018,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PasswordAccessControlRequest'
                   description: ':returns: :class:`PasswordPermissions`'
       responses:
         '200':
@@ -2643,20 +2719,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2684,20 +2760,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2725,20 +2801,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2767,20 +2843,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2820,20 +2896,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2892,20 +2968,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2934,20 +3010,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2977,20 +3053,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

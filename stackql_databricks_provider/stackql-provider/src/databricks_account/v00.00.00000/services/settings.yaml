@@ -5,7 +5,7 @@ info:
     Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.settings
 servers:
 - url: https://accounts.cloud.databricks.com
@@ -54,10 +54,12 @@ paths:
                   type: string
                   description: Label for the IP access list. This **cannot** be empty.
                 list_type:
-                  type: string
+                  $ref: '#/components/schemas/ListType'
                   description: ':param ip_addresses: List[str] (optional)'
                 ip_addresses:
-                  type: string
+                  type: array
+                  items:
+                    type: string
               required:
               - label
               - list_type
@@ -246,12 +248,14 @@ paths:
                   type: string
                   description: Label for the IP access list. This **cannot** be empty.
                 list_type:
-                  type: string
+                  $ref: '#/components/schemas/ListType'
                   description: ':param enabled: bool Specifies whether this IP access list is enabled.'
                 enabled:
                   type: boolean
                 ip_addresses:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: List[str] (optional)
               required:
               - label
@@ -320,15 +324,17 @@ paths:
               type: object
               properties:
                 enabled:
-                  type: string
+                  type: boolean
                   description: Specifies whether this IP access list is enabled.
                 ip_addresses:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: ':param label: str (optional) Label for the IP access list. This **cannot** be empty.'
                 label:
                   type: string
                 list_type:
-                  type: string
+                  $ref: '#/components/schemas/ListType'
                   description: :class:`ListType` (optional)
       responses:
         '200':
@@ -381,7 +387,7 @@ paths:
               type: object
               properties:
                 network_connectivity_config:
-                  type: string
+                  $ref: '#/components/schemas/CreateNetworkConnectivityConfiguration'
                   description: ':returns: :class:`NetworkConnectivityConfiguration`'
               required:
               - network_connectivity_config
@@ -490,7 +496,7 @@ paths:
               type: object
               properties:
                 private_endpoint_rule:
-                  type: string
+                  $ref: '#/components/schemas/CreatePrivateEndpointRule'
                   description: ':returns: :class:`NccPrivateEndpointRule`'
               required:
               - private_endpoint_rule
@@ -811,7 +817,7 @@ paths:
               type: object
               properties:
                 private_endpoint_rule:
-                  type: string
+                  $ref: '#/components/schemas/UpdatePrivateEndpointRule'
                   description: ':param update_mask: str The field mask must be a single string, with multiple fields separated
                     by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate
                     sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -866,7 +872,7 @@ paths:
               type: object
               properties:
                 network_policy:
-                  type: string
+                  $ref: '#/components/schemas/AccountNetworkPolicy'
                   description: Network policy configuration details.
               required:
               - network_policy
@@ -1050,7 +1056,7 @@ paths:
               type: object
               properties:
                 network_policy:
-                  type: string
+                  $ref: '#/components/schemas/AccountNetworkPolicy'
                   description: Updated network policy configuration details.
               required:
               - network_policy
@@ -1154,7 +1160,7 @@ paths:
               type: object
               properties:
                 workspace_network_option:
-                  type: string
+                  $ref: '#/components/schemas/WorkspaceNetworkOption'
                   description: The network option details for the workspace.
               required:
               - workspace_network_option
@@ -2850,20 +2856,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2897,20 +2903,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2944,20 +2950,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3012,20 +3018,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3057,20 +3063,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3107,20 +3113,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3149,20 +3155,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3211,20 +3217,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3252,20 +3258,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3300,20 +3306,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3353,20 +3359,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3419,20 +3425,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3466,20 +3472,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3519,20 +3525,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

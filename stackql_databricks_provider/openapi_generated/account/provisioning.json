@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks provisioning service (account-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.provisioning"
   },
   "servers": [
@@ -45,7 +45,7 @@
                     "description": "The human-readable name of the credential configuration object."
                   },
                   "aws_credentials": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/CreateCredentialAwsCredentials",
                     "description": ":returns: :class:`Credential`"
                   }
                 },
@@ -286,15 +286,18 @@
                 "type": "object",
                 "properties": {
                   "use_cases": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/KeyUseCase"
+                    },
                     "description": "The cases that the key can be used for."
                   },
                   "aws_key_info": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/CreateAwsKeyInfo",
                     "description": ":param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)"
                   },
                   "gcp_key_info": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/CreateGcpKeyInfo"
                   }
                 },
                 "required": [
@@ -533,22 +536,28 @@
                 "type": "object",
                 "properties": {
                   "gcp_network_info": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/GcpNetworkInfo",
                     "description": ":param network_name: str (optional) The human-readable name of the network configuration."
                   },
                   "network_name": {
                     "type": "string"
                   },
                   "security_group_ids": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "IDs of one to five security groups associated with this network. Security group IDs **cannot** be used in multiple network configurations."
                   },
                   "subnet_ids": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "IDs of at least two subnets associated with this network. Subnet IDs **cannot** be used in multiple network configurations."
                   },
                   "vpc_endpoints": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/NetworkVpcEndpoints",
                     "description": ":param vpc_id: str (optional) The ID of the VPC associated with this network configuration. VPC IDs can be used in multiple networks."
                   },
                   "vpc_id": {
@@ -788,11 +797,14 @@
                 "type": "object",
                 "properties": {
                   "allowed_vpc_endpoint_ids": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "An array of Databricks VPC endpoint IDs. This is the Databricks ID returned when registering the VPC endpoint configuration in your Databricks account. This is not the ID of the VPC endpoint in AWS. Only used when private_access_level is set to ENDPOINT. This is an allow list of VPC endpoints registered in your Databricks account that can connect to your workspace over AWS PrivateLink. Note: If hybrid access to your workspace is enabled by setting public_access_enabled to true, this control only works for PrivateLink connections. To control how your workspace is accessed via public internet, see IP access lists."
                   },
                   "private_access_level": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/PrivateAccessLevel",
                     "description": "The private access level controls which VPC endpoints can connect to the UI or API of any workspace that attaches this private access settings object. `ACCOUNT` level access (the default) allows only VPC endpoints that are registered in your Databricks account connect to your workspace. `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details, see allowed_vpc_endpoint_ids."
                   },
                   "private_access_settings_name": {
@@ -800,7 +812,7 @@
                     "description": "The human-readable name of the private access settings object."
                   },
                   "public_access_enabled": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Determines if the workspace can be accessed over public internet. For fully private workspaces, you can optionally specify false, but only if you implement both the front-end and the back-end PrivateLink connections. Otherwise, specify true, which means that public access is enabled."
                   },
                   "region": {
@@ -1048,7 +1060,7 @@
                 "type": "object",
                 "properties": {
                   "customer_facing_private_access_settings": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/PrivateAccessSettings",
                     "description": "Properties of the new private access settings object."
                   }
                 },
@@ -1122,7 +1134,7 @@
                     "description": "The human-readable name of the storage configuration."
                   },
                   "root_bucket_info": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/RootBucketInfo",
                     "description": "Root S3 bucket information."
                   },
                   "role_arn": {
@@ -1371,7 +1383,7 @@
                     "description": "The ID of the VPC endpoint object in AWS."
                   },
                   "gcp_vpc_endpoint_info": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/GcpVpcEndpointInfo",
                     "description": "The cloud info of this vpc endpoint."
                   },
                   "region": {
@@ -1623,18 +1635,18 @@
                     "type": "string"
                   },
                   "cloud_resource_container": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/CloudResourceContainer",
                     "description": ":param compute_mode: :class:`CustomerFacingComputeMode` (optional) If the compute mode is `SERVERLESS`, a serverless workspace is created that comes pre-configured with serverless compute and default storage, providing a fully-managed, enterprise-ready SaaS experience. This means you don't need to provide any resources managed by you, such as credentials, storage, or network. If the compute mode is `HYBRID` (which is the default option), a classic workspace is created that uses customer-managed resources."
                   },
                   "compute_mode": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/CustomerFacingComputeMode"
                   },
                   "credentials_id": {
                     "type": "string",
                     "description": "ID of the workspace's credential configuration object."
                   },
                   "custom_tags": {
-                    "type": "string",
+                    "type": "object",
                     "description": "The custom tags key-value pairing that is attached to this workspace. The key-value pair is a string of utf-8 characters. The value can be an empty string, with maximum length of 255 characters. The key can be of maximum length of 127 characters, and cannot be empty."
                   },
                   "deployment_name": {
@@ -1642,11 +1654,11 @@
                     "description": "The deployment name defines part of the subdomain for the workspace. The workspace URL for the web application and REST APIs is <workspace-deployment-name>.cloud.databricks.com. For example, if the deployment name is abcsales, your workspace URL will be https://abcsales.cloud.databricks.com. Hyphens are allowed. This property supports only the set of characters that are allowed in a subdomain. To set this value, you must have a deployment name prefix. Contact your Databricks account team to add an account deployment name prefix to your account. Workspace deployment names follow the account prefix and a hyphen. For example, if your account's deployment prefix is acme and the workspace deployment name is workspace-1, the JSON response for the deployment_name field becomes acme-workspace-1. The workspace URL would be acme-workspace-1.cloud.databricks.com. You can also set the deployment_name to the reserved keyword EMPTY if you want the deployment name to only include the deployment prefix. For example, if your account's deployment prefix is acme and the workspace deployment name is EMPTY, the deployment_name becomes acme only and the workspace URL is acme.cloud.databricks.com. This value must be unique across all non-deleted deployments across all AWS regions. If a new workspace omits this property, the server generates a unique deployment name for you with the pattern dbc-xxxxxxxx-xxxx."
                   },
                   "gcp_managed_network_config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/GcpManagedNetworkConfig",
                     "description": ":param gke_config: :class:`GkeConfig` (optional)"
                   },
                   "gke_config": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/GkeConfig"
                   },
                   "location": {
                     "type": "string",
@@ -1665,7 +1677,7 @@
                     "description": "The ID of the workspace's network configuration object. To use AWS PrivateLink, this field is required."
                   },
                   "pricing_tier": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/PricingTier",
                     "description": ":param private_access_settings_id: str (optional) ID of the workspace's private access settings object. Only used for PrivateLink. You must specify this ID if you are using [AWS PrivateLink] for either front-end (user-to-workspace connection), back-end (data plane to control plane connection), or both connection types. Before configuring PrivateLink, read the [Databricks article about PrivateLink].\", [AWS PrivateLink]: https://aws.amazon.com/privatelink/ [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"
                   },
                   "private_access_settings_id": {
@@ -1932,7 +1944,7 @@
                 "type": "object",
                 "properties": {
                   "customer_facing_workspace": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/Workspace",
                     "description": ":param update_mask: str (optional) The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
                   }
                 },
@@ -2683,7 +2695,7 @@
           "CUSTOMER_HOSTED",
           "DEFAULT_STORAGE"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "EndpointUseCase": {
         "type": "string",
@@ -2691,7 +2703,7 @@
           "DATAPLANE_RELAY_ACCESS",
           "WORKSPACE_ACCESS"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ErrorType": {
         "type": "string",
@@ -2718,7 +2730,7 @@
           "MANAGED_SERVICES",
           "STORAGE"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "PricingTier": {
         "type": "string",
@@ -2730,7 +2742,7 @@
           "STANDARD",
           "UNKNOWN"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "PrivateAccessLevel": {
         "type": "string",
@@ -2738,7 +2750,7 @@
           "ACCOUNT",
           "ENDPOINT"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "VpcStatus": {
         "type": "string",
@@ -2748,7 +2760,7 @@
           "VALID",
           "WARNED"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "WarningType": {
         "type": "string",
@@ -2756,7 +2768,7 @@
           "securityGroup",
           "subnet"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "WorkspaceStatus": {
         "type": "string",

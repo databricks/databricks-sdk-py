@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.postgres
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -62,7 +62,7 @@ paths:
               type: object
               properties:
                 branch:
-                  type: string
+                  $ref: '#/components/schemas/Branch'
                   description: The Branch to create.
               required:
                 - branch
@@ -114,7 +114,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Upper bound for items returned. Cannot be negative.
         - name: page_token
           in: query
@@ -190,7 +190,7 @@ paths:
               type: object
               properties:
                 endpoint:
-                  type: string
+                  $ref: '#/components/schemas/Endpoint'
                   description: The Endpoint to create.
               required:
                 - endpoint
@@ -243,7 +243,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Upper bound for items returned. Cannot be negative.
         - name: page_token
           in: query
@@ -314,7 +314,7 @@ paths:
               type: object
               properties:
                 project:
-                  type: string
+                  $ref: '#/components/schemas/Project'
                   description: The Project to create.
               required:
                 - project
@@ -360,7 +360,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Upper bound for items returned. Cannot be negative.
         - name: page_token
           in: query
@@ -439,7 +439,7 @@ paths:
               type: object
               properties:
                 role:
-                  type: string
+                  $ref: '#/components/schemas/Role'
                   description: The desired specification of a Role.
               required:
                 - role
@@ -491,7 +491,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Upper bound for items returned. Cannot be negative.
         - name: page_token
           in: query
@@ -660,7 +660,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: object
           description: >-
             The list of fields to update. If unspecified, all fields will be
             updated when possible.
@@ -671,7 +671,7 @@ paths:
               type: object
               properties:
                 project:
-                  type: string
+                  $ref: '#/components/schemas/Project'
                   description: >-
                     The Project to update. The project's `name` field is used to
                     identify the project to update. Format:
@@ -726,7 +726,9 @@ paths:
                     credential will be generated. Format:
                     projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
                 claims:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RequestedClaims'
                   description: >-
                     The returned token will be scoped to UC tables with the
                     specified permissions.
@@ -1397,20 +1399,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

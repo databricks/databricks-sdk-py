@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.jobs
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -42,13 +42,13 @@ paths:
               type: object
               properties:
                 all_queued_runs:
-                  type: string
+                  type: boolean
                   description: >-
                     Optional boolean parameter to cancel all queued runs. If no
                     job_id is provided, all queued runs in the workspace are
                     canceled.
                 job_id:
-                  type: string
+                  type: integer
                   description: The canonical identifier of the job to cancel all runs of.
       responses:
         '200':
@@ -236,7 +236,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/JobAccessControlRequest'
                   description: List of permissions to set on the job.
                 budget_policy_id:
                   type: string
@@ -247,13 +249,13 @@ paths:
                     `effective_budget_policy_id` for the budget policy used by
                     this workload.
                 continuous:
-                  type: string
+                  $ref: '#/components/schemas/Continuous'
                   description: >-
                     An optional continuous property for this job. The continuous
                     property will ensure that there is always one run executing.
                     Only one of `schedule` and `continuous` can be used.
                 deployment:
-                  type: string
+                  $ref: '#/components/schemas/JobDeployment'
                   description: Deployment information for jobs managed by external sources.
                 description:
                   type: string
@@ -261,19 +263,21 @@ paths:
                     An optional description for the job. The maximum length is
                     27700 characters in UTF-8 encoding.
                 edit_mode:
-                  type: string
+                  $ref: '#/components/schemas/JobEditMode'
                   description: >-
                     Edit mode of the job. * `UI_LOCKED`: The job is in a locked
                     UI state and cannot be modified. * `EDITABLE`: The job is in
                     an editable state and can be modified.
                 email_notifications:
-                  type: string
+                  $ref: '#/components/schemas/JobEmailNotifications'
                   description: >-
                     An optional set of email addresses that is notified when
                     runs of this job begin or complete as well as when this job
                     is deleted.
                 environments:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/JobEnvironment'
                   description: >-
                     A list of task execution environment specifications that can
                     be referenced by serverless tasks of this job. For
@@ -284,13 +288,13 @@ paths:
                     environment is required to be specified using
                     environment_key in the task settings.
                 format:
-                  type: string
+                  $ref: '#/components/schemas/Format'
                   description: >-
                     Used to tell what is the format of the job. This field is
                     ignored in Create/Update/Reset calls. When using the Jobs
                     API 2.1 this value is always set to `"MULTI_TASK"`.
                 git_source:
-                  type: string
+                  $ref: '#/components/schemas/GitSource'
                   description: >-
                     An optional specification for a remote Git repository
                     containing the source code used by tasks. Version-controlled
@@ -302,7 +306,7 @@ paths:
                     support only version-controlled sources. If dbt or SQL File
                     tasks are used, `git_source` must be defined on the job.
                 health:
-                  type: string
+                  $ref: '#/components/schemas/JobsHealthRules'
                   description: >-
                     :param job_clusters: List[:class:`JobCluster`] (optional) A
                     list of job cluster specifications that can be shared and
@@ -310,9 +314,11 @@ paths:
                     a shared job cluster. You must declare dependent libraries
                     in task settings.
                 job_clusters:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/JobCluster'
                 max_concurrent_runs:
-                  type: string
+                  type: integer
                   description: >-
                     An optional maximum allowed number of concurrent runs of the
                     job. Set this value if you want to be able to execute
@@ -333,16 +339,18 @@ paths:
                     An optional name for the job. The maximum length is 4096
                     bytes in UTF-8 encoding.
                 notification_settings:
-                  type: string
+                  $ref: '#/components/schemas/JobNotificationSettings'
                   description: >-
                     Optional notification settings that are used when sending
                     notifications to each of the `email_notifications` and
                     `webhook_notifications` for this job.
                 parameters:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/JobParameterDefinition'
                   description: Job-level parameter definitions
                 performance_target:
-                  type: string
+                  $ref: '#/components/schemas/PerformanceTarget'
                   description: >-
                     The performance mode on a serverless job. This field
                     determines the level of compute performance or
@@ -353,31 +361,33 @@ paths:
                     startup and execution times through rapid scaling and
                     optimized cluster performance.
                 queue:
-                  type: string
+                  $ref: '#/components/schemas/QueueSettings'
                   description: The queue settings of the job.
                 run_as:
-                  type: string
+                  $ref: '#/components/schemas/JobRunAs'
                   description: >-
                     The user or service principal that the job runs as, if
                     specified in the request. This field indicates the explicit
                     configuration of `run_as` for the job. To find the value in
                     all cases, explicit or implicit, use `run_as_user_name`.
                 schedule:
-                  type: string
+                  $ref: '#/components/schemas/CronSchedule'
                   description: >-
                     An optional periodic schedule for this job. The default
                     behavior is that the job only runs when triggered by
                     clicking “Run Now” in the Jobs UI or sending an API request
                     to `runNow`.
                 tags:
-                  type: string
+                  type: object
                   description: >-
                     A map of tags associated with the job. These are forwarded
                     to the cluster as cluster tags for jobs clusters, and are
                     subject to the same limitations as cluster tags. A maximum
                     of 25 tags can be added to the job.
                 tasks:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Task'
                   description: >-
                     A list of task specifications to be executed by this job. It
                     supports up to 1000 elements in write endpoints
@@ -388,12 +398,12 @@ paths:
                     the `next_page_token` field at the object root to determine
                     if more results are available.
                 timeout_seconds:
-                  type: string
+                  type: integer
                   description: >-
                     An optional timeout applied to each run of this job. A value
                     of `0` means no timeout.
                 trigger:
-                  type: string
+                  $ref: '#/components/schemas/TriggerSettings'
                   description: >-
                     A configuration to trigger a run when certain conditions are
                     met. The default behavior is that the job runs only when
@@ -408,7 +418,7 @@ paths:
                     `effective_usage_policy_id` for the usage policy used by
                     this workload.
                 webhook_notifications:
-                  type: string
+                  $ref: '#/components/schemas/WebhookNotifications'
                   description: >-
                     A collection of system notification IDs to notify when runs
                     of this job begin or complete.
@@ -533,7 +543,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/ViewsToExport'
           description: Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
       responses:
         '200':
@@ -743,7 +753,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/JobAccessControlRequest'
                   description: ':returns: :class:`JobPermissions`'
       responses:
         '200':
@@ -797,7 +809,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/JobAccessControlRequest'
                   description: ':returns: :class:`JobPermissions`'
       responses:
         '200':
@@ -870,13 +884,13 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Whether to include the repair history in the response.
         - name: include_resolved_values
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Whether to include resolved parameter values in the response.
         - name: page_token
           in: query
@@ -996,7 +1010,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include task and cluster details in the response. Note
             that only the first 100 elements will be shown. Use :method:jobs/get
@@ -1005,7 +1019,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The number of jobs to return. This value must be greater than 0 and
             less or equal to 100. The default value is 20.
@@ -1019,7 +1033,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The offset of the first job to return, relative to the most recently
             created job. Deprecated since June 2023. Use `page_token` to iterate
@@ -1097,7 +1111,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             If active_only is `true`, only active runs are included in the
             results; otherwise, lists both active and completed runs. An active
@@ -1108,7 +1122,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             If completed_only is `true`, only completed runs are included in the
             results; otherwise, lists both active and completed runs. This field
@@ -1117,7 +1131,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include task and cluster details in the response. Note
             that only the first 100 elements will be shown. Use
@@ -1126,7 +1140,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The job for which to list runs. If omitted, the Jobs service lists
             runs from all jobs.
@@ -1134,7 +1148,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The number of runs to return. This value must be greater than 0 and
             less than 25. The default value is 20. If a request specifies a
@@ -1143,7 +1157,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The offset of the first run to return, relative to the most recent
             run. Deprecated since June 2023. Use `page_token` to iterate through
@@ -1161,7 +1175,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/RunType'
           description: >-
             The type of runs to return. For a description of run types, see
             :method:jobs/getRun.
@@ -1169,7 +1183,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Show runs that started _at or after_ this value. The value must be a
             UTC timestamp in milliseconds. Can be combined with _start_time_to_
@@ -1178,7 +1192,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Show runs that started _at or before_ this value. The value must be
             a UTC timestamp in milliseconds. Can be combined with
@@ -1331,7 +1345,9 @@ paths:
                     The job run ID of the run to repair. The run must not be in
                     progress.
                 dbt_commands:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     An array of commands to execute for jobs with the dbt task,
                     for example `"dbt_commands": ["dbt deps", "dbt seed", "dbt
@@ -1340,7 +1356,9 @@ paths:
                     parameters]:
                     https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
                 jar_params:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     A list of parameters for jobs with Spark JAR tasks, for
                     example `"jar_params": ["john doe", "35"]`. The parameters
@@ -1354,18 +1372,18 @@ paths:
                     information down to tasks. [job parameters]:
                     https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
                 job_parameters:
-                  type: string
+                  type: object
                   description: >-
                     Job-level parameters used in the run. for example `"param":
                     "overriding_val"`
                 latest_repair_id:
-                  type: string
+                  type: integer
                   description: >-
                     The ID of the latest repair. This parameter is not required
                     when repairing a run for the first time, but must be
                     provided on subsequent requests to repair the same run.
                 notebook_params:
-                  type: string
+                  type: object
                   description: >-
                     A map from keys to values for jobs with notebook task, for
                     example `"notebook_params": {"name": "john doe", "age":
@@ -1382,7 +1400,7 @@ paths:
                     [job parameters]:
                     https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
                 performance_target:
-                  type: string
+                  $ref: '#/components/schemas/PerformanceTarget'
                   description: >-
                     The performance mode on a serverless job. The performance
                     target determines the level of compute performance or
@@ -1393,10 +1411,10 @@ paths:
                     execution times through rapid scaling and optimized cluster
                     performance.
                 pipeline_params:
-                  type: string
+                  $ref: '#/components/schemas/PipelineParams'
                   description: Controls whether the pipeline should perform a full refresh
                 python_named_params:
-                  type: string
+                  type: object
                   description: >-
                     :param python_params: List[str] (optional) A list of
                     parameters for jobs with Python tasks, for example
@@ -1413,23 +1431,29 @@ paths:
                     Japanese kanjis, and emojis. [job parameters]:
                     https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
                 python_params:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                 rerun_all_failed_tasks:
-                  type: string
+                  type: boolean
                   description: >-
                     If true, repair all failed tasks. Only one of `rerun_tasks`
                     or `rerun_all_failed_tasks` can be used.
                 rerun_dependent_tasks:
-                  type: string
+                  type: boolean
                   description: >-
                     If true, repair all tasks that depend on the tasks in
                     `rerun_tasks`, even if they were previously successful. Can
                     be also used in combination with `rerun_all_failed_tasks`.
                 rerun_tasks:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: The task keys of the task runs to repair.
                 spark_submit_params:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     A list of parameters for jobs with spark submit task, for
                     example `"spark_submit_params": ["--class",
@@ -1446,7 +1470,7 @@ paths:
                     Japanese kanjis, and emojis. [job parameters]:
                     https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
                 sql_params:
-                  type: string
+                  type: object
                   description: >-
                     A map from keys to values for jobs with SQL task, for
                     example `"sql_params": {"name": "john doe", "age": "35"}`.
@@ -1509,7 +1533,7 @@ paths:
                     The canonical identifier of the job to reset. This field is
                     required.
                 new_settings:
-                  type: string
+                  $ref: '#/components/schemas/JobSettings'
                   description: >-
                     The new settings of the job. These settings completely
                     replace the old settings. Changes to the field
@@ -1661,7 +1685,9 @@ paths:
                   type: integer
                   description: The ID of the job to be executed
                 dbt_commands:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     An array of commands to execute for jobs with the dbt task,
                     for example `"dbt_commands": ["dbt deps", "dbt seed", "dbt
@@ -1685,7 +1711,9 @@ paths:
                     for jobs]:
                     https://kb.databricks.com/jobs/jobs-idempotency.html
                 jar_params:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     A list of parameters for jobs with Spark JAR tasks, for
                     example `"jar_params": ["john doe", "35"]`. The parameters
@@ -1699,12 +1727,12 @@ paths:
                     information down to tasks. [job parameters]:
                     https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
                 job_parameters:
-                  type: string
+                  type: object
                   description: >-
                     Job-level parameters used in the run. for example `"param":
                     "overriding_val"`
                 notebook_params:
-                  type: string
+                  type: object
                   description: >-
                     A map from keys to values for jobs with notebook task, for
                     example `"notebook_params": {"name": "john doe", "age":
@@ -1721,12 +1749,14 @@ paths:
                     [job parameters]:
                     https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
                 only:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     A list of task keys to run inside of the job. If this field
                     is not provided, all tasks in the job will be run.
                 performance_target:
-                  type: string
+                  $ref: '#/components/schemas/PerformanceTarget'
                   description: >-
                     The performance mode on a serverless job. The performance
                     target determines the level of compute performance or
@@ -1737,10 +1767,10 @@ paths:
                     execution times through rapid scaling and optimized cluster
                     performance.
                 pipeline_params:
-                  type: string
+                  $ref: '#/components/schemas/PipelineParams'
                   description: Controls whether the pipeline should perform a full refresh
                 python_named_params:
-                  type: string
+                  type: object
                   description: >-
                     :param python_params: List[str] (optional) A list of
                     parameters for jobs with Python tasks, for example
@@ -1757,12 +1787,16 @@ paths:
                     Japanese kanjis, and emojis. [job parameters]:
                     https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
                 python_params:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                 queue:
-                  type: string
+                  $ref: '#/components/schemas/QueueSettings'
                   description: The queue settings of the run.
                 spark_submit_params:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     A list of parameters for jobs with spark submit task, for
                     example `"spark_submit_params": ["--class",
@@ -1779,7 +1813,7 @@ paths:
                     Japanese kanjis, and emojis. [job parameters]:
                     https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
                 sql_params:
-                  type: string
+                  type: object
                   description: >-
                     A map from keys to values for jobs with SQL task, for
                     example `"sql_params": {"name": "john doe", "age": "35"}`.
@@ -1906,7 +1940,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/JobAccessControlRequest'
                   description: List of permissions to set on the job.
                 budget_policy_id:
                   type: string
@@ -1915,17 +1951,19 @@ paths:
                     one-time run. If not specified, the run will be not be
                     attributed to any budget policy.
                 email_notifications:
-                  type: string
+                  $ref: '#/components/schemas/JobEmailNotifications'
                   description: >-
                     An optional set of email addresses notified when the run
                     begins or completes.
                 environments:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/JobEnvironment'
                   description: >-
                     A list of task execution environment specifications that can
                     be referenced by tasks of this run.
                 git_source:
-                  type: string
+                  $ref: '#/components/schemas/GitSource'
                   description: >-
                     An optional specification for a remote Git repository
                     containing the source code used by tasks. Version-controlled
@@ -1937,7 +1975,7 @@ paths:
                     support only version-controlled sources. If dbt or SQL File
                     tasks are used, `git_source` must be defined on the job.
                 health:
-                  type: string
+                  $ref: '#/components/schemas/JobsHealthRules'
                   description: >-
                     :param idempotency_token: str (optional) An optional token
                     that can be used to guarantee the idempotency of job run
@@ -1955,16 +1993,16 @@ paths:
                 idempotency_token:
                   type: string
                 notification_settings:
-                  type: string
+                  $ref: '#/components/schemas/JobNotificationSettings'
                   description: >-
                     Optional notification settings that are used when sending
                     notifications to each of the `email_notifications` and
                     `webhook_notifications` for this run.
                 queue:
-                  type: string
+                  $ref: '#/components/schemas/QueueSettings'
                   description: The queue settings of the one-time run.
                 run_as:
-                  type: string
+                  $ref: '#/components/schemas/JobRunAs'
                   description: >-
                     Specifies the user or service principal that the job runs
                     as. If not specified, the job runs as the user who submits
@@ -1975,13 +2013,15 @@ paths:
                     An optional name for the run. The default value is
                     `Untitled`.
                 tasks:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/SubmitTask'
                   description: >-
                     :param timeout_seconds: int (optional) An optional timeout
                     applied to each run of this job. A value of `0` means no
                     timeout.
                 timeout_seconds:
-                  type: string
+                  type: integer
                 usage_policy_id:
                   type: string
                   description: >-
@@ -1989,7 +2029,7 @@ paths:
                     one-time run. If not specified, a default usage policy may
                     be applied when creating or modifying the job.
                 webhook_notifications:
-                  type: string
+                  $ref: '#/components/schemas/WebhookNotifications'
                   description: >-
                     A collection of system notification IDs to notify when the
                     run begins or completes.
@@ -2055,13 +2095,15 @@ paths:
                     The canonical identifier of the job to update. This field is
                     required.
                 fields_to_remove:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     Remove top-level fields in the job settings. Removing nested
                     fields is not supported, except for tasks and job clusters
                     (`tasks/task_1`). This field is optional.
                 new_settings:
-                  type: string
+                  $ref: '#/components/schemas/JobSettings'
                   description: >-
                     The new settings for the job. Top-level fields specified in
                     `new_settings` are completely replaced, except for arrays
@@ -2124,7 +2166,7 @@ paths:
                   type: integer
                   description: The ID of the job you want to enforce policy compliance on.
                 validate_only:
-                  type: string
+                  type: boolean
                   description: >-
                     If set, previews changes made to the job to comply with its
                     policy, but does not update the job.
@@ -2238,7 +2280,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Use this field to specify the maximum number of results to be
             returned by the server. The server may further constrain the maximum
@@ -5787,20 +5829,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5868,20 +5910,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5954,20 +5996,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6002,20 +6044,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6140,20 +6182,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6182,20 +6224,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6239,20 +6281,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6488,20 +6530,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6531,20 +6573,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

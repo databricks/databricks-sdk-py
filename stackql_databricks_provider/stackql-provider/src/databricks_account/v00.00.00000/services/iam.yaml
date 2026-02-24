@@ -5,7 +5,7 @@ info:
     SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.iam
 servers:
 - url: https://accounts.cloud.databricks.com
@@ -177,7 +177,7 @@ paths:
                   type: string
                   description: Name of the rule set.
                 rule_set:
-                  type: string
+                  $ref: '#/components/schemas/RuleSetUpdateRequest'
                   description: ':returns: :class:`RuleSetResponse`'
               required:
               - name
@@ -244,13 +244,17 @@ paths:
                 id:
                   type: string
                 members:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: ':param meta: :class:`ResourceMeta` (optional) Container for the group identifier. Workspace
                     local versus account.'
                 meta:
-                  type: string
+                  $ref: '#/components/schemas/ResourceMeta'
                 roles:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: Indicates if the group has the admin role.
       responses:
         '200':
@@ -320,7 +324,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Desired number of results per page. Default is 10000.
       - name: excluded_attributes
         in: query
@@ -346,13 +350,13 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/ListSortOrder'
         description: The order to sort the results.
       - name: start_index
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Specifies the index of the first result. First item is number 1.
       responses:
         '200':
@@ -489,11 +493,15 @@ paths:
               type: object
               properties:
                 operations:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Patch'
                   description: ':param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must
                     be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].'
                 schemas:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PatchSchema'
       responses:
         '200':
           description: Success
@@ -553,12 +561,16 @@ paths:
                   type: string
                   description: ':param members: List[:class:`ComplexValue`] (optional)'
                 members:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                 meta:
-                  type: string
+                  $ref: '#/components/schemas/ResourceMeta'
                   description: Container for the group identifier. Workspace local versus account.
                 roles:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: Indicates if the group has the admin role.
       responses:
         '200':
@@ -611,7 +623,7 @@ paths:
               type: object
               properties:
                 active:
-                  type: string
+                  type: boolean
                   description: If this user is active
                 application_id:
                   type: string
@@ -625,7 +637,9 @@ paths:
                 id:
                   type: string
                 roles:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: Indicates if the group has the admin role.
       responses:
         '200':
@@ -692,7 +706,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Desired number of results per page. Default is 10000.
       - name: excluded_attributes
         in: query
@@ -718,13 +732,13 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/ListSortOrder'
         description: The order to sort the results.
       - name: start_index
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Specifies the index of the first result. First item is number 1.
       responses:
         '200':
@@ -861,11 +875,15 @@ paths:
               type: object
               properties:
                 operations:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Patch'
                   description: ':param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must
                     be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].'
                 schemas:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PatchSchema'
       responses:
         '200':
           description: Success
@@ -922,7 +940,7 @@ paths:
               type: object
               properties:
                 active:
-                  type: string
+                  type: boolean
                   description: If this user is active
                 application_id:
                   type: string
@@ -935,7 +953,9 @@ paths:
                   description: ':param roles: List[:class:`ComplexValue`] (optional) Indicates if the group has the admin
                     role.'
                 roles:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
       responses:
         '200':
           description: Success
@@ -992,13 +1012,15 @@ paths:
               type: object
               properties:
                 active:
-                  type: string
+                  type: boolean
                   description: If this user is active
                 display_name:
                   type: string
                   description: String that represents a concatenation of given and family names. For example `John Smith`.
                 emails:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: All the emails associated with the Databricks user.
                 external_id:
                   type: string
@@ -1007,11 +1029,13 @@ paths:
                   type: string
                   description: Databricks user ID.
                 name:
-                  type: string
+                  $ref: '#/components/schemas/Name'
                   description: ':param roles: List[:class:`ComplexValue`] (optional) Indicates if the group has the admin
                     role.'
                 roles:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                 user_name:
                   type: string
                   description: Email address of the Databricks user.
@@ -1081,7 +1105,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Desired number of results per page. Default is 10000.
       - name: excluded_attributes
         in: query
@@ -1108,13 +1132,13 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/ListSortOrder'
         description: The order to sort the results.
       - name: start_index
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Specifies the index of the first result. First item is number 1.
       responses:
         '200':
@@ -1230,7 +1254,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Desired number of results per page. Default is 10000.
       - name: excluded_attributes
         in: query
@@ -1257,13 +1281,13 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/GetSortOrder'
         description: The order to sort the results.
       - name: start_index
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Specifies the index of the first result. First item is number 1.
       responses:
         '200':
@@ -1317,11 +1341,15 @@ paths:
               type: object
               properties:
                 operations:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Patch'
                   description: ':param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must
                     be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].'
                 schemas:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PatchSchema'
       responses:
         '200':
           description: Success
@@ -1380,23 +1408,27 @@ paths:
               type: object
               properties:
                 active:
-                  type: string
+                  type: boolean
                   description: If this user is active
                 display_name:
                   type: string
                   description: String that represents a concatenation of given and family names. For example `John Smith`.
                 emails:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                   description: All the emails associated with the Databricks user.
                 external_id:
                   type: string
                   description: External ID is not currently supported. It is reserved for future use.
                 name:
-                  type: string
+                  $ref: '#/components/schemas/Name'
                   description: ':param roles: List[:class:`ComplexValue`] (optional) Indicates if the group has the admin
                     role.'
                 roles:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
                 user_name:
                   type: string
                   description: Email address of the Databricks user.
@@ -1510,7 +1542,9 @@ paths:
               type: object
               properties:
                 permissions:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/WorkspacePermission'
                   description: Array of permissions assignments to update on the workspace. Valid values are "USER" and "ADMIN"
                     (case-sensitive). If both "USER" and "ADMIN" are provided, "ADMIN" takes precedence. Other values will
                     be ignored. Note that excluding this field, or providing unsupported values, will have the same effect
@@ -2302,20 +2336,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2343,20 +2377,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2384,20 +2418,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2426,20 +2460,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2479,20 +2513,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2551,20 +2585,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2593,20 +2627,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2636,20 +2670,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

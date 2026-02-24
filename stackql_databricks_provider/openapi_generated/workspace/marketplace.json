@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks marketplace service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.marketplace"
   },
   "servers": [
@@ -45,7 +45,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           },
           {
@@ -115,7 +115,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           },
           {
@@ -188,17 +188,17 @@
                 "type": "object",
                 "properties": {
                   "accepted_consumer_terms": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/ConsumerTerms"
                   },
                   "catalog_name": {
                     "type": "string",
                     "description": ":param recipient_type: :class:`DeltaSharingRecipientType` (optional)"
                   },
                   "recipient_type": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/DeltaSharingRecipientType"
                   },
                   "repo_detail": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/RepoInstallation",
                     "description": "for git repo installations"
                   },
                   "share_name": {
@@ -265,7 +265,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           },
           {
@@ -398,11 +398,11 @@
                 "type": "object",
                 "properties": {
                   "installation": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/InstallationDetail",
                     "description": ":param rotate_token: bool (optional)"
                   },
                   "rotate_token": {
-                    "type": "string"
+                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -460,7 +460,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": ":param page_token: str (optional)"
           },
@@ -521,7 +521,10 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
             "description": ":returns: :class:`BatchGetListingsResponse`"
           }
@@ -627,7 +630,10 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/AssetType"
+              }
             },
             "description": "Matches any of the following asset types"
           },
@@ -636,7 +642,10 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Category"
+              }
             },
             "description": "Matches any of the following categories"
           },
@@ -645,7 +654,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Filters each listing based on if it is free."
           },
@@ -654,7 +663,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Filters each listing based on if it is a private exchange."
           },
@@ -663,7 +672,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Filters each listing based on whether it is a staff pick."
           },
@@ -672,7 +681,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": ":param page_token: str (optional)"
           },
@@ -689,7 +698,10 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
             "description": "Matches any of the following provider ids"
           },
@@ -698,7 +710,10 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ListingTag"
+              }
             },
             "description": "Matches any of the following tags"
           }
@@ -760,7 +775,10 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/AssetType"
+              }
             },
             "description": "Matches any of the following asset types"
           },
@@ -769,7 +787,10 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Category"
+              }
             },
             "description": "Matches any of the following categories"
           },
@@ -778,7 +799,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": ":param is_private_exchange: bool (optional)"
           },
@@ -787,7 +808,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           },
           {
@@ -795,7 +816,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": ":param page_token: str (optional)"
           },
@@ -812,7 +833,10 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
             "description": "Matches any of the following provider ids"
           }
@@ -880,7 +904,7 @@
                     "type": "string"
                   },
                   "accepted_consumer_terms": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ConsumerTerms",
                     "description": ":param comment: str (optional)"
                   },
                   "comment": {
@@ -894,14 +918,14 @@
                     "type": "string"
                   },
                   "is_from_lighthouse": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": ":param last_name: str (optional)"
                   },
                   "last_name": {
                     "type": "string"
                   },
                   "recipient_type": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/DeltaSharingRecipientType",
                     "description": ":returns: :class:`CreatePersonalizationRequestResponse`"
                   }
                 },
@@ -1012,7 +1036,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": ":param page_token: str (optional)"
           },
@@ -1073,7 +1097,10 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
             "description": ":returns: :class:`BatchGetProvidersResponse`"
           }
@@ -1179,7 +1206,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": ":param page_size: int (optional)"
           },
@@ -1188,7 +1215,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           },
           {
@@ -1250,7 +1277,7 @@
                 "type": "object",
                 "properties": {
                   "filter": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ExchangeFilter",
                     "description": ":returns: :class:`CreateExchangeFilterResponse`"
                   }
                 },
@@ -1316,7 +1343,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           },
           {
@@ -1433,7 +1460,7 @@
                 "type": "object",
                 "properties": {
                   "filter": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/ExchangeFilter"
                   }
                 },
                 "required": [
@@ -1562,7 +1589,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           },
           {
@@ -1624,7 +1651,7 @@
                 "type": "object",
                 "properties": {
                   "exchange": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/Exchange",
                     "description": ":returns: :class:`CreateExchangeResponse`"
                   }
                 },
@@ -1681,7 +1708,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": ":param page_token: str (optional)"
           },
@@ -1849,7 +1876,7 @@
                 "type": "object",
                 "properties": {
                   "exchange": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/Exchange"
                   }
                 },
                 "required": [
@@ -1962,7 +1989,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           },
           {
@@ -2024,11 +2051,11 @@
                 "type": "object",
                 "properties": {
                   "file_parent": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/FileParent",
                     "description": ":param marketplace_file_type: :class:`MarketplaceFileType`"
                   },
                   "marketplace_file_type": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/MarketplaceFileType"
                   },
                   "mime_type": {
                     "type": "string",
@@ -2093,7 +2120,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/FileParent"
             },
             "description": ":param page_size: int (optional)"
           },
@@ -2102,7 +2129,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           },
           {
@@ -2261,7 +2288,7 @@
                 "type": "object",
                 "properties": {
                   "listing": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/Listing",
                     "description": ":returns: :class:`CreateListingResponse`"
                   }
                 },
@@ -2427,7 +2454,7 @@
                 "type": "object",
                 "properties": {
                   "listing": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/Listing"
                   }
                 },
                 "required": [
@@ -2485,7 +2512,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": ":param page_token: str (optional)"
           },
@@ -2546,7 +2573,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": ":param page_token: str (optional)"
           },
@@ -2627,14 +2654,14 @@
                 "type": "object",
                 "properties": {
                   "status": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/PersonalizationRequestStatus",
                     "description": ":param reason: str (optional)"
                   },
                   "reason": {
                     "type": "string"
                   },
                   "share": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ShareInfo",
                     "description": ":returns: :class:`UpdatePersonalizationRequestResponse`"
                   }
                 },
@@ -2829,7 +2856,7 @@
                 "type": "object",
                 "properties": {
                   "version": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "this is the version of the dashboard template we want to update our user to current expectation is that it should be equal to latest version of the dashboard template"
                   }
                 }
@@ -2886,7 +2913,7 @@
                 "type": "object",
                 "properties": {
                   "provider": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ProviderInfo",
                     "description": ":returns: :class:`CreateProviderResponse`"
                   }
                 },
@@ -3052,7 +3079,7 @@
                 "type": "object",
                 "properties": {
                   "provider": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/ProviderInfo"
                   }
                 },
                 "required": [
@@ -3110,7 +3137,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": ":param page_token: str (optional)"
           },
@@ -4325,7 +4352,7 @@
           "ASSET_TYPE_NOTEBOOK",
           "ASSET_TYPE_PARTNER_INTEGRATION"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "Category": {
         "type": "string",
@@ -4353,7 +4380,7 @@
           "TRANSPORTATION_AND_LOGISTICS",
           "TRAVEL_AND_TOURISM"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "Cost": {
         "type": "string",
@@ -4361,7 +4388,7 @@
           "FREE",
           "PAID"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "DataRefresh": {
         "type": "string",
@@ -4376,7 +4403,7 @@
           "WEEKLY",
           "YEARLY"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "DeltaSharingRecipientType": {
         "type": "string",
@@ -4384,14 +4411,14 @@
           "DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS",
           "DELTA_SHARING_RECIPIENT_TYPE_OPEN"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ExchangeFilterType": {
         "type": "string",
         "x-enum": [
           "GLOBAL_METASTORE_ID"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FileParentType": {
         "type": "string",
@@ -4400,7 +4427,7 @@
           "LISTING_RESOURCE",
           "PROVIDER"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FileStatus": {
         "type": "string",
@@ -4410,7 +4437,7 @@
           "FILE_STATUS_SANITIZING",
           "FILE_STATUS_STAGING"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FulfillmentType": {
         "type": "string",
@@ -4418,7 +4445,7 @@
           "INSTALL",
           "REQUEST_ACCESS"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "InstallationStatus": {
         "type": "string",
@@ -4426,7 +4453,7 @@
           "FAILED",
           "INSTALLED"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ListingShareType": {
         "type": "string",
@@ -4434,7 +4461,7 @@
           "FULL",
           "SAMPLE"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ListingStatus": {
         "type": "string",
@@ -4452,7 +4479,7 @@
           "LISTING_TAG_TYPE_LANGUAGE",
           "LISTING_TAG_TYPE_TASK"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ListingType": {
         "type": "string",
@@ -4460,7 +4487,7 @@
           "PERSONALIZED",
           "STANDARD"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "MarketplaceFileType": {
         "type": "string",
@@ -4469,7 +4496,7 @@
           "EMBEDDED_NOTEBOOK",
           "PROVIDER_ICON"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "PersonalizationRequestStatus": {
         "type": "string",
@@ -4479,7 +4506,7 @@
           "NEW",
           "REQUEST_PENDING"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "Visibility": {
         "type": "string",
@@ -4487,7 +4514,7 @@
           "PRIVATE",
           "PUBLIC"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       }
     }
   }

@@ -5,7 +5,7 @@ info:
     Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.oauth2
 servers:
 - url: https://accounts.cloud.databricks.com
@@ -44,7 +44,7 @@ paths:
               type: object
               properties:
                 policy:
-                  type: string
+                  $ref: '#/components/schemas/FederationPolicy'
                   description: ':param policy_id: str (optional) The identifier for the federation policy. The identifier
                     must contain only lowercase alphanumeric characters, numbers, hyphens, and slashes. If unspecified, the
                     id will be assigned by Databricks.'
@@ -92,7 +92,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: ':param page_token: str (optional)'
       - name: page_token
         in: query
@@ -245,7 +245,7 @@ paths:
               type: object
               properties:
                 policy:
-                  type: string
+                  $ref: '#/components/schemas/FederationPolicy'
                   description: ':param update_mask: str (optional) The field mask specifies which fields of the policy to
                     update. To specify multiple fields in the field mask, use comma as the separator (no space). The special
                     value ''*'' indicates that all fields should be updated (full replacement). If unspecified, all fields
@@ -313,23 +313,29 @@ paths:
               type: object
               properties:
                 confidential:
-                  type: string
+                  type: boolean
                   description: This field indicates whether an OAuth client secret is required to authenticate this client.
                 name:
                   type: string
                   description: Name of the custom OAuth app
                 redirect_urls:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: List of OAuth redirect urls
                 scopes:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: 'OAuth scopes granted to the application. Supported scopes: all-apis, sql, offline_access,
                     openid, profile, email.'
                 token_access_policy:
-                  type: string
+                  $ref: '#/components/schemas/TokenAccessPolicy'
                   description: Token access policy
                 user_authorized_scopes:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: Scopes that will need to be consented by end user to mint the access token. If the user does
                     not authorize the access token will not be minted. Must be a subset of scopes.
       responses:
@@ -375,13 +381,13 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: boolean
         description: ':param page_size: int (optional)'
       - name: page_size
         in: query
         required: false
         schema:
-          type: string
+          type: integer
       - name: page_token
         in: query
         required: false
@@ -531,16 +537,22 @@ paths:
               type: object
               properties:
                 redirect_urls:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                 scopes:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: List of OAuth scopes to be updated in the custom OAuth app integration, similar to redirect
                     URIs this will fully replace the existing values instead of appending
                 token_access_policy:
-                  type: string
+                  $ref: '#/components/schemas/TokenAccessPolicy'
                   description: Token access policy to be updated in the custom OAuth app integration
                 user_authorized_scopes:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: Scopes that will need to be consented by end user to mint the access token. If the user does
                     not authorize the access token will not be minted. Must be a subset of scopes.
       responses:
@@ -584,7 +596,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: The max number of OAuth published apps to return in one page.
       - name: page_token
         in: query
@@ -645,7 +657,7 @@ paths:
                   type: string
                   description: App id of the OAuth published app integration. For example power-bi, tableau-deskop
                 token_access_policy:
-                  type: string
+                  $ref: '#/components/schemas/TokenAccessPolicy'
                   description: Token access policy
       responses:
         '200':
@@ -689,7 +701,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: ':param page_token: str (optional)'
       - name: page_token
         in: query
@@ -830,7 +842,7 @@ paths:
               type: object
               properties:
                 token_access_policy:
-                  type: string
+                  $ref: '#/components/schemas/TokenAccessPolicy'
       responses:
         '200':
           description: Success
@@ -888,7 +900,7 @@ paths:
               type: object
               properties:
                 policy:
-                  type: string
+                  $ref: '#/components/schemas/FederationPolicy'
                   description: ':param policy_id: str (optional) The identifier for the federation policy. The identifier
                     must contain only lowercase alphanumeric characters, numbers, hyphens, and slashes. If unspecified, the
                     id will be assigned by Databricks.'
@@ -944,7 +956,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: ':param page_token: str (optional)'
       - name: page_token
         in: query
@@ -1121,7 +1133,7 @@ paths:
               type: object
               properties:
                 policy:
-                  type: string
+                  $ref: '#/components/schemas/FederationPolicy'
                   description: ':param update_mask: str (optional) The field mask specifies which fields of the policy to
                     update. To specify multiple fields in the field mask, use comma as the separator (no space). The special
                     value ''*'' indicates that all fields should be updated (full replacement). If unspecified, all fields
@@ -1244,7 +1256,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: ':param page_token: str (optional) An opaque page token which was the `next_page_token` in the response
           of the previous request to list the secrets for this service principal. Provide this token to retrieve the next
           page of secret entries. When providing a `page_token`, all other parameters provided to the request must match the

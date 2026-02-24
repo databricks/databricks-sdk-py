@@ -6,7 +6,7 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.vectorsearch
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -45,7 +45,7 @@ paths:
                   type: string
                   description: Name of the vector search endpoint
                 endpoint_type:
-                  type: string
+                  $ref: '#/components/schemas/EndpointType'
                   description: Type of endpoint
                 budget_policy_id:
                   type: string
@@ -225,10 +225,12 @@ paths:
                   type: string
                   description: End time for metrics query
                 granularity_in_seconds:
-                  type: string
+                  type: integer
                   description: Granularity in seconds
                 metrics:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Metric'
                   description: List of metrics to retrieve
                 page_token:
                   type: string
@@ -338,7 +340,9 @@ paths:
               type: object
               properties:
                 custom_tags:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CustomTag'
                   description: The new custom tags for the vector search endpoint
               required:
                 - custom_tags
@@ -404,16 +408,16 @@ paths:
                   type: string
                   description: Primary key of the index
                 index_type:
-                  type: string
+                  $ref: '#/components/schemas/VectorIndexType'
                   description: >-
                     :param delta_sync_index_spec:
                     :class:`DeltaSyncVectorIndexSpecRequest` (optional)
                     Specification for Delta Sync Index. Required if `index_type`
                     is `DELTA_SYNC`.
                 delta_sync_index_spec:
-                  type: string
+                  $ref: '#/components/schemas/DeltaSyncVectorIndexSpecRequest'
                 direct_access_index_spec:
-                  type: string
+                  $ref: '#/components/schemas/DirectAccessVectorIndexSpec'
                   description: >-
                     Specification for Direct Vector Access Index. Required if
                     `index_type` is `DIRECT_ACCESS`.
@@ -517,7 +521,9 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           description: List of primary keys for the data to be deleted.
       responses:
         '200':
@@ -600,7 +606,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             If true, the URL returned for the index is guaranteed to be
             compatible with the reranker. Currently this means we return the CP
@@ -683,10 +689,14 @@ paths:
               type: object
               properties:
                 columns:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: List of column names to include in the response.
                 columns_to_rerank:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: Column names used to retrieve data to send to the reranker.
                 filters_json:
                   type: string
@@ -698,7 +708,7 @@ paths:
                     greater than equal to 5. - `{"id": 5}`: Filter for id equal
                     to 5.
                 num_results:
-                  type: string
+                  type: integer
                   description: Number of results to return. Defaults to 10.
                 query_text:
                   type: string
@@ -711,12 +721,14 @@ paths:
                     The query type to use. Choices are `ANN` and `HYBRID` and
                     `FULL_TEXT`. Defaults to `ANN`.
                 query_vector:
-                  type: string
+                  type: array
+                  items:
+                    type: number
                   description: >-
                     Query vector. Required for Direct Vector Access Index and
                     Delta Sync Index using self-managed vectors.
                 reranker:
-                  type: string
+                  $ref: '#/components/schemas/RerankerConfig'
                   description: >-
                     If set, the top 50 results are reranked with the Databricks
                     Reranker model before returning the `num_results` results to
@@ -727,7 +739,7 @@ paths:
                     https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank
                     for more information.
                 score_threshold:
-                  type: string
+                  type: number
                   description: >-
                     Threshold for the approximate nearest neighbor search.
                     Defaults to 0.0.
@@ -857,7 +869,7 @@ paths:
                   type: string
                   description: Primary key of the last entry returned in the previous scan.
                 num_results:
-                  type: string
+                  type: integer
                   description: Number of results to return. Defaults to 10.
       responses:
         '200':
@@ -1463,20 +1475,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1540,20 +1552,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

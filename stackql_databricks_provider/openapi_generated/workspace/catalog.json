@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks catalog service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.catalog"
   },
   "servers": [
@@ -44,7 +44,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/ArtifactType"
             },
             "description": "The artifact type of the allowlist."
           }
@@ -106,15 +106,18 @@
                 "type": "object",
                 "properties": {
                   "artifact_type": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ArtifactType",
                     "description": "The artifact type of the allowlist."
                   },
                   "artifact_matchers": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ArtifactMatcher"
+                    },
                     "description": "A list of allowed artifact match patterns."
                   },
                   "created_at": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "Time at which this artifact allowlist was set, in epoch milliseconds."
                   },
                   "created_by": {
@@ -195,11 +198,11 @@
                     "description": "The name of the connection to an external data source."
                   },
                   "options": {
-                    "type": "string",
+                    "type": "object",
                     "description": "A map of key-value properties attached to the securable."
                   },
                   "properties": {
-                    "type": "string",
+                    "type": "object",
                     "description": "A map of key-value properties attached to the securable."
                   },
                   "provider_name": {
@@ -268,7 +271,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include catalogs in the response for which the principal can only access selective metadata for"
           },
@@ -277,7 +280,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include catalogs not bound to the workspace. Effective only if the user has permission to update the catalog\u2013workspace binding."
           },
@@ -286,7 +289,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of catalogs to return. - when set to 0, the page length is set to a server configured value (recommended); - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to a value less than 0, an invalid parameter error is returned; - If not set, all valid catalogs are returned (not recommended). - Note: The number of returned catalogs might be less than the specified max_results size, even zero. The only definitive indication that no further catalogs can be fetched is when the next_page_token is unset from the response."
           },
@@ -357,7 +360,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Force deletion even if the catalog is not empty."
           }
@@ -410,7 +413,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include catalogs in the response for which the principal can only access selective metadata for"
           }
@@ -477,11 +480,11 @@
                     "description": "User-provided free-form text description."
                   },
                   "enable_predictive_optimization": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/EnablePredictiveOptimization",
                     "description": "Whether predictive optimization should be enabled for this object and objects under it."
                   },
                   "isolation_mode": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/CatalogIsolationMode",
                     "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces."
                   },
                   "new_name": {
@@ -489,7 +492,7 @@
                     "description": "New name for the catalog."
                   },
                   "options": {
-                    "type": "string",
+                    "type": "object",
                     "description": "A map of key-value properties attached to the securable."
                   },
                   "owner": {
@@ -497,7 +500,7 @@
                     "description": "Username of current owner of catalog."
                   },
                   "properties": {
-                    "type": "string",
+                    "type": "object",
                     "description": "A map of key-value properties attached to the securable."
                   }
                 }
@@ -558,11 +561,11 @@
                     "description": "Name of the connection."
                   },
                   "connection_type": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ConnectionType",
                     "description": "The type of connection."
                   },
                   "options": {
-                    "type": "string",
+                    "type": "object",
                     "description": "A map of key-value properties attached to the securable."
                   },
                   "comment": {
@@ -570,11 +573,11 @@
                     "description": "User-provided free-form text description."
                   },
                   "properties": {
-                    "type": "string",
+                    "type": "object",
                     "description": "A map of key-value properties attached to the securable."
                   },
                   "read_only": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "If the connection is read only."
                   }
                 },
@@ -633,7 +636,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of connections to return. - If not set, all connections are returned (not recommended). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to 0, the page length is set to a server configured value (recommended); - when set to a value less than 0, an invalid parameter error is returned;"
           },
@@ -802,7 +805,7 @@
                 "type": "object",
                 "properties": {
                   "options": {
-                    "type": "string",
+                    "type": "object",
                     "description": "A map of key-value properties attached to the securable."
                   },
                   "new_name": {
@@ -870,7 +873,7 @@
                 "type": "object",
                 "properties": {
                   "tag_assignment": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/EntityTagAssignment",
                     "description": ":returns: :class:`EntityTagAssignment`"
                   }
                 },
@@ -1098,7 +1101,7 @@
                 "type": "object",
                 "properties": {
                   "tag_assignment": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/EntityTagAssignment",
                     "description": ":param update_mask: str The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
                   }
                 },
@@ -1175,7 +1178,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Optional. Maximum number of tag assignments to return in a single page"
           },
@@ -1238,7 +1241,7 @@
                 "type": "object",
                 "properties": {
                   "external_lineage_relationship": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/CreateRequestExternalLineage",
                     "description": ":returns: :class:`ExternalLineageRelationship`"
                   }
                 },
@@ -1295,7 +1298,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/DeleteRequestExternalLineage"
             },
             "description": ":class:`DeleteRequestExternalLineage`"
           }
@@ -1339,7 +1342,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/ExternalLineageObject"
             },
             "description": "The object to query external lineage relationships for. Since this field is a query parameter, please flatten the nested fields. For example, if the object is a table, the query parameter should look like: `object_info.table.name=main.sales.customers`"
           },
@@ -1348,7 +1351,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/LineageDirection"
             },
             "description": "The lineage direction to filter on."
           },
@@ -1357,7 +1360,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Specifies the maximum number of external lineage relationships to return in a single response. The value must be less than or equal to 1000."
           },
@@ -1428,7 +1431,7 @@
                 "type": "object",
                 "properties": {
                   "external_lineage_relationship": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/UpdateRequestExternalLineage",
                     "description": ":param update_mask: str The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
                   }
                 },
@@ -1504,26 +1507,26 @@
                     "description": "User-provided free-form text description."
                   },
                   "enable_file_events": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Whether to enable file events on this external location. Default to `true`. Set to `false` to disable file events."
                   },
                   "encryption_details": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/EncryptionDetails",
                     "description": ":param fallback: bool (optional) Indicates whether fallback mode is enabled for this external location. When fallback mode is enabled, the access to the location falls back to cluster credentials if UC credentials are not sufficient."
                   },
                   "fallback": {
-                    "type": "string"
+                    "type": "boolean"
                   },
                   "file_event_queue": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/FileEventQueue",
                     "description": "File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly one of the documented properties."
                   },
                   "read_only": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Indicates whether the external location is read-only."
                   },
                   "skip_validation": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Skips validation of the storage credential associated with the external location."
                   }
                 },
@@ -1582,7 +1585,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include external locations in the response for which the principal can only access selective metadata for"
           },
@@ -1591,7 +1594,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include external locations not bound to the workspace. Effective only if the user has permission to update the location\u2013workspace binding."
           },
@@ -1600,7 +1603,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of external locations to return. If not set, all the external locations are returned (not recommended). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to 0, the page length is set to a server configured value (recommended); - when set to a value less than 0, an invalid parameter error is returned;"
           },
@@ -1671,7 +1674,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Force deletion even if there are dependent external tables or mounts."
           }
@@ -1724,7 +1727,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include external locations in the response for which the principal can only access selective metadata for"
           }
@@ -1795,26 +1798,26 @@
                     "description": "Name of the storage credential used with this location."
                   },
                   "enable_file_events": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Whether to enable file events on this external location. Default to `true`. Set to `false` to disable file events."
                   },
                   "encryption_details": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/EncryptionDetails",
                     "description": ":param fallback: bool (optional) Indicates whether fallback mode is enabled for this external location. When fallback mode is enabled, the access to the location falls back to cluster credentials if UC credentials are not sufficient."
                   },
                   "fallback": {
-                    "type": "string"
+                    "type": "boolean"
                   },
                   "file_event_queue": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/FileEventQueue",
                     "description": "File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly one of the documented properties."
                   },
                   "force": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Force update even if changing url invalidates dependent external tables or mounts."
                   },
                   "isolation_mode": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/IsolationMode",
                     "description": ":param new_name: str (optional) New name for the external location."
                   },
                   "new_name": {
@@ -1825,11 +1828,11 @@
                     "description": "The owner of the external location."
                   },
                   "read_only": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Indicates whether the external location is read-only."
                   },
                   "skip_validation": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Skips validation of the storage credential associated with the external location."
                   },
                   "url": {
@@ -1890,7 +1893,7 @@
                 "type": "object",
                 "properties": {
                   "external_metadata": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ExternalMetadata",
                     "description": ":returns: :class:`ExternalMetadata`"
                   }
                 },
@@ -1947,7 +1950,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Specifies the maximum number of external metadata objects to return in a single response. The value must be less than or equal to 1000."
           },
@@ -2124,7 +2127,7 @@
                 "type": "object",
                 "properties": {
                   "external_metadata": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ExternalMetadata",
                     "description": ":param update_mask: str The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
                   }
                 },
@@ -2184,7 +2187,7 @@
                 "type": "object",
                 "properties": {
                   "function_info": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/CreateFunction",
                     "description": "Partial __FunctionInfo__ specifying the function to be created."
                   }
                 },
@@ -2259,7 +2262,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include functions in the response for which the principal can only access selective metadata for"
           },
@@ -2268,7 +2271,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of functions to return. If not set, all the functions are returned (not recommended). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to 0, the page length is set to a server configured value (recommended); - when set to a value less than 0, an invalid parameter error is returned;"
           },
@@ -2339,7 +2342,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Force deletion even if the function is notempty."
           }
@@ -2392,7 +2395,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include functions in the response for which the principal can only access selective metadata for"
           }
@@ -2529,7 +2532,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment present in a single page response is guaranteed to contain all the privileges granted on the requested Securable for the respective principal. If not set, all the permissions are returned. If set to - lesser than 0: invalid parameter error - 0: page length is set to a server configured value - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able to return at least one complete PrivilegeAssignment in a single page response) - greater than (or equal to) 150: page length is the minimum of this value and a server configured value"
           },
@@ -2619,7 +2622,10 @@
                 "type": "object",
                 "properties": {
                   "changes": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PermissionsChange"
+                    },
                     "description": "Array of permissions change objects."
                   }
                 }
@@ -2693,7 +2699,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Specifies the maximum number of privileges to return (page length). Every EffectivePrivilegeAssignment present in a single page response is guaranteed to contain all the effective privileges granted on (or inherited by) the requested Securable for the respective principal. If not set, all the effective permissions are returned. If set to - lesser than 0: invalid parameter error - 0: page length is set to a server configured value - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able to return at least one complete EffectivePrivilegeAssignment in a single page response) - greater than (or equal to) 150: page length is the minimum of this value and a server configured value"
           },
@@ -2954,7 +2960,7 @@
                     "description": "The user-specified name of the metastore."
                   },
                   "external_access_enabled": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Whether to allow non-DBR clients to directly access entities under the metastore."
                   },
                   "region": {
@@ -3019,7 +3025,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of metastores to return. - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to 0, the page length is set to a server configured value (recommended); - when set to a value less than 0, an invalid parameter error is returned; - If not set, all the metastores are returned (not recommended). - Note: The number of returned metastores might be less than the specified max_results size, even zero. The only definitive indication that no further metastores can be fetched is when the next_page_token is unset from the response."
           },
@@ -3132,7 +3138,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Force deletion even if the metastore is not empty. Default is false."
           }
@@ -3243,15 +3249,15 @@
                     "description": "The organization name of a Delta Sharing entity, to be used in Databricks-to-Databricks Delta Sharing as the official name."
                   },
                   "delta_sharing_recipient_token_lifetime_in_seconds": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The lifetime of delta sharing recipient token in seconds."
                   },
                   "delta_sharing_scope": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/DeltaSharingScopeEnum",
                     "description": "The scope of Delta Sharing enabled for the metastore."
                   },
                   "external_access_enabled": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Whether to allow non-DBR clients to directly access entities under the metastore."
                   },
                   "new_name": {
@@ -3436,7 +3442,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include aliases associated with the model version in the response"
           },
@@ -3445,7 +3451,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include model versions in the response for which the principal can only access selective metadata for"
           }
@@ -3517,7 +3523,10 @@
                 "type": "object",
                 "properties": {
                   "aliases": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RegisteredModelAlias"
+                    },
                     "description": "List of aliases associated with the model version"
                   },
                   "catalog_name": {
@@ -3529,7 +3538,7 @@
                     "description": "The comment attached to the model version"
                   },
                   "created_at": {
-                    "type": "string",
+                    "type": "integer",
                     "description": ":param created_by: str (optional) The identifier of the user who created the model version"
                   },
                   "created_by": {
@@ -3548,7 +3557,7 @@
                     "description": "The name of the parent registered model of the model version, relative to parent schema"
                   },
                   "model_version_dependencies": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/DependencyList",
                     "description": "Model version dependencies, for feature-store packaged models"
                   },
                   "run_id": {
@@ -3556,7 +3565,7 @@
                     "description": "MLflow run ID used when creating the model version, if ``source`` was generated by an experiment run stored in an MLflow tracking server"
                   },
                   "run_workspace_id": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "ID of the Databricks workspace containing the MLflow run that generated this model version, if applicable"
                   },
                   "schema_name": {
@@ -3568,7 +3577,7 @@
                     "description": "URI indicating the location of the source artifacts (files) for the model version"
                   },
                   "status": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ModelVersionInfoStatus",
                     "description": "Current status of the model version. Newly created model versions start in PENDING_REGISTRATION status, then move to READY status once the model version files are uploaded and the model version is finalized. Only model versions in READY status can be loaded for inference or served."
                   },
                   "storage_location": {
@@ -3576,7 +3585,7 @@
                     "description": "The storage location on the cloud under which model version data files are stored"
                   },
                   "updated_at": {
-                    "type": "string",
+                    "type": "integer",
                     "description": ":param updated_by: str (optional) The identifier of the user who updated the model version last time"
                   },
                   "updated_by": {
@@ -3653,7 +3662,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include aliases associated with the model version in the response"
           }
@@ -3846,7 +3855,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include model versions in the response for which the principal can only access selective metadata for"
           },
@@ -3855,7 +3864,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of model versions to return. If not set, the page length is set to a server configured value (100, as of 1/3/2024). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value(1000, as of 1/3/2024); - when set to 0, the page length is set to a server configured value (100, as of 1/3/2024) (recommended); - when set to a value less than 0, an invalid parameter error is returned;"
           },
@@ -3918,7 +3927,7 @@
                 "type": "object",
                 "properties": {
                   "table": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/OnlineTable",
                     "description": "Specification of the online table to be created."
                   }
                 },
@@ -4075,7 +4084,7 @@
                 "type": "object",
                 "properties": {
                   "policy_info": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/PolicyInfo",
                     "description": "Required. The policy to create."
                   }
                 },
@@ -4311,7 +4320,7 @@
                 "type": "object",
                 "properties": {
                   "policy_info": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/PolicyInfo",
                     "description": "Optional fields to update. This is the request body for updating a policy. Use `update_mask` field to specify which fields in the request is to be updated. - If `update_mask` is empty or \"*\", all specified fields will be updated. - If `update_mask` is specified, only the fields specified in the `update_mask` will be updated. If a field is specified in `update_mask` and not set in the request, the field will be cleared. Users can use the update mask to explicitly unset optional fields such as `exception_principals` and `when_condition`."
                   }
                 },
@@ -4388,7 +4397,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Optional. Whether to include policies defined on parent securables. By default, the inherited policies are not included."
           },
@@ -4397,7 +4406,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Optional. Maximum number of policies to return on a single page (page length). - When not set or set to 0, the page length is set to a server configured value (recommended); - When set to a value greater than 0, the page length is the minimum of this value and a server configured value;"
           },
@@ -4538,42 +4547,48 @@
                     "description": "[Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in the monitored `table_name`. The baseline table and the monitored table shall have the same schema."
                   },
                   "custom_metrics": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MonitorMetric"
+                    },
                     "description": "[Create:OPT Update:OPT] Custom metrics."
                   },
                   "data_classification_config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MonitorDataClassificationConfig",
                     "description": "[Create:OPT Update:OPT] Data classification related config."
                   },
                   "inference_log": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MonitorInferenceLog",
                     "description": ":param latest_monitor_failure_msg: str (optional) [Create:ERR Update:IGN] The latest error message for a monitor failure."
                   },
                   "latest_monitor_failure_msg": {
                     "type": "string"
                   },
                   "notifications": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MonitorNotifications",
                     "description": "[Create:OPT Update:OPT] Field for specifying notification settings."
                   },
                   "schedule": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MonitorCronSchedule",
                     "description": "[Create:OPT Update:OPT] The monitor schedule."
                   },
                   "skip_builtin_dashboard": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Whether to skip creating a default dashboard summarizing data quality metrics."
                   },
                   "slicing_exprs": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "[Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The data is grouped by each expression independently, resulting in a separate slice for each predicate and its complements. For example `slicing_exprs=[\u201ccol_1\u201d, \u201ccol_2 > 10\u201d]` will generate the following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate slices."
                   },
                   "snapshot": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MonitorSnapshot",
                     "description": "Configuration for monitoring snapshot tables."
                   },
                   "time_series": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MonitorTimeSeries",
                     "description": "Configuration for monitoring time series tables."
                   },
                   "warehouse_id": {
@@ -4757,7 +4772,10 @@
                     "description": "[Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in the monitored `table_name`. The baseline table and the monitored table shall have the same schema."
                   },
                   "custom_metrics": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MonitorMetric"
+                    },
                     "description": "[Create:OPT Update:OPT] Custom metrics."
                   },
                   "dashboard_id": {
@@ -4765,34 +4783,37 @@
                     "description": "[Create:ERR Update:OPT] Id of dashboard that visualizes the computed metrics. This can be empty if the monitor is in PENDING state."
                   },
                   "data_classification_config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MonitorDataClassificationConfig",
                     "description": "[Create:OPT Update:OPT] Data classification related config."
                   },
                   "inference_log": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MonitorInferenceLog",
                     "description": ":param latest_monitor_failure_msg: str (optional) [Create:ERR Update:IGN] The latest error message for a monitor failure."
                   },
                   "latest_monitor_failure_msg": {
                     "type": "string"
                   },
                   "notifications": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MonitorNotifications",
                     "description": "[Create:OPT Update:OPT] Field for specifying notification settings."
                   },
                   "schedule": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MonitorCronSchedule",
                     "description": "[Create:OPT Update:OPT] The monitor schedule."
                   },
                   "slicing_exprs": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "[Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The data is grouped by each expression independently, resulting in a separate slice for each predicate and its complements. For example `slicing_exprs=[\u201ccol_1\u201d, \u201ccol_2 > 10\u201d]` will generate the following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate slices."
                   },
                   "snapshot": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MonitorSnapshot",
                     "description": "Configuration for monitoring snapshot tables."
                   },
                   "time_series": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MonitorTimeSeries",
                     "description": "Configuration for monitoring time series tables."
                   }
                 },
@@ -5086,11 +5107,14 @@
                 "type": "object",
                 "properties": {
                   "aliases": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RegisteredModelAlias"
+                    },
                     "description": "List of aliases associated with the registered model"
                   },
                   "browse_only": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Indicates whether the principal is limited to retrieving metadata for the associated object through the BROWSE privilege when include_browse is enabled in the request."
                   },
                   "catalog_name": {
@@ -5102,7 +5126,7 @@
                     "description": "The comment attached to the registered model"
                   },
                   "created_at": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "Creation timestamp of the registered model in milliseconds since the Unix epoch"
                   },
                   "created_by": {
@@ -5134,7 +5158,7 @@
                     "description": "The storage location on the cloud under which model version data files are stored"
                   },
                   "updated_at": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "Last-update timestamp of the registered model in milliseconds since the Unix epoch"
                   },
                   "updated_by": {
@@ -5201,7 +5225,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include registered models in the response for which the principal can only access selective metadata for"
           },
@@ -5210,7 +5234,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Max number of registered models to return. If both catalog and schema are specified: - when max_results is not specified, the page length is set to a server configured value (10000, as of 4/2/2024). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value (10000, as of 4/2/2024); - when set to 0, the page length is set to a server configured value (10000, as of 4/2/2024); - when set to a value less than 0, an invalid parameter error is returned; If neither schema nor catalog is specified: - when max_results is not specified, the page length is set to a server configured value (100, as of 4/2/2024). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value (1000, as of 4/2/2024); - when set to 0, the page length is set to a server configured value (100, as of 4/2/2024); - when set to a value less than 0, an invalid parameter error is returned;"
           },
@@ -5334,7 +5358,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include registered model aliases in the response"
           },
@@ -5343,7 +5367,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include registered models in the response for which the principal can only access selective metadata for"
           }
@@ -5406,11 +5430,14 @@
                 "type": "object",
                 "properties": {
                   "aliases": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RegisteredModelAlias"
+                    },
                     "description": "List of aliases associated with the registered model"
                   },
                   "browse_only": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Indicates whether the principal is limited to retrieving metadata for the associated object through the BROWSE privilege when include_browse is enabled in the request."
                   },
                   "catalog_name": {
@@ -5422,7 +5449,7 @@
                     "description": "The comment attached to the registered model"
                   },
                   "created_at": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "Creation timestamp of the registered model in milliseconds since the Unix epoch"
                   },
                   "created_by": {
@@ -5454,7 +5481,7 @@
                     "description": "The storage location on the cloud under which model version data files are stored"
                   },
                   "updated_at": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "Last-update timestamp of the registered model in milliseconds since the Unix epoch"
                   },
                   "updated_by": {
@@ -5585,7 +5612,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The number of quotas to return."
           },
@@ -5648,7 +5675,10 @@
                 "type": "object",
                 "properties": {
                   "requests": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/CreateAccessRequest"
+                    },
                     "description": "A list of individual access requests, where each request corresponds to a set of permissions being requested on a list of securables for a specified principal. At most 30 requests per API call."
                   }
                 }
@@ -5778,7 +5808,7 @@
                 "type": "object",
                 "properties": {
                   "access_request_destinations": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AccessRequestDestinations",
                     "description": "The access request destinations to assign to the securable. For each destination, a **destination_id** and **destination_type** must be defined."
                   }
                 },
@@ -5850,7 +5880,7 @@
                     "description": "User-provided free-form text description."
                   },
                   "properties": {
-                    "type": "string",
+                    "type": "object",
                     "description": "A map of key-value properties attached to the securable."
                   },
                   "storage_root": {
@@ -5921,7 +5951,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include schemas in the response for which the principal can only access selective metadata for"
           },
@@ -5930,7 +5960,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of schemas to return. If not set, all the schemas are returned (not recommended). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to 0, the page length is set to a server configured value (recommended); - when set to a value less than 0, an invalid parameter error is returned;"
           },
@@ -6001,7 +6031,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Force deletion even if the schema is not empty."
           }
@@ -6054,7 +6084,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include schemas in the response for which the principal can only access selective metadata for"
           }
@@ -6121,7 +6151,7 @@
                     "description": "User-provided free-form text description."
                   },
                   "enable_predictive_optimization": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/EnablePredictiveOptimization",
                     "description": "Whether predictive optimization should be enabled for this object and objects under it."
                   },
                   "new_name": {
@@ -6133,7 +6163,7 @@
                     "description": "Username of current owner of schema."
                   },
                   "properties": {
-                    "type": "string",
+                    "type": "object",
                     "description": "A map of key-value properties attached to the securable."
                   }
                 }
@@ -6194,19 +6224,19 @@
                     "description": "The credential name. The name must be unique among storage and service credentials within the metastore."
                   },
                   "aws_iam_role": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AwsIamRoleRequest",
                     "description": "The AWS IAM role configuration."
                   },
                   "azure_managed_identity": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AzureManagedIdentityRequest",
                     "description": "The Azure managed identity configuration."
                   },
                   "azure_service_principal": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AzureServicePrincipal",
                     "description": "The Azure service principal configuration."
                   },
                   "cloudflare_api_token": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/CloudflareApiToken",
                     "description": "The Cloudflare API token configuration."
                   },
                   "comment": {
@@ -6214,15 +6244,15 @@
                     "description": "Comment associated with the credential."
                   },
                   "databricks_gcp_service_account": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/DatabricksGcpServiceAccountRequest",
                     "description": "The Databricks managed GCP service account configuration."
                   },
                   "read_only": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Whether the credential is usable only for read operations. Only applicable when purpose is **STORAGE**."
                   },
                   "skip_validation": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Supplying true to this argument skips validation of the created credential."
                   }
                 },
@@ -6279,7 +6309,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include credentials not bound to the workspace. Effective only if the user has permission to update the credential\u2013workspace binding."
           },
@@ -6288,7 +6318,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of storage credentials to return. If not set, all the storage credentials are returned (not recommended). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to 0, the page length is set to a server configured value (recommended); - when set to a value less than 0, an invalid parameter error is returned;"
           },
@@ -6359,7 +6389,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Force an update even if there are dependent external locations or external tables (when purpose is **STORAGE**) or dependent services (when purpose is **SERVICE**)."
           }
@@ -6466,19 +6496,19 @@
                 "type": "object",
                 "properties": {
                   "aws_iam_role": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AwsIamRoleRequest",
                     "description": "The AWS IAM role configuration."
                   },
                   "azure_managed_identity": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AzureManagedIdentityResponse",
                     "description": "The Azure managed identity configuration."
                   },
                   "azure_service_principal": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AzureServicePrincipal",
                     "description": "The Azure service principal configuration."
                   },
                   "cloudflare_api_token": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/CloudflareApiToken",
                     "description": "The Cloudflare API token configuration."
                   },
                   "comment": {
@@ -6486,15 +6516,15 @@
                     "description": "Comment associated with the credential."
                   },
                   "databricks_gcp_service_account": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/DatabricksGcpServiceAccountRequest",
                     "description": "The Databricks managed GCP service account configuration."
                   },
                   "force": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Force update even if there are dependent external locations or external tables."
                   },
                   "isolation_mode": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/IsolationMode",
                     "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces."
                   },
                   "new_name": {
@@ -6506,11 +6536,11 @@
                     "description": "Username of current owner of credential."
                   },
                   "read_only": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Whether the credential is usable only for read operations. Only applicable when purpose is **STORAGE**."
                   },
                   "skip_validation": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Supplying true to this argument skips validation of the updated credential."
                   }
                 }
@@ -6567,23 +6597,23 @@
                 "type": "object",
                 "properties": {
                   "aws_iam_role": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AwsIamRoleRequest",
                     "description": "The AWS IAM role configuration."
                   },
                   "azure_managed_identity": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AzureManagedIdentityRequest",
                     "description": "The Azure managed identity configuration."
                   },
                   "azure_service_principal": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AzureServicePrincipal",
                     "description": "The Azure service principal configuration."
                   },
                   "cloudflare_api_token": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/CloudflareApiToken",
                     "description": "The Cloudflare API token configuration."
                   },
                   "databricks_gcp_service_account": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/DatabricksGcpServiceAccountRequest",
                     "description": "The Databricks created GCP service account configuration."
                   },
                   "external_location_name": {
@@ -6591,7 +6621,7 @@
                     "description": "The name of an existing external location to validate."
                   },
                   "read_only": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Whether the storage credential is only usable for read operations."
                   },
                   "storage_credential_name": {
@@ -6787,7 +6817,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of schemas to return. - When set to 0, the page length is set to a server configured value (recommended); - When set to a value greater than 0, the page length is the minimum of this value and a server configured value; - When set to a value less than 0, an invalid parameter error is returned; - If not set, all the schemas are returned (not recommended)."
           },
@@ -6854,7 +6884,7 @@
                     "description": "The full name of the table referenced by the constraint."
                   },
                   "constraint": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/TableConstraint",
                     "description": ":returns: :class:`TableConstraint`"
                   }
                 },
@@ -6991,22 +7021,25 @@
                     "description": "Name of parent schema relative to its parent catalog."
                   },
                   "table_type": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/TableType",
                     "description": ":param data_source_format: :class:`DataSourceFormat`"
                   },
                   "data_source_format": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/DataSourceFormat"
                   },
                   "storage_location": {
                     "type": "string",
                     "description": "Storage root URL for table (for **MANAGED**, **EXTERNAL** tables)."
                   },
                   "columns": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ColumnInfo"
+                    },
                     "description": "The array of __ColumnInfo__ definitions of the table's columns."
                   },
                   "properties": {
-                    "type": "string",
+                    "type": "object",
                     "description": "A map of key-value properties attached to the securable."
                   }
                 },
@@ -7086,7 +7119,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include tables in the response for which the principal can only access selective metadata for."
           },
@@ -7095,7 +7128,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include a manifest containing table capabilities in the response."
           },
@@ -7104,7 +7137,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of tables to return. If not set, all the tables are returned (not recommended). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to 0, the page length is set to a server configured value (recommended); - when set to a value less than 0, an invalid parameter error is returned;"
           },
@@ -7113,7 +7146,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to omit the columns of the table from the response or not."
           },
@@ -7122,7 +7155,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to omit the properties of the table from the response or not."
           },
@@ -7131,7 +7164,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to omit the username of the table (e.g. owner, updated_by, created_by) from the response or not."
           },
@@ -7246,7 +7279,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include tables in the response for which the principal can only access selective metadata for."
           },
@@ -7255,7 +7288,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether delta metadata should be included in the response."
           },
@@ -7264,7 +7297,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include a manifest containing table capabilities in the response."
           }
@@ -7438,7 +7471,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include a manifest containing table capabilities in the response."
           },
@@ -7447,7 +7480,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of summaries for tables to return. If not set, the page length is set to a server configured value (10000, as of 1/5/2024). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value (10000, as of 1/5/2024); - when set to 0, the page length is set to a server configured value (10000, as of 1/5/2024) (recommended); - when set to a value less than 0, an invalid parameter error is returned;"
           },
@@ -7532,11 +7565,11 @@
                     "description": "URL for path-based access."
                   },
                   "operation": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/PathOperation",
                     "description": "The operation being performed on the path."
                   },
                   "dry_run": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Optional. When set to true, the service will not validate that the generated credentials can perform write operations, therefore no new paths will be created and the response will not contain valid credentials. Defaults to false."
                   }
                 },
@@ -7597,7 +7630,7 @@
                 "type": "object",
                 "properties": {
                   "operation": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/TableOperation",
                     "description": "The operation performed against the table data, either READ or READ_WRITE. If READ_WRITE is specified, the credentials returned will have write permissions, otherwise, it will be read only."
                   },
                   "table_id": {
@@ -7670,7 +7703,7 @@
                     "description": "The name of the volume"
                   },
                   "volume_type": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/VolumeType",
                     "description": "The type of the volume. An external volume is located in the specified external location. A managed volume is located in the default location which is specified by the parent schema, or the parent catalog, or the Metastore. [Learn more] [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"
                   },
                   "comment": {
@@ -7756,7 +7789,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include volumes in the response for which the principal can only access selective metadata for"
           },
@@ -7765,7 +7798,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of volumes to return (page length). If not set, the page length is set to a server configured value (10000, as of 1/29/2024). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value (10000, as of 1/29/2024); - when set to 0, the page length is set to a server configured value (10000, as of 1/29/2024) (recommended); - when set to a value less than 0, an invalid parameter error is returned; Note: this parameter controls only the maximum number of volumes to return. The actual number of volumes returned in a page may be smaller than this value, including 0, even if there are more pages."
           },
@@ -7880,7 +7913,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             },
             "description": "Whether to include volumes in the response for which the principal can only access selective metadata for"
           }
@@ -8070,11 +8103,17 @@
                 "type": "object",
                 "properties": {
                   "assign_workspaces": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
                     "description": "A list of workspace IDs."
                   },
                   "unassign_workspaces": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
                     "description": "A list of workspace IDs."
                   }
                 }
@@ -8148,7 +8187,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of workspace bindings to return. - When set to 0, the page length is set to a server configured value (recommended); - When set to a value greater than 0, the page length is the minimum of this value and a server configured value; - When set to a value less than 0, an invalid parameter error is returned; - If not set, all the workspace bindings are returned (not recommended)."
           },
@@ -8229,11 +8268,17 @@
                 "type": "object",
                 "properties": {
                   "add": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/WorkspaceBinding"
+                    },
                     "description": "List of workspace bindings to add. If a binding for the workspace already exists with a different binding_type, adding it again with a new binding_type will update the existing binding (e.g., from READ_WRITE to READ_ONLY)."
                   },
                   "remove": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/WorkspaceBinding"
+                    },
                     "description": "List of workspace bindings to remove."
                   }
                 }
@@ -12636,7 +12681,7 @@
           "ISOLATED",
           "OPEN"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "CatalogType": {
         "type": "string",
@@ -12678,7 +12723,7 @@
           "USER_DEFINED_TYPE",
           "VARIANT"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ConnectionType": {
         "type": "string",
@@ -12711,7 +12756,7 @@
         "x-enum": [
           "S"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "CreateFunctionRoutineBody": {
         "type": "string",
@@ -12719,14 +12764,14 @@
           "EXTERNAL",
           "SQL"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "CreateFunctionSecurityType": {
         "type": "string",
         "x-enum": [
           "DEFINER"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "CreateFunctionSqlDataAccess": {
         "type": "string",
@@ -12735,7 +12780,7 @@
           "NO_SQL",
           "READS_SQL_DATA"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "CredentialPurpose": {
         "type": "string",
@@ -12743,7 +12788,7 @@
           "SERVICE",
           "STORAGE"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "CredentialType": {
         "type": "string",
@@ -12808,7 +12853,7 @@
           "INTERNAL",
           "INTERNAL_AND_EXTERNAL"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "DestinationType": {
         "type": "string",
@@ -12819,7 +12864,7 @@
           "SLACK",
           "URL"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "EffectivePredictiveOptimizationFlagInheritedFromType": {
         "type": "string",
@@ -12827,7 +12872,7 @@
           "CATALOG",
           "SCHEMA"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "EnablePredictiveOptimization": {
         "type": "string",
@@ -12836,14 +12881,14 @@
           "ENABLE",
           "INHERIT"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FunctionInfoParameterStyle": {
         "type": "string",
         "x-enum": [
           "S"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FunctionInfoRoutineBody": {
         "type": "string",
@@ -12851,14 +12896,14 @@
           "EXTERNAL",
           "SQL"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FunctionInfoSecurityType": {
         "type": "string",
         "x-enum": [
           "DEFINER"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FunctionInfoSqlDataAccess": {
         "type": "string",
@@ -12867,14 +12912,14 @@
           "NO_SQL",
           "READS_SQL_DATA"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FunctionParameterMode": {
         "type": "string",
         "x-enum": [
           "IN"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FunctionParameterType": {
         "type": "string",
@@ -12882,7 +12927,7 @@
           "COLUMN",
           "PARAM"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "IsolationMode": {
         "type": "string",
@@ -12890,7 +12935,7 @@
           "ISOLATION_MODE_ISOLATED",
           "ISOLATION_MODE_OPEN"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "LineageDirection": {
         "type": "string",
@@ -12898,7 +12943,7 @@
           "DOWNSTREAM",
           "UPSTREAM"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "MatchType": {
         "type": "string",
@@ -12915,7 +12960,7 @@
           "PENDING_REGISTRATION",
           "READY"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "MonitorCronSchedulePauseStatus": {
         "type": "string",
@@ -12932,7 +12977,7 @@
           "PROBLEM_TYPE_CLASSIFICATION",
           "PROBLEM_TYPE_REGRESSION"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "MonitorInfoStatus": {
         "type": "string",
@@ -12943,7 +12988,7 @@
           "MONITOR_STATUS_FAILED",
           "MONITOR_STATUS_PENDING"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "MonitorMetricType": {
         "type": "string",
@@ -12973,7 +13018,7 @@
           "SCHEDULE",
           "UNKNOWN_TRIGGER"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "OnlineTableState": {
         "type": "string",
@@ -13020,7 +13065,7 @@
           "PATH_READ",
           "PATH_READ_WRITE"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "PolicyType": {
         "type": "string",
@@ -13028,7 +13073,7 @@
           "POLICY_TYPE_COLUMN_MASK",
           "POLICY_TYPE_ROW_FILTER"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "PrincipalType": {
         "type": "string",
@@ -13037,7 +13082,7 @@
           "SERVICE_PRINCIPAL",
           "USER_PRINCIPAL"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "Privilege": {
         "type": "string",
@@ -13093,7 +13138,7 @@
           "WRITE_PRIVATE_FILES",
           "WRITE_VOLUME"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ProvisioningInfoState": {
         "type": "string",
@@ -13105,7 +13150,7 @@
           "PROVISIONING",
           "UPDATING"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "SecurableKind": {
         "type": "string",
@@ -13208,7 +13253,7 @@
           "SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER",
           "SPECIAL_DESTINATION_METASTORE_OWNER"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "SseEncryptionDetailsAlgorithm": {
         "type": "string",
@@ -13216,7 +13261,7 @@
           "AWS_SSE_KMS",
           "AWS_SSE_S3"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "SystemType": {
         "type": "string",
@@ -13245,7 +13290,7 @@
           "TERADATA",
           "WORKDAY"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "TableOperation": {
         "type": "string",
@@ -13253,7 +13298,7 @@
           "READ",
           "READ_WRITE"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "TableType": {
         "type": "string",
@@ -13268,7 +13313,7 @@
           "STREAMING_TABLE",
           "VIEW"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ValidateCredentialResult": {
         "type": "string",
@@ -13305,7 +13350,7 @@
           "EXTERNAL",
           "MANAGED"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "WorkspaceBindingBindingType": {
         "type": "string",

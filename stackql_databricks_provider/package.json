@@ -4,6 +4,7 @@
   "description": "StackQL Provider for Databricks",
   "type": "module",
   "scripts": {
+    "postinstall": "npx patch-package",
     "generate-docs": "./bin/generate-docs.sh",
     "generate-provider": "./bin/generate-provider.sh",
     "start-server": "bash ./bin/start-server.sh",

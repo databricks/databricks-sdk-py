@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.tags
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -52,7 +52,7 @@ paths:
               type: object
               properties:
                 tag_policy:
-                  type: string
+                  $ref: '#/components/schemas/TagPolicy'
                   description: ':returns: :class:`TagPolicy`'
               required:
                 - tag_policy
@@ -113,7 +113,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The maximum number of results to return in this request. Fewer
             results may be returned than requested. If unspecified or set to 0,
@@ -315,7 +315,7 @@ paths:
               type: object
               properties:
                 tag_policy:
-                  type: string
+                  $ref: '#/components/schemas/TagPolicy'
               required:
                 - tag_policy
       responses:
@@ -357,7 +357,7 @@ paths:
               type: object
               properties:
                 tag_assignment:
-                  type: string
+                  $ref: '#/components/schemas/TagAssignment'
                   description: ':returns: :class:`TagAssignment`'
               required:
                 - tag_assignment
@@ -556,7 +556,7 @@ paths:
               type: object
               properties:
                 tag_assignment:
-                  type: string
+                  $ref: '#/components/schemas/TagAssignment'
                   description: >-
                     :param update_mask: str The field mask must be a single
                     string, with multiple fields separated by commas (no
@@ -630,7 +630,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Optional. Maximum number of tag assignments to return in a single
             page

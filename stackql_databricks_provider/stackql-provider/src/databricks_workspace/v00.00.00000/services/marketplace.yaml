@@ -6,7 +6,7 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.marketplace
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -41,7 +41,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: page_token
           in: query
           required: false
@@ -108,7 +108,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: page_token
           in: query
           required: false
@@ -167,16 +167,16 @@ paths:
               type: object
               properties:
                 accepted_consumer_terms:
-                  type: string
+                  $ref: '#/components/schemas/ConsumerTerms'
                 catalog_name:
                   type: string
                   description: >-
                     :param recipient_type: :class:`DeltaSharingRecipientType`
                     (optional)
                 recipient_type:
-                  type: string
+                  $ref: '#/components/schemas/DeltaSharingRecipientType'
                 repo_detail:
-                  type: string
+                  $ref: '#/components/schemas/RepoInstallation'
                   description: for git repo installations
                 share_name:
                   type: string
@@ -225,7 +225,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: page_token
           in: query
           required: false
@@ -345,10 +345,10 @@ paths:
               type: object
               properties:
                 installation:
-                  type: string
+                  $ref: '#/components/schemas/InstallationDetail'
                   description: ':param rotate_token: bool (optional)'
                 rotate_token:
-                  type: string
+                  type: boolean
               required:
                 - installation
       responses:
@@ -389,7 +389,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -438,7 +438,9 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           description: ':returns: :class:`BatchGetListingsResponse`'
       responses:
         '200':
@@ -542,37 +544,41 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/AssetType'
           description: Matches any of the following asset types
         - name: categories
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/Category'
           description: Matches any of the following categories
         - name: is_free
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Filters each listing based on if it is free.
         - name: is_private_exchange
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Filters each listing based on if it is a private exchange.
         - name: is_staff_pick
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: Filters each listing based on whether it is a staff pick.
         - name: page_size
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -583,13 +589,17 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           description: Matches any of the following provider ids
         - name: tags
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/ListingTag'
           description: Matches any of the following tags
       responses:
         '200':
@@ -656,30 +666,34 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/AssetType'
           description: Matches any of the following asset types
         - name: categories
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/Category'
           description: Matches any of the following categories
         - name: is_free
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: ':param is_private_exchange: bool (optional)'
         - name: is_private_exchange
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
         - name: page_size
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -690,7 +704,9 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           description: Matches any of the following provider ids
       responses:
         '200':
@@ -748,7 +764,7 @@ paths:
                 intended_use:
                   type: string
                 accepted_consumer_terms:
-                  type: string
+                  $ref: '#/components/schemas/ConsumerTerms'
                   description: ':param comment: str (optional)'
                 comment:
                   type: string
@@ -758,12 +774,12 @@ paths:
                 first_name:
                   type: string
                 is_from_lighthouse:
-                  type: string
+                  type: boolean
                   description: ':param last_name: str (optional)'
                 last_name:
                   type: string
                 recipient_type:
-                  type: string
+                  $ref: '#/components/schemas/DeltaSharingRecipientType'
                   description: ':returns: :class:`CreatePersonalizationRequestResponse`'
               required:
                 - intended_use
@@ -851,7 +867,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -900,7 +916,9 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           description: ':returns: :class:`BatchGetProvidersResponse`'
       responses:
         '200':
@@ -992,13 +1010,13 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: ':param page_size: int (optional)'
         - name: page_size
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: page_token
           in: query
           required: false
@@ -1044,7 +1062,7 @@ paths:
               type: object
               properties:
                 filter:
-                  type: string
+                  $ref: '#/components/schemas/ExchangeFilter'
                   description: ':returns: :class:`CreateExchangeFilterResponse`'
               required:
                 - filter
@@ -1092,7 +1110,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: page_token
           in: query
           required: false
@@ -1178,7 +1196,7 @@ paths:
               type: object
               properties:
                 filter:
-                  type: string
+                  $ref: '#/components/schemas/ExchangeFilter'
               required:
                 - filter
       responses:
@@ -1272,7 +1290,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: page_token
           in: query
           required: false
@@ -1318,7 +1336,7 @@ paths:
               type: object
               properties:
                 exchange:
-                  type: string
+                  $ref: '#/components/schemas/Exchange'
                   description: ':returns: :class:`CreateExchangeResponse`'
               required:
                 - exchange
@@ -1359,7 +1377,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -1483,7 +1501,7 @@ paths:
               type: object
               properties:
                 exchange:
-                  type: string
+                  $ref: '#/components/schemas/Exchange'
               required:
                 - exchange
       responses:
@@ -1564,7 +1582,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: page_token
           in: query
           required: false
@@ -1621,10 +1639,10 @@ paths:
               type: object
               properties:
                 file_parent:
-                  type: string
+                  $ref: '#/components/schemas/FileParent'
                   description: ':param marketplace_file_type: :class:`MarketplaceFileType`'
                 marketplace_file_type:
-                  type: string
+                  $ref: '#/components/schemas/MarketplaceFileType'
                 mime_type:
                   type: string
                   description: ':param display_name: str (optional)'
@@ -1672,13 +1690,13 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/FileParent'
           description: ':param page_size: int (optional)'
         - name: page_size
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: page_token
           in: query
           required: false
@@ -1795,7 +1813,7 @@ paths:
               type: object
               properties:
                 listing:
-                  type: string
+                  $ref: '#/components/schemas/Listing'
                   description: ':returns: :class:`CreateListingResponse`'
               required:
                 - listing
@@ -1916,7 +1934,7 @@ paths:
               type: object
               properties:
                 listing:
-                  type: string
+                  $ref: '#/components/schemas/Listing'
               required:
                 - listing
       responses:
@@ -1957,7 +1975,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -2010,7 +2028,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -2081,12 +2099,12 @@ paths:
               type: object
               properties:
                 status:
-                  type: string
+                  $ref: '#/components/schemas/PersonalizationRequestStatus'
                   description: ':param reason: str (optional)'
                 reason:
                   type: string
                 share:
-                  type: string
+                  $ref: '#/components/schemas/ShareInfo'
                   description: ':returns: :class:`UpdatePersonalizationRequestResponse`'
               required:
                 - status
@@ -2239,7 +2257,7 @@ paths:
               type: object
               properties:
                 version:
-                  type: string
+                  type: integer
                   description: >-
                     this is the version of the dashboard template we want to
                     update our user to current expectation is that it should be
@@ -2283,7 +2301,7 @@ paths:
               type: object
               properties:
                 provider:
-                  type: string
+                  $ref: '#/components/schemas/ProviderInfo'
                   description: ':returns: :class:`CreateProviderResponse`'
               required:
                 - provider
@@ -2404,7 +2422,7 @@ paths:
               type: object
               properties:
                 provider:
-                  type: string
+                  $ref: '#/components/schemas/ProviderInfo'
               required:
                 - provider
       responses:
@@ -2445,7 +2463,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -3296,20 +3314,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3358,20 +3376,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3400,20 +3418,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3449,20 +3467,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3491,20 +3509,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3532,20 +3550,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3575,20 +3593,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3619,20 +3637,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3661,20 +3679,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3703,20 +3721,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3745,20 +3763,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3795,20 +3813,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3837,20 +3855,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3880,20 +3898,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3924,20 +3942,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -3966,20 +3984,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

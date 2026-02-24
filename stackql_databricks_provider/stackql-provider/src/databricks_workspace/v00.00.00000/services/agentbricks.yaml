@@ -6,7 +6,7 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.agentbricks
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -96,12 +96,16 @@ paths:
                     you have write permissions. Please provide this in
                     catalog.schema format.
                 datasets:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Dataset'
                   description: >-
                     Datasets used for training and evaluating the model, not for
                     inference. Currently, only 1 dataset is accepted.
                 guidelines:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: Guidelines for the custom LLM to adhere to
               required:
                 - name
@@ -240,7 +244,7 @@ paths:
               type: object
               properties:
                 custom_llm:
-                  type: string
+                  $ref: '#/components/schemas/CustomLlm'
                   description: The CustomLlm containing the fields which should be updated.
                 update_mask:
                   type: string

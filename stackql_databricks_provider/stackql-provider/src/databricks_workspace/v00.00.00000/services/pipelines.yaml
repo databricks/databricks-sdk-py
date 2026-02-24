@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.pipelines
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -124,7 +124,7 @@ paths:
               type: object
               properties:
                 allow_duplicate_names:
-                  type: string
+                  type: boolean
                   description: >-
                     If false, deployment will fail if name conflicts with that
                     of another pipeline.
@@ -143,26 +143,28 @@ paths:
                   type: string
                   description: DLT Release Channel that specifies which version to use.
                 clone_mode:
-                  type: string
+                  $ref: '#/components/schemas/CloneMode'
                   description: >-
                     The type of clone to perform. Currently, only deep copies
                     are supported
                 clusters:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PipelineCluster'
                   description: Cluster settings for this pipeline deployment.
                 configuration:
-                  type: string
+                  type: object
                   description: String-String configuration for this pipeline execution.
                 continuous:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether the pipeline is continuous or triggered. This
                     replaces `trigger`.
                 deployment:
-                  type: string
+                  $ref: '#/components/schemas/PipelineDeployment'
                   description: Deployment type of this pipeline.
                 development:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether the pipeline is in Development mode. Defaults to
                     false.
@@ -170,26 +172,26 @@ paths:
                   type: string
                   description: Pipeline product edition.
                 environment:
-                  type: string
+                  $ref: '#/components/schemas/PipelinesEnvironment'
                   description: >-
                     Environment specification for this pipeline used to install
                     dependencies.
                 event_log:
-                  type: string
+                  $ref: '#/components/schemas/EventLogSpec'
                   description: Event log configuration for this pipeline
                 expected_last_modified:
-                  type: string
+                  type: integer
                   description: >-
                     If present, the last-modified time of the pipeline settings
                     before the clone. If the settings were modified after that
                     time, then the request will fail with a conflict.
                 filters:
-                  type: string
+                  $ref: '#/components/schemas/Filters'
                   description: >-
                     Filters on which Pipeline packages to include in the
                     deployed graph.
                 gateway_definition:
-                  type: string
+                  $ref: '#/components/schemas/IngestionGatewayPipelineDefinition'
                   description: >-
                     The definition of a gateway pipeline to support change data
                     capture.
@@ -197,25 +199,29 @@ paths:
                   type: string
                   description: Unique identifier for this pipeline.
                 ingestion_definition:
-                  type: string
+                  $ref: '#/components/schemas/IngestionPipelineDefinition'
                   description: >-
                     The configuration for a managed ingestion pipeline. These
                     settings cannot be used with the 'libraries', 'schema',
                     'target', or 'catalog' settings.
                 libraries:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PipelineLibrary'
                   description: Libraries or code needed by this deployment.
                 name:
                   type: string
                   description: Friendly identifier for this pipeline.
                 notifications:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Notifications'
                   description: List of notification settings for this pipeline.
                 photon:
-                  type: string
+                  type: boolean
                   description: Whether Photon is enabled for this pipeline.
                 restart_window:
-                  type: string
+                  $ref: '#/components/schemas/RestartWindow'
                   description: Restart window of this pipeline.
                 root_path:
                   type: string
@@ -230,13 +236,13 @@ paths:
                     The default schema (database) where tables are read from or
                     published to.
                 serverless:
-                  type: string
+                  type: boolean
                   description: Whether serverless compute is enabled for this pipeline.
                 storage:
                   type: string
                   description: DBFS root directory for storing checkpoints and tables.
                 tags:
-                  type: string
+                  type: object
                   description: >-
                     A map of tags associated with the pipeline. These are
                     forwarded to the cluster as cluster tags, and are therefore
@@ -251,7 +257,7 @@ paths:
                     legacy field is deprecated for pipeline creation in favor of
                     the `schema` field.
                 trigger:
-                  type: string
+                  $ref: '#/components/schemas/PipelineTrigger'
                   description: >-
                     Which pipeline trigger to use. Deprecated: Use `continuous`
                     instead.
@@ -373,7 +379,7 @@ paths:
               type: object
               properties:
                 allow_duplicate_names:
-                  type: string
+                  type: boolean
                   description: >-
                     If false, deployment will fail if name conflicts with that
                     of another pipeline.
@@ -392,44 +398,46 @@ paths:
                   type: string
                   description: DLT Release Channel that specifies which version to use.
                 clusters:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PipelineCluster'
                   description: Cluster settings for this pipeline deployment.
                 configuration:
-                  type: string
+                  type: object
                   description: String-String configuration for this pipeline execution.
                 continuous:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether the pipeline is continuous or triggered. This
                     replaces `trigger`.
                 deployment:
-                  type: string
+                  $ref: '#/components/schemas/PipelineDeployment'
                   description: Deployment type of this pipeline.
                 development:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether the pipeline is in Development mode. Defaults to
                     false.
                 dry_run:
-                  type: string
+                  type: boolean
                   description: ':param edition: str (optional) Pipeline product edition.'
                 edition:
                   type: string
                 environment:
-                  type: string
+                  $ref: '#/components/schemas/PipelinesEnvironment'
                   description: >-
                     Environment specification for this pipeline used to install
                     dependencies.
                 event_log:
-                  type: string
+                  $ref: '#/components/schemas/EventLogSpec'
                   description: Event log configuration for this pipeline
                 filters:
-                  type: string
+                  $ref: '#/components/schemas/Filters'
                   description: >-
                     Filters on which Pipeline packages to include in the
                     deployed graph.
                 gateway_definition:
-                  type: string
+                  $ref: '#/components/schemas/IngestionGatewayPipelineDefinition'
                   description: >-
                     The definition of a gateway pipeline to support change data
                     capture.
@@ -437,25 +445,29 @@ paths:
                   type: string
                   description: Unique identifier for this pipeline.
                 ingestion_definition:
-                  type: string
+                  $ref: '#/components/schemas/IngestionPipelineDefinition'
                   description: >-
                     The configuration for a managed ingestion pipeline. These
                     settings cannot be used with the 'libraries', 'schema',
                     'target', or 'catalog' settings.
                 libraries:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PipelineLibrary'
                   description: Libraries or code needed by this deployment.
                 name:
                   type: string
                   description: Friendly identifier for this pipeline.
                 notifications:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Notifications'
                   description: List of notification settings for this pipeline.
                 photon:
-                  type: string
+                  type: boolean
                   description: Whether Photon is enabled for this pipeline.
                 restart_window:
-                  type: string
+                  $ref: '#/components/schemas/RestartWindow'
                   description: Restart window of this pipeline.
                 root_path:
                   type: string
@@ -465,20 +477,20 @@ paths:
                     interface and it is added to sys.path when executing Python
                     sources during pipeline execution.
                 run_as:
-                  type: string
+                  $ref: '#/components/schemas/RunAs'
                   description: >-
                     :param schema: str (optional) The default schema (database)
                     where tables are read from or published to.
                 schema:
                   type: string
                 serverless:
-                  type: string
+                  type: boolean
                   description: Whether serverless compute is enabled for this pipeline.
                 storage:
                   type: string
                   description: DBFS root directory for storing checkpoints and tables.
                 tags:
-                  type: string
+                  type: object
                   description: >-
                     A map of tags associated with the pipeline. These are
                     forwarded to the cluster as cluster tags, and are therefore
@@ -493,7 +505,7 @@ paths:
                     legacy field is deprecated for pipeline creation in favor of
                     the `schema` field.
                 trigger:
-                  type: string
+                  $ref: '#/components/schemas/PipelineTrigger'
                   description: >-
                     Which pipeline trigger to use. Deprecated: Use `continuous`
                     instead.
@@ -564,7 +576,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The maximum number of entries to return in a single page. The system
             may return fewer than max_results events in a response, even if
@@ -575,7 +587,9 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           description: >-
             A list of strings specifying the order of results. Supported
             order_by fields are id and name. The default is id asc. This field
@@ -640,7 +654,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
       responses:
         '200':
           description: Success
@@ -791,7 +805,7 @@ paths:
               type: object
               properties:
                 allow_duplicate_names:
-                  type: string
+                  type: boolean
                   description: >-
                     If false, deployment will fail if name has changed and
                     conflicts the name of another pipeline.
@@ -810,21 +824,23 @@ paths:
                   type: string
                   description: DLT Release Channel that specifies which version to use.
                 clusters:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PipelineCluster'
                   description: Cluster settings for this pipeline deployment.
                 configuration:
-                  type: string
+                  type: object
                   description: String-String configuration for this pipeline execution.
                 continuous:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether the pipeline is continuous or triggered. This
                     replaces `trigger`.
                 deployment:
-                  type: string
+                  $ref: '#/components/schemas/PipelineDeployment'
                   description: Deployment type of this pipeline.
                 development:
-                  type: string
+                  type: boolean
                   description: >-
                     Whether the pipeline is in Development mode. Defaults to
                     false.
@@ -832,26 +848,26 @@ paths:
                   type: string
                   description: Pipeline product edition.
                 environment:
-                  type: string
+                  $ref: '#/components/schemas/PipelinesEnvironment'
                   description: >-
                     Environment specification for this pipeline used to install
                     dependencies.
                 event_log:
-                  type: string
+                  $ref: '#/components/schemas/EventLogSpec'
                   description: Event log configuration for this pipeline
                 expected_last_modified:
-                  type: string
+                  type: integer
                   description: >-
                     If present, the last-modified time of the pipeline settings
                     before the edit. If the settings were modified after that
                     time, then the request will fail with a conflict.
                 filters:
-                  type: string
+                  $ref: '#/components/schemas/Filters'
                   description: >-
                     Filters on which Pipeline packages to include in the
                     deployed graph.
                 gateway_definition:
-                  type: string
+                  $ref: '#/components/schemas/IngestionGatewayPipelineDefinition'
                   description: >-
                     The definition of a gateway pipeline to support change data
                     capture.
@@ -859,25 +875,29 @@ paths:
                   type: string
                   description: Unique identifier for this pipeline.
                 ingestion_definition:
-                  type: string
+                  $ref: '#/components/schemas/IngestionPipelineDefinition'
                   description: >-
                     The configuration for a managed ingestion pipeline. These
                     settings cannot be used with the 'libraries', 'schema',
                     'target', or 'catalog' settings.
                 libraries:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PipelineLibrary'
                   description: Libraries or code needed by this deployment.
                 name:
                   type: string
                   description: Friendly identifier for this pipeline.
                 notifications:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Notifications'
                   description: List of notification settings for this pipeline.
                 photon:
-                  type: string
+                  type: boolean
                   description: Whether Photon is enabled for this pipeline.
                 restart_window:
-                  type: string
+                  $ref: '#/components/schemas/RestartWindow'
                   description: Restart window of this pipeline.
                 root_path:
                   type: string
@@ -887,20 +907,20 @@ paths:
                     interface and it is added to sys.path when executing Python
                     sources during pipeline execution.
                 run_as:
-                  type: string
+                  $ref: '#/components/schemas/RunAs'
                   description: >-
                     :param schema: str (optional) The default schema (database)
                     where tables are read from or published to.
                 schema:
                   type: string
                 serverless:
-                  type: string
+                  type: boolean
                   description: Whether serverless compute is enabled for this pipeline.
                 storage:
                   type: string
                   description: DBFS root directory for storing checkpoints and tables.
                 tags:
-                  type: string
+                  type: object
                   description: >-
                     A map of tags associated with the pipeline. These are
                     forwarded to the cluster as cluster tags, and are therefore
@@ -915,7 +935,7 @@ paths:
                     legacy field is deprecated for pipeline creation in favor of
                     the `schema` field.
                 trigger:
-                  type: string
+                  $ref: '#/components/schemas/PipelineTrigger'
                   description: >-
                     Which pipeline trigger to use. Deprecated: Use `continuous`
                     instead.
@@ -1055,7 +1075,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PipelineAccessControlRequest'
                   description: ':returns: :class:`PipelinePermissions`'
       responses:
         '200':
@@ -1109,7 +1131,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PipelineAccessControlRequest'
                   description: ':returns: :class:`PipelinePermissions`'
       responses:
         '200':
@@ -1231,7 +1255,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Max number of entries to return in a single page. The system may
             return fewer than max_results events in a response, even if there
@@ -1240,7 +1264,9 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           description: >-
             A string indicating a sort order by timestamp for the results, for
             example, ["timestamp asc"]. The sort order can be ascending or
@@ -1305,7 +1331,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Max number of entries to return in a single page.
         - name: page_token
           in: query
@@ -1387,31 +1413,35 @@ paths:
               type: object
               properties:
                 cause:
-                  type: string
+                  $ref: '#/components/schemas/StartUpdateCause'
                 full_refresh:
-                  type: string
+                  type: boolean
                   description: If true, this update will reset all tables before running.
                 full_refresh_selection:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     A list of tables to update with fullRefresh. If both
                     refresh_selection and full_refresh_selection are empty, this
                     is a full graph update. Full Refresh on a table means that
                     the states of the table will be reset before the refresh.
                 refresh_selection:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: >-
                     A list of tables to update without fullRefresh. If both
                     refresh_selection and full_refresh_selection are empty, this
                     is a full graph update. Full Refresh on a table means that
                     the states of the table will be reset before the refresh.
                 rewind_spec:
-                  type: string
+                  $ref: '#/components/schemas/RewindSpec'
                   description: >-
                     The information about the requested rewind operation. If
                     specified this is a rewind mode update.
                 validate_only:
-                  type: string
+                  type: boolean
                   description: >-
                     If true, this update only validates the correctness of
                     pipeline source code but does not materialize or publish any
@@ -2907,20 +2937,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

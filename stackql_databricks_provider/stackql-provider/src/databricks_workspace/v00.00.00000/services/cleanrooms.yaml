@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.cleanrooms
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -65,7 +65,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/CleanRoomAssetAssetType'
           description: Asset type. Only NOTEBOOK_FILE is supported.
       responses:
         '200':
@@ -130,13 +130,13 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/CleanRoomAssetAssetType'
           description: Asset type. Only NOTEBOOK_FILE is supported.
         - name: page_size
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Maximum number of asset revisions to return. Defaults to 10.
         - name: page_token
           in: query
@@ -212,7 +212,7 @@ paths:
               type: object
               properties:
                 asset:
-                  type: string
+                  $ref: '#/components/schemas/CleanRoomAsset'
                   description: ':returns: :class:`CleanRoomAsset`'
               required:
                 - asset
@@ -326,10 +326,10 @@ paths:
               type: object
               properties:
                 asset_type:
-                  type: string
+                  $ref: '#/components/schemas/CleanRoomAssetAssetType'
                   description: Asset type. Can either be NOTEBOOK_FILE or JAR_ANALYSIS.
                 notebook_review:
-                  type: string
+                  $ref: '#/components/schemas/NotebookVersionReview'
                   description: ':returns: :class:`CreateCleanRoomAssetReviewResponse`'
               required:
                 - asset_type
@@ -392,7 +392,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/CleanRoomAssetAssetType'
           description: The type of the asset.
       responses:
         '200':
@@ -450,7 +450,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/CleanRoomAssetAssetType'
           description: The type of the asset.
       responses:
         '200':
@@ -535,10 +535,10 @@ paths:
               type: object
               properties:
                 asset_type:
-                  type: string
+                  $ref: '#/components/schemas/CleanRoomAssetAssetType'
                   description: The type of the asset.
                 asset:
-                  type: string
+                  $ref: '#/components/schemas/CleanRoomAsset'
                   description: >-
                     The asset to update. The asset's `name` and `asset_type`
                     fields are used to identify the asset to update.
@@ -593,7 +593,7 @@ paths:
               type: object
               properties:
                 auto_approval_rule:
-                  type: string
+                  $ref: '#/components/schemas/CleanRoomAutoApprovalRule'
                   description: ':returns: :class:`CleanRoomAutoApprovalRule`'
               required:
                 - auto_approval_rule
@@ -645,7 +645,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: page_token
           in: query
           required: false
@@ -791,7 +791,7 @@ paths:
               type: object
               properties:
                 auto_approval_rule:
-                  type: string
+                  $ref: '#/components/schemas/CleanRoomAutoApprovalRule'
                   description: >-
                     The auto-approval rule to update. The rule_id field is used
                     to identify the rule to update.
@@ -853,7 +853,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The maximum number of task runs to return. Currently ignored - all
             runs will be returned.
@@ -924,7 +924,7 @@ paths:
               type: object
               properties:
                 clean_room:
-                  type: string
+                  $ref: '#/components/schemas/CleanRoom'
                   description: >-
                     :returns: Long-running operation waiter for
                     :class:`CleanRoom`. See :method:wait_get_clean_room_active
@@ -976,7 +976,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Maximum number of clean rooms to return (i.e., the page length).
             Defaults to 100.
@@ -1034,7 +1034,7 @@ paths:
               type: object
               properties:
                 output_catalog:
-                  type: string
+                  $ref: '#/components/schemas/CleanRoomOutputCatalog'
                   description: ':returns: :class:`CreateCleanRoomOutputCatalogResponse`'
               required:
                 - output_catalog
@@ -1178,7 +1178,7 @@ paths:
               type: object
               properties:
                 clean_room:
-                  type: string
+                  $ref: '#/components/schemas/CleanRoom'
                   description: ':returns: :class:`CleanRoom`'
       responses:
         '200':
@@ -1692,20 +1692,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1737,20 +1737,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1780,20 +1780,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1821,20 +1821,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1864,20 +1864,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1906,20 +1906,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1949,20 +1949,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1993,20 +1993,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

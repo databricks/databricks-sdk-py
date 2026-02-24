@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks files service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.files"
   },
   "servers": [
@@ -152,7 +152,7 @@
                     "description": "The path of the new file. The path should be the absolute DBFS path."
                   },
                   "overwrite": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "The flag that specifies whether to overwrite existing file/files."
                   }
                 },
@@ -216,7 +216,7 @@
                     "description": "The path of the file or directory to delete. The path should be the absolute DBFS path."
                   },
                   "recursive": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Whether or not to recursively delete the directory's contents. Deleting empty directories can be done without providing the recursive flag."
                   }
                 },
@@ -494,7 +494,7 @@
                     "description": "This parameter might be absent, and instead a posted file will be used."
                   },
                   "overwrite": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "The flag that specifies whether to overwrite existing file/files."
                   }
                 },
@@ -555,7 +555,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The number of bytes to read starting from the offset. This has a limit of 1 MB, and a default value of 0.5 MB."
           },
@@ -564,7 +564,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The offset to read from in bytes."
           }
@@ -754,7 +754,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The maximum number of directory entries to return. The response may contain fewer entries. If the response contains a `next_page_token`, there may be more entries, even if fewer than `page_size` entries are in the response. We recommend not to set this value unless you are intentionally listing less than the complete directory contents. If unspecified, at most 1000 directory entries will be returned. The maximum value is 1000. Values above 1000 will be coerced to 1000."
           },
@@ -968,7 +968,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           }
         ],
@@ -980,6 +980,7 @@
                 "properties": {
                   "contents": {
                     "type": "string",
+                    "format": "binary",
                     "description": ":param overwrite: bool (optional) If true or unspecified, an existing file will be overwritten. If false, an error will be returned if the path points to an existing file."
                   }
                 },

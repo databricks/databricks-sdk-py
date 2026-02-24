@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks serving service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.serving"
   },
   "servers": [
@@ -103,7 +103,7 @@
                     "description": "The name of the serving endpoint. This field is required and must be unique across a Databricks workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."
                   },
                   "ai_gateway": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AiGatewayConfig",
                     "description": "The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned throughput, and pay-per-token endpoints are fully supported; agent endpoints currently only support inference tables."
                   },
                   "budget_policy_id": {
@@ -111,7 +111,7 @@
                     "description": "The budget policy to be applied to the serving endpoint."
                   },
                   "config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/EndpointCoreConfigInput",
                     "description": "The core config of the serving endpoint."
                   },
                   "description": {
@@ -119,18 +119,24 @@
                     "description": ":param email_notifications: :class:`EmailNotifications` (optional) Email notification settings."
                   },
                   "email_notifications": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/EmailNotifications"
                   },
                   "rate_limits": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RateLimit"
+                    },
                     "description": "Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI Gateway to manage rate limits."
                   },
                   "route_optimized": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Enable route optimization for the serving endpoint."
                   },
                   "tags": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/EndpointTag"
+                    },
                     "description": "Tags to be attached to the serving endpoint and automatically propagated to billing logs."
                   }
                 },
@@ -234,11 +240,11 @@
                     "description": "The name of the serving endpoint. This field is required and must be unique across a Databricks workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."
                   },
                   "config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/PtEndpointCoreConfig",
                     "description": "The core config of the serving endpoint."
                   },
                   "ai_gateway": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AiGatewayConfig",
                     "description": "The AI Gateway configuration for the serving endpoint."
                   },
                   "budget_policy_id": {
@@ -246,11 +252,14 @@
                     "description": "The budget policy associated with the endpoint."
                   },
                   "email_notifications": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/EmailNotifications",
                     "description": "Email notification settings."
                   },
                   "tags": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/EndpointTag"
+                    },
                     "description": "Tags to be attached to the serving endpoint and automatically propagated to billing logs."
                   }
                 },
@@ -639,7 +648,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ServingEndpointAccessControlRequest"
+                    },
                     "description": ":returns: :class:`ServingEndpointPermissions`"
                   }
                 }
@@ -705,7 +717,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ServingEndpointAccessControlRequest"
+                    },
                     "description": ":returns: :class:`ServingEndpointPermissions`"
                   }
                 }
@@ -766,7 +781,7 @@
                     "description": "The connection name to use. This is required to identify the external connection."
                   },
                   "method": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ExternalFunctionRequestHttpMethod",
                     "description": "The HTTP method to use (e.g., 'GET', 'POST')."
                   },
                   "path": {
@@ -918,11 +933,17 @@
                 "type": "object",
                 "properties": {
                   "add_tags": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/EndpointTag"
+                    },
                     "description": "List of endpoint tags to add"
                   },
                   "delete_tags": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "List of tag keys to delete"
                   }
                 }
@@ -990,7 +1011,10 @@
                 "type": "object",
                 "properties": {
                   "rate_limits": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RateLimit"
+                    },
                     "description": "The list of endpoint rate limits."
                   }
                 }
@@ -1058,23 +1082,26 @@
                 "type": "object",
                 "properties": {
                   "fallback_config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/FallbackConfig",
                     "description": "Configuration for traffic fallback which auto fallbacks to other served entities if the request to a served entity fails with certain error codes, to increase availability."
                   },
                   "guardrails": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AiGatewayGuardrails",
                     "description": "Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses."
                   },
                   "inference_table_config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AiGatewayInferenceTableConfig",
                     "description": "Configuration for payload logging using inference tables. Use these tables to monitor and audit data being sent to and received from model APIs and to improve model quality."
                   },
                   "rate_limits": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/AiGatewayRateLimit"
+                    },
                     "description": "Configuration for rate limits which can be set to limit endpoint traffic."
                   },
                   "usage_tracking_config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AiGatewayUsageTrackingConfig",
                     "description": "Configuration to enable usage tracking using system tables. These tables allow you to monitor operational usage on endpoints and their associated costs."
                   }
                 }
@@ -1146,59 +1173,71 @@
                     "description": "Optional user-provided request identifier that will be recorded in the inference table and the usage tracking table."
                   },
                   "dataframe_records": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
                     "description": "Pandas Dataframe input in the records orientation."
                   },
                   "dataframe_split": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/DataframeSplitInput",
                     "description": "Pandas Dataframe input in the split orientation."
                   },
                   "extra_params": {
-                    "type": "string",
+                    "type": "object",
                     "description": "The extra parameters field used ONLY for __completions, chat,__ and __embeddings external & foundation model__ serving endpoints. This is a map of strings and should only be used with other external/foundation model query fields."
                   },
                   "input": {
-                    "type": "string",
+                    "type": "object",
                     "description": "The input string (or array of strings) field used ONLY for __embeddings external & foundation model__ serving endpoints and is the only field (along with extra_params if needed) used by embeddings queries."
                   },
                   "inputs": {
-                    "type": "string",
+                    "type": "object",
                     "description": "Tensor-based input in columnar format."
                   },
                   "instances": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
                     "description": "Tensor-based input in row format."
                   },
                   "max_tokens": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving endpoints. This is an integer and should only be used with other chat/completions query fields."
                   },
                   "messages": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ChatMessage"
+                    },
                     "description": "The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an array of ChatMessage objects and should only be used with other chat query fields."
                   },
                   "n": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be used with other chat/completions query fields."
                   },
                   "prompt": {
-                    "type": "string",
+                    "type": "object",
                     "description": "The prompt string (or array of strings) field used ONLY for __completions external & foundation model__ serving endpoints and should only be used with other completions query fields."
                   },
                   "stop": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "The stop sequences field used ONLY for __completions__ and __chat external & foundation model__ serving endpoints. This is a list of strings and should only be used with other chat/completions query fields."
                   },
                   "stream": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "The stream field used ONLY for __completions__ and __chat external & foundation model__ serving endpoints. This is a boolean defaulting to false and should only be used with other chat/completions query fields."
                   },
                   "temperature": {
-                    "type": "string",
+                    "type": "number",
                     "description": "The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with other chat/completions query fields."
                   },
                   "usage_context": {
-                    "type": "string",
+                    "type": "object",
                     "description": "Optional user-provided context that will be recorded in the usage tracking table."
                   }
                 }
@@ -1266,19 +1305,25 @@
                 "type": "object",
                 "properties": {
                   "auto_capture_config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/AutoCaptureConfigInput",
                     "description": "Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or updating existing provisioned throughput endpoints that never have inference table configured; in these cases please use AI Gateway to manage inference tables."
                   },
                   "served_entities": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ServedEntityInput"
+                    },
                     "description": "The list of served entities under the serving endpoint config."
                   },
                   "served_models": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ServedModelInput"
+                    },
                     "description": "(Deprecated, use served_entities instead) The list of served models under the serving endpoint config."
                   },
                   "traffic_config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/TrafficConfig",
                     "description": "The traffic configuration associated with the serving endpoint config."
                   }
                 }
@@ -1346,7 +1391,7 @@
                 "type": "object",
                 "properties": {
                   "email_notifications": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/EmailNotifications",
                     "description": "The email notification settings to update. Specify email addresses to notify when endpoint state changes occur."
                   }
                 }
@@ -1414,7 +1459,7 @@
                 "type": "object",
                 "properties": {
                   "config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/PtEndpointCoreConfig",
                     "description": ":returns: Long-running operation waiter for :class:`ServingEndpointDetailed`. See :method:wait_get_serving_endpoint_not_updating for more details."
                   }
                 },
@@ -3072,7 +3117,7 @@
           "MASK",
           "NONE"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "AiGatewayRateLimitKey": {
         "type": "string",
@@ -3082,14 +3127,14 @@
           "user",
           "user_group"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "AiGatewayRateLimitRenewalPeriod": {
         "type": "string",
         "x-enum": [
           "minute"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "AmazonBedrockConfigBedrockProvider": {
         "type": "string",
@@ -3099,7 +3144,7 @@
           "anthropic",
           "cohere"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ChatMessageRole": {
         "type": "string",
@@ -3125,7 +3170,7 @@
           "UPDATE_CANCELED",
           "UPDATE_FAILED"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "EndpointStateReady": {
         "type": "string",
@@ -3133,7 +3178,7 @@
           "NOT_READY",
           "READY"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ExternalFunctionRequestHttpMethod": {
         "type": "string",
@@ -3144,7 +3189,7 @@
           "POST",
           "PUT"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ExternalModelProvider": {
         "type": "string",
@@ -3159,7 +3204,7 @@
           "openai",
           "palm"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "QueryEndpointResponseObject": {
         "type": "string",
@@ -3176,14 +3221,14 @@
           "endpoint",
           "user"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "RateLimitRenewalPeriod": {
         "type": "string",
         "x-enum": [
           "minute"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ServedModelInputWorkloadType": {
         "type": "string",
@@ -3205,7 +3250,7 @@
           "DEPLOYMENT_READY",
           "DEPLOYMENT_RECOVERING"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ServingEndpointDetailedPermissionLevel": {
         "type": "string",
@@ -3214,7 +3259,7 @@
           "CAN_QUERY",
           "CAN_VIEW"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ServingEndpointPermissionLevel": {
         "type": "string",

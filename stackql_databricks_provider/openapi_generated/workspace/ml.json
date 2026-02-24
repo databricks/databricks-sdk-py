@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks ml service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-19",
+    "x-stackql-date-generated": "2026-02-24",
     "x-stackql-sdk-namespace": "databricks.sdk.service.ml"
   },
   "servers": [
@@ -45,7 +45,10 @@
                     "description": "Location where all artifacts for the experiment are stored. If not provided, the remote server will select an appropriate default."
                   },
                   "tags": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ExperimentTag"
+                    },
                     "description": "A collection of tags to set on the experiment. Maximum tag size and number of tags per request depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250 bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to support up to 20 tags per request."
                   }
                 },
@@ -117,7 +120,10 @@
                     "description": "The name of the model (optional). If not specified one will be generated."
                   },
                   "params": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/LoggedModelParameter"
+                    },
                     "description": "Parameters attached to the model."
                   },
                   "source_run_id": {
@@ -125,7 +131,10 @@
                     "description": "The ID of the run that created the model."
                   },
                   "tags": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/LoggedModelTag"
+                    },
                     "description": "Tags attached to the model."
                   }
                 },
@@ -193,11 +202,14 @@
                     "description": "The name of the run."
                   },
                   "start_time": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "Unix timestamp in milliseconds of when the run started."
                   },
                   "tags": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RunTag"
+                    },
                     "description": "Additional metadata for run."
                   },
                   "user_id": {
@@ -366,7 +378,7 @@
                 "type": "object",
                 "properties": {
                   "status": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/LoggedModelStatus",
                     "description": "Whether or not the model is ready for use. ``\"LOGGED_MODEL_UPLOAD_FAILED\"`` indicates that something went wrong when logging the model weights / agent code."
                   }
                 },
@@ -593,7 +605,7 @@
                     "description": "The maximum creation timestamp in milliseconds since the UNIX epoch for deleting runs. Only runs created prior to or at this timestamp are deleted."
                   },
                   "max_runs": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "An optional positive integer indicating the maximum number of runs to delete. The maximum allowed value for max_runs is 10000."
                   }
                 },
@@ -826,7 +838,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of Metric records to return per paginated request. Default is set to 25,000. If set higher than 25,000, a request Exception will be raised."
           },
@@ -1022,7 +1034,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ExperimentAccessControlRequest"
+                    },
                     "description": ":returns: :class:`ExperimentPermissions`"
                   }
                 }
@@ -1088,7 +1103,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ExperimentAccessControlRequest"
+                    },
                     "description": ":returns: :class:`ExperimentPermissions`"
                   }
                 }
@@ -1286,7 +1304,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of experiments desired. If `max_results` is unspecified, return all experiments. If `max_results` is too large, it'll be automatically capped at 1000. Callers of this endpoint are encouraged to pass max_results explicitly and leverage page_token to iterate through experiments."
           },
@@ -1304,7 +1322,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/ViewType"
             },
             "description": "Qualifier for type of experiments to be returned. If unspecified, return only active experiments."
           }
@@ -1358,11 +1376,17 @@
                 "type": "object",
                 "properties": {
                   "metrics": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Metric"
+                    },
                     "description": "Metrics to log. A single request can contain up to 1000 metrics, and up to 1000 metrics, params, and tags in total."
                   },
                   "params": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Param"
+                    },
                     "description": "Params to log. A single request can contain up to 100 params, and up to 1000 metrics, params, and tags in total."
                   },
                   "run_id": {
@@ -1370,7 +1394,10 @@
                     "description": "ID of the run to log under"
                   },
                   "tags": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RunTag"
+                    },
                     "description": "Tags to log. A single request can contain up to 100 tags, and up to 1000 metrics, params, and tags in total."
                   }
                 }
@@ -1424,11 +1451,17 @@
                     "description": "ID of the run to log under"
                   },
                   "datasets": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DatasetInput"
+                    },
                     "description": "Dataset inputs"
                   },
                   "models": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ModelInput"
+                    },
                     "description": "Model inputs"
                   }
                 },
@@ -1492,7 +1525,10 @@
                 "type": "object",
                 "properties": {
                   "params": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/LoggedModelParameter"
+                    },
                     "description": "Parameters to attach to the model."
                   }
                 }
@@ -1574,7 +1610,7 @@
                     "description": "[Deprecated, use `run_id` instead] ID of the run under which to log the metric. This field will be removed in a future MLflow version."
                   },
                   "step": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "Step at which to log the metric"
                   }
                 },
@@ -1687,7 +1723,10 @@
                     "description": "The ID of the Run from which to log outputs."
                   },
                   "models": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ModelOutput"
+                    },
                     "description": "The model outputs from the Run."
                   }
                 },
@@ -1920,7 +1959,7 @@
                     "description": "The minimum deletion timestamp in milliseconds since the UNIX epoch for restoring runs. Only runs deleted no earlier than this timestamp are restored."
                   },
                   "max_runs": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "An optional positive integer indicating the maximum number of runs to restore. The maximum allowed value for max_runs is 10000."
                   }
                 },
@@ -1985,11 +2024,14 @@
                     "description": "String representing a SQL filter condition (e.g. \"name ILIKE 'my-experiment%'\")"
                   },
                   "max_results": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "Maximum number of experiments desired. Max threshold is 3000."
                   },
                   "order_by": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "List of columns for ordering search results, which can include experiment name and last updated timestamp with an optional \"DESC\" or \"ASC\" annotation, where \"ASC\" is the default. Tiebreaks are done by experiment id DESC."
                   },
                   "page_token": {
@@ -1997,7 +2039,7 @@
                     "description": "Token indicating the page of experiments to fetch"
                   },
                   "view_type": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ViewType",
                     "description": "Qualifier for type of experiments to be returned. If unspecified, return only active experiments."
                   }
                 }
@@ -2054,11 +2096,17 @@
                 "type": "object",
                 "properties": {
                   "datasets": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/SearchLoggedModelsDataset"
+                    },
                     "description": "List of datasets on which to apply the metrics filter clauses. For example, a filter with `metrics.accuracy > 0.9` and dataset info with name \"test_dataset\" means we will return all logged models with accuracy > 0.9 on the test_dataset. Metric values from ANY dataset matching the criteria are considered. If no datasets are specified, then metrics across all datasets are considered in the filter."
                   },
                   "experiment_ids": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "The IDs of the experiments in which to search for logged models."
                   },
                   "filter": {
@@ -2066,11 +2114,14 @@
                     "description": "A filter expression over logged model info and data that allows returning a subset of logged models. The syntax is a subset of SQL that supports AND'ing together binary operations. Example: ``params.alpha < 0.3 AND metrics.accuracy > 0.9``."
                   },
                   "max_results": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The maximum number of Logged Models to return. The maximum limit is 50."
                   },
                   "order_by": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/SearchLoggedModelsOrderBy"
+                    },
                     "description": "The list of columns for ordering the results, with additional fields for sorting criteria."
                   },
                   "page_token": {
@@ -2131,7 +2182,10 @@
                 "type": "object",
                 "properties": {
                   "experiment_ids": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "List of experiment IDs to search over."
                   },
                   "filter": {
@@ -2139,11 +2193,14 @@
                     "description": "A filter expression over params, metrics, and tags, that allows returning a subset of runs. The syntax is a subset of SQL that supports ANDing together binary operations between a param, metric, or tag and a constant. Example: `metrics.rmse < 1 and params.model_class = 'LogisticRegression'` You can select columns with special characters (hyphen, space, period, etc.) by using double quotes: `metrics.\"model class\" = 'LinearRegression' and tags.\"user-name\" = 'Tomas'` Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`."
                   },
                   "max_results": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "Maximum number of runs desired. Max threshold is 50000"
                   },
                   "order_by": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "List of columns to be ordered by, including attributes, params, metrics, and tags with an optional `\"DESC\"` or `\"ASC\"` annotation, where `\"ASC\"` is the default. Example: `[\"params.input DESC\", \"metrics.alpha ASC\", \"metrics.rmse\"]`. Tiebreaks are done by start_time `DESC` followed by `run_id` for runs with the same start time (and this is the default ordering criterion if order_by is not provided)."
                   },
                   "page_token": {
@@ -2151,7 +2208,7 @@
                     "description": "Token for the current page of runs."
                   },
                   "run_view_type": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/ViewType",
                     "description": "Whether to display only active, only deleted, or all runs. Defaults to only active runs."
                   }
                 }
@@ -2282,7 +2339,10 @@
                 "type": "object",
                 "properties": {
                   "tags": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/LoggedModelTag"
+                    },
                     "description": "The tags to set on the logged model."
                   }
                 }
@@ -2455,7 +2515,7 @@
                 "type": "object",
                 "properties": {
                   "end_time": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "Unix timestamp in milliseconds of when the run ended."
                   },
                   "run_id": {
@@ -2471,7 +2531,7 @@
                     "description": "[Deprecated, use `run_id` instead] ID of the run to update. This field will be removed in a future MLflow version."
                   },
                   "status": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/UpdateRunStatus",
                     "description": "Updated status of the run."
                   }
                 }
@@ -2528,7 +2588,10 @@
                 "type": "object",
                 "properties": {
                   "requests": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/CreateMaterializedFeatureRequest"
+                    },
                     "description": "The requests to create materialized features."
                   }
                 },
@@ -2588,7 +2651,7 @@
                 "type": "object",
                 "properties": {
                   "feature": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/Feature",
                     "description": "Feature to create."
                   }
                 },
@@ -2645,7 +2708,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The maximum number of results to return."
           },
@@ -2708,7 +2771,7 @@
                 "type": "object",
                 "properties": {
                   "kafka_config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/KafkaConfig",
                     "description": ":returns: :class:`KafkaConfig`"
                   }
                 },
@@ -2765,7 +2828,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The maximum number of results to return."
           },
@@ -2828,7 +2891,7 @@
                 "type": "object",
                 "properties": {
                   "materialized_feature": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MaterializedFeature",
                     "description": "The materialized feature to create."
                   }
                 },
@@ -2894,7 +2957,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The maximum number of results to return. Defaults to 100 if not specified. Cannot be greater than 1000."
           },
@@ -3072,7 +3135,7 @@
                 "type": "object",
                 "properties": {
                   "feature": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/Feature",
                     "description": "Feature to update."
                   }
                 },
@@ -3235,7 +3298,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "object"
             },
             "description": "The list of fields to update."
           }
@@ -3247,7 +3310,7 @@
                 "type": "object",
                 "properties": {
                   "kafka_config": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/KafkaConfig",
                     "description": "The Kafka config to update."
                   }
                 },
@@ -3422,7 +3485,7 @@
                 "type": "object",
                 "properties": {
                   "materialized_feature": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/MaterializedFeature",
                     "description": "The materialized feature to update."
                   }
                 },
@@ -3482,7 +3545,7 @@
                 "type": "object",
                 "properties": {
                   "online_store": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/OnlineStore",
                     "description": "Online store to create."
                   }
                 },
@@ -3539,7 +3602,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The maximum number of results to return. Defaults to 100 if not specified."
           },
@@ -3717,7 +3780,7 @@
                 "type": "object",
                 "properties": {
                   "online_store": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/OnlineStore",
                     "description": "Online store to update."
                   }
                 },
@@ -3834,7 +3897,7 @@
                 "type": "object",
                 "properties": {
                   "publish_spec": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/PublishSpec",
                     "description": "The specification for publishing the online table from the source table."
                   }
                 },
@@ -3926,15 +3989,21 @@
                     "description": "The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name, used to store future feature data for predictions."
                   },
                   "holiday_regions": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "The region code(s) to automatically add holiday features. Currently supports only one region."
                   },
                   "include_features": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "Specifies the list of feature columns to include in model training. These columns must exist in the training data and be of type string, numerical, or boolean. If not specified, no additional features will be included. Note: Certain columns are automatically handled: - Automatically excluded: split_column, target_column, custom_weights_column. - Automatically included: time_column."
                   },
                   "max_runtime": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The maximum duration for the experiment in minutes. The experiment stops automatically if it exceeds this limit."
                   },
                   "prediction_data_path": {
@@ -3954,11 +4023,17 @@
                     "description": "// The column in the training table used for custom data splits. Values must be 'train', 'validate', or 'test'."
                   },
                   "timeseries_identifier_columns": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "The column in the training table used to group the dataset for predicting individual time series."
                   },
                   "training_frameworks": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "List of frameworks to include for model tuning. Possible values are 'Prophet', 'ARIMA', 'DeepAR'. An empty list includes all supported frameworks."
                   }
                 },
@@ -4094,7 +4169,7 @@
                 "type": "object",
                 "properties": {
                   "feature_tag": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/FeatureTag",
                     "description": ":returns: :class:`FeatureTag`"
                   }
                 },
@@ -4168,7 +4243,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "The maximum number of results to return."
           },
@@ -4398,7 +4473,7 @@
                 "type": "object",
                 "properties": {
                   "feature_tag": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/FeatureTag"
                   }
                 },
                 "required": [
@@ -4676,7 +4751,10 @@
                     "description": "Optional description for registered model."
                   },
                   "tags": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ModelTag"
+                    },
                     "description": "Additional metadata for registered model."
                   }
                 },
@@ -4756,7 +4834,10 @@
                     "description": "MLflow run link - this is the exact link of the run that generated this model version, potentially hosted at another instance of MLflow."
                   },
                   "tags": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ModelVersionTag"
+                    },
                     "description": "Additional metadata for model version."
                   }
                 },
@@ -4891,7 +4972,10 @@
                 "type": "object",
                 "properties": {
                   "events": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RegistryWebhookEvent"
+                    },
                     "description": "Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was created for the associated model. * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version\u2019s stage was changed. * `TRANSITION_REQUEST_CREATED`: A user requested a model version\u2019s stage be transitioned. * `COMMENT_CREATED`: A user wrote a comment on a registered model. * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be specified for a registry-wide webhook, which can be created by not specifying a model name in the create request. * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version. * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging. * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production. * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived. * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to staging. * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to production. * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived."
                   },
                   "description": {
@@ -4899,11 +4983,11 @@
                     "description": "User-specified description for the webhook."
                   },
                   "http_url_spec": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/HttpUrlSpec",
                     "description": "External HTTPS URL called on event trigger (by using a POST request)."
                   },
                   "job_spec": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/JobSpec",
                     "description": "ID of the job that the webhook runs."
                   },
                   "model_name": {
@@ -4911,7 +4995,7 @@
                     "description": "If model name is not specified, a registry-wide webhook is created that listens for the specified events across all versions of all registered models."
                   },
                   "status": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/RegistryWebhookStatus",
                     "description": "Enable or disable triggering the webhook, or put the webhook into test mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens. * `DISABLED`: Webhook is not triggered. * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real event."
                   }
                 },
@@ -5376,7 +5460,10 @@
                     "description": "Registered model unique name identifier."
                   },
                   "stages": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "List of stages."
                   }
                 },
@@ -5728,7 +5815,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RegisteredModelAccessControlRequest"
+                    },
                     "description": ":returns: :class:`RegisteredModelPermissions`"
                   }
                 }
@@ -5794,7 +5884,10 @@
                 "type": "object",
                 "properties": {
                   "access_control_list": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RegisteredModelAccessControlRequest"
+                    },
                     "description": ":returns: :class:`RegisteredModelPermissions`"
                   }
                 }
@@ -5850,7 +5943,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of registered models desired. Max threshold is 1000."
           },
@@ -5974,7 +6067,10 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/RegistryWebhookEvent"
+              }
             },
             "description": "Events that trigger the webhook. * `MODEL_VERSION_CREATED`: A new model version was created for the associated model. * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version\u2019s stage was changed. * `TRANSITION_REQUEST_CREATED`: A user requested a model version\u2019s stage be transitioned. * `COMMENT_CREATED`: A user wrote a comment on a registered model. * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be specified for a registry-wide webhook, which can be created by not specifying a model name in the create request. * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version. * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging. * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production. * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived. * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to staging. * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to production. * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived. If `events` is specified, any webhook with one or more of the specified trigger events is included in the output. If `events` is not specified, webhooks of all event types are included in the output."
           },
@@ -5983,7 +6079,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": ":param model_name: str (optional) Registered model name If not specified, all webhooks associated with the specified events are listed, regardless of their associated model."
           },
@@ -6200,7 +6296,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of models desired. Max threshold is 10K."
           },
@@ -6209,7 +6305,10 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
             "description": "List of columns to be ordered by including model name, version, stage with an optional \"DESC\" or \"ASC\" annotation, where \"ASC\" is the default. Tiebreaks are done by latest stage transition timestamp, followed by name ASC, followed by version DESC."
           },
@@ -6280,7 +6379,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "integer"
             },
             "description": "Maximum number of models desired. Default is 100. Max threshold is 1000."
           },
@@ -6289,7 +6388,10 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
             "description": "List of columns for ordering search results, which can include model name and last updated timestamp with an optional \"DESC\" or \"ASC\" annotation, where \"ASC\" is the default. Tiebreaks are done by model name ASC."
           },
@@ -6487,7 +6589,7 @@
                     "description": "Webhook ID"
                   },
                   "event": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/RegistryWebhookEvent",
                     "description": "If `event` is specified, the test trigger uses the specified event. If `event` is not specified, the test trigger uses a randomly chosen event associated with the webhook."
                   }
                 },
@@ -6832,18 +6934,21 @@
                     "description": "User-specified description for the webhook."
                   },
                   "events": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RegistryWebhookEvent"
+                    },
                     "description": "Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was created for the associated model. * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version\u2019s stage was changed. * `TRANSITION_REQUEST_CREATED`: A user requested a model version\u2019s stage be transitioned. * `COMMENT_CREATED`: A user wrote a comment on a registered model. * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be specified for a registry-wide webhook, which can be created by not specifying a model name in the create request. * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version. * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging. * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production. * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived. * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to staging. * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to production. * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived."
                   },
                   "http_url_spec": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/HttpUrlSpec",
                     "description": ":param job_spec: :class:`JobSpec` (optional)"
                   },
                   "job_spec": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/JobSpec"
                   },
                   "status": {
-                    "type": "string",
+                    "$ref": "#/components/schemas/RegistryWebhookStatus",
                     "description": ":returns: :class:`UpdateWebhookResponse`"
                   }
                 },
@@ -9327,7 +9432,7 @@
           "RUNNING",
           "SUCCEEDED"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FunctionFunctionType": {
         "type": "string",
@@ -9346,7 +9451,7 @@
           "VAR_POP",
           "VAR_SAMP"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "LoggedModelStatus": {
         "type": "string",
@@ -9364,7 +9469,7 @@
           "PAUSED",
           "SNAPSHOT"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ModelVersionStatus": {
         "type": "string",
@@ -9385,7 +9490,7 @@
           "STOPPED",
           "UPDATING"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "PermissionLevel": {
         "type": "string",
@@ -9406,7 +9511,7 @@
           "SNAPSHOT",
           "TRIGGERED"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "RegisteredModelPermissionLevel": {
         "type": "string",
@@ -9445,7 +9550,7 @@
           "TRANSITION_REQUEST_TO_PRODUCTION_CREATED",
           "TRANSITION_REQUEST_TO_STAGING_CREATED"
         ],
-        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "RegistryWebhookStatus": {
         "type": "string",

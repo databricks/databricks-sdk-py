@@ -6,7 +6,7 @@ info:
     generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.sql
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -38,14 +38,14 @@ paths:
               type: object
               properties:
                 alert:
-                  type: string
+                  $ref: '#/components/schemas/CreateAlertRequestAlert'
                   description: >-
                     :param auto_resolve_display_name: bool (optional) If true,
                     automatically resolve alert display name conflicts.
                     Otherwise, fail the request if the alert's display name
                     conflicts with an existing alert's display name.
                 auto_resolve_display_name:
-                  type: string
+                  type: boolean
       responses:
         '200':
           description: Success
@@ -92,7 +92,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -250,14 +250,14 @@ paths:
                 update_mask:
                   type: string
                 alert:
-                  type: string
+                  $ref: '#/components/schemas/UpdateAlertRequestAlert'
                   description: >-
                     :param auto_resolve_display_name: bool (optional) If true,
                     automatically resolve alert display name conflicts.
                     Otherwise, fail the request if the alert's display name
                     conflicts with an existing alert's display name.
                 auto_resolve_display_name:
-                  type: string
+                  type: boolean
               required:
                 - update_mask
       responses:
@@ -326,7 +326,7 @@ paths:
                   type: string
                   description: Name of the alert.
                 options:
-                  type: string
+                  $ref: '#/components/schemas/AlertOptions'
                   description: Alert configuration options.
                 query_id:
                   type: string
@@ -337,7 +337,7 @@ paths:
                     The identifier of the workspace folder containing the
                     object.
                 rearm:
-                  type: string
+                  type: integer
                   description: >-
                     Number of seconds after being triggered before the alert
                     rearms itself and can be triggered again. If `null`, alert
@@ -540,13 +540,13 @@ paths:
                 name:
                   type: string
                 options:
-                  type: string
+                  $ref: '#/components/schemas/AlertOptions'
                   description: Alert configuration options.
                 query_id:
                   type: string
                   description: Query ID.
                 rearm:
-                  type: string
+                  type: integer
                   description: >-
                     Number of seconds after being triggered before the alert
                     rearms itself and can be triggered again. If `null`, alert
@@ -590,7 +590,7 @@ paths:
               type: object
               properties:
                 alert:
-                  type: string
+                  $ref: '#/components/schemas/AlertV2'
                   description: ':returns: :class:`AlertV2`'
               required:
                 - alert
@@ -631,7 +631,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -731,7 +731,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
       responses:
         '200':
           description: Success
@@ -790,7 +790,7 @@ paths:
               type: object
               properties:
                 alert:
-                  type: string
+                  $ref: '#/components/schemas/AlertV2'
                   description: >-
                     :param update_mask: str The field mask must be a single
                     string, with multiple fields separated by commas (no
@@ -857,7 +857,7 @@ paths:
                   type: string
                   description: Dashboard ID returned by :method:dashboards/create.
                 options:
-                  type: string
+                  $ref: '#/components/schemas/WidgetOptions'
                   description: ':param width: int Width of a widget'
                 width:
                   type: integer
@@ -969,7 +969,7 @@ paths:
                   type: string
                   description: Dashboard ID returned by :method:dashboards/create.
                 options:
-                  type: string
+                  $ref: '#/components/schemas/WidgetOptions'
                   description: ':param width: int Width of a widget'
                 width:
                   type: integer
@@ -1136,13 +1136,15 @@ paths:
                 name:
                   type: string
                 run_as_role:
-                  type: string
+                  $ref: '#/components/schemas/RunAsRole'
                   description: >-
                     Sets the **Run as** role for the object. Must be set to one
                     of `"viewer"` (signifying "run as viewer" behavior) or
                     `"owner"` (signifying "run as owner" behavior)
                 tags:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: ':returns: :class:`Dashboard`'
       responses:
         '200':
@@ -1195,19 +1197,19 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/ListOrder'
           description: Name of dashboard attribute to order by.
         - name: page
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Page number to retrieve.
         - name: page_size
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Number of dashboards to return per page.
         - name: q
           in: query
@@ -1361,7 +1363,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/ObjectTypePlural'
           description: The type of object permissions to check.
       responses:
         '200':
@@ -1433,10 +1435,12 @@ paths:
               type: object
               properties:
                 object_type:
-                  type: string
+                  $ref: '#/components/schemas/ObjectTypePlural'
                   description: The type of object permission to set.
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/AccessControl'
                   description: ':returns: :class:`SetResponse`'
               required:
                 - object_type
@@ -1500,7 +1504,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/TransferOwnershipObjectId'
           description: The ID of the object on which to change ownership.
       requestBody:
         content:
@@ -1509,7 +1513,7 @@ paths:
               type: object
               properties:
                 object_type:
-                  type: string
+                  $ref: '#/components/schemas/OwnableObjectType'
                   description: The type of object on which to change ownership.
                 new_owner:
                   type: string
@@ -1560,13 +1564,13 @@ paths:
               type: object
               properties:
                 auto_resolve_display_name:
-                  type: string
+                  type: boolean
                   description: >-
                     If true, automatically resolve query display name conflicts.
                     Otherwise, fail the request if the query's display name
                     conflicts with an existing query's display name.
                 query:
-                  type: string
+                  $ref: '#/components/schemas/CreateQueryRequestQuery'
                   description: ':returns: :class:`Query`'
       responses:
         '200':
@@ -1614,7 +1618,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: ':param page_token: str (optional)'
         - name: page_token
           in: query
@@ -1772,13 +1776,13 @@ paths:
                 update_mask:
                   type: string
                 auto_resolve_display_name:
-                  type: string
+                  type: boolean
                   description: >-
                     If true, automatically resolve alert display name conflicts.
                     Otherwise, fail the request if the alert's display name
                     conflicts with an existing alert's display name.
                 query:
-                  type: string
+                  $ref: '#/components/schemas/UpdateQueryRequestQuery'
                   description: ':returns: :class:`Query`'
               required:
                 - update_mask
@@ -1827,7 +1831,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: page_token
           in: query
           required: false
@@ -1936,7 +1940,7 @@ paths:
                     The title of this query that appears in list views, widget
                     headings, and on the query page.
                 options:
-                  type: string
+                  type: object
                   description: >-
                     Exclusively used for storing a list parameter definitions. A
                     parameter is an object with `title`, `name`, `type`, and
@@ -1951,13 +1955,15 @@ paths:
                   type: string
                   description: The text of the query to be run.
                 run_as_role:
-                  type: string
+                  $ref: '#/components/schemas/RunAsRole'
                   description: >-
                     Sets the **Run as** role for the object. Must be set to one
                     of `"viewer"` (signifying "run as viewer" behavior) or
                     `"owner"` (signifying "run as owner" behavior)
                 tags:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: ':returns: :class:`LegacyQuery`'
       responses:
         '200':
@@ -2045,13 +2051,13 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Page number to retrieve.
         - name: page_size
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: Number of queries to return per page.
         - name: q
           in: query
@@ -2250,7 +2256,7 @@ paths:
                     The title of this query that appears in list views, widget
                     headings, and on the query page.
                 options:
-                  type: string
+                  type: object
                   description: >-
                     Exclusively used for storing a list parameter definitions. A
                     parameter is an object with `title`, `name`, `type`, and
@@ -2260,13 +2266,15 @@ paths:
                   type: string
                   description: The text of the query to be run.
                 run_as_role:
-                  type: string
+                  $ref: '#/components/schemas/RunAsRole'
                   description: >-
                     Sets the **Run as** role for the object. Must be set to one
                     of `"viewer"` (signifying "run as viewer" behavior) or
                     `"owner"` (signifying "run as owner" behavior)
                 tags:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                   description: ':returns: :class:`LegacyQuery`'
       responses:
         '200':
@@ -2376,7 +2384,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/QueryFilter'
           description: >-
             An optional filter object to limit query history results. Accepts
             parameters such as user IDs, endpoint IDs, and statuses to narrow
@@ -2386,7 +2394,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             Whether to include the query metrics with each query. Only use this
             for a small subset of queries (max_results). Defaults to false.
@@ -2394,7 +2402,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Limit the number of results returned in one page. Must be less than
             1000 and the default is 100.
@@ -2450,7 +2458,7 @@ paths:
               type: object
               properties:
                 visualization:
-                  type: string
+                  $ref: '#/components/schemas/CreateVisualizationRequestVisualization'
                   description: ':returns: :class:`Visualization`'
       responses:
         '200':
@@ -2557,7 +2565,7 @@ paths:
                 update_mask:
                   type: string
                 visualization:
-                  type: string
+                  $ref: '#/components/schemas/UpdateVisualizationRequestVisualization'
                   description: ':returns: :class:`Visualization`'
               required:
                 - update_mask
@@ -2620,7 +2628,7 @@ paths:
               type: object
               properties:
                 options:
-                  type: string
+                  type: object
                   description: >-
                     The options object varies widely from one visualization type
                     to the next and is unsupported. Databricks does not
@@ -2774,13 +2782,13 @@ paths:
                     The name of the visualization that appears on dashboards and
                     the query screen.
                 options:
-                  type: string
+                  type: object
                   description: >-
                     The options object varies widely from one visualization type
                     to the next and is unsupported. Databricks does not
                     recommend modifying visualization settings in JSON.
                 query:
-                  type: string
+                  $ref: '#/components/schemas/LegacyQuery'
                   description: >-
                     :param type: str (optional) The type of visualization:
                     chart, table, pivot table, and so on.
@@ -3144,7 +3152,7 @@ paths:
                     are SQL warehouses?] [What are SQL warehouses?]:
                     https://docs.databricks.com/sql/admin/warehouse-type.html
                 byte_limit:
-                  type: string
+                  type: integer
                   description: >-
                     Applies the given byte limit to the statement's result size.
                     Byte counts are based on internal data representations and
@@ -3160,7 +3168,7 @@ paths:
                     [`USE CATALOG`] in SQL. [`USE CATALOG`]:
                     https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
                 disposition:
-                  type: string
+                  $ref: '#/components/schemas/Disposition'
                   description: >-
                     The fetch disposition provides two modes of fetching
                     results: `INLINE` and `EXTERNAL_LINKS`. Statements executed
@@ -3185,7 +3193,7 @@ paths:
                     response. The behavior when attempting to use an expired
                     link is cloud specific.
                 format:
-                  type: string
+                  $ref: '#/components/schemas/Format'
                   description: >-
                     Statement execution supports three result formats:
                     `JSON_ARRAY` (default), `ARROW_STREAM`, and `CSV`.
@@ -3219,7 +3227,7 @@ paths:
                     https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
                     [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
                 on_wait_timeout:
-                  type: string
+                  $ref: '#/components/schemas/ExecuteStatementRequestOnWaitTimeout'
                   description: >-
                     When `wait_timeout > 0s`, the call will block up to the
                     specified time. If the statement execution doesn't finish
@@ -3231,7 +3239,9 @@ paths:
                     set to `CANCEL`, the statement execution is canceled and the
                     call returns with a `CANCELED` state.
                 parameters:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/StatementParameterListItem'
                   description: >-
                     A list of parameters to pass into a SQL statement containing
                     parameter markers. A parameter consists of a name, a value,
@@ -3259,7 +3269,9 @@ paths:
                     [`cast` function]:
                     https://docs.databricks.com/sql/language-manual/functions/cast.html
                 query_tags:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/QueryTag'
                   description: >-
                     An array of query tags to annotate a SQL statement. A query
                     tag consists of a non-empty key and, optionally, a value. To
@@ -3272,7 +3284,7 @@ paths:
                     "query_tags": [ { "key": "team", "value": "eng" }, { "key":
                     "some key only tag" } ] }
                 row_limit:
-                  type: string
+                  type: integer
                   description: >-
                     Applies the given row limit to the statement's result set,
                     but unlike the `LIMIT` clause in SQL, it also sets the
@@ -3538,14 +3550,14 @@ paths:
               type: object
               properties:
                 auto_stop_mins:
-                  type: string
+                  type: integer
                   description: >-
                     The amount of time in minutes that a SQL warehouse must be
                     idle (i.e., no RUNNING queries) before it is automatically
                     stopped. Supported values: - Must be == 0 or >= 10 mins - 0
                     indicates no autostop. Defaults to 120 mins
                 channel:
-                  type: string
+                  $ref: '#/components/schemas/Channel'
                   description: Channel Details
                 cluster_size:
                   type: string
@@ -3560,12 +3572,12 @@ paths:
                   type: string
                   description: warehouse creator name
                 enable_photon:
-                  type: string
+                  type: boolean
                   description: >-
                     Configures whether the warehouse should use Photon optimized
                     clusters. Defaults to false.
                 enable_serverless_compute:
-                  type: string
+                  type: boolean
                   description: >-
                     Configures whether the warehouse should use serverless
                     compute
@@ -3575,14 +3587,14 @@ paths:
                     Deprecated. Instance profile used to pass IAM role to the
                     cluster
                 max_num_clusters:
-                  type: string
+                  type: integer
                   description: >-
                     Maximum number of clusters that the autoscaler will create
                     to handle concurrent queries. Supported values: - Must be >=
                     min_num_clusters - Must be <= 40. Defaults to min_clusters
                     if unset.
                 min_num_clusters:
-                  type: string
+                  type: integer
                   description: >-
                     Minimum number of available clusters that will be maintained
                     for this SQL warehouse. Increasing this will ensure that a
@@ -3597,19 +3609,19 @@ paths:
                     Logical name for the cluster. Supported values: - Must be
                     unique within an org. - Must be less than 100 characters.
                 spot_instance_policy:
-                  type: string
+                  $ref: '#/components/schemas/SpotInstancePolicy'
                   description: >-
                     Configurations whether the endpoint should use spot
                     instances.
                 tags:
-                  type: string
+                  $ref: '#/components/schemas/EndpointTags'
                   description: >-
                     A set of key-value pairs that will be tagged on all
                     resources (e.g., AWS instances and EBS volumes) associated
                     with this SQL warehouse. Supported values: - Number of tags
                     < 45.
                 warehouse_type:
-                  type: string
+                  $ref: '#/components/schemas/CreateWarehouseRequestWarehouseType'
                   description: >-
                     Warehouse type: `PRO` or `CLASSIC`. If you want to use
                     serverless compute, you must set to `PRO` and also set the
@@ -3660,7 +3672,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: The max number of warehouses to return.
         - name: page_token
           in: query
@@ -3676,7 +3688,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             Service Principal which will be used to fetch the list of endpoints.
             If not specified, SQL Gateway will use the user from the session
@@ -3740,7 +3752,7 @@ paths:
               type: object
               properties:
                 default_warehouse_override:
-                  type: string
+                  $ref: '#/components/schemas/DefaultWarehouseOverride'
                   description: Required. The default warehouse override to create.
               required:
                 - default_warehouse_override
@@ -3795,7 +3807,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: integer
           description: >-
             The maximum number of overrides to return. The service may return
             fewer than this value. If unspecified, at most 100 overrides will be
@@ -4051,7 +4063,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: object
           description: >-
             Required. Field mask specifying which fields to update. Only the
             fields specified in the mask will be updated. Use "*" to update all
@@ -4061,7 +4073,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            type: boolean
           description: >-
             If set to true, and the override is not found, a new override will
             be created. In this situation, `update_mask` is ignored and all
@@ -4073,7 +4085,7 @@ paths:
               type: object
               properties:
                 default_warehouse_override:
-                  type: string
+                  $ref: '#/components/schemas/DefaultWarehouseOverride'
                   description: >-
                     Required. The default warehouse override to update. The name
                     field must be set in the format:
@@ -4187,14 +4199,14 @@ paths:
               type: object
               properties:
                 auto_stop_mins:
-                  type: string
+                  type: integer
                   description: >-
                     The amount of time in minutes that a SQL warehouse must be
                     idle (i.e., no RUNNING queries) before it is automatically
                     stopped. Supported values: - Must be == 0 or >= 10 mins - 0
                     indicates no autostop. Defaults to 120 mins
                 channel:
-                  type: string
+                  $ref: '#/components/schemas/Channel'
                   description: Channel Details
                 cluster_size:
                   type: string
@@ -4209,12 +4221,12 @@ paths:
                   type: string
                   description: warehouse creator name
                 enable_photon:
-                  type: string
+                  type: boolean
                   description: >-
                     Configures whether the warehouse should use Photon optimized
                     clusters. Defaults to false.
                 enable_serverless_compute:
-                  type: string
+                  type: boolean
                   description: >-
                     Configures whether the warehouse should use serverless
                     compute
@@ -4224,14 +4236,14 @@ paths:
                     Deprecated. Instance profile used to pass IAM role to the
                     cluster
                 max_num_clusters:
-                  type: string
+                  type: integer
                   description: >-
                     Maximum number of clusters that the autoscaler will create
                     to handle concurrent queries. Supported values: - Must be >=
                     min_num_clusters - Must be <= 40. Defaults to min_clusters
                     if unset.
                 min_num_clusters:
-                  type: string
+                  type: integer
                   description: >-
                     Minimum number of available clusters that will be maintained
                     for this SQL warehouse. Increasing this will ensure that a
@@ -4246,19 +4258,19 @@ paths:
                     Logical name for the cluster. Supported values: - Must be
                     unique within an org. - Must be less than 100 characters.
                 spot_instance_policy:
-                  type: string
+                  $ref: '#/components/schemas/SpotInstancePolicy'
                   description: >-
                     Configurations whether the endpoint should use spot
                     instances.
                 tags:
-                  type: string
+                  $ref: '#/components/schemas/EndpointTags'
                   description: >-
                     A set of key-value pairs that will be tagged on all
                     resources (e.g., AWS instances and EBS volumes) associated
                     with this SQL warehouse. Supported values: - Number of tags
                     < 45.
                 warehouse_type:
-                  type: string
+                  $ref: '#/components/schemas/EditWarehouseRequestWarehouseType'
                   description: >-
                     Warehouse type: `PRO` or `CLASSIC`. If you want to use
                     serverless compute, you must set to `PRO` and also set the
@@ -4405,7 +4417,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/WarehouseAccessControlRequest'
                   description: ':returns: :class:`WarehousePermissions`'
       responses:
         '200':
@@ -4462,7 +4476,9 @@ paths:
               type: object
               properties:
                 access_control_list:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/WarehouseAccessControlRequest'
                   description: ':returns: :class:`WarehousePermissions`'
       responses:
         '200':
@@ -4566,21 +4582,25 @@ paths:
               type: object
               properties:
                 channel:
-                  type: string
+                  $ref: '#/components/schemas/Channel'
                   description: 'Optional: Channel selection details'
                 config_param:
-                  type: string
+                  $ref: '#/components/schemas/RepeatedEndpointConfPairs'
                   description: 'Deprecated: Use sql_configuration_parameters'
                 data_access_config:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/EndpointConfPair'
                   description: >-
                     Spark confs for external hive metastore configuration JSON
                     serialized size must be less than <= 512K
                 enable_serverless_compute:
-                  type: string
+                  type: boolean
                   description: Enable Serverless compute for SQL warehouses
                 enabled_warehouse_types:
-                  type: string
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/WarehouseTypePair'
                   description: >-
                     List of Warehouse Types allowed in this workspace (limits
                     allowed value of the type field in CreateWarehouse and
@@ -4590,7 +4610,7 @@ paths:
                     converted to another type. Used by frontend to save specific
                     type availability in the warehouse create and edit form UI.
                 global_param:
-                  type: string
+                  $ref: '#/components/schemas/RepeatedEndpointConfPairs'
                   description: 'Deprecated: Use sql_configuration_parameters'
                 google_service_account:
                   type: string
@@ -4604,10 +4624,11 @@ paths:
                     the SQL warehouses. This configuration is also applied to
                     the workspace's serverless compute for notebooks and jobs.
                 security_policy:
-                  type: string
+                  $ref: >-
+                    #/components/schemas/SetWorkspaceWarehouseConfigRequestSecurityPolicy
                   description: Security policy for warehouses
                 sql_configuration_parameters:
-                  type: string
+                  $ref: '#/components/schemas/RepeatedEndpointConfPairs'
                   description: SQL configuration parameters
       responses:
         '200':
@@ -7331,20 +7352,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7388,20 +7409,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7435,20 +7456,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7485,20 +7506,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7529,20 +7550,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7604,20 +7625,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7647,20 +7668,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7690,20 +7711,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7747,20 +7768,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7789,20 +7810,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7837,20 +7858,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7880,20 +7901,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7923,20 +7944,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7988,20 +8009,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8031,20 +8052,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8081,20 +8102,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8123,20 +8144,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8165,20 +8186,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8224,20 +8245,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8269,20 +8290,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8353,20 +8374,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8407,20 +8428,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8449,20 +8470,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8491,20 +8512,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8545,20 +8566,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8646,20 +8667,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8689,20 +8710,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8730,20 +8751,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -8980,20 +9001,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

@@ -5,7 +5,7 @@ info:
     Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-19'
+  x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.catalog
 servers:
 - url: https://accounts.cloud.databricks.com
@@ -52,7 +52,7 @@ paths:
               type: object
               properties:
                 metastore_assignment:
-                  type: string
+                  $ref: '#/components/schemas/CreateMetastoreAssignment'
                   description: ':returns: :class:`AccountsCreateMetastoreAssignmentResponse`'
       responses:
         '200':
@@ -167,7 +167,7 @@ paths:
               type: object
               properties:
                 metastore_assignment:
-                  type: string
+                  $ref: '#/components/schemas/UpdateMetastoreAssignment'
                   description: ':returns: :class:`AccountsUpdateMetastoreAssignmentResponse`'
       responses:
         '200':
@@ -306,7 +306,7 @@ paths:
               type: object
               properties:
                 metastore_info:
-                  type: string
+                  $ref: '#/components/schemas/CreateAccountsMetastore'
                   description: ':returns: :class:`AccountsCreateMetastoreResponse`'
       responses:
         '200':
@@ -395,7 +395,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: boolean
         description: Force deletion even if the metastore is not empty. Default is false.
       responses:
         '200':
@@ -494,7 +494,7 @@ paths:
               type: object
               properties:
                 metastore_info:
-                  type: string
+                  $ref: '#/components/schemas/UpdateAccountsMetastore'
                   description: Properties of the metastore to change.
       responses:
         '200':
@@ -557,11 +557,11 @@ paths:
               type: object
               properties:
                 credential_info:
-                  type: string
+                  $ref: '#/components/schemas/CreateAccountsStorageCredential'
                   description: ':param skip_validation: bool (optional) Optional, default false. Supplying true to this argument
                     skips validation of the created set of credentials.'
                 skip_validation:
-                  type: string
+                  type: boolean
       responses:
         '200':
           description: Success
@@ -666,7 +666,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: boolean
         description: Force deletion even if the Storage Credential is not empty. Default is false.
       responses:
         '200':
@@ -784,11 +784,11 @@ paths:
               type: object
               properties:
                 credential_info:
-                  type: string
+                  $ref: '#/components/schemas/UpdateAccountsStorageCredential'
                   description: ':param skip_validation: bool (optional) Optional. Supplying true to this argument skips validation
                     of the updated set of credentials.'
                 skip_validation:
-                  type: string
+                  type: boolean
       responses:
         '200':
           description: Success
@@ -855,29 +855,29 @@ paths:
                   description: The credential name. The name must be unique among storage and service credentials within the
                     metastore.
                 aws_iam_role:
-                  type: string
+                  $ref: '#/components/schemas/AwsIamRole'
                   description: The AWS IAM role configuration.
                 azure_managed_identity:
-                  type: string
+                  $ref: '#/components/schemas/AzureManagedIdentity'
                   description: The Azure managed identity configuration.
                 azure_service_principal:
-                  type: string
+                  $ref: '#/components/schemas/AzureServicePrincipal'
                   description: The Azure service principal configuration.
                 comment:
                   type: string
                   description: Comment associated with the credential.
                 databricks_gcp_service_account:
-                  type: string
+                  $ref: '#/components/schemas/DatabricksGcpServiceAccount'
                   description: The Databricks managed GCP service account configuration.
                 purpose:
-                  type: string
+                  $ref: '#/components/schemas/CredentialPurpose'
                   description: Indicates the purpose of the credential.
                 read_only:
-                  type: string
+                  type: boolean
                   description: Whether the credential is usable only for read operations. Only applicable when purpose is
                     **STORAGE**.
                 skip_validation:
-                  type: string
+                  type: boolean
                   description: Optional. Supplying true to this argument skips validation of the created set of credentials.
               required:
               - name
@@ -936,14 +936,14 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: boolean
         description: Whether to include credentials not bound to the workspace. Effective only if the user has permission
           to update the credential–workspace binding.
       - name: max_results
         in: query
         required: false
         schema:
-          type: string
+          type: integer
         description: Maximum number of credentials to return. - If not set, the default max page size is used. - When set
           to a value greater than 0, the page length is the minimum of this value and a server-configured value. - When set
           to 0, the page length is set to a server-configured value (recommended). - When set to a value less than 0, an invalid
@@ -958,7 +958,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/CredentialPurpose'
         description: Return only credentials for the specified purpose.
       responses:
         '200':
@@ -1006,7 +1006,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type: boolean
         description: Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent external
           locations and external tables (when purpose is **STORAGE**).
       responses:
@@ -1118,26 +1118,26 @@ paths:
               type: object
               properties:
                 aws_iam_role:
-                  type: string
+                  $ref: '#/components/schemas/AwsIamRole'
                   description: The AWS IAM role configuration.
                 azure_managed_identity:
-                  type: string
+                  $ref: '#/components/schemas/AzureManagedIdentity'
                   description: The Azure managed identity configuration.
                 azure_service_principal:
-                  type: string
+                  $ref: '#/components/schemas/AzureServicePrincipal'
                   description: The Azure service principal configuration.
                 comment:
                   type: string
                   description: Comment associated with the credential.
                 databricks_gcp_service_account:
-                  type: string
+                  $ref: '#/components/schemas/DatabricksGcpServiceAccount'
                   description: The Databricks managed GCP service account configuration.
                 force:
-                  type: string
+                  type: boolean
                   description: Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent
                     external locations and external tables (when purpose is **STORAGE**).
                 isolation_mode:
-                  type: string
+                  $ref: '#/components/schemas/IsolationMode'
                   description: Whether the current securable is accessible from all workspaces or a specific set of workspaces.
                 new_name:
                   type: string
@@ -1146,11 +1146,11 @@ paths:
                   type: string
                   description: Username of current owner of credential.
                 read_only:
-                  type: string
+                  type: boolean
                   description: Whether the credential is usable only for read operations. Only applicable when purpose is
                     **STORAGE**.
                 skip_validation:
-                  type: string
+                  type: boolean
                   description: Supply true to this argument to skip validation of the updated credential.
       responses:
         '200':
@@ -1198,10 +1198,10 @@ paths:
                   type: string
                   description: The name of the service credential used to generate a temporary credential
                 azure_options:
-                  type: string
+                  $ref: '#/components/schemas/GenerateTemporaryServiceCredentialAzureOptions'
                   description: ':param gcp_options: :class:`GenerateTemporaryServiceCredentialGcpOptions` (optional)'
                 gcp_options:
-                  type: string
+                  $ref: '#/components/schemas/GenerateTemporaryServiceCredentialGcpOptions'
               required:
               - credential_name
       responses:
@@ -1269,24 +1269,24 @@ paths:
               type: object
               properties:
                 aws_iam_role:
-                  type: string
+                  $ref: '#/components/schemas/AwsIamRole'
                   description: ':param azure_managed_identity: :class:`AzureManagedIdentity` (optional)'
                 azure_managed_identity:
-                  type: string
+                  $ref: '#/components/schemas/AzureManagedIdentity'
                 credential_name:
                   type: string
                   description: Required. The name of an existing credential or long-lived cloud credential to validate.
                 databricks_gcp_service_account:
-                  type: string
+                  $ref: '#/components/schemas/DatabricksGcpServiceAccount'
                   description: ':param external_location_name: str (optional) The name of an existing external location to
                     validate. Only applicable for storage credentials (purpose is **STORAGE**.)'
                 external_location_name:
                   type: string
                 purpose:
-                  type: string
+                  $ref: '#/components/schemas/CredentialPurpose'
                   description: The purpose of the credential. This should only be used when the credential is specified.
                 read_only:
-                  type: string
+                  type: boolean
                   description: Whether the credential is only usable for read operations. Only applicable for storage credentials
                     (purpose is **STORAGE**.)
                 url:
@@ -4579,20 +4579,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -4653,20 +4653,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -4718,20 +4718,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -4760,20 +4760,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -4801,20 +4801,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -4844,20 +4844,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -4886,20 +4886,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -4981,20 +4981,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5026,20 +5026,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5068,20 +5068,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5111,20 +5111,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5152,20 +5152,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5194,20 +5194,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5235,20 +5235,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5278,20 +5278,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5319,20 +5319,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5361,20 +5361,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5403,20 +5403,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5445,20 +5445,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5494,20 +5494,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5546,20 +5546,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5591,20 +5591,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5658,20 +5658,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5741,20 +5741,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5783,20 +5783,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5826,20 +5826,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5916,20 +5916,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -5962,20 +5962,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6095,20 +6095,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6137,20 +6137,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6200,20 +6200,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6242,20 +6242,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6291,20 +6291,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6358,20 +6358,20 @@ components:
 
         Access them by:
 
-        - attribute access:
+        - attribute access::
 
-          >>> Color.RED
-          <Color.RED: 1>
+        >>> Color.RED
+        <Color.RED: 1>
 
         - value lookup:
 
-          >>> Color(1)
-          <Color.RED: 1>
+        >>> Color(1)
+        <Color.RED: 1>
 
         - name lookup:
 
-          >>> Color['RED']
-          <Color.RED: 1>
+        >>> Color['RED']
+        <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
