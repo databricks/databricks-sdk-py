@@ -78,11 +78,11 @@ function extractCodeFromElements(elements, preferredTab) {
 function extractTemplateFromPage() {
   const sections = {};
 
-  // --- SELECT (prefer "get" tab for a single-resource check) ---
+  // --- SELECT (prefer "list" tab for the least specific method) ---
   const selectH2 = document.getElementById('select-examples');
   if (selectH2) {
     const els = getElementsBetweenHeadings(selectH2);
-    sections.select = extractCodeFromElements(els, 'get')
+    sections.select = extractCodeFromElements(els, 'list')
                    || extractCodeFromElements(els);
   }
 
@@ -187,7 +187,7 @@ function buildStatecheckQuery(parsed) {
   const whereFields = getWhereFieldNames(parsed.where);
   const fieldConditions = parsed.fields
     .filter(f => !whereFields.has(f))
-    .map(f => `${f} = {{ ${f} }}`)
+    .map(f => `${f} = '{{ ${f} }}'`)
     .join(' AND\n');
 
   let whereClause = fieldConditions;
@@ -246,13 +246,17 @@ function buildTemplate(sections) {
     // /*+ statecheck */
     parts.push(`/*+ statecheck, retries=5, retry_delay=10 */\n${buildStatecheckQuery(mutableParsed)}`);
 
-    // /*+ exports */
-    let exportsSql = `SELECT ${mutableParsed.fields.join(',\n')}\nFROM ${parsed.table}`;
-    if (parsed.where) {
-      exportsSql += `\nWHERE ${parsed.where}`;
+    // /*+ exports */ - exclude account_id and deployment_name from exports
+    const excludeFromExports = new Set(['account_id', 'deployment_name']);
+    const exportFields = mutableParsed.fields.filter(f => !excludeFromExports.has(f));
+    if (exportFields.length > 0) {
+      let exportsSql = `SELECT ${exportFields.join(',\n')}\nFROM ${parsed.table}`;
+      if (parsed.where) {
+        exportsSql += `\nWHERE ${parsed.where}`;
+      }
+      exportsSql += '\n;';
+      parts.push(`/*+ exports */\n${exportsSql}`);
     }
-    exportsSql += '\n;';
-    parts.push(`/*+ exports */\n${exportsSql}`);
   }
 
   // /*+ delete */
