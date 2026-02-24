@@ -2313,6 +2313,10 @@ class Operation:
 
 @dataclass
 class Space:
+    name: str
+    """The name of the app space. The name must contain only lowercase alphanumeric characters and
+    hyphens. It must be unique within the workspace."""
+
     create_time: Optional[Timestamp] = None
     """The creation time of the app space. Formatted timestamp in ISO 6801."""
 
@@ -2330,10 +2334,6 @@ class Space:
 
     id: Optional[str] = None
     """The unique identifier of the app space."""
-
-    name: Optional[str] = None
-    """The name of the app space. The name must contain only lowercase alphanumeric characters and
-    hyphens. It must be unique within the workspace."""
 
     oauth2_app_client_id: Optional[str] = None
     """The OAuth2 app client ID for the app space."""

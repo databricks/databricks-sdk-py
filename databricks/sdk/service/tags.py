@@ -88,7 +88,8 @@ class TagAssignment:
     geniespaces"""
 
     entity_id: str
-    """The identifier of the entity to which the tag is assigned"""
+    """The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app
+    name"""
 
     tag_key: str
     """The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed"""
@@ -419,7 +420,7 @@ class WorkspaceEntityTagAssignmentsAPI:
         :param entity_type: str
           The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
         :param entity_id: str
-          The identifier of the entity to which the tag is assigned
+          The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app name
         :param tag_key: str
           The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed
 
@@ -444,7 +445,7 @@ class WorkspaceEntityTagAssignmentsAPI:
         :param entity_type: str
           The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
         :param entity_id: str
-          The identifier of the entity to which the tag is assigned
+          The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app name
         :param tag_key: str
           The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed
 
@@ -472,7 +473,7 @@ class WorkspaceEntityTagAssignmentsAPI:
         :param entity_type: str
           The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
         :param entity_id: str
-          The identifier of the entity to which the tag is assigned
+          The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app name
         :param page_size: int (optional)
           Optional. Maximum number of tag assignments to return in a single page
         :param page_token: str (optional)
@@ -513,7 +514,7 @@ class WorkspaceEntityTagAssignmentsAPI:
         :param entity_type: str
           The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
         :param entity_id: str
-          The identifier of the entity to which the tag is assigned
+          The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app name
         :param tag_key: str
           The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed
         :param tag_assignment: :class:`TagAssignment`
