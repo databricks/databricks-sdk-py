@@ -12,6 +12,7 @@
 * Added "Retries" section to README.
 
 ### Internal Changes
+* add capability to read the `product` field from the env variable.
 
 ### API Changes
 * Add `read_only_host` field for `databricks.sdk.service.postgres.EndpointHosts`.
