@@ -9,11 +9,12 @@ info:
   x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.marketplace
 servers:
-  - url: https://{deployment_name}.cloud.databricks.com
+  - url: https://{workspace}.cloud.databricks.com
+    description: Databricks workspace
     variables:
-      deployment_name:
-        description: The Databricks Workspace Deployment Name
-        default: dbc-abcd0123-a1bc
+      workspace:
+        default: your-workspace
+        description: Your Databricks workspace name
 paths:
   /api/2.1/marketplace-consumer/listings/{listing_id}/content:
     get:
@@ -167,16 +168,98 @@ paths:
               type: object
               properties:
                 accepted_consumer_terms:
-                  $ref: '#/components/schemas/ConsumerTerms'
+                  type: object
+                  properties:
+                    version:
+                      type: string
+                  required:
+                    - version
                 catalog_name:
                   type: string
                   description: >-
                     :param recipient_type: :class:`DeltaSharingRecipientType`
                     (optional)
                 recipient_type:
-                  $ref: '#/components/schemas/DeltaSharingRecipientType'
+                  type: string
+                  x-enum:
+                    - DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS
+                    - DELTA_SHARING_RECIPIENT_TYPE_OPEN
+                  description: >-
+                    Create a collection of name/value pairs.
+
+
+                    Example enumeration:
+
+
+                    >>> class Color(Enum):
+
+                    ...     RED = 1
+
+                    ...     BLUE = 2
+
+                    ...     GREEN = 3
+
+
+                    Access them by:
+
+
+                    - attribute access::
+
+
+                    >>> Color.RED
+
+                    <Color.RED: 1>
+
+
+                    - value lookup:
+
+
+                    >>> Color(1)
+
+                    <Color.RED: 1>
+
+
+                    - name lookup:
+
+
+                    >>> Color['RED']
+
+                    <Color.RED: 1>
+
+
+                    Enumerations can be iterated over, and know how many members
+                    they have:
+
+
+                    >>> len(Color)
+
+                    3
+
+
+                    >>> list(Color)
+
+                    [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                    Methods can be added to enumerations, and members can have
+                    their own
+
+                    attributes -- see the documentation for details.
                 repo_detail:
-                  $ref: '#/components/schemas/RepoInstallation'
+                  type: object
+                  properties:
+                    repo_name:
+                      type: string
+                    repo_path:
+                      type: string
+                      description: >-
+                        refers to the full url file path that navigates the user
+                        to the repo's entrypoint (e.g. a README.md file, or the
+                        repo file view in the unified UI) should just be a
+                        relative path
+                  required:
+                    - repo_name
+                    - repo_path
                   description: for git repo installations
                 share_name:
                   type: string
@@ -345,7 +428,204 @@ paths:
               type: object
               properties:
                 installation:
-                  $ref: '#/components/schemas/InstallationDetail'
+                  type: object
+                  properties:
+                    catalog_name:
+                      type: string
+                    error_message:
+                      type: string
+                    id:
+                      type: string
+                    installed_on:
+                      type: integer
+                    listing_id:
+                      type: string
+                    listing_name:
+                      type: string
+                    recipient_type:
+                      type: string
+                      x-enum:
+                        - DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS
+                        - DELTA_SHARING_RECIPIENT_TYPE_OPEN
+                      description: >-
+                        Create a collection of name/value pairs.
+
+
+                        Example enumeration:
+
+
+                        >>> class Color(Enum):
+
+                        ...     RED = 1
+
+                        ...     BLUE = 2
+
+                        ...     GREEN = 3
+
+
+                        Access them by:
+
+
+                        - attribute access::
+
+
+                        >>> Color.RED
+
+                        <Color.RED: 1>
+
+
+                        - value lookup:
+
+
+                        >>> Color(1)
+
+                        <Color.RED: 1>
+
+
+                        - name lookup:
+
+
+                        >>> Color['RED']
+
+                        <Color.RED: 1>
+
+
+                        Enumerations can be iterated over, and know how many
+                        members they have:
+
+
+                        >>> len(Color)
+
+                        3
+
+
+                        >>> list(Color)
+
+                        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                        Methods can be added to enumerations, and members can
+                        have their own
+
+                        attributes -- see the documentation for details.
+                    repo_name:
+                      type: string
+                    repo_path:
+                      type: string
+                    share_name:
+                      type: string
+                    status:
+                      type: string
+                      x-enum:
+                        - FAILED
+                        - INSTALLED
+                      description: >-
+                        Create a collection of name/value pairs.
+
+
+                        Example enumeration:
+
+
+                        >>> class Color(Enum):
+
+                        ...     RED = 1
+
+                        ...     BLUE = 2
+
+                        ...     GREEN = 3
+
+
+                        Access them by:
+
+
+                        - attribute access::
+
+
+                        >>> Color.RED
+
+                        <Color.RED: 1>
+
+
+                        - value lookup:
+
+
+                        >>> Color(1)
+
+                        <Color.RED: 1>
+
+
+                        - name lookup:
+
+
+                        >>> Color['RED']
+
+                        <Color.RED: 1>
+
+
+                        Enumerations can be iterated over, and know how many
+                        members they have:
+
+
+                        >>> len(Color)
+
+                        3
+
+
+                        >>> list(Color)
+
+                        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                        Methods can be added to enumerations, and members can
+                        have their own
+
+                        attributes -- see the documentation for details.
+                    token_detail:
+                      type: object
+                      properties:
+                        bearerToken:
+                          type: string
+                        endpoint:
+                          type: string
+                        expirationTime:
+                          type: string
+                        shareCredentialsVersion:
+                          type: integer
+                          description: >-
+                            These field names must follow the delta sharing
+                            protocol. Original message: RetrieveToken.Response
+                            in managed-catalog/api/messages/recipient.proto
+                    tokens:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          activation_url:
+                            type: string
+                          created_at:
+                            type: integer
+                            description: >-
+                              Time at which this Recipient Token was created, in
+                              epoch milliseconds.
+                          created_by:
+                            type: string
+                            description: Username of Recipient Token creator.
+                          expiration_time:
+                            type: integer
+                            description: >-
+                              Expiration timestamp of the token in epoch
+                              milliseconds.
+                          id:
+                            type: string
+                            description: Unique id of the Recipient Token.
+                          updated_at:
+                            type: integer
+                            description: >-
+                              Time at which this Recipient Token was updated, in
+                              epoch milliseconds.
+                          updated_by:
+                            type: string
+                            description: Username of Recipient Token updater.
                   description: ':param rotate_token: bool (optional)'
                 rotate_token:
                   type: boolean
@@ -764,7 +1044,12 @@ paths:
                 intended_use:
                   type: string
                 accepted_consumer_terms:
-                  $ref: '#/components/schemas/ConsumerTerms'
+                  type: object
+                  properties:
+                    version:
+                      type: string
+                  required:
+                    - version
                   description: ':param comment: str (optional)'
                 comment:
                   type: string
@@ -779,7 +1064,10 @@ paths:
                 last_name:
                   type: string
                 recipient_type:
-                  $ref: '#/components/schemas/DeltaSharingRecipientType'
+                  type: string
+                  x-enum:
+                    - DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS
+                    - DELTA_SHARING_RECIPIENT_TYPE_OPEN
                   description: ':returns: :class:`CreatePersonalizationRequestResponse`'
               required:
                 - intended_use
@@ -1062,7 +1350,93 @@ paths:
               type: object
               properties:
                 filter:
-                  $ref: '#/components/schemas/ExchangeFilter'
+                  type: object
+                  properties:
+                    exchange_id:
+                      type: string
+                    filter_value:
+                      type: string
+                    filter_type:
+                      type: string
+                      x-enum:
+                        - GLOBAL_METASTORE_ID
+                      description: >-
+                        Create a collection of name/value pairs.
+
+
+                        Example enumeration:
+
+
+                        >>> class Color(Enum):
+
+                        ...     RED = 1
+
+                        ...     BLUE = 2
+
+                        ...     GREEN = 3
+
+
+                        Access them by:
+
+
+                        - attribute access::
+
+
+                        >>> Color.RED
+
+                        <Color.RED: 1>
+
+
+                        - value lookup:
+
+
+                        >>> Color(1)
+
+                        <Color.RED: 1>
+
+
+                        - name lookup:
+
+
+                        >>> Color['RED']
+
+                        <Color.RED: 1>
+
+
+                        Enumerations can be iterated over, and know how many
+                        members they have:
+
+
+                        >>> len(Color)
+
+                        3
+
+
+                        >>> list(Color)
+
+                        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                        Methods can be added to enumerations, and members can
+                        have their own
+
+                        attributes -- see the documentation for details.
+                    created_at:
+                      type: integer
+                    created_by:
+                      type: string
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    updated_at:
+                      type: integer
+                    updated_by:
+                      type: string
+                  required:
+                    - exchange_id
+                    - filter_value
+                    - filter_type
                   description: ':returns: :class:`CreateExchangeFilterResponse`'
               required:
                 - filter
@@ -1196,7 +1570,93 @@ paths:
               type: object
               properties:
                 filter:
-                  $ref: '#/components/schemas/ExchangeFilter'
+                  type: object
+                  properties:
+                    exchange_id:
+                      type: string
+                    filter_value:
+                      type: string
+                    filter_type:
+                      type: string
+                      x-enum:
+                        - GLOBAL_METASTORE_ID
+                      description: >-
+                        Create a collection of name/value pairs.
+
+
+                        Example enumeration:
+
+
+                        >>> class Color(Enum):
+
+                        ...     RED = 1
+
+                        ...     BLUE = 2
+
+                        ...     GREEN = 3
+
+
+                        Access them by:
+
+
+                        - attribute access::
+
+
+                        >>> Color.RED
+
+                        <Color.RED: 1>
+
+
+                        - value lookup:
+
+
+                        >>> Color(1)
+
+                        <Color.RED: 1>
+
+
+                        - name lookup:
+
+
+                        >>> Color['RED']
+
+                        <Color.RED: 1>
+
+
+                        Enumerations can be iterated over, and know how many
+                        members they have:
+
+
+                        >>> len(Color)
+
+                        3
+
+
+                        >>> list(Color)
+
+                        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                        Methods can be added to enumerations, and members can
+                        have their own
+
+                        attributes -- see the documentation for details.
+                    created_at:
+                      type: integer
+                    created_by:
+                      type: string
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    updated_at:
+                      type: integer
+                    updated_by:
+                      type: string
+                  required:
+                    - exchange_id
+                    - filter_value
+                    - filter_type
               required:
                 - filter
       responses:
@@ -1336,7 +1796,134 @@ paths:
               type: object
               properties:
                 exchange:
-                  $ref: '#/components/schemas/Exchange'
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    comment:
+                      type: string
+                    created_at:
+                      type: integer
+                    created_by:
+                      type: string
+                    filters:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          exchange_id:
+                            type: string
+                          filter_value:
+                            type: string
+                          filter_type:
+                            type: string
+                            x-enum:
+                              - GLOBAL_METASTORE_ID
+                            description: >-
+                              Create a collection of name/value pairs.
+
+
+                              Example enumeration:
+
+
+                              >>> class Color(Enum):
+
+                              ...     RED = 1
+
+                              ...     BLUE = 2
+
+                              ...     GREEN = 3
+
+
+                              Access them by:
+
+
+                              - attribute access::
+
+
+                              >>> Color.RED
+
+                              <Color.RED: 1>
+
+
+                              - value lookup:
+
+
+                              >>> Color(1)
+
+                              <Color.RED: 1>
+
+
+                              - name lookup:
+
+
+                              >>> Color['RED']
+
+                              <Color.RED: 1>
+
+
+                              Enumerations can be iterated over, and know how
+                              many members they have:
+
+
+                              >>> len(Color)
+
+                              3
+
+
+                              >>> list(Color)
+
+                              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                              3>]
+
+
+                              Methods can be added to enumerations, and members
+                              can have their own
+
+                              attributes -- see the documentation for details.
+                          created_at:
+                            type: integer
+                          created_by:
+                            type: string
+                          id:
+                            type: string
+                          name:
+                            type: string
+                          updated_at:
+                            type: integer
+                          updated_by:
+                            type: string
+                        required:
+                          - exchange_id
+                          - filter_value
+                          - filter_type
+                    id:
+                      type: string
+                    linked_listings:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          created_at:
+                            type: integer
+                          created_by:
+                            type: string
+                          exchange_id:
+                            type: string
+                          exchange_name:
+                            type: string
+                          id:
+                            type: string
+                          listing_id:
+                            type: string
+                          listing_name:
+                            type: string
+                    updated_at:
+                      type: integer
+                    updated_by:
+                      type: string
+                  required:
+                    - name
                   description: ':returns: :class:`CreateExchangeResponse`'
               required:
                 - exchange
@@ -1501,7 +2088,134 @@ paths:
               type: object
               properties:
                 exchange:
-                  $ref: '#/components/schemas/Exchange'
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    comment:
+                      type: string
+                    created_at:
+                      type: integer
+                    created_by:
+                      type: string
+                    filters:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          exchange_id:
+                            type: string
+                          filter_value:
+                            type: string
+                          filter_type:
+                            type: string
+                            x-enum:
+                              - GLOBAL_METASTORE_ID
+                            description: >-
+                              Create a collection of name/value pairs.
+
+
+                              Example enumeration:
+
+
+                              >>> class Color(Enum):
+
+                              ...     RED = 1
+
+                              ...     BLUE = 2
+
+                              ...     GREEN = 3
+
+
+                              Access them by:
+
+
+                              - attribute access::
+
+
+                              >>> Color.RED
+
+                              <Color.RED: 1>
+
+
+                              - value lookup:
+
+
+                              >>> Color(1)
+
+                              <Color.RED: 1>
+
+
+                              - name lookup:
+
+
+                              >>> Color['RED']
+
+                              <Color.RED: 1>
+
+
+                              Enumerations can be iterated over, and know how
+                              many members they have:
+
+
+                              >>> len(Color)
+
+                              3
+
+
+                              >>> list(Color)
+
+                              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                              3>]
+
+
+                              Methods can be added to enumerations, and members
+                              can have their own
+
+                              attributes -- see the documentation for details.
+                          created_at:
+                            type: integer
+                          created_by:
+                            type: string
+                          id:
+                            type: string
+                          name:
+                            type: string
+                          updated_at:
+                            type: integer
+                          updated_by:
+                            type: string
+                        required:
+                          - exchange_id
+                          - filter_value
+                          - filter_type
+                    id:
+                      type: string
+                    linked_listings:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          created_at:
+                            type: integer
+                          created_by:
+                            type: string
+                          exchange_id:
+                            type: string
+                          exchange_name:
+                            type: string
+                          id:
+                            type: string
+                          listing_id:
+                            type: string
+                          listing_name:
+                            type: string
+                    updated_at:
+                      type: integer
+                    updated_by:
+                      type: string
+                  required:
+                    - name
               required:
                 - exchange
       responses:
@@ -1639,10 +2353,146 @@ paths:
               type: object
               properties:
                 file_parent:
-                  $ref: '#/components/schemas/FileParent'
+                  type: object
+                  properties:
+                    file_parent_type:
+                      type: string
+                      x-enum:
+                        - LISTING
+                        - LISTING_RESOURCE
+                        - PROVIDER
+                      description: >-
+                        Create a collection of name/value pairs.
+
+
+                        Example enumeration:
+
+
+                        >>> class Color(Enum):
+
+                        ...     RED = 1
+
+                        ...     BLUE = 2
+
+                        ...     GREEN = 3
+
+
+                        Access them by:
+
+
+                        - attribute access::
+
+
+                        >>> Color.RED
+
+                        <Color.RED: 1>
+
+
+                        - value lookup:
+
+
+                        >>> Color(1)
+
+                        <Color.RED: 1>
+
+
+                        - name lookup:
+
+
+                        >>> Color['RED']
+
+                        <Color.RED: 1>
+
+
+                        Enumerations can be iterated over, and know how many
+                        members they have:
+
+
+                        >>> len(Color)
+
+                        3
+
+
+                        >>> list(Color)
+
+                        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                        Methods can be added to enumerations, and members can
+                        have their own
+
+                        attributes -- see the documentation for details.
+                    parent_id:
+                      type: string
+                      description: TODO make the following fields required
                   description: ':param marketplace_file_type: :class:`MarketplaceFileType`'
                 marketplace_file_type:
-                  $ref: '#/components/schemas/MarketplaceFileType'
+                  type: string
+                  x-enum:
+                    - APP
+                    - EMBEDDED_NOTEBOOK
+                    - PROVIDER_ICON
+                  description: >-
+                    Create a collection of name/value pairs.
+
+
+                    Example enumeration:
+
+
+                    >>> class Color(Enum):
+
+                    ...     RED = 1
+
+                    ...     BLUE = 2
+
+                    ...     GREEN = 3
+
+
+                    Access them by:
+
+
+                    - attribute access::
+
+
+                    >>> Color.RED
+
+                    <Color.RED: 1>
+
+
+                    - value lookup:
+
+
+                    >>> Color(1)
+
+                    <Color.RED: 1>
+
+
+                    - name lookup:
+
+
+                    >>> Color['RED']
+
+                    <Color.RED: 1>
+
+
+                    Enumerations can be iterated over, and know how many members
+                    they have:
+
+
+                    >>> len(Color)
+
+                    3
+
+
+                    >>> list(Color)
+
+                    [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                    Methods can be added to enumerations, and members can have
+                    their own
+
+                    attributes -- see the documentation for details.
                 mime_type:
                   type: string
                   description: ':param display_name: str (optional)'
@@ -1813,7 +2663,991 @@ paths:
               type: object
               properties:
                 listing:
-                  $ref: '#/components/schemas/Listing'
+                  type: object
+                  properties:
+                    summary:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        listingType:
+                          type: string
+                          x-enum:
+                            - PERSONALIZED
+                            - STANDARD
+                          description: >-
+                            Create a collection of name/value pairs.
+
+
+                            Example enumeration:
+
+
+                            >>> class Color(Enum):
+
+                            ...     RED = 1
+
+                            ...     BLUE = 2
+
+                            ...     GREEN = 3
+
+
+                            Access them by:
+
+
+                            - attribute access::
+
+
+                            >>> Color.RED
+
+                            <Color.RED: 1>
+
+
+                            - value lookup:
+
+
+                            >>> Color(1)
+
+                            <Color.RED: 1>
+
+
+                            - name lookup:
+
+
+                            >>> Color['RED']
+
+                            <Color.RED: 1>
+
+
+                            Enumerations can be iterated over, and know how many
+                            members they have:
+
+
+                            >>> len(Color)
+
+                            3
+
+
+                            >>> list(Color)
+
+                            [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                            Methods can be added to enumerations, and members
+                            can have their own
+
+                            attributes -- see the documentation for details.
+                        categories:
+                          type: array
+                          items:
+                            type: string
+                            x-enum:
+                              - ADVERTISING_AND_MARKETING
+                              - CLIMATE_AND_ENVIRONMENT
+                              - COMMERCE
+                              - DEMOGRAPHICS
+                              - ECONOMICS
+                              - EDUCATION
+                              - ENERGY
+                              - FINANCIAL
+                              - GAMING
+                              - GEOSPATIAL
+                              - HEALTH
+                              - LOOKUP_TABLES
+                              - MANUFACTURING
+                              - MEDIA
+                              - OTHER
+                              - PUBLIC_SECTOR
+                              - RETAIL
+                              - SCIENCE_AND_RESEARCH
+                              - SECURITY
+                              - SPORTS
+                              - TRANSPORTATION_AND_LOGISTICS
+                              - TRAVEL_AND_TOURISM
+                            description: >-
+                              Create a collection of name/value pairs.
+
+
+                              Example enumeration:
+
+
+                              >>> class Color(Enum):
+
+                              ...     RED = 1
+
+                              ...     BLUE = 2
+
+                              ...     GREEN = 3
+
+
+                              Access them by:
+
+
+                              - attribute access::
+
+
+                              >>> Color.RED
+
+                              <Color.RED: 1>
+
+
+                              - value lookup:
+
+
+                              >>> Color(1)
+
+                              <Color.RED: 1>
+
+
+                              - name lookup:
+
+
+                              >>> Color['RED']
+
+                              <Color.RED: 1>
+
+
+                              Enumerations can be iterated over, and know how
+                              many members they have:
+
+
+                              >>> len(Color)
+
+                              3
+
+
+                              >>> list(Color)
+
+                              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                              3>]
+
+
+                              Methods can be added to enumerations, and members
+                              can have their own
+
+                              attributes -- see the documentation for details.
+                        created_at:
+                          type: integer
+                        created_by:
+                          type: string
+                        created_by_id:
+                          type: integer
+                        exchange_ids:
+                          type: array
+                          items:
+                            type: string
+                        git_repo:
+                          type: object
+                          properties:
+                            git_repo_url:
+                              type: string
+                          required:
+                            - git_repo_url
+                          description: >-
+                            if a git repo is being created, a listing will be
+                            initialized with this field as opposed to a share
+                        provider_id:
+                          type: string
+                        provider_region:
+                          type: object
+                          properties:
+                            cloud:
+                              type: string
+                            region:
+                              type: string
+                        published_at:
+                          type: integer
+                        published_by:
+                          type: string
+                        setting:
+                          type: object
+                          properties:
+                            visibility:
+                              type: string
+                              x-enum:
+                                - PRIVATE
+                                - PUBLIC
+                              description: >-
+                                Create a collection of name/value pairs.
+
+
+                                Example enumeration:
+
+
+                                >>> class Color(Enum):
+
+                                ...     RED = 1
+
+                                ...     BLUE = 2
+
+                                ...     GREEN = 3
+
+
+                                Access them by:
+
+
+                                - attribute access::
+
+
+                                >>> Color.RED
+
+                                <Color.RED: 1>
+
+
+                                - value lookup:
+
+
+                                >>> Color(1)
+
+                                <Color.RED: 1>
+
+
+                                - name lookup:
+
+
+                                >>> Color['RED']
+
+                                <Color.RED: 1>
+
+
+                                Enumerations can be iterated over, and know how
+                                many members they have:
+
+
+                                >>> len(Color)
+
+                                3
+
+
+                                >>> list(Color)
+
+                                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                                3>]
+
+
+                                Methods can be added to enumerations, and
+                                members can have their own
+
+                                attributes -- see the documentation for details.
+                        share:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            type:
+                              type: string
+                              x-enum:
+                                - FULL
+                                - SAMPLE
+                              description: >-
+                                Create a collection of name/value pairs.
+
+
+                                Example enumeration:
+
+
+                                >>> class Color(Enum):
+
+                                ...     RED = 1
+
+                                ...     BLUE = 2
+
+                                ...     GREEN = 3
+
+
+                                Access them by:
+
+
+                                - attribute access::
+
+
+                                >>> Color.RED
+
+                                <Color.RED: 1>
+
+
+                                - value lookup:
+
+
+                                >>> Color(1)
+
+                                <Color.RED: 1>
+
+
+                                - name lookup:
+
+
+                                >>> Color['RED']
+
+                                <Color.RED: 1>
+
+
+                                Enumerations can be iterated over, and know how
+                                many members they have:
+
+
+                                >>> len(Color)
+
+                                3
+
+
+                                >>> list(Color)
+
+                                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                                3>]
+
+
+                                Methods can be added to enumerations, and
+                                members can have their own
+
+                                attributes -- see the documentation for details.
+                          required:
+                            - name
+                            - type
+                        status:
+                          type: string
+                          x-enum:
+                            - DRAFT
+                            - PENDING
+                            - PUBLISHED
+                            - SUSPENDED
+                          description: Enums
+                        subtitle:
+                          type: string
+                        updated_at:
+                          type: integer
+                        updated_by:
+                          type: string
+                        updated_by_id:
+                          type: integer
+                      required:
+                        - name
+                        - listingType
+                    detail:
+                      type: object
+                      properties:
+                        assets:
+                          type: array
+                          items:
+                            type: string
+                            x-enum:
+                              - ASSET_TYPE_APP
+                              - ASSET_TYPE_DATA_TABLE
+                              - ASSET_TYPE_GIT_REPO
+                              - ASSET_TYPE_MCP
+                              - ASSET_TYPE_MEDIA
+                              - ASSET_TYPE_MODEL
+                              - ASSET_TYPE_NOTEBOOK
+                              - ASSET_TYPE_PARTNER_INTEGRATION
+                            description: >-
+                              Create a collection of name/value pairs.
+
+
+                              Example enumeration:
+
+
+                              >>> class Color(Enum):
+
+                              ...     RED = 1
+
+                              ...     BLUE = 2
+
+                              ...     GREEN = 3
+
+
+                              Access them by:
+
+
+                              - attribute access::
+
+
+                              >>> Color.RED
+
+                              <Color.RED: 1>
+
+
+                              - value lookup:
+
+
+                              >>> Color(1)
+
+                              <Color.RED: 1>
+
+
+                              - name lookup:
+
+
+                              >>> Color['RED']
+
+                              <Color.RED: 1>
+
+
+                              Enumerations can be iterated over, and know how
+                              many members they have:
+
+
+                              >>> len(Color)
+
+                              3
+
+
+                              >>> list(Color)
+
+                              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                              3>]
+
+
+                              Methods can be added to enumerations, and members
+                              can have their own
+
+                              attributes -- see the documentation for details.
+                        collection_date_end:
+                          type: integer
+                          description: The ending date timestamp for when the data spans
+                        collection_date_start:
+                          type: integer
+                          description: The starting date timestamp for when the data spans
+                        collection_granularity:
+                          type: object
+                          properties:
+                            interval:
+                              type: integer
+                            unit:
+                              type: string
+                              x-enum:
+                                - DAILY
+                                - HOURLY
+                                - MINUTE
+                                - MONTHLY
+                                - NONE
+                                - QUARTERLY
+                                - SECOND
+                                - WEEKLY
+                                - YEARLY
+                              description: >-
+                                Create a collection of name/value pairs.
+
+
+                                Example enumeration:
+
+
+                                >>> class Color(Enum):
+
+                                ...     RED = 1
+
+                                ...     BLUE = 2
+
+                                ...     GREEN = 3
+
+
+                                Access them by:
+
+
+                                - attribute access::
+
+
+                                >>> Color.RED
+
+                                <Color.RED: 1>
+
+
+                                - value lookup:
+
+
+                                >>> Color(1)
+
+                                <Color.RED: 1>
+
+
+                                - name lookup:
+
+
+                                >>> Color['RED']
+
+                                <Color.RED: 1>
+
+
+                                Enumerations can be iterated over, and know how
+                                many members they have:
+
+
+                                >>> len(Color)
+
+                                3
+
+
+                                >>> list(Color)
+
+                                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                                3>]
+
+
+                                Methods can be added to enumerations, and
+                                members can have their own
+
+                                attributes -- see the documentation for details.
+                          required:
+                            - interval
+                            - unit
+                          description: Smallest unit of time in the dataset
+                        cost:
+                          type: string
+                          x-enum:
+                            - FREE
+                            - PAID
+                          description: Whether the dataset is free or paid
+                        data_source:
+                          type: string
+                          description: Where/how the data is sourced
+                        description:
+                          type: string
+                        documentation_link:
+                          type: string
+                        embedded_notebook_file_infos:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              created_at:
+                                type: integer
+                              display_name:
+                                type: string
+                                description: >-
+                                  Name displayed to users for applicable files,
+                                  e.g. embedded notebooks
+                              download_link:
+                                type: string
+                              file_parent:
+                                type: object
+                                properties:
+                                  file_parent_type:
+                                    type: string
+                                    x-enum:
+                                      - LISTING
+                                      - LISTING_RESOURCE
+                                      - PROVIDER
+                                    description: >-
+                                      Create a collection of name/value pairs.
+
+
+                                      Example enumeration:
+
+
+                                      >>> class Color(Enum):
+
+                                      ...     RED = 1
+
+                                      ...     BLUE = 2
+
+                                      ...     GREEN = 3
+
+
+                                      Access them by:
+
+
+                                      - attribute access::
+
+
+                                      >>> Color.RED
+
+                                      <Color.RED: 1>
+
+
+                                      - value lookup:
+
+
+                                      >>> Color(1)
+
+                                      <Color.RED: 1>
+
+
+                                      - name lookup:
+
+
+                                      >>> Color['RED']
+
+                                      <Color.RED: 1>
+
+
+                                      Enumerations can be iterated over, and
+                                      know how many members they have:
+
+
+                                      >>> len(Color)
+
+                                      3
+
+
+                                      >>> list(Color)
+
+                                      [<Color.RED: 1>, <Color.BLUE: 2>,
+                                      <Color.GREEN: 3>]
+
+
+                                      Methods can be added to enumerations, and
+                                      members can have their own
+
+                                      attributes -- see the documentation for
+                                      details.
+                                  parent_id:
+                                    type: string
+                                    description: TODO make the following fields required
+                              id:
+                                type: string
+                              marketplace_file_type:
+                                type: string
+                                x-enum:
+                                  - APP
+                                  - EMBEDDED_NOTEBOOK
+                                  - PROVIDER_ICON
+                                description: >-
+                                  Create a collection of name/value pairs.
+
+
+                                  Example enumeration:
+
+
+                                  >>> class Color(Enum):
+
+                                  ...     RED = 1
+
+                                  ...     BLUE = 2
+
+                                  ...     GREEN = 3
+
+
+                                  Access them by:
+
+
+                                  - attribute access::
+
+
+                                  >>> Color.RED
+
+                                  <Color.RED: 1>
+
+
+                                  - value lookup:
+
+
+                                  >>> Color(1)
+
+                                  <Color.RED: 1>
+
+
+                                  - name lookup:
+
+
+                                  >>> Color['RED']
+
+                                  <Color.RED: 1>
+
+
+                                  Enumerations can be iterated over, and know
+                                  how many members they have:
+
+
+                                  >>> len(Color)
+
+                                  3
+
+
+                                  >>> list(Color)
+
+                                  [<Color.RED: 1>, <Color.BLUE: 2>,
+                                  <Color.GREEN: 3>]
+
+
+                                  Methods can be added to enumerations, and
+                                  members can have their own
+
+                                  attributes -- see the documentation for
+                                  details.
+                              mime_type:
+                                type: string
+                              status:
+                                type: string
+                                x-enum:
+                                  - FILE_STATUS_PUBLISHED
+                                  - FILE_STATUS_SANITIZATION_FAILED
+                                  - FILE_STATUS_SANITIZING
+                                  - FILE_STATUS_STAGING
+                                description: >-
+                                  Create a collection of name/value pairs.
+
+
+                                  Example enumeration:
+
+
+                                  >>> class Color(Enum):
+
+                                  ...     RED = 1
+
+                                  ...     BLUE = 2
+
+                                  ...     GREEN = 3
+
+
+                                  Access them by:
+
+
+                                  - attribute access::
+
+
+                                  >>> Color.RED
+
+                                  <Color.RED: 1>
+
+
+                                  - value lookup:
+
+
+                                  >>> Color(1)
+
+                                  <Color.RED: 1>
+
+
+                                  - name lookup:
+
+
+                                  >>> Color['RED']
+
+                                  <Color.RED: 1>
+
+
+                                  Enumerations can be iterated over, and know
+                                  how many members they have:
+
+
+                                  >>> len(Color)
+
+                                  3
+
+
+                                  >>> list(Color)
+
+                                  [<Color.RED: 1>, <Color.BLUE: 2>,
+                                  <Color.GREEN: 3>]
+
+
+                                  Methods can be added to enumerations, and
+                                  members can have their own
+
+                                  attributes -- see the documentation for
+                                  details.
+                              status_message:
+                                type: string
+                                description: >-
+                                  Populated if status is in a failed state with
+                                  more information on reason for the failure.
+                              updated_at:
+                                type: integer
+                        file_ids:
+                          type: array
+                          items:
+                            type: string
+                        geographical_coverage:
+                          type: string
+                          description: Which geo region the listing data is collected from
+                        license:
+                          type: string
+                          description: >-
+                            ID 20, 21 removed don't use License of the data
+                            asset - Required for listings with model based
+                            assets
+                        pricing_model:
+                          type: string
+                          description: >-
+                            What the pricing model is (e.g. paid, subscription,
+                            paid upfront); should only be present if cost is
+                            paid TODO: Not used yet, should deprecate if we will
+                            never use it
+                        privacy_policy_link:
+                          type: string
+                        size:
+                          type: number
+                          description: size of the dataset in GB
+                        support_link:
+                          type: string
+                        tags:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              tag_name:
+                                type: string
+                                x-enum:
+                                  - LISTING_TAG_TYPE_LANGUAGE
+                                  - LISTING_TAG_TYPE_TASK
+                                description: >-
+                                  Create a collection of name/value pairs.
+
+
+                                  Example enumeration:
+
+
+                                  >>> class Color(Enum):
+
+                                  ...     RED = 1
+
+                                  ...     BLUE = 2
+
+                                  ...     GREEN = 3
+
+
+                                  Access them by:
+
+
+                                  - attribute access::
+
+
+                                  >>> Color.RED
+
+                                  <Color.RED: 1>
+
+
+                                  - value lookup:
+
+
+                                  >>> Color(1)
+
+                                  <Color.RED: 1>
+
+
+                                  - name lookup:
+
+
+                                  >>> Color['RED']
+
+                                  <Color.RED: 1>
+
+
+                                  Enumerations can be iterated over, and know
+                                  how many members they have:
+
+
+                                  >>> len(Color)
+
+                                  3
+
+
+                                  >>> list(Color)
+
+                                  [<Color.RED: 1>, <Color.BLUE: 2>,
+                                  <Color.GREEN: 3>]
+
+
+                                  Methods can be added to enumerations, and
+                                  members can have their own
+
+                                  attributes -- see the documentation for
+                                  details.
+                              tag_values:
+                                type: array
+                                items:
+                                  type: string
+                                description: >-
+                                  String representation of the tag value. Values
+                                  should be string literals (no complex types)
+                          description: >-
+                            Listing tags - Simple key value pair to annotate
+                            listings. When should I use tags vs dedicated
+                            fields? Using tags avoids the need to add new
+                            columns in the database for new annotations.
+                            However, this should be used sparingly since tags
+                            are stored as key value pair. Use tags only: 1. If
+                            the field is optional and won't need to have NOT
+                            NULL integrity check 2. The value is fairly fixed,
+                            static and low cardinality (eg. enums). 3. The value
+                            won't be used in filters or joins with other tables.
+                        terms_of_service:
+                          type: string
+                        update_frequency:
+                          type: object
+                          properties:
+                            interval:
+                              type: integer
+                            unit:
+                              type: string
+                              x-enum:
+                                - DAILY
+                                - HOURLY
+                                - MINUTE
+                                - MONTHLY
+                                - NONE
+                                - QUARTERLY
+                                - SECOND
+                                - WEEKLY
+                                - YEARLY
+                              description: >-
+                                Create a collection of name/value pairs.
+
+
+                                Example enumeration:
+
+
+                                >>> class Color(Enum):
+
+                                ...     RED = 1
+
+                                ...     BLUE = 2
+
+                                ...     GREEN = 3
+
+
+                                Access them by:
+
+
+                                - attribute access::
+
+
+                                >>> Color.RED
+
+                                <Color.RED: 1>
+
+
+                                - value lookup:
+
+
+                                >>> Color(1)
+
+                                <Color.RED: 1>
+
+
+                                - name lookup:
+
+
+                                >>> Color['RED']
+
+                                <Color.RED: 1>
+
+
+                                Enumerations can be iterated over, and know how
+                                many members they have:
+
+
+                                >>> len(Color)
+
+                                3
+
+
+                                >>> list(Color)
+
+                                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                                3>]
+
+
+                                Methods can be added to enumerations, and
+                                members can have their own
+
+                                attributes -- see the documentation for details.
+                          required:
+                            - interval
+                            - unit
+                          description: How often data is updated
+                    id:
+                      type: string
+                  required:
+                    - summary
                   description: ':returns: :class:`CreateListingResponse`'
               required:
                 - listing
@@ -1934,7 +3768,991 @@ paths:
               type: object
               properties:
                 listing:
-                  $ref: '#/components/schemas/Listing'
+                  type: object
+                  properties:
+                    summary:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        listingType:
+                          type: string
+                          x-enum:
+                            - PERSONALIZED
+                            - STANDARD
+                          description: >-
+                            Create a collection of name/value pairs.
+
+
+                            Example enumeration:
+
+
+                            >>> class Color(Enum):
+
+                            ...     RED = 1
+
+                            ...     BLUE = 2
+
+                            ...     GREEN = 3
+
+
+                            Access them by:
+
+
+                            - attribute access::
+
+
+                            >>> Color.RED
+
+                            <Color.RED: 1>
+
+
+                            - value lookup:
+
+
+                            >>> Color(1)
+
+                            <Color.RED: 1>
+
+
+                            - name lookup:
+
+
+                            >>> Color['RED']
+
+                            <Color.RED: 1>
+
+
+                            Enumerations can be iterated over, and know how many
+                            members they have:
+
+
+                            >>> len(Color)
+
+                            3
+
+
+                            >>> list(Color)
+
+                            [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                            Methods can be added to enumerations, and members
+                            can have their own
+
+                            attributes -- see the documentation for details.
+                        categories:
+                          type: array
+                          items:
+                            type: string
+                            x-enum:
+                              - ADVERTISING_AND_MARKETING
+                              - CLIMATE_AND_ENVIRONMENT
+                              - COMMERCE
+                              - DEMOGRAPHICS
+                              - ECONOMICS
+                              - EDUCATION
+                              - ENERGY
+                              - FINANCIAL
+                              - GAMING
+                              - GEOSPATIAL
+                              - HEALTH
+                              - LOOKUP_TABLES
+                              - MANUFACTURING
+                              - MEDIA
+                              - OTHER
+                              - PUBLIC_SECTOR
+                              - RETAIL
+                              - SCIENCE_AND_RESEARCH
+                              - SECURITY
+                              - SPORTS
+                              - TRANSPORTATION_AND_LOGISTICS
+                              - TRAVEL_AND_TOURISM
+                            description: >-
+                              Create a collection of name/value pairs.
+
+
+                              Example enumeration:
+
+
+                              >>> class Color(Enum):
+
+                              ...     RED = 1
+
+                              ...     BLUE = 2
+
+                              ...     GREEN = 3
+
+
+                              Access them by:
+
+
+                              - attribute access::
+
+
+                              >>> Color.RED
+
+                              <Color.RED: 1>
+
+
+                              - value lookup:
+
+
+                              >>> Color(1)
+
+                              <Color.RED: 1>
+
+
+                              - name lookup:
+
+
+                              >>> Color['RED']
+
+                              <Color.RED: 1>
+
+
+                              Enumerations can be iterated over, and know how
+                              many members they have:
+
+
+                              >>> len(Color)
+
+                              3
+
+
+                              >>> list(Color)
+
+                              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                              3>]
+
+
+                              Methods can be added to enumerations, and members
+                              can have their own
+
+                              attributes -- see the documentation for details.
+                        created_at:
+                          type: integer
+                        created_by:
+                          type: string
+                        created_by_id:
+                          type: integer
+                        exchange_ids:
+                          type: array
+                          items:
+                            type: string
+                        git_repo:
+                          type: object
+                          properties:
+                            git_repo_url:
+                              type: string
+                          required:
+                            - git_repo_url
+                          description: >-
+                            if a git repo is being created, a listing will be
+                            initialized with this field as opposed to a share
+                        provider_id:
+                          type: string
+                        provider_region:
+                          type: object
+                          properties:
+                            cloud:
+                              type: string
+                            region:
+                              type: string
+                        published_at:
+                          type: integer
+                        published_by:
+                          type: string
+                        setting:
+                          type: object
+                          properties:
+                            visibility:
+                              type: string
+                              x-enum:
+                                - PRIVATE
+                                - PUBLIC
+                              description: >-
+                                Create a collection of name/value pairs.
+
+
+                                Example enumeration:
+
+
+                                >>> class Color(Enum):
+
+                                ...     RED = 1
+
+                                ...     BLUE = 2
+
+                                ...     GREEN = 3
+
+
+                                Access them by:
+
+
+                                - attribute access::
+
+
+                                >>> Color.RED
+
+                                <Color.RED: 1>
+
+
+                                - value lookup:
+
+
+                                >>> Color(1)
+
+                                <Color.RED: 1>
+
+
+                                - name lookup:
+
+
+                                >>> Color['RED']
+
+                                <Color.RED: 1>
+
+
+                                Enumerations can be iterated over, and know how
+                                many members they have:
+
+
+                                >>> len(Color)
+
+                                3
+
+
+                                >>> list(Color)
+
+                                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                                3>]
+
+
+                                Methods can be added to enumerations, and
+                                members can have their own
+
+                                attributes -- see the documentation for details.
+                        share:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            type:
+                              type: string
+                              x-enum:
+                                - FULL
+                                - SAMPLE
+                              description: >-
+                                Create a collection of name/value pairs.
+
+
+                                Example enumeration:
+
+
+                                >>> class Color(Enum):
+
+                                ...     RED = 1
+
+                                ...     BLUE = 2
+
+                                ...     GREEN = 3
+
+
+                                Access them by:
+
+
+                                - attribute access::
+
+
+                                >>> Color.RED
+
+                                <Color.RED: 1>
+
+
+                                - value lookup:
+
+
+                                >>> Color(1)
+
+                                <Color.RED: 1>
+
+
+                                - name lookup:
+
+
+                                >>> Color['RED']
+
+                                <Color.RED: 1>
+
+
+                                Enumerations can be iterated over, and know how
+                                many members they have:
+
+
+                                >>> len(Color)
+
+                                3
+
+
+                                >>> list(Color)
+
+                                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                                3>]
+
+
+                                Methods can be added to enumerations, and
+                                members can have their own
+
+                                attributes -- see the documentation for details.
+                          required:
+                            - name
+                            - type
+                        status:
+                          type: string
+                          x-enum:
+                            - DRAFT
+                            - PENDING
+                            - PUBLISHED
+                            - SUSPENDED
+                          description: Enums
+                        subtitle:
+                          type: string
+                        updated_at:
+                          type: integer
+                        updated_by:
+                          type: string
+                        updated_by_id:
+                          type: integer
+                      required:
+                        - name
+                        - listingType
+                    detail:
+                      type: object
+                      properties:
+                        assets:
+                          type: array
+                          items:
+                            type: string
+                            x-enum:
+                              - ASSET_TYPE_APP
+                              - ASSET_TYPE_DATA_TABLE
+                              - ASSET_TYPE_GIT_REPO
+                              - ASSET_TYPE_MCP
+                              - ASSET_TYPE_MEDIA
+                              - ASSET_TYPE_MODEL
+                              - ASSET_TYPE_NOTEBOOK
+                              - ASSET_TYPE_PARTNER_INTEGRATION
+                            description: >-
+                              Create a collection of name/value pairs.
+
+
+                              Example enumeration:
+
+
+                              >>> class Color(Enum):
+
+                              ...     RED = 1
+
+                              ...     BLUE = 2
+
+                              ...     GREEN = 3
+
+
+                              Access them by:
+
+
+                              - attribute access::
+
+
+                              >>> Color.RED
+
+                              <Color.RED: 1>
+
+
+                              - value lookup:
+
+
+                              >>> Color(1)
+
+                              <Color.RED: 1>
+
+
+                              - name lookup:
+
+
+                              >>> Color['RED']
+
+                              <Color.RED: 1>
+
+
+                              Enumerations can be iterated over, and know how
+                              many members they have:
+
+
+                              >>> len(Color)
+
+                              3
+
+
+                              >>> list(Color)
+
+                              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                              3>]
+
+
+                              Methods can be added to enumerations, and members
+                              can have their own
+
+                              attributes -- see the documentation for details.
+                        collection_date_end:
+                          type: integer
+                          description: The ending date timestamp for when the data spans
+                        collection_date_start:
+                          type: integer
+                          description: The starting date timestamp for when the data spans
+                        collection_granularity:
+                          type: object
+                          properties:
+                            interval:
+                              type: integer
+                            unit:
+                              type: string
+                              x-enum:
+                                - DAILY
+                                - HOURLY
+                                - MINUTE
+                                - MONTHLY
+                                - NONE
+                                - QUARTERLY
+                                - SECOND
+                                - WEEKLY
+                                - YEARLY
+                              description: >-
+                                Create a collection of name/value pairs.
+
+
+                                Example enumeration:
+
+
+                                >>> class Color(Enum):
+
+                                ...     RED = 1
+
+                                ...     BLUE = 2
+
+                                ...     GREEN = 3
+
+
+                                Access them by:
+
+
+                                - attribute access::
+
+
+                                >>> Color.RED
+
+                                <Color.RED: 1>
+
+
+                                - value lookup:
+
+
+                                >>> Color(1)
+
+                                <Color.RED: 1>
+
+
+                                - name lookup:
+
+
+                                >>> Color['RED']
+
+                                <Color.RED: 1>
+
+
+                                Enumerations can be iterated over, and know how
+                                many members they have:
+
+
+                                >>> len(Color)
+
+                                3
+
+
+                                >>> list(Color)
+
+                                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                                3>]
+
+
+                                Methods can be added to enumerations, and
+                                members can have their own
+
+                                attributes -- see the documentation for details.
+                          required:
+                            - interval
+                            - unit
+                          description: Smallest unit of time in the dataset
+                        cost:
+                          type: string
+                          x-enum:
+                            - FREE
+                            - PAID
+                          description: Whether the dataset is free or paid
+                        data_source:
+                          type: string
+                          description: Where/how the data is sourced
+                        description:
+                          type: string
+                        documentation_link:
+                          type: string
+                        embedded_notebook_file_infos:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              created_at:
+                                type: integer
+                              display_name:
+                                type: string
+                                description: >-
+                                  Name displayed to users for applicable files,
+                                  e.g. embedded notebooks
+                              download_link:
+                                type: string
+                              file_parent:
+                                type: object
+                                properties:
+                                  file_parent_type:
+                                    type: string
+                                    x-enum:
+                                      - LISTING
+                                      - LISTING_RESOURCE
+                                      - PROVIDER
+                                    description: >-
+                                      Create a collection of name/value pairs.
+
+
+                                      Example enumeration:
+
+
+                                      >>> class Color(Enum):
+
+                                      ...     RED = 1
+
+                                      ...     BLUE = 2
+
+                                      ...     GREEN = 3
+
+
+                                      Access them by:
+
+
+                                      - attribute access::
+
+
+                                      >>> Color.RED
+
+                                      <Color.RED: 1>
+
+
+                                      - value lookup:
+
+
+                                      >>> Color(1)
+
+                                      <Color.RED: 1>
+
+
+                                      - name lookup:
+
+
+                                      >>> Color['RED']
+
+                                      <Color.RED: 1>
+
+
+                                      Enumerations can be iterated over, and
+                                      know how many members they have:
+
+
+                                      >>> len(Color)
+
+                                      3
+
+
+                                      >>> list(Color)
+
+                                      [<Color.RED: 1>, <Color.BLUE: 2>,
+                                      <Color.GREEN: 3>]
+
+
+                                      Methods can be added to enumerations, and
+                                      members can have their own
+
+                                      attributes -- see the documentation for
+                                      details.
+                                  parent_id:
+                                    type: string
+                                    description: TODO make the following fields required
+                              id:
+                                type: string
+                              marketplace_file_type:
+                                type: string
+                                x-enum:
+                                  - APP
+                                  - EMBEDDED_NOTEBOOK
+                                  - PROVIDER_ICON
+                                description: >-
+                                  Create a collection of name/value pairs.
+
+
+                                  Example enumeration:
+
+
+                                  >>> class Color(Enum):
+
+                                  ...     RED = 1
+
+                                  ...     BLUE = 2
+
+                                  ...     GREEN = 3
+
+
+                                  Access them by:
+
+
+                                  - attribute access::
+
+
+                                  >>> Color.RED
+
+                                  <Color.RED: 1>
+
+
+                                  - value lookup:
+
+
+                                  >>> Color(1)
+
+                                  <Color.RED: 1>
+
+
+                                  - name lookup:
+
+
+                                  >>> Color['RED']
+
+                                  <Color.RED: 1>
+
+
+                                  Enumerations can be iterated over, and know
+                                  how many members they have:
+
+
+                                  >>> len(Color)
+
+                                  3
+
+
+                                  >>> list(Color)
+
+                                  [<Color.RED: 1>, <Color.BLUE: 2>,
+                                  <Color.GREEN: 3>]
+
+
+                                  Methods can be added to enumerations, and
+                                  members can have their own
+
+                                  attributes -- see the documentation for
+                                  details.
+                              mime_type:
+                                type: string
+                              status:
+                                type: string
+                                x-enum:
+                                  - FILE_STATUS_PUBLISHED
+                                  - FILE_STATUS_SANITIZATION_FAILED
+                                  - FILE_STATUS_SANITIZING
+                                  - FILE_STATUS_STAGING
+                                description: >-
+                                  Create a collection of name/value pairs.
+
+
+                                  Example enumeration:
+
+
+                                  >>> class Color(Enum):
+
+                                  ...     RED = 1
+
+                                  ...     BLUE = 2
+
+                                  ...     GREEN = 3
+
+
+                                  Access them by:
+
+
+                                  - attribute access::
+
+
+                                  >>> Color.RED
+
+                                  <Color.RED: 1>
+
+
+                                  - value lookup:
+
+
+                                  >>> Color(1)
+
+                                  <Color.RED: 1>
+
+
+                                  - name lookup:
+
+
+                                  >>> Color['RED']
+
+                                  <Color.RED: 1>
+
+
+                                  Enumerations can be iterated over, and know
+                                  how many members they have:
+
+
+                                  >>> len(Color)
+
+                                  3
+
+
+                                  >>> list(Color)
+
+                                  [<Color.RED: 1>, <Color.BLUE: 2>,
+                                  <Color.GREEN: 3>]
+
+
+                                  Methods can be added to enumerations, and
+                                  members can have their own
+
+                                  attributes -- see the documentation for
+                                  details.
+                              status_message:
+                                type: string
+                                description: >-
+                                  Populated if status is in a failed state with
+                                  more information on reason for the failure.
+                              updated_at:
+                                type: integer
+                        file_ids:
+                          type: array
+                          items:
+                            type: string
+                        geographical_coverage:
+                          type: string
+                          description: Which geo region the listing data is collected from
+                        license:
+                          type: string
+                          description: >-
+                            ID 20, 21 removed don't use License of the data
+                            asset - Required for listings with model based
+                            assets
+                        pricing_model:
+                          type: string
+                          description: >-
+                            What the pricing model is (e.g. paid, subscription,
+                            paid upfront); should only be present if cost is
+                            paid TODO: Not used yet, should deprecate if we will
+                            never use it
+                        privacy_policy_link:
+                          type: string
+                        size:
+                          type: number
+                          description: size of the dataset in GB
+                        support_link:
+                          type: string
+                        tags:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              tag_name:
+                                type: string
+                                x-enum:
+                                  - LISTING_TAG_TYPE_LANGUAGE
+                                  - LISTING_TAG_TYPE_TASK
+                                description: >-
+                                  Create a collection of name/value pairs.
+
+
+                                  Example enumeration:
+
+
+                                  >>> class Color(Enum):
+
+                                  ...     RED = 1
+
+                                  ...     BLUE = 2
+
+                                  ...     GREEN = 3
+
+
+                                  Access them by:
+
+
+                                  - attribute access::
+
+
+                                  >>> Color.RED
+
+                                  <Color.RED: 1>
+
+
+                                  - value lookup:
+
+
+                                  >>> Color(1)
+
+                                  <Color.RED: 1>
+
+
+                                  - name lookup:
+
+
+                                  >>> Color['RED']
+
+                                  <Color.RED: 1>
+
+
+                                  Enumerations can be iterated over, and know
+                                  how many members they have:
+
+
+                                  >>> len(Color)
+
+                                  3
+
+
+                                  >>> list(Color)
+
+                                  [<Color.RED: 1>, <Color.BLUE: 2>,
+                                  <Color.GREEN: 3>]
+
+
+                                  Methods can be added to enumerations, and
+                                  members can have their own
+
+                                  attributes -- see the documentation for
+                                  details.
+                              tag_values:
+                                type: array
+                                items:
+                                  type: string
+                                description: >-
+                                  String representation of the tag value. Values
+                                  should be string literals (no complex types)
+                          description: >-
+                            Listing tags - Simple key value pair to annotate
+                            listings. When should I use tags vs dedicated
+                            fields? Using tags avoids the need to add new
+                            columns in the database for new annotations.
+                            However, this should be used sparingly since tags
+                            are stored as key value pair. Use tags only: 1. If
+                            the field is optional and won't need to have NOT
+                            NULL integrity check 2. The value is fairly fixed,
+                            static and low cardinality (eg. enums). 3. The value
+                            won't be used in filters or joins with other tables.
+                        terms_of_service:
+                          type: string
+                        update_frequency:
+                          type: object
+                          properties:
+                            interval:
+                              type: integer
+                            unit:
+                              type: string
+                              x-enum:
+                                - DAILY
+                                - HOURLY
+                                - MINUTE
+                                - MONTHLY
+                                - NONE
+                                - QUARTERLY
+                                - SECOND
+                                - WEEKLY
+                                - YEARLY
+                              description: >-
+                                Create a collection of name/value pairs.
+
+
+                                Example enumeration:
+
+
+                                >>> class Color(Enum):
+
+                                ...     RED = 1
+
+                                ...     BLUE = 2
+
+                                ...     GREEN = 3
+
+
+                                Access them by:
+
+
+                                - attribute access::
+
+
+                                >>> Color.RED
+
+                                <Color.RED: 1>
+
+
+                                - value lookup:
+
+
+                                >>> Color(1)
+
+                                <Color.RED: 1>
+
+
+                                - name lookup:
+
+
+                                >>> Color['RED']
+
+                                <Color.RED: 1>
+
+
+                                Enumerations can be iterated over, and know how
+                                many members they have:
+
+
+                                >>> len(Color)
+
+                                3
+
+
+                                >>> list(Color)
+
+                                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN:
+                                3>]
+
+
+                                Methods can be added to enumerations, and
+                                members can have their own
+
+                                attributes -- see the documentation for details.
+                          required:
+                            - interval
+                            - unit
+                          description: How often data is updated
+                    id:
+                      type: string
+                  required:
+                    - summary
               required:
                 - listing
       responses:
@@ -2099,12 +4917,89 @@ paths:
               type: object
               properties:
                 status:
-                  $ref: '#/components/schemas/PersonalizationRequestStatus'
+                  type: string
+                  x-enum:
+                    - DENIED
+                    - FULFILLED
+                    - NEW
+                    - REQUEST_PENDING
                   description: ':param reason: str (optional)'
                 reason:
                   type: string
                 share:
-                  $ref: '#/components/schemas/ShareInfo'
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    type:
+                      type: string
+                      x-enum:
+                        - FULL
+                        - SAMPLE
+                      description: >-
+                        Create a collection of name/value pairs.
+
+
+                        Example enumeration:
+
+
+                        >>> class Color(Enum):
+
+                        ...     RED = 1
+
+                        ...     BLUE = 2
+
+                        ...     GREEN = 3
+
+
+                        Access them by:
+
+
+                        - attribute access::
+
+
+                        >>> Color.RED
+
+                        <Color.RED: 1>
+
+
+                        - value lookup:
+
+
+                        >>> Color(1)
+
+                        <Color.RED: 1>
+
+
+                        - name lookup:
+
+
+                        >>> Color['RED']
+
+                        <Color.RED: 1>
+
+
+                        Enumerations can be iterated over, and know how many
+                        members they have:
+
+
+                        >>> len(Color)
+
+                        3
+
+
+                        >>> list(Color)
+
+                        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                        Methods can be added to enumerations, and members can
+                        have their own
+
+                        attributes -- see the documentation for details.
+                  required:
+                    - name
+                    - type
                   description: ':returns: :class:`UpdatePersonalizationRequestResponse`'
               required:
                 - status
@@ -2301,7 +5196,45 @@ paths:
               type: object
               properties:
                 provider:
-                  $ref: '#/components/schemas/ProviderInfo'
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    business_contact_email:
+                      type: string
+                    term_of_service_link:
+                      type: string
+                    privacy_policy_link:
+                      type: string
+                    company_website_link:
+                      type: string
+                    dark_mode_icon_file_id:
+                      type: string
+                    dark_mode_icon_file_path:
+                      type: string
+                    description:
+                      type: string
+                    icon_file_id:
+                      type: string
+                    icon_file_path:
+                      type: string
+                    id:
+                      type: string
+                    is_featured:
+                      type: boolean
+                      description: is_featured is accessible by consumers only
+                    published_by:
+                      type: string
+                      description: >-
+                        published_by is only applicable to data aggregators
+                        (e.g. Crux)
+                    support_contact_email:
+                      type: string
+                  required:
+                    - name
+                    - business_contact_email
+                    - term_of_service_link
+                    - privacy_policy_link
                   description: ':returns: :class:`CreateProviderResponse`'
               required:
                 - provider
@@ -2422,7 +5355,45 @@ paths:
               type: object
               properties:
                 provider:
-                  $ref: '#/components/schemas/ProviderInfo'
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    business_contact_email:
+                      type: string
+                    term_of_service_link:
+                      type: string
+                    privacy_policy_link:
+                      type: string
+                    company_website_link:
+                      type: string
+                    dark_mode_icon_file_id:
+                      type: string
+                    dark_mode_icon_file_path:
+                      type: string
+                    description:
+                      type: string
+                    icon_file_id:
+                      type: string
+                    icon_file_path:
+                      type: string
+                    id:
+                      type: string
+                    is_featured:
+                      type: boolean
+                      description: is_featured is accessible by consumers only
+                    published_by:
+                      type: string
+                      description: >-
+                        published_by is only applicable to data aggregators
+                        (e.g. Crux)
+                    support_contact_email:
+                      type: string
+                  required:
+                    - name
+                    - business_contact_email
+                    - term_of_service_link
+                    - privacy_policy_link
               required:
                 - provider
       responses:

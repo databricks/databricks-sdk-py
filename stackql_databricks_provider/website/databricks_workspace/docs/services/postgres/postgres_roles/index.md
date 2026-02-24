@@ -197,28 +197,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Returns a paginated list of Postgres roles in the branch.</td>
 </tr>
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Retrieves information about the specified Postgres role, including its authentication method and</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-role"><code>role</code></a></td>
+    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-role"><code>role</code></a></td>
     <td><a href="#parameter-role_id"><code>role_id</code></a></td>
     <td>Creates a new Postgres role in the branch.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-reassign_owned_to"><code>reassign_owned_to</code></a></td>
     <td>Deletes the specified Postgres role.</td>
 </tr>
@@ -238,11 +238,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
@@ -253,9 +248,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The Branch where this Role is created. Format: projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Upper bound for items returned. Cannot be negative.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -299,7 +299,7 @@ status,
 update_time
 FROM databricks_workspace.postgres.postgres_roles
 WHERE parent = '{{ parent }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -319,7 +319,7 @@ status,
 update_time
 FROM databricks_workspace.postgres.postgres_roles
 WHERE name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -343,13 +343,13 @@ Creates a new Postgres role in the branch.
 INSERT INTO databricks_workspace.postgres.postgres_roles (
 role,
 parent,
-deployment_name,
+workspace,
 role_id
 )
 SELECT 
 '{{ role }}' /* required */,
 '{{ parent }}',
-'{{ deployment_name }}',
+'{{ workspace }}',
 '{{ role_id }}'
 ;
 ```
@@ -363,13 +363,60 @@ SELECT
     - name: parent
       value: string
       description: Required parameter for the postgres_roles resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the postgres_roles resource.
     - name: role
-      value: string
+      value: object
       description: |
         The desired specification of a Role.
+      props:
+      - name: create_time
+        value: string
+      - name: name
+        value: string
+        description: |
+          Output only. The full resource path of the role. Format: projects/{project_id}/branches/{branch_id}/roles/{role_id}
+      - name: parent
+        value: string
+        description: |
+          The Branch where this Role exists. Format: projects/{project_id}/branches/{branch_id}
+      - name: spec
+        value: object
+        description: |
+          The spec contains the role configuration, including identity type, authentication method, and role attributes.
+        props:
+        - name: auth_method
+          value: string
+          description: |
+            How the role is authenticated when connecting to Postgres.
+        - name: identity_type
+          value: string
+          description: |
+            The type of role. When specifying a managed-identity, the chosen role_id must be a valid: * application ID for SERVICE_PRINCIPAL * user email for USER * group name for GROUP
+        - name: postgres_role
+          value: string
+          description: |
+            The name of the Postgres role. This expects a valid Postgres identifier as specified in the link below. https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS Required when creating the Role. If you wish to create a Postgres Role backed by a managed Databricks identity, then postgres_role must be one of the following: 1. user email for IdentityType.USER 2. app ID for IdentityType.SERVICE_PRINCIPAL 2. group name for IdentityType.GROUP
+      - name: status
+        value: object
+        description: |
+          Current status of the role, including its identity type, authentication method, and role attributes.
+        props:
+        - name: auth_method
+          value: string
+          description: |
+            How the role is authenticated when connecting to Postgres.
+        - name: identity_type
+          value: string
+          description: |
+            The type of the role.
+        - name: postgres_role
+          value: string
+          description: |
+            The name of the Postgres role.
+      - name: update_time
+        value: string
     - name: role_id
       value: string
       description: The ID to use for the Role, which will become the final component of the role's resource name. This ID becomes the role in Postgres. This value should be 4-63 characters, and valid characters are lowercase letters, numbers, and hyphens, as defined by RFC 1123. If role_id is not specified in the request, it is generated automatically.
@@ -393,7 +440,7 @@ Deletes the specified Postgres role.
 ```sql
 DELETE FROM databricks_workspace.postgres.postgres_roles
 WHERE name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND reassign_owned_to = '{{ reassign_owned_to }}'
 ;
 ```

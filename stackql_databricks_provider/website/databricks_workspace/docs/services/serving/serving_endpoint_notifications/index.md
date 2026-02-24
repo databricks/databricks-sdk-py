@@ -53,7 +53,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates the email and webhook notification settings for an endpoint.</td>
 </tr>
@@ -73,15 +73,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>The name of the serving endpoint whose notifications are being updated. This field is required.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -104,7 +104,7 @@ SET
 email_notifications = '{{ email_notifications }}'
 WHERE 
 name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 name,
 email_notifications;

@@ -129,35 +129,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-credential_id"><code>credential_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-credential_id"><code>credential_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-principal_id"><code>principal_id</code></a></td>
     <td>Gets the Git credential with the specified credential ID.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-principal_id"><code>principal_id</code></a></td>
     <td>Lists the calling user's Git credentials.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-git_provider"><code>git_provider</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-git_provider"><code>git_provider</code></a></td>
     <td></td>
     <td>Creates a Git credential entry for the user. Only one Git credential per user is supported, so any</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-credential_id"><code>credential_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-git_provider"><code>git_provider</code></a></td>
+    <td><a href="#parameter-credential_id"><code>credential_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-git_provider"><code>git_provider</code></a></td>
     <td></td>
     <td>Updates the specified Git credential.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-credential_id"><code>credential_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-credential_id"><code>credential_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-principal_id"><code>principal_id</code></a></td>
     <td>Deletes the specified Git credential.</td>
 </tr>
@@ -182,14 +182,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>integer</code></td>
     <td>The ID for the corresponding credential to access.</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
     <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-principal_id">
     <td><CopyableCode code="principal_id" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>The ID of the service principal whose credentials will be modified. Only service principal managers can perform this action.</td>
 </tr>
 </tbody>
@@ -218,7 +218,7 @@ git_username,
 is_default_for_provider
 FROM databricks_workspace.workspace.git_credentials
 WHERE credential_id = '{{ credential_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND principal_id = '{{ principal_id }}'
 ;
 ```
@@ -236,7 +236,7 @@ git_provider,
 git_username,
 is_default_for_provider
 FROM databricks_workspace.workspace.git_credentials
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND principal_id = '{{ principal_id }}'
 ;
 ```
@@ -266,17 +266,17 @@ is_default_for_provider,
 name,
 personal_access_token,
 principal_id,
-deployment_name
+workspace
 )
 SELECT 
 '{{ git_provider }}' /* required */,
 '{{ git_email }}',
 '{{ git_username }}',
-'{{ is_default_for_provider }}',
+{{ is_default_for_provider }},
 '{{ name }}',
 '{{ personal_access_token }}',
-'{{ principal_id }}',
-'{{ deployment_name }}'
+{{ principal_id }},
+'{{ workspace }}'
 RETURNING
 name,
 credential_id,
@@ -293,7 +293,7 @@ is_default_for_provider
 # Description fields are for documentation purposes
 - name: git_credentials
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the git_credentials resource.
     - name: git_provider
@@ -309,7 +309,7 @@ is_default_for_provider
       description: |
         The username provided with your Git provider account and associated with the credential. For most Git providers it is only used to set the Git committer & author names for commits, however it may be required for authentication depending on your Git provider / token requirements. Required for AWS CodeCommit.
     - name: is_default_for_provider
-      value: string
+      value: boolean
       description: |
         if the credential is the default for the given provider
     - name: name
@@ -321,7 +321,7 @@ is_default_for_provider
       description: |
         The personal access token used to authenticate to the corresponding Git provider. For certain providers, support may exist for other types of scoped access tokens. [Learn more]. [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
     - name: principal_id
-      value: string
+      value: integer
       description: |
         The ID of the service principal whose credentials will be modified. Only service principal managers can perform this action.
 ```
@@ -347,13 +347,13 @@ SET
 git_provider = '{{ git_provider }}',
 git_email = '{{ git_email }}',
 git_username = '{{ git_username }}',
-is_default_for_provider = '{{ is_default_for_provider }}',
+is_default_for_provider = {{ is_default_for_provider }},
 name = '{{ name }}',
 personal_access_token = '{{ personal_access_token }}',
-principal_id = '{{ principal_id }}'
+principal_id = {{ principal_id }}
 WHERE 
 credential_id = '{{ credential_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND git_provider = '{{ git_provider }}' --required;
 ```
 </TabItem>
@@ -375,7 +375,7 @@ Deletes the specified Git credential.
 ```sql
 DELETE FROM databricks_workspace.workspace.git_credentials
 WHERE credential_id = '{{ credential_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND principal_id = '{{ principal_id }}'
 ;
 ```

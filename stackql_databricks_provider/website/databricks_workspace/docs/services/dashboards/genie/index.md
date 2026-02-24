@@ -131,35 +131,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-include_serialized_space"><code>include_serialized_space</code></a></td>
     <td>Get details of a Genie Space.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Get list of Genie Spaces.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-warehouse_id"><code>warehouse_id</code></a>, <a href="#parameter-serialized_space"><code>serialized_space</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-warehouse_id"><code>warehouse_id</code></a>, <a href="#parameter-serialized_space"><code>serialized_space</code></a></td>
     <td></td>
     <td>Creates a Genie space from a serialized payload.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates a Genie space with a serialized payload.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Move a Genie Space to the trash.</td>
 </tr>
@@ -179,24 +179,24 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-space_id">
     <td><CopyableCode code="space_id" /></td>
     <td><code>string</code></td>
     <td>The ID associated with the Genie space to be sent to the trash.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-include_serialized_space">
     <td><CopyableCode code="include_serialized_space" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Whether to include the serialized space export in the response. Requires at least CAN EDIT permission on the space.</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of spaces to return per page</td>
 </tr>
 <tr id="parameter-page_token">
@@ -229,7 +229,7 @@ serialized_space,
 title
 FROM databricks_workspace.dashboards.genie
 WHERE space_id = '{{ space_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND include_serialized_space = '{{ include_serialized_space }}'
 ;
 ```
@@ -243,7 +243,7 @@ SELECT
 next_page_token,
 spaces
 FROM databricks_workspace.dashboards.genie
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -272,7 +272,7 @@ serialized_space,
 description,
 parent_path,
 title,
-deployment_name
+workspace
 )
 SELECT 
 '{{ warehouse_id }}' /* required */,
@@ -280,7 +280,7 @@ SELECT
 '{{ description }}',
 '{{ parent_path }}',
 '{{ title }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 space_id,
 warehouse_id,
@@ -296,7 +296,7 @@ title
 # Description fields are for documentation purposes
 - name: genie
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the genie resource.
     - name: warehouse_id
@@ -345,7 +345,7 @@ title = '{{ title }}',
 warehouse_id = '{{ warehouse_id }}'
 WHERE 
 space_id = '{{ space_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 space_id,
 warehouse_id,
@@ -372,7 +372,7 @@ Move a Genie Space to the trash.
 ```sql
 DELETE FROM databricks_workspace.dashboards.genie
 WHERE space_id = '{{ space_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

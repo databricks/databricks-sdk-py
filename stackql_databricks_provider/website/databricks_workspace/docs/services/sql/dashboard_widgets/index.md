@@ -53,21 +53,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-width"><code>width</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-width"><code>width</code></a></td>
     <td></td>
     <td>Updates an existing widget</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-width"><code>width</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-width"><code>width</code></a></td>
     <td></td>
     <td>Adds a widget to a dashboard</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Removes a widget from a dashboard</td>
 </tr>
@@ -87,15 +87,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>Widget ID returned by :method:dashboardwidgets/create</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -122,7 +122,7 @@ width,
 text,
 visualization_id,
 id,
-deployment_name
+workspace
 )
 SELECT 
 '{{ dashboard_id }}' /* required */,
@@ -131,7 +131,7 @@ SELECT
 '{{ text }}',
 '{{ visualization_id }}',
 '{{ id }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 options,
@@ -151,7 +151,7 @@ options,
 width,
 text,
 visualization_id,
-deployment_name
+workspace
 )
 SELECT 
 '{{ dashboard_id }}' /* required */,
@@ -159,7 +159,7 @@ SELECT
 {{ width }} /* required */,
 '{{ text }}',
 '{{ visualization_id }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 options,
@@ -177,7 +177,7 @@ width
     - name: id
       value: string
       description: Required parameter for the dashboard_widgets resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the dashboard_widgets resource.
     - name: dashboard_id
@@ -185,9 +185,57 @@ width
       description: |
         Dashboard ID returned by :method:dashboards/create.
     - name: options
-      value: string
+      value: object
       description: |
         :param width: int Width of a widget
+      props:
+      - name: created_at
+        value: string
+      - name: description
+        value: string
+        description: |
+          Custom description of the widget
+      - name: isHidden
+        value: boolean
+        description: |
+          Whether this widget is hidden on the dashboard.
+      - name: parameterMappings
+        value: object
+        description: |
+          How parameters used by the visualization in this widget relate to other widgets on the dashboard. Databricks does not recommend modifying this definition in JSON.
+      - name: position
+        value: object
+        description: |
+          Coordinates of this widget on a dashboard. This portion of the API changes frequently and is unsupported.
+        props:
+        - name: autoHeight
+          value: boolean
+          description: |
+            reserved for internal use
+        - name: col
+          value: integer
+          description: |
+            column in the dashboard grid. Values start with 0
+        - name: row
+          value: integer
+          description: |
+            row in the dashboard grid. Values start with 0
+        - name: sizeX
+          value: integer
+          description: |
+            width of the widget measured in dashboard grid cells
+        - name: sizeY
+          value: integer
+          description: |
+            height of the widget measured in dashboard grid cells
+      - name: title
+        value: string
+        description: |
+          Custom title of the widget
+      - name: updated_at
+        value: string
+        description: |
+          Timestamp of the last time this object was updated.
     - name: width
       value: integer
     - name: text
@@ -218,7 +266,7 @@ Removes a widget from a dashboard
 ```sql
 DELETE FROM databricks_workspace.sql.dashboard_widgets
 WHERE id = '{{ id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

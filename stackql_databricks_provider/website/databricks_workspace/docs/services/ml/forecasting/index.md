@@ -78,14 +78,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-experiment_id"><code>experiment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-experiment_id"><code>experiment_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Public RPC to get forecasting experiment</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-train_data_path"><code>train_data_path</code></a>, <a href="#parameter-target_column"><code>target_column</code></a>, <a href="#parameter-time_column"><code>time_column</code></a>, <a href="#parameter-forecast_granularity"><code>forecast_granularity</code></a>, <a href="#parameter-forecast_horizon"><code>forecast_horizon</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-train_data_path"><code>train_data_path</code></a>, <a href="#parameter-target_column"><code>target_column</code></a>, <a href="#parameter-time_column"><code>time_column</code></a>, <a href="#parameter-forecast_granularity"><code>forecast_granularity</code></a>, <a href="#parameter-forecast_horizon"><code>forecast_horizon</code></a></td>
     <td></td>
     <td>Creates a serverless forecasting experiment. Returns the experiment ID.</td>
 </tr>
@@ -105,15 +105,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-experiment_id">
     <td><CopyableCode code="experiment_id" /></td>
     <td><code>string</code></td>
     <td>The unique ID of a forecasting experiment</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -137,7 +137,7 @@ experiment_page_url,
 state
 FROM databricks_workspace.ml.forecasting
 WHERE experiment_id = '{{ experiment_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -176,7 +176,7 @@ register_to,
 split_column,
 timeseries_identifier_columns,
 training_frameworks,
-deployment_name
+workspace
 )
 SELECT 
 '{{ train_data_path }}' /* required */,
@@ -189,14 +189,14 @@ SELECT
 '{{ future_feature_data_path }}',
 '{{ holiday_regions }}',
 '{{ include_features }}',
-'{{ max_runtime }}',
+{{ max_runtime }},
 '{{ prediction_data_path }}',
 '{{ primary_metric }}',
 '{{ register_to }}',
 '{{ split_column }}',
 '{{ timeseries_identifier_columns }}',
 '{{ training_frameworks }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 experiment_id,
 experiment_page_url,
@@ -210,7 +210,7 @@ state
 # Description fields are for documentation purposes
 - name: forecasting
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the forecasting resource.
     - name: train_data_path
@@ -246,15 +246,19 @@ state
       description: |
         The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name, used to store future feature data for predictions.
     - name: holiday_regions
-      value: string
+      value: array
       description: |
         The region code(s) to automatically add holiday features. Currently supports only one region.
+      items:
+        type: string
     - name: include_features
-      value: string
+      value: array
       description: |
         Specifies the list of feature columns to include in model training. These columns must exist in the training data and be of type string, numerical, or boolean. If not specified, no additional features will be included. Note: Certain columns are automatically handled: - Automatically excluded: split_column, target_column, custom_weights_column. - Automatically included: time_column.
+      items:
+        type: string
     - name: max_runtime
-      value: string
+      value: integer
       description: |
         The maximum duration for the experiment in minutes. The experiment stops automatically if it exceeds this limit.
     - name: prediction_data_path
@@ -274,13 +278,17 @@ state
       description: |
         // The column in the training table used for custom data splits. Values must be 'train', 'validate', or 'test'.
     - name: timeseries_identifier_columns
-      value: string
+      value: array
       description: |
         The column in the training table used to group the dataset for predicting individual time series.
+      items:
+        type: string
     - name: training_frameworks
-      value: string
+      value: array
       description: |
         List of frameworks to include for model tuning. Possible values are 'Prophet', 'ARIMA', 'DeepAR'. An empty list includes all supported frameworks.
+      items:
+        type: string
 ```
 </TabItem>
 </Tabs>

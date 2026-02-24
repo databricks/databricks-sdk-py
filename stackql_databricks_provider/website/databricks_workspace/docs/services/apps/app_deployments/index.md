@@ -339,21 +339,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_id"><code>deployment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_id"><code>deployment_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Retrieves information for the app deployment with the supplied name and deployment id.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Lists all app deployments for the app with the supplied name.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-app_deployment"><code>app_deployment</code></a></td>
+    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-app_deployment"><code>app_deployment</code></a></td>
     <td></td>
     <td>Creates an app deployment for the app with the supplied name.</td>
 </tr>
@@ -383,14 +383,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The unique id of the deployment.</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
     <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Upper bound for items returned.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -430,7 +430,7 @@ update_time
 FROM databricks_workspace.apps.app_deployments
 WHERE app_name = '{{ app_name }}' -- required
 AND deployment_id = '{{ deployment_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -453,7 +453,7 @@ status,
 update_time
 FROM databricks_workspace.apps.app_deployments
 WHERE app_name = '{{ app_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -479,12 +479,12 @@ Creates an app deployment for the app with the supplied name.
 INSERT INTO databricks_workspace.apps.app_deployments (
 app_deployment,
 app_name,
-deployment_name
+workspace
 )
 SELECT 
 '{{ app_deployment }}' /* required */,
 '{{ app_name }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 deployment_id,
 command,
@@ -509,13 +509,113 @@ update_time
     - name: app_name
       value: string
       description: Required parameter for the app_deployments resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the app_deployments resource.
     - name: app_deployment
-      value: string
+      value: object
       description: |
         The app deployment configuration.
+      props:
+      - name: command
+        value: array
+        items:
+          type: string
+      - name: create_time
+        value: string
+        description: |
+          The creation time of the deployment. Formatted timestamp in ISO 6801.
+      - name: creator
+        value: string
+        description: |
+          The email of the user creates the deployment.
+      - name: deployment_artifacts
+        value: object
+        description: |
+          The deployment artifacts for an app.
+        props:
+        - name: source_code_path
+          value: string
+      - name: deployment_id
+        value: string
+        description: |
+          The unique id of the deployment.
+      - name: env_vars
+        value: array
+        description: |
+          The environment variables to set in the app runtime environment. This will override the environment variables specified in the app.yaml file.
+        props:
+        - name: name
+          value: string
+        - name: value
+          value: string
+          description: |
+            The value for the environment variable.
+        - name: value_from
+          value: string
+          description: |
+            The name of an external Databricks resource that contains the value, such as a secret or a database table.
+      - name: git_source
+        value: object
+        description: |
+          Git repository to use as the source for the app deployment.
+        props:
+        - name: branch
+          value: string
+          description: |
+            Git branch to checkout.
+        - name: commit
+          value: string
+          description: |
+            Git commit SHA to checkout.
+        - name: git_repository
+          value: object
+          description: |
+            Git repository configuration. Populated from the app's git_repository configuration.
+          props:
+          - name: url
+            value: string
+            description: |
+              URL of the Git repository.
+          - name: provider
+            value: string
+            description: |
+              Git provider. Case insensitive. Supported values: gitHub, gitHubEnterprise, bitbucketCloud, bitbucketServer, azureDevOpsServices, gitLab, gitLabEnterpriseEdition, awsCodeCommit.
+        - name: resolved_commit
+          value: string
+          description: |
+            The resolved commit SHA that was actually used for the deployment. This is populated by the system after resolving the reference (branch, tag, or commit). If commit is specified directly, this will match commit. If a branch or tag is specified, this contains the commit SHA that the branch or tag pointed to at deployment time.
+        - name: source_code_path
+          value: string
+          description: |
+            Relative path to the app source code within the Git repository. If not specified, the root of the repository is used.
+        - name: tag
+          value: string
+          description: |
+            Git tag to checkout.
+      - name: mode
+        value: string
+        description: |
+          The mode of which the deployment will manage the source code.
+      - name: source_code_path
+        value: string
+        description: |
+          The workspace file system path of the source code used to create the app deployment. This is different from `deployment_artifacts.source_code_path`, which is the path used by the deployed app. The former refers to the original source code location of the app in the workspace during deployment creation, whereas the latter provides a system generated stable snapshotted source code path used by the deployment.
+      - name: status
+        value: object
+        description: |
+          Status and status message of the deployment
+        props:
+        - name: message
+          value: string
+        - name: state
+          value: string
+          description: |
+            State of the deployment.
+      - name: update_time
+        value: string
+        description: |
+          The update time of the deployment. Formatted timestamp in ISO 6801.
 ```
 </TabItem>
 </Tabs>

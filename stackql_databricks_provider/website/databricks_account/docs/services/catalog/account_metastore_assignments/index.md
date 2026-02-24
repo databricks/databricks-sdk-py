@@ -239,9 +239,20 @@ SELECT
       value: string
       description: Required parameter for the account_metastore_assignments resource.
     - name: metastore_assignment
-      value: string
+      value: object
       description: |
         :returns: :class:`AccountsCreateMetastoreAssignmentResponse`
+      props:
+      - name: workspace_id
+        value: integer
+      - name: metastore_id
+        value: string
+        description: |
+          The unique ID of the metastore.
+      - name: default_catalog_name
+        value: string
+        description: |
+          The name of the default catalog in the metastore. This field is deprecated. Please use "Default Namespace API" to configure the default catalog for a Databricks workspace.
 ```
 </TabItem>
 </Tabs>

@@ -78,28 +78,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get provider analytics dashboard.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Update provider analytics dashboard.</td>
 </tr>
 <tr>
     <td><a href="#get_latest_version"><CopyableCode code="get_latest_version" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get latest version of provider analytics dashboard.</td>
 </tr>
@@ -119,15 +119,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>id is immutable property and can't be updated.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -150,7 +150,7 @@ id,
 dashboard_id,
 version
 FROM databricks_workspace.marketplace.provider_provider_analytics_dashboards
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -172,10 +172,10 @@ Create provider analytics dashboard. Returns Marketplace specific `id`. Not to b
 
 ```sql
 INSERT INTO databricks_workspace.marketplace.provider_provider_analytics_dashboards (
-deployment_name
+workspace
 )
 SELECT 
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id
 ;
@@ -187,7 +187,7 @@ id
 # Description fields are for documentation purposes
 - name: provider_provider_analytics_dashboards
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the provider_provider_analytics_dashboards resource.
 ```
@@ -210,10 +210,10 @@ Update provider analytics dashboard.
 ```sql
 REPLACE databricks_workspace.marketplace.provider_provider_analytics_dashboards
 SET 
-version = '{{ version }}'
+version = {{ version }}
 WHERE 
 id = '{{ id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 id,
 dashboard_id,
@@ -237,7 +237,7 @@ Get latest version of provider analytics dashboard.
 
 ```sql
 EXEC databricks_workspace.marketplace.provider_provider_analytics_dashboards.get_latest_version 
-@deployment_name='{{ deployment_name }}' --required
+@workspace='{{ workspace }}' --required
 ;
 ```
 </TabItem>

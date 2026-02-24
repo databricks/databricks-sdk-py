@@ -187,14 +187,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Returns a paginated list of database branches in the project.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-branch_id"><code>branch_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-branch"><code>branch</code></a></td>
+    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-branch_id"><code>branch_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-branch"><code>branch</code></a></td>
     <td></td>
     <td>Creates a new database branch in the project.</td>
 </tr>
@@ -219,19 +219,19 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The ID to use for the Branch. This becomes the final component of the branch's resource name. The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only lowercase letters, numbers, and hyphens. For example, `development` becomes `projects/my-app/branches/development`.</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-parent">
     <td><CopyableCode code="parent" /></td>
     <td><code>string</code></td>
     <td>The Project where this Branch will be created. Format: projects/&#123;project_id&#125;</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Upper bound for items returned. Cannot be negative.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -265,7 +265,7 @@ uid,
 update_time
 FROM databricks_workspace.postgres.postgres_branches
 WHERE parent = '{{ parent }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -292,13 +292,13 @@ INSERT INTO databricks_workspace.postgres.postgres_branches (
 branch,
 parent,
 branch_id,
-deployment_name
+workspace
 )
 SELECT 
 '{{ branch }}' /* required */,
 '{{ parent }}',
 '{{ branch_id }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 ;
 ```
 </TabItem>
@@ -314,13 +314,108 @@ SELECT
     - name: branch_id
       value: string
       description: Required parameter for the postgres_branches resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the postgres_branches resource.
     - name: branch
-      value: string
+      value: object
       description: |
         The Branch to create.
+      props:
+      - name: create_time
+        value: string
+      - name: name
+        value: string
+        description: |
+          Output only. The full resource path of the branch. Format: projects/{project_id}/branches/{branch_id}
+      - name: parent
+        value: string
+        description: |
+          The project containing this branch (API resource hierarchy). Format: projects/{project_id} Note: This field indicates where the branch exists in the resource hierarchy. For point-in-time branching from another branch, see `status.source_branch`.
+      - name: spec
+        value: object
+        description: |
+          The spec contains the branch configuration.
+        props:
+        - name: expire_time
+          value: string
+        - name: is_protected
+          value: boolean
+          description: |
+            When set to true, protects the branch from deletion and reset. Associated compute endpoints and the project cannot be deleted while the branch is protected.
+        - name: no_expiry
+          value: boolean
+          description: |
+            Explicitly disable expiration. When set to true, the branch will not expire. If set to false, the request is invalid; provide either ttl or expire_time instead.
+        - name: source_branch
+          value: string
+          description: |
+            The name of the source branch from which this branch was created (data lineage for point-in-time recovery). If not specified, defaults to the project's default branch. Format: projects/{project_id}/branches/{branch_id}
+        - name: source_branch_lsn
+          value: string
+          description: |
+            The Log Sequence Number (LSN) on the source branch from which this branch was created.
+        - name: source_branch_time
+          value: string
+          description: |
+            The point in time on the source branch from which this branch was created.
+        - name: ttl
+          value: string
+          description: |
+            Relative time-to-live duration. When set, the branch will expire at creation_time + ttl.
+      - name: status
+        value: object
+        description: |
+          The current status of a Branch.
+        props:
+        - name: current_state
+          value: string
+          description: |
+            The state of the branch.
+        - name: default
+          value: boolean
+          description: |
+            Whether the branch is the project's default branch.
+        - name: expire_time
+          value: string
+          description: |
+            Absolute expiration time for the branch. Empty if expiration is disabled.
+        - name: is_protected
+          value: boolean
+          description: |
+            Whether the branch is protected.
+        - name: logical_size_bytes
+          value: integer
+          description: |
+            The logical size of the branch.
+        - name: pending_state
+          value: string
+          description: |
+            The pending state of the branch, if a state transition is in progress.
+        - name: source_branch
+          value: string
+          description: |
+            The name of the source branch from which this branch was created. Format: projects/{project_id}/branches/{branch_id}
+        - name: source_branch_lsn
+          value: string
+          description: |
+            The Log Sequence Number (LSN) on the source branch from which this branch was created.
+        - name: source_branch_time
+          value: string
+          description: |
+            The point in time on the source branch from which this branch was created.
+        - name: state_change_time
+          value: string
+          description: |
+            A timestamp indicating when the `current_state` began.
+      - name: uid
+        value: string
+        description: |
+          System-generated unique ID for the branch.
+      - name: update_time
+        value: string
+        description: |
+          A timestamp indicating when the branch was last updated.
 ```
 </TabItem>
 </Tabs>

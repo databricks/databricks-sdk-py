@@ -340,7 +340,9 @@ ip_access_list
       description: |
         :param ip_addresses: List[str] (optional)
     - name: ip_addresses
-      value: string
+      value: array
+      items:
+        type: string
 ```
 </TabItem>
 </Tabs>
@@ -361,7 +363,7 @@ Updates an existing IP access list, specified by its ID.
 ```sql
 UPDATE databricks_account.settings.account_ip_access_lists
 SET 
-enabled = '{{ enabled }}',
+enabled = {{ enabled }},
 ip_addresses = '{{ ip_addresses }}',
 label = '{{ label }}',
 list_type = '{{ list_type }}'

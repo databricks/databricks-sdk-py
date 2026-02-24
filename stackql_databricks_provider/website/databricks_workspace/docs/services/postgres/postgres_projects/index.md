@@ -206,21 +206,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Returns a paginated list of database projects in the workspace that the user has permission to access.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-project_id"><code>project_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-project"><code>project</code></a></td>
+    <td><a href="#parameter-project_id"><code>project_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-project"><code>project</code></a></td>
     <td></td>
     <td>Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-project"><code>project</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-project"><code>project</code></a></td>
     <td></td>
     <td>Updates the specified database project.</td>
 </tr>
@@ -240,11 +240,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
@@ -257,12 +252,17 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-update_mask">
     <td><CopyableCode code="update_mask" /></td>
-    <td><code>string</code></td>
+    <td><code>object</code></td>
     <td>The list of fields to update. If unspecified, all fields will be updated when possible.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Upper bound for items returned. Cannot be negative.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -294,7 +294,7 @@ status,
 uid,
 update_time
 FROM databricks_workspace.postgres.postgres_projects
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -320,12 +320,12 @@ Creates a new Lakebase Autoscaling Postgres database project, which contains bra
 INSERT INTO databricks_workspace.postgres.postgres_projects (
 project,
 project_id,
-deployment_name
+workspace
 )
 SELECT 
 '{{ project }}' /* required */,
 '{{ project_id }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 ;
 ```
 </TabItem>
@@ -338,13 +338,122 @@ SELECT
     - name: project_id
       value: string
       description: Required parameter for the postgres_projects resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the postgres_projects resource.
     - name: project
-      value: string
+      value: object
       description: |
         The Project to create.
+      props:
+      - name: create_time
+        value: string
+      - name: name
+        value: string
+        description: |
+          Output only. The full resource path of the project. Format: projects/{project_id}
+      - name: spec
+        value: object
+        description: |
+          The spec contains the project configuration, including display_name, pg_version (Postgres version), history_retention_duration, and default_endpoint_settings.
+        props:
+        - name: default_endpoint_settings
+          value: object
+          description: |
+            A collection of settings for a compute endpoint.
+          props:
+          - name: autoscaling_limit_max_cu
+            value: number
+            description: |
+              The maximum number of Compute Units. Minimum value is 0.5.
+          - name: autoscaling_limit_min_cu
+            value: number
+            description: |
+              The minimum number of Compute Units. Minimum value is 0.5.
+          - name: no_suspension
+            value: boolean
+            description: |
+              When set to true, explicitly disables automatic suspension (never suspend). Should be set to true when provided.
+          - name: pg_settings
+            value: object
+            description: |
+              A raw representation of Postgres settings.
+          - name: suspend_timeout_duration
+            value: string
+            description: |
+              Duration of inactivity after which the compute endpoint is automatically suspended. If specified should be between 60s and 604800s (1 minute to 1 week).
+        - name: display_name
+          value: string
+          description: |
+            Human-readable project name. Length should be between 1 and 256 characters.
+        - name: history_retention_duration
+          value: string
+          description: |
+            The number of seconds to retain the shared history for point in time recovery for all branches in this project. Value should be between 0s and 2592000s (up to 30 days).
+        - name: pg_version
+          value: integer
+          description: |
+            The major Postgres version number. Supported versions are 16 and 17.
+      - name: status
+        value: object
+        description: |
+          The current status of a Project.
+        props:
+        - name: branch_logical_size_limit_bytes
+          value: integer
+        - name: default_endpoint_settings
+          value: object
+          description: |
+            The effective default endpoint settings.
+          props:
+          - name: autoscaling_limit_max_cu
+            value: number
+            description: |
+              The maximum number of Compute Units. Minimum value is 0.5.
+          - name: autoscaling_limit_min_cu
+            value: number
+            description: |
+              The minimum number of Compute Units. Minimum value is 0.5.
+          - name: no_suspension
+            value: boolean
+            description: |
+              When set to true, explicitly disables automatic suspension (never suspend). Should be set to true when provided.
+          - name: pg_settings
+            value: object
+            description: |
+              A raw representation of Postgres settings.
+          - name: suspend_timeout_duration
+            value: string
+            description: |
+              Duration of inactivity after which the compute endpoint is automatically suspended. If specified should be between 60s and 604800s (1 minute to 1 week).
+        - name: display_name
+          value: string
+          description: |
+            The effective human-readable project name.
+        - name: history_retention_duration
+          value: string
+          description: |
+            The effective number of seconds to retain the shared history for point in time recovery.
+        - name: owner
+          value: string
+          description: |
+            The email of the project owner.
+        - name: pg_version
+          value: integer
+          description: |
+            The effective major Postgres version number.
+        - name: synthetic_storage_size_bytes
+          value: integer
+          description: |
+            The current space occupied by the project in storage.
+      - name: uid
+        value: string
+        description: |
+          System-generated unique ID for the project.
+      - name: update_time
+        value: string
+        description: |
+          A timestamp indicating when the project was last updated.
 ```
 </TabItem>
 </Tabs>
@@ -369,7 +478,7 @@ project = '{{ project }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND project = '{{ project }}' --required;
 ```
 </TabItem>

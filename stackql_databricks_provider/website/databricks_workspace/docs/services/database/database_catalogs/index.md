@@ -119,35 +119,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get a Database Catalog.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>This API is currently unimplemented, but exposed for Terraform support.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-catalog"><code>catalog</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-catalog"><code>catalog</code></a></td>
     <td></td>
     <td>Create a Database Catalog.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-database_catalog"><code>database_catalog</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-database_catalog"><code>database_catalog</code></a></td>
     <td></td>
     <td>This API is currently unimplemented, but exposed for Terraform support.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Delete a Database Catalog.</td>
 </tr>
@@ -167,11 +167,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-instance_name">
     <td><CopyableCode code="instance_name" /></td>
     <td><code>string</code></td>
@@ -187,9 +182,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The list of fields to update. Setting this field is not yet supported.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Upper bound for items returned.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -222,7 +222,7 @@ create_database_if_not_exists,
 uid
 FROM databricks_workspace.database.database_catalogs
 WHERE name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -239,7 +239,7 @@ create_database_if_not_exists,
 uid
 FROM databricks_workspace.database.database_catalogs
 WHERE instance_name = '{{ instance_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -264,11 +264,11 @@ Create a Database Catalog.
 ```sql
 INSERT INTO databricks_workspace.database.database_catalogs (
 catalog,
-deployment_name
+workspace
 )
 SELECT 
 '{{ catalog }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 name,
 database_instance_name,
@@ -284,13 +284,28 @@ uid
 # Description fields are for documentation purposes
 - name: database_catalogs
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the database_catalogs resource.
     - name: catalog
-      value: string
+      value: object
       description: |
         :returns: :class:`DatabaseCatalog`
+      props:
+      - name: name
+        value: string
+      - name: database_instance_name
+        value: string
+        description: |
+          The name of the DatabaseInstance housing the database.
+      - name: database_name
+        value: string
+        description: |
+          The name of the database (in a instance) associated with the catalog.
+      - name: create_database_if_not_exists
+        value: boolean
+      - name: uid
+        value: string
 ```
 </TabItem>
 </Tabs>
@@ -315,7 +330,7 @@ database_catalog = '{{ database_catalog }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND database_catalog = '{{ database_catalog }}' --required
 RETURNING
 name,
@@ -343,7 +358,7 @@ Delete a Database Catalog.
 ```sql
 DELETE FROM databricks_workspace.database.database_catalogs
 WHERE name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

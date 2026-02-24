@@ -103,7 +103,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-metric_key"><code>metric_key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-metric_key"><code>metric_key</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-run_id"><code>run_id</code></a>, <a href="#parameter-run_uuid"><code>run_uuid</code></a></td>
     <td>Gets a list of all values for the specified metric for a given run.</td>
 </tr>
@@ -123,19 +123,19 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-metric_key">
     <td><CopyableCode code="metric_key" /></td>
     <td><code>string</code></td>
     <td>Name of the metric.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of Metric records to return per paginated request. Default is set to 25,000. If set higher than 25,000, a request Exception will be raised.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -180,7 +180,7 @@ timestamp,
 value
 FROM databricks_workspace.ml.experiment_run_metrics
 WHERE metric_key = '{{ metric_key }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 AND run_id = '{{ run_id }}'

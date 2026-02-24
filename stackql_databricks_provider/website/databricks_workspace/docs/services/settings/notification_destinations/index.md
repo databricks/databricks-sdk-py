@@ -242,7 +242,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "destination_type",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (EMAIL, MICROSOFT_TEAMS, PAGERDUTY, SLACK, WEBHOOK)"
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (EMAIL, MICROSOFT_TEAMS, PAGERDUTY, SLACK, WEBHOOK)"
   }
 ]} />
 </TabItem>
@@ -266,35 +266,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets a notification destination.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Lists notification destinations.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Creates a notification destination. Requires workspace admin permissions.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates a notification destination. Requires workspace admin permissions. At least one field is</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes a notification destination. Requires workspace admin permissions.</td>
 </tr>
@@ -314,19 +314,19 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>str</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>:param page_token: str (optional)</td>
 </tr>
 <tr id="parameter-page_token">
@@ -358,7 +358,7 @@ config,
 destination_type
 FROM databricks_workspace.settings.notification_destinations
 WHERE id = '{{ id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -372,7 +372,7 @@ id,
 display_name,
 destination_type
 FROM databricks_workspace.settings.notification_destinations
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -398,12 +398,12 @@ Creates a notification destination. Requires workspace admin permissions.
 INSERT INTO databricks_workspace.settings.notification_destinations (
 config,
 display_name,
-deployment_name
+workspace
 )
 SELECT 
 '{{ config }}',
 '{{ display_name }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 display_name,
@@ -418,13 +418,121 @@ destination_type
 # Description fields are for documentation purposes
 - name: notification_destinations
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the notification_destinations resource.
     - name: config
-      value: string
+      value: object
       description: |
         The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
+      props:
+      - name: email
+        value: object
+        props:
+        - name: addresses
+          value: array
+          items:
+            type: string
+      - name: generic_webhook
+        value: object
+        props:
+        - name: password
+          value: string
+        - name: password_set
+          value: boolean
+          description: |
+            [Output-Only] Whether password is set.
+        - name: url
+          value: string
+          description: |
+            [Input-Only] URL for webhook.
+        - name: url_set
+          value: boolean
+          description: |
+            [Output-Only] Whether URL is set.
+        - name: username
+          value: string
+          description: |
+            [Input-Only][Optional] Username for webhook.
+        - name: username_set
+          value: boolean
+          description: |
+            [Output-Only] Whether username is set.
+      - name: microsoft_teams
+        value: object
+        props:
+        - name: app_id
+          value: string
+        - name: app_id_set
+          value: boolean
+          description: |
+            [Output-Only] Whether App ID is set.
+        - name: auth_secret
+          value: string
+          description: |
+            [Input-Only] Secret for Microsoft Teams App authentication.
+        - name: auth_secret_set
+          value: boolean
+          description: |
+            [Output-Only] Whether secret is set.
+        - name: channel_url
+          value: string
+          description: |
+            [Input-Only] Channel URL for Microsoft Teams App.
+        - name: channel_url_set
+          value: boolean
+          description: |
+            [Output-Only] Whether Channel URL is set.
+        - name: tenant_id
+          value: string
+          description: |
+            [Input-Only] Tenant ID for Microsoft Teams App.
+        - name: tenant_id_set
+          value: boolean
+          description: |
+            [Output-Only] Whether Tenant ID is set.
+        - name: url
+          value: string
+          description: |
+            [Input-Only] URL for Microsoft Teams webhook.
+        - name: url_set
+          value: boolean
+          description: |
+            [Output-Only] Whether URL is set.
+      - name: pagerduty
+        value: object
+        props:
+        - name: integration_key
+          value: string
+        - name: integration_key_set
+          value: boolean
+          description: |
+            [Output-Only] Whether integration key is set.
+      - name: slack
+        value: object
+        props:
+        - name: channel_id
+          value: string
+        - name: channel_id_set
+          value: boolean
+          description: |
+            [Output-Only] Whether channel ID is set.
+        - name: oauth_token
+          value: string
+          description: |
+            [Input-Only] OAuth token for Slack authentication.
+        - name: oauth_token_set
+          value: boolean
+          description: |
+            [Output-Only] Whether OAuth token is set.
+        - name: url
+          value: string
+          description: |
+            [Input-Only] URL for Slack destination.
+        - name: url_set
+          value: boolean
+          description: |
+            [Output-Only] Whether URL is set.
     - name: display_name
       value: string
       description: |
@@ -453,7 +561,7 @@ config = '{{ config }}',
 display_name = '{{ display_name }}'
 WHERE 
 id = '{{ id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 id,
 display_name,
@@ -479,7 +587,7 @@ Deletes a notification destination. Requires workspace admin permissions.
 ```sql
 DELETE FROM databricks_workspace.settings.notification_destinations
 WHERE id = '{{ id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

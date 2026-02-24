@@ -112,7 +112,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-workspace_id">
     <td><CopyableCode code="workspace_id" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>The workspace ID of the workspace in which the usage dashboard is created.</td>
 </tr>
 </tbody>
@@ -167,7 +167,7 @@ account_id
 SELECT 
 '{{ dashboard_type }}',
 '{{ major_version }}',
-'{{ workspace_id }}',
+{{ workspace_id }},
 '{{ account_id }}'
 RETURNING
 dashboard_id
@@ -192,7 +192,7 @@ dashboard_id
       description: |
         The major version of the usage dashboard template to use. Defaults to VERSION_1.
     - name: workspace_id
-      value: string
+      value: integer
       description: |
         The workspace ID of the workspace in which the usage dashboard is created.
 ```

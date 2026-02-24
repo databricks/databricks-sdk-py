@@ -153,35 +153,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-repo_id"><code>repo_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-repo_id"><code>repo_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Returns the repo with the given repo ID.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-next_page_token"><code>next_page_token</code></a>, <a href="#parameter-path_prefix"><code>path_prefix</code></a></td>
     <td>Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-provider"><code>provider</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-provider"><code>provider</code></a></td>
     <td></td>
     <td>Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-repo_id"><code>repo_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-repo_id"><code>repo_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-repo_id"><code>repo_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-repo_id"><code>repo_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes the specified repo.</td>
 </tr>
@@ -201,15 +201,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-repo_id">
     <td><CopyableCode code="repo_id" /></td>
     <td><code>integer</code></td>
     <td>The ID for the corresponding repo to delete.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-next_page_token">
     <td><CopyableCode code="next_page_token" /></td>
@@ -248,7 +248,7 @@ sparse_checkout,
 url
 FROM databricks_workspace.workspace.repos
 WHERE repo_id = '{{ repo_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -266,7 +266,7 @@ provider,
 sparse_checkout,
 url
 FROM databricks_workspace.workspace.repos
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND next_page_token = '{{ next_page_token }}'
 AND path_prefix = '{{ path_prefix }}'
 ;
@@ -294,14 +294,14 @@ url,
 provider,
 path,
 sparse_checkout,
-deployment_name
+workspace
 )
 SELECT 
 '{{ url }}' /* required */,
 '{{ provider }}' /* required */,
 '{{ path }}',
 '{{ sparse_checkout }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 head_commit_id,
@@ -319,7 +319,7 @@ url
 # Description fields are for documentation purposes
 - name: repos
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the repos resource.
     - name: url
@@ -335,9 +335,16 @@ url
       description: |
         Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`.
     - name: sparse_checkout
-      value: string
+      value: object
       description: |
         If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable sparse checkout after the repo is created.
+      props:
+      - name: patterns
+        value: array
+        description: |
+          List of sparse checkout cone patterns, see [cone mode handling] for details. [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
+        items:
+          type: string
 ```
 </TabItem>
 </Tabs>
@@ -363,7 +370,7 @@ sparse_checkout = '{{ sparse_checkout }}',
 tag = '{{ tag }}'
 WHERE 
 repo_id = '{{ repo_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required;
+AND workspace = '{{ workspace }}' --required;
 ```
 </TabItem>
 </Tabs>
@@ -384,7 +391,7 @@ Deletes the specified repo.
 ```sql
 DELETE FROM databricks_workspace.workspace.repos
 WHERE repo_id = '{{ repo_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

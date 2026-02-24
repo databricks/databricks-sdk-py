@@ -448,15 +448,42 @@ use_cases
       value: string
       description: Required parameter for the encryption_keys resource.
     - name: use_cases
-      value: string
+      value: array
       description: |
         The cases that the key can be used for.
+      items:
+        type: string
     - name: aws_key_info
-      value: string
+      value: object
       description: |
         :param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)
+      props:
+      - name: key_arn
+        value: string
+      - name: key_alias
+        value: string
+        description: |
+          The AWS KMS key alias.
+      - name: key_region
+        value: string
+        description: |
+          The AWS KMS key region.
+      - name: reuse_key_for_cluster_volumes
+        value: boolean
+        description: |
+          This field applies only if the `use_cases` property includes `STORAGE`. If this is set to true or omitted, the key is also used to encrypt cluster EBS volumes. If you do not want to use this key for encrypting EBS volumes, set to false.
     - name: gcp_key_info
-      value: string
+      value: object
+      props:
+      - name: kms_key_id
+        value: string
+      - name: gcp_service_account
+        value: object
+        description: |
+          Globally unique service account email that has access to the KMS key. The service account exists within the Databricks CP project.
+        props:
+        - name: service_account_email
+          value: string
 ```
 </TabItem>
 </Tabs>

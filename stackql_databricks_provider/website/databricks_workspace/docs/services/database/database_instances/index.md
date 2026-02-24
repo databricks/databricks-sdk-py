@@ -699,42 +699,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get a Database Instance.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List Database Instances.</td>
 </tr>
 <tr>
     <td><a href="#find_by_uid"><CopyableCode code="find_by_uid" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-uid"><code>uid</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-uid"><code>uid</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Find a Database Instance by uid.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-database_instance"><code>database_instance</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-database_instance"><code>database_instance</code></a></td>
     <td></td>
     <td>Create a Database Instance.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-database_instance"><code>database_instance</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-database_instance"><code>database_instance</code></a></td>
     <td></td>
     <td>Update a Database Instance.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a>, <a href="#parameter-purge"><code>purge</code></a></td>
     <td>Delete a Database Instance.</td>
 </tr>
@@ -754,11 +754,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
@@ -774,14 +769,19 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td></td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-force">
     <td><CopyableCode code="force" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>By default, a instance cannot be deleted if it has descendant instances created via PITR. If this flag is specified as true, all descendent instances will be deleted as well.</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Upper bound for items returned.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -791,7 +791,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-purge">
     <td><CopyableCode code="purge" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Deprecated. Omitting the field or setting it to true will result in the field being hard deleted. Setting a value of false will throw a bad request.</td>
 </tr>
 </tbody>
@@ -841,7 +841,7 @@ stopped,
 uid
 FROM databricks_workspace.database.database_instances
 WHERE name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -878,7 +878,7 @@ state,
 stopped,
 uid
 FROM databricks_workspace.database.database_instances
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -918,7 +918,7 @@ stopped,
 uid
 FROM databricks_workspace.database.database_instances
 WHERE uid = '{{ uid }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -941,11 +941,11 @@ Create a Database Instance.
 ```sql
 INSERT INTO databricks_workspace.database.database_instances (
 database_instance,
-deployment_name
+workspace
 )
 SELECT 
 '{{ database_instance }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 name,
 effective_usage_policy_id,
@@ -982,13 +982,174 @@ uid
 # Description fields are for documentation purposes
 - name: database_instances
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the database_instances resource.
     - name: database_instance
-      value: string
+      value: object
       description: |
         Instance to create.
+      props:
+      - name: name
+        value: string
+        description: |
+          The name of the instance. This is the unique identifier for the instance.
+      - name: capacity
+        value: string
+        description: |
+          The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4", "CU_8".
+      - name: child_instance_refs
+        value: array
+        description: |
+          The refs of the child instances. This is only available if the instance is parent instance.
+        props:
+        - name: branch_time
+          value: string
+          description: |
+            Branch time of the ref database instance. For a parent ref instance, this is the point in time on the parent instance from which the instance was created. For a child ref instance, this is the point in time on the instance from which the child instance was created. Input: For specifying the point in time to create a child instance. Optional. Output: Only populated if provided as input to create a child instance.
+        - name: effective_lsn
+          value: string
+          description: |
+            For a parent ref instance, this is the LSN on the parent instance from which the instance was created. For a child ref instance, this is the LSN on the instance from which the child instance was created. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+        - name: lsn
+          value: string
+          description: |
+            User-specified WAL LSN of the ref database instance. Input: For specifying the WAL LSN to create a child instance. Optional. Output: Only populated if provided as input to create a child instance.
+        - name: name
+          value: string
+          description: |
+            Name of the ref database instance.
+        - name: uid
+          value: string
+          description: |
+            Id of the ref database instance.
+      - name: creation_time
+        value: string
+        description: |
+          The timestamp when the instance was created.
+      - name: creator
+        value: string
+        description: |
+          The email of the creator of the instance.
+      - name: custom_tags
+        value: array
+        description: |
+          Custom tags associated with the instance. This field is only included on create and update responses.
+        props:
+        - name: key
+          value: string
+        - name: value
+          value: string
+          description: |
+            The value of the custom tag.
+      - name: effective_capacity
+        value: string
+        description: |
+          Deprecated. The sku of the instance; this field will always match the value of capacity. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+      - name: effective_custom_tags
+        value: array
+        description: |
+          The recorded custom tags associated with the instance. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+        props:
+        - name: key
+          value: string
+        - name: value
+          value: string
+          description: |
+            The value of the custom tag.
+      - name: effective_enable_pg_native_login
+        value: boolean
+        description: |
+          Whether the instance has PG native password login enabled. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+      - name: effective_enable_readable_secondaries
+        value: boolean
+        description: |
+          Whether secondaries serving read-only traffic are enabled. Defaults to false. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+      - name: effective_node_count
+        value: integer
+        description: |
+          The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults to 1 primary and 0 secondaries. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+      - name: effective_retention_window_in_days
+        value: integer
+        description: |
+          The retention window for the instance. This is the time window in days for which the historical data is retained. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+      - name: effective_stopped
+        value: boolean
+        description: |
+          Whether the instance is stopped. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+      - name: effective_usage_policy_id
+        value: string
+        description: |
+          The policy that is applied to the instance. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+      - name: enable_pg_native_login
+        value: boolean
+        description: |
+          Whether to enable PG native password login on the instance. Defaults to false.
+      - name: enable_readable_secondaries
+        value: boolean
+        description: |
+          Whether to enable secondaries to serve read-only traffic. Defaults to false.
+      - name: node_count
+        value: integer
+        description: |
+          The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults to 1 primary and 0 secondaries. This field is input only, see effective_node_count for the output.
+      - name: parent_instance_ref
+        value: object
+        description: |
+          The ref of the parent instance. This is only available if the instance is child instance. Input: For specifying the parent instance to create a child instance. Optional. Output: Only populated if provided as input to create a child instance.
+        props:
+        - name: branch_time
+          value: string
+          description: |
+            Branch time of the ref database instance. For a parent ref instance, this is the point in time on the parent instance from which the instance was created. For a child ref instance, this is the point in time on the instance from which the child instance was created. Input: For specifying the point in time to create a child instance. Optional. Output: Only populated if provided as input to create a child instance.
+        - name: effective_lsn
+          value: string
+          description: |
+            For a parent ref instance, this is the LSN on the parent instance from which the instance was created. For a child ref instance, this is the LSN on the instance from which the child instance was created. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+        - name: lsn
+          value: string
+          description: |
+            User-specified WAL LSN of the ref database instance. Input: For specifying the WAL LSN to create a child instance. Optional. Output: Only populated if provided as input to create a child instance.
+        - name: name
+          value: string
+          description: |
+            Name of the ref database instance.
+        - name: uid
+          value: string
+          description: |
+            Id of the ref database instance.
+      - name: pg_version
+        value: string
+        description: |
+          The version of Postgres running on the instance.
+      - name: read_only_dns
+        value: string
+        description: |
+          The DNS endpoint to connect to the instance for read only access. This is only available if enable_readable_secondaries is true.
+      - name: read_write_dns
+        value: string
+        description: |
+          The DNS endpoint to connect to the instance for read+write access.
+      - name: retention_window_in_days
+        value: integer
+        description: |
+          The retention window for the instance. This is the time window in days for which the historical data is retained. The default value is 7 days. Valid values are 2 to 35 days.
+      - name: state
+        value: string
+        description: |
+          The current state of the instance.
+      - name: stopped
+        value: boolean
+        description: |
+          Whether to stop the instance. An input only param, see effective_stopped for the output.
+      - name: uid
+        value: string
+        description: |
+          An immutable UUID identifier for the instance.
+      - name: usage_policy_id
+        value: string
+        description: |
+          The desired usage policy to associate with the instance.
 ```
 </TabItem>
 </Tabs>
@@ -1013,7 +1174,7 @@ database_instance = '{{ database_instance }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND database_instance = '{{ database_instance }}' --required
 RETURNING
 name,
@@ -1062,7 +1223,7 @@ Delete a Database Instance.
 ```sql
 DELETE FROM databricks_workspace.database.database_instances
 WHERE name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND force = '{{ force }}'
 AND purge = '{{ purge }}'
 ;

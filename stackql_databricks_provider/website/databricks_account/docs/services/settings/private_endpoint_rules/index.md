@@ -444,9 +444,36 @@ updated_time
       value: string
       description: Required parameter for the private_endpoint_rules resource.
     - name: private_endpoint_rule
-      value: string
+      value: object
       description: |
         :returns: :class:`NccPrivateEndpointRule`
+      props:
+      - name: domain_names
+        value: array
+        description: |
+          Only used by private endpoints to customer-managed private endpoint services. Domain names of target private link service. When updating this field, the full list of target domain_names must be specified.
+        items:
+          type: string
+      - name: endpoint_service
+        value: string
+        description: |
+          The full target AWS endpoint service name that connects to the destination resources of the private endpoint.
+      - name: error_message
+        value: string
+      - name: group_id
+        value: string
+        description: |
+          Not used by customer-managed private endpoint services. The sub-resource type (group ID) of the target resource. Note that to connect to workspace root storage (root DBFS), you need two endpoints, one for blob and one for dfs.
+      - name: resource_id
+        value: string
+        description: |
+          The Azure resource ID of the target resource.
+      - name: resource_names
+        value: array
+        description: |
+          Only used by private endpoints towards AWS S3 service. The globally unique S3 bucket names that will be accessed via the VPC endpoint. The bucket names must be in the same region as the NCC/endpoint service. When updating this field, we perform full update on this field. Please ensure a full list of desired resource_names is provided.
+        items:
+          type: string
 ```
 </TabItem>
 </Tabs>

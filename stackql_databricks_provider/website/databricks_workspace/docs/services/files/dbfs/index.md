@@ -83,70 +83,70 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-path"><code>path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-path"><code>path</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>List the contents of a directory, or details of the file. If the file or directory does not exist,</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-path"><code>path</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-path"><code>path</code></a></td>
     <td></td>
     <td>Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Delete the file or directory (optionally recursively delete all files in the directory). This call</td>
 </tr>
 <tr>
     <td><a href="#add_block"><CopyableCode code="add_block" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-handle"><code>handle</code></a>, <a href="#parameter-data"><code>data</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-handle"><code>handle</code></a>, <a href="#parameter-data"><code>data</code></a></td>
     <td></td>
     <td>Appends a block of data to the stream specified by the input handle. If the handle does not exist,</td>
 </tr>
 <tr>
     <td><a href="#close"><CopyableCode code="close" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-handle"><code>handle</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-handle"><code>handle</code></a></td>
     <td></td>
     <td>Closes the stream specified by the input handle. If the handle does not exist, this call throws an</td>
 </tr>
 <tr>
     <td><a href="#get_status"><CopyableCode code="get_status" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-path"><code>path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-path"><code>path</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets the file information for a file or directory. If the file or directory does not exist, this call</td>
 </tr>
 <tr>
     <td><a href="#mkdirs"><CopyableCode code="mkdirs" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-path"><code>path</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-path"><code>path</code></a></td>
     <td></td>
     <td>Creates the given directory and necessary parent directories if they do not exist. If a file (not a</td>
 </tr>
 <tr>
     <td><a href="#move"><CopyableCode code="move" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-source_path"><code>source_path</code></a>, <a href="#parameter-destination_path"><code>destination_path</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-source_path"><code>source_path</code></a>, <a href="#parameter-destination_path"><code>destination_path</code></a></td>
     <td></td>
     <td>Moves a file from one location to another location within DBFS. If the source file does not exist,</td>
 </tr>
 <tr>
     <td><a href="#put"><CopyableCode code="put" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-path"><code>path</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-path"><code>path</code></a></td>
     <td></td>
     <td>Uploads a file through the use of multipart form post. It is mainly used for streaming uploads, but</td>
 </tr>
 <tr>
     <td><a href="#read"><CopyableCode code="read" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-path"><code>path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-path"><code>path</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-length"><code>length</code></a>, <a href="#parameter-offset"><code>offset</code></a></td>
     <td>Returns the contents of a file. If the file does not exist, this call throws an exception with</td>
 </tr>
@@ -166,24 +166,24 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-path">
     <td><CopyableCode code="path" /></td>
     <td><code>string</code></td>
     <td>The path of the file to read. The path should be the absolute DBFS path.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-length">
     <td><CopyableCode code="length" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>The number of bytes to read starting from the offset. This has a limit of 1 MB, and a default value of 0.5 MB.</td>
 </tr>
 <tr id="parameter-offset">
     <td><CopyableCode code="offset" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>The offset to read from in bytes.</td>
 </tr>
 </tbody>
@@ -209,7 +209,7 @@ modification_time,
 path
 FROM databricks_workspace.files.dbfs
 WHERE path = '{{ path }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -233,12 +233,12 @@ Opens a stream to write to a file and returns a handle to this stream. There is 
 INSERT INTO databricks_workspace.files.dbfs (
 path,
 overwrite,
-deployment_name
+workspace
 )
 SELECT 
 '{{ path }}' /* required */,
-'{{ overwrite }}',
-'{{ deployment_name }}'
+{{ overwrite }},
+'{{ workspace }}'
 RETURNING
 handle
 ;
@@ -250,7 +250,7 @@ handle
 # Description fields are for documentation purposes
 - name: dbfs
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the dbfs resource.
     - name: path
@@ -258,7 +258,7 @@ handle
       description: |
         The path of the new file. The path should be the absolute DBFS path.
     - name: overwrite
-      value: string
+      value: boolean
       description: |
         The flag that specifies whether to overwrite existing file/files.
 ```
@@ -280,7 +280,7 @@ Delete the file or directory (optionally recursively delete all files in the dir
 
 ```sql
 DELETE FROM databricks_workspace.files.dbfs
-WHERE deployment_name = '{{ deployment_name }}' --required
+WHERE workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -307,7 +307,7 @@ Appends a block of data to the stream specified by the input handle. If the hand
 
 ```sql
 EXEC databricks_workspace.files.dbfs.add_block 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "handle": {{ handle }}, 
@@ -322,7 +322,7 @@ Closes the stream specified by the input handle. If the handle does not exist, t
 
 ```sql
 EXEC databricks_workspace.files.dbfs.close 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "handle": {{ handle }}
@@ -337,7 +337,7 @@ Gets the file information for a file or directory. If the file or directory does
 ```sql
 EXEC databricks_workspace.files.dbfs.get_status 
 @path='{{ path }}' --required, 
-@deployment_name='{{ deployment_name }}' --required
+@workspace='{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -347,7 +347,7 @@ Creates the given directory and necessary parent directories if they do not exis
 
 ```sql
 EXEC databricks_workspace.files.dbfs.mkdirs 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "path": "{{ path }}"
@@ -361,7 +361,7 @@ Moves a file from one location to another location within DBFS. If the source fi
 
 ```sql
 EXEC databricks_workspace.files.dbfs.move 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "source_path": "{{ source_path }}", 
@@ -376,12 +376,12 @@ Uploads a file through the use of multipart form post. It is mainly used for str
 
 ```sql
 EXEC databricks_workspace.files.dbfs.put 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "path": "{{ path }}", 
 "contents": "{{ contents }}", 
-"overwrite": "{{ overwrite }}"
+"overwrite": {{ overwrite }}
 }'
 ;
 ```
@@ -393,7 +393,7 @@ Returns the contents of a file. If the file does not exist, this call throws an 
 ```sql
 EXEC databricks_workspace.files.dbfs.read 
 @path='{{ path }}' --required, 
-@deployment_name='{{ deployment_name }}' --required, 
+@workspace='{{ workspace }}' --required, 
 @length='{{ length }}', 
 @offset='{{ offset }}'
 ;

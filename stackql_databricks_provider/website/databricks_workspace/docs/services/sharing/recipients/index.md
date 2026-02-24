@@ -371,42 +371,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-data_recipient_global_metastore_id"><code>data_recipient_global_metastore_id</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets an array of all share recipients within the current metastore where:</td>
 </tr>
 <tr>
     <td><a href="#rotate_token"><CopyableCode code="rotate_token" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-existing_token_expire_in_seconds"><code>existing_token_expire_in_seconds</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-existing_token_expire_in_seconds"><code>existing_token_expire_in_seconds</code></a></td>
     <td></td>
     <td>Refreshes the specified recipient's delta sharing authentication token with the provided token info.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-authentication_type"><code>authentication_type</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-authentication_type"><code>authentication_type</code></a></td>
     <td></td>
     <td>Creates a new recipient with the delta sharing authentication type in the metastore. The caller must</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.</td>
 </tr>
@@ -426,15 +426,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Name of the recipient.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-data_recipient_global_metastore_id">
     <td><CopyableCode code="data_recipient_global_metastore_id" /></td>
@@ -443,7 +443,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of recipients to return. - when set to 0, the page length is set to a server configured value (recommended); - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to a value less than 0, an invalid parameter error is returned; - If not set, all valid recipients are returned (not recommended). - Note: The number of returned recipients might be less than the specified max_results size, even zero. The only definitive indication that no further recipients can be fetched is when the next_page_token is unset from the response.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -491,7 +491,7 @@ updated_at,
 updated_by
 FROM databricks_workspace.sharing.recipients
 WHERE name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -522,7 +522,7 @@ tokens,
 updated_at,
 updated_by
 FROM databricks_workspace.sharing.recipients
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND data_recipient_global_metastore_id = '{{ data_recipient_global_metastore_id }}'
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
@@ -550,12 +550,12 @@ Refreshes the specified recipient's delta sharing authentication token with the 
 INSERT INTO databricks_workspace.sharing.recipients (
 existing_token_expire_in_seconds,
 name,
-deployment_name
+workspace
 )
 SELECT 
 {{ existing_token_expire_in_seconds }} /* required */,
 '{{ name }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 name,
@@ -596,20 +596,20 @@ ip_access_list,
 owner,
 properties_kvpairs,
 sharing_code,
-deployment_name
+workspace
 )
 SELECT 
 '{{ name }}' /* required */,
 '{{ authentication_type }}' /* required */,
 '{{ comment }}',
 '{{ data_recipient_global_metastore_id }}',
-'{{ expiration_time }}',
+{{ expiration_time }},
 '{{ id }}',
 '{{ ip_access_list }}',
 '{{ owner }}',
 '{{ properties_kvpairs }}',
 '{{ sharing_code }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 name,
@@ -643,7 +643,7 @@ updated_by
     - name: name
       value: string
       description: Required parameter for the recipients resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the recipients resource.
     - name: existing_token_expire_in_seconds
@@ -665,7 +665,7 @@ updated_by
       description: |
         The global Unity Catalog metastore id provided by the data recipient. This field is only present when the __authentication_type__ is **DATABRICKS**. The identifier is of format __cloud__:__region__:__metastore-uuid__.
     - name: expiration_time
-      value: string
+      value: integer
       description: |
         Expiration timestamp of the token, in epoch milliseconds.
     - name: id
@@ -673,17 +673,27 @@ updated_by
       description: |
         [Create,Update:IGN] common - id of the recipient
     - name: ip_access_list
-      value: string
+      value: object
       description: |
         IP Access List
+      props:
+      - name: allowed_ip_addresses
+        value: array
+        items:
+          type: string
     - name: owner
       value: string
       description: |
         Username of the recipient owner.
     - name: properties_kvpairs
-      value: string
+      value: object
       description: |
         Recipient properties as map of string key-value pairs. When provided in update request, the specified properties will override the existing properties. To add and remove properties, one would need to perform a read-modify-write.
+      props:
+      - name: properties
+        value: object
+        description: |
+          A map of key-value properties attached to the securable.
     - name: sharing_code
       value: string
       description: |
@@ -709,7 +719,7 @@ Updates an existing recipient in the metastore. The caller must be a metastore a
 UPDATE databricks_workspace.sharing.recipients
 SET 
 comment = '{{ comment }}',
-expiration_time = '{{ expiration_time }}',
+expiration_time = {{ expiration_time }},
 id = '{{ id }}',
 ip_access_list = '{{ ip_access_list }}',
 new_name = '{{ new_name }}',
@@ -717,7 +727,7 @@ owner = '{{ owner }}',
 properties_kvpairs = '{{ properties_kvpairs }}'
 WHERE 
 name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 id,
 name,
@@ -759,7 +769,7 @@ Deletes the specified recipient from the metastore. The caller must be the owner
 ```sql
 DELETE FROM databricks_workspace.sharing.recipients
 WHERE name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

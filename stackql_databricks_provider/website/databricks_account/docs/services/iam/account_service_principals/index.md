@@ -265,7 +265,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-count">
     <td><CopyableCode code="count" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Desired number of results per page. Default is 10000.</td>
 </tr>
 <tr id="parameter-excluded_attributes">
@@ -290,7 +290,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-start_index">
     <td><CopyableCode code="start_index" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Specifies the index of the first result. First item is number 1.</td>
 </tr>
 </tbody>
@@ -376,7 +376,7 @@ roles,
 account_id
 )
 SELECT 
-'{{ active }}',
+{{ active }},
 '{{ application_id }}',
 '{{ display_name }}',
 '{{ external_id }}',
@@ -404,7 +404,7 @@ roles
       value: string
       description: Required parameter for the account_service_principals resource.
     - name: active
-      value: string
+      value: boolean
       description: |
         If this user is active
     - name: application_id
@@ -422,9 +422,20 @@ roles
     - name: id
       value: string
     - name: roles
-      value: string
+      value: array
       description: |
         Indicates if the group has the admin role.
+      props:
+      - name: display
+        value: string
+      - name: primary
+        value: boolean
+      - name: $ref
+        value: string
+      - name: type
+        value: string
+      - name: value
+        value: string
 ```
 </TabItem>
 </Tabs>
@@ -470,7 +481,7 @@ Updates the details of a single service principal.
 ```sql
 REPLACE databricks_account.iam.account_service_principals
 SET 
-active = '{{ active }}',
+active = {{ active }},
 application_id = '{{ application_id }}',
 display_name = '{{ display_name }}',
 external_id = '{{ external_id }}',

@@ -183,28 +183,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get dashboard schedule.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List dashboard schedules.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-schedule"><code>schedule</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-schedule"><code>schedule</code></a></td>
     <td></td>
     <td>Create dashboard schedule.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-etag"><code>etag</code></a></td>
     <td>Delete dashboard schedule.</td>
 </tr>
@@ -229,15 +229,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>UUID identifying the dashboard to which the schedule belongs.</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-schedule_id">
     <td><CopyableCode code="schedule_id" /></td>
     <td><code>string</code></td>
     <td>UUID identifying the schedule.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-etag">
     <td><CopyableCode code="etag" /></td>
@@ -246,7 +246,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>The number of schedules to return per page.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -284,7 +284,7 @@ update_time
 FROM databricks_workspace.dashboards.lakeview_schedules
 WHERE dashboard_id = '{{ dashboard_id }}' -- required
 AND schedule_id = '{{ schedule_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -305,7 +305,7 @@ pause_status,
 update_time
 FROM databricks_workspace.dashboards.lakeview_schedules
 WHERE dashboard_id = '{{ dashboard_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -331,12 +331,12 @@ Create dashboard schedule.
 INSERT INTO databricks_workspace.dashboards.lakeview_schedules (
 schedule,
 dashboard_id,
-deployment_name
+workspace
 )
 SELECT 
 '{{ schedule }}' /* required */,
 '{{ dashboard_id }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 dashboard_id,
 schedule_id,
@@ -359,13 +359,55 @@ update_time
     - name: dashboard_id
       value: string
       description: Required parameter for the lakeview_schedules resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the lakeview_schedules resource.
     - name: schedule
-      value: string
+      value: object
       description: |
         The schedule to create. A dashboard is limited to 10 schedules.
+      props:
+      - name: cron_schedule
+        value: object
+        props:
+        - name: quartz_cron_expression
+          value: string
+        - name: timezone_id
+          value: string
+          description: |
+            A Java timezone id. The schedule will be resolved with respect to this timezone. See [Java TimeZone] for details. [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
+      - name: create_time
+        value: string
+        description: |
+          A timestamp indicating when the schedule was created.
+      - name: dashboard_id
+        value: string
+        description: |
+          UUID identifying the dashboard to which the schedule belongs.
+      - name: display_name
+        value: string
+        description: |
+          The display name for schedule.
+      - name: etag
+        value: string
+        description: |
+          The etag for the schedule. Must be left empty on create, must be provided on updates to ensure that the schedule has not been modified since the last read, and can be optionally provided on delete.
+      - name: pause_status
+        value: string
+        description: |
+          The status indicates whether this schedule is paused or not.
+      - name: schedule_id
+        value: string
+        description: |
+          UUID identifying the schedule.
+      - name: update_time
+        value: string
+        description: |
+          A timestamp indicating when the schedule was last updated.
+      - name: warehouse_id
+        value: string
+        description: |
+          The warehouse id to run the dashboard with for the schedule.
 ```
 </TabItem>
 </Tabs>
@@ -387,7 +429,7 @@ Delete dashboard schedule.
 DELETE FROM databricks_workspace.dashboards.lakeview_schedules
 WHERE dashboard_id = '{{ dashboard_id }}' --required
 AND schedule_id = '{{ schedule_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND etag = '{{ etag }}'
 ;
 ```

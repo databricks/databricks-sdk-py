@@ -47,7 +47,18 @@
                   "tags": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ExperimentTag"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "description": "The tag key."
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "The tag value."
+                        }
+                      },
+                      "description": "A tag for an experiment."
                     },
                     "description": "A collection of tags to set on the experiment. Maximum tag size and number of tags per request depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250 bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to support up to 20 tags per request."
                   }
@@ -122,7 +133,18 @@
                   "params": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/LoggedModelParameter"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "description": "The key identifying this param."
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "The value of this param."
+                        }
+                      },
+                      "description": "Parameter associated with a LoggedModel."
                     },
                     "description": "Parameters attached to the model."
                   },
@@ -133,7 +155,18 @@
                   "tags": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/LoggedModelTag"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "description": "The tag key."
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "The tag value."
+                        }
+                      },
+                      "description": "Tag for a LoggedModel."
                     },
                     "description": "Tags attached to the model."
                   }
@@ -208,7 +241,18 @@
                   "tags": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/RunTag"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "description": "The tag key."
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "The tag value."
+                        }
+                      },
+                      "description": "Tag for a run."
                     },
                     "description": "Additional metadata for run."
                   },
@@ -378,7 +422,12 @@
                 "type": "object",
                 "properties": {
                   "status": {
-                    "$ref": "#/components/schemas/LoggedModelStatus",
+                    "type": "string",
+                    "x-enum": [
+                      "LOGGED_MODEL_PENDING",
+                      "LOGGED_MODEL_READY",
+                      "LOGGED_MODEL_UPLOAD_FAILED"
+                    ],
                     "description": "Whether or not the model is ready for use. ``\"LOGGED_MODEL_UPLOAD_FAILED\"`` indicates that something went wrong when logging the model weights / agent code."
                   }
                 },
@@ -1036,7 +1085,29 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ExperimentAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_EDIT",
+                            "CAN_MANAGE",
+                            "CAN_READ"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`ExperimentPermissions`"
                   }
@@ -1105,7 +1176,29 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ExperimentAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_EDIT",
+                            "CAN_MANAGE",
+                            "CAN_READ"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`ExperimentPermissions`"
                   }
@@ -1378,14 +1471,60 @@
                   "metrics": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Metric"
+                      "type": "object",
+                      "properties": {
+                        "dataset_digest": {
+                          "type": "string",
+                          "description": "The dataset digest of the dataset associated with the metric, e.g. an md5 hash of the dataset that uniquely identifies it within datasets of the same name."
+                        },
+                        "dataset_name": {
+                          "type": "string",
+                          "description": "The name of the dataset associated with the metric. E.g. \u201cmy.uc.table@2\u201d \u201cnyc-taxi-dataset\u201d, \u201cfantastic-elk-3\u201d"
+                        },
+                        "key": {
+                          "type": "string",
+                          "description": "The key identifying the metric."
+                        },
+                        "model_id": {
+                          "type": "string",
+                          "description": "The ID of the logged model or registered model version associated with the metric, if applicable."
+                        },
+                        "run_id": {
+                          "type": "string",
+                          "description": "The ID of the run containing the metric."
+                        },
+                        "step": {
+                          "type": "integer",
+                          "description": "The step at which the metric was logged."
+                        },
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "The timestamp at which the metric was recorded."
+                        },
+                        "value": {
+                          "type": "number",
+                          "description": "The value of the metric."
+                        }
+                      },
+                      "description": "Metric associated with a run, represented as a key-value pair."
                     },
                     "description": "Metrics to log. A single request can contain up to 1000 metrics, and up to 1000 metrics, params, and tags in total."
                   },
                   "params": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Param"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "description": "Key identifying this param."
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "Value associated with this param."
+                        }
+                      },
+                      "description": "Param associated with a run."
                     },
                     "description": "Params to log. A single request can contain up to 100 params, and up to 1000 metrics, params, and tags in total."
                   },
@@ -1396,7 +1535,18 @@
                   "tags": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/RunTag"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "description": "The tag key."
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "The tag value."
+                        }
+                      },
+                      "description": "Tag for a run."
                     },
                     "description": "Tags to log. A single request can contain up to 100 tags, and up to 1000 metrics, params, and tags in total."
                   }
@@ -1453,14 +1603,88 @@
                   "datasets": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/DatasetInput"
+                      "type": "object",
+                      "properties": {
+                        "dataset": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "description": "The name of the dataset. E.g. \u201cmy.uc.table@2\u201d \u201cnyc-taxi-dataset\u201d, \u201cfantastic-elk-3\u201d"
+                            },
+                            "digest": {
+                              "type": "string",
+                              "description": "Dataset digest, e.g. an md5 hash of the dataset that uniquely identifies it within datasets of the same name."
+                            },
+                            "source_type": {
+                              "type": "string",
+                              "description": "The type of the dataset source, e.g. \u2018databricks-uc-table\u2019, \u2018DBFS\u2019, \u2018S3\u2019, ..."
+                            },
+                            "source": {
+                              "type": "string",
+                              "description": "Source information for the dataset. Note that the source may not exactly reproduce the dataset if it was transformed / modified before use with MLflow."
+                            },
+                            "profile": {
+                              "type": "string",
+                              "description": "The profile of the dataset. Summary statistics for the dataset, such as the number of rows in a table, the mean / std / mode of each column in a table, or the number of elements in an array."
+                            },
+                            "schema": {
+                              "type": "string",
+                              "description": "The schema of the dataset. E.g., MLflow ColSpec JSON for a dataframe, MLflow TensorSpec JSON for an ndarray, or another schema format."
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "digest",
+                            "source_type",
+                            "source"
+                          ],
+                          "description": "The dataset being used as a Run input."
+                        },
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "key": {
+                                "type": "string",
+                                "description": "The tag key."
+                              },
+                              "value": {
+                                "type": "string",
+                                "description": "The tag value."
+                              }
+                            },
+                            "required": [
+                              "key",
+                              "value"
+                            ],
+                            "description": "Tag for a dataset input."
+                          },
+                          "description": "A list of tags for the dataset input, e.g. a \u201ccontext\u201d tag with value \u201ctraining\u201d"
+                        }
+                      },
+                      "required": [
+                        "dataset"
+                      ],
+                      "description": "DatasetInput. Represents a dataset and input tags."
                     },
                     "description": "Dataset inputs"
                   },
                   "models": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ModelInput"
+                      "type": "object",
+                      "properties": {
+                        "model_id": {
+                          "type": "string",
+                          "description": "The unique identifier of the model."
+                        }
+                      },
+                      "required": [
+                        "model_id"
+                      ],
+                      "description": "Represents a LoggedModel or Registered Model Version input to a Run."
                     },
                     "description": "Model inputs"
                   }
@@ -1527,7 +1751,18 @@
                   "params": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/LoggedModelParameter"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "description": "The key identifying this param."
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "The value of this param."
+                        }
+                      },
+                      "description": "Parameter associated with a LoggedModel."
                     },
                     "description": "Parameters to attach to the model."
                   }
@@ -1725,7 +1960,22 @@
                   "models": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ModelOutput"
+                      "type": "object",
+                      "properties": {
+                        "model_id": {
+                          "type": "string",
+                          "description": "The unique identifier of the model."
+                        },
+                        "step": {
+                          "type": "integer",
+                          "description": "The step at which the model was produced."
+                        }
+                      },
+                      "required": [
+                        "model_id",
+                        "step"
+                      ],
+                      "description": "Represents a LoggedModel output of a Run."
                     },
                     "description": "The model outputs from the Run."
                   }
@@ -2039,7 +2289,12 @@
                     "description": "Token indicating the page of experiments to fetch"
                   },
                   "view_type": {
-                    "$ref": "#/components/schemas/ViewType",
+                    "type": "string",
+                    "x-enum": [
+                      "ACTIVE_ONLY",
+                      "ALL",
+                      "DELETED_ONLY"
+                    ],
                     "description": "Qualifier for type of experiments to be returned. If unspecified, return only active experiments."
                   }
                 }
@@ -2098,7 +2353,19 @@
                   "datasets": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/SearchLoggedModelsDataset"
+                      "type": "object",
+                      "properties": {
+                        "dataset_name": {
+                          "type": "string"
+                        },
+                        "dataset_digest": {
+                          "type": "string",
+                          "description": "The digest of the dataset."
+                        }
+                      },
+                      "required": [
+                        "dataset_name"
+                      ]
                     },
                     "description": "List of datasets on which to apply the metrics filter clauses. For example, a filter with `metrics.accuracy > 0.9` and dataset info with name \"test_dataset\" means we will return all logged models with accuracy > 0.9 on the test_dataset. Metric values from ANY dataset matching the criteria are considered. If no datasets are specified, then metrics across all datasets are considered in the filter."
                   },
@@ -2120,7 +2387,27 @@
                   "order_by": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/SearchLoggedModelsOrderBy"
+                      "type": "object",
+                      "properties": {
+                        "field_name": {
+                          "type": "string"
+                        },
+                        "ascending": {
+                          "type": "boolean",
+                          "description": "Whether the search results order is ascending or not."
+                        },
+                        "dataset_digest": {
+                          "type": "string",
+                          "description": "If ``field_name`` refers to a metric, this field specifies the digest of the dataset associated with the metric. Only metrics associated with the specified dataset name and digest will be considered for ordering. This field may only be set if ``dataset_name`` is also set."
+                        },
+                        "dataset_name": {
+                          "type": "string",
+                          "description": "If ``field_name`` refers to a metric, this field specifies the name of the dataset associated with the metric. Only metrics associated with the specified dataset name will be considered for ordering. This field may only be set if ``field_name`` refers to a metric."
+                        }
+                      },
+                      "required": [
+                        "field_name"
+                      ]
                     },
                     "description": "The list of columns for ordering the results, with additional fields for sorting criteria."
                   },
@@ -2208,7 +2495,12 @@
                     "description": "Token for the current page of runs."
                   },
                   "run_view_type": {
-                    "$ref": "#/components/schemas/ViewType",
+                    "type": "string",
+                    "x-enum": [
+                      "ACTIVE_ONLY",
+                      "ALL",
+                      "DELETED_ONLY"
+                    ],
                     "description": "Whether to display only active, only deleted, or all runs. Defaults to only active runs."
                   }
                 }
@@ -2341,7 +2633,18 @@
                   "tags": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/LoggedModelTag"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "description": "The tag key."
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "The tag value."
+                        }
+                      },
+                      "description": "Tag for a LoggedModel."
                     },
                     "description": "The tags to set on the logged model."
                   }
@@ -2531,7 +2834,14 @@
                     "description": "[Deprecated, use `run_id` instead] ID of the run to update. This field will be removed in a future MLflow version."
                   },
                   "status": {
-                    "$ref": "#/components/schemas/UpdateRunStatus",
+                    "type": "string",
+                    "x-enum": [
+                      "FAILED",
+                      "FINISHED",
+                      "KILLED",
+                      "RUNNING",
+                      "SCHEDULED"
+                    ],
                     "description": "Updated status of the run."
                   }
                 }
@@ -2590,7 +2900,101 @@
                   "requests": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/CreateMaterializedFeatureRequest"
+                      "type": "object",
+                      "properties": {
+                        "materialized_feature": {
+                          "type": "object",
+                          "properties": {
+                            "feature_name": {
+                              "type": "string",
+                              "description": "The full name of the feature in Unity Catalog."
+                            },
+                            "cron_schedule": {
+                              "type": "string",
+                              "description": "The quartz cron expression that defines the schedule of the materialization pipeline. The schedule is evaluated in the UTC timezone."
+                            },
+                            "last_materialization_time": {
+                              "type": "string",
+                              "description": "The timestamp when the pipeline last ran and updated the materialized feature values. If the pipeline has not run yet, this field will be null."
+                            },
+                            "materialized_feature_id": {
+                              "type": "string",
+                              "description": "Unique identifier for the materialized feature."
+                            },
+                            "offline_store_config": {
+                              "type": "object",
+                              "properties": {
+                                "catalog_name": {
+                                  "type": "string",
+                                  "description": "The Unity Catalog catalog name."
+                                },
+                                "schema_name": {
+                                  "type": "string",
+                                  "description": "The Unity Catalog schema name."
+                                },
+                                "table_name_prefix": {
+                                  "type": "string",
+                                  "description": "Prefix for Unity Catalog table name. The materialized feature will be stored in a table with this prefix and a generated postfix."
+                                }
+                              },
+                              "required": [
+                                "catalog_name",
+                                "schema_name",
+                                "table_name_prefix"
+                              ],
+                              "description": "Configuration for offline store destination."
+                            },
+                            "online_store_config": {
+                              "type": "object",
+                              "properties": {
+                                "catalog_name": {
+                                  "type": "string",
+                                  "description": "The Unity Catalog catalog name. This name is also used as the Lakebase logical database name."
+                                },
+                                "schema_name": {
+                                  "type": "string",
+                                  "description": "The Unity Catalog schema name."
+                                },
+                                "table_name_prefix": {
+                                  "type": "string",
+                                  "description": "Prefix for Unity Catalog table name. The materialized feature will be stored in a Lakebase table with this prefix and a generated postfix."
+                                },
+                                "online_store_name": {
+                                  "type": "string",
+                                  "description": "The name of the target online store."
+                                }
+                              },
+                              "required": [
+                                "catalog_name",
+                                "schema_name",
+                                "table_name_prefix",
+                                "online_store_name"
+                              ],
+                              "description": "Configuration for online store destination."
+                            },
+                            "pipeline_schedule_state": {
+                              "type": "string",
+                              "x-enum": [
+                                "ACTIVE",
+                                "PAUSED",
+                                "SNAPSHOT"
+                              ],
+                              "description": "The schedule state of the materialization pipeline."
+                            },
+                            "table_name": {
+                              "type": "string",
+                              "description": "The fully qualified Unity Catalog path to the table containing the materialized feature (Delta table or Lakebase table). Output only."
+                            }
+                          },
+                          "required": [
+                            "feature_name"
+                          ],
+                          "description": "A materialized feature represents a feature that is continuously computed and stored."
+                        }
+                      },
+                      "required": [
+                        "materialized_feature"
+                      ]
                     },
                     "description": "The requests to create materialized features."
                   }
@@ -2651,7 +3055,222 @@
                 "type": "object",
                 "properties": {
                   "feature": {
-                    "$ref": "#/components/schemas/Feature",
+                    "type": "object",
+                    "properties": {
+                      "full_name": {
+                        "type": "string"
+                      },
+                      "source": {
+                        "type": "object",
+                        "properties": {
+                          "delta_table_source": {
+                            "type": "object",
+                            "properties": {
+                              "full_name": {
+                                "type": "string"
+                              },
+                              "entity_columns": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "The entity columns of the Delta table."
+                              },
+                              "timeseries_column": {
+                                "type": "string",
+                                "description": "The timeseries column of the Delta table."
+                              }
+                            },
+                            "required": [
+                              "full_name",
+                              "entity_columns",
+                              "timeseries_column"
+                            ]
+                          },
+                          "kafka_source": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "entity_column_identifiers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "variant_expr_path": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "variant_expr_path"
+                                  ]
+                                },
+                                "description": "The entity column identifiers of the Kafka source."
+                              },
+                              "timeseries_column_identifier": {
+                                "type": "object",
+                                "properties": {
+                                  "variant_expr_path": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "variant_expr_path"
+                                ],
+                                "description": "The timeseries column identifier of the Kafka source."
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "entity_column_identifiers",
+                              "timeseries_column_identifier"
+                            ]
+                          }
+                        },
+                        "description": "The data source of the feature."
+                      },
+                      "inputs": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "The input columns from which the feature is computed."
+                      },
+                      "function": {
+                        "type": "object",
+                        "properties": {
+                          "function_type": {
+                            "type": "string",
+                            "x-enum": [
+                              "APPROX_COUNT_DISTINCT",
+                              "APPROX_PERCENTILE",
+                              "AVG",
+                              "COUNT",
+                              "FIRST",
+                              "LAST",
+                              "MAX",
+                              "MIN",
+                              "STDDEV_POP",
+                              "STDDEV_SAMP",
+                              "SUM",
+                              "VAR_POP",
+                              "VAR_SAMP"
+                            ],
+                            "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                          },
+                          "extra_parameters": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "key": {
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "string",
+                                  "description": "The value of the parameter."
+                                }
+                              },
+                              "required": [
+                                "key",
+                                "value"
+                              ]
+                            },
+                            "description": "Extra parameters for parameterized functions."
+                          }
+                        },
+                        "required": [
+                          "function_type"
+                        ],
+                        "description": "The function by which the feature is computed."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "The description of the feature."
+                      },
+                      "filter_condition": {
+                        "type": "string",
+                        "description": "The filter condition applied to the source data before aggregation."
+                      },
+                      "lineage_context": {
+                        "type": "object",
+                        "properties": {
+                          "job_context": {
+                            "type": "object",
+                            "properties": {
+                              "job_id": {
+                                "type": "integer"
+                              },
+                              "job_run_id": {
+                                "type": "integer",
+                                "description": "The job run ID where this API was invoked."
+                              }
+                            },
+                            "description": "Job context information including job ID and run ID."
+                          },
+                          "notebook_id": {
+                            "type": "integer",
+                            "description": "The notebook ID where this API was invoked."
+                          }
+                        },
+                        "description": "WARNING: This field is primarily intended for internal use by Databricks systems and is automatically populated when features are created through Databricks notebooks or jobs. Users should not manually set this field as incorrect values may lead to inaccurate lineage tracking or unexpected behavior. This field will be set by feature-engineering client and should be left unset by SDK and terraform users."
+                      },
+                      "time_window": {
+                        "type": "object",
+                        "properties": {
+                          "continuous": {
+                            "type": "object",
+                            "properties": {
+                              "window_duration": {
+                                "type": "string"
+                              },
+                              "offset": {
+                                "type": "string",
+                                "description": "The offset of the continuous window (must be non-positive)."
+                              }
+                            },
+                            "required": [
+                              "window_duration"
+                            ]
+                          },
+                          "sliding": {
+                            "type": "object",
+                            "properties": {
+                              "window_duration": {
+                                "type": "string"
+                              },
+                              "slide_duration": {
+                                "type": "string",
+                                "description": "The slide duration (interval by which windows advance, must be positive and less than duration)."
+                              }
+                            },
+                            "required": [
+                              "window_duration",
+                              "slide_duration"
+                            ]
+                          },
+                          "tumbling": {
+                            "type": "object",
+                            "properties": {
+                              "window_duration": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "window_duration"
+                            ]
+                          }
+                        },
+                        "description": "The time window in which the feature is computed."
+                      }
+                    },
+                    "required": [
+                      "full_name",
+                      "source",
+                      "inputs",
+                      "function"
+                    ],
                     "description": "Feature to create."
                   }
                 },
@@ -2771,7 +3390,100 @@
                 "type": "object",
                 "properties": {
                   "kafka_config": {
-                    "$ref": "#/components/schemas/KafkaConfig",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "bootstrap_servers": {
+                        "type": "string",
+                        "description": "A comma-separated list of host/port pairs pointing to Kafka cluster."
+                      },
+                      "subscription_mode": {
+                        "type": "object",
+                        "properties": {
+                          "assign": {
+                            "type": "string"
+                          },
+                          "subscribe": {
+                            "type": "string",
+                            "description": "A comma-separated list of Kafka topics to read from. For example, 'topicA,topicB,topicC'."
+                          },
+                          "subscribe_pattern": {
+                            "type": "string",
+                            "description": "A regular expression matching topics to subscribe to. For example, 'topic.*' will subscribe to all topics starting with 'topic'."
+                          }
+                        },
+                        "description": "Options to configure which Kafka topics to pull data from."
+                      },
+                      "auth_config": {
+                        "type": "object",
+                        "properties": {
+                          "uc_service_credential_name": {
+                            "type": "string"
+                          }
+                        },
+                        "description": "Authentication configuration for connection to topics."
+                      },
+                      "backfill_source": {
+                        "type": "object",
+                        "properties": {
+                          "delta_table_source": {
+                            "type": "object",
+                            "properties": {
+                              "full_name": {
+                                "type": "string"
+                              },
+                              "entity_columns": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "The entity columns of the Delta table."
+                              },
+                              "timeseries_column": {
+                                "type": "string",
+                                "description": "The timeseries column of the Delta table."
+                              }
+                            },
+                            "required": [
+                              "full_name",
+                              "entity_columns",
+                              "timeseries_column"
+                            ]
+                          }
+                        },
+                        "description": "A user-provided and managed source for backfilling data. Historical data is used when creating a training set from streaming features linked to this Kafka config. In the future, a separate table will be maintained by Databricks for forward filling data. The schema for this source must match exactly that of the key and value schemas specified for this Kafka config."
+                      },
+                      "extra_options": {
+                        "type": "object",
+                        "description": "Catch-all for miscellaneous options. Keys should be source options or Kafka consumer options (kafka.*)"
+                      },
+                      "key_schema": {
+                        "type": "object",
+                        "properties": {
+                          "json_schema": {
+                            "type": "string"
+                          }
+                        },
+                        "description": "Schema configuration for extracting message keys from topics. At least one of key_schema and value_schema must be provided."
+                      },
+                      "value_schema": {
+                        "type": "object",
+                        "properties": {
+                          "json_schema": {
+                            "type": "string"
+                          }
+                        },
+                        "description": "Schema configuration for extracting message values from topics. At least one of key_schema and value_schema must be provided."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "bootstrap_servers",
+                      "subscription_mode",
+                      "auth_config"
+                    ],
                     "description": ":returns: :class:`KafkaConfig`"
                   }
                 },
@@ -2891,7 +3603,92 @@
                 "type": "object",
                 "properties": {
                   "materialized_feature": {
-                    "$ref": "#/components/schemas/MaterializedFeature",
+                    "type": "object",
+                    "properties": {
+                      "feature_name": {
+                        "type": "string",
+                        "description": "The full name of the feature in Unity Catalog."
+                      },
+                      "cron_schedule": {
+                        "type": "string",
+                        "description": "The quartz cron expression that defines the schedule of the materialization pipeline. The schedule is evaluated in the UTC timezone."
+                      },
+                      "last_materialization_time": {
+                        "type": "string",
+                        "description": "The timestamp when the pipeline last ran and updated the materialized feature values. If the pipeline has not run yet, this field will be null."
+                      },
+                      "materialized_feature_id": {
+                        "type": "string",
+                        "description": "Unique identifier for the materialized feature."
+                      },
+                      "offline_store_config": {
+                        "type": "object",
+                        "properties": {
+                          "catalog_name": {
+                            "type": "string",
+                            "description": "The Unity Catalog catalog name."
+                          },
+                          "schema_name": {
+                            "type": "string",
+                            "description": "The Unity Catalog schema name."
+                          },
+                          "table_name_prefix": {
+                            "type": "string",
+                            "description": "Prefix for Unity Catalog table name. The materialized feature will be stored in a table with this prefix and a generated postfix."
+                          }
+                        },
+                        "required": [
+                          "catalog_name",
+                          "schema_name",
+                          "table_name_prefix"
+                        ],
+                        "description": "Configuration for offline store destination."
+                      },
+                      "online_store_config": {
+                        "type": "object",
+                        "properties": {
+                          "catalog_name": {
+                            "type": "string",
+                            "description": "The Unity Catalog catalog name. This name is also used as the Lakebase logical database name."
+                          },
+                          "schema_name": {
+                            "type": "string",
+                            "description": "The Unity Catalog schema name."
+                          },
+                          "table_name_prefix": {
+                            "type": "string",
+                            "description": "Prefix for Unity Catalog table name. The materialized feature will be stored in a Lakebase table with this prefix and a generated postfix."
+                          },
+                          "online_store_name": {
+                            "type": "string",
+                            "description": "The name of the target online store."
+                          }
+                        },
+                        "required": [
+                          "catalog_name",
+                          "schema_name",
+                          "table_name_prefix",
+                          "online_store_name"
+                        ],
+                        "description": "Configuration for online store destination."
+                      },
+                      "pipeline_schedule_state": {
+                        "type": "string",
+                        "x-enum": [
+                          "ACTIVE",
+                          "PAUSED",
+                          "SNAPSHOT"
+                        ],
+                        "description": "The schedule state of the materialization pipeline."
+                      },
+                      "table_name": {
+                        "type": "string",
+                        "description": "The fully qualified Unity Catalog path to the table containing the materialized feature (Delta table or Lakebase table). Output only."
+                      }
+                    },
+                    "required": [
+                      "feature_name"
+                    ],
                     "description": "The materialized feature to create."
                   }
                 },
@@ -3135,7 +3932,222 @@
                 "type": "object",
                 "properties": {
                   "feature": {
-                    "$ref": "#/components/schemas/Feature",
+                    "type": "object",
+                    "properties": {
+                      "full_name": {
+                        "type": "string"
+                      },
+                      "source": {
+                        "type": "object",
+                        "properties": {
+                          "delta_table_source": {
+                            "type": "object",
+                            "properties": {
+                              "full_name": {
+                                "type": "string"
+                              },
+                              "entity_columns": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "The entity columns of the Delta table."
+                              },
+                              "timeseries_column": {
+                                "type": "string",
+                                "description": "The timeseries column of the Delta table."
+                              }
+                            },
+                            "required": [
+                              "full_name",
+                              "entity_columns",
+                              "timeseries_column"
+                            ]
+                          },
+                          "kafka_source": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "entity_column_identifiers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "variant_expr_path": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "variant_expr_path"
+                                  ]
+                                },
+                                "description": "The entity column identifiers of the Kafka source."
+                              },
+                              "timeseries_column_identifier": {
+                                "type": "object",
+                                "properties": {
+                                  "variant_expr_path": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "variant_expr_path"
+                                ],
+                                "description": "The timeseries column identifier of the Kafka source."
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "entity_column_identifiers",
+                              "timeseries_column_identifier"
+                            ]
+                          }
+                        },
+                        "description": "The data source of the feature."
+                      },
+                      "inputs": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "The input columns from which the feature is computed."
+                      },
+                      "function": {
+                        "type": "object",
+                        "properties": {
+                          "function_type": {
+                            "type": "string",
+                            "x-enum": [
+                              "APPROX_COUNT_DISTINCT",
+                              "APPROX_PERCENTILE",
+                              "AVG",
+                              "COUNT",
+                              "FIRST",
+                              "LAST",
+                              "MAX",
+                              "MIN",
+                              "STDDEV_POP",
+                              "STDDEV_SAMP",
+                              "SUM",
+                              "VAR_POP",
+                              "VAR_SAMP"
+                            ],
+                            "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                          },
+                          "extra_parameters": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "key": {
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "string",
+                                  "description": "The value of the parameter."
+                                }
+                              },
+                              "required": [
+                                "key",
+                                "value"
+                              ]
+                            },
+                            "description": "Extra parameters for parameterized functions."
+                          }
+                        },
+                        "required": [
+                          "function_type"
+                        ],
+                        "description": "The function by which the feature is computed."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "The description of the feature."
+                      },
+                      "filter_condition": {
+                        "type": "string",
+                        "description": "The filter condition applied to the source data before aggregation."
+                      },
+                      "lineage_context": {
+                        "type": "object",
+                        "properties": {
+                          "job_context": {
+                            "type": "object",
+                            "properties": {
+                              "job_id": {
+                                "type": "integer"
+                              },
+                              "job_run_id": {
+                                "type": "integer",
+                                "description": "The job run ID where this API was invoked."
+                              }
+                            },
+                            "description": "Job context information including job ID and run ID."
+                          },
+                          "notebook_id": {
+                            "type": "integer",
+                            "description": "The notebook ID where this API was invoked."
+                          }
+                        },
+                        "description": "WARNING: This field is primarily intended for internal use by Databricks systems and is automatically populated when features are created through Databricks notebooks or jobs. Users should not manually set this field as incorrect values may lead to inaccurate lineage tracking or unexpected behavior. This field will be set by feature-engineering client and should be left unset by SDK and terraform users."
+                      },
+                      "time_window": {
+                        "type": "object",
+                        "properties": {
+                          "continuous": {
+                            "type": "object",
+                            "properties": {
+                              "window_duration": {
+                                "type": "string"
+                              },
+                              "offset": {
+                                "type": "string",
+                                "description": "The offset of the continuous window (must be non-positive)."
+                              }
+                            },
+                            "required": [
+                              "window_duration"
+                            ]
+                          },
+                          "sliding": {
+                            "type": "object",
+                            "properties": {
+                              "window_duration": {
+                                "type": "string"
+                              },
+                              "slide_duration": {
+                                "type": "string",
+                                "description": "The slide duration (interval by which windows advance, must be positive and less than duration)."
+                              }
+                            },
+                            "required": [
+                              "window_duration",
+                              "slide_duration"
+                            ]
+                          },
+                          "tumbling": {
+                            "type": "object",
+                            "properties": {
+                              "window_duration": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "window_duration"
+                            ]
+                          }
+                        },
+                        "description": "The time window in which the feature is computed."
+                      }
+                    },
+                    "required": [
+                      "full_name",
+                      "source",
+                      "inputs",
+                      "function"
+                    ],
                     "description": "Feature to update."
                   }
                 },
@@ -3310,7 +4322,100 @@
                 "type": "object",
                 "properties": {
                   "kafka_config": {
-                    "$ref": "#/components/schemas/KafkaConfig",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "bootstrap_servers": {
+                        "type": "string",
+                        "description": "A comma-separated list of host/port pairs pointing to Kafka cluster."
+                      },
+                      "subscription_mode": {
+                        "type": "object",
+                        "properties": {
+                          "assign": {
+                            "type": "string"
+                          },
+                          "subscribe": {
+                            "type": "string",
+                            "description": "A comma-separated list of Kafka topics to read from. For example, 'topicA,topicB,topicC'."
+                          },
+                          "subscribe_pattern": {
+                            "type": "string",
+                            "description": "A regular expression matching topics to subscribe to. For example, 'topic.*' will subscribe to all topics starting with 'topic'."
+                          }
+                        },
+                        "description": "Options to configure which Kafka topics to pull data from."
+                      },
+                      "auth_config": {
+                        "type": "object",
+                        "properties": {
+                          "uc_service_credential_name": {
+                            "type": "string"
+                          }
+                        },
+                        "description": "Authentication configuration for connection to topics."
+                      },
+                      "backfill_source": {
+                        "type": "object",
+                        "properties": {
+                          "delta_table_source": {
+                            "type": "object",
+                            "properties": {
+                              "full_name": {
+                                "type": "string"
+                              },
+                              "entity_columns": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "The entity columns of the Delta table."
+                              },
+                              "timeseries_column": {
+                                "type": "string",
+                                "description": "The timeseries column of the Delta table."
+                              }
+                            },
+                            "required": [
+                              "full_name",
+                              "entity_columns",
+                              "timeseries_column"
+                            ]
+                          }
+                        },
+                        "description": "A user-provided and managed source for backfilling data. Historical data is used when creating a training set from streaming features linked to this Kafka config. In the future, a separate table will be maintained by Databricks for forward filling data. The schema for this source must match exactly that of the key and value schemas specified for this Kafka config."
+                      },
+                      "extra_options": {
+                        "type": "object",
+                        "description": "Catch-all for miscellaneous options. Keys should be source options or Kafka consumer options (kafka.*)"
+                      },
+                      "key_schema": {
+                        "type": "object",
+                        "properties": {
+                          "json_schema": {
+                            "type": "string"
+                          }
+                        },
+                        "description": "Schema configuration for extracting message keys from topics. At least one of key_schema and value_schema must be provided."
+                      },
+                      "value_schema": {
+                        "type": "object",
+                        "properties": {
+                          "json_schema": {
+                            "type": "string"
+                          }
+                        },
+                        "description": "Schema configuration for extracting message values from topics. At least one of key_schema and value_schema must be provided."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "bootstrap_servers",
+                      "subscription_mode",
+                      "auth_config"
+                    ],
                     "description": "The Kafka config to update."
                   }
                 },
@@ -3485,7 +4590,92 @@
                 "type": "object",
                 "properties": {
                   "materialized_feature": {
-                    "$ref": "#/components/schemas/MaterializedFeature",
+                    "type": "object",
+                    "properties": {
+                      "feature_name": {
+                        "type": "string",
+                        "description": "The full name of the feature in Unity Catalog."
+                      },
+                      "cron_schedule": {
+                        "type": "string",
+                        "description": "The quartz cron expression that defines the schedule of the materialization pipeline. The schedule is evaluated in the UTC timezone."
+                      },
+                      "last_materialization_time": {
+                        "type": "string",
+                        "description": "The timestamp when the pipeline last ran and updated the materialized feature values. If the pipeline has not run yet, this field will be null."
+                      },
+                      "materialized_feature_id": {
+                        "type": "string",
+                        "description": "Unique identifier for the materialized feature."
+                      },
+                      "offline_store_config": {
+                        "type": "object",
+                        "properties": {
+                          "catalog_name": {
+                            "type": "string",
+                            "description": "The Unity Catalog catalog name."
+                          },
+                          "schema_name": {
+                            "type": "string",
+                            "description": "The Unity Catalog schema name."
+                          },
+                          "table_name_prefix": {
+                            "type": "string",
+                            "description": "Prefix for Unity Catalog table name. The materialized feature will be stored in a table with this prefix and a generated postfix."
+                          }
+                        },
+                        "required": [
+                          "catalog_name",
+                          "schema_name",
+                          "table_name_prefix"
+                        ],
+                        "description": "Configuration for offline store destination."
+                      },
+                      "online_store_config": {
+                        "type": "object",
+                        "properties": {
+                          "catalog_name": {
+                            "type": "string",
+                            "description": "The Unity Catalog catalog name. This name is also used as the Lakebase logical database name."
+                          },
+                          "schema_name": {
+                            "type": "string",
+                            "description": "The Unity Catalog schema name."
+                          },
+                          "table_name_prefix": {
+                            "type": "string",
+                            "description": "Prefix for Unity Catalog table name. The materialized feature will be stored in a Lakebase table with this prefix and a generated postfix."
+                          },
+                          "online_store_name": {
+                            "type": "string",
+                            "description": "The name of the target online store."
+                          }
+                        },
+                        "required": [
+                          "catalog_name",
+                          "schema_name",
+                          "table_name_prefix",
+                          "online_store_name"
+                        ],
+                        "description": "Configuration for online store destination."
+                      },
+                      "pipeline_schedule_state": {
+                        "type": "string",
+                        "x-enum": [
+                          "ACTIVE",
+                          "PAUSED",
+                          "SNAPSHOT"
+                        ],
+                        "description": "The schedule state of the materialization pipeline."
+                      },
+                      "table_name": {
+                        "type": "string",
+                        "description": "The fully qualified Unity Catalog path to the table containing the materialized feature (Delta table or Lakebase table). Output only."
+                      }
+                    },
+                    "required": [
+                      "feature_name"
+                    ],
                     "description": "The materialized feature to update."
                   }
                 },
@@ -3545,7 +4735,49 @@
                 "type": "object",
                 "properties": {
                   "online_store": {
-                    "$ref": "#/components/schemas/OnlineStore",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "The name of the online store. This is the unique identifier for the online store."
+                      },
+                      "capacity": {
+                        "type": "string",
+                        "description": "The capacity of the online store. Valid values are \"CU_1\", \"CU_2\", \"CU_4\", \"CU_8\"."
+                      },
+                      "creation_time": {
+                        "type": "string",
+                        "description": "The timestamp when the online store was created."
+                      },
+                      "creator": {
+                        "type": "string",
+                        "description": "The email of the creator of the online store."
+                      },
+                      "read_replica_count": {
+                        "type": "integer",
+                        "description": "The number of read replicas for the online store. Defaults to 0."
+                      },
+                      "state": {
+                        "type": "string",
+                        "x-enum": [
+                          "AVAILABLE",
+                          "DELETING",
+                          "FAILING_OVER",
+                          "STARTING",
+                          "STOPPED",
+                          "UPDATING"
+                        ],
+                        "description": "The current state of the online store."
+                      },
+                      "usage_policy_id": {
+                        "type": "string",
+                        "description": "The usage policy applied to the online store to track billing."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "capacity"
+                    ],
                     "description": "Online store to create."
                   }
                 },
@@ -3780,7 +5012,49 @@
                 "type": "object",
                 "properties": {
                   "online_store": {
-                    "$ref": "#/components/schemas/OnlineStore",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "The name of the online store. This is the unique identifier for the online store."
+                      },
+                      "capacity": {
+                        "type": "string",
+                        "description": "The capacity of the online store. Valid values are \"CU_1\", \"CU_2\", \"CU_4\", \"CU_8\"."
+                      },
+                      "creation_time": {
+                        "type": "string",
+                        "description": "The timestamp when the online store was created."
+                      },
+                      "creator": {
+                        "type": "string",
+                        "description": "The email of the creator of the online store."
+                      },
+                      "read_replica_count": {
+                        "type": "integer",
+                        "description": "The number of read replicas for the online store. Defaults to 0."
+                      },
+                      "state": {
+                        "type": "string",
+                        "x-enum": [
+                          "AVAILABLE",
+                          "DELETING",
+                          "FAILING_OVER",
+                          "STARTING",
+                          "STOPPED",
+                          "UPDATING"
+                        ],
+                        "description": "The current state of the online store."
+                      },
+                      "usage_policy_id": {
+                        "type": "string",
+                        "description": "The usage policy applied to the online store to track billing."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "capacity"
+                    ],
                     "description": "Online store to update."
                   }
                 },
@@ -3897,7 +5171,30 @@
                 "type": "object",
                 "properties": {
                   "publish_spec": {
-                    "$ref": "#/components/schemas/PublishSpec",
+                    "type": "object",
+                    "properties": {
+                      "online_store": {
+                        "type": "string"
+                      },
+                      "online_table_name": {
+                        "type": "string",
+                        "description": "The full three-part (catalog, schema, table) name of the online table."
+                      },
+                      "publish_mode": {
+                        "type": "string",
+                        "x-enum": [
+                          "CONTINUOUS",
+                          "SNAPSHOT",
+                          "TRIGGERED"
+                        ],
+                        "description": "The publish mode of the pipeline that syncs the online table with the source table."
+                      }
+                    },
+                    "required": [
+                      "online_store",
+                      "online_table_name",
+                      "publish_mode"
+                    ],
                     "description": "The specification for publishing the online table from the source table."
                   }
                 },
@@ -4169,7 +5466,18 @@
                 "type": "object",
                 "properties": {
                   "feature_tag": {
-                    "$ref": "#/components/schemas/FeatureTag",
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "key"
+                    ],
                     "description": ":returns: :class:`FeatureTag`"
                   }
                 },
@@ -4473,7 +5781,19 @@
                 "type": "object",
                 "properties": {
                   "feature_tag": {
-                    "$ref": "#/components/schemas/FeatureTag"
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "key"
+                    ],
+                    "description": "Represents a tag on a feature in a feature table."
                   }
                 },
                 "required": [
@@ -4753,7 +6073,18 @@
                   "tags": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ModelTag"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "description": "The tag key."
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "The tag value."
+                        }
+                      },
+                      "description": "Tag for a registered model"
                     },
                     "description": "Additional metadata for registered model."
                   }
@@ -4836,7 +6167,16 @@
                   "tags": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ModelVersionTag"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "The tag value."
+                        }
+                      }
                     },
                     "description": "Additional metadata for model version."
                   }
@@ -4974,7 +6314,22 @@
                   "events": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/RegistryWebhookEvent"
+                      "type": "string",
+                      "x-enum": [
+                        "COMMENT_CREATED",
+                        "MODEL_VERSION_CREATED",
+                        "MODEL_VERSION_TAG_SET",
+                        "MODEL_VERSION_TRANSITIONED_STAGE",
+                        "MODEL_VERSION_TRANSITIONED_TO_ARCHIVED",
+                        "MODEL_VERSION_TRANSITIONED_TO_PRODUCTION",
+                        "MODEL_VERSION_TRANSITIONED_TO_STAGING",
+                        "REGISTERED_MODEL_CREATED",
+                        "TRANSITION_REQUEST_CREATED",
+                        "TRANSITION_REQUEST_TO_ARCHIVED_CREATED",
+                        "TRANSITION_REQUEST_TO_PRODUCTION_CREATED",
+                        "TRANSITION_REQUEST_TO_STAGING_CREATED"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     },
                     "description": "Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was created for the associated model. * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version\u2019s stage was changed. * `TRANSITION_REQUEST_CREATED`: A user requested a model version\u2019s stage be transitioned. * `COMMENT_CREATED`: A user wrote a comment on a registered model. * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be specified for a registry-wide webhook, which can be created by not specifying a model name in the create request. * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version. * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging. * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production. * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived. * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to staging. * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to production. * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived."
                   },
@@ -4983,11 +6338,48 @@
                     "description": "User-specified description for the webhook."
                   },
                   "http_url_spec": {
-                    "$ref": "#/components/schemas/HttpUrlSpec",
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "type": "string"
+                      },
+                      "authorization": {
+                        "type": "string",
+                        "description": "Value of the authorization header that should be sent in the request sent by the wehbook. It should be of the form `\"<auth type> <credentials>\"`. If set to an empty string, no authorization header will be included in the request."
+                      },
+                      "enable_ssl_verification": {
+                        "type": "boolean",
+                        "description": "Enable/disable SSL certificate validation. Default is true. For self-signed certificates, this field must be false AND the destination server must disable certificate validation as well. For security purposes, it is encouraged to perform secret validation with the HMAC-encoded portion of the payload and acknowledge the risk associated with disabling hostname validation whereby it becomes more likely that requests can be maliciously routed to an unintended host."
+                      },
+                      "secret": {
+                        "type": "string",
+                        "description": "Shared secret required for HMAC encoding payload. The HMAC-encoded payload will be sent in the header as: { \"X-Databricks-Signature\": $encoded_payload }."
+                      }
+                    },
+                    "required": [
+                      "url"
+                    ],
                     "description": "External HTTPS URL called on event trigger (by using a POST request)."
                   },
                   "job_spec": {
-                    "$ref": "#/components/schemas/JobSpec",
+                    "type": "object",
+                    "properties": {
+                      "job_id": {
+                        "type": "string"
+                      },
+                      "access_token": {
+                        "type": "string",
+                        "description": "The personal access token used to authorize webhook's job runs."
+                      },
+                      "workspace_url": {
+                        "type": "string",
+                        "description": "URL of the workspace containing the job that this webhook runs. If not specified, the job\u2019s workspace URL is assumed to be the same as the workspace where the webhook is created."
+                      }
+                    },
+                    "required": [
+                      "job_id",
+                      "access_token"
+                    ],
                     "description": "ID of the job that the webhook runs."
                   },
                   "model_name": {
@@ -4995,7 +6387,12 @@
                     "description": "If model name is not specified, a registry-wide webhook is created that listens for the specified events across all versions of all registered models."
                   },
                   "status": {
-                    "$ref": "#/components/schemas/RegistryWebhookStatus",
+                    "type": "string",
+                    "x-enum": [
+                      "ACTIVE",
+                      "DISABLED",
+                      "TEST_MODE"
+                    ],
                     "description": "Enable or disable triggering the webhook, or put the webhook into test mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens. * `DISABLED`: Webhook is not triggered. * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real event."
                   }
                 },
@@ -5817,7 +7214,31 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/RegisteredModelAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_EDIT",
+                            "CAN_MANAGE",
+                            "CAN_MANAGE_PRODUCTION_VERSIONS",
+                            "CAN_MANAGE_STAGING_VERSIONS",
+                            "CAN_READ"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`RegisteredModelPermissions`"
                   }
@@ -5886,7 +7307,31 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/RegisteredModelAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_EDIT",
+                            "CAN_MANAGE",
+                            "CAN_MANAGE_PRODUCTION_VERSIONS",
+                            "CAN_MANAGE_STAGING_VERSIONS",
+                            "CAN_READ"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`RegisteredModelPermissions`"
                   }
@@ -6589,7 +8034,21 @@
                     "description": "Webhook ID"
                   },
                   "event": {
-                    "$ref": "#/components/schemas/RegistryWebhookEvent",
+                    "type": "string",
+                    "x-enum": [
+                      "COMMENT_CREATED",
+                      "MODEL_VERSION_CREATED",
+                      "MODEL_VERSION_TAG_SET",
+                      "MODEL_VERSION_TRANSITIONED_STAGE",
+                      "MODEL_VERSION_TRANSITIONED_TO_ARCHIVED",
+                      "MODEL_VERSION_TRANSITIONED_TO_PRODUCTION",
+                      "MODEL_VERSION_TRANSITIONED_TO_STAGING",
+                      "REGISTERED_MODEL_CREATED",
+                      "TRANSITION_REQUEST_CREATED",
+                      "TRANSITION_REQUEST_TO_ARCHIVED_CREATED",
+                      "TRANSITION_REQUEST_TO_PRODUCTION_CREATED",
+                      "TRANSITION_REQUEST_TO_STAGING_CREATED"
+                    ],
                     "description": "If `event` is specified, the test trigger uses the specified event. If `event` is not specified, the test trigger uses a randomly chosen event associated with the webhook."
                   }
                 },
@@ -6936,19 +8395,76 @@
                   "events": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/RegistryWebhookEvent"
+                      "type": "string",
+                      "x-enum": [
+                        "COMMENT_CREATED",
+                        "MODEL_VERSION_CREATED",
+                        "MODEL_VERSION_TAG_SET",
+                        "MODEL_VERSION_TRANSITIONED_STAGE",
+                        "MODEL_VERSION_TRANSITIONED_TO_ARCHIVED",
+                        "MODEL_VERSION_TRANSITIONED_TO_PRODUCTION",
+                        "MODEL_VERSION_TRANSITIONED_TO_STAGING",
+                        "REGISTERED_MODEL_CREATED",
+                        "TRANSITION_REQUEST_CREATED",
+                        "TRANSITION_REQUEST_TO_ARCHIVED_CREATED",
+                        "TRANSITION_REQUEST_TO_PRODUCTION_CREATED",
+                        "TRANSITION_REQUEST_TO_STAGING_CREATED"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     },
                     "description": "Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was created for the associated model. * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version\u2019s stage was changed. * `TRANSITION_REQUEST_CREATED`: A user requested a model version\u2019s stage be transitioned. * `COMMENT_CREATED`: A user wrote a comment on a registered model. * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be specified for a registry-wide webhook, which can be created by not specifying a model name in the create request. * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version. * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging. * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production. * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived. * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to staging. * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to production. * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived."
                   },
                   "http_url_spec": {
-                    "$ref": "#/components/schemas/HttpUrlSpec",
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "type": "string"
+                      },
+                      "authorization": {
+                        "type": "string",
+                        "description": "Value of the authorization header that should be sent in the request sent by the wehbook. It should be of the form `\"<auth type> <credentials>\"`. If set to an empty string, no authorization header will be included in the request."
+                      },
+                      "enable_ssl_verification": {
+                        "type": "boolean",
+                        "description": "Enable/disable SSL certificate validation. Default is true. For self-signed certificates, this field must be false AND the destination server must disable certificate validation as well. For security purposes, it is encouraged to perform secret validation with the HMAC-encoded portion of the payload and acknowledge the risk associated with disabling hostname validation whereby it becomes more likely that requests can be maliciously routed to an unintended host."
+                      },
+                      "secret": {
+                        "type": "string",
+                        "description": "Shared secret required for HMAC encoding payload. The HMAC-encoded payload will be sent in the header as: { \"X-Databricks-Signature\": $encoded_payload }."
+                      }
+                    },
+                    "required": [
+                      "url"
+                    ],
                     "description": ":param job_spec: :class:`JobSpec` (optional)"
                   },
                   "job_spec": {
-                    "$ref": "#/components/schemas/JobSpec"
+                    "type": "object",
+                    "properties": {
+                      "job_id": {
+                        "type": "string"
+                      },
+                      "access_token": {
+                        "type": "string",
+                        "description": "The personal access token used to authorize webhook's job runs."
+                      },
+                      "workspace_url": {
+                        "type": "string",
+                        "description": "URL of the workspace containing the job that this webhook runs. If not specified, the job\u2019s workspace URL is assumed to be the same as the workspace where the webhook is created."
+                      }
+                    },
+                    "required": [
+                      "job_id",
+                      "access_token"
+                    ]
                   },
                   "status": {
-                    "$ref": "#/components/schemas/RegistryWebhookStatus",
+                    "type": "string",
+                    "x-enum": [
+                      "ACTIVE",
+                      "DISABLED",
+                      "TEST_MODE"
+                    ],
                     "description": ":returns: :class:`UpdateWebhookResponse`"
                   }
                 },

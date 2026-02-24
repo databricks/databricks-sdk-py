@@ -128,7 +128,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "problem_type",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (PROBLEM_TYPE_CLASSIFICATION, PROBLEM_TYPE_REGRESSION)"
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (PROBLEM_TYPE_CLASSIFICATION, PROBLEM_TYPE_REGRESSION)"
       },
       {
         "name": "timestamp_col",
@@ -279,42 +279,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>[DEPRECATED] Gets a monitor for the specified table. Use Data Quality Monitors API instead</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-output_schema_name"><code>output_schema_name</code></a>, <a href="#parameter-assets_dir"><code>assets_dir</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-output_schema_name"><code>output_schema_name</code></a>, <a href="#parameter-assets_dir"><code>assets_dir</code></a></td>
     <td></td>
     <td>[DEPRECATED] Creates a new monitor for the specified table. Use Data Quality Monitors API instead</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-output_schema_name"><code>output_schema_name</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-output_schema_name"><code>output_schema_name</code></a></td>
     <td></td>
     <td>[DEPRECATED] Updates a monitor for the specified table. Use Data Quality Monitors API instead</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>[DEPRECATED] Deletes a monitor for the specified table. Use Data Quality Monitors API instead</td>
 </tr>
 <tr>
     <td><a href="#cancel_refresh"><CopyableCode code="cancel_refresh" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>[DEPRECATED] Cancels an already-initiated refresh job. Use Data Quality Monitors API instead</td>
 </tr>
 <tr>
     <td><a href="#regenerate_dashboard"><CopyableCode code="regenerate_dashboard" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>[DEPRECATED] Regenerates the monitoring dashboard for the specified table. Use Data Quality Monitors</td>
 </tr>
@@ -334,11 +334,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-refresh_id">
     <td><CopyableCode code="refresh_id" /></td>
     <td><code>integer</code></td>
@@ -348,6 +343,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="table_name" /></td>
     <td><code>string</code></td>
     <td>UC table name in format `catalog.schema.table_name`. This field corresponds to the &#123;full_table_name_arg&#125; arg in the endpoint path.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -386,7 +386,7 @@ status,
 time_series
 FROM databricks_workspace.catalog.quality_monitors
 WHERE table_name = '{{ table_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -423,7 +423,7 @@ snapshot,
 time_series,
 warehouse_id,
 table_name,
-deployment_name
+workspace
 )
 SELECT 
 '{{ output_schema_name }}' /* required */,
@@ -435,13 +435,13 @@ SELECT
 '{{ latest_monitor_failure_msg }}',
 '{{ notifications }}',
 '{{ schedule }}',
-'{{ skip_builtin_dashboard }}',
+{{ skip_builtin_dashboard }},
 '{{ slicing_exprs }}',
 '{{ snapshot }}',
 '{{ time_series }}',
 '{{ warehouse_id }}',
 '{{ table_name }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 dashboard_id,
 baseline_table_name,
@@ -473,7 +473,7 @@ time_series
     - name: table_name
       value: string
       description: Required parameter for the quality_monitors resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the quality_monitors resource.
     - name: output_schema_name
@@ -489,43 +489,165 @@ time_series
       description: |
         [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
     - name: custom_metrics
-      value: string
+      value: array
       description: |
         [Create:OPT Update:OPT] Custom metrics.
+      props:
+      - name: name
+        value: string
+        description: |
+          Name of the metric in the output tables.
+      - name: definition
+        value: string
+        description: |
+          Jinja template for a SQL expression that specifies how to compute the metric. See [create metric definition]. [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition
+      - name: input_columns
+        value: array
+        description: |
+          A list of column names in the input table the metric should be computed for. Can use ``":table"`` to indicate that the metric needs information from multiple columns.
+        items:
+          type: string
+      - name: output_data_type
+        value: string
+        description: |
+          The output type of the custom metric.
+      - name: type
+        value: string
+        description: |
+          Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``, ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics
     - name: data_classification_config
-      value: string
+      value: object
       description: |
         [Create:OPT Update:OPT] Data classification related config.
+      props:
+      - name: enabled
+        value: boolean
+        description: |
+          Whether to enable data classification.
     - name: inference_log
-      value: string
+      value: object
       description: |
         :param latest_monitor_failure_msg: str (optional) [Create:ERR Update:IGN] The latest error message for a monitor failure.
+      props:
+      - name: problem_type
+        value: string
+        description: |
+          Create a collection of name/value pairs.
+          Example enumeration:
+          >>> class Color(Enum):
+          ...     RED = 1
+          ...     BLUE = 2
+          ...     GREEN = 3
+          Access them by:
+          - attribute access::
+          >>> Color.RED
+          <Color.RED: 1>
+          - value lookup:
+          >>> Color(1)
+          <Color.RED: 1>
+          - name lookup:
+          >>> Color['RED']
+          <Color.RED: 1>
+          Enumerations can be iterated over, and know how many members they have:
+          >>> len(Color)
+          3
+          >>> list(Color)
+          [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+          Methods can be added to enumerations, and members can have their own
+          attributes -- see the documentation for details.
+      - name: timestamp_col
+        value: string
+        description: |
+          Column for the timestamp.
+      - name: granularities
+        value: array
+        description: |
+          List of granularities to use when aggregating data into time windows based on their timestamp.
+        items:
+          type: string
+      - name: prediction_col
+        value: string
+        description: |
+          Column for the prediction.
+      - name: model_id_col
+        value: string
+        description: |
+          Column for the model identifier.
+      - name: label_col
+        value: string
+        description: |
+          Column for the label.
+      - name: prediction_proba_col
+        value: string
+        description: |
+          Column for prediction probabilities
     - name: latest_monitor_failure_msg
       value: string
     - name: notifications
-      value: string
+      value: object
       description: |
         [Create:OPT Update:OPT] Field for specifying notification settings.
+      props:
+      - name: on_failure
+        value: object
+        props:
+        - name: email_addresses
+          value: array
+          items:
+            type: string
+      - name: on_new_classification_tag_detected
+        value: object
+        description: |
+          Destinations to send notifications on new classification tag detected.
+        props:
+        - name: email_addresses
+          value: array
+          items:
+            type: string
     - name: schedule
-      value: string
+      value: object
       description: |
         [Create:OPT Update:OPT] The monitor schedule.
+      props:
+      - name: quartz_cron_expression
+        value: string
+      - name: timezone_id
+        value: string
+        description: |
+          The timezone id (e.g., ``PST``) in which to evaluate the quartz expression.
+      - name: pause_status
+        value: string
+        description: |
+          Read only field that indicates whether a schedule is paused or not.
     - name: skip_builtin_dashboard
-      value: string
+      value: boolean
       description: |
         Whether to skip creating a default dashboard summarizing data quality metrics.
     - name: slicing_exprs
-      value: string
+      value: array
       description: |
         [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The data is grouped by each expression independently, resulting in a separate slice for each predicate and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate slices.
+      items:
+        type: string
     - name: snapshot
-      value: string
+      value: object
       description: |
         Configuration for monitoring snapshot tables.
     - name: time_series
-      value: string
+      value: object
       description: |
         Configuration for monitoring time series tables.
+      props:
+      - name: timestamp_col
+        value: string
+        description: |
+          Column for the timestamp.
+      - name: granularities
+        value: array
+        description: |
+          Granularities for aggregating data into time windows based on their timestamp. Currently the following static granularities are supported: {``\"5 minutes\"``, ``\"30 minutes\"``, ``\"1 hour\"``, ``\"1 day\"``, ``\"\u003cn\u003e week(s)\"``, ``\"1 month\"``, ``\"1 year\"``}.
+        items:
+          type: string
     - name: warehouse_id
       value: string
       description: |
@@ -564,7 +686,7 @@ snapshot = '{{ snapshot }}',
 time_series = '{{ time_series }}'
 WHERE 
 table_name = '{{ table_name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND output_schema_name = '{{ output_schema_name }}' --required
 RETURNING
 dashboard_id,
@@ -605,7 +727,7 @@ time_series;
 ```sql
 DELETE FROM databricks_workspace.catalog.quality_monitors
 WHERE table_name = '{{ table_name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -629,7 +751,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 EXEC databricks_workspace.catalog.quality_monitors.cancel_refresh 
 @table_name='{{ table_name }}' --required, 
 @refresh_id='{{ refresh_id }}' --required, 
-@deployment_name='{{ deployment_name }}' --required
+@workspace='{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -640,7 +762,7 @@ EXEC databricks_workspace.catalog.quality_monitors.cancel_refresh
 ```sql
 EXEC databricks_workspace.catalog.quality_monitors.regenerate_dashboard 
 @table_name='{{ table_name }}' --required, 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "warehouse_id": "{{ warehouse_id }}"

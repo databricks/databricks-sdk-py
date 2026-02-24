@@ -197,28 +197,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets a role for a Database Instance.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage &lt; PUBLIC_PREVIEW. With more</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-database_instance_role"><code>database_instance_role</code></a></td>
+    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-database_instance_role"><code>database_instance_role</code></a></td>
     <td><a href="#parameter-database_instance_name"><code>database_instance_name</code></a></td>
     <td>Create a role for a Database Instance.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-allow_missing"><code>allow_missing</code></a>, <a href="#parameter-reassign_owned_to"><code>reassign_owned_to</code></a></td>
     <td>Deletes a role for a Database Instance.</td>
 </tr>
@@ -238,11 +238,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-instance_name">
     <td><CopyableCode code="instance_name" /></td>
     <td><code>string</code></td>
@@ -253,9 +248,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td></td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-allow_missing">
     <td><CopyableCode code="allow_missing" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>This is the AIP standard name for the equivalent of Postgres' `IF EXISTS` option</td>
 </tr>
 <tr id="parameter-database_instance_name">
@@ -265,7 +265,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td></td>
 </tr>
 <tr id="parameter-page_token">
@@ -305,7 +305,7 @@ membership_role
 FROM databricks_workspace.database.database_instance_roles
 WHERE instance_name = '{{ instance_name }}' -- required
 AND name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -323,7 +323,7 @@ identity_type,
 membership_role
 FROM databricks_workspace.database.database_instance_roles
 WHERE instance_name = '{{ instance_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -349,13 +349,13 @@ Create a role for a Database Instance.
 INSERT INTO databricks_workspace.database.database_instance_roles (
 database_instance_role,
 instance_name,
-deployment_name,
+workspace,
 database_instance_name
 )
 SELECT 
 '{{ database_instance_role }}' /* required */,
 '{{ instance_name }}',
-'{{ deployment_name }}',
+'{{ workspace }}',
 '{{ database_instance_name }}'
 RETURNING
 name,
@@ -376,11 +376,50 @@ membership_role
     - name: instance_name
       value: string
       description: Required parameter for the database_instance_roles resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the database_instance_roles resource.
     - name: database_instance_role
-      value: string
+      value: object
+      description: |
+        A DatabaseInstanceRole represents a Postgres role in a database instance.
+      props:
+      - name: name
+        value: string
+        description: |
+          The name of the role. This is the unique identifier for the role in an instance.
+      - name: attributes
+        value: object
+        description: |
+          The desired API-exposed Postgres role attribute to associate with the role. Optional.
+        props:
+        - name: bypassrls
+          value: boolean
+        - name: createdb
+          value: boolean
+        - name: createrole
+          value: boolean
+      - name: effective_attributes
+        value: object
+        description: |
+          The attributes that are applied to the role. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+        props:
+        - name: bypassrls
+          value: boolean
+        - name: createdb
+          value: boolean
+        - name: createrole
+          value: boolean
+      - name: identity_type
+        value: string
+        description: |
+          The type of the role.
+      - name: instance_name
+        value: string
+      - name: membership_role
+        value: string
+        description: |
+          An enum value for a standard role that this role is a member of.
     - name: database_instance_name
       value: string
       description: :returns: :class:`DatabaseInstanceRole`
@@ -405,7 +444,7 @@ Deletes a role for a Database Instance.
 DELETE FROM databricks_workspace.database.database_instance_roles
 WHERE instance_name = '{{ instance_name }}' --required
 AND name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND allow_missing = '{{ allow_missing }}'
 AND reassign_owned_to = '{{ reassign_owned_to }}'
 ;

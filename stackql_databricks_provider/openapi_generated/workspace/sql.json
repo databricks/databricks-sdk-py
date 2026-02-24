@@ -37,7 +37,98 @@
                 "type": "object",
                 "properties": {
                   "alert": {
-                    "$ref": "#/components/schemas/CreateAlertRequestAlert",
+                    "type": "object",
+                    "properties": {
+                      "condition": {
+                        "type": "object",
+                        "properties": {
+                          "empty_result_state": {
+                            "type": "string",
+                            "x-enum": [
+                              "OK",
+                              "TRIGGERED",
+                              "UNKNOWN"
+                            ],
+                            "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                          },
+                          "op": {
+                            "type": "string",
+                            "x-enum": [
+                              "EQUAL",
+                              "GREATER_THAN",
+                              "GREATER_THAN_OR_EQUAL",
+                              "IS_NULL",
+                              "LESS_THAN",
+                              "LESS_THAN_OR_EQUAL",
+                              "NOT_EQUAL"
+                            ],
+                            "description": "Operator used for comparison in alert evaluation."
+                          },
+                          "operand": {
+                            "type": "object",
+                            "properties": {
+                              "column": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "description": "Name of the column from the query result to use for comparison in alert evaluation."
+                          },
+                          "threshold": {
+                            "type": "object",
+                            "properties": {
+                              "value": {
+                                "type": "object",
+                                "properties": {
+                                  "bool_value": {
+                                    "type": "boolean"
+                                  },
+                                  "double_value": {
+                                    "type": "number"
+                                  },
+                                  "string_value": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "description": "Threshold value used for comparison in alert evaluation."
+                          }
+                        }
+                      },
+                      "custom_body": {
+                        "type": "string",
+                        "description": "Custom body of alert notification, if it exists. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html"
+                      },
+                      "custom_subject": {
+                        "type": "string",
+                        "description": "Custom subject of alert notification, if it exists. This can include email subject entries and Slack notification headers, for example. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html"
+                      },
+                      "display_name": {
+                        "type": "string",
+                        "description": "The display name of the alert."
+                      },
+                      "notify_on_ok": {
+                        "type": "boolean",
+                        "description": "Whether to notify alert subscribers when alert returns back to normal."
+                      },
+                      "parent_path": {
+                        "type": "string",
+                        "description": "The workspace path of the folder containing the alert."
+                      },
+                      "query_id": {
+                        "type": "string",
+                        "description": "UUID of the query attached to the alert."
+                      },
+                      "seconds_to_retrigger": {
+                        "type": "integer",
+                        "description": "Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it can be triggered again. If 0 or not specified, the alert will not be triggered again."
+                      }
+                    },
                     "description": ":param auto_resolve_display_name: bool (optional) If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the alert's display name conflicts with an existing alert's display name."
                   },
                   "auto_resolve_display_name": {
@@ -265,7 +356,98 @@
                     "type": "string"
                   },
                   "alert": {
-                    "$ref": "#/components/schemas/UpdateAlertRequestAlert",
+                    "type": "object",
+                    "properties": {
+                      "condition": {
+                        "type": "object",
+                        "properties": {
+                          "empty_result_state": {
+                            "type": "string",
+                            "x-enum": [
+                              "OK",
+                              "TRIGGERED",
+                              "UNKNOWN"
+                            ],
+                            "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                          },
+                          "op": {
+                            "type": "string",
+                            "x-enum": [
+                              "EQUAL",
+                              "GREATER_THAN",
+                              "GREATER_THAN_OR_EQUAL",
+                              "IS_NULL",
+                              "LESS_THAN",
+                              "LESS_THAN_OR_EQUAL",
+                              "NOT_EQUAL"
+                            ],
+                            "description": "Operator used for comparison in alert evaluation."
+                          },
+                          "operand": {
+                            "type": "object",
+                            "properties": {
+                              "column": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "description": "Name of the column from the query result to use for comparison in alert evaluation."
+                          },
+                          "threshold": {
+                            "type": "object",
+                            "properties": {
+                              "value": {
+                                "type": "object",
+                                "properties": {
+                                  "bool_value": {
+                                    "type": "boolean"
+                                  },
+                                  "double_value": {
+                                    "type": "number"
+                                  },
+                                  "string_value": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "description": "Threshold value used for comparison in alert evaluation."
+                          }
+                        }
+                      },
+                      "custom_body": {
+                        "type": "string",
+                        "description": "Custom body of alert notification, if it exists. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html"
+                      },
+                      "custom_subject": {
+                        "type": "string",
+                        "description": "Custom subject of alert notification, if it exists. This can include email subject entries and Slack notification headers, for example. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html"
+                      },
+                      "display_name": {
+                        "type": "string",
+                        "description": "The display name of the alert."
+                      },
+                      "notify_on_ok": {
+                        "type": "boolean",
+                        "description": "Whether to notify alert subscribers when alert returns back to normal."
+                      },
+                      "owner_user_name": {
+                        "type": "string",
+                        "description": "The owner's username. This field is set to \"Unavailable\" if the user has been deleted."
+                      },
+                      "query_id": {
+                        "type": "string",
+                        "description": "UUID of the query attached to the alert."
+                      },
+                      "seconds_to_retrigger": {
+                        "type": "integer",
+                        "description": "Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it can be triggered again. If 0 or not specified, the alert will not be triggered again."
+                      }
+                    },
                     "description": ":param auto_resolve_display_name: bool (optional) If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the alert's display name conflicts with an existing alert's display name."
                   },
                   "auto_resolve_display_name": {
@@ -332,7 +514,47 @@
                     "description": "Name of the alert."
                   },
                   "options": {
-                    "$ref": "#/components/schemas/AlertOptions",
+                    "type": "object",
+                    "properties": {
+                      "column": {
+                        "type": "string",
+                        "description": "Name of column in the query result to compare in alert evaluation."
+                      },
+                      "op": {
+                        "type": "string",
+                        "description": "Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`, `!=`"
+                      },
+                      "value": {
+                        "type": "object",
+                        "description": "Value used to compare in alert evaluation. Supported types include strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true)."
+                      },
+                      "custom_body": {
+                        "type": "string",
+                        "description": "Custom body of alert notification, if it exists. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html"
+                      },
+                      "custom_subject": {
+                        "type": "string",
+                        "description": "Custom subject of alert notification, if it exists. This includes email subject, Slack notification header, etc. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html"
+                      },
+                      "empty_result_state": {
+                        "type": "string",
+                        "x-enum": [
+                          "ok",
+                          "triggered",
+                          "unknown"
+                        ],
+                        "description": "State that alert evaluates to when query result is empty."
+                      },
+                      "muted": {
+                        "type": "boolean",
+                        "description": "Whether or not the alert is muted. If an alert is muted, it will not notify users and notification destinations when triggered."
+                      }
+                    },
+                    "required": [
+                      "column",
+                      "op",
+                      "value"
+                    ],
                     "description": "Alert configuration options."
                   },
                   "query_id": {
@@ -555,7 +777,47 @@
                     "type": "string"
                   },
                   "options": {
-                    "$ref": "#/components/schemas/AlertOptions",
+                    "type": "object",
+                    "properties": {
+                      "column": {
+                        "type": "string",
+                        "description": "Name of column in the query result to compare in alert evaluation."
+                      },
+                      "op": {
+                        "type": "string",
+                        "description": "Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`, `!=`"
+                      },
+                      "value": {
+                        "type": "object",
+                        "description": "Value used to compare in alert evaluation. Supported types include strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true)."
+                      },
+                      "custom_body": {
+                        "type": "string",
+                        "description": "Custom body of alert notification, if it exists. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html"
+                      },
+                      "custom_subject": {
+                        "type": "string",
+                        "description": "Custom subject of alert notification, if it exists. This includes email subject, Slack notification header, etc. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html"
+                      },
+                      "empty_result_state": {
+                        "type": "string",
+                        "x-enum": [
+                          "ok",
+                          "triggered",
+                          "unknown"
+                        ],
+                        "description": "State that alert evaluates to when query result is empty."
+                      },
+                      "muted": {
+                        "type": "boolean",
+                        "description": "Whether or not the alert is muted. If an alert is muted, it will not notify users and notification destinations when triggered."
+                      }
+                    },
+                    "required": [
+                      "column",
+                      "op",
+                      "value"
+                    ],
                     "description": "Alert configuration options."
                   },
                   "query_id": {
@@ -618,7 +880,267 @@
                 "type": "object",
                 "properties": {
                   "alert": {
-                    "$ref": "#/components/schemas/AlertV2",
+                    "type": "object",
+                    "properties": {
+                      "display_name": {
+                        "type": "string"
+                      },
+                      "query_text": {
+                        "type": "string",
+                        "description": "Text of the query to be run."
+                      },
+                      "warehouse_id": {
+                        "type": "string",
+                        "description": "ID of the SQL warehouse attached to the alert."
+                      },
+                      "evaluation": {
+                        "type": "object",
+                        "properties": {
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "aggregation": {
+                                "type": "string",
+                                "x-enum": [
+                                  "AVG",
+                                  "COUNT",
+                                  "COUNT_DISTINCT",
+                                  "MAX",
+                                  "MEDIAN",
+                                  "MIN",
+                                  "STDDEV",
+                                  "SUM"
+                                ],
+                                "description": "If not set, the behavior is equivalent to using `First row` in the UI."
+                              },
+                              "display": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name"
+                            ]
+                          },
+                          "comparison_operator": {
+                            "type": "string",
+                            "x-enum": [
+                              "EQUAL",
+                              "GREATER_THAN",
+                              "GREATER_THAN_OR_EQUAL",
+                              "IS_NOT_NULL",
+                              "IS_NULL",
+                              "LESS_THAN",
+                              "LESS_THAN_OR_EQUAL",
+                              "NOT_EQUAL"
+                            ],
+                            "description": "Operator used for comparison in alert evaluation."
+                          },
+                          "empty_result_state": {
+                            "type": "string",
+                            "x-enum": [
+                              "ERROR",
+                              "OK",
+                              "TRIGGERED",
+                              "UNKNOWN"
+                            ],
+                            "description": "Alert state if result is empty. Please avoid setting this field to be `UNKNOWN` because `UNKNOWN` state is planned to be deprecated."
+                          },
+                          "last_evaluated_at": {
+                            "type": "string",
+                            "description": "Timestamp of the last evaluation."
+                          },
+                          "notification": {
+                            "type": "object",
+                            "properties": {
+                              "notify_on_ok": {
+                                "type": "boolean"
+                              },
+                              "retrigger_seconds": {
+                                "type": "integer",
+                                "description": "Number of seconds an alert waits after being triggered before it is allowed to send another notification. If set to 0 or omitted, the alert will not send any further notifications after the first trigger Setting this value to 1 allows the alert to send a notification on every evaluation where the condition is met, effectively making it always retrigger for notification purposes."
+                              },
+                              "subscriptions": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "destination_id": {
+                                      "type": "string"
+                                    },
+                                    "user_email": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "description": "User or Notification Destination to notify when alert is triggered."
+                          },
+                          "state": {
+                            "type": "string",
+                            "x-enum": [
+                              "ERROR",
+                              "OK",
+                              "TRIGGERED",
+                              "UNKNOWN"
+                            ],
+                            "description": "Latest state of alert evaluation."
+                          },
+                          "threshold": {
+                            "type": "object",
+                            "properties": {
+                              "column": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "aggregation": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "AVG",
+                                      "COUNT",
+                                      "COUNT_DISTINCT",
+                                      "MAX",
+                                      "MEDIAN",
+                                      "MIN",
+                                      "STDDEV",
+                                      "SUM"
+                                    ],
+                                    "description": "If not set, the behavior is equivalent to using `First row` in the UI."
+                                  },
+                                  "display": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "name"
+                                ]
+                              },
+                              "value": {
+                                "type": "object",
+                                "properties": {
+                                  "bool_value": {
+                                    "type": "boolean"
+                                  },
+                                  "double_value": {
+                                    "type": "number"
+                                  },
+                                  "string_value": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "description": "Threshold to user for alert evaluation, can be a column or a value."
+                          }
+                        },
+                        "required": [
+                          "source",
+                          "comparison_operator"
+                        ]
+                      },
+                      "schedule": {
+                        "type": "object",
+                        "properties": {
+                          "quartz_cron_schedule": {
+                            "type": "string"
+                          },
+                          "timezone_id": {
+                            "type": "string",
+                            "description": "A Java timezone id. The schedule will be resolved using this timezone. This will be combined with the quartz_cron_schedule to determine the schedule. See https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html for details."
+                          },
+                          "pause_status": {
+                            "type": "string",
+                            "x-enum": [
+                              "PAUSED",
+                              "UNPAUSED"
+                            ],
+                            "description": "Indicate whether this schedule is paused or not."
+                          }
+                        },
+                        "required": [
+                          "quartz_cron_schedule",
+                          "timezone_id"
+                        ]
+                      },
+                      "create_time": {
+                        "type": "string",
+                        "description": "The timestamp indicating when the alert was created."
+                      },
+                      "custom_description": {
+                        "type": "string",
+                        "description": "Custom description for the alert. support mustache template."
+                      },
+                      "custom_summary": {
+                        "type": "string",
+                        "description": "Custom summary for the alert. support mustache template."
+                      },
+                      "effective_run_as": {
+                        "type": "object",
+                        "properties": {
+                          "service_principal_name": {
+                            "type": "string"
+                          },
+                          "user_name": {
+                            "type": "string",
+                            "description": "The email of an active workspace user. Can only set this field to their own email."
+                          }
+                        },
+                        "description": "The actual identity that will be used to execute the alert. This is an output-only field that shows the resolved run-as identity after applying permissions and defaults."
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "UUID identifying the alert."
+                      },
+                      "lifecycle_state": {
+                        "type": "string",
+                        "x-enum": [
+                          "ACTIVE",
+                          "DELETED"
+                        ],
+                        "description": "Indicates whether the query is trashed."
+                      },
+                      "owner_user_name": {
+                        "type": "string",
+                        "description": "The owner's username. This field is set to \"Unavailable\" if the user has been deleted."
+                      },
+                      "parent_path": {
+                        "type": "string",
+                        "description": "The workspace path of the folder containing the alert. Can only be set on create, and cannot be updated."
+                      },
+                      "run_as": {
+                        "type": "object",
+                        "properties": {
+                          "service_principal_name": {
+                            "type": "string"
+                          },
+                          "user_name": {
+                            "type": "string",
+                            "description": "The email of an active workspace user. Can only set this field to their own email."
+                          }
+                        },
+                        "description": "Specifies the identity that will be used to run the alert. This field allows you to configure alerts to run as a specific user or service principal. - For user identity: Set `user_name` to the email of an active workspace user. Users can only set this to their own email. - For service principal: Set `service_principal_name` to the application ID. Requires the `servicePrincipal/user` role. If not specified, the alert will run as the request user."
+                      },
+                      "run_as_user_name": {
+                        "type": "string",
+                        "description": "The run as username or application ID of service principal. On Create and Update, this field can be set to application ID of an active service principal. Setting this field requires the servicePrincipal/user role. Deprecated: Use `run_as` field instead. This field will be removed in a future release."
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "The timestamp indicating when the alert was updated."
+                      }
+                    },
+                    "required": [
+                      "display_name",
+                      "query_text",
+                      "warehouse_id",
+                      "evaluation",
+                      "schedule"
+                    ],
                     "description": ":returns: :class:`AlertV2`"
                   }
                 },
@@ -859,7 +1381,267 @@
                 "type": "object",
                 "properties": {
                   "alert": {
-                    "$ref": "#/components/schemas/AlertV2",
+                    "type": "object",
+                    "properties": {
+                      "display_name": {
+                        "type": "string"
+                      },
+                      "query_text": {
+                        "type": "string",
+                        "description": "Text of the query to be run."
+                      },
+                      "warehouse_id": {
+                        "type": "string",
+                        "description": "ID of the SQL warehouse attached to the alert."
+                      },
+                      "evaluation": {
+                        "type": "object",
+                        "properties": {
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "aggregation": {
+                                "type": "string",
+                                "x-enum": [
+                                  "AVG",
+                                  "COUNT",
+                                  "COUNT_DISTINCT",
+                                  "MAX",
+                                  "MEDIAN",
+                                  "MIN",
+                                  "STDDEV",
+                                  "SUM"
+                                ],
+                                "description": "If not set, the behavior is equivalent to using `First row` in the UI."
+                              },
+                              "display": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name"
+                            ]
+                          },
+                          "comparison_operator": {
+                            "type": "string",
+                            "x-enum": [
+                              "EQUAL",
+                              "GREATER_THAN",
+                              "GREATER_THAN_OR_EQUAL",
+                              "IS_NOT_NULL",
+                              "IS_NULL",
+                              "LESS_THAN",
+                              "LESS_THAN_OR_EQUAL",
+                              "NOT_EQUAL"
+                            ],
+                            "description": "Operator used for comparison in alert evaluation."
+                          },
+                          "empty_result_state": {
+                            "type": "string",
+                            "x-enum": [
+                              "ERROR",
+                              "OK",
+                              "TRIGGERED",
+                              "UNKNOWN"
+                            ],
+                            "description": "Alert state if result is empty. Please avoid setting this field to be `UNKNOWN` because `UNKNOWN` state is planned to be deprecated."
+                          },
+                          "last_evaluated_at": {
+                            "type": "string",
+                            "description": "Timestamp of the last evaluation."
+                          },
+                          "notification": {
+                            "type": "object",
+                            "properties": {
+                              "notify_on_ok": {
+                                "type": "boolean"
+                              },
+                              "retrigger_seconds": {
+                                "type": "integer",
+                                "description": "Number of seconds an alert waits after being triggered before it is allowed to send another notification. If set to 0 or omitted, the alert will not send any further notifications after the first trigger Setting this value to 1 allows the alert to send a notification on every evaluation where the condition is met, effectively making it always retrigger for notification purposes."
+                              },
+                              "subscriptions": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "destination_id": {
+                                      "type": "string"
+                                    },
+                                    "user_email": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "description": "User or Notification Destination to notify when alert is triggered."
+                          },
+                          "state": {
+                            "type": "string",
+                            "x-enum": [
+                              "ERROR",
+                              "OK",
+                              "TRIGGERED",
+                              "UNKNOWN"
+                            ],
+                            "description": "Latest state of alert evaluation."
+                          },
+                          "threshold": {
+                            "type": "object",
+                            "properties": {
+                              "column": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "aggregation": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "AVG",
+                                      "COUNT",
+                                      "COUNT_DISTINCT",
+                                      "MAX",
+                                      "MEDIAN",
+                                      "MIN",
+                                      "STDDEV",
+                                      "SUM"
+                                    ],
+                                    "description": "If not set, the behavior is equivalent to using `First row` in the UI."
+                                  },
+                                  "display": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "name"
+                                ]
+                              },
+                              "value": {
+                                "type": "object",
+                                "properties": {
+                                  "bool_value": {
+                                    "type": "boolean"
+                                  },
+                                  "double_value": {
+                                    "type": "number"
+                                  },
+                                  "string_value": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "description": "Threshold to user for alert evaluation, can be a column or a value."
+                          }
+                        },
+                        "required": [
+                          "source",
+                          "comparison_operator"
+                        ]
+                      },
+                      "schedule": {
+                        "type": "object",
+                        "properties": {
+                          "quartz_cron_schedule": {
+                            "type": "string"
+                          },
+                          "timezone_id": {
+                            "type": "string",
+                            "description": "A Java timezone id. The schedule will be resolved using this timezone. This will be combined with the quartz_cron_schedule to determine the schedule. See https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html for details."
+                          },
+                          "pause_status": {
+                            "type": "string",
+                            "x-enum": [
+                              "PAUSED",
+                              "UNPAUSED"
+                            ],
+                            "description": "Indicate whether this schedule is paused or not."
+                          }
+                        },
+                        "required": [
+                          "quartz_cron_schedule",
+                          "timezone_id"
+                        ]
+                      },
+                      "create_time": {
+                        "type": "string",
+                        "description": "The timestamp indicating when the alert was created."
+                      },
+                      "custom_description": {
+                        "type": "string",
+                        "description": "Custom description for the alert. support mustache template."
+                      },
+                      "custom_summary": {
+                        "type": "string",
+                        "description": "Custom summary for the alert. support mustache template."
+                      },
+                      "effective_run_as": {
+                        "type": "object",
+                        "properties": {
+                          "service_principal_name": {
+                            "type": "string"
+                          },
+                          "user_name": {
+                            "type": "string",
+                            "description": "The email of an active workspace user. Can only set this field to their own email."
+                          }
+                        },
+                        "description": "The actual identity that will be used to execute the alert. This is an output-only field that shows the resolved run-as identity after applying permissions and defaults."
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "UUID identifying the alert."
+                      },
+                      "lifecycle_state": {
+                        "type": "string",
+                        "x-enum": [
+                          "ACTIVE",
+                          "DELETED"
+                        ],
+                        "description": "Indicates whether the query is trashed."
+                      },
+                      "owner_user_name": {
+                        "type": "string",
+                        "description": "The owner's username. This field is set to \"Unavailable\" if the user has been deleted."
+                      },
+                      "parent_path": {
+                        "type": "string",
+                        "description": "The workspace path of the folder containing the alert. Can only be set on create, and cannot be updated."
+                      },
+                      "run_as": {
+                        "type": "object",
+                        "properties": {
+                          "service_principal_name": {
+                            "type": "string"
+                          },
+                          "user_name": {
+                            "type": "string",
+                            "description": "The email of an active workspace user. Can only set this field to their own email."
+                          }
+                        },
+                        "description": "Specifies the identity that will be used to run the alert. This field allows you to configure alerts to run as a specific user or service principal. - For user identity: Set `user_name` to the email of an active workspace user. Users can only set this to their own email. - For service principal: Set `service_principal_name` to the application ID. Requires the `servicePrincipal/user` role. If not specified, the alert will run as the request user."
+                      },
+                      "run_as_user_name": {
+                        "type": "string",
+                        "description": "The run as username or application ID of service principal. On Create and Update, this field can be set to application ID of an active service principal. Setting this field requires the servicePrincipal/user role. Deprecated: Use `run_as` field instead. This field will be removed in a future release."
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "The timestamp indicating when the alert was updated."
+                      }
+                    },
+                    "required": [
+                      "display_name",
+                      "query_text",
+                      "warehouse_id",
+                      "evaluation",
+                      "schedule"
+                    ],
                     "description": ":param update_mask: str The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
                   }
                 },
@@ -923,7 +1705,58 @@
                     "description": "Dashboard ID returned by :method:dashboards/create."
                   },
                   "options": {
-                    "$ref": "#/components/schemas/WidgetOptions",
+                    "type": "object",
+                    "properties": {
+                      "created_at": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Custom description of the widget"
+                      },
+                      "isHidden": {
+                        "type": "boolean",
+                        "description": "Whether this widget is hidden on the dashboard."
+                      },
+                      "parameterMappings": {
+                        "type": "object",
+                        "description": "How parameters used by the visualization in this widget relate to other widgets on the dashboard. Databricks does not recommend modifying this definition in JSON."
+                      },
+                      "position": {
+                        "type": "object",
+                        "properties": {
+                          "autoHeight": {
+                            "type": "boolean",
+                            "description": "reserved for internal use"
+                          },
+                          "col": {
+                            "type": "integer",
+                            "description": "column in the dashboard grid. Values start with 0"
+                          },
+                          "row": {
+                            "type": "integer",
+                            "description": "row in the dashboard grid. Values start with 0"
+                          },
+                          "sizeX": {
+                            "type": "integer",
+                            "description": "width of the widget measured in dashboard grid cells"
+                          },
+                          "sizeY": {
+                            "type": "integer",
+                            "description": "height of the widget measured in dashboard grid cells"
+                          }
+                        },
+                        "description": "Coordinates of this widget on a dashboard. This portion of the API changes frequently and is unsupported."
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "Custom title of the widget"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "description": "Timestamp of the last time this object was updated."
+                      }
+                    },
                     "description": ":param width: int Width of a widget"
                   },
                   "width": {
@@ -1055,7 +1888,58 @@
                     "description": "Dashboard ID returned by :method:dashboards/create."
                   },
                   "options": {
-                    "$ref": "#/components/schemas/WidgetOptions",
+                    "type": "object",
+                    "properties": {
+                      "created_at": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Custom description of the widget"
+                      },
+                      "isHidden": {
+                        "type": "boolean",
+                        "description": "Whether this widget is hidden on the dashboard."
+                      },
+                      "parameterMappings": {
+                        "type": "object",
+                        "description": "How parameters used by the visualization in this widget relate to other widgets on the dashboard. Databricks does not recommend modifying this definition in JSON."
+                      },
+                      "position": {
+                        "type": "object",
+                        "properties": {
+                          "autoHeight": {
+                            "type": "boolean",
+                            "description": "reserved for internal use"
+                          },
+                          "col": {
+                            "type": "integer",
+                            "description": "column in the dashboard grid. Values start with 0"
+                          },
+                          "row": {
+                            "type": "integer",
+                            "description": "row in the dashboard grid. Values start with 0"
+                          },
+                          "sizeX": {
+                            "type": "integer",
+                            "description": "width of the widget measured in dashboard grid cells"
+                          },
+                          "sizeY": {
+                            "type": "integer",
+                            "description": "height of the widget measured in dashboard grid cells"
+                          }
+                        },
+                        "description": "Coordinates of this widget on a dashboard. This portion of the API changes frequently and is unsupported."
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "Custom title of the widget"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "description": "Timestamp of the last time this object was updated."
+                      }
+                    },
                     "description": ":param width: int Width of a widget"
                   },
                   "width": {
@@ -1237,7 +2121,11 @@
                     "type": "string"
                   },
                   "run_as_role": {
-                    "$ref": "#/components/schemas/RunAsRole",
+                    "type": "string",
+                    "x-enum": [
+                      "owner",
+                      "viewer"
+                    ],
                     "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior)"
                   },
                   "tags": {
@@ -1556,13 +2444,37 @@
                 "type": "object",
                 "properties": {
                   "object_type": {
-                    "$ref": "#/components/schemas/ObjectTypePlural",
+                    "type": "string",
+                    "x-enum": [
+                      "alerts",
+                      "dashboards",
+                      "data_sources",
+                      "queries"
+                    ],
                     "description": "The type of object permission to set."
                   },
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/AccessControl"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_EDIT",
+                            "CAN_MANAGE",
+                            "CAN_RUN",
+                            "CAN_VIEW"
+                          ],
+                          "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query"
+                        },
+                        "user_name": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`SetResponse`"
                   }
@@ -1642,7 +2554,12 @@
                 "type": "object",
                 "properties": {
                   "object_type": {
-                    "$ref": "#/components/schemas/OwnableObjectType",
+                    "type": "string",
+                    "x-enum": [
+                      "alert",
+                      "dashboard",
+                      "query"
+                    ],
                     "description": "The type of object on which to change ownership."
                   },
                   "new_owner": {
@@ -1710,7 +2627,236 @@
                     "description": "If true, automatically resolve query display name conflicts. Otherwise, fail the request if the query's display name conflicts with an existing query's display name."
                   },
                   "query": {
-                    "$ref": "#/components/schemas/CreateQueryRequestQuery",
+                    "type": "object",
+                    "properties": {
+                      "apply_auto_limit": {
+                        "type": "boolean"
+                      },
+                      "catalog": {
+                        "type": "string",
+                        "description": "Name of the catalog where this query will be executed."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "General description that conveys additional information about this query such as usage notes."
+                      },
+                      "display_name": {
+                        "type": "string",
+                        "description": "Display name of the query that appears in list views, widget headings, and on the query page."
+                      },
+                      "parameters": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "date_range_value": {
+                              "type": "object",
+                              "properties": {
+                                "date_range_value": {
+                                  "type": "object",
+                                  "properties": {
+                                    "start": {
+                                      "type": "string"
+                                    },
+                                    "end": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "start",
+                                    "end"
+                                  ]
+                                },
+                                "dynamic_date_range_value": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "LAST_12_MONTHS",
+                                    "LAST_14_DAYS",
+                                    "LAST_24_HOURS",
+                                    "LAST_30_DAYS",
+                                    "LAST_60_DAYS",
+                                    "LAST_7_DAYS",
+                                    "LAST_8_HOURS",
+                                    "LAST_90_DAYS",
+                                    "LAST_HOUR",
+                                    "LAST_MONTH",
+                                    "LAST_WEEK",
+                                    "LAST_YEAR",
+                                    "THIS_MONTH",
+                                    "THIS_WEEK",
+                                    "THIS_YEAR",
+                                    "TODAY",
+                                    "YESTERDAY"
+                                  ],
+                                  "description": "Dynamic date-time range value based on current date-time."
+                                },
+                                "precision": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "DAY_PRECISION",
+                                    "MINUTE_PRECISION",
+                                    "SECOND_PRECISION"
+                                  ],
+                                  "description": "Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD)."
+                                },
+                                "start_day_of_week": {
+                                  "type": "integer"
+                                }
+                              }
+                            },
+                            "date_value": {
+                              "type": "object",
+                              "properties": {
+                                "date_value": {
+                                  "type": "string"
+                                },
+                                "dynamic_date_value": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "NOW",
+                                    "YESTERDAY"
+                                  ],
+                                  "description": "Dynamic date-time value based on current date-time."
+                                },
+                                "precision": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "DAY_PRECISION",
+                                    "MINUTE_PRECISION",
+                                    "SECOND_PRECISION"
+                                  ],
+                                  "description": "Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD)."
+                                }
+                              },
+                              "description": "Date query parameter value. Can only specify one of `dynamic_date_value` or `date_value`."
+                            },
+                            "enum_value": {
+                              "type": "object",
+                              "properties": {
+                                "enum_options": {
+                                  "type": "string"
+                                },
+                                "multi_values_options": {
+                                  "type": "object",
+                                  "properties": {
+                                    "prefix": {
+                                      "type": "string"
+                                    },
+                                    "separator": {
+                                      "type": "string",
+                                      "description": "Character that separates each selected parameter value. Defaults to a comma."
+                                    },
+                                    "suffix": {
+                                      "type": "string",
+                                      "description": "Character that suffixes each selected parameter value."
+                                    }
+                                  },
+                                  "description": "If specified, allows multiple values to be selected for this parameter."
+                                },
+                                "values": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "description": "List of selected query parameter values."
+                                }
+                              },
+                              "description": "Dropdown query parameter value."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Literal parameter marker that appears between double curly braces in the query text."
+                            },
+                            "numeric_value": {
+                              "type": "object",
+                              "properties": {
+                                "value": {
+                                  "type": "number"
+                                }
+                              },
+                              "description": "Numeric query parameter value."
+                            },
+                            "query_backed_value": {
+                              "type": "object",
+                              "properties": {
+                                "multi_values_options": {
+                                  "type": "object",
+                                  "properties": {
+                                    "prefix": {
+                                      "type": "string"
+                                    },
+                                    "separator": {
+                                      "type": "string",
+                                      "description": "Character that separates each selected parameter value. Defaults to a comma."
+                                    },
+                                    "suffix": {
+                                      "type": "string",
+                                      "description": "Character that suffixes each selected parameter value."
+                                    }
+                                  }
+                                },
+                                "query_id": {
+                                  "type": "string",
+                                  "description": "UUID of the query that provides the parameter values."
+                                },
+                                "values": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "description": "List of selected query parameter values."
+                                }
+                              },
+                              "description": "Query-based dropdown query parameter value."
+                            },
+                            "text_value": {
+                              "type": "object",
+                              "properties": {
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "description": "Text query parameter value."
+                            },
+                            "title": {
+                              "type": "string",
+                              "description": "Text displayed in the user-facing parameter widget in the UI."
+                            }
+                          }
+                        },
+                        "description": "List of query parameter definitions."
+                      },
+                      "parent_path": {
+                        "type": "string",
+                        "description": "Workspace path of the workspace folder containing the object."
+                      },
+                      "query_text": {
+                        "type": "string",
+                        "description": "Text of the query to be run."
+                      },
+                      "run_as_mode": {
+                        "type": "string",
+                        "x-enum": [
+                          "OWNER",
+                          "VIEWER"
+                        ],
+                        "description": "Sets the \"Run as\" role for the object."
+                      },
+                      "schema": {
+                        "type": "string",
+                        "description": "Name of the schema where this query will be executed."
+                      },
+                      "tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "warehouse_id": {
+                        "type": "string",
+                        "description": "ID of the SQL warehouse attached to the query."
+                      }
+                    },
                     "description": ":returns: :class:`Query`"
                   }
                 }
@@ -1939,7 +3085,236 @@
                     "description": "If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the alert's display name conflicts with an existing alert's display name."
                   },
                   "query": {
-                    "$ref": "#/components/schemas/UpdateQueryRequestQuery",
+                    "type": "object",
+                    "properties": {
+                      "apply_auto_limit": {
+                        "type": "boolean"
+                      },
+                      "catalog": {
+                        "type": "string",
+                        "description": "Name of the catalog where this query will be executed."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "General description that conveys additional information about this query such as usage notes."
+                      },
+                      "display_name": {
+                        "type": "string",
+                        "description": "Display name of the query that appears in list views, widget headings, and on the query page."
+                      },
+                      "owner_user_name": {
+                        "type": "string",
+                        "description": "Username of the user that owns the query."
+                      },
+                      "parameters": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "date_range_value": {
+                              "type": "object",
+                              "properties": {
+                                "date_range_value": {
+                                  "type": "object",
+                                  "properties": {
+                                    "start": {
+                                      "type": "string"
+                                    },
+                                    "end": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "start",
+                                    "end"
+                                  ]
+                                },
+                                "dynamic_date_range_value": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "LAST_12_MONTHS",
+                                    "LAST_14_DAYS",
+                                    "LAST_24_HOURS",
+                                    "LAST_30_DAYS",
+                                    "LAST_60_DAYS",
+                                    "LAST_7_DAYS",
+                                    "LAST_8_HOURS",
+                                    "LAST_90_DAYS",
+                                    "LAST_HOUR",
+                                    "LAST_MONTH",
+                                    "LAST_WEEK",
+                                    "LAST_YEAR",
+                                    "THIS_MONTH",
+                                    "THIS_WEEK",
+                                    "THIS_YEAR",
+                                    "TODAY",
+                                    "YESTERDAY"
+                                  ],
+                                  "description": "Dynamic date-time range value based on current date-time."
+                                },
+                                "precision": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "DAY_PRECISION",
+                                    "MINUTE_PRECISION",
+                                    "SECOND_PRECISION"
+                                  ],
+                                  "description": "Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD)."
+                                },
+                                "start_day_of_week": {
+                                  "type": "integer"
+                                }
+                              }
+                            },
+                            "date_value": {
+                              "type": "object",
+                              "properties": {
+                                "date_value": {
+                                  "type": "string"
+                                },
+                                "dynamic_date_value": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "NOW",
+                                    "YESTERDAY"
+                                  ],
+                                  "description": "Dynamic date-time value based on current date-time."
+                                },
+                                "precision": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "DAY_PRECISION",
+                                    "MINUTE_PRECISION",
+                                    "SECOND_PRECISION"
+                                  ],
+                                  "description": "Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD)."
+                                }
+                              },
+                              "description": "Date query parameter value. Can only specify one of `dynamic_date_value` or `date_value`."
+                            },
+                            "enum_value": {
+                              "type": "object",
+                              "properties": {
+                                "enum_options": {
+                                  "type": "string"
+                                },
+                                "multi_values_options": {
+                                  "type": "object",
+                                  "properties": {
+                                    "prefix": {
+                                      "type": "string"
+                                    },
+                                    "separator": {
+                                      "type": "string",
+                                      "description": "Character that separates each selected parameter value. Defaults to a comma."
+                                    },
+                                    "suffix": {
+                                      "type": "string",
+                                      "description": "Character that suffixes each selected parameter value."
+                                    }
+                                  },
+                                  "description": "If specified, allows multiple values to be selected for this parameter."
+                                },
+                                "values": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "description": "List of selected query parameter values."
+                                }
+                              },
+                              "description": "Dropdown query parameter value."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Literal parameter marker that appears between double curly braces in the query text."
+                            },
+                            "numeric_value": {
+                              "type": "object",
+                              "properties": {
+                                "value": {
+                                  "type": "number"
+                                }
+                              },
+                              "description": "Numeric query parameter value."
+                            },
+                            "query_backed_value": {
+                              "type": "object",
+                              "properties": {
+                                "multi_values_options": {
+                                  "type": "object",
+                                  "properties": {
+                                    "prefix": {
+                                      "type": "string"
+                                    },
+                                    "separator": {
+                                      "type": "string",
+                                      "description": "Character that separates each selected parameter value. Defaults to a comma."
+                                    },
+                                    "suffix": {
+                                      "type": "string",
+                                      "description": "Character that suffixes each selected parameter value."
+                                    }
+                                  }
+                                },
+                                "query_id": {
+                                  "type": "string",
+                                  "description": "UUID of the query that provides the parameter values."
+                                },
+                                "values": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "description": "List of selected query parameter values."
+                                }
+                              },
+                              "description": "Query-based dropdown query parameter value."
+                            },
+                            "text_value": {
+                              "type": "object",
+                              "properties": {
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "description": "Text query parameter value."
+                            },
+                            "title": {
+                              "type": "string",
+                              "description": "Text displayed in the user-facing parameter widget in the UI."
+                            }
+                          }
+                        },
+                        "description": "List of query parameter definitions."
+                      },
+                      "query_text": {
+                        "type": "string",
+                        "description": "Text of the query to be run."
+                      },
+                      "run_as_mode": {
+                        "type": "string",
+                        "x-enum": [
+                          "OWNER",
+                          "VIEWER"
+                        ],
+                        "description": "Sets the \"Run as\" role for the object."
+                      },
+                      "schema": {
+                        "type": "string",
+                        "description": "Name of the schema where this query will be executed."
+                      },
+                      "tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "warehouse_id": {
+                        "type": "string",
+                        "description": "ID of the SQL warehouse attached to the query."
+                      }
+                    },
                     "description": ":returns: :class:`Query`"
                   }
                 },
@@ -2093,7 +3468,11 @@
                     "description": "The text of the query to be run."
                   },
                   "run_as_role": {
-                    "$ref": "#/components/schemas/RunAsRole",
+                    "type": "string",
+                    "x-enum": [
+                      "owner",
+                      "viewer"
+                    ],
                     "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior)"
                   },
                   "tags": {
@@ -2360,7 +3739,11 @@
                     "description": "The text of the query to be run."
                   },
                   "run_as_role": {
-                    "$ref": "#/components/schemas/RunAsRole",
+                    "type": "string",
+                    "x-enum": [
+                      "owner",
+                      "viewer"
+                    ],
                     "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior)"
                   },
                   "tags": {
@@ -2550,7 +3933,28 @@
                 "type": "object",
                 "properties": {
                   "visualization": {
-                    "$ref": "#/components/schemas/CreateVisualizationRequestVisualization",
+                    "type": "object",
+                    "properties": {
+                      "display_name": {
+                        "type": "string"
+                      },
+                      "query_id": {
+                        "type": "string",
+                        "description": "UUID of the query that the visualization is attached to."
+                      },
+                      "serialized_options": {
+                        "type": "string",
+                        "description": "The visualization options varies widely from one visualization type to the next and is unsupported. Databricks does not recommend modifying visualization options directly."
+                      },
+                      "serialized_query_plan": {
+                        "type": "string",
+                        "description": "The visualization query plan varies widely from one visualization type to the next and is unsupported. Databricks does not recommend modifying the visualization query plan directly."
+                      },
+                      "type": {
+                        "type": "string",
+                        "description": "The type of visualization: counter, table, funnel, and so on."
+                      }
+                    },
                     "description": ":returns: :class:`Visualization`"
                   }
                 }
@@ -2665,7 +4069,24 @@
                     "type": "string"
                   },
                   "visualization": {
-                    "$ref": "#/components/schemas/UpdateVisualizationRequestVisualization",
+                    "type": "object",
+                    "properties": {
+                      "display_name": {
+                        "type": "string"
+                      },
+                      "serialized_options": {
+                        "type": "string",
+                        "description": "The visualization options varies widely from one visualization type to the next and is unsupported. Databricks does not recommend modifying visualization options directly."
+                      },
+                      "serialized_query_plan": {
+                        "type": "string",
+                        "description": "The visualization query plan varies widely from one visualization type to the next and is unsupported. Databricks does not recommend modifying the visualization query plan directly."
+                      },
+                      "type": {
+                        "type": "string",
+                        "description": "The type of visualization: counter, table, funnel, and so on."
+                      }
+                    },
                     "description": ":returns: :class:`Visualization`"
                   }
                 },
@@ -2873,7 +4294,237 @@
                     "description": "The options object varies widely from one visualization type to the next and is unsupported. Databricks does not recommend modifying visualization settings in JSON."
                   },
                   "query": {
-                    "$ref": "#/components/schemas/LegacyQuery",
+                    "type": "object",
+                    "properties": {
+                      "can_edit": {
+                        "type": "boolean"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "description": "The timestamp when this query was created."
+                      },
+                      "data_source_id": {
+                        "type": "string",
+                        "description": "Data source ID maps to the ID of the data source used by the resource and is distinct from the warehouse ID. [Learn more] [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "General description that conveys additional information about this query such as usage notes."
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "Query ID."
+                      },
+                      "is_archived": {
+                        "type": "boolean",
+                        "description": "Indicates whether the query is trashed. Trashed queries can't be used in dashboards, or appear in search results. If this boolean is `true`, the `options` property for this query includes a `moved_to_trash_at` timestamp. Trashed queries are permanently deleted after 30 days."
+                      },
+                      "is_draft": {
+                        "type": "boolean",
+                        "description": "Whether the query is a draft. Draft queries only appear in list views for their owners. Visualizations from draft queries cannot appear on dashboards."
+                      },
+                      "is_favorite": {
+                        "type": "boolean",
+                        "description": "Whether this query object appears in the current user's favorites list. This flag determines whether the star icon for favorites is selected."
+                      },
+                      "is_safe": {
+                        "type": "boolean",
+                        "description": "Text parameter types are not safe from SQL injection for all types of data source. Set this Boolean parameter to `true` if a query either does not use any text type parameters or uses a data source type where text type parameters are handled safely."
+                      },
+                      "last_modified_by": {
+                        "type": "object",
+                        "properties": {
+                          "email": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "last_modified_by_id": {
+                        "type": "integer",
+                        "description": "The ID of the user who last saved changes to this query."
+                      },
+                      "latest_query_data_id": {
+                        "type": "string",
+                        "description": "If there is a cached result for this query and user, this field includes the query result ID. If this query uses parameters, this field is always null."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "The title of this query that appears in list views, widget headings, and on the query page."
+                      },
+                      "options": {
+                        "type": "object",
+                        "properties": {
+                          "catalog": {
+                            "type": "string"
+                          },
+                          "moved_to_trash_at": {
+                            "type": "string",
+                            "description": "The timestamp when this query was moved to trash. Only present when the `is_archived` property is `true`. Trashed items are deleted after thirty days."
+                          },
+                          "parameters": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "enumOptions": {
+                                  "type": "string"
+                                },
+                                "multiValuesOptions": {
+                                  "type": "object",
+                                  "properties": {
+                                    "prefix": {
+                                      "type": "string"
+                                    },
+                                    "separator": {
+                                      "type": "string",
+                                      "description": "Character that separates each selected parameter value. Defaults to a comma."
+                                    },
+                                    "suffix": {
+                                      "type": "string",
+                                      "description": "Character that suffixes each selected parameter value."
+                                    }
+                                  },
+                                  "description": "If specified, allows multiple values to be selected for this parameter. Only applies to dropdown list and query-based dropdown list parameters."
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "The literal parameter marker that appears between double curly braces in the query text."
+                                },
+                                "queryId": {
+                                  "type": "string",
+                                  "description": "The UUID of the query that provides the parameter values. Only applies for query-based dropdown list parameters."
+                                },
+                                "title": {
+                                  "type": "string",
+                                  "description": "The text displayed in a parameter picking widget."
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "datetime",
+                                    "enum",
+                                    "number",
+                                    "query",
+                                    "text"
+                                  ],
+                                  "description": "Parameters can have several different types."
+                                },
+                                "value": {
+                                  "type": "object",
+                                  "description": "The default value for this parameter."
+                                }
+                              }
+                            }
+                          },
+                          "schema": {
+                            "type": "string",
+                            "description": "The name of the schema to execute this query in."
+                          }
+                        }
+                      },
+                      "parent": {
+                        "type": "string",
+                        "description": "The identifier of the workspace folder containing the object."
+                      },
+                      "permission_tier": {
+                        "type": "string",
+                        "x-enum": [
+                          "CAN_EDIT",
+                          "CAN_MANAGE",
+                          "CAN_RUN",
+                          "CAN_VIEW"
+                        ],
+                        "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query"
+                      },
+                      "query": {
+                        "type": "string",
+                        "description": "The text of the query to be run."
+                      },
+                      "query_hash": {
+                        "type": "string",
+                        "description": "A SHA-256 hash of the query text along with the authenticated user ID."
+                      },
+                      "run_as_role": {
+                        "type": "string",
+                        "x-enum": [
+                          "owner",
+                          "viewer"
+                        ],
+                        "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior)"
+                      },
+                      "tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "description": "The timestamp at which this query was last updated."
+                      },
+                      "user": {
+                        "type": "object",
+                        "properties": {
+                          "email": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "user_id": {
+                        "type": "integer",
+                        "description": "The ID of the user who owns the query."
+                      },
+                      "visualizations": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "created_at": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string",
+                              "description": "A short description of this visualization. This is not displayed in the UI."
+                            },
+                            "id": {
+                              "type": "string",
+                              "description": "The UUID for this visualization."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "The name of the visualization that appears on dashboards and the query screen."
+                            },
+                            "options": {
+                              "type": "object",
+                              "description": "The options object varies widely from one visualization type to the next and is unsupported. Databricks does not recommend modifying visualization settings in JSON."
+                            },
+                            "query": {
+                              "$ref": "#/components/schemas/LegacyQuery"
+                            },
+                            "type": {
+                              "type": "string",
+                              "description": "The type of visualization: chart, table, pivot table, and so on."
+                            },
+                            "updated_at": {
+                              "type": "string"
+                            }
+                          },
+                          "description": "The visualization description API changes frequently and is unsupported. You can duplicate a\n    visualization by copying description objects received _from the API_ and then using them to\n    create a new one with a POST request to the same endpoint. Databricks does not recommend\n    constructing ad-hoc visualizations entirely in JSON."
+                        }
+                      }
+                    },
                     "description": ":param type: str (optional) The type of visualization: chart, table, pivot table, and so on."
                   },
                   "type": {
@@ -3041,28 +4692,69 @@
                     "description": "Sets default catalog for statement execution, similar to [`USE CATALOG`] in SQL. [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html"
                   },
                   "disposition": {
-                    "$ref": "#/components/schemas/Disposition",
+                    "type": "string",
+                    "x-enum": [
+                      "EXTERNAL_LINKS",
+                      "INLINE"
+                    ],
                     "description": "The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`. Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY` format, in a series of chunks. If a given statement produces a result set with a size larger than 25 MiB, that statement execution is aborted, and no result set will be available. **NOTE** Byte limits are computed based upon internal representations of the result set data, and might not match the sizes visible in JSON responses. Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links: URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The resulting links have two important properties: 1. They point to resources _external_ to the Databricks compute; therefore any associated authentication information (typically a personal access token, OAuth token, or similar) _must be removed_ when fetching from these links. 2. These are URLs with a specific expiration, indicated in the response. The behavior when attempting to use an expired link is cloud specific."
                   },
                   "format": {
-                    "$ref": "#/components/schemas/Format",
+                    "type": "string",
+                    "x-enum": [
+                      "ARROW_STREAM",
+                      "CSV",
+                      "JSON_ARRAY"
+                    ],
                     "description": "Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and `CSV`. Important: The formats `ARROW_STREAM` and `CSV` are supported only with `EXTERNAL_LINKS` disposition. `JSON_ARRAY` is supported in `INLINE` and `EXTERNAL_LINKS` disposition. When specifying `format=JSON_ARRAY`, result data will be formatted as an array of arrays of values, where each value is either the *string representation* of a value, or `null`. For example, the output of `SELECT concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)` would look like this: ``` [ [ \"id-1\", \"1\", null ], [ \"id-2\", \"2\", null ], [ \"id-3\", \"3\", null ], ] ``` When specifying `format=JSON_ARRAY` and `disposition=EXTERNAL_LINKS`, each chunk in the result contains compact JSON with no indentation or extra whitespace. When specifying `format=ARROW_STREAM` and `disposition=EXTERNAL_LINKS`, each chunk in the result will be formatted as Apache Arrow Stream. See the [Apache Arrow streaming format]. When specifying `format=CSV` and `disposition=EXTERNAL_LINKS`, each chunk in the result will be a CSV according to [RFC 4180] standard. All the columns values will have *string representation* similar to the `JSON_ARRAY` format, and `null` values will be encoded as \u201cnull\u201d. Only the first chunk in the result would contain a header row with column names. For example, the output of `SELECT concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM range(3)` would look like this: ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ``` [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180"
                   },
                   "on_wait_timeout": {
-                    "$ref": "#/components/schemas/ExecuteStatementRequestOnWaitTimeout",
+                    "type": "string",
+                    "x-enum": [
+                      "CANCEL",
+                      "CONTINUE"
+                    ],
                     "description": "When `wait_timeout > 0s`, the call will block up to the specified time. If the statement execution doesn't finish within this time, `on_wait_timeout` determines whether the execution should continue or be canceled. When set to `CONTINUE`, the statement execution continues asynchronously and the call returns a statement ID which can be used for polling with :method:statementexecution/getStatement. When set to `CANCEL`, the statement execution is canceled and the call returns with a `CANCELED` state."
                   },
                   "parameters": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/StatementParameterListItem"
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string",
+                          "description": "The data type, given as a string. For example: `INT`, `STRING`, `DECIMAL(10,2)`. If no type is given the type is assumed to be `STRING`. Complex types, such as `ARRAY`, `MAP`, and `STRUCT` are not supported. For valid types, refer to the section [Data types] of the SQL language reference. [Data types]: https://docs.databricks.com/sql/language-manual/functions/cast.html"
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "The value to substitute, represented as a string. If omitted, the value is interpreted as NULL."
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ]
                     },
                     "description": "A list of parameters to pass into a SQL statement containing parameter markers. A parameter consists of a name, a value, and optionally a type. To represent a NULL value, the `value` field may be omitted or set to `null` explicitly. If the `type` field is omitted, the value is interpreted as a string. If the type is given, parameters will be checked for type correctness according to the given type. A value is correct if the provided string can be converted to the requested type using the `cast` function. The exact semantics are described in the section [`cast` function] of the SQL language reference. For example, the following statement contains two parameters, `my_name` and `my_date`: ``` SELECT * FROM my_table WHERE name = :my_name AND date = :my_date ``` The parameters can be passed in the request body as follows: ` { ..., \"statement\": \"SELECT * FROM my_table WHERE name = :my_name AND date = :my_date\", \"parameters\": [ { \"name\": \"my_name\", \"value\": \"the name\" }, { \"name\": \"my_date\", \"value\": \"2020-01-01\", \"type\": \"DATE\" } ] } ` Currently, positional parameters denoted by a `?` marker are not supported by the Databricks SQL Statement Execution API. Also see the section [Parameter markers] of the SQL language reference. [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html"
                   },
                   "query_tags": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/QueryTag"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "key"
+                      ],
+                      "description": "* A query execution can be annotated with an optional key-value pair to allow users to attribute\n    the executions by key and optional value to filter by. QueryTag is the user-facing\n    representation."
                     },
                     "description": "An array of query tags to annotate a SQL statement. A query tag consists of a non-empty key and, optionally, a value. To represent a NULL value, either omit the `value` field or manually set it to `null` or white space. Refer to the SQL language reference for the format specification of query tags. There's no significance to the order of tags. Only one value per key will be recorded. A sequence in excess of 20 query tags will be coerced to 20. Example: { ..., \"query_tags\": [ { \"key\": \"team\", \"value\": \"eng\" }, { \"key\": \"some key only tag\" } ] }"
                   },
@@ -3255,7 +4947,22 @@
                     "description": "The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it is automatically stopped. Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop. Defaults to 120 mins"
                   },
                   "channel": {
-                    "$ref": "#/components/schemas/Channel",
+                    "type": "object",
+                    "properties": {
+                      "dbsql_version": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string",
+                        "x-enum": [
+                          "CHANNEL_NAME_CURRENT",
+                          "CHANNEL_NAME_CUSTOM",
+                          "CHANNEL_NAME_PREVIEW",
+                          "CHANNEL_NAME_PREVIOUS"
+                        ],
+                        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                      }
+                    },
                     "description": "Channel Details"
                   },
                   "cluster_size": {
@@ -3291,15 +4998,41 @@
                     "description": "Logical name for the cluster. Supported values: - Must be unique within an org. - Must be less than 100 characters."
                   },
                   "spot_instance_policy": {
-                    "$ref": "#/components/schemas/SpotInstancePolicy",
+                    "type": "string",
+                    "x-enum": [
+                      "COST_OPTIMIZED",
+                      "POLICY_UNSPECIFIED",
+                      "RELIABILITY_OPTIMIZED"
+                    ],
                     "description": "Configurations whether the endpoint should use spot instances."
                   },
                   "tags": {
-                    "$ref": "#/components/schemas/EndpointTags",
+                    "type": "object",
+                    "properties": {
+                      "custom_tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "description": "A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated with this SQL warehouse. Supported values: - Number of tags < 45."
                   },
                   "warehouse_type": {
-                    "$ref": "#/components/schemas/CreateWarehouseRequestWarehouseType",
+                    "type": "string",
+                    "x-enum": [
+                      "CLASSIC",
+                      "PRO",
+                      "TYPE_UNSPECIFIED"
+                    ],
                     "description": "Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and also set the field `enable_serverless_compute` to `true`."
                   }
                 }
@@ -3436,7 +5169,32 @@
                 "type": "object",
                 "properties": {
                   "default_warehouse_override": {
-                    "$ref": "#/components/schemas/DefaultWarehouseOverride",
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "x-enum": [
+                          "CUSTOM",
+                          "LAST_SELECTED"
+                        ],
+                        "description": "The type of override behavior."
+                      },
+                      "default_warehouse_override_id": {
+                        "type": "string",
+                        "description": "The ID component of the resource name (user ID)."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "The resource name of the default warehouse override. Format: default-warehouse-overrides/{default_warehouse_override_id}"
+                      },
+                      "warehouse_id": {
+                        "type": "string",
+                        "description": "The specific warehouse ID when type is CUSTOM. Not set for LAST_SELECTED type."
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
                     "description": "Required. The default warehouse override to create."
                   }
                 },
@@ -3777,7 +5535,32 @@
                 "type": "object",
                 "properties": {
                   "default_warehouse_override": {
-                    "$ref": "#/components/schemas/DefaultWarehouseOverride",
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "x-enum": [
+                          "CUSTOM",
+                          "LAST_SELECTED"
+                        ],
+                        "description": "The type of override behavior."
+                      },
+                      "default_warehouse_override_id": {
+                        "type": "string",
+                        "description": "The ID component of the resource name (user ID)."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "The resource name of the default warehouse override. Format: default-warehouse-overrides/{default_warehouse_override_id}"
+                      },
+                      "warehouse_id": {
+                        "type": "string",
+                        "description": "The specific warehouse ID when type is CUSTOM. Not set for LAST_SELECTED type."
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
                     "description": "Required. The default warehouse override to update. The name field must be set in the format: default-warehouse-overrides/{default_warehouse_override_id} The default_warehouse_override_id can be a numeric user ID or the literal string \"me\" for the current user."
                   }
                 },
@@ -3852,7 +5635,22 @@
                     "description": "The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it is automatically stopped. Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop. Defaults to 120 mins"
                   },
                   "channel": {
-                    "$ref": "#/components/schemas/Channel",
+                    "type": "object",
+                    "properties": {
+                      "dbsql_version": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string",
+                        "x-enum": [
+                          "CHANNEL_NAME_CURRENT",
+                          "CHANNEL_NAME_CUSTOM",
+                          "CHANNEL_NAME_PREVIEW",
+                          "CHANNEL_NAME_PREVIOUS"
+                        ],
+                        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                      }
+                    },
                     "description": "Channel Details"
                   },
                   "cluster_size": {
@@ -3888,15 +5686,41 @@
                     "description": "Logical name for the cluster. Supported values: - Must be unique within an org. - Must be less than 100 characters."
                   },
                   "spot_instance_policy": {
-                    "$ref": "#/components/schemas/SpotInstancePolicy",
+                    "type": "string",
+                    "x-enum": [
+                      "COST_OPTIMIZED",
+                      "POLICY_UNSPECIFIED",
+                      "RELIABILITY_OPTIMIZED"
+                    ],
                     "description": "Configurations whether the endpoint should use spot instances."
                   },
                   "tags": {
-                    "$ref": "#/components/schemas/EndpointTags",
+                    "type": "object",
+                    "properties": {
+                      "custom_tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "description": "A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated with this SQL warehouse. Supported values: - Number of tags < 45."
                   },
                   "warehouse_type": {
-                    "$ref": "#/components/schemas/EditWarehouseRequestWarehouseType",
+                    "type": "string",
+                    "x-enum": [
+                      "CLASSIC",
+                      "PRO",
+                      "TYPE_UNSPECIFIED"
+                    ],
                     "description": "Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and also set the field `enable_serverless_compute` to `true`."
                   }
                 }
@@ -4070,7 +5894,31 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/WarehouseAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_MANAGE",
+                            "CAN_MONITOR",
+                            "CAN_USE",
+                            "CAN_VIEW",
+                            "IS_OWNER"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`WarehousePermissions`"
                   }
@@ -4139,7 +5987,31 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/WarehouseAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_MANAGE",
+                            "CAN_MONITOR",
+                            "CAN_USE",
+                            "CAN_VIEW",
+                            "IS_OWNER"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`WarehousePermissions`"
                   }
@@ -4237,17 +6109,70 @@
                 "type": "object",
                 "properties": {
                   "channel": {
-                    "$ref": "#/components/schemas/Channel",
+                    "type": "object",
+                    "properties": {
+                      "dbsql_version": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string",
+                        "x-enum": [
+                          "CHANNEL_NAME_CURRENT",
+                          "CHANNEL_NAME_CUSTOM",
+                          "CHANNEL_NAME_PREVIEW",
+                          "CHANNEL_NAME_PREVIOUS"
+                        ],
+                        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                      }
+                    },
                     "description": "Optional: Channel selection details"
                   },
                   "config_param": {
-                    "$ref": "#/components/schemas/RepeatedEndpointConfPairs",
+                    "type": "object",
+                    "properties": {
+                      "config_pair": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "configuration_pairs": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "description": "Deprecated: Use sql_configuration_parameters"
                   },
                   "data_access_config": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/EndpointConfPair"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K"
                   },
@@ -4258,12 +6183,58 @@
                   "enabled_warehouse_types": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/WarehouseTypePair"
+                      "type": "object",
+                      "properties": {
+                        "enabled": {
+                          "type": "boolean",
+                          "description": "If set to false the specific warehouse type will not be be allowed as a value for warehouse_type in CreateWarehouse and EditWarehouse"
+                        },
+                        "warehouse_type": {
+                          "type": "string",
+                          "x-enum": [
+                            "CLASSIC",
+                            "PRO",
+                            "TYPE_UNSPECIFIED"
+                          ],
+                          "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                        }
+                      },
+                      "description": "* Configuration values to enable or disable the access to specific warehouse types in the\n    workspace."
                     },
                     "description": "List of Warehouse Types allowed in this workspace (limits allowed value of the type field in CreateWarehouse and EditWarehouse). Note: Some types cannot be disabled, they don't need to be specified in SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses to be converted to another type. Used by frontend to save specific type availability in the warehouse create and edit form UI."
                   },
                   "global_param": {
-                    "$ref": "#/components/schemas/RepeatedEndpointConfPairs",
+                    "type": "object",
+                    "properties": {
+                      "config_pair": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "configuration_pairs": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "description": "Deprecated: Use sql_configuration_parameters"
                   },
                   "google_service_account": {
@@ -4275,11 +6246,46 @@
                     "description": "AWS Only: The instance profile used to pass an IAM role to the SQL warehouses. This configuration is also applied to the workspace's serverless compute for notebooks and jobs."
                   },
                   "security_policy": {
-                    "$ref": "#/components/schemas/SetWorkspaceWarehouseConfigRequestSecurityPolicy",
+                    "type": "string",
+                    "x-enum": [
+                      "DATA_ACCESS_CONTROL",
+                      "NONE",
+                      "PASSTHROUGH"
+                    ],
                     "description": "Security policy for warehouses"
                   },
                   "sql_configuration_parameters": {
-                    "$ref": "#/components/schemas/RepeatedEndpointConfPairs",
+                    "type": "object",
+                    "properties": {
+                      "config_pair": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "configuration_pairs": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "description": "SQL configuration parameters"
                   }
                 }

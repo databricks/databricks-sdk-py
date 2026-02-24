@@ -109,35 +109,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets a tag assignment for an Unity Catalog entity by tag key.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List tag assignments for an Unity Catalog entity</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-tag_assignment"><code>tag_assignment</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-tag_assignment"><code>tag_assignment</code></a></td>
     <td></td>
     <td>Creates a tag assignment for an Unity Catalog entity.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-tag_assignment"><code>tag_assignment</code></a></td>
+    <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-tag_assignment"><code>tag_assignment</code></a></td>
     <td></td>
     <td>Updates an existing tag assignment for an Unity Catalog entity.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes a tag assignment for an Unity Catalog entity by its key.</td>
 </tr>
@@ -157,11 +157,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-entity_name">
     <td><CopyableCode code="entity_name" /></td>
     <td><code>string</code></td>
@@ -182,9 +177,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td></td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Optional. Maximum number of tag assignments to return in a single page</td>
 </tr>
 <tr id="parameter-page_token">
@@ -218,7 +218,7 @@ FROM databricks_workspace.catalog.entity_tag_assignments
 WHERE entity_type = '{{ entity_type }}' -- required
 AND entity_name = '{{ entity_name }}' -- required
 AND tag_key = '{{ tag_key }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -235,7 +235,7 @@ tag_value
 FROM databricks_workspace.catalog.entity_tag_assignments
 WHERE entity_type = '{{ entity_type }}' -- required
 AND entity_name = '{{ entity_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -260,11 +260,11 @@ Creates a tag assignment for an Unity Catalog entity.
 ```sql
 INSERT INTO databricks_workspace.catalog.entity_tag_assignments (
 tag_assignment,
-deployment_name
+workspace
 )
 SELECT 
 '{{ tag_assignment }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 entity_name,
 entity_type,
@@ -279,13 +279,30 @@ tag_value
 # Description fields are for documentation purposes
 - name: entity_tag_assignments
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the entity_tag_assignments resource.
     - name: tag_assignment
-      value: string
+      value: object
       description: |
         :returns: :class:`EntityTagAssignment`
+      props:
+      - name: entity_name
+        value: string
+        description: |
+          The fully qualified name of the entity to which the tag is assigned
+      - name: tag_key
+        value: string
+        description: |
+          The key of the tag
+      - name: entity_type
+        value: string
+        description: |
+          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables, columns, volumes.
+      - name: tag_value
+        value: string
+        description: |
+          The value of the tag
 ```
 </TabItem>
 </Tabs>
@@ -312,7 +329,7 @@ entity_type = '{{ entity_type }}' --required
 AND entity_name = '{{ entity_name }}' --required
 AND tag_key = '{{ tag_key }}' --required
 AND update_mask = '{{ update_mask }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND tag_assignment = '{{ tag_assignment }}' --required
 RETURNING
 entity_name,
@@ -341,7 +358,7 @@ DELETE FROM databricks_workspace.catalog.entity_tag_assignments
 WHERE entity_type = '{{ entity_type }}' --required
 AND entity_name = '{{ entity_name }}' --required
 AND tag_key = '{{ tag_key }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

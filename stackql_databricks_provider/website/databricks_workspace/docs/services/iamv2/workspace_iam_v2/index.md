@@ -98,28 +98,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get_workspace_access_detail_local"><CopyableCode code="get_workspace_access_detail_local" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-principal_id"><code>principal_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-principal_id"><code>principal_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-view"><code>view</code></a></td>
     <td>Returns the access details for a principal in the current workspace. Allows for checking access</td>
 </tr>
 <tr>
     <td><a href="#resolve_group_proxy"><CopyableCode code="resolve_group_proxy" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-external_id"><code>external_id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-external_id"><code>external_id</code></a></td>
     <td></td>
     <td>Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it</td>
 </tr>
 <tr>
     <td><a href="#resolve_service_principal_proxy"><CopyableCode code="resolve_service_principal_proxy" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-external_id"><code>external_id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-external_id"><code>external_id</code></a></td>
     <td></td>
     <td>Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will</td>
 </tr>
 <tr>
     <td><a href="#resolve_user_proxy"><CopyableCode code="resolve_user_proxy" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-external_id"><code>external_id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-external_id"><code>external_id</code></a></td>
     <td></td>
     <td>Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it</td>
 </tr>
@@ -139,15 +139,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-principal_id">
     <td><CopyableCode code="principal_id" /></td>
     <td><code>integer</code></td>
     <td>Required. The internal ID of the principal (user/sp/group) for which the access details are being requested.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-view">
     <td><CopyableCode code="view" /></td>
@@ -180,7 +180,7 @@ principal_type,
 status
 FROM databricks_workspace.iamv2.workspace_iam_v2
 WHERE principal_id = '{{ principal_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND view = '{{ view }}'
 ;
 ```
@@ -204,7 +204,7 @@ Resolves a group with the given external ID from the customer's IdP. If the grou
 
 ```sql
 EXEC databricks_workspace.iamv2.workspace_iam_v2.resolve_group_proxy 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "external_id": "{{ external_id }}"
@@ -218,7 +218,7 @@ Resolves an SP with the given external ID from the customer's IdP. If the SP doe
 
 ```sql
 EXEC databricks_workspace.iamv2.workspace_iam_v2.resolve_service_principal_proxy 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "external_id": "{{ external_id }}"
@@ -232,7 +232,7 @@ Resolves a user with the given external ID from the customer's IdP. If the user 
 
 ```sql
 EXEC databricks_workspace.iamv2.workspace_iam_v2.resolve_user_proxy 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "external_id": "{{ external_id }}"

@@ -759,35 +759,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a></td>
     <td>Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List functions within the specified parent catalog and schema. If the user is a metastore admin, all</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-function_info"><code>function_info</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-function_info"><code>function_info</code></a></td>
     <td></td>
     <td>**WARNING: This API is experimental and will change in future versions**</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates the function that matches the supplied name. Only the owner of the function can be updated. If</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
     <td>Deletes the function that matches the supplied name. For the deletion to succeed, the user must</td>
 </tr>
@@ -812,11 +812,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Name of parent catalog for functions of interest.</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
@@ -827,19 +822,24 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Parent schema of functions.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-force">
     <td><CopyableCode code="force" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Force deletion even if the function is notempty.</td>
 </tr>
 <tr id="parameter-include_browse">
     <td><CopyableCode code="include_browse" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Whether to include functions in the response for which the principal can only access selective metadata for</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of functions to return. If not set, all the functions are returned (not recommended). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to 0, the page length is set to a server configured value (recommended); - when set to a value less than 0, an invalid parameter error is returned;</td>
 </tr>
 <tr id="parameter-page_token">
@@ -897,7 +897,7 @@ updated_at,
 updated_by
 FROM databricks_workspace.catalog.functions
 WHERE name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND include_browse = '{{ include_browse }}'
 ;
 ```
@@ -941,7 +941,7 @@ updated_by
 FROM databricks_workspace.catalog.functions
 WHERE catalog_name = '{{ catalog_name }}' -- required
 AND schema_name = '{{ schema_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND include_browse = '{{ include_browse }}'
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
@@ -967,11 +967,11 @@ AND page_token = '{{ page_token }}'
 ```sql
 INSERT INTO databricks_workspace.catalog.functions (
 function_info,
-deployment_name
+workspace
 )
 SELECT 
 '{{ function_info }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 name,
 function_id,
@@ -1012,13 +1012,238 @@ updated_by
 # Description fields are for documentation purposes
 - name: functions
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the functions resource.
     - name: function_info
-      value: string
+      value: object
       description: |
         Partial __FunctionInfo__ specifying the function to be created.
+      props:
+      - name: name
+        value: string
+      - name: catalog_name
+        value: string
+        description: |
+          Name of parent Catalog.
+      - name: schema_name
+        value: string
+        description: |
+          Name of parent Schema relative to its parent Catalog.
+      - name: input_params
+        value: object
+        description: |
+          Function input parameters.
+        props:
+        - name: parameters
+          value: array
+          props:
+          - name: name
+            value: string
+          - name: type_text
+            value: string
+            description: |
+              Full data type spec, SQL/catalogString text.
+          - name: type_name
+            value: string
+            description: |
+              Name of type (INT, STRUCT, MAP, etc.)
+          - name: position
+            value: integer
+            description: |
+              Ordinal position of column (starting at position 0).
+          - name: comment
+            value: string
+            description: |
+              User-provided free-form text description.
+          - name: parameter_default
+            value: string
+            description: |
+              Default value of the parameter.
+          - name: parameter_mode
+            value: string
+            description: |
+              Function parameter mode.
+          - name: parameter_type
+            value: string
+            description: |
+              Function parameter type.
+          - name: type_interval_type
+            value: string
+            description: |
+              Format of IntervalType.
+          - name: type_json
+            value: string
+            description: |
+              Full data type spec, JSON-serialized.
+          - name: type_precision
+            value: integer
+            description: |
+              Digits of precision; required on Create for DecimalTypes.
+          - name: type_scale
+            value: integer
+            description: |
+              Digits to right of decimal; Required on Create for DecimalTypes.
+      - name: data_type
+        value: string
+        description: |
+          Scalar function return data type.
+      - name: full_data_type
+        value: string
+        description: |
+          Pretty printed function data type.
+      - name: routine_body
+        value: string
+        description: |
+          Function language. When **EXTERNAL** is used, the language of the routine function should be specified in the **external_language** field, and the **return_params** of the function cannot be used (as **TABLE** return type is not supported), and the **sql_data_access** field must be **NO_SQL**.
+      - name: routine_definition
+        value: string
+        description: |
+          Function body.
+      - name: parameter_style
+        value: string
+        description: |
+          Function parameter style. **S** is the value for SQL.
+      - name: is_deterministic
+        value: boolean
+        description: |
+          Whether the function is deterministic.
+      - name: sql_data_access
+        value: string
+        description: |
+          Function SQL data access.
+      - name: is_null_call
+        value: boolean
+        description: |
+          Function null call.
+      - name: security_type
+        value: string
+        description: |
+          Function security type.
+      - name: specific_name
+        value: string
+        description: |
+          Specific name of the function; Reserved for future use.
+      - name: comment
+        value: string
+        description: |
+          User-provided free-form text description.
+      - name: external_language
+        value: string
+        description: |
+          External function language.
+      - name: external_name
+        value: string
+        description: |
+          External function name.
+      - name: properties
+        value: string
+        description: |
+          JSON-serialized key-value pair map, encoded (escaped) as a string.
+      - name: return_params
+        value: object
+        description: |
+          Table function return parameters.
+        props:
+        - name: parameters
+          value: array
+          props:
+          - name: name
+            value: string
+          - name: type_text
+            value: string
+            description: |
+              Full data type spec, SQL/catalogString text.
+          - name: type_name
+            value: string
+            description: |
+              Name of type (INT, STRUCT, MAP, etc.)
+          - name: position
+            value: integer
+            description: |
+              Ordinal position of column (starting at position 0).
+          - name: comment
+            value: string
+            description: |
+              User-provided free-form text description.
+          - name: parameter_default
+            value: string
+            description: |
+              Default value of the parameter.
+          - name: parameter_mode
+            value: string
+            description: |
+              Function parameter mode.
+          - name: parameter_type
+            value: string
+            description: |
+              Function parameter type.
+          - name: type_interval_type
+            value: string
+            description: |
+              Format of IntervalType.
+          - name: type_json
+            value: string
+            description: |
+              Full data type spec, JSON-serialized.
+          - name: type_precision
+            value: integer
+            description: |
+              Digits of precision; required on Create for DecimalTypes.
+          - name: type_scale
+            value: integer
+            description: |
+              Digits to right of decimal; Required on Create for DecimalTypes.
+      - name: routine_dependencies
+        value: object
+        description: |
+          function dependencies.
+        props:
+        - name: dependencies
+          value: array
+          description: |
+            Array of dependencies.
+          props:
+          - name: connection
+            value: object
+            description: |
+              A connection that is dependent on a SQL object.
+            props:
+            - name: connection_name
+              value: string
+              description: |
+                Full name of the dependent connection, in the form of __connection_name__.
+          - name: credential
+            value: object
+            description: |
+              A credential that is dependent on a SQL object.
+            props:
+            - name: credential_name
+              value: string
+              description: |
+                Full name of the dependent credential, in the form of __credential_name__.
+          - name: function
+            value: object
+            description: |
+              A function that is dependent on a SQL object.
+            props:
+            - name: function_full_name
+              value: string
+              description: |
+                Full name of the dependent function, in the form of __catalog_name__.__schema_name__.__function_name__.
+          - name: table
+            value: object
+            description: |
+              A table that is dependent on a SQL object.
+            props:
+            - name: table_full_name
+              value: string
+              description: |
+                Full name of the dependent table, in the form of __catalog_name__.__schema_name__.__table_name__.
+      - name: sql_path
+        value: string
+        description: |
+          List of schemes whose objects can be referenced without qualification.
 ```
 </TabItem>
 </Tabs>
@@ -1042,7 +1267,7 @@ SET
 owner = '{{ owner }}'
 WHERE 
 name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 name,
 function_id,
@@ -1094,7 +1319,7 @@ Deletes the function that matches the supplied name. For the deletion to succeed
 ```sql
 DELETE FROM databricks_workspace.catalog.functions
 WHERE name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND force = '{{ force }}'
 ;
 ```

@@ -90,21 +90,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-include_all"><code>include_all</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Get a list of conversations in a Genie Space.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Delete a conversation.</td>
 </tr>
 <tr>
     <td><a href="#start"><CopyableCode code="start" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-content"><code>content</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-content"><code>content</code></a></td>
     <td></td>
     <td>Start a new conversation.</td>
 </tr>
@@ -129,24 +129,24 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The ID of the conversation to delete.</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-space_id">
     <td><CopyableCode code="space_id" /></td>
     <td><code>string</code></td>
     <td>The ID associated with the Genie space where you want to start a conversation.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-include_all">
     <td><CopyableCode code="include_all" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Include all conversations in the space across all users. Requires at least CAN MANAGE permission on the space.</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of conversations to return per page</td>
 </tr>
 <tr id="parameter-page_token">
@@ -175,7 +175,7 @@ conversations,
 next_page_token
 FROM databricks_workspace.dashboards.genie_conversations
 WHERE space_id = '{{ space_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND include_all = '{{ include_all }}'
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
@@ -201,7 +201,7 @@ Delete a conversation.
 DELETE FROM databricks_workspace.dashboards.genie_conversations
 WHERE space_id = '{{ space_id }}' --required
 AND conversation_id = '{{ conversation_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -223,7 +223,7 @@ Start a new conversation.
 ```sql
 EXEC databricks_workspace.dashboards.genie_conversations.start 
 @space_id='{{ space_id }}' --required, 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "content": "{{ content }}"

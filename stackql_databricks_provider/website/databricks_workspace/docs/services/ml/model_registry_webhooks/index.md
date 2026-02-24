@@ -132,35 +132,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-events"><code>events</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-model_name"><code>model_name</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>**NOTE:** This endpoint is in Public Preview. Lists all registry webhooks.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-events"><code>events</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-events"><code>events</code></a></td>
     <td></td>
     <td>**NOTE:** This endpoint is in Public Preview. Creates a registry webhook.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-id"><code>id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
     <td>**NOTE:** This endpoint is in Public Preview. Updates a registry webhook.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>**NOTE:** This endpoint is in Public Preview. Deletes a registry webhook.</td>
 </tr>
 <tr>
     <td><a href="#test"><CopyableCode code="test" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-id"><code>id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
     <td>**NOTE:** This endpoint is in Public Preview. Tests a registry webhook.</td>
 </tr>
@@ -180,24 +180,24 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>Webhook ID required to delete a registry webhook.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-events">
     <td><CopyableCode code="events" /></td>
-    <td><code>string</code></td>
+    <td><code>array</code></td>
     <td>Events that trigger the webhook. * `MODEL_VERSION_CREATED`: A new model version was created for the associated model. * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed. * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned. * `COMMENT_CREATED`: A user wrote a comment on a registered model. * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be specified for a registry-wide webhook, which can be created by not specifying a model name in the create request. * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version. * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging. * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production. * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived. * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to staging. * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to production. * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived. If `events` is specified, any webhook with one or more of the specified trigger events is included in the output. If `events` is not specified, webhooks of all event types are included in the output.</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>:param model_name: str (optional) Registered model name If not specified, all webhooks associated with the specified events are listed, regardless of their associated model.</td>
 </tr>
 <tr id="parameter-model_name">
@@ -237,7 +237,7 @@ job_spec,
 last_updated_timestamp,
 status
 FROM databricks_workspace.ml.model_registry_webhooks
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND events = '{{ events }}'
 AND max_results = '{{ max_results }}'
 AND model_name = '{{ model_name }}'
@@ -269,7 +269,7 @@ http_url_spec,
 job_spec,
 model_name,
 status,
-deployment_name
+workspace
 )
 SELECT 
 '{{ events }}' /* required */,
@@ -278,7 +278,7 @@ SELECT
 '{{ job_spec }}',
 '{{ model_name }}',
 '{{ status }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 webhook
 ;
@@ -290,25 +290,53 @@ webhook
 # Description fields are for documentation purposes
 - name: model_registry_webhooks
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the model_registry_webhooks resource.
     - name: events
-      value: string
+      value: array
       description: |
         Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was created for the associated model. * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed. * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned. * `COMMENT_CREATED`: A user wrote a comment on a registered model. * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be specified for a registry-wide webhook, which can be created by not specifying a model name in the create request. * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version. * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging. * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production. * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived. * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to staging. * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to production. * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
+      items:
+        type: string
     - name: description
       value: string
       description: |
         User-specified description for the webhook.
     - name: http_url_spec
-      value: string
+      value: object
       description: |
         External HTTPS URL called on event trigger (by using a POST request).
+      props:
+      - name: url
+        value: string
+      - name: authorization
+        value: string
+        description: |
+          Value of the authorization header that should be sent in the request sent by the wehbook. It should be of the form `"<auth type> <credentials>"`. If set to an empty string, no authorization header will be included in the request.
+      - name: enable_ssl_verification
+        value: boolean
+        description: |
+          Enable/disable SSL certificate validation. Default is true. For self-signed certificates, this field must be false AND the destination server must disable certificate validation as well. For security purposes, it is encouraged to perform secret validation with the HMAC-encoded portion of the payload and acknowledge the risk associated with disabling hostname validation whereby it becomes more likely that requests can be maliciously routed to an unintended host.
+      - name: secret
+        value: string
+        description: |
+          Shared secret required for HMAC encoding payload. The HMAC-encoded payload will be sent in the header as: { "X-Databricks-Signature": $encoded_payload }.
     - name: job_spec
-      value: string
+      value: object
       description: |
         ID of the job that the webhook runs.
+      props:
+      - name: job_id
+        value: string
+      - name: access_token
+        value: string
+        description: |
+          The personal access token used to authorize webhook's job runs.
+      - name: workspace_url
+        value: string
+        description: |
+          URL of the workspace containing the job that this webhook runs. If not specified, the job’s workspace URL is assumed to be the same as the workspace where the webhook is created.
     - name: model_name
       value: string
       description: |
@@ -344,7 +372,7 @@ http_url_spec = '{{ http_url_spec }}',
 job_spec = '{{ job_spec }}',
 status = '{{ status }}'
 WHERE 
-deployment_name = '{{ deployment_name }}' --required
+workspace = '{{ workspace }}' --required
 AND id = '{{ id }}' --required
 RETURNING
 webhook;
@@ -369,7 +397,7 @@ webhook;
 ```sql
 EXEC databricks_workspace.ml.model_registry_webhooks.delete 
 @id='{{ id }}' --required, 
-@deployment_name='{{ deployment_name }}' --required
+@workspace='{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -379,7 +407,7 @@ EXEC databricks_workspace.ml.model_registry_webhooks.delete
 
 ```sql
 EXEC databricks_workspace.ml.model_registry_webhooks.test 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "id": "{{ id }}", 

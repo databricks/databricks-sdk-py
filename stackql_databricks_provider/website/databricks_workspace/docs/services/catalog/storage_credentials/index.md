@@ -185,7 +185,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
   },
   {
     "name": "owner",
@@ -360,7 +360,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
   },
   {
     "name": "owner",
@@ -409,42 +409,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-include_unbound"><code>include_unbound</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates a new storage credential.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates a storage credential on the metastore.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
     <td>Deletes a storage credential from the metastore. The caller must be an owner of the storage</td>
 </tr>
 <tr>
     <td><a href="#validate"><CopyableCode code="validate" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Validates a storage credential. At least one of __external_location_name__ and __url__ need to be</td>
 </tr>
@@ -464,29 +464,29 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Name of the storage credential.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-force">
     <td><CopyableCode code="force" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Force an update even if there are dependent external locations or external tables (when purpose is **STORAGE**) or dependent services (when purpose is **SERVICE**).</td>
 </tr>
 <tr id="parameter-include_unbound">
     <td><CopyableCode code="include_unbound" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Whether to include credentials not bound to the workspace. Effective only if the user has permission to update the credential–workspace binding.</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of storage credentials to return. If not set, all the storage credentials are returned (not recommended). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to 0, the page length is set to a server configured value (recommended); - when set to a value less than 0, an invalid parameter error is returned;</td>
 </tr>
 <tr id="parameter-page_token">
@@ -532,7 +532,7 @@ updated_by,
 used_for_managed_storage
 FROM databricks_workspace.catalog.storage_credentials
 WHERE name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -561,7 +561,7 @@ updated_at,
 updated_by,
 used_for_managed_storage
 FROM databricks_workspace.catalog.storage_credentials
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND include_unbound = '{{ include_unbound }}'
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
@@ -595,7 +595,7 @@ comment,
 databricks_gcp_service_account,
 read_only,
 skip_validation,
-deployment_name
+workspace
 )
 SELECT 
 '{{ name }}' /* required */,
@@ -605,9 +605,9 @@ SELECT
 '{{ cloudflare_api_token }}',
 '{{ comment }}',
 '{{ databricks_gcp_service_account }}',
-'{{ read_only }}',
-'{{ skip_validation }}',
-'{{ deployment_name }}'
+{{ read_only }},
+{{ skip_validation }},
+'{{ workspace }}'
 RETURNING
 id,
 name,
@@ -636,7 +636,7 @@ used_for_managed_storage
 # Description fields are for documentation purposes
 - name: storage_credentials
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the storage_credentials resource.
     - name: name
@@ -644,35 +644,75 @@ used_for_managed_storage
       description: |
         The credential name. The name must be unique among storage and service credentials within the metastore.
     - name: aws_iam_role
-      value: string
+      value: object
       description: |
         The AWS IAM role configuration.
+      props:
+      - name: role_arn
+        value: string
+        description: |
+          The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials.
     - name: azure_managed_identity
-      value: string
+      value: object
       description: |
         The Azure managed identity configuration.
+      props:
+      - name: access_connector_id
+        value: string
+        description: |
+          The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+      - name: managed_identity_id
+        value: string
+        description: |
+          The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}` This is only available for user-assgined identities. For system-assigned identities, the access_connector_id is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity is using the system-assigned identity.
     - name: azure_service_principal
-      value: string
+      value: object
       description: |
         The Azure service principal configuration.
+      props:
+      - name: directory_id
+        value: string
+        description: |
+          The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application.
+      - name: application_id
+        value: string
+        description: |
+          The application ID of the application registration within the referenced AAD tenant.
+      - name: client_secret
+        value: string
+        description: |
+          The client secret generated for the above app ID in AAD.
     - name: cloudflare_api_token
-      value: string
+      value: object
       description: |
         The Cloudflare API token configuration.
+      props:
+      - name: access_key_id
+        value: string
+        description: |
+          The access key ID associated with the API token.
+      - name: secret_access_key
+        value: string
+        description: |
+          The secret access token generated for the above access key ID.
+      - name: account_id
+        value: string
+        description: |
+          The ID of the account associated with the API token.
     - name: comment
       value: string
       description: |
         Comment associated with the credential.
     - name: databricks_gcp_service_account
-      value: string
+      value: object
       description: |
         The Databricks managed GCP service account configuration.
     - name: read_only
-      value: string
+      value: boolean
       description: |
         Whether the credential is usable only for read operations. Only applicable when purpose is **STORAGE**.
     - name: skip_validation
-      value: string
+      value: boolean
       description: |
         Supplying true to this argument skips validation of the created credential.
 ```
@@ -701,15 +741,15 @@ azure_service_principal = '{{ azure_service_principal }}',
 cloudflare_api_token = '{{ cloudflare_api_token }}',
 comment = '{{ comment }}',
 databricks_gcp_service_account = '{{ databricks_gcp_service_account }}',
-force = '{{ force }}',
+force = {{ force }},
 isolation_mode = '{{ isolation_mode }}',
 new_name = '{{ new_name }}',
 owner = '{{ owner }}',
-read_only = '{{ read_only }}',
-skip_validation = '{{ skip_validation }}'
+read_only = {{ read_only }},
+skip_validation = {{ skip_validation }}
 WHERE 
 name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 id,
 name,
@@ -749,7 +789,7 @@ Deletes a storage credential from the metastore. The caller must be an owner of 
 ```sql
 DELETE FROM databricks_workspace.catalog.storage_credentials
 WHERE name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND force = '{{ force }}'
 ;
 ```
@@ -771,7 +811,7 @@ Validates a storage credential. At least one of __external_location_name__ and _
 
 ```sql
 EXEC databricks_workspace.catalog.storage_credentials.validate 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "aws_iam_role": "{{ aws_iam_role }}", 
@@ -780,7 +820,7 @@ EXEC databricks_workspace.catalog.storage_credentials.validate
 "cloudflare_api_token": "{{ cloudflare_api_token }}", 
 "databricks_gcp_service_account": "{{ databricks_gcp_service_account }}", 
 "external_location_name": "{{ external_location_name }}", 
-"read_only": "{{ read_only }}", 
+"read_only": {{ read_only }}, 
 "storage_credential_name": "{{ storage_credential_name }}", 
 "url": "{{ url }}"
 }'

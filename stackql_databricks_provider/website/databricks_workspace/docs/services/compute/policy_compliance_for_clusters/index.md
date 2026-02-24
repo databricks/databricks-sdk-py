@@ -94,21 +94,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Returns the policy compliance status of a cluster. Clusters could be out of compliance if their policy</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-policy_id"><code>policy_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-policy_id"><code>policy_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Returns the policy compliance status of all clusters that use a given policy. Clusters could be out of</td>
 </tr>
 <tr>
     <td><a href="#enforce"><CopyableCode code="enforce" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
     <td></td>
     <td>Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if</td>
 </tr>
@@ -133,19 +133,19 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The ID of the cluster to get the compliance status</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-policy_id">
     <td><CopyableCode code="policy_id" /></td>
     <td><code>string</code></td>
     <td>Canonical unique identifier for the cluster policy.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Use this field to specify the maximum number of results to be returned by the server. The server may further constrain the maximum number of results returned in a single page.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -175,7 +175,7 @@ is_compliant,
 violations
 FROM databricks_workspace.compute.policy_compliance_for_clusters
 WHERE cluster_id = '{{ cluster_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -190,7 +190,7 @@ is_compliant,
 violations
 FROM databricks_workspace.compute.policy_compliance_for_clusters
 WHERE policy_id = '{{ policy_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -216,12 +216,12 @@ Updates a cluster to be compliant with the current version of its policy. A clus
 INSERT INTO databricks_workspace.compute.policy_compliance_for_clusters (
 cluster_id,
 validate_only,
-deployment_name
+workspace
 )
 SELECT 
 '{{ cluster_id }}' /* required */,
-'{{ validate_only }}',
-'{{ deployment_name }}'
+{{ validate_only }},
+'{{ workspace }}'
 RETURNING
 changes,
 has_changes
@@ -234,7 +234,7 @@ has_changes
 # Description fields are for documentation purposes
 - name: policy_compliance_for_clusters
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the policy_compliance_for_clusters resource.
     - name: cluster_id
@@ -242,7 +242,7 @@ has_changes
       description: |
         The ID of the cluster you want to enforce policy compliance on.
     - name: validate_only
-      value: string
+      value: boolean
       description: |
         If set, previews the changes that would be made to a cluster to enforce compliance but does not update the cluster.
 ```

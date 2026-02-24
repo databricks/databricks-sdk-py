@@ -259,35 +259,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>[DEPRECATED] Read a quality monitor on UC object. Use Data Quality Monitoring API instead.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>[DEPRECATED] (Unimplemented) List quality monitors. Use Data Quality Monitoring API instead.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-quality_monitor"><code>quality_monitor</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-quality_monitor"><code>quality_monitor</code></a></td>
     <td></td>
     <td>[DEPRECATED] Create a quality monitor on UC object. Use Data Quality Monitoring API instead.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-quality_monitor"><code>quality_monitor</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-quality_monitor"><code>quality_monitor</code></a></td>
     <td></td>
     <td>[DEPRECATED] (Unimplemented) Update a quality monitor on UC object. Use Data Quality Monitoring API</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>[DEPRECATED] Delete a quality monitor on UC object. Use Data Quality Monitoring API instead.</td>
 </tr>
@@ -307,11 +307,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-object_id">
     <td><CopyableCode code="object_id" /></td>
     <td><code>string</code></td>
@@ -322,9 +317,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The type of the monitored object. Can be one of the following: schema.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>:param page_token: str (optional)</td>
 </tr>
 <tr id="parameter-page_token">
@@ -357,7 +357,7 @@ validity_check_configurations
 FROM databricks_workspace.qualitymonitorv2.quality_monitor_v2
 WHERE object_type = '{{ object_type }}' -- required
 AND object_id = '{{ object_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -372,7 +372,7 @@ anomaly_detection_config,
 object_type,
 validity_check_configurations
 FROM databricks_workspace.qualitymonitorv2.quality_monitor_v2
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -397,11 +397,11 @@ AND page_token = '{{ page_token }}'
 ```sql
 INSERT INTO databricks_workspace.qualitymonitorv2.quality_monitor_v2 (
 quality_monitor,
-deployment_name
+workspace
 )
 SELECT 
 '{{ quality_monitor }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 object_id,
 anomaly_detection_config,
@@ -416,13 +416,75 @@ validity_check_configurations
 # Description fields are for documentation purposes
 - name: quality_monitor_v2
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the quality_monitor_v2 resource.
     - name: quality_monitor
-      value: string
+      value: object
       description: |
         :returns: :class:`QualityMonitor`
+      props:
+      - name: object_type
+        value: string
+      - name: object_id
+        value: string
+        description: |
+          The uuid of the request object. For example, schema id.
+      - name: anomaly_detection_config
+        value: object
+        props:
+        - name: excluded_table_full_names
+          value: array
+          items:
+            type: string
+        - name: last_run_id
+          value: string
+          description: |
+            Run id of the last run of the workflow
+        - name: latest_run_status
+          value: string
+          description: |
+            The status of the last run of the workflow.
+      - name: validity_check_configurations
+        value: array
+        description: |
+          Validity check configurations for anomaly detection.
+        props:
+        - name: name
+          value: string
+        - name: percent_null_validity_check
+          value: object
+          props:
+          - name: column_names
+            value: array
+            items:
+              type: string
+          - name: upper_bound
+            value: number
+            description: |
+              Optional upper bound; we should use auto determined bounds for now
+        - name: range_validity_check
+          value: object
+          props:
+          - name: column_names
+            value: array
+            items:
+              type: string
+          - name: lower_bound
+            value: number
+            description: |
+              Lower bound for the range
+          - name: upper_bound
+            value: number
+            description: |
+              Upper bound for the range
+        - name: uniqueness_validity_check
+          value: object
+          props:
+          - name: column_names
+            value: array
+            items:
+              type: string
 ```
 </TabItem>
 </Tabs>
@@ -447,7 +509,7 @@ quality_monitor = '{{ quality_monitor }}'
 WHERE 
 object_type = '{{ object_type }}' --required
 AND object_id = '{{ object_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND quality_monitor = '{{ quality_monitor }}' --required
 RETURNING
 object_id,
@@ -475,7 +537,7 @@ validity_check_configurations;
 DELETE FROM databricks_workspace.qualitymonitorv2.quality_monitor_v2
 WHERE object_type = '{{ object_type }}' --required
 AND object_id = '{{ object_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

@@ -68,14 +68,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get_query_result"><CopyableCode code="get_query_result" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-attachment_id"><code>attachment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-attachment_id"><code>attachment_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get the result of SQL query if the message has a query attachment. This is only available if a message</td>
 </tr>
 <tr>
     <td><a href="#execute_attachment_query"><CopyableCode code="execute_attachment_query" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-attachment_id"><code>attachment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-attachment_id"><code>attachment_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Execute the SQL for a message query attachment. Use this API when the query attachment has expired and</td>
 </tr>
@@ -105,11 +105,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Conversation ID</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-message_id">
     <td><CopyableCode code="message_id" /></td>
     <td><code>string</code></td>
@@ -119,6 +114,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="space_id" /></td>
     <td><code>string</code></td>
     <td>Genie space ID</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -143,7 +143,7 @@ WHERE space_id = '{{ space_id }}' -- required
 AND conversation_id = '{{ conversation_id }}' -- required
 AND message_id = '{{ message_id }}' -- required
 AND attachment_id = '{{ attachment_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -168,7 +168,7 @@ EXEC databricks_workspace.dashboards.genie_message_attachments.execute_attachmen
 @conversation_id='{{ conversation_id }}' --required, 
 @message_id='{{ message_id }}' --required, 
 @attachment_id='{{ attachment_id }}' --required, 
-@deployment_name='{{ deployment_name }}' --required
+@workspace='{{ workspace }}' --required
 ;
 ```
 </TabItem>

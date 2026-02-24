@@ -230,63 +230,63 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get_by_name"><CopyableCode code="get_by_name" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-experiment_name"><code>experiment_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-experiment_name"><code>experiment_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets metadata for an experiment.</td>
 </tr>
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-experiment_id"><code>experiment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-experiment_id"><code>experiment_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets metadata for an experiment. This method works on deleted experiments.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-view_type"><code>view_type</code></a></td>
     <td>Gets a list of all experiments.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a></td>
     <td></td>
     <td>Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the</td>
 </tr>
 <tr>
     <td><a href="#restore"><CopyableCode code="restore" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a></td>
     <td></td>
     <td>Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,</td>
 </tr>
 <tr>
     <td><a href="#search"><CopyableCode code="search" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Searches for experiments that satisfy specified search criteria.</td>
 </tr>
 <tr>
     <td><a href="#set_tag"><CopyableCode code="set_tag" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-value"><code>value</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-value"><code>value</code></a></td>
     <td></td>
     <td>Sets a tag on an experiment. Experiment tags are metadata that can be updated.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a></td>
     <td></td>
     <td>Updates experiment metadata.</td>
 </tr>
@@ -306,11 +306,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-experiment_id">
     <td><CopyableCode code="experiment_id" /></td>
     <td><code>string</code></td>
@@ -321,9 +316,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Name of the associated experiment.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of experiments desired. If `max_results` is unspecified, return all experiments. If `max_results` is too large, it'll be automatically capped at 1000. Callers of this endpoint are encouraged to pass max_results explicitly and leverage page_token to iterate through experiments.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -358,7 +358,7 @@ SELECT
 experiment
 FROM databricks_workspace.ml.experiments
 WHERE experiment_name = '{{ experiment_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -371,7 +371,7 @@ SELECT
 experiment
 FROM databricks_workspace.ml.experiments
 WHERE experiment_id = '{{ experiment_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -389,7 +389,7 @@ last_update_time,
 lifecycle_stage,
 tags
 FROM databricks_workspace.ml.experiments
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 AND view_type = '{{ view_type }}'
@@ -417,13 +417,13 @@ INSERT INTO databricks_workspace.ml.experiments (
 name,
 artifact_location,
 tags,
-deployment_name
+workspace
 )
 SELECT 
 '{{ name }}' /* required */,
 '{{ artifact_location }}',
 '{{ tags }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 experiment_id
 ;
@@ -435,7 +435,7 @@ experiment_id
 # Description fields are for documentation purposes
 - name: experiments
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the experiments resource.
     - name: name
@@ -447,9 +447,18 @@ experiment_id
       description: |
         Location where all artifacts for the experiment are stored. If not provided, the remote server will select an appropriate default.
     - name: tags
-      value: string
+      value: array
       description: |
         A collection of tags to set on the experiment. Maximum tag size and number of tags per request depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250 bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to support up to 20 tags per request.
+      props:
+      - name: key
+        value: string
+        description: |
+          The tag key.
+      - name: value
+        value: string
+        description: |
+          The tag value.
 ```
 </TabItem>
 </Tabs>
@@ -473,7 +482,7 @@ Marks an experiment and associated metadata, runs, metrics, params, and tags for
 
 ```sql
 EXEC databricks_workspace.ml.experiments.delete 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "experiment_id": "{{ experiment_id }}"
@@ -487,7 +496,7 @@ Restore an experiment marked for deletion. This also restores associated metadat
 
 ```sql
 EXEC databricks_workspace.ml.experiments.restore 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "experiment_id": "{{ experiment_id }}"
@@ -501,11 +510,11 @@ Searches for experiments that satisfy specified search criteria.
 
 ```sql
 EXEC databricks_workspace.ml.experiments.search 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "filter": "{{ filter }}", 
-"max_results": "{{ max_results }}", 
+"max_results": {{ max_results }}, 
 "order_by": "{{ order_by }}", 
 "page_token": "{{ page_token }}", 
 "view_type": "{{ view_type }}"
@@ -519,7 +528,7 @@ Sets a tag on an experiment. Experiment tags are metadata that can be updated.
 
 ```sql
 EXEC databricks_workspace.ml.experiments.set_tag 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "experiment_id": "{{ experiment_id }}", 
@@ -535,7 +544,7 @@ Updates experiment metadata.
 
 ```sql
 EXEC databricks_workspace.ml.experiments.update 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "experiment_id": "{{ experiment_id }}", 

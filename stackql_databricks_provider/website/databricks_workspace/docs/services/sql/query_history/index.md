@@ -411,7 +411,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "Query status with one the following values: - `QUEUED`: Query has been received and queued. - `RUNNING`: Query has started. - `CANCELED`: Query has been cancelled by the user. - `FAILED`: Query has failed. - `FINISHED`: Query has completed. (CANCELED, COMPILED, COMPILING, FAILED, FINISHED, QUEUED, RUNNING, STARTED)"
+        "description": "Statuses which are also used by OperationStatus in runtime (CANCELED, COMPILED, COMPILING, FAILED, FINISHED, QUEUED, RUNNING, STARTED)"
       },
       {
         "name": "user_id",
@@ -452,7 +452,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-filter_by"><code>filter_by</code></a>, <a href="#parameter-include_metrics"><code>include_metrics</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List the history of queries through SQL warehouses, and serverless compute.</td>
 </tr>
@@ -472,24 +472,24 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
     <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-filter_by">
     <td><CopyableCode code="filter_by" /></td>
-    <td><code>string</code></td>
+    <td><code>object</code></td>
     <td>An optional filter object to limit query history results. Accepts parameters such as user IDs, endpoint IDs, and statuses to narrow the returned data. In a URL, the parameters of this filter are specified with dot notation. For example: `filter_by.statement_ids`.</td>
 </tr>
 <tr id="parameter-include_metrics">
     <td><CopyableCode code="include_metrics" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Whether to include the query metrics with each query. Only use this for a small subset of queries (max_results). Defaults to false.</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Limit the number of results returned in one page. Must be less than 1000 and the default is 100.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -518,7 +518,7 @@ has_next_page,
 next_page_token,
 res
 FROM databricks_workspace.sql.query_history
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND filter_by = '{{ filter_by }}'
 AND include_metrics = '{{ include_metrics }}'
 AND max_results = '{{ max_results }}'

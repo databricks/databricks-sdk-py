@@ -53,7 +53,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#generate"><CopyableCode code="generate" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-operation"><code>operation</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-operation"><code>operation</code></a></td>
     <td></td>
     <td>Get a short-lived credential for directly accessing cloud storage locations registered in Databricks.</td>
 </tr>
@@ -73,10 +73,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
     <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -99,13 +99,13 @@ INSERT INTO databricks_workspace.catalog.temporary_path_credentials (
 url,
 operation,
 dry_run,
-deployment_name
+workspace
 )
 SELECT 
 '{{ url }}' /* required */,
 '{{ operation }}' /* required */,
-'{{ dry_run }}',
-'{{ deployment_name }}'
+{{ dry_run }},
+'{{ workspace }}'
 RETURNING
 aws_temp_credentials,
 azure_aad,
@@ -123,7 +123,7 @@ url
 # Description fields are for documentation purposes
 - name: temporary_path_credentials
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the temporary_path_credentials resource.
     - name: url
@@ -135,7 +135,7 @@ url
       description: |
         The operation being performed on the path.
     - name: dry_run
-      value: string
+      value: boolean
       description: |
         Optional. When set to true, the service will not validate that the generated credentials can perform write operations, therefore no new paths will be created and the response will not contain valid credentials. Defaults to false.
 ```

@@ -53,7 +53,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#migrate"><CopyableCode code="migrate" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-from_workspace_group_name"><code>from_workspace_group_name</code></a>, <a href="#parameter-to_account_group_name"><code>to_account_group_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-from_workspace_group_name"><code>from_workspace_group_name</code></a>, <a href="#parameter-to_account_group_name"><code>to_account_group_name</code></a></td>
     <td></td>
     <td>Migrate Permissions.</td>
 </tr>
@@ -73,10 +73,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
     <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -100,14 +100,14 @@ workspace_id,
 from_workspace_group_name,
 to_account_group_name,
 size,
-deployment_name
+workspace
 )
 SELECT 
 {{ workspace_id }} /* required */,
 '{{ from_workspace_group_name }}' /* required */,
 '{{ to_account_group_name }}' /* required */,
-'{{ size }}',
-'{{ deployment_name }}'
+{{ size }},
+'{{ workspace }}'
 RETURNING
 permissions_migrated
 ;
@@ -119,7 +119,7 @@ permissions_migrated
 # Description fields are for documentation purposes
 - name: permission_migration
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the permission_migration resource.
     - name: workspace_id
@@ -135,7 +135,7 @@ permissions_migrated
       description: |
         The name of the account group that permissions will be migrated to.
     - name: size
-      value: string
+      value: integer
       description: |
         The maximum number of permissions that will be migrated.
 ```

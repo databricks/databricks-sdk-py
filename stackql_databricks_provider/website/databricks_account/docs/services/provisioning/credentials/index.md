@@ -292,9 +292,15 @@ creation_time
       description: |
         The human-readable name of the credential configuration object.
     - name: aws_credentials
-      value: string
+      value: object
       description: |
         :returns: :class:`Credential`
+      props:
+      - name: sts_role
+        value: object
+        props:
+        - name: role_arn
+          value: string
 ```
 </TabItem>
 </Tabs>

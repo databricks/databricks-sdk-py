@@ -37,7 +37,43 @@
                 "type": "object",
                 "properties": {
                   "tag_policy": {
-                    "$ref": "#/components/schemas/TagPolicy",
+                    "type": "object",
+                    "properties": {
+                      "tag_key": {
+                        "type": "string"
+                      },
+                      "create_time": {
+                        "type": "string",
+                        "description": "Timestamp when the tag policy was created"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "Timestamp when the tag policy was last updated"
+                      },
+                      "values": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "tag_key"
+                    ],
                     "description": ":returns: :class:`TagPolicy`"
                   }
                 },
@@ -272,7 +308,43 @@
                 "type": "object",
                 "properties": {
                   "tag_policy": {
-                    "$ref": "#/components/schemas/TagPolicy"
+                    "type": "object",
+                    "properties": {
+                      "tag_key": {
+                        "type": "string"
+                      },
+                      "create_time": {
+                        "type": "string",
+                        "description": "Timestamp when the tag policy was created"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "Timestamp when the tag policy was last updated"
+                      },
+                      "values": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "tag_key"
+                    ]
                   }
                 },
                 "required": [
@@ -331,7 +403,29 @@
                 "type": "object",
                 "properties": {
                   "tag_assignment": {
-                    "$ref": "#/components/schemas/TagAssignment",
+                    "type": "object",
+                    "properties": {
+                      "entity_type": {
+                        "type": "string"
+                      },
+                      "entity_id": {
+                        "type": "string",
+                        "description": "The identifier of the entity to which the tag is assigned"
+                      },
+                      "tag_key": {
+                        "type": "string",
+                        "description": "The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed"
+                      },
+                      "tag_value": {
+                        "type": "string",
+                        "description": "The value of the tag"
+                      }
+                    },
+                    "required": [
+                      "entity_type",
+                      "entity_id",
+                      "tag_key"
+                    ],
                     "description": ":returns: :class:`TagAssignment`"
                   }
                 },
@@ -559,7 +653,29 @@
                 "type": "object",
                 "properties": {
                   "tag_assignment": {
-                    "$ref": "#/components/schemas/TagAssignment",
+                    "type": "object",
+                    "properties": {
+                      "entity_type": {
+                        "type": "string"
+                      },
+                      "entity_id": {
+                        "type": "string",
+                        "description": "The identifier of the entity to which the tag is assigned"
+                      },
+                      "tag_key": {
+                        "type": "string",
+                        "description": "The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed"
+                      },
+                      "tag_value": {
+                        "type": "string",
+                        "description": "The value of the tag"
+                      }
+                    },
+                    "required": [
+                      "entity_type",
+                      "entity_id",
+                      "tag_key"
+                    ],
                     "description": ":param update_mask: str The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
                   }
                 },

@@ -107,7 +107,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-external_value"><code>external_value</code></a>, <a href="#parameter-external_viewer_id"><code>external_viewer_id</code></a></td>
     <td>Get a required authorization details and scopes of a published dashboard to mint an OAuth token.</td>
 </tr>
@@ -132,10 +132,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>UUID identifying the published dashboard.</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
     <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-external_value">
     <td><CopyableCode code="external_value" /></td>
@@ -169,7 +169,7 @@ custom_claim,
 scope
 FROM databricks_workspace.dashboards.lakeview_embedded
 WHERE dashboard_id = '{{ dashboard_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND external_value = '{{ external_value }}'
 AND external_viewer_id = '{{ external_viewer_id }}'
 ;

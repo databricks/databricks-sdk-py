@@ -9,11 +9,12 @@ info:
   x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.tags
 servers:
-  - url: https://{deployment_name}.cloud.databricks.com
+  - url: https://{workspace}.cloud.databricks.com
+    description: Databricks workspace
     variables:
-      deployment_name:
-        description: The Databricks Workspace Deployment Name
-        default: dbc-abcd0123-a1bc
+      workspace:
+        default: your-workspace
+        description: Your Databricks workspace name
 paths:
   /api/2.1/tag-policies:
     post:
@@ -52,7 +53,31 @@ paths:
               type: object
               properties:
                 tag_policy:
-                  $ref: '#/components/schemas/TagPolicy'
+                  type: object
+                  properties:
+                    tag_key:
+                      type: string
+                    create_time:
+                      type: string
+                      description: Timestamp when the tag policy was created
+                    description:
+                      type: string
+                    id:
+                      type: string
+                    update_time:
+                      type: string
+                      description: Timestamp when the tag policy was last updated
+                    values:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                        required:
+                          - name
+                  required:
+                    - tag_key
                   description: ':returns: :class:`TagPolicy`'
               required:
                 - tag_policy
@@ -315,7 +340,31 @@ paths:
               type: object
               properties:
                 tag_policy:
-                  $ref: '#/components/schemas/TagPolicy'
+                  type: object
+                  properties:
+                    tag_key:
+                      type: string
+                    create_time:
+                      type: string
+                      description: Timestamp when the tag policy was created
+                    description:
+                      type: string
+                    id:
+                      type: string
+                    update_time:
+                      type: string
+                      description: Timestamp when the tag policy was last updated
+                    values:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                        required:
+                          - name
+                  required:
+                    - tag_key
               required:
                 - tag_policy
       responses:
@@ -357,7 +406,27 @@ paths:
               type: object
               properties:
                 tag_assignment:
-                  $ref: '#/components/schemas/TagAssignment'
+                  type: object
+                  properties:
+                    entity_type:
+                      type: string
+                    entity_id:
+                      type: string
+                      description: >-
+                        The identifier of the entity to which the tag is
+                        assigned
+                    tag_key:
+                      type: string
+                      description: >-
+                        The key of the tag. The characters , . : / - = and
+                        leading/trailing spaces are not allowed
+                    tag_value:
+                      type: string
+                      description: The value of the tag
+                  required:
+                    - entity_type
+                    - entity_id
+                    - tag_key
                   description: ':returns: :class:`TagAssignment`'
               required:
                 - tag_assignment
@@ -556,7 +625,27 @@ paths:
               type: object
               properties:
                 tag_assignment:
-                  $ref: '#/components/schemas/TagAssignment'
+                  type: object
+                  properties:
+                    entity_type:
+                      type: string
+                    entity_id:
+                      type: string
+                      description: >-
+                        The identifier of the entity to which the tag is
+                        assigned
+                    tag_key:
+                      type: string
+                      description: >-
+                        The key of the tag. The characters , . : / - = and
+                        leading/trailing spaces are not allowed
+                    tag_value:
+                      type: string
+                      description: The value of the tag
+                  required:
+                    - entity_type
+                    - entity_id
+                    - tag_key
                   description: >-
                     :param update_mask: str The field mask must be a single
                     string, with multiple fields separated by commas (no

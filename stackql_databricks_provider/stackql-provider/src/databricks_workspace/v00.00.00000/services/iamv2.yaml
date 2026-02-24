@@ -8,11 +8,12 @@ info:
   x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.iamv2
 servers:
-- url: https://{deployment_name}.cloud.databricks.com
+- url: https://{workspace}.cloud.databricks.com
+  description: Databricks workspace
   variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+    workspace:
+      default: your-workspace
+      description: Your Databricks workspace name
 paths:
   /api/2.0/identity/workspaceAccessDetails/{principal_id}:
     get:

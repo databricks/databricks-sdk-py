@@ -9,11 +9,12 @@ info:
   x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.postgres
 servers:
-  - url: https://{deployment_name}.cloud.databricks.com
+  - url: https://{workspace}.cloud.databricks.com
+    description: Databricks workspace
     variables:
-      deployment_name:
-        description: The Databricks Workspace Deployment Name
-        default: dbc-abcd0123-a1bc
+      workspace:
+        default: your-workspace
+        description: Your Databricks workspace name
 paths:
   /api/2.0/postgres/{parent}/branches:
     post:
@@ -62,7 +63,138 @@ paths:
               type: object
               properties:
                 branch:
-                  $ref: '#/components/schemas/Branch'
+                  type: object
+                  properties:
+                    create_time:
+                      type: string
+                      format: date-time
+                    name:
+                      type: string
+                      description: >-
+                        Output only. The full resource path of the branch.
+                        Format: projects/{project_id}/branches/{branch_id}
+                    parent:
+                      type: string
+                      description: >-
+                        The project containing this branch (API resource
+                        hierarchy). Format: projects/{project_id} Note: This
+                        field indicates where the branch exists in the resource
+                        hierarchy. For point-in-time branching from another
+                        branch, see `status.source_branch`.
+                    spec:
+                      type: object
+                      properties:
+                        expire_time:
+                          type: string
+                          format: date-time
+                        is_protected:
+                          type: boolean
+                          description: >-
+                            When set to true, protects the branch from deletion
+                            and reset. Associated compute endpoints and the
+                            project cannot be deleted while the branch is
+                            protected.
+                        no_expiry:
+                          type: boolean
+                          description: >-
+                            Explicitly disable expiration. When set to true, the
+                            branch will not expire. If set to false, the request
+                            is invalid; provide either ttl or expire_time
+                            instead.
+                        source_branch:
+                          type: string
+                          description: >-
+                            The name of the source branch from which this branch
+                            was created (data lineage for point-in-time
+                            recovery). If not specified, defaults to the
+                            project's default branch. Format:
+                            projects/{project_id}/branches/{branch_id}
+                        source_branch_lsn:
+                          type: string
+                          description: >-
+                            The Log Sequence Number (LSN) on the source branch
+                            from which this branch was created.
+                        source_branch_time:
+                          type: string
+                          format: date-time
+                          description: >-
+                            The point in time on the source branch from which
+                            this branch was created.
+                        ttl:
+                          type: string
+                          description: >-
+                            Relative time-to-live duration. When set, the branch
+                            will expire at creation_time + ttl.
+                      description: The spec contains the branch configuration.
+                    status:
+                      type: object
+                      properties:
+                        current_state:
+                          type: string
+                          x-enum:
+                            - ARCHIVED
+                            - IMPORTING
+                            - INIT
+                            - READY
+                            - RESETTING
+                          description: The state of the branch.
+                        default:
+                          type: boolean
+                          description: Whether the branch is the project's default branch.
+                        expire_time:
+                          type: string
+                          format: date-time
+                          description: >-
+                            Absolute expiration time for the branch. Empty if
+                            expiration is disabled.
+                        is_protected:
+                          type: boolean
+                          description: Whether the branch is protected.
+                        logical_size_bytes:
+                          type: integer
+                          description: The logical size of the branch.
+                        pending_state:
+                          type: string
+                          x-enum:
+                            - ARCHIVED
+                            - IMPORTING
+                            - INIT
+                            - READY
+                            - RESETTING
+                          description: >-
+                            The pending state of the branch, if a state
+                            transition is in progress.
+                        source_branch:
+                          type: string
+                          description: >-
+                            The name of the source branch from which this branch
+                            was created. Format:
+                            projects/{project_id}/branches/{branch_id}
+                        source_branch_lsn:
+                          type: string
+                          description: >-
+                            The Log Sequence Number (LSN) on the source branch
+                            from which this branch was created.
+                        source_branch_time:
+                          type: string
+                          format: date-time
+                          description: >-
+                            The point in time on the source branch from which
+                            this branch was created.
+                        state_change_time:
+                          type: string
+                          format: date-time
+                          description: >-
+                            A timestamp indicating when the `current_state`
+                            began.
+                      description: The current status of a Branch.
+                    uid:
+                      type: string
+                      description: System-generated unique ID for the branch.
+                    update_time:
+                      type: string
+                      format: date-time
+                      description: A timestamp indicating when the branch was last updated.
                   description: The Branch to create.
               required:
                 - branch
@@ -190,7 +322,150 @@ paths:
               type: object
               properties:
                 endpoint:
-                  $ref: '#/components/schemas/Endpoint'
+                  type: object
+                  properties:
+                    create_time:
+                      type: string
+                      format: date-time
+                    name:
+                      type: string
+                      description: >-
+                        Output only. The full resource path of the endpoint.
+                        Format:
+                        projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+                    parent:
+                      type: string
+                      description: >-
+                        The branch containing this endpoint (API resource
+                        hierarchy). Format:
+                        projects/{project_id}/branches/{branch_id}
+                    spec:
+                      type: object
+                      properties:
+                        endpoint_type:
+                          type: string
+                          x-enum:
+                            - ENDPOINT_TYPE_READ_ONLY
+                            - ENDPOINT_TYPE_READ_WRITE
+                          description: >-
+                            The compute endpoint type. Either `read_write` or
+                            `read_only`.
+                        autoscaling_limit_max_cu:
+                          type: number
+                          description: >-
+                            The maximum number of Compute Units. Minimum value
+                            is 0.5.
+                        autoscaling_limit_min_cu:
+                          type: number
+                          description: >-
+                            The minimum number of Compute Units. Minimum value
+                            is 0.5.
+                        disabled:
+                          type: boolean
+                          description: >-
+                            Whether to restrict connections to the compute
+                            endpoint. Enabling this option schedules a suspend
+                            compute operation. A disabled compute endpoint
+                            cannot be enabled by a connection or console action.
+                        no_suspension:
+                          type: boolean
+                          description: >-
+                            When set to true, explicitly disables automatic
+                            suspension (never suspend). Should be set to true
+                            when provided.
+                        settings:
+                          type: object
+                          properties:
+                            pg_settings:
+                              type: object
+                              description: A raw representation of Postgres settings.
+                          description: A collection of settings for a compute endpoint.
+                        suspend_timeout_duration:
+                          type: string
+                          description: >-
+                            Duration of inactivity after which the compute
+                            endpoint is automatically suspended. If specified
+                            should be between 60s and 604800s (1 minute to 1
+                            week).
+                      required:
+                        - endpoint_type
+                      description: >-
+                        The spec contains the compute endpoint configuration,
+                        including autoscaling limits, suspend timeout, and
+                        disabled state.
+                    status:
+                      type: object
+                      properties:
+                        autoscaling_limit_max_cu:
+                          type: number
+                        autoscaling_limit_min_cu:
+                          type: number
+                          description: The minimum number of Compute Units.
+                        current_state:
+                          type: string
+                          x-enum:
+                            - ACTIVE
+                            - IDLE
+                            - INIT
+                          description: The state of the compute endpoint.
+                        disabled:
+                          type: boolean
+                          description: >-
+                            Whether to restrict connections to the compute
+                            endpoint. Enabling this option schedules a suspend
+                            compute operation. A disabled compute endpoint
+                            cannot be enabled by a connection or console action.
+                        endpoint_type:
+                          type: string
+                          x-enum:
+                            - ENDPOINT_TYPE_READ_ONLY
+                            - ENDPOINT_TYPE_READ_WRITE
+                          description: >-
+                            The endpoint type. A branch can only have one
+                            READ_WRITE endpoint.
+                        hosts:
+                          type: object
+                          properties:
+                            host:
+                              type: string
+                              description: >-
+                                The hostname to connect to this endpoint. For
+                                read-write endpoints, this is a read-write
+                                hostname which connects to the primary compute.
+                                For read-only endpoints, this is a read-only
+                                hostname which allows read-only operations.
+                          description: >-
+                            Contains host information for connecting to the
+                            endpoint.
+                        pending_state:
+                          type: string
+                          x-enum:
+                            - ACTIVE
+                            - IDLE
+                            - INIT
+                          description: The state of the compute endpoint.
+                        settings:
+                          type: object
+                          properties:
+                            pg_settings:
+                              type: object
+                              description: A raw representation of Postgres settings.
+                          description: A collection of settings for a compute endpoint.
+                        suspend_timeout_duration:
+                          type: string
+                          description: >-
+                            Duration of inactivity after which the compute
+                            endpoint is automatically suspended.
+                      description: Current operational status of the compute endpoint.
+                    uid:
+                      type: string
+                      description: System-generated unique ID for the endpoint.
+                    update_time:
+                      type: string
+                      format: date-time
+                      description: >-
+                        A timestamp indicating when the compute endpoint was
+                        last updated.
                   description: The Endpoint to create.
               required:
                 - endpoint
@@ -314,7 +589,135 @@ paths:
               type: object
               properties:
                 project:
-                  $ref: '#/components/schemas/Project'
+                  type: object
+                  properties:
+                    create_time:
+                      type: string
+                      format: date-time
+                    name:
+                      type: string
+                      description: >-
+                        Output only. The full resource path of the project.
+                        Format: projects/{project_id}
+                    spec:
+                      type: object
+                      properties:
+                        default_endpoint_settings:
+                          type: object
+                          properties:
+                            autoscaling_limit_max_cu:
+                              type: number
+                              description: >-
+                                The maximum number of Compute Units. Minimum
+                                value is 0.5.
+                            autoscaling_limit_min_cu:
+                              type: number
+                              description: >-
+                                The minimum number of Compute Units. Minimum
+                                value is 0.5.
+                            no_suspension:
+                              type: boolean
+                              description: >-
+                                When set to true, explicitly disables automatic
+                                suspension (never suspend). Should be set to
+                                true when provided.
+                            pg_settings:
+                              type: object
+                              description: A raw representation of Postgres settings.
+                            suspend_timeout_duration:
+                              type: string
+                              description: >-
+                                Duration of inactivity after which the compute
+                                endpoint is automatically suspended. If
+                                specified should be between 60s and 604800s (1
+                                minute to 1 week).
+                          description: A collection of settings for a compute endpoint.
+                        display_name:
+                          type: string
+                          description: >-
+                            Human-readable project name. Length should be
+                            between 1 and 256 characters.
+                        history_retention_duration:
+                          type: string
+                          description: >-
+                            The number of seconds to retain the shared history
+                            for point in time recovery for all branches in this
+                            project. Value should be between 0s and 2592000s (up
+                            to 30 days).
+                        pg_version:
+                          type: integer
+                          description: >-
+                            The major Postgres version number. Supported
+                            versions are 16 and 17.
+                      description: >-
+                        The spec contains the project configuration, including
+                        display_name, pg_version (Postgres version),
+                        history_retention_duration, and
+                        default_endpoint_settings.
+                    status:
+                      type: object
+                      properties:
+                        branch_logical_size_limit_bytes:
+                          type: integer
+                        default_endpoint_settings:
+                          type: object
+                          properties:
+                            autoscaling_limit_max_cu:
+                              type: number
+                              description: >-
+                                The maximum number of Compute Units. Minimum
+                                value is 0.5.
+                            autoscaling_limit_min_cu:
+                              type: number
+                              description: >-
+                                The minimum number of Compute Units. Minimum
+                                value is 0.5.
+                            no_suspension:
+                              type: boolean
+                              description: >-
+                                When set to true, explicitly disables automatic
+                                suspension (never suspend). Should be set to
+                                true when provided.
+                            pg_settings:
+                              type: object
+                              description: A raw representation of Postgres settings.
+                            suspend_timeout_duration:
+                              type: string
+                              description: >-
+                                Duration of inactivity after which the compute
+                                endpoint is automatically suspended. If
+                                specified should be between 60s and 604800s (1
+                                minute to 1 week).
+                          description: The effective default endpoint settings.
+                        display_name:
+                          type: string
+                          description: The effective human-readable project name.
+                        history_retention_duration:
+                          type: string
+                          description: >-
+                            The effective number of seconds to retain the shared
+                            history for point in time recovery.
+                        owner:
+                          type: string
+                          description: The email of the project owner.
+                        pg_version:
+                          type: integer
+                          description: The effective major Postgres version number.
+                        synthetic_storage_size_bytes:
+                          type: integer
+                          description: >-
+                            The current space occupied by the project in
+                            storage.
+                      description: The current status of a Project.
+                    uid:
+                      type: string
+                      description: System-generated unique ID for the project.
+                    update_time:
+                      type: string
+                      format: date-time
+                      description: >-
+                        A timestamp indicating when the project was last
+                        updated.
                   description: The Project to create.
               required:
                 - project
@@ -439,7 +842,89 @@ paths:
               type: object
               properties:
                 role:
-                  $ref: '#/components/schemas/Role'
+                  type: object
+                  properties:
+                    create_time:
+                      type: string
+                      format: date-time
+                    name:
+                      type: string
+                      description: >-
+                        Output only. The full resource path of the role. Format:
+                        projects/{project_id}/branches/{branch_id}/roles/{role_id}
+                    parent:
+                      type: string
+                      description: >-
+                        The Branch where this Role exists. Format:
+                        projects/{project_id}/branches/{branch_id}
+                    spec:
+                      type: object
+                      properties:
+                        auth_method:
+                          type: string
+                          x-enum:
+                            - LAKEBASE_OAUTH_V1
+                            - NO_LOGIN
+                            - PG_PASSWORD_SCRAM_SHA_256
+                          description: >-
+                            How the role is authenticated when connecting to
+                            Postgres.
+                        identity_type:
+                          type: string
+                          x-enum:
+                            - GROUP
+                            - SERVICE_PRINCIPAL
+                            - USER
+                          description: >-
+                            The type of role. When specifying a
+                            managed-identity, the chosen role_id must be a
+                            valid: * application ID for SERVICE_PRINCIPAL * user
+                            email for USER * group name for GROUP
+                        postgres_role:
+                          type: string
+                          description: >-
+                            The name of the Postgres role. This expects a valid
+                            Postgres identifier as specified in the link below.
+                            https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+                            Required when creating the Role. If you wish to
+                            create a Postgres Role backed by a managed
+                            Databricks identity, then postgres_role must be one
+                            of the following: 1. user email for
+                            IdentityType.USER 2. app ID for
+                            IdentityType.SERVICE_PRINCIPAL 2. group name for
+                            IdentityType.GROUP
+                      description: >-
+                        The spec contains the role configuration, including
+                        identity type, authentication method, and role
+                        attributes.
+                    status:
+                      type: object
+                      properties:
+                        auth_method:
+                          type: string
+                          x-enum:
+                            - LAKEBASE_OAUTH_V1
+                            - NO_LOGIN
+                            - PG_PASSWORD_SCRAM_SHA_256
+                          description: >-
+                            How the role is authenticated when connecting to
+                            Postgres.
+                        identity_type:
+                          type: string
+                          x-enum:
+                            - GROUP
+                            - SERVICE_PRINCIPAL
+                            - USER
+                          description: The type of the role.
+                        postgres_role:
+                          type: string
+                          description: The name of the Postgres role.
+                      description: >-
+                        Current status of the role, including its identity type,
+                        authentication method, and role attributes.
+                    update_time:
+                      type: string
+                      format: date-time
                   description: The desired specification of a Role.
               required:
                 - role
@@ -671,7 +1156,135 @@ paths:
               type: object
               properties:
                 project:
-                  $ref: '#/components/schemas/Project'
+                  type: object
+                  properties:
+                    create_time:
+                      type: string
+                      format: date-time
+                    name:
+                      type: string
+                      description: >-
+                        Output only. The full resource path of the project.
+                        Format: projects/{project_id}
+                    spec:
+                      type: object
+                      properties:
+                        default_endpoint_settings:
+                          type: object
+                          properties:
+                            autoscaling_limit_max_cu:
+                              type: number
+                              description: >-
+                                The maximum number of Compute Units. Minimum
+                                value is 0.5.
+                            autoscaling_limit_min_cu:
+                              type: number
+                              description: >-
+                                The minimum number of Compute Units. Minimum
+                                value is 0.5.
+                            no_suspension:
+                              type: boolean
+                              description: >-
+                                When set to true, explicitly disables automatic
+                                suspension (never suspend). Should be set to
+                                true when provided.
+                            pg_settings:
+                              type: object
+                              description: A raw representation of Postgres settings.
+                            suspend_timeout_duration:
+                              type: string
+                              description: >-
+                                Duration of inactivity after which the compute
+                                endpoint is automatically suspended. If
+                                specified should be between 60s and 604800s (1
+                                minute to 1 week).
+                          description: A collection of settings for a compute endpoint.
+                        display_name:
+                          type: string
+                          description: >-
+                            Human-readable project name. Length should be
+                            between 1 and 256 characters.
+                        history_retention_duration:
+                          type: string
+                          description: >-
+                            The number of seconds to retain the shared history
+                            for point in time recovery for all branches in this
+                            project. Value should be between 0s and 2592000s (up
+                            to 30 days).
+                        pg_version:
+                          type: integer
+                          description: >-
+                            The major Postgres version number. Supported
+                            versions are 16 and 17.
+                      description: >-
+                        The spec contains the project configuration, including
+                        display_name, pg_version (Postgres version),
+                        history_retention_duration, and
+                        default_endpoint_settings.
+                    status:
+                      type: object
+                      properties:
+                        branch_logical_size_limit_bytes:
+                          type: integer
+                        default_endpoint_settings:
+                          type: object
+                          properties:
+                            autoscaling_limit_max_cu:
+                              type: number
+                              description: >-
+                                The maximum number of Compute Units. Minimum
+                                value is 0.5.
+                            autoscaling_limit_min_cu:
+                              type: number
+                              description: >-
+                                The minimum number of Compute Units. Minimum
+                                value is 0.5.
+                            no_suspension:
+                              type: boolean
+                              description: >-
+                                When set to true, explicitly disables automatic
+                                suspension (never suspend). Should be set to
+                                true when provided.
+                            pg_settings:
+                              type: object
+                              description: A raw representation of Postgres settings.
+                            suspend_timeout_duration:
+                              type: string
+                              description: >-
+                                Duration of inactivity after which the compute
+                                endpoint is automatically suspended. If
+                                specified should be between 60s and 604800s (1
+                                minute to 1 week).
+                          description: The effective default endpoint settings.
+                        display_name:
+                          type: string
+                          description: The effective human-readable project name.
+                        history_retention_duration:
+                          type: string
+                          description: >-
+                            The effective number of seconds to retain the shared
+                            history for point in time recovery.
+                        owner:
+                          type: string
+                          description: The email of the project owner.
+                        pg_version:
+                          type: integer
+                          description: The effective major Postgres version number.
+                        synthetic_storage_size_bytes:
+                          type: integer
+                          description: >-
+                            The current space occupied by the project in
+                            storage.
+                      description: The current status of a Project.
+                    uid:
+                      type: string
+                      description: System-generated unique ID for the project.
+                    update_time:
+                      type: string
+                      format: date-time
+                      description: >-
+                        A timestamp indicating when the project was last
+                        updated.
                   description: >-
                     The Project to update. The project's `name` field is used to
                     identify the project to update. Format:
@@ -728,7 +1341,82 @@ paths:
                 claims:
                   type: array
                   items:
-                    $ref: '#/components/schemas/RequestedClaims'
+                    type: object
+                    properties:
+                      permission_set:
+                        type: string
+                        x-enum:
+                          - READ_ONLY
+                        description: >-
+                          Create a collection of name/value pairs.
+
+
+                          Example enumeration:
+
+
+                          >>> class Color(Enum):
+
+                          ...     RED = 1
+
+                          ...     BLUE = 2
+
+                          ...     GREEN = 3
+
+
+                          Access them by:
+
+
+                          - attribute access::
+
+
+                          >>> Color.RED
+
+                          <Color.RED: 1>
+
+
+                          - value lookup:
+
+
+                          >>> Color(1)
+
+                          <Color.RED: 1>
+
+
+                          - name lookup:
+
+
+                          >>> Color['RED']
+
+                          <Color.RED: 1>
+
+
+                          Enumerations can be iterated over, and know how many
+                          members they have:
+
+
+                          >>> len(Color)
+
+                          3
+
+
+                          >>> list(Color)
+
+                          [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                          Methods can be added to enumerations, and members can
+                          have their own
+
+                          attributes -- see the documentation for details.
+                      resources:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            table_name:
+                              type: string
+                            unspecified_resource_name:
+                              type: string
                   description: >-
                     The returned token will be scoped to UC tables with the
                     specified permissions.

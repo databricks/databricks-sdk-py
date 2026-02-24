@@ -78,28 +78,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>List the instance profiles that the calling user can use to launch a cluster.</td>
 </tr>
 <tr>
     <td><a href="#add"><CopyableCode code="add" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-instance_profile_arn"><code>instance_profile_arn</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-instance_profile_arn"><code>instance_profile_arn</code></a></td>
     <td></td>
     <td>Registers an instance profile in Databricks. In the UI, you can then give users the permission to use</td>
 </tr>
 <tr>
     <td><a href="#edit"><CopyableCode code="edit" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-instance_profile_arn"><code>instance_profile_arn</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-instance_profile_arn"><code>instance_profile_arn</code></a></td>
     <td></td>
     <td>The only supported field to change is the optional IAM role ARN associated with the instance profile.</td>
 </tr>
 <tr>
     <td><a href="#remove"><CopyableCode code="remove" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Remove the instance profile with the provided ARN. Existing clusters with this instance profile will</td>
 </tr>
@@ -119,10 +119,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
     <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -145,7 +145,7 @@ iam_role_arn,
 instance_profile_arn,
 is_meta_instance_profile
 FROM databricks_workspace.compute.instance_profiles
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -171,14 +171,14 @@ instance_profile_arn,
 iam_role_arn,
 is_meta_instance_profile,
 skip_validation,
-deployment_name
+workspace
 )
 SELECT 
 '{{ instance_profile_arn }}' /* required */,
 '{{ iam_role_arn }}',
-'{{ is_meta_instance_profile }}',
-'{{ skip_validation }}',
-'{{ deployment_name }}'
+{{ is_meta_instance_profile }},
+{{ skip_validation }},
+'{{ workspace }}'
 ;
 ```
 </TabItem>
@@ -188,7 +188,7 @@ SELECT
 # Description fields are for documentation purposes
 - name: instance_profiles
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the instance_profiles resource.
     - name: instance_profile_arn
@@ -200,11 +200,11 @@ SELECT
       description: |
         The AWS IAM role ARN of the role associated with the instance profile. This field is required if your role name and instance profile name do not match and you want to use the instance profile with [Databricks SQL Serverless]. Otherwise, this field is optional. [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
     - name: is_meta_instance_profile
-      value: string
+      value: boolean
       description: |
         Boolean flag indicating whether the instance profile should only be used in credential passthrough scenarios. If true, it means the instance profile contains an meta IAM role which could assume a wide range of roles. Therefore it should always be used with authorization. This field is optional, the default value is `false`.
     - name: skip_validation
-      value: string
+      value: boolean
       description: |
         By default, Databricks validates that it has sufficient permissions to launch instances with the instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation fails with an error message that does not indicate an IAM related permission issue, (e.g. “Your requested instance type is not supported in your requested availability zone”), you can pass this flag to skip the validation and forcibly add the instance profile.
 ```
@@ -229,9 +229,9 @@ REPLACE databricks_workspace.compute.instance_profiles
 SET 
 instance_profile_arn = '{{ instance_profile_arn }}',
 iam_role_arn = '{{ iam_role_arn }}',
-is_meta_instance_profile = '{{ is_meta_instance_profile }}'
+is_meta_instance_profile = {{ is_meta_instance_profile }}
 WHERE 
-deployment_name = '{{ deployment_name }}' --required
+workspace = '{{ workspace }}' --required
 AND instance_profile_arn = '{{ instance_profile_arn }}' --required;
 ```
 </TabItem>
@@ -252,7 +252,7 @@ Remove the instance profile with the provided ARN. Existing clusters with this i
 
 ```sql
 DELETE FROM databricks_workspace.compute.instance_profiles
-WHERE deployment_name = '{{ deployment_name }}' --required
+WHERE workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

@@ -85,7 +85,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "filter_type",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (GLOBAL_METASTORE_ID)"
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (GLOBAL_METASTORE_ID)"
           },
           {
             "name": "created_at",
@@ -226,7 +226,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "filter_type",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (GLOBAL_METASTORE_ID)"
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (GLOBAL_METASTORE_ID)"
       },
       {
         "name": "created_at",
@@ -334,35 +334,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get an exchange.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List exchanges visible to provider</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-exchange"><code>exchange</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-exchange"><code>exchange</code></a></td>
     <td></td>
     <td>Create an exchange</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-exchange"><code>exchange</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-exchange"><code>exchange</code></a></td>
     <td></td>
     <td>Update an exchange</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>This removes a listing from marketplace.</td>
 </tr>
@@ -382,19 +382,19 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>str</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>:param page_token: str (optional)</td>
 </tr>
 <tr id="parameter-page_token">
@@ -423,7 +423,7 @@ SELECT
 exchange
 FROM databricks_workspace.marketplace.provider_exchanges
 WHERE id = '{{ id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -443,7 +443,7 @@ linked_listings,
 updated_at,
 updated_by
 FROM databricks_workspace.marketplace.provider_exchanges
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -468,11 +468,11 @@ Create an exchange
 ```sql
 INSERT INTO databricks_workspace.marketplace.provider_exchanges (
 exchange,
-deployment_name
+workspace
 )
 SELECT 
 '{{ exchange }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 exchange_id
 ;
@@ -484,13 +484,90 @@ exchange_id
 # Description fields are for documentation purposes
 - name: provider_exchanges
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the provider_exchanges resource.
     - name: exchange
-      value: string
+      value: object
       description: |
         :returns: :class:`CreateExchangeResponse`
+      props:
+      - name: name
+        value: string
+      - name: comment
+        value: string
+      - name: created_at
+        value: integer
+      - name: created_by
+        value: string
+      - name: filters
+        value: array
+        props:
+        - name: exchange_id
+          value: string
+        - name: filter_value
+          value: string
+        - name: filter_type
+          value: string
+          description: |
+            Create a collection of name/value pairs.
+            Example enumeration:
+            >>> class Color(Enum):
+            ...     RED = 1
+            ...     BLUE = 2
+            ...     GREEN = 3
+            Access them by:
+            - attribute access::
+            >>> Color.RED
+            <Color.RED: 1>
+            - value lookup:
+            >>> Color(1)
+            <Color.RED: 1>
+            - name lookup:
+            >>> Color['RED']
+            <Color.RED: 1>
+            Enumerations can be iterated over, and know how many members they have:
+            >>> len(Color)
+            3
+            >>> list(Color)
+            [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+            Methods can be added to enumerations, and members can have their own
+            attributes -- see the documentation for details.
+        - name: created_at
+          value: integer
+        - name: created_by
+          value: string
+        - name: id
+          value: string
+        - name: name
+          value: string
+        - name: updated_at
+          value: integer
+        - name: updated_by
+          value: string
+      - name: id
+        value: string
+      - name: linked_listings
+        value: array
+        props:
+        - name: created_at
+          value: integer
+        - name: created_by
+          value: string
+        - name: exchange_id
+          value: string
+        - name: exchange_name
+          value: string
+        - name: id
+          value: string
+        - name: listing_id
+          value: string
+        - name: listing_name
+          value: string
+      - name: updated_at
+        value: integer
+      - name: updated_by
+        value: string
 ```
 </TabItem>
 </Tabs>
@@ -514,7 +591,7 @@ SET
 exchange = '{{ exchange }}'
 WHERE 
 id = '{{ id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND exchange = '{{ exchange }}' --required
 RETURNING
 exchange;
@@ -538,7 +615,7 @@ This removes a listing from marketplace.
 ```sql
 DELETE FROM databricks_workspace.marketplace.provider_exchanges
 WHERE id = '{{ id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

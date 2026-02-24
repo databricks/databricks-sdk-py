@@ -1053,42 +1053,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Retrieve a query object definition along with contextual permissions information about the currently</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-order"><code>order</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-q"><code>q</code></a></td>
     <td>Gets a list of queries. Optionally, this list can be filtered by a search term.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Creates a new query definition. Queries created with this endpoint belong to the authenticated user</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Modify this query definition.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and</td>
 </tr>
 <tr>
     <td><a href="#restore"><CopyableCode code="restore" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Restore a query that has been moved to the trash. A restored query appears in list views and searches.</td>
 </tr>
@@ -1108,15 +1108,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-query_id">
     <td><CopyableCode code="query_id" /></td>
     <td><code>string</code></td>
     <td>str</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-order">
     <td><CopyableCode code="order" /></td>
@@ -1125,12 +1125,12 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-page">
     <td><CopyableCode code="page" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Page number to retrieve.</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Number of queries to return per page.</td>
 </tr>
 <tr id="parameter-q">
@@ -1182,7 +1182,7 @@ user,
 visualizations
 FROM databricks_workspace.sql.queries_legacy
 WHERE query_id = '{{ query_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -1217,7 +1217,7 @@ updated_at,
 user,
 visualizations
 FROM databricks_workspace.sql.queries_legacy
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND order = '{{ order }}'
 AND page = '{{ page }}'
 AND page_size = '{{ page_size }}'
@@ -1251,7 +1251,7 @@ parent,
 query,
 run_as_role,
 tags,
-deployment_name
+workspace
 )
 SELECT 
 '{{ data_source_id }}',
@@ -1262,7 +1262,7 @@ SELECT
 '{{ query }}',
 '{{ run_as_role }}',
 '{{ tags }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 name,
@@ -1297,7 +1297,7 @@ visualizations
 # Description fields are for documentation purposes
 - name: queries_legacy
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the queries_legacy resource.
     - name: data_source_id
@@ -1313,7 +1313,7 @@ visualizations
       description: |
         The title of this query that appears in list views, widget headings, and on the query page.
     - name: options
-      value: string
+      value: object
       description: |
         Exclusively used for storing a list parameter definitions. A parameter is an object with `title`, `name`, `type`, and `value` properties. The `value` field here is the default value. It can be overridden at runtime.
     - name: parent
@@ -1329,9 +1329,11 @@ visualizations
       description: |
         Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
     - name: tags
-      value: string
+      value: array
       description: |
         :returns: :class:`LegacyQuery`
+      items:
+        type: string
 ```
 </TabItem>
 </Tabs>
@@ -1361,7 +1363,7 @@ run_as_role = '{{ run_as_role }}',
 tags = '{{ tags }}'
 WHERE 
 query_id = '{{ query_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 id,
 name,
@@ -1407,7 +1409,7 @@ Moves a query to the trash. Trashed queries immediately disappear from searches 
 ```sql
 DELETE FROM databricks_workspace.sql.queries_legacy
 WHERE query_id = '{{ query_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -1429,7 +1431,7 @@ Restore a query that has been moved to the trash. A restored query appears in li
 ```sql
 EXEC databricks_workspace.sql.queries_legacy.restore 
 @query_id='{{ query_id }}' --required, 
-@deployment_name='{{ deployment_name }}' --required
+@workspace='{{ workspace }}' --required
 ;
 ```
 </TabItem>

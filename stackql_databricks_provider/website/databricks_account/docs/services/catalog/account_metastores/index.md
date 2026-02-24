@@ -319,7 +319,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-force">
     <td><CopyableCode code="force" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Force deletion even if the metastore is not empty. Default is false.</td>
 </tr>
 </tbody>
@@ -434,9 +434,24 @@ metastore_info
       value: string
       description: Required parameter for the account_metastores resource.
     - name: metastore_info
-      value: string
+      value: object
       description: |
         :returns: :class:`AccountsCreateMetastoreResponse`
+      props:
+      - name: name
+        value: string
+      - name: external_access_enabled
+        value: boolean
+        description: |
+          Whether to allow non-DBR clients to directly access entities under the metastore.
+      - name: region
+        value: string
+        description: |
+          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+      - name: storage_root
+        value: string
+        description: |
+          The storage root URL for metastore
 ```
 </TabItem>
 </Tabs>

@@ -89,28 +89,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-principal"><code>principal</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-principal"><code>principal</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Describes the details about the given ACL, such as the group and permission.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Lists the ACLs set on the given scope.</td>
 </tr>
 <tr>
     <td><a href="#put"><CopyableCode code="put" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-principal"><code>principal</code></a>, <a href="#parameter-permission"><code>permission</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-principal"><code>principal</code></a>, <a href="#parameter-permission"><code>permission</code></a></td>
     <td></td>
     <td>Creates or overwrites the ACL associated with the given principal (user or group) on the specified</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-principal"><code>principal</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-principal"><code>principal</code></a></td>
     <td></td>
     <td>Deletes the given ACL on the given scope.</td>
 </tr>
@@ -130,11 +130,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-principal">
     <td><CopyableCode code="principal" /></td>
     <td><code>string</code></td>
@@ -144,6 +139,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="scope" /></td>
     <td><code>string</code></td>
     <td>The name of the scope to fetch ACL information from.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -168,7 +168,7 @@ principal
 FROM databricks_workspace.workspace.secret_acls
 WHERE scope = '{{ scope }}' -- required
 AND principal = '{{ principal }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -182,7 +182,7 @@ permission,
 principal
 FROM databricks_workspace.workspace.secret_acls
 WHERE scope = '{{ scope }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -207,13 +207,13 @@ INSERT INTO databricks_workspace.workspace.secret_acls (
 scope,
 principal,
 permission,
-deployment_name
+workspace
 )
 SELECT 
 '{{ scope }}' /* required */,
 '{{ principal }}' /* required */,
 '{{ permission }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 ;
 ```
 </TabItem>
@@ -223,7 +223,7 @@ SELECT
 # Description fields are for documentation purposes
 - name: secret_acls
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the secret_acls resource.
     - name: scope
@@ -257,7 +257,7 @@ Deletes the given ACL on the given scope.
 
 ```sql
 EXEC databricks_workspace.workspace.secret_acls.delete 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "scope": "{{ scope }}", 

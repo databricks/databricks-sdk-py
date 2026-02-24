@@ -174,7 +174,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "format",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ARROW_STREAM, CSV, JSON_ARRAY)"
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ARROW_STREAM, CSV, JSON_ARRAY)"
       },
       {
         "name": "schema",
@@ -359,7 +359,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "error_code",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ABORTED, ALREADY_EXISTS, BAD_REQUEST, CANCELLED, DEADLINE_EXCEEDED, INTERNAL_ERROR, IO_ERROR, NOT_FOUND, RESOURCE_EXHAUSTED, SERVICE_UNDER_MAINTENANCE, TEMPORARILY_UNAVAILABLE, UNAUTHENTICATED, UNKNOWN, WORKSPACE_TEMPORARILY_UNAVAILABLE)"
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ABORTED, ALREADY_EXISTS, BAD_REQUEST, CANCELLED, DEADLINE_EXCEEDED, INTERNAL_ERROR, IO_ERROR, NOT_FOUND, RESOURCE_EXHAUSTED, SERVICE_UNDER_MAINTENANCE, TEMPORARILY_UNAVAILABLE, UNAUTHENTICATED, UNKNOWN, WORKSPACE_TEMPORARILY_UNAVAILABLE)"
           },
           {
             "name": "message",
@@ -397,28 +397,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get_result_chunk"><CopyableCode code="get_result_chunk" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-statement_id"><code>statement_id</code></a>, <a href="#parameter-chunk_index"><code>chunk_index</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-statement_id"><code>statement_id</code></a>, <a href="#parameter-chunk_index"><code>chunk_index</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>After the statement execution has `SUCCEEDED`, this request can be used to fetch any chunk by index.</td>
 </tr>
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-statement_id"><code>statement_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-statement_id"><code>statement_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>This request can be used to poll for the statement's status. StatementResponse contains `statement_id`</td>
 </tr>
 <tr>
     <td><a href="#cancel"><CopyableCode code="cancel" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-statement_id"><code>statement_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-statement_id"><code>statement_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Requests that an executing statement be canceled. Callers must poll for status to see the terminal</td>
 </tr>
 <tr>
     <td><a href="#execute"><CopyableCode code="execute" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-statement"><code>statement</code></a>, <a href="#parameter-warehouse_id"><code>warehouse_id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-statement"><code>statement</code></a>, <a href="#parameter-warehouse_id"><code>warehouse_id</code></a></td>
     <td></td>
     <td>Execute a SQL statement and optionally await its results for a specified time.</td>
 </tr>
@@ -443,15 +443,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>integer</code></td>
     <td>:returns: :class:`ResultData`</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-statement_id">
     <td><CopyableCode code="statement_id" /></td>
     <td><code>string</code></td>
     <td>The statement ID is returned upon successfully submitting a SQL statement, and is a required reference for all subsequent calls.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -482,7 +482,7 @@ row_offset
 FROM databricks_workspace.sql.statement_execution
 WHERE statement_id = '{{ statement_id }}' -- required
 AND chunk_index = '{{ chunk_index }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -498,7 +498,7 @@ result,
 status
 FROM databricks_workspace.sql.statement_execution
 WHERE statement_id = '{{ statement_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -522,11 +522,11 @@ Requests that an executing statement be canceled. Callers must poll for status t
 ```sql
 INSERT INTO databricks_workspace.sql.statement_execution (
 statement_id,
-deployment_name
+workspace
 )
 SELECT 
 '{{ statement_id }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 ;
 ```
 </TabItem>
@@ -548,22 +548,22 @@ query_tags,
 row_limit,
 schema,
 wait_timeout,
-deployment_name
+workspace
 )
 SELECT 
 '{{ statement }}' /* required */,
 '{{ warehouse_id }}' /* required */,
-'{{ byte_limit }}',
+{{ byte_limit }},
 '{{ catalog }}',
 '{{ disposition }}',
 '{{ format }}',
 '{{ on_wait_timeout }}',
 '{{ parameters }}',
 '{{ query_tags }}',
-'{{ row_limit }}',
+{{ row_limit }},
 '{{ schema }}',
 '{{ wait_timeout }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 statement_id,
 manifest,
@@ -581,7 +581,7 @@ status
     - name: statement_id
       value: string
       description: Required parameter for the statement_execution resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the statement_execution resource.
     - name: statement
@@ -593,7 +593,7 @@ status
       description: |
         Warehouse upon which to execute a statement. See also [What are SQL warehouses?] [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html
     - name: byte_limit
-      value: string
+      value: integer
       description: |
         Applies the given byte limit to the statement's result size. Byte counts are based on internal data representations and might not match the final size in the requested `format`. If the result was truncated due to the byte limit, then `truncated` in the response is set to `true`. When using `EXTERNAL_LINKS` disposition, a default `byte_limit` of 100 GiB is applied if `byte_limit` is not explicitly set.
     - name: catalog
@@ -613,15 +613,31 @@ status
       description: |
         When `wait_timeout > 0s`, the call will block up to the specified time. If the statement execution doesn't finish within this time, `on_wait_timeout` determines whether the execution should continue or be canceled. When set to `CONTINUE`, the statement execution continues asynchronously and the call returns a statement ID which can be used for polling with :method:statementexecution/getStatement. When set to `CANCEL`, the statement execution is canceled and the call returns with a `CANCELED` state.
     - name: parameters
-      value: string
+      value: array
       description: |
         A list of parameters to pass into a SQL statement containing parameter markers. A parameter consists of a name, a value, and optionally a type. To represent a NULL value, the `value` field may be omitted or set to `null` explicitly. If the `type` field is omitted, the value is interpreted as a string. If the type is given, parameters will be checked for type correctness according to the given type. A value is correct if the provided string can be converted to the requested type using the `cast` function. The exact semantics are described in the section [`cast` function] of the SQL language reference. For example, the following statement contains two parameters, `my_name` and `my_date`: ``` SELECT * FROM my_table WHERE name = :my_name AND date = :my_date ``` The parameters can be passed in the request body as follows: ` { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date", "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value": "2020-01-01", "type": "DATE" } ] } ` Currently, positional parameters denoted by a `?` marker are not supported by the Databricks SQL Statement Execution API. Also see the section [Parameter markers] of the SQL language reference. [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+      props:
+      - name: name
+        value: string
+      - name: type
+        value: string
+        description: |
+          The data type, given as a string. For example: `INT`, `STRING`, `DECIMAL(10,2)`. If no type is given the type is assumed to be `STRING`. Complex types, such as `ARRAY`, `MAP`, and `STRUCT` are not supported. For valid types, refer to the section [Data types] of the SQL language reference. [Data types]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+      - name: value
+        value: string
+        description: |
+          The value to substitute, represented as a string. If omitted, the value is interpreted as NULL.
     - name: query_tags
-      value: string
+      value: array
       description: |
         An array of query tags to annotate a SQL statement. A query tag consists of a non-empty key and, optionally, a value. To represent a NULL value, either omit the `value` field or manually set it to `null` or white space. Refer to the SQL language reference for the format specification of query tags. There's no significance to the order of tags. Only one value per key will be recorded. A sequence in excess of 20 query tags will be coerced to 20. Example: { ..., "query_tags": [ { "key": "team", "value": "eng" }, { "key": "some key only tag" } ] }
+      props:
+      - name: key
+        value: string
+      - name: value
+        value: string
     - name: row_limit
-      value: string
+      value: integer
       description: |
         Applies the given row limit to the statement's result set, but unlike the `LIMIT` clause in SQL, it also sets the `truncated` field in the response to indicate whether the result was trimmed due to the limit or not.
     - name: schema

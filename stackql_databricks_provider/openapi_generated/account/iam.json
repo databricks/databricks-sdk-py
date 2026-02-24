@@ -174,7 +174,41 @@
                     "description": "Name of the rule set."
                   },
                   "rule_set": {
-                    "$ref": "#/components/schemas/RuleSetUpdateRequest",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "etag": {
+                        "type": "string",
+                        "description": "Identifies the version of the rule set returned. Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from overwriting each other. It is strongly suggested that systems make use of the etag in the read -> modify -> write pattern to perform rule set updates in order to avoid race conditions that is get an etag from a GET rule set request, and pass it with the PUT update request to identify the rule set version you are updating."
+                      },
+                      "grant_rules": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "role": {
+                              "type": "string"
+                            },
+                            "principals": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "Principals this grant rule applies to. A principal can be a user (for end users), a service principal (for applications and compute workloads), or an account group. Each principal has its own identifier format: * users/<USERNAME> * groups/<GROUP_NAME> * servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>"
+                            }
+                          },
+                          "required": [
+                            "role"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "etag"
+                    ],
                     "description": ":returns: :class:`RuleSetResponse`"
                   }
                 },
@@ -258,17 +292,56 @@
                   "members": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": ":param meta: :class:`ResourceMeta` (optional) Container for the group identifier. Workspace local versus account."
                   },
                   "meta": {
-                    "$ref": "#/components/schemas/ResourceMeta"
+                    "type": "object",
+                    "properties": {
+                      "resourceType": {
+                        "type": "string"
+                      }
+                    }
                   },
                   "roles": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Indicates if the group has the admin role."
                   }
@@ -571,14 +644,37 @@
                   "operations": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Patch"
+                      "type": "object",
+                      "properties": {
+                        "op": {
+                          "type": "string",
+                          "x-enum": [
+                            "add",
+                            "remove",
+                            "replace"
+                          ],
+                          "description": "Type of patch operation."
+                        },
+                        "path": {
+                          "type": "string",
+                          "description": "Selection of patch operation"
+                        },
+                        "value": {
+                          "type": "object",
+                          "description": "Value to modify"
+                        }
+                      }
                     },
                     "description": ":param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must be [\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"]."
                   },
                   "schemas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/PatchSchema"
+                      "type": "string",
+                      "x-enum": [
+                        "urn:ietf:params:scim:api:messages:2.0:PatchOp"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     }
                   }
                 }
@@ -655,17 +751,56 @@
                   "members": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     }
                   },
                   "meta": {
-                    "$ref": "#/components/schemas/ResourceMeta",
+                    "type": "object",
+                    "properties": {
+                      "resourceType": {
+                        "type": "string"
+                      }
+                    },
                     "description": "Container for the group identifier. Workspace local versus account."
                   },
                   "roles": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Indicates if the group has the admin role."
                   }
@@ -747,7 +882,24 @@
                   "roles": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Indicates if the group has the admin role."
                   }
@@ -1050,14 +1202,37 @@
                   "operations": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Patch"
+                      "type": "object",
+                      "properties": {
+                        "op": {
+                          "type": "string",
+                          "x-enum": [
+                            "add",
+                            "remove",
+                            "replace"
+                          ],
+                          "description": "Type of patch operation."
+                        },
+                        "path": {
+                          "type": "string",
+                          "description": "Selection of patch operation"
+                        },
+                        "value": {
+                          "type": "object",
+                          "description": "Value to modify"
+                        }
+                      }
                     },
                     "description": ":param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must be [\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"]."
                   },
                   "schemas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/PatchSchema"
+                      "type": "string",
+                      "x-enum": [
+                        "urn:ietf:params:scim:api:messages:2.0:PatchOp"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     }
                   }
                 }
@@ -1142,7 +1317,24 @@
                   "roles": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     }
                   }
                 }
@@ -1212,7 +1404,24 @@
                   "emails": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "All the emails associated with the Databricks user."
                   },
@@ -1225,13 +1434,39 @@
                     "description": "Databricks user ID."
                   },
                   "name": {
-                    "$ref": "#/components/schemas/Name",
+                    "type": "object",
+                    "properties": {
+                      "familyName": {
+                        "type": "string"
+                      },
+                      "givenName": {
+                        "type": "string",
+                        "description": "Given name of the Databricks user."
+                      }
+                    },
                     "description": ":param roles: List[:class:`ComplexValue`] (optional) Indicates if the group has the admin role."
                   },
                   "roles": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     }
                   },
                   "user_name": {
@@ -1600,14 +1835,37 @@
                   "operations": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Patch"
+                      "type": "object",
+                      "properties": {
+                        "op": {
+                          "type": "string",
+                          "x-enum": [
+                            "add",
+                            "remove",
+                            "replace"
+                          ],
+                          "description": "Type of patch operation."
+                        },
+                        "path": {
+                          "type": "string",
+                          "description": "Selection of patch operation"
+                        },
+                        "value": {
+                          "type": "object",
+                          "description": "Value to modify"
+                        }
+                      }
                     },
                     "description": ":param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must be [\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"]."
                   },
                   "schemas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/PatchSchema"
+                      "type": "string",
+                      "x-enum": [
+                        "urn:ietf:params:scim:api:messages:2.0:PatchOp"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     }
                   }
                 }
@@ -1684,7 +1942,24 @@
                   "emails": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "All the emails associated with the Databricks user."
                   },
@@ -1693,13 +1968,39 @@
                     "description": "External ID is not currently supported. It is reserved for future use."
                   },
                   "name": {
-                    "$ref": "#/components/schemas/Name",
+                    "type": "object",
+                    "properties": {
+                      "familyName": {
+                        "type": "string"
+                      },
+                      "givenName": {
+                        "type": "string",
+                        "description": "Given name of the Databricks user."
+                      }
+                    },
                     "description": ":param roles: List[:class:`ComplexValue`] (optional) Indicates if the group has the admin role."
                   },
                   "roles": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     }
                   },
                   "user_name": {
@@ -1844,7 +2145,13 @@
                   "permissions": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/WorkspacePermission"
+                      "type": "string",
+                      "x-enum": [
+                        "ADMIN",
+                        "UNKNOWN",
+                        "USER"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     },
                     "description": "Array of permissions assignments to update on the workspace. Valid values are \"USER\" and \"ADMIN\" (case-sensitive). If both \"USER\" and \"ADMIN\" are provided, \"ADMIN\" takes precedence. Other values will be ignored. Note that excluding this field, or providing unsupported values, will have the same effect as providing an empty list, which will result in the deletion of all permissions for the principal."
                   }

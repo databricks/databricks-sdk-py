@@ -139,7 +139,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "operator",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (IN)"
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (IN)"
               },
               {
                 "name": "values",
@@ -158,7 +158,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "operator",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (IN)"
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (IN)"
           },
           {
             "name": "values",
@@ -276,7 +276,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "operator",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (IN)"
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (IN)"
               },
               {
                 "name": "values",
@@ -295,7 +295,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "operator",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (IN)"
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (IN)"
           },
           {
             "name": "values",
@@ -485,9 +485,146 @@ budget
       value: string
       description: Required parameter for the budgets resource.
     - name: budget
-      value: string
+      value: object
       description: |
         Properties of the new budget configuration.
+      props:
+      - name: account_id
+        value: string
+      - name: alert_configurations
+        value: array
+        description: |
+          Alerts to configure when this budget is in a triggered state. Budgets must have exactly one alert configuration.
+        props:
+        - name: action_configurations
+          value: array
+          props:
+          - name: action_type
+            value: string
+            description: |
+              Create a collection of name/value pairs.
+              Example enumeration:
+              >>> class Color(Enum):
+              ...     RED = 1
+              ...     BLUE = 2
+              ...     GREEN = 3
+              Access them by:
+              - attribute access::
+              >>> Color.RED
+              <Color.RED: 1>
+              - value lookup:
+              >>> Color(1)
+              <Color.RED: 1>
+              - name lookup:
+              >>> Color['RED']
+              <Color.RED: 1>
+              Enumerations can be iterated over, and know how many members they have:
+              >>> len(Color)
+              3
+              >>> list(Color)
+              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+              Methods can be added to enumerations, and members can have their own
+              attributes -- see the documentation for details.
+          - name: target
+            value: string
+            description: |
+              Target for the action. For example, an email address.
+        - name: quantity_threshold
+          value: string
+          description: |
+            The threshold for the budget alert to determine if it is in a triggered state. The number is evaluated based on `quantity_type`.
+        - name: quantity_type
+          value: string
+          description: |
+            The way to calculate cost for this budget alert. This is what `quantity_threshold` is measured in.
+        - name: time_period
+          value: string
+          description: |
+            The time window of usage data for the budget.
+        - name: trigger_type
+          value: string
+          description: |
+            The evaluation method to determine when this budget alert is in a triggered state.
+      - name: display_name
+        value: string
+        description: |
+          Human-readable name of budget configuration. Max Length: 128
+      - name: filter
+        value: object
+        description: |
+          Configured filters for this budget. These are applied to your account's usage to limit the scope of what is considered for this budget. Leave empty to include all usage for this account. All provided filters must be matched for usage to be included.
+        props:
+        - name: tags
+          value: array
+          props:
+          - name: key
+            value: string
+          - name: value
+            value: object
+            props:
+            - name: operator
+              value: string
+              description: |
+                Create a collection of name/value pairs.
+                Example enumeration:
+                >>> class Color(Enum):
+                ...     RED = 1
+                ...     BLUE = 2
+                ...     GREEN = 3
+                Access them by:
+                - attribute access::
+                >>> Color.RED
+                <Color.RED: 1>
+                - value lookup:
+                >>> Color(1)
+                <Color.RED: 1>
+                - name lookup:
+                >>> Color['RED']
+                <Color.RED: 1>
+                Enumerations can be iterated over, and know how many members they have:
+                >>> len(Color)
+                3
+                >>> list(Color)
+                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+                Methods can be added to enumerations, and members can have their own
+                attributes -- see the documentation for details.
+            - name: values
+              value: array
+        - name: workspace_id
+          value: object
+          description: |
+            If provided, usage must match with the provided Databricks workspace IDs.
+          props:
+          - name: operator
+            value: string
+            description: |
+              Create a collection of name/value pairs.
+              Example enumeration:
+              >>> class Color(Enum):
+              ...     RED = 1
+              ...     BLUE = 2
+              ...     GREEN = 3
+              Access them by:
+              - attribute access::
+              >>> Color.RED
+              <Color.RED: 1>
+              - value lookup:
+              >>> Color(1)
+              <Color.RED: 1>
+              - name lookup:
+              >>> Color['RED']
+              <Color.RED: 1>
+              Enumerations can be iterated over, and know how many members they have:
+              >>> len(Color)
+              3
+              >>> list(Color)
+              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+              Methods can be added to enumerations, and members can have their own
+              attributes -- see the documentation for details.
+          - name: values
+            value: array
+            items:
+              type: integer
 ```
 </TabItem>
 </Tabs>

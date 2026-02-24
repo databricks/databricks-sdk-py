@@ -53,7 +53,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#generate"><CopyableCode code="generate" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get a short-lived credential for directly accessing the table data on cloud storage. The metastore</td>
 </tr>
@@ -73,10 +73,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
     <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -98,12 +98,12 @@ Get a short-lived credential for directly accessing the table data on cloud stor
 INSERT INTO databricks_workspace.catalog.temporary_table_credentials (
 operation,
 table_id,
-deployment_name
+workspace
 )
 SELECT 
 '{{ operation }}',
 '{{ table_id }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 aws_temp_credentials,
 azure_aad,
@@ -121,7 +121,7 @@ url
 # Description fields are for documentation purposes
 - name: temporary_table_credentials
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the temporary_table_credentials resource.
     - name: operation

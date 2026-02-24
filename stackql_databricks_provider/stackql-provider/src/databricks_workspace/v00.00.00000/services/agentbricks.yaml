@@ -9,11 +9,12 @@ info:
   x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.agentbricks
 servers:
-  - url: https://{deployment_name}.cloud.databricks.com
+  - url: https://{workspace}.cloud.databricks.com
+    description: Databricks workspace
     variables:
-      deployment_name:
-        description: The Databricks Workspace Deployment Name
-        default: dbc-abcd0123-a1bc
+      workspace:
+        default: your-workspace
+        description: Your Databricks workspace name
 paths:
   /api/2.0/custom-llms/{id}/optimize/cancel:
     post:
@@ -98,7 +99,26 @@ paths:
                 datasets:
                   type: array
                   items:
-                    $ref: '#/components/schemas/Dataset'
+                    type: object
+                    properties:
+                      table:
+                        type: object
+                        properties:
+                          table_path:
+                            type: string
+                          request_col:
+                            type: string
+                            description: Name of the request column
+                          response_col:
+                            type: string
+                            description: >-
+                              Optional: Name of the response column if the data
+                              is labeled
+                        required:
+                          - table_path
+                          - request_col
+                    required:
+                      - table
                   description: >-
                     Datasets used for training and evaluating the model, not for
                     inference. Currently, only 1 dataset is accepted.
@@ -244,7 +264,74 @@ paths:
               type: object
               properties:
                 custom_llm:
-                  $ref: '#/components/schemas/CustomLlm'
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    instructions:
+                      type: string
+                      description: Instructions for the custom LLM to follow
+                    agent_artifact_path:
+                      type: string
+                    creation_time:
+                      type: string
+                      description: Creation timestamp of the custom LLM
+                    creator:
+                      type: string
+                      description: Creator of the custom LLM
+                    datasets:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          table:
+                            type: object
+                            properties:
+                              table_path:
+                                type: string
+                              request_col:
+                                type: string
+                                description: Name of the request column
+                              response_col:
+                                type: string
+                                description: >-
+                                  Optional: Name of the response column if the
+                                  data is labeled
+                            required:
+                              - table_path
+                              - request_col
+                        required:
+                          - table
+                      description: >-
+                        Datasets used for training and evaluating the model, not
+                        for inference
+                    endpoint_name:
+                      type: string
+                      description: >-
+                        Name of the endpoint that will be used to serve the
+                        custom LLM
+                    guidelines:
+                      type: array
+                      items:
+                        type: string
+                      description: Guidelines for the custom LLM to adhere to
+                    id:
+                      type: string
+                    optimization_state:
+                      type: string
+                      x-enum:
+                        - CANCELLED
+                        - COMPLETED
+                        - CREATED
+                        - FAILED
+                        - PENDING
+                        - RUNNING
+                      description: >-
+                        If optimization is kicked off, tracks the state of the
+                        custom LLM
+                  required:
+                    - name
+                    - instructions
                   description: The CustomLlm containing the fields which should be updated.
                 update_mask:
                   type: string

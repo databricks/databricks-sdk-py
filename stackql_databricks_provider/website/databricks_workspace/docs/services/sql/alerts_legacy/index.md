@@ -539,35 +539,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-alert_id"><code>alert_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-alert_id"><code>alert_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets an alert.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets a list of alerts.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-query_id"><code>query_id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-query_id"><code>query_id</code></a></td>
     <td></td>
     <td>Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-alert_id"><code>alert_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-query_id"><code>query_id</code></a></td>
+    <td><a href="#parameter-alert_id"><code>alert_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-query_id"><code>query_id</code></a></td>
     <td></td>
     <td>Updates an alert.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-alert_id"><code>alert_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-alert_id"><code>alert_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike</td>
 </tr>
@@ -592,10 +592,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>str</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
     <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -628,7 +628,7 @@ updated_at,
 user
 FROM databricks_workspace.sql.alerts_legacy
 WHERE alert_id = '{{ alert_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -650,7 +650,7 @@ state,
 updated_at,
 user
 FROM databricks_workspace.sql.alerts_legacy
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -677,15 +677,15 @@ options,
 query_id,
 parent,
 rearm,
-deployment_name
+workspace
 )
 SELECT 
 '{{ name }}' /* required */,
 '{{ options }}' /* required */,
 '{{ query_id }}' /* required */,
 '{{ parent }}',
-'{{ rearm }}',
-'{{ deployment_name }}'
+{{ rearm }},
+'{{ workspace }}'
 RETURNING
 id,
 name,
@@ -707,7 +707,7 @@ user
 # Description fields are for documentation purposes
 - name: alerts_legacy
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the alerts_legacy resource.
     - name: name
@@ -715,9 +715,38 @@ user
       description: |
         Name of the alert.
     - name: options
-      value: string
+      value: object
       description: |
         Alert configuration options.
+      props:
+      - name: column
+        value: string
+        description: |
+          Name of column in the query result to compare in alert evaluation.
+      - name: op
+        value: string
+        description: |
+          Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`, `!=`
+      - name: value
+        value: object
+        description: |
+          Value used to compare in alert evaluation. Supported types include strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true).
+      - name: custom_body
+        value: string
+        description: |
+          Custom body of alert notification, if it exists. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html
+      - name: custom_subject
+        value: string
+        description: |
+          Custom subject of alert notification, if it exists. This includes email subject, Slack notification header, etc. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html
+      - name: empty_result_state
+        value: string
+        description: |
+          State that alert evaluates to when query result is empty.
+      - name: muted
+        value: boolean
+        description: |
+          Whether or not the alert is muted. If an alert is muted, it will not notify users and notification destinations when triggered.
     - name: query_id
       value: string
       description: |
@@ -727,7 +756,7 @@ user
       description: |
         The identifier of the workspace folder containing the object.
     - name: rearm
-      value: string
+      value: integer
       description: |
         Number of seconds after being triggered before the alert rearms itself and can be triggered again. If `null`, alert will never be triggered again.
 ```
@@ -753,10 +782,10 @@ SET
 name = '{{ name }}',
 options = '{{ options }}',
 query_id = '{{ query_id }}',
-rearm = '{{ rearm }}'
+rearm = {{ rearm }}
 WHERE 
 alert_id = '{{ alert_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND name = '{{ name }}' --required
 AND options = '{{ options }}' --required
 AND query_id = '{{ query_id }}' --required;
@@ -780,7 +809,7 @@ Deletes an alert. Deleted alerts are no longer accessible and cannot be restored
 ```sql
 DELETE FROM databricks_workspace.sql.alerts_legacy
 WHERE alert_id = '{{ alert_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

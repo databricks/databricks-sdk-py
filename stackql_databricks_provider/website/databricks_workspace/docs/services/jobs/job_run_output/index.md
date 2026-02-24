@@ -2775,7 +2775,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get_output"><CopyableCode code="get_output" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-run_id"><code>run_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-run_id"><code>run_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Retrieve the output and metadata of a single task run. When a notebook task returns a value through</td>
 </tr>
@@ -2795,15 +2795,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-run_id">
     <td><CopyableCode code="run_id" /></td>
     <td><code>integer</code></td>
     <td>The canonical identifier for the run.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -2838,7 +2838,7 @@ run_job_output,
 sql_output
 FROM databricks_workspace.jobs.job_run_output
 WHERE run_id = '{{ run_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>

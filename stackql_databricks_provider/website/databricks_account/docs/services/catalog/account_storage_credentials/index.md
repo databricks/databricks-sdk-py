@@ -474,7 +474,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-force">
     <td><CopyableCode code="force" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Force deletion even if the Storage Credential is not empty. Default is false.</td>
 </tr>
 </tbody>
@@ -575,7 +575,7 @@ metastore_id
 )
 SELECT 
 '{{ credential_info }}',
-'{{ skip_validation }}',
+{{ skip_validation }},
 '{{ account_id }}',
 '{{ metastore_id }}'
 RETURNING
@@ -596,11 +596,82 @@ credential_info
       value: string
       description: Required parameter for the account_storage_credentials resource.
     - name: credential_info
-      value: string
+      value: object
       description: |
         :param skip_validation: bool (optional) Optional, default false. Supplying true to this argument skips validation of the created set of credentials.
+      props:
+      - name: name
+        value: string
+      - name: aws_iam_role
+        value: object
+        description: |
+          The AWS IAM role configuration.
+        props:
+        - name: role_arn
+          value: string
+          description: |
+            The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials.
+      - name: azure_managed_identity
+        value: object
+        description: |
+          The Azure managed identity configuration.
+        props:
+        - name: access_connector_id
+          value: string
+          description: |
+            The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+        - name: managed_identity_id
+          value: string
+          description: |
+            The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}` This is only available for user-assgined identities. For system-assigned identities, the access_connector_id is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity is using the system-assigned identity.
+      - name: azure_service_principal
+        value: object
+        description: |
+          The Azure service principal configuration.
+        props:
+        - name: directory_id
+          value: string
+          description: |
+            The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application.
+        - name: application_id
+          value: string
+          description: |
+            The application ID of the application registration within the referenced AAD tenant.
+        - name: client_secret
+          value: string
+          description: |
+            The client secret generated for the above app ID in AAD.
+      - name: cloudflare_api_token
+        value: object
+        description: |
+          The Cloudflare API token configuration.
+        props:
+        - name: access_key_id
+          value: string
+          description: |
+            The access key ID associated with the API token.
+        - name: secret_access_key
+          value: string
+          description: |
+            The secret access token generated for the above access key ID.
+        - name: account_id
+          value: string
+          description: |
+            The ID of the account associated with the API token.
+      - name: comment
+        value: string
+        description: |
+          Comment associated with the credential.
+      - name: databricks_gcp_service_account
+        value: object
+        description: |
+          The Databricks managed GCP service account configuration.
+      - name: read_only
+        value: boolean
+        description: |
+          Whether the credential is usable only for read operations. Only applicable when purpose is **STORAGE**.
     - name: skip_validation
-      value: string
+      value: boolean
 ```
 </TabItem>
 </Tabs>
@@ -622,7 +693,7 @@ Updates a storage credential on the metastore. The caller must be the owner of t
 REPLACE databricks_account.catalog.account_storage_credentials
 SET 
 credential_info = '{{ credential_info }}',
-skip_validation = '{{ skip_validation }}'
+skip_validation = {{ skip_validation }}
 WHERE 
 account_id = '{{ account_id }}' --required
 AND metastore_id = '{{ metastore_id }}' --required

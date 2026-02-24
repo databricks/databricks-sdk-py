@@ -321,42 +321,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets the details for a single service principal define in the Databricks workspace.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-attributes"><code>attributes</code></a>, <a href="#parameter-count"><code>count</code></a>, <a href="#parameter-excluded_attributes"><code>excluded_attributes</code></a>, <a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-sort_by"><code>sort_by</code></a>, <a href="#parameter-sort_order"><code>sort_order</code></a>, <a href="#parameter-start_index"><code>start_index</code></a></td>
     <td>Gets the set of service principals associated with a Databricks workspace.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Creates a new service principal in the Databricks workspace.</td>
 </tr>
 <tr>
     <td><a href="#patch"><CopyableCode code="patch" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Partially updates the details of a single service principal in the Databricks workspace.</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates the details of a single service principal.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Delete a single service principal in the Databricks workspace.</td>
 </tr>
@@ -376,15 +376,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>Unique ID for a service principal in the Databricks workspace.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-attributes">
     <td><CopyableCode code="attributes" /></td>
@@ -393,7 +393,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-count">
     <td><CopyableCode code="count" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Desired number of results per page.</td>
 </tr>
 <tr id="parameter-excluded_attributes">
@@ -418,7 +418,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-start_index">
     <td><CopyableCode code="start_index" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Specifies the index of the first result. First item is number 1.</td>
 </tr>
 </tbody>
@@ -450,7 +450,7 @@ roles,
 schemas
 FROM databricks_workspace.iam.service_principals_v2
 WHERE id = '{{ id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -470,7 +470,7 @@ groups,
 roles,
 schemas
 FROM databricks_workspace.iam.service_principals_v2
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND attributes = '{{ attributes }}'
 AND count = '{{ count }}'
 AND excluded_attributes = '{{ excluded_attributes }}'
@@ -508,10 +508,10 @@ groups,
 id,
 roles,
 schemas,
-deployment_name
+workspace
 )
 SELECT 
-'{{ active }}',
+{{ active }},
 '{{ application_id }}',
 '{{ display_name }}',
 '{{ entitlements }}',
@@ -520,7 +520,7 @@ SELECT
 '{{ id }}',
 '{{ roles }}',
 '{{ schemas }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 active,
@@ -540,11 +540,11 @@ schemas
 # Description fields are for documentation purposes
 - name: service_principals_v2
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the service_principals_v2 resource.
     - name: active
-      value: string
+      value: boolean
       description: |
         If this user is active
     - name: application_id
@@ -556,27 +556,62 @@ schemas
       description: |
         String that represents a concatenation of given and family names.
     - name: entitlements
-      value: string
+      value: array
       description: |
         Entitlements assigned to the service principal. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+      props:
+      - name: display
+        value: string
+      - name: primary
+        value: boolean
+      - name: $ref
+        value: string
+      - name: type
+        value: string
+      - name: value
+        value: string
     - name: external_id
       value: string
       description: |
         :param groups: List[:class:`ComplexValue`] (optional)
     - name: groups
-      value: string
+      value: array
+      props:
+      - name: display
+        value: string
+      - name: primary
+        value: boolean
+      - name: $ref
+        value: string
+      - name: type
+        value: string
+      - name: value
+        value: string
     - name: id
       value: string
       description: |
         Databricks service principal ID.
     - name: roles
-      value: string
+      value: array
       description: |
         Corresponds to AWS instance profile/arn role.
+      props:
+      - name: display
+        value: string
+      - name: primary
+        value: boolean
+      - name: $ref
+        value: string
+      - name: type
+        value: string
+      - name: value
+        value: string
     - name: schemas
-      value: string
+      value: array
       description: |
         The schema of the List response.
+      items:
+        type: string
 ```
 </TabItem>
 </Tabs>
@@ -601,7 +636,7 @@ operations = '{{ operations }}',
 schemas = '{{ schemas }}'
 WHERE 
 id = '{{ id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required;
+AND workspace = '{{ workspace }}' --required;
 ```
 </TabItem>
 </Tabs>
@@ -622,7 +657,7 @@ Updates the details of a single service principal.
 ```sql
 REPLACE databricks_workspace.iam.service_principals_v2
 SET 
-active = '{{ active }}',
+active = {{ active }},
 application_id = '{{ application_id }}',
 display_name = '{{ display_name }}',
 entitlements = '{{ entitlements }}',
@@ -632,7 +667,7 @@ roles = '{{ roles }}',
 schemas = '{{ schemas }}'
 WHERE 
 id = '{{ id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required;
+AND workspace = '{{ workspace }}' --required;
 ```
 </TabItem>
 </Tabs>
@@ -653,7 +688,7 @@ Delete a single service principal in the Databricks workspace.
 ```sql
 DELETE FROM databricks_workspace.iam.service_principals_v2
 WHERE id = '{{ id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

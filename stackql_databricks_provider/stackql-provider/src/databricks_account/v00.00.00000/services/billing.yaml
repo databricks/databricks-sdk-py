@@ -9,6 +9,7 @@ info:
   x-stackql-sdk-namespace: databricks.sdk.service.billing
 servers:
 - url: https://accounts.cloud.databricks.com
+  description: Databricks account
 paths:
   /api/2.0/accounts/{account_id}/usage/download:
     get:
@@ -17,32 +18,17 @@ paths:
       tags:
       - billing
       - billable_usage
-      description: |-
-        Returns billable usage logs in CSV format for the specified account and date range. For the data
-        schema, see:
-
-        - AWS: [CSV file schema]. - GCP: [CSV file schema].
-
-        Note that this method might take multiple minutes to complete.
-
-        **Warning**: Depending on the queried date range, the number of workspaces in the account, the size of
-        the response and the internet speed of the caller, this API may hit a timeout after a few minutes. If
-        you experience this, try to mitigate by calling the API with narrower date ranges.
-
-        [CSV file schema]: https://docs.gcp.databricks.com/administration-guide/account-settings/usage-analysis.html#csv-file-schema
-
-        :param start_month: str
-          Format specification for month in the format `YYYY-MM`. This is used to specify billable usage
-          `start_month` and `end_month` properties. **Note**: Billable usage logs are unavailable before March
-          2019 (`2019-03`).
-        :param end_month: str
-          Format: `YYYY-MM`. Last month to return billable usage logs for. This field is required.
-        :param personal_data: bool (optional)
-          Specify whether to include personally identifiable information in the billable usage logs, for
-          example the email addresses of cluster creators. Handle this information with care. Defaults to
-          false.
-
-        :returns: :class:`DownloadResponse`
+      description: "Returns billable usage logs in CSV format for the specified account and date range. For the data\nschema,\
+        \ see:\n\n- AWS: [CSV file schema]. - GCP: [CSV file schema].\n\nNote that this method might take multiple minutes\
+        \ to complete.\n\n**Warning**: Depending on the queried date range, the number of workspaces in the account, the size\
+        \ of\nthe response and the internet speed of the caller, this API may hit a timeout after a few minutes. If\nyou experience\
+        \ this, try to mitigate by calling the API with narrower date ranges.\n\n[CSV file schema]: https://docs.gcp.databricks.com/administration-guide/account-settings/usage-analysis.html#csv-file-schema\n\
+        \n:param start_month: str\n  Format specification for month in the format `YYYY-MM`. This is used to specify billable\
+        \ usage\n  `start_month` and `end_month` properties. **Note**: Billable usage logs are unavailable before March\n\
+        \  2019 (`2019-03`).\n:param end_month: str\n  Format: `YYYY-MM`. Last month to return billable usage logs for. This\
+        \ field is required.\n:param personal_data: bool (optional)\n  Specify whether to include personally identifiable\
+        \ information in the billable usage logs, for\n  example the email addresses of cluster creators. Handle this information\
+        \ with care. Defaults to\n  false.\n\n:returns: :class:`DownloadResponse`"
       parameters:
       - name: account_id
         in: path
@@ -98,18 +84,11 @@ paths:
       tags:
       - billing
       - budget_policy
-      description: |-
-        Creates a new policy.
-
-        :param policy: :class:`BudgetPolicy` (optional)
-          The policy to create. `policy_id` needs to be empty as it will be generated `policy_name` must be
-          provided, custom_tags may need to be provided depending on the cloud provider. All other fields are
-          optional.
-        :param request_id: str (optional)
-          A unique identifier for this request. Restricted to 36 ASCII characters. A random UUID is
-          recommended. This request is only idempotent if a `request_id` is provided.
-
-        :returns: :class:`BudgetPolicy`
+      description: "Creates a new policy.\n\n:param policy: :class:`BudgetPolicy` (optional)\n  The policy to create. `policy_id`\
+        \ needs to be empty as it will be generated `policy_name` must be\n  provided, custom_tags may need to be provided\
+        \ depending on the cloud provider. All other fields are\n  optional.\n:param request_id: str (optional)\n  A unique\
+        \ identifier for this request. Restricted to 36 ASCII characters. A random UUID is\n  recommended. This request is\
+        \ only idempotent if a `request_id` is provided.\n\n:returns: :class:`BudgetPolicy`"
       parameters:
       - name: account_id
         in: path
@@ -123,7 +102,24 @@ paths:
               type: object
               properties:
                 policy:
-                  $ref: '#/components/schemas/BudgetPolicy'
+                  type: object
+                  properties:
+                    binding_workspace_ids:
+                      type: array
+                      items:
+                        type: integer
+                      description: List of workspaces that this budget policy will be exclusively bound to. An empty binding
+                        implies that this budget policy is open to any workspace in the account.
+                    custom_tags:
+                      type: string
+                      description: A list of tags defined by the customer. At most 20 entries are allowed per policy.
+                    policy_id:
+                      type: string
+                      description: The Id of the policy. This field is generated by Databricks and globally unique.
+                    policy_name:
+                      type: string
+                      description: The name of the policy. - Must be unique among active policies. - Can contain only characters
+                        from the ISO 8859-1 (latin1) set. - Can't start with reserved keywords such as `databricks:default-policy`.
                   description: The policy to create. `policy_id` needs to be empty as it will be generated `policy_name` must
                     be provided, custom_tags may need to be provided depending on the cloud provider. All other fields are
                     optional.
@@ -156,24 +152,14 @@ paths:
       tags:
       - billing
       - budget_policy
-      description: |-
-        Lists all policies. Policies are returned in the alphabetically ascending order of their names.
-
-        :param filter_by: :class:`Filter` (optional)
-          A filter to apply to the list of policies.
-        :param page_size: int (optional)
-          The maximum number of budget policies to return. If unspecified, at most 100 budget policies will be
-          returned. The maximum value is 1000; values above 1000 will be coerced to 1000.
-        :param page_token: str (optional)
-          A page token, received from a previous `ListServerlessPolicies` call. Provide this to retrieve the
-          subsequent page. If unspecified, the first page will be returned.
-
-          When paginating, all other parameters provided to `ListServerlessPoliciesRequest` must match the
-          call that provided the page token.
-        :param sort_spec: :class:`SortSpec` (optional)
-          The sort specification.
-
-        :returns: Iterator over :class:`BudgetPolicy`
+      description: "Lists all policies. Policies are returned in the alphabetically ascending order of their names.\n\n:param\
+        \ filter_by: :class:`Filter` (optional)\n  A filter to apply to the list of policies.\n:param page_size: int (optional)\n\
+        \  The maximum number of budget policies to return. If unspecified, at most 100 budget policies will be\n  returned.\
+        \ The maximum value is 1000; values above 1000 will be coerced to 1000.\n:param page_token: str (optional)\n  A page\
+        \ token, received from a previous `ListServerlessPolicies` call. Provide this to retrieve the\n  subsequent page.\
+        \ If unspecified, the first page will be returned.\n\n  When paginating, all other parameters provided to `ListServerlessPoliciesRequest`\
+        \ must match the\n  call that provided the page token.\n:param sort_spec: :class:`SortSpec` (optional)\n  The sort\
+        \ specification.\n\n:returns: Iterator over :class:`BudgetPolicy`"
       parameters:
       - name: account_id
         in: path
@@ -233,11 +219,7 @@ paths:
       tags:
       - billing
       - budget_policy
-      description: |-
-        Deletes a policy
-
-        :param policy_id: str
-          The Id of the policy.
+      description: "Deletes a policy\n\n:param policy_id: str\n  The Id of the policy."
       parameters:
       - name: account_id
         in: path
@@ -271,13 +253,7 @@ paths:
       tags:
       - billing
       - budget_policy
-      description: |-
-        Retrieves a policy by it's ID.
-
-        :param policy_id: str
-          The Id of the policy.
-
-        :returns: :class:`BudgetPolicy`
+      description: "Retrieves a policy by it's ID.\n\n:param policy_id: str\n  The Id of the policy.\n\n:returns: :class:`BudgetPolicy`"
       parameters:
       - name: account_id
         in: path
@@ -315,18 +291,11 @@ paths:
       tags:
       - billing
       - budget_policy
-      description: |-
-        Updates a policy
-
-        :param policy_id: str
-          The Id of the policy. This field is generated by Databricks and globally unique.
-        :param policy: :class:`BudgetPolicy`
-          The policy to update. `creator_user_id` cannot be specified in the request. All other fields must be
-          specified even if not changed. The `policy_id` is used to identify the policy to update.
-        :param limit_config: :class:`LimitConfig` (optional)
-          DEPRECATED. This is redundant field as LimitConfig is part of the BudgetPolicy
-
-        :returns: :class:`BudgetPolicy`
+      description: "Updates a policy\n\n:param policy_id: str\n  The Id of the policy. This field is generated by Databricks\
+        \ and globally unique.\n:param policy: :class:`BudgetPolicy`\n  The policy to update. `creator_user_id` cannot be\
+        \ specified in the request. All other fields must be\n  specified even if not changed. The `policy_id` is used to\
+        \ identify the policy to update.\n:param limit_config: :class:`LimitConfig` (optional)\n  DEPRECATED. This is redundant\
+        \ field as LimitConfig is part of the BudgetPolicy\n\n:returns: :class:`BudgetPolicy`"
       parameters:
       - name: account_id
         in: path
@@ -352,7 +321,24 @@ paths:
               type: object
               properties:
                 policy:
-                  $ref: '#/components/schemas/BudgetPolicy'
+                  type: object
+                  properties:
+                    binding_workspace_ids:
+                      type: array
+                      items:
+                        type: integer
+                      description: List of workspaces that this budget policy will be exclusively bound to. An empty binding
+                        implies that this budget policy is open to any workspace in the account.
+                    custom_tags:
+                      type: string
+                      description: A list of tags defined by the customer. At most 20 entries are allowed per policy.
+                    policy_id:
+                      type: string
+                      description: The Id of the policy. This field is generated by Databricks and globally unique.
+                    policy_name:
+                      type: string
+                      description: The name of the policy. - Must be unique among active policies. - Can contain only characters
+                        from the ISO 8859-1 (latin1) set. - Can't start with reserved keywords such as `databricks:default-policy`.
                   description: The policy to update. `creator_user_id` cannot be specified in the request. All other fields
                     must be specified even if not changed. The `policy_id` is used to identify the policy to update.
               required:
@@ -383,14 +369,9 @@ paths:
       tags:
       - billing
       - budgets
-      description: |-
-        Create a new budget configuration for an account. For full details, see
-        https://docs.databricks.com/en/admin/account-settings/budgets.html.
-
-        :param budget: :class:`CreateBudgetConfigurationBudget`
-          Properties of the new budget configuration.
-
-        :returns: :class:`CreateBudgetConfigurationResponse`
+      description: "Create a new budget configuration for an account. For full details, see\nhttps://docs.databricks.com/en/admin/account-settings/budgets.html.\n\
+        \n:param budget: :class:`CreateBudgetConfigurationBudget`\n  Properties of the new budget configuration.\n\n:returns:\
+        \ :class:`CreateBudgetConfigurationResponse`"
       parameters:
       - name: account_id
         in: path
@@ -404,7 +385,262 @@ paths:
               type: object
               properties:
                 budget:
-                  $ref: '#/components/schemas/CreateBudgetConfigurationBudget'
+                  type: object
+                  properties:
+                    account_id:
+                      type: string
+                    alert_configurations:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          action_configurations:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                action_type:
+                                  type: string
+                                  x-enum:
+                                  - EMAIL_NOTIFICATION
+                                  description: 'Create a collection of name/value pairs.
+
+
+                                    Example enumeration:
+
+
+                                    >>> class Color(Enum):
+
+                                    ...     RED = 1
+
+                                    ...     BLUE = 2
+
+                                    ...     GREEN = 3
+
+
+                                    Access them by:
+
+
+                                    - attribute access::
+
+
+                                    >>> Color.RED
+
+                                    <Color.RED: 1>
+
+
+                                    - value lookup:
+
+
+                                    >>> Color(1)
+
+                                    <Color.RED: 1>
+
+
+                                    - name lookup:
+
+
+                                    >>> Color[''RED'']
+
+                                    <Color.RED: 1>
+
+
+                                    Enumerations can be iterated over, and know how many members they have:
+
+
+                                    >>> len(Color)
+
+                                    3
+
+
+                                    >>> list(Color)
+
+                                    [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                                    Methods can be added to enumerations, and members can have their own
+
+                                    attributes -- see the documentation for details.'
+                                target:
+                                  type: string
+                                  description: Target for the action. For example, an email address.
+                          quantity_threshold:
+                            type: string
+                            description: The threshold for the budget alert to determine if it is in a triggered state. The
+                              number is evaluated based on `quantity_type`.
+                          quantity_type:
+                            type: string
+                            x-enum:
+                            - LIST_PRICE_DOLLARS_USD
+                            description: The way to calculate cost for this budget alert. This is what `quantity_threshold`
+                              is measured in.
+                          time_period:
+                            type: string
+                            x-enum:
+                            - MONTH
+                            description: The time window of usage data for the budget.
+                          trigger_type:
+                            type: string
+                            x-enum:
+                            - CUMULATIVE_SPENDING_EXCEEDED
+                            description: The evaluation method to determine when this budget alert is in a triggered state.
+                      description: Alerts to configure when this budget is in a triggered state. Budgets must have exactly
+                        one alert configuration.
+                    display_name:
+                      type: string
+                      description: 'Human-readable name of budget configuration. Max Length: 128'
+                    filter:
+                      type: object
+                      properties:
+                        tags:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              key:
+                                type: string
+                              value:
+                                type: object
+                                properties:
+                                  operator:
+                                    type: string
+                                    x-enum:
+                                    - IN
+                                    description: 'Create a collection of name/value pairs.
+
+
+                                      Example enumeration:
+
+
+                                      >>> class Color(Enum):
+
+                                      ...     RED = 1
+
+                                      ...     BLUE = 2
+
+                                      ...     GREEN = 3
+
+
+                                      Access them by:
+
+
+                                      - attribute access::
+
+
+                                      >>> Color.RED
+
+                                      <Color.RED: 1>
+
+
+                                      - value lookup:
+
+
+                                      >>> Color(1)
+
+                                      <Color.RED: 1>
+
+
+                                      - name lookup:
+
+
+                                      >>> Color[''RED'']
+
+                                      <Color.RED: 1>
+
+
+                                      Enumerations can be iterated over, and know how many members they have:
+
+
+                                      >>> len(Color)
+
+                                      3
+
+
+                                      >>> list(Color)
+
+                                      [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                                      Methods can be added to enumerations, and members can have their own
+
+                                      attributes -- see the documentation for details.'
+                                  values:
+                                    type: array
+                                    items:
+                                      type: string
+                        workspace_id:
+                          type: object
+                          properties:
+                            operator:
+                              type: string
+                              x-enum:
+                              - IN
+                              description: 'Create a collection of name/value pairs.
+
+
+                                Example enumeration:
+
+
+                                >>> class Color(Enum):
+
+                                ...     RED = 1
+
+                                ...     BLUE = 2
+
+                                ...     GREEN = 3
+
+
+                                Access them by:
+
+
+                                - attribute access::
+
+
+                                >>> Color.RED
+
+                                <Color.RED: 1>
+
+
+                                - value lookup:
+
+
+                                >>> Color(1)
+
+                                <Color.RED: 1>
+
+
+                                - name lookup:
+
+
+                                >>> Color[''RED'']
+
+                                <Color.RED: 1>
+
+
+                                Enumerations can be iterated over, and know how many members they have:
+
+
+                                >>> len(Color)
+
+                                3
+
+
+                                >>> list(Color)
+
+                                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                                Methods can be added to enumerations, and members can have their own
+
+                                attributes -- see the documentation for details.'
+                            values:
+                              type: array
+                              items:
+                                type: integer
+                          description: If provided, usage must match with the provided Databricks workspace IDs.
+                      description: Configured filters for this budget. These are applied to your account's usage to limit
+                        the scope of what is considered for this budget. Leave empty to include all usage for this account.
+                        All provided filters must be matched for usage to be included.
                   description: Properties of the new budget configuration.
               required:
               - budget
@@ -433,14 +669,9 @@ paths:
       tags:
       - billing
       - budgets
-      description: |-
-        Gets all budgets associated with this account.
-
-        :param page_token: str (optional)
-          A page token received from a previous get all budget configurations call. This token can be used to
-          retrieve the subsequent page. Requests first page if absent.
-
-        :returns: Iterator over :class:`BudgetConfiguration`
+      description: "Gets all budgets associated with this account.\n\n:param page_token: str (optional)\n  A page token received\
+        \ from a previous get all budget configurations call. This token can be used to\n  retrieve the subsequent page. Requests\
+        \ first page if absent.\n\n:returns: Iterator over :class:`BudgetConfiguration`"
       parameters:
       - name: account_id
         in: path
@@ -480,12 +711,8 @@ paths:
       tags:
       - billing
       - budgets
-      description: |-
-        Deletes a budget configuration for an account. Both account and budget configuration are specified by
-        ID. This cannot be undone.
-
-        :param budget_id: str
-          The Databricks budget configuration ID.
+      description: "Deletes a budget configuration for an account. Both account and budget configuration are specified by\n\
+        ID. This cannot be undone.\n\n:param budget_id: str\n  The Databricks budget configuration ID."
       parameters:
       - name: account_id
         in: path
@@ -519,13 +746,8 @@ paths:
       tags:
       - billing
       - budgets
-      description: |-
-        Gets a budget configuration for an account. Both account and budget configuration are specified by ID.
-
-        :param budget_id: str
-          The budget configuration ID
-
-        :returns: :class:`GetBudgetConfigurationResponse`
+      description: "Gets a budget configuration for an account. Both account and budget configuration are specified by ID.\n\
+        \n:param budget_id: str\n  The budget configuration ID\n\n:returns: :class:`GetBudgetConfigurationResponse`"
       parameters:
       - name: account_id
         in: path
@@ -563,16 +785,9 @@ paths:
       tags:
       - billing
       - budgets
-      description: |-
-        Updates a budget configuration for an account. Both account and budget configuration are specified by
-        ID.
-
-        :param budget_id: str
-          The Databricks budget configuration ID.
-        :param budget: :class:`UpdateBudgetConfigurationBudget`
-          The updated budget. This will overwrite the budget specified by the budget ID.
-
-        :returns: :class:`UpdateBudgetConfigurationResponse`
+      description: "Updates a budget configuration for an account. Both account and budget configuration are specified by\n\
+        ID.\n\n:param budget_id: str\n  The Databricks budget configuration ID.\n:param budget: :class:`UpdateBudgetConfigurationBudget`\n\
+        \  The updated budget. This will overwrite the budget specified by the budget ID.\n\n:returns: :class:`UpdateBudgetConfigurationResponse`"
       parameters:
       - name: account_id
         in: path
@@ -592,7 +807,213 @@ paths:
               type: object
               properties:
                 budget:
-                  $ref: '#/components/schemas/UpdateBudgetConfigurationBudget'
+                  type: object
+                  properties:
+                    account_id:
+                      type: string
+                    alert_configurations:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          action_configurations:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                action_configuration_id:
+                                  type: string
+                                action_type:
+                                  type: string
+                                  x-enum:
+                                  - EMAIL_NOTIFICATION
+                                  description: The type of the action.
+                                target:
+                                  type: string
+                                  description: Target for the action. For example, an email address.
+                          alert_configuration_id:
+                            type: string
+                            description: Databricks alert configuration ID.
+                          quantity_threshold:
+                            type: string
+                            description: The threshold for the budget alert to determine if it is in a triggered state. The
+                              number is evaluated based on `quantity_type`.
+                          quantity_type:
+                            type: string
+                            x-enum:
+                            - LIST_PRICE_DOLLARS_USD
+                            description: The way to calculate cost for this budget alert. This is what `quantity_threshold`
+                              is measured in.
+                          time_period:
+                            type: string
+                            x-enum:
+                            - MONTH
+                            description: The time window of usage data for the budget.
+                          trigger_type:
+                            type: string
+                            x-enum:
+                            - CUMULATIVE_SPENDING_EXCEEDED
+                            description: The evaluation method to determine when this budget alert is in a triggered state.
+                      description: Alerts to configure when this budget is in a triggered state. Budgets must have exactly
+                        one alert configuration.
+                    budget_configuration_id:
+                      type: string
+                      description: Databricks budget configuration ID.
+                    display_name:
+                      type: string
+                      description: 'Human-readable name of budget configuration. Max Length: 128'
+                    filter:
+                      type: object
+                      properties:
+                        tags:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              key:
+                                type: string
+                              value:
+                                type: object
+                                properties:
+                                  operator:
+                                    type: string
+                                    x-enum:
+                                    - IN
+                                    description: 'Create a collection of name/value pairs.
+
+
+                                      Example enumeration:
+
+
+                                      >>> class Color(Enum):
+
+                                      ...     RED = 1
+
+                                      ...     BLUE = 2
+
+                                      ...     GREEN = 3
+
+
+                                      Access them by:
+
+
+                                      - attribute access::
+
+
+                                      >>> Color.RED
+
+                                      <Color.RED: 1>
+
+
+                                      - value lookup:
+
+
+                                      >>> Color(1)
+
+                                      <Color.RED: 1>
+
+
+                                      - name lookup:
+
+
+                                      >>> Color[''RED'']
+
+                                      <Color.RED: 1>
+
+
+                                      Enumerations can be iterated over, and know how many members they have:
+
+
+                                      >>> len(Color)
+
+                                      3
+
+
+                                      >>> list(Color)
+
+                                      [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                                      Methods can be added to enumerations, and members can have their own
+
+                                      attributes -- see the documentation for details.'
+                                  values:
+                                    type: array
+                                    items:
+                                      type: string
+                        workspace_id:
+                          type: object
+                          properties:
+                            operator:
+                              type: string
+                              x-enum:
+                              - IN
+                              description: 'Create a collection of name/value pairs.
+
+
+                                Example enumeration:
+
+
+                                >>> class Color(Enum):
+
+                                ...     RED = 1
+
+                                ...     BLUE = 2
+
+                                ...     GREEN = 3
+
+
+                                Access them by:
+
+
+                                - attribute access::
+
+
+                                >>> Color.RED
+
+                                <Color.RED: 1>
+
+
+                                - value lookup:
+
+
+                                >>> Color(1)
+
+                                <Color.RED: 1>
+
+
+                                - name lookup:
+
+
+                                >>> Color[''RED'']
+
+                                <Color.RED: 1>
+
+
+                                Enumerations can be iterated over, and know how many members they have:
+
+
+                                >>> len(Color)
+
+                                3
+
+
+                                >>> list(Color)
+
+                                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+                                Methods can be added to enumerations, and members can have their own
+
+                                attributes -- see the documentation for details.'
+                            values:
+                              type: array
+                              items:
+                                type: integer
+                          description: If provided, usage must match with the provided Databricks workspace IDs.
+                      description: Configured filters for this budget. These are applied to your account's usage to limit
+                        the scope of what is considered for this budget. Leave empty to include all usage for this account.
+                        All provided filters must be matched for usage to be included.
                   description: The updated budget. This will overwrite the budget specified by the budget ID.
               required:
               - budget
@@ -622,31 +1043,47 @@ paths:
       tags:
       - billing
       - log_delivery
-      description: |-
-        Creates a new Databricks log delivery configuration to enable delivery of the specified type of logs
+      description: 'Creates a new Databricks log delivery configuration to enable delivery of the specified type of logs
+
         to your storage location. This requires that you already created a [credential
+
         object](:method:Credentials/Create) (which encapsulates a cross-account service IAM role) and a
+
         [storage configuration object](:method:Storage/Create) (which encapsulates an S3 bucket).
 
+
         For full details, including the required IAM role policies and bucket policies, see [Deliver and
+
         access billable usage logs] or [Configure audit logging].
 
+
         **Note**: There is a limit on the number of log delivery configurations available per account (each
+
         limit applies separately to each log type including billable usage and audit logs). You can create a
+
         maximum of two enabled account-level delivery configurations (configurations without a workspace
+
         filter) per type. Additionally, you can create two enabled workspace-level delivery configurations per
+
         workspace for each log type, which means that the same workspace ID can occur in the workspace filter
+
         for no more than two delivery configurations per log type.
 
+
         You cannot delete a log delivery configuration, but you can disable it (see [Enable or disable log
+
         delivery configuration](:method:LogDelivery/PatchStatus)).
 
+
         [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+
         [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+
 
         :param log_delivery_configuration: :class:`CreateLogDeliveryConfigurationParams`
 
-        :returns: :class:`WrappedLogDeliveryConfiguration`
+
+        :returns: :class:`WrappedLogDeliveryConfiguration`'
       parameters:
       - name: account_id
         in: path
@@ -660,7 +1097,80 @@ paths:
               type: object
               properties:
                 log_delivery_configuration:
-                  $ref: '#/components/schemas/CreateLogDeliveryConfigurationParams'
+                  type: object
+                  properties:
+                    log_type:
+                      type: string
+                      x-enum:
+                      - AUDIT_LOGS
+                      - BILLABLE_USAGE
+                      description: 'Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure [billable usage
+                        log delivery]. For the CSV schema, see the [View billable usage]. * `AUDIT_LOGS` — Configure [audit
+                        log delivery]. For the JSON schema, see [Configure audit logging] [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+                        [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+                        [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+                        [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html'
+                    output_format:
+                      type: string
+                      x-enum:
+                      - CSV
+                      - JSON
+                      description: 'The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this value must be
+                        `CSV`. Only the CSV (comma-separated values) format is supported. For the schema, see the [View billable
+                        usage] * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript Object
+                        Notation) format is supported. For the schema, see the [Configuring audit logs]. [Configuring audit
+                        logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable
+                        usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html'
+                    credentials_id:
+                      type: string
+                      description: 'The ID for a method:credentials/create that represents the AWS IAM role with policy and
+                        trust relationship as described in the main billable usage documentation page. See [Configure billable
+                        usage delivery]. [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html'
+                    storage_configuration_id:
+                      type: string
+                      description: 'The ID for a method:storage/create that represents the S3 bucket with bucket policy as
+                        described in the main billable usage documentation page. See [Configure billable usage delivery].
+                        [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html'
+                    config_name:
+                      type: string
+                      description: The optional human-readable name of the log delivery configuration. Defaults to empty.
+                    delivery_path_prefix:
+                      type: string
+                      description: The optional delivery path prefix within Amazon S3 storage. Defaults to empty, which means
+                        that logs are delivered to the root of the bucket. This must be a valid S3 object key. This must not
+                        start or end with a slash character.
+                    delivery_start_time:
+                      type: string
+                      description: This field applies only if log_type is BILLABLE_USAGE. This is the optional start month
+                        and year for delivery, specified in YYYY-MM format. Defaults to current year and month. BILLABLE_USAGE
+                        logs are not available for usage before March 2019 (2019-03).
+                    status:
+                      type: string
+                      x-enum:
+                      - DISABLED
+                      - ENABLED
+                      description: Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled).
+                        Defaults to `ENABLED`. You can [enable or disable the configuration](#operation/patch-log-delivery-config-status)
+                        later. Deletion of a configuration is not supported, so disable a log delivery configuration that
+                        is no longer needed.
+                    workspace_ids_filter:
+                      type: array
+                      items:
+                        type: integer
+                      description: Optional filter that specifies workspace IDs to deliver logs for. By default the workspace
+                        filter is empty and log delivery applies at the account level, delivering workspace-level logs for
+                        all workspaces in your account, plus account level logs. You can optionally set this field to an array
+                        of workspace IDs (each one is an `int64`) to which log delivery should apply, in which case only workspace-level
+                        logs relating to the specified workspaces are delivered. If you plan to use different log delivery
+                        configurations for different workspaces, set this field explicitly. Be aware that delivery configurations
+                        mentioning specific workspaces won't apply to new workspaces created in the future, and delivery won't
+                        include account level logs. For some types of Databricks deployments there is only one workspace per
+                        account ID, so this field is unnecessary.
+                  required:
+                  - log_type
+                  - output_format
+                  - credentials_id
+                  - storage_configuration_id
                   description: ':returns: :class:`WrappedLogDeliveryConfiguration`'
               required:
               - log_delivery_configuration
@@ -689,20 +1199,12 @@ paths:
       tags:
       - billing
       - log_delivery
-      description: |-
-        Gets all Databricks log delivery configurations associated with an account specified by ID.
-
-        :param credentials_id: str (optional)
-          The Credentials id to filter the search results with
-        :param page_token: str (optional)
-          A page token received from a previous get all budget configurations call. This token can be used to
-          retrieve the subsequent page. Requests first page if absent.
-        :param status: :class:`LogDeliveryConfigStatus` (optional)
-          The log delivery status to filter the search results with
-        :param storage_configuration_id: str (optional)
-          The Storage Configuration id to filter the search results with
-
-        :returns: Iterator over :class:`LogDeliveryConfiguration`
+      description: "Gets all Databricks log delivery configurations associated with an account specified by ID.\n\n:param\
+        \ credentials_id: str (optional)\n  The Credentials id to filter the search results with\n:param page_token: str (optional)\n\
+        \  A page token received from a previous get all budget configurations call. This token can be used to\n  retrieve\
+        \ the subsequent page. Requests first page if absent.\n:param status: :class:`LogDeliveryConfigStatus` (optional)\n\
+        \  The log delivery status to filter the search results with\n:param storage_configuration_id: str (optional)\n  The\
+        \ Storage Configuration id to filter the search results with\n\n:returns: Iterator over :class:`LogDeliveryConfiguration`"
       parameters:
       - name: account_id
         in: path
@@ -760,13 +1262,8 @@ paths:
       tags:
       - billing
       - log_delivery
-      description: |-
-        Gets a Databricks log delivery configuration object for an account, both specified by ID.
-
-        :param log_delivery_configuration_id: str
-          The log delivery configuration id of customer
-
-        :returns: :class:`GetLogDeliveryConfigurationResponse`
+      description: "Gets a Databricks log delivery configuration object for an account, both specified by ID.\n\n:param log_delivery_configuration_id:\
+        \ str\n  The log delivery configuration id of customer\n\n:returns: :class:`GetLogDeliveryConfigurationResponse`"
       parameters:
       - name: account_id
         in: path
@@ -804,19 +1301,13 @@ paths:
       tags:
       - billing
       - log_delivery
-      description: |-
-        Enables or disables a log delivery configuration. Deletion of delivery configurations is not
-        supported, so disable log delivery configurations that are no longer needed. Note that you can't
-        re-enable a delivery configuration if this would violate the delivery configuration limits described
-        under [Create log delivery](:method:LogDelivery/Create).
-
-        :param log_delivery_configuration_id: str
-          The log delivery configuration id of customer
-        :param status: :class:`LogDeliveryConfigStatus`
-          Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults
-          to `ENABLED`. You can [enable or disable the
-          configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
-          not supported, so disable a log delivery configuration that is no longer needed.
+      description: "Enables or disables a log delivery configuration. Deletion of delivery configurations is not\nsupported,\
+        \ so disable log delivery configurations that are no longer needed. Note that you can't\nre-enable a delivery configuration\
+        \ if this would violate the delivery configuration limits described\nunder [Create log delivery](:method:LogDelivery/Create).\n\
+        \n:param log_delivery_configuration_id: str\n  The log delivery configuration id of customer\n:param status: :class:`LogDeliveryConfigStatus`\n\
+        \  Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults\n  to `ENABLED`.\
+        \ You can [enable or disable the\n  configuration](#operation/patch-log-delivery-config-status) later. Deletion of\
+        \ a configuration is\n  not supported, so disable a log delivery configuration that is no longer needed."
       parameters:
       - name: account_id
         in: path
@@ -836,7 +1327,10 @@ paths:
               type: object
               properties:
                 status:
-                  $ref: '#/components/schemas/LogDeliveryConfigStatus'
+                  type: string
+                  x-enum:
+                  - DISABLED
+                  - ENABLED
                   description: Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled).
                     Defaults to `ENABLED`. You can [enable or disable the configuration](#operation/patch-log-delivery-config-status)
                     later. Deletion of a configuration is not supported, so disable a log delivery configuration that is no
@@ -865,18 +1359,11 @@ paths:
       tags:
       - billing
       - usage_dashboards
-      description: |-
-        Create a usage dashboard specified by workspaceId, accountId, and dashboard type.
-
-        :param dashboard_type: :class:`UsageDashboardType` (optional)
-          Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage
-          dashboard shows usage data for all workspaces in the account.
-        :param major_version: :class:`UsageDashboardMajorVersion` (optional)
-          The major version of the usage dashboard template to use. Defaults to VERSION_1.
-        :param workspace_id: int (optional)
-          The workspace ID of the workspace in which the usage dashboard is created.
-
-        :returns: :class:`CreateBillingUsageDashboardResponse`
+      description: "Create a usage dashboard specified by workspaceId, accountId, and dashboard type.\n\n:param dashboard_type:\
+        \ :class:`UsageDashboardType` (optional)\n  Workspace level usage dashboard shows usage data for the specified workspace\
+        \ ID. Global level usage\n  dashboard shows usage data for all workspaces in the account.\n:param major_version: :class:`UsageDashboardMajorVersion`\
+        \ (optional)\n  The major version of the usage dashboard template to use. Defaults to VERSION_1.\n:param workspace_id:\
+        \ int (optional)\n  The workspace ID of the workspace in which the usage dashboard is created.\n\n:returns: :class:`CreateBillingUsageDashboardResponse`"
       parameters:
       - name: account_id
         in: path
@@ -890,11 +1377,17 @@ paths:
               type: object
               properties:
                 dashboard_type:
-                  $ref: '#/components/schemas/UsageDashboardType'
+                  type: string
+                  x-enum:
+                  - USAGE_DASHBOARD_TYPE_GLOBAL
+                  - USAGE_DASHBOARD_TYPE_WORKSPACE
                   description: Workspace level usage dashboard shows usage data for the specified workspace ID. Global level
                     usage dashboard shows usage data for all workspaces in the account.
                 major_version:
-                  $ref: '#/components/schemas/UsageDashboardMajorVersion'
+                  type: string
+                  x-enum:
+                  - USAGE_DASHBOARD_MAJOR_VERSION_1
+                  - USAGE_DASHBOARD_MAJOR_VERSION_2
                   description: The major version of the usage dashboard template to use. Defaults to VERSION_1.
                 workspace_id:
                   type: integer
@@ -924,16 +1417,10 @@ paths:
       tags:
       - billing
       - usage_dashboards
-      description: |-
-        Get a usage dashboard specified by workspaceId, accountId, and dashboard type.
-
-        :param dashboard_type: :class:`UsageDashboardType` (optional)
-          Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage
-          dashboard shows usage data for all workspaces in the account.
-        :param workspace_id: int (optional)
-          The workspace ID of the workspace in which the usage dashboard is created.
-
-        :returns: :class:`GetBillingUsageDashboardResponse`
+      description: "Get a usage dashboard specified by workspaceId, accountId, and dashboard type.\n\n:param dashboard_type:\
+        \ :class:`UsageDashboardType` (optional)\n  Workspace level usage dashboard shows usage data for the specified workspace\
+        \ ID. Global level usage\n  dashboard shows usage data for all workspaces in the account.\n:param workspace_id: int\
+        \ (optional)\n  The workspace ID of the workspace in which the usage dashboard is created.\n\n:returns: :class:`GetBillingUsageDashboardResponse`"
       parameters:
       - name: account_id
         in: path
@@ -1231,9 +1718,8 @@ components:
         policy_name:
           type: string
           description: The partial name of policies to be filtered on. If unspecified, all policies will be returned.
-      description: |-
-        Structured representation of a filter to be applied to a list of policies. All specified filters
-            will be applied in conjunction.
+      description: "Structured representation of a filter to be applied to a list of policies. All specified filters\n   \
+        \ will be applied in conjunction."
     GetBillingUsageDashboardResponse:
       type: object
       properties:
@@ -1255,9 +1741,8 @@ components:
     LimitConfig:
       type: object
       properties: {}
-      description: |-
-        The limit configuration of the policy. Limit configuration provide a budget policy level cost
-            control by enforcing the limit.
+      description: "The limit configuration of the policy. Limit configuration provide a budget policy level cost\n    control\
+        \ by enforcing the limit."
     ListBudgetConfigurationsResponse:
       type: object
       properties:
@@ -1439,207 +1924,312 @@ components:
       type: string
       x-enum:
       - EMAIL_NOTIFICATION
-      description: |-
-        Create a collection of name/value pairs.
+      description: 'Create a collection of name/value pairs.
+
 
         Example enumeration:
 
+
         >>> class Color(Enum):
+
         ...     RED = 1
+
         ...     BLUE = 2
+
         ...     GREEN = 3
+
 
         Access them by:
 
+
         - attribute access::
 
+
         >>> Color.RED
+
         <Color.RED: 1>
+
 
         - value lookup:
 
+
         >>> Color(1)
+
         <Color.RED: 1>
+
 
         - name lookup:
 
-        >>> Color['RED']
+
+        >>> Color[''RED'']
+
         <Color.RED: 1>
+
 
         Enumerations can be iterated over, and know how many members they have:
 
+
         >>> len(Color)
+
         3
 
+
         >>> list(Color)
+
         [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
 
+
         Methods can be added to enumerations, and members can have their own
-        attributes -- see the documentation for details.
+
+        attributes -- see the documentation for details.'
     AlertConfigurationQuantityType:
       type: string
       x-enum:
       - LIST_PRICE_DOLLARS_USD
-      description: |-
-        Create a collection of name/value pairs.
+      description: 'Create a collection of name/value pairs.
+
 
         Example enumeration:
 
+
         >>> class Color(Enum):
+
         ...     RED = 1
+
         ...     BLUE = 2
+
         ...     GREEN = 3
+
 
         Access them by:
 
+
         - attribute access::
 
+
         >>> Color.RED
+
         <Color.RED: 1>
+
 
         - value lookup:
 
+
         >>> Color(1)
+
         <Color.RED: 1>
+
 
         - name lookup:
 
-        >>> Color['RED']
+
+        >>> Color[''RED'']
+
         <Color.RED: 1>
+
 
         Enumerations can be iterated over, and know how many members they have:
 
+
         >>> len(Color)
+
         3
 
+
         >>> list(Color)
+
         [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
 
+
         Methods can be added to enumerations, and members can have their own
-        attributes -- see the documentation for details.
+
+        attributes -- see the documentation for details.'
     AlertConfigurationTimePeriod:
       type: string
       x-enum:
       - MONTH
-      description: |-
-        Create a collection of name/value pairs.
+      description: 'Create a collection of name/value pairs.
+
 
         Example enumeration:
 
+
         >>> class Color(Enum):
+
         ...     RED = 1
+
         ...     BLUE = 2
+
         ...     GREEN = 3
+
 
         Access them by:
 
+
         - attribute access::
 
+
         >>> Color.RED
+
         <Color.RED: 1>
+
 
         - value lookup:
 
+
         >>> Color(1)
+
         <Color.RED: 1>
+
 
         - name lookup:
 
-        >>> Color['RED']
+
+        >>> Color[''RED'']
+
         <Color.RED: 1>
+
 
         Enumerations can be iterated over, and know how many members they have:
 
+
         >>> len(Color)
+
         3
 
+
         >>> list(Color)
+
         [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
 
+
         Methods can be added to enumerations, and members can have their own
-        attributes -- see the documentation for details.
+
+        attributes -- see the documentation for details.'
     AlertConfigurationTriggerType:
       type: string
       x-enum:
       - CUMULATIVE_SPENDING_EXCEEDED
-      description: |-
-        Create a collection of name/value pairs.
+      description: 'Create a collection of name/value pairs.
+
 
         Example enumeration:
 
+
         >>> class Color(Enum):
+
         ...     RED = 1
+
         ...     BLUE = 2
+
         ...     GREEN = 3
+
 
         Access them by:
 
+
         - attribute access::
 
+
         >>> Color.RED
+
         <Color.RED: 1>
+
 
         - value lookup:
 
+
         >>> Color(1)
+
         <Color.RED: 1>
+
 
         - name lookup:
 
-        >>> Color['RED']
+
+        >>> Color[''RED'']
+
         <Color.RED: 1>
+
 
         Enumerations can be iterated over, and know how many members they have:
 
+
         >>> len(Color)
+
         3
 
+
         >>> list(Color)
+
         [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
 
+
         Methods can be added to enumerations, and members can have their own
-        attributes -- see the documentation for details.
+
+        attributes -- see the documentation for details.'
     BudgetConfigurationFilterOperator:
       type: string
       x-enum:
       - IN
-      description: |-
-        Create a collection of name/value pairs.
+      description: 'Create a collection of name/value pairs.
+
 
         Example enumeration:
 
+
         >>> class Color(Enum):
+
         ...     RED = 1
+
         ...     BLUE = 2
+
         ...     GREEN = 3
+
 
         Access them by:
 
+
         - attribute access::
 
+
         >>> Color.RED
+
         <Color.RED: 1>
+
 
         - value lookup:
 
+
         >>> Color(1)
+
         <Color.RED: 1>
+
 
         - name lookup:
 
-        >>> Color['RED']
+
+        >>> Color[''RED'']
+
         <Color.RED: 1>
+
 
         Enumerations can be iterated over, and know how many members they have:
 
+
         >>> len(Color)
+
         3
 
+
         >>> list(Color)
+
         [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
 
+
         Methods can be added to enumerations, and members can have their own
-        attributes -- see the documentation for details.
+
+        attributes -- see the documentation for details.'
     DeliveryStatus:
       type: string
       x-enum:
@@ -1648,24 +2238,30 @@ components:
       - SUCCEEDED
       - SYSTEM_FAILURE
       - USER_FAILURE
-      description: |-
-        * The status string for log delivery. Possible values are: `CREATED`: There were no log delivery
+      description: '* The status string for log delivery. Possible values are: `CREATED`: There were no log delivery
+
         attempts since the config was created. `SUCCEEDED`: The latest attempt of log delivery has
+
         succeeded completely. `USER_FAILURE`: The latest attempt of log delivery failed because of
+
         misconfiguration of customer provided permissions on role or storage. `SYSTEM_FAILURE`: The
+
         latest attempt of log delivery failed because of an Databricks internal error. Contact support
-        if it doesn't go away soon. `NOT_FOUND`: The log delivery status as the configuration has been
-        disabled since the release of this feature or there are no workspaces in the account.
+
+        if it doesn''t go away soon. `NOT_FOUND`: The log delivery status as the configuration has been
+
+        disabled since the release of this feature or there are no workspaces in the account.'
     LogDeliveryConfigStatus:
       type: string
       x-enum:
       - DISABLED
       - ENABLED
-      description: |-
-        * Log Delivery Status
+      description: '* Log Delivery Status
+
 
         `ENABLED`: All dependencies have executed and succeeded `DISABLED`: At least one dependency has
-        succeeded
+
+        succeeded'
     LogType:
       type: string
       x-enum:
@@ -1682,127 +2278,190 @@ components:
       type: string
       x-enum:
       - POLICY_NAME
-      description: |-
-        Create a collection of name/value pairs.
+      description: 'Create a collection of name/value pairs.
+
 
         Example enumeration:
 
+
         >>> class Color(Enum):
+
         ...     RED = 1
+
         ...     BLUE = 2
+
         ...     GREEN = 3
+
 
         Access them by:
 
+
         - attribute access::
 
+
         >>> Color.RED
+
         <Color.RED: 1>
+
 
         - value lookup:
 
+
         >>> Color(1)
+
         <Color.RED: 1>
+
 
         - name lookup:
 
-        >>> Color['RED']
+
+        >>> Color[''RED'']
+
         <Color.RED: 1>
+
 
         Enumerations can be iterated over, and know how many members they have:
 
+
         >>> len(Color)
+
         3
 
+
         >>> list(Color)
+
         [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
 
+
         Methods can be added to enumerations, and members can have their own
-        attributes -- see the documentation for details.
+
+        attributes -- see the documentation for details.'
     UsageDashboardMajorVersion:
       type: string
       x-enum:
       - USAGE_DASHBOARD_MAJOR_VERSION_1
       - USAGE_DASHBOARD_MAJOR_VERSION_2
-      description: |-
-        Create a collection of name/value pairs.
+      description: 'Create a collection of name/value pairs.
+
 
         Example enumeration:
 
+
         >>> class Color(Enum):
+
         ...     RED = 1
+
         ...     BLUE = 2
+
         ...     GREEN = 3
+
 
         Access them by:
 
+
         - attribute access::
 
+
         >>> Color.RED
+
         <Color.RED: 1>
+
 
         - value lookup:
 
+
         >>> Color(1)
+
         <Color.RED: 1>
+
 
         - name lookup:
 
-        >>> Color['RED']
+
+        >>> Color[''RED'']
+
         <Color.RED: 1>
+
 
         Enumerations can be iterated over, and know how many members they have:
 
+
         >>> len(Color)
+
         3
 
+
         >>> list(Color)
+
         [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
 
+
         Methods can be added to enumerations, and members can have their own
-        attributes -- see the documentation for details.
+
+        attributes -- see the documentation for details.'
     UsageDashboardType:
       type: string
       x-enum:
       - USAGE_DASHBOARD_TYPE_GLOBAL
       - USAGE_DASHBOARD_TYPE_WORKSPACE
-      description: |-
-        Create a collection of name/value pairs.
+      description: 'Create a collection of name/value pairs.
+
 
         Example enumeration:
 
+
         >>> class Color(Enum):
+
         ...     RED = 1
+
         ...     BLUE = 2
+
         ...     GREEN = 3
+
 
         Access them by:
 
+
         - attribute access::
 
+
         >>> Color.RED
+
         <Color.RED: 1>
+
 
         - value lookup:
 
+
         >>> Color(1)
+
         <Color.RED: 1>
+
 
         - name lookup:
 
-        >>> Color['RED']
+
+        >>> Color[''RED'']
+
         <Color.RED: 1>
+
 
         Enumerations can be iterated over, and know how many members they have:
 
+
         >>> len(Color)
+
         3
 
+
         >>> list(Color)
+
         [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
 
+
         Methods can be added to enumerations, and members can have their own
-        attributes -- see the documentation for details.
+
+        attributes -- see the documentation for details.'
   x-stackQL-resources:
     billable_usage:
       id: databricks_account.billing.billable_usage
@@ -2036,28 +2695,14 @@ components:
         views:
           select:
             predicate: sqlDialect == "sqlite3"
-            ddl: |-
-              SELECT
-                p.account_id,
-                p.policy_id,
-                p.policy_name,
-                p.custom_tags,
-                w.value AS binding_workspace_id
-              FROM databricks_account.billing.budget_policy p,
-                   JSON_EACH(p.binding_workspace_ids) w
-              WHERE account_id = '{{ account_id }}'
+            ddl: "SELECT\n  p.account_id,\n  p.policy_id,\n  p.policy_name,\n  p.custom_tags,\n  w.value AS binding_workspace_id\n\
+              FROM databricks_account.billing.budget_policy p,\n     JSON_EACH(p.binding_workspace_ids) w\nWHERE account_id\
+              \ = '{{ account_id }}'"
             fallback:
               predicate: sqlDialect == "postgres"
-              ddl: |-
-                SELECT
-                  p.account_id,
-                  p.policy_id,
-                  p.policy_name,
-                  p.custom_tags,
-                  w.value AS binding_workspace_id
-                FROM databricks_account.billing.budget_policy p,
-                     jsonb_array_elements(p.binding_workspace_ids::jsonb) AS w
-                WHERE account_id = '{{ account_id }}'
+              ddl: "SELECT\n  p.account_id,\n  p.policy_id,\n  p.policy_name,\n  p.custom_tags,\n  w.value AS binding_workspace_id\n\
+                FROM databricks_account.billing.budget_policy p,\n     jsonb_array_elements(p.binding_workspace_ids::jsonb)\
+                \ AS w\nWHERE account_id = '{{ account_id }}'"
     vw_budgets:
       name: vw_budgets
       id: databricks_account.billing.vw_budgets
@@ -2113,46 +2758,23 @@ components:
         views:
           select:
             predicate: sqlDialect == "sqlite3"
-            ddl: |-
-              SELECT
-                b.account_id,
-                b.budget_configuration_id,
-                b.display_name,
-                b.create_time,
-                b.update_time,
-                JSON_EXTRACT(b.filter, '$.workspace_id.operator') AS filter_workspace_operator,
-                JSON_EXTRACT(b.filter, '$.workspace_id.values') AS filter_workspace_ids,
-                JSON_EXTRACT(b.filter, '$.tags') AS filter_tags,
-                JSON_EXTRACT(ac.value, '$.alert_configuration_id') AS alert_configuration_id,
-                JSON_EXTRACT(ac.value, '$.quantity_threshold') AS quantity_threshold,
-                JSON_EXTRACT(ac.value, '$.quantity_type') AS quantity_type,
-                JSON_EXTRACT(ac.value, '$.time_period') AS time_period,
-                JSON_EXTRACT(ac.value, '$.trigger_type') AS trigger_type,
-                JSON_EXTRACT(ac.value, '$.action_configurations') AS action_configurations
-              FROM databricks_account.billing.budgets b,
-                   JSON_EACH(b.alert_configurations) ac
-              WHERE account_id = '{{ account_id }}'
+            ddl: "SELECT\n  b.account_id,\n  b.budget_configuration_id,\n  b.display_name,\n  b.create_time,\n  b.update_time,\n\
+              \  JSON_EXTRACT(b.filter, '$.workspace_id.operator') AS filter_workspace_operator,\n  JSON_EXTRACT(b.filter,\
+              \ '$.workspace_id.values') AS filter_workspace_ids,\n  JSON_EXTRACT(b.filter, '$.tags') AS filter_tags,\n  JSON_EXTRACT(ac.value,\
+              \ '$.alert_configuration_id') AS alert_configuration_id,\n  JSON_EXTRACT(ac.value, '$.quantity_threshold') AS\
+              \ quantity_threshold,\n  JSON_EXTRACT(ac.value, '$.quantity_type') AS quantity_type,\n  JSON_EXTRACT(ac.value,\
+              \ '$.time_period') AS time_period,\n  JSON_EXTRACT(ac.value, '$.trigger_type') AS trigger_type,\n  JSON_EXTRACT(ac.value,\
+              \ '$.action_configurations') AS action_configurations\nFROM databricks_account.billing.budgets b,\n     JSON_EACH(b.alert_configurations)\
+              \ ac\nWHERE account_id = '{{ account_id }}'"
             fallback:
               predicate: sqlDialect == "postgres"
-              ddl: |-
-                SELECT
-                  b.account_id,
-                  b.budget_configuration_id,
-                  b.display_name,
-                  b.create_time,
-                  b.update_time,
-                  b.filter->'workspace_id'->>'operator' AS filter_workspace_operator,
-                  b.filter->'workspace_id'->'values' AS filter_workspace_ids,
-                  b.filter->'tags' AS filter_tags,
-                  ac.value->>'alert_configuration_id' AS alert_configuration_id,
-                  ac.value->>'quantity_threshold' AS quantity_threshold,
-                  ac.value->>'quantity_type' AS quantity_type,
-                  ac.value->>'time_period' AS time_period,
-                  ac.value->>'trigger_type' AS trigger_type,
-                  ac.value->'action_configurations' AS action_configurations
-                FROM databricks_account.billing.budgets b,
-                     jsonb_array_elements(b.alert_configurations::jsonb) AS ac
-                WHERE account_id = '{{ account_id }}'
+              ddl: "SELECT\n  b.account_id,\n  b.budget_configuration_id,\n  b.display_name,\n  b.create_time,\n  b.update_time,\n\
+                \  b.filter->'workspace_id'->>'operator' AS filter_workspace_operator,\n  b.filter->'workspace_id'->'values'\
+                \ AS filter_workspace_ids,\n  b.filter->'tags' AS filter_tags,\n  ac.value->>'alert_configuration_id' AS alert_configuration_id,\n\
+                \  ac.value->>'quantity_threshold' AS quantity_threshold,\n  ac.value->>'quantity_type' AS quantity_type,\n\
+                \  ac.value->>'time_period' AS time_period,\n  ac.value->>'trigger_type' AS trigger_type,\n  ac.value->'action_configurations'\
+                \ AS action_configurations\nFROM databricks_account.billing.budgets b,\n     jsonb_array_elements(b.alert_configurations::jsonb)\
+                \ AS ac\nWHERE account_id = '{{ account_id }}'"
     vw_budget_alert_actions:
       name: vw_budget_alert_actions
       id: databricks_account.billing.vw_budget_alert_actions
@@ -2190,36 +2812,20 @@ components:
         views:
           select:
             predicate: sqlDialect == "sqlite3"
-            ddl: |-
-              SELECT
-                b.account_id,
-                b.budget_configuration_id,
-                b.display_name,
-                JSON_EXTRACT(ac.value, '$.alert_configuration_id') AS alert_configuration_id,
-                JSON_EXTRACT(ac.value, '$.quantity_threshold') AS quantity_threshold,
-                JSON_EXTRACT(act.value, '$.action_configuration_id') AS action_configuration_id,
-                JSON_EXTRACT(act.value, '$.action_type') AS action_type,
-                JSON_EXTRACT(act.value, '$.target') AS action_target
-              FROM databricks_account.billing.budgets b,
-                   JSON_EACH(b.alert_configurations) ac,
-                   JSON_EACH(JSON_EXTRACT(ac.value, '$.action_configurations')) act
-              WHERE account_id = '{{ account_id }}'
+            ddl: "SELECT\n  b.account_id,\n  b.budget_configuration_id,\n  b.display_name,\n  JSON_EXTRACT(ac.value, '$.alert_configuration_id')\
+              \ AS alert_configuration_id,\n  JSON_EXTRACT(ac.value, '$.quantity_threshold') AS quantity_threshold,\n  JSON_EXTRACT(act.value,\
+              \ '$.action_configuration_id') AS action_configuration_id,\n  JSON_EXTRACT(act.value, '$.action_type') AS action_type,\n\
+              \  JSON_EXTRACT(act.value, '$.target') AS action_target\nFROM databricks_account.billing.budgets b,\n     JSON_EACH(b.alert_configurations)\
+              \ ac,\n     JSON_EACH(JSON_EXTRACT(ac.value, '$.action_configurations')) act\nWHERE account_id = '{{ account_id\
+              \ }}'"
             fallback:
               predicate: sqlDialect == "postgres"
-              ddl: |-
-                SELECT
-                  b.account_id,
-                  b.budget_configuration_id,
-                  b.display_name,
-                  ac.value->>'alert_configuration_id' AS alert_configuration_id,
-                  ac.value->>'quantity_threshold' AS quantity_threshold,
-                  act.value->>'action_configuration_id' AS action_configuration_id,
-                  act.value->>'action_type' AS action_type,
-                  act.value->>'target' AS action_target
-                FROM databricks_account.billing.budgets b,
-                     jsonb_array_elements(b.alert_configurations::jsonb) AS ac,
-                     jsonb_array_elements((ac.value->'action_configurations')::jsonb) AS act
-                WHERE account_id = '{{ account_id }}'
+              ddl: "SELECT\n  b.account_id,\n  b.budget_configuration_id,\n  b.display_name,\n  ac.value->>'alert_configuration_id'\
+                \ AS alert_configuration_id,\n  ac.value->>'quantity_threshold' AS quantity_threshold,\n  act.value->>'action_configuration_id'\
+                \ AS action_configuration_id,\n  act.value->>'action_type' AS action_type,\n  act.value->>'target' AS action_target\n\
+                FROM databricks_account.billing.budgets b,\n     jsonb_array_elements(b.alert_configurations::jsonb) AS ac,\n\
+                \     jsonb_array_elements((ac.value->'action_configurations')::jsonb) AS act\nWHERE account_id = '{{ account_id\
+                \ }}'"
     vw_log_delivery_configurations:
       name: vw_log_delivery_configurations
       id: databricks_account.billing.vw_log_delivery_configurations
@@ -2284,50 +2890,21 @@ components:
         views:
           select:
             predicate: sqlDialect == "sqlite3"
-            ddl: |-
-              SELECT
-                ld.account_id,
-                ld.config_id,
-                ld.config_name,
-                ld.log_type,
-                ld.output_format,
-                ld.credentials_id,
-                ld.storage_configuration_id,
-                ld.delivery_path_prefix,
-                ld.delivery_start_time,
-                ld.status,
-                ld.creation_time,
-                ld.update_time,
-                JSON_EXTRACT(ld.log_delivery_status, '$.status') AS delivery_status,
-                JSON_EXTRACT(ld.log_delivery_status, '$.message') AS delivery_status_message,
-                JSON_EXTRACT(ld.log_delivery_status, '$.last_attempt_time') AS last_attempt_time,
-                JSON_EXTRACT(ld.log_delivery_status, '$.last_successful_attempt_time') AS last_successful_attempt_time,
-                ld.workspace_ids_filter
-              FROM databricks_account.billing.log_delivery ld
-              WHERE account_id = '{{ account_id }}'
+            ddl: "SELECT\n  ld.account_id,\n  ld.config_id,\n  ld.config_name,\n  ld.log_type,\n  ld.output_format,\n  ld.credentials_id,\n\
+              \  ld.storage_configuration_id,\n  ld.delivery_path_prefix,\n  ld.delivery_start_time,\n  ld.status,\n  ld.creation_time,\n\
+              \  ld.update_time,\n  JSON_EXTRACT(ld.log_delivery_status, '$.status') AS delivery_status,\n  JSON_EXTRACT(ld.log_delivery_status,\
+              \ '$.message') AS delivery_status_message,\n  JSON_EXTRACT(ld.log_delivery_status, '$.last_attempt_time') AS\
+              \ last_attempt_time,\n  JSON_EXTRACT(ld.log_delivery_status, '$.last_successful_attempt_time') AS last_successful_attempt_time,\n\
+              \  ld.workspace_ids_filter\nFROM databricks_account.billing.log_delivery ld\nWHERE account_id = '{{ account_id\
+              \ }}'"
             fallback:
               predicate: sqlDialect == "postgres"
-              ddl: |-
-                SELECT
-                  ld.account_id,
-                  ld.config_id,
-                  ld.config_name,
-                  ld.log_type,
-                  ld.output_format,
-                  ld.credentials_id,
-                  ld.storage_configuration_id,
-                  ld.delivery_path_prefix,
-                  ld.delivery_start_time,
-                  ld.status,
-                  ld.creation_time,
-                  ld.update_time,
-                  ld.log_delivery_status->>'status' AS delivery_status,
-                  ld.log_delivery_status->>'message' AS delivery_status_message,
-                  ld.log_delivery_status->>'last_attempt_time' AS last_attempt_time,
-                  ld.log_delivery_status->>'last_successful_attempt_time' AS last_successful_attempt_time,
-                  ld.workspace_ids_filter
-                FROM databricks_account.billing.log_delivery ld
-                WHERE account_id = '{{ account_id }}'
+              ddl: "SELECT\n  ld.account_id,\n  ld.config_id,\n  ld.config_name,\n  ld.log_type,\n  ld.output_format,\n  ld.credentials_id,\n\
+                \  ld.storage_configuration_id,\n  ld.delivery_path_prefix,\n  ld.delivery_start_time,\n  ld.status,\n  ld.creation_time,\n\
+                \  ld.update_time,\n  ld.log_delivery_status->>'status' AS delivery_status,\n  ld.log_delivery_status->>'message'\
+                \ AS delivery_status_message,\n  ld.log_delivery_status->>'last_attempt_time' AS last_attempt_time,\n  ld.log_delivery_status->>'last_successful_attempt_time'\
+                \ AS last_successful_attempt_time,\n  ld.workspace_ids_filter\nFROM databricks_account.billing.log_delivery\
+                \ ld\nWHERE account_id = '{{ account_id }}'"
     vw_log_delivery_workspace_filter:
       name: vw_log_delivery_workspace_filter
       id: databricks_account.billing.vw_log_delivery_workspace_filter
@@ -2362,32 +2939,14 @@ components:
         views:
           select:
             predicate: sqlDialect == "sqlite3"
-            ddl: |-
-              SELECT
-                ld.account_id,
-                ld.config_id,
-                ld.config_name,
-                ld.log_type,
-                ld.status,
-                JSON_EXTRACT(ld.log_delivery_status, '$.status') AS delivery_status,
-                w.value AS workspace_id
-              FROM databricks_account.billing.log_delivery ld,
-                   JSON_EACH(ld.workspace_ids_filter) w
-              WHERE account_id = '{{ account_id }}'
+            ddl: "SELECT\n  ld.account_id,\n  ld.config_id,\n  ld.config_name,\n  ld.log_type,\n  ld.status,\n  JSON_EXTRACT(ld.log_delivery_status,\
+              \ '$.status') AS delivery_status,\n  w.value AS workspace_id\nFROM databricks_account.billing.log_delivery ld,\n\
+              \     JSON_EACH(ld.workspace_ids_filter) w\nWHERE account_id = '{{ account_id }}'"
             fallback:
               predicate: sqlDialect == "postgres"
-              ddl: |-
-                SELECT
-                  ld.account_id,
-                  ld.config_id,
-                  ld.config_name,
-                  ld.log_type,
-                  ld.status,
-                  ld.log_delivery_status->>'status' AS delivery_status,
-                  w.value AS workspace_id
-                FROM databricks_account.billing.log_delivery ld,
-                     jsonb_array_elements(ld.workspace_ids_filter::jsonb) AS w
-                WHERE account_id = '{{ account_id }}'
+              ddl: "SELECT\n  ld.account_id,\n  ld.config_id,\n  ld.config_name,\n  ld.log_type,\n  ld.status,\n  ld.log_delivery_status->>'status'\
+                \ AS delivery_status,\n  w.value AS workspace_id\nFROM databricks_account.billing.log_delivery ld,\n     jsonb_array_elements(ld.workspace_ids_filter::jsonb)\
+                \ AS w\nWHERE account_id = '{{ account_id }}'"
     vw_budget_filter_tags:
       name: vw_budget_filter_tags
       id: databricks_account.billing.vw_budget_filter_tags
@@ -2419,30 +2978,15 @@ components:
         views:
           select:
             predicate: sqlDialect == "sqlite3"
-            ddl: |-
-              SELECT
-                b.account_id,
-                b.budget_configuration_id,
-                b.display_name,
-                JSON_EXTRACT(t.value, '$.key') AS tag_key,
-                JSON_EXTRACT(t.value, '$.value.operator') AS tag_operator,
-                JSON_EXTRACT(t.value, '$.value.values') AS tag_values
-              FROM databricks_account.billing.budgets b,
-                   JSON_EACH(JSON_EXTRACT(b.filter, '$.tags')) t
-              WHERE account_id = '{{ account_id }}'
+            ddl: "SELECT\n  b.account_id,\n  b.budget_configuration_id,\n  b.display_name,\n  JSON_EXTRACT(t.value, '$.key')\
+              \ AS tag_key,\n  JSON_EXTRACT(t.value, '$.value.operator') AS tag_operator,\n  JSON_EXTRACT(t.value, '$.value.values')\
+              \ AS tag_values\nFROM databricks_account.billing.budgets b,\n     JSON_EACH(JSON_EXTRACT(b.filter, '$.tags'))\
+              \ t\nWHERE account_id = '{{ account_id }}'"
             fallback:
               predicate: sqlDialect == "postgres"
-              ddl: |-
-                SELECT
-                  b.account_id,
-                  b.budget_configuration_id,
-                  b.display_name,
-                  t.value->>'key' AS tag_key,
-                  t.value->'value'->>'operator' AS tag_operator,
-                  t.value->'value'->'values' AS tag_values
-                FROM databricks_account.billing.budgets b,
-                     jsonb_array_elements((b.filter->'tags')::jsonb) AS t
-                WHERE account_id = '{{ account_id }}'
+              ddl: "SELECT\n  b.account_id,\n  b.budget_configuration_id,\n  b.display_name,\n  t.value->>'key' AS tag_key,\n\
+                \  t.value->'value'->>'operator' AS tag_operator,\n  t.value->'value'->'values' AS tag_values\nFROM databricks_account.billing.budgets\
+                \ b,\n     jsonb_array_elements((b.filter->'tags')::jsonb) AS t\nWHERE account_id = '{{ account_id }}'"
 x-stackQL-config:
   pagination:
     requestToken:

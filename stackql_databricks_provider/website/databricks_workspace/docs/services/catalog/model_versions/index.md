@@ -612,35 +612,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-include_aliases"><code>include_aliases</code></a>, <a href="#parameter-include_browse"><code>include_browse</code></a></td>
     <td>Get a model version.</td>
 </tr>
 <tr>
     <td><a href="#get_by_alias"><CopyableCode code="get_by_alias" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-alias"><code>alias</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-alias"><code>alias</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-include_aliases"><code>include_aliases</code></a></td>
     <td>Get a model version by alias.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List model versions. You can list model versions under a particular schema, or list all model versions</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates the specified model version.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes a model version from the specified registered model. Any aliases assigned to the model version</td>
 </tr>
@@ -665,11 +665,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The name of the alias</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-full_name">
     <td><CopyableCode code="full_name" /></td>
     <td><code>string</code></td>
@@ -680,19 +675,24 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>integer</code></td>
     <td>The integer version number of the model version</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-include_aliases">
     <td><CopyableCode code="include_aliases" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Whether to include aliases associated with the model version in the response</td>
 </tr>
 <tr id="parameter-include_browse">
     <td><CopyableCode code="include_browse" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Whether to include model versions in the response for which the principal can only access selective metadata for</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of model versions to return. If not set, the page length is set to a server configured value (100, as of 1/3/2024). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value(1000, as of 1/3/2024); - when set to 0, the page length is set to a server configured value (100, as of 1/3/2024) (recommended); - when set to a value less than 0, an invalid parameter error is returned;</td>
 </tr>
 <tr id="parameter-page_token">
@@ -740,7 +740,7 @@ version
 FROM databricks_workspace.catalog.model_versions
 WHERE full_name = '{{ full_name }}' -- required
 AND version = '{{ version }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND include_aliases = '{{ include_aliases }}'
 AND include_browse = '{{ include_browse }}'
 ;
@@ -773,7 +773,7 @@ version
 FROM databricks_workspace.catalog.model_versions
 WHERE full_name = '{{ full_name }}' -- required
 AND alias = '{{ alias }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND include_aliases = '{{ include_aliases }}'
 ;
 ```
@@ -804,7 +804,7 @@ updated_by,
 version
 FROM databricks_workspace.catalog.model_versions
 WHERE full_name = '{{ full_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND include_browse = '{{ include_browse }}'
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
@@ -832,24 +832,24 @@ SET
 aliases = '{{ aliases }}',
 catalog_name = '{{ catalog_name }}',
 comment = '{{ comment }}',
-created_at = '{{ created_at }}',
+created_at = {{ created_at }},
 created_by = '{{ created_by }}',
 id = '{{ id }}',
 metastore_id = '{{ metastore_id }}',
 model_name = '{{ model_name }}',
 model_version_dependencies = '{{ model_version_dependencies }}',
 run_id = '{{ run_id }}',
-run_workspace_id = '{{ run_workspace_id }}',
+run_workspace_id = {{ run_workspace_id }},
 schema_name = '{{ schema_name }}',
 source = '{{ source }}',
 status = '{{ status }}',
 storage_location = '{{ storage_location }}',
-updated_at = '{{ updated_at }}',
+updated_at = {{ updated_at }},
 updated_by = '{{ updated_by }}'
 WHERE 
 full_name = '{{ full_name }}' --required
 AND version = '{{ version }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 id,
 metastore_id,
@@ -890,7 +890,7 @@ Deletes a model version from the specified registered model. Any aliases assigne
 DELETE FROM databricks_workspace.catalog.model_versions
 WHERE full_name = '{{ full_name }}' --required
 AND version = '{{ version }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

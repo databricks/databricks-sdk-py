@@ -105,7 +105,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-personal_data">
     <td><CopyableCode code="personal_data" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Specify whether to include personally identifiable information in the billable usage logs, for example the email addresses of cluster creators. Handle this information with care. Defaults to false.</td>
 </tr>
 </tbody>

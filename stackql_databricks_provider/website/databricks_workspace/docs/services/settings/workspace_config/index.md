@@ -313,14 +313,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get_workspace_config"><CopyableCode code="get_workspace_config" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-keys"><code>keys</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-keys"><code>keys</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets the configuration status for a workspace.</td>
 </tr>
 <tr>
     <td><a href="#set_workspace_config"><CopyableCode code="set_workspace_config" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-contents"><code>contents</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-contents"><code>contents</code></a></td>
     <td></td>
     <td>Sets the configuration status for a workspace, including enabling or disabling it.</td>
 </tr>
@@ -340,15 +340,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-keys">
     <td><CopyableCode code="keys" /></td>
     <td><code>string</code></td>
     <td>:returns: Dict[str,str]</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -419,7 +419,7 @@ sidebarLogoText,
 storeInteractiveNotebookResultsInCustomerAccount
 FROM databricks_workspace.settings.workspace_config
 WHERE keys = '{{ keys }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -443,7 +443,7 @@ UPDATE databricks_workspace.settings.workspace_config
 SET 
 contents = '{{ contents }}'
 WHERE 
-deployment_name = '{{ deployment_name }}' --required
+workspace = '{{ workspace }}' --required
 AND contents = '{{ contents }}' --required;
 ```
 </TabItem>

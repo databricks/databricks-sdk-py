@@ -95,21 +95,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-object_type.value"><code>object_type.value</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-object_type.value"><code>object_type.value</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets a JSON representation of the access control list (ACL) for a specified object.</td>
 </tr>
 <tr>
     <td><a href="#set"><CopyableCode code="set" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-object_type.value"><code>object_type.value</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-object_type"><code>object_type</code></a></td>
+    <td><a href="#parameter-object_type.value"><code>object_type.value</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-object_type"><code>object_type</code></a></td>
     <td></td>
     <td>Sets the access control list (ACL) for a specified object. This operation will complete rewrite the</td>
 </tr>
 <tr>
     <td><a href="#transfer_ownership"><CopyableCode code="transfer_ownership" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-object_type.value"><code>object_type.value</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-object_type"><code>object_type</code></a></td>
+    <td><a href="#parameter-object_type.value"><code>object_type.value</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-object_type"><code>object_type</code></a></td>
     <td></td>
     <td>Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.</td>
 </tr>
@@ -129,14 +129,9 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-object_id">
     <td><CopyableCode code="object_id" /></td>
-    <td><code>string</code></td>
+    <td><code>object</code></td>
     <td>The ID of the object on which to change ownership.</td>
 </tr>
 <tr id="parameter-object_type">
@@ -148,6 +143,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="object_type.value" /></td>
     <td><code>string</code></td>
     <td></td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -173,7 +173,7 @@ FROM databricks_workspace.sql.dbsql_permissions
 WHERE object_type.value = '{{ object_type.value }}' -- required
 AND object_id = '{{ object_id }}' -- required
 AND object_type = '{{ object_type }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -199,14 +199,14 @@ object_type,
 access_control_list,
 object_type.value,
 object_id,
-deployment_name
+workspace
 )
 SELECT 
 '{{ object_type }}' /* required */,
 '{{ access_control_list }}',
 '{{ object_type.value }}',
 '{{ object_id }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 object_id,
 access_control_list,
@@ -226,7 +226,7 @@ object_type
     - name: object_id
       value: string
       description: Required parameter for the dbsql_permissions resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the dbsql_permissions resource.
     - name: object_type
@@ -234,9 +234,18 @@ object_type
       description: |
         The type of object permission to set.
     - name: access_control_list
-      value: string
+      value: array
       description: |
         :returns: :class:`SetResponse`
+      props:
+      - name: group_name
+        value: string
+      - name: permission_level
+        value: string
+        description: |
+          * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
+      - name: user_name
+        value: string
 ```
 </TabItem>
 </Tabs>
@@ -258,7 +267,7 @@ Transfers ownership of a dashboard, query, or alert to an active user. Requires 
 EXEC databricks_workspace.sql.dbsql_permissions.transfer_ownership 
 @object_type.value='{{ object_type.value }}' --required, 
 @object_id='{{ object_id }}' --required, 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "object_type": "{{ object_type }}", 

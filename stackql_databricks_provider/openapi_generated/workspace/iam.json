@@ -250,7 +250,41 @@
                     "description": "Name of the rule set."
                   },
                   "rule_set": {
-                    "$ref": "#/components/schemas/RuleSetUpdateRequest",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "etag": {
+                        "type": "string",
+                        "description": "Identifies the version of the rule set returned. Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from overwriting each other. It is strongly suggested that systems make use of the etag in the read -> modify -> write pattern to perform rule set updates in order to avoid race conditions that is get an etag from a GET rule set request, and pass it with the PUT update request to identify the rule set version you are updating."
+                      },
+                      "grant_rules": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "role": {
+                              "type": "string"
+                            },
+                            "principals": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "Principals this grant rule applies to. A principal can be a user (for end users), a service principal (for applications and compute workloads), or an account group. Each principal has its own identifier format: * users/<USERNAME> * groups/<GROUP_NAME> * servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>"
+                            }
+                          },
+                          "required": [
+                            "role"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "etag"
+                    ],
                     "description": ":returns: :class:`RuleSetResponse`"
                   }
                 },
@@ -359,7 +393,24 @@
                   "entitlements": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Entitlements assigned to the group. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
                   },
@@ -370,7 +421,24 @@
                   "groups": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     }
                   },
                   "id": {
@@ -380,24 +448,67 @@
                   "members": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": ":param meta: :class:`ResourceMeta` (optional) Container for the group identifier. Workspace local versus account."
                   },
                   "meta": {
-                    "$ref": "#/components/schemas/ResourceMeta"
+                    "type": "object",
+                    "properties": {
+                      "resourceType": {
+                        "type": "string"
+                      }
+                    }
                   },
                   "roles": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Corresponds to AWS instance profile/arn role."
                   },
                   "schemas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/GroupSchema"
+                      "type": "string",
+                      "x-enum": [
+                        "urn:ietf:params:scim:schemas:core:2.0:Group"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     },
                     "description": "The schema of the group."
                   }
@@ -668,14 +779,37 @@
                   "operations": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Patch"
+                      "type": "object",
+                      "properties": {
+                        "op": {
+                          "type": "string",
+                          "x-enum": [
+                            "add",
+                            "remove",
+                            "replace"
+                          ],
+                          "description": "Type of patch operation."
+                        },
+                        "path": {
+                          "type": "string",
+                          "description": "Selection of patch operation"
+                        },
+                        "value": {
+                          "type": "object",
+                          "description": "Value to modify"
+                        }
+                      }
                     },
                     "description": ":param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must be [\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"]."
                   },
                   "schemas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/PatchSchema"
+                      "type": "string",
+                      "x-enum": [
+                        "urn:ietf:params:scim:api:messages:2.0:PatchOp"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     }
                   }
                 }
@@ -740,7 +874,24 @@
                   "entitlements": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Entitlements assigned to the group. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
                   },
@@ -751,30 +902,90 @@
                   "groups": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     }
                   },
                   "members": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": ":param meta: :class:`ResourceMeta` (optional) Container for the group identifier. Workspace local versus account."
                   },
                   "meta": {
-                    "$ref": "#/components/schemas/ResourceMeta"
+                    "type": "object",
+                    "properties": {
+                      "resourceType": {
+                        "type": "string"
+                      }
+                    }
                   },
                   "roles": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Corresponds to AWS instance profile/arn role."
                   },
                   "schemas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/GroupSchema"
+                      "type": "string",
+                      "x-enum": [
+                        "urn:ietf:params:scim:schemas:core:2.0:Group"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     },
                     "description": "The schema of the group."
                   }
@@ -981,7 +1192,45 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/AccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_ATTACH_TO",
+                            "CAN_BIND",
+                            "CAN_CREATE",
+                            "CAN_EDIT",
+                            "CAN_EDIT_METADATA",
+                            "CAN_MANAGE",
+                            "CAN_MANAGE_PRODUCTION_VERSIONS",
+                            "CAN_MANAGE_RUN",
+                            "CAN_MANAGE_STAGING_VERSIONS",
+                            "CAN_MONITOR",
+                            "CAN_MONITOR_ONLY",
+                            "CAN_QUERY",
+                            "CAN_READ",
+                            "CAN_RESTART",
+                            "CAN_RUN",
+                            "CAN_USE",
+                            "CAN_VIEW",
+                            "CAN_VIEW_METADATA",
+                            "IS_OWNER"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`ObjectPermissions`"
                   }
@@ -1059,7 +1308,45 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/AccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_ATTACH_TO",
+                            "CAN_BIND",
+                            "CAN_CREATE",
+                            "CAN_EDIT",
+                            "CAN_EDIT_METADATA",
+                            "CAN_MANAGE",
+                            "CAN_MANAGE_PRODUCTION_VERSIONS",
+                            "CAN_MANAGE_RUN",
+                            "CAN_MANAGE_STAGING_VERSIONS",
+                            "CAN_MONITOR",
+                            "CAN_MONITOR_ONLY",
+                            "CAN_QUERY",
+                            "CAN_READ",
+                            "CAN_RESTART",
+                            "CAN_RUN",
+                            "CAN_USE",
+                            "CAN_VIEW",
+                            "CAN_VIEW_METADATA",
+                            "IS_OWNER"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`ObjectPermissions`"
                   }
@@ -1193,7 +1480,24 @@
                   "entitlements": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Entitlements assigned to the service principal. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
                   },
@@ -1204,7 +1508,24 @@
                   "groups": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     }
                   },
                   "id": {
@@ -1214,14 +1535,35 @@
                   "roles": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Corresponds to AWS instance profile/arn role."
                   },
                   "schemas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ServicePrincipalSchema"
+                      "type": "string",
+                      "x-enum": [
+                        "urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     },
                     "description": "The schema of the List response."
                   }
@@ -1492,14 +1834,37 @@
                   "operations": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Patch"
+                      "type": "object",
+                      "properties": {
+                        "op": {
+                          "type": "string",
+                          "x-enum": [
+                            "add",
+                            "remove",
+                            "replace"
+                          ],
+                          "description": "Type of patch operation."
+                        },
+                        "path": {
+                          "type": "string",
+                          "description": "Selection of patch operation"
+                        },
+                        "value": {
+                          "type": "object",
+                          "description": "Value to modify"
+                        }
+                      }
                     },
                     "description": ":param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must be [\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"]."
                   },
                   "schemas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/PatchSchema"
+                      "type": "string",
+                      "x-enum": [
+                        "urn:ietf:params:scim:api:messages:2.0:PatchOp"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     }
                   }
                 }
@@ -1572,7 +1937,24 @@
                   "entitlements": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Entitlements assigned to the service principal. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
                   },
@@ -1583,20 +1965,58 @@
                   "groups": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     }
                   },
                   "roles": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Corresponds to AWS instance profile/arn role."
                   },
                   "schemas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ServicePrincipalSchema"
+                      "type": "string",
+                      "x-enum": [
+                        "urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     },
                     "description": "The schema of the List response."
                   }
@@ -1657,14 +2077,48 @@
                   "emails": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "All the emails associated with the Databricks user."
                   },
                   "entitlements": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
                   },
@@ -1675,7 +2129,24 @@
                   "groups": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": ":param id: str (optional) Databricks user ID."
                   },
@@ -1683,19 +2154,50 @@
                     "type": "string"
                   },
                   "name": {
-                    "$ref": "#/components/schemas/Name",
+                    "type": "object",
+                    "properties": {
+                      "familyName": {
+                        "type": "string"
+                      },
+                      "givenName": {
+                        "type": "string",
+                        "description": "Given name of the Databricks user."
+                      }
+                    },
                     "description": ":param roles: List[:class:`ComplexValue`] (optional) Corresponds to AWS instance profile/arn role."
                   },
                   "roles": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     }
                   },
                   "schemas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/UserSchema"
+                      "type": "string",
+                      "x-enum": [
+                        "urn:ietf:params:scim:schemas:core:2.0:User",
+                        "urn:ietf:params:scim:schemas:extension:workspace:2.0:User"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     },
                     "description": "The schema of the user."
                   },
@@ -2033,14 +2535,37 @@
                   "operations": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Patch"
+                      "type": "object",
+                      "properties": {
+                        "op": {
+                          "type": "string",
+                          "x-enum": [
+                            "add",
+                            "remove",
+                            "replace"
+                          ],
+                          "description": "Type of patch operation."
+                        },
+                        "path": {
+                          "type": "string",
+                          "description": "Selection of patch operation"
+                        },
+                        "value": {
+                          "type": "object",
+                          "description": "Value to modify"
+                        }
+                      }
                     },
                     "description": ":param schemas: List[:class:`PatchSchema`] (optional) The schema of the patch request. Must be [\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"]."
                   },
                   "schemas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/PatchSchema"
+                      "type": "string",
+                      "x-enum": [
+                        "urn:ietf:params:scim:api:messages:2.0:PatchOp"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     }
                   }
                 }
@@ -2109,14 +2634,48 @@
                   "emails": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "All the emails associated with the Databricks user."
                   },
                   "entitlements": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
                   },
@@ -2127,24 +2686,72 @@
                   "groups": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": ":param name: :class:`Name` (optional)"
                   },
                   "name": {
-                    "$ref": "#/components/schemas/Name"
+                    "type": "object",
+                    "properties": {
+                      "familyName": {
+                        "type": "string"
+                      },
+                      "givenName": {
+                        "type": "string",
+                        "description": "Given name of the Databricks user."
+                      }
+                    }
                   },
                   "roles": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ComplexValue"
+                      "type": "object",
+                      "properties": {
+                        "display": {
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "$ref": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "description": "Corresponds to AWS instance profile/arn role."
                   },
                   "schemas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/UserSchema"
+                      "type": "string",
+                      "x-enum": [
+                        "urn:ietf:params:scim:schemas:core:2.0:User",
+                        "urn:ietf:params:scim:schemas:extension:workspace:2.0:User"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     },
                     "description": "The schema of the user."
                   },
@@ -2283,7 +2890,27 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/PasswordAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_USE"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`PasswordPermissions`"
                   }
@@ -2341,7 +2968,27 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/PasswordAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_USE"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`PasswordPermissions`"
                   }

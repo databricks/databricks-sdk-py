@@ -144,21 +144,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get_destinations"><CopyableCode code="get_destinations" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets an array of access request destinations for the specified securable. Any caller can see URL</td>
 </tr>
 <tr>
     <td><a href="#batch_create"><CopyableCode code="batch_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Creates access requests for Unity Catalog permissions for a specified principal on a securable object.</td>
 </tr>
 <tr>
     <td><a href="#update_destinations"><CopyableCode code="update_destinations" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-access_request_destinations"><code>access_request_destinations</code></a></td>
+    <td><a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-access_request_destinations"><code>access_request_destinations</code></a></td>
     <td></td>
     <td>Updates the access request destinations for the given securable. The caller must be a metastore admin,</td>
 </tr>
@@ -178,11 +178,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-full_name">
     <td><CopyableCode code="full_name" /></td>
     <td><code>string</code></td>
@@ -197,6 +192,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="update_mask" /></td>
     <td><code>string</code></td>
     <td>The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -224,7 +224,7 @@ securable_type
 FROM databricks_workspace.catalog.rfa
 WHERE securable_type = '{{ securable_type }}' -- required
 AND full_name = '{{ full_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -247,11 +247,11 @@ Creates access requests for Unity Catalog permissions for a specified principal 
 ```sql
 INSERT INTO databricks_workspace.catalog.rfa (
 requests,
-deployment_name
+workspace
 )
 SELECT 
 '{{ requests }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 responses
 ;
@@ -263,13 +263,75 @@ responses
 # Description fields are for documentation purposes
 - name: rfa
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the rfa resource.
     - name: requests
-      value: string
+      value: array
       description: |
         A list of individual access requests, where each request corresponds to a set of permissions being requested on a list of securables for a specified principal. At most 30 requests per API call.
+      props:
+      - name: behalf_of
+        value: object
+        props:
+        - name: id
+          value: string
+        - name: principal_type
+          value: string
+          description: |
+            Create a collection of name/value pairs.
+            Example enumeration:
+            >>> class Color(Enum):
+            ...     RED = 1
+            ...     BLUE = 2
+            ...     GREEN = 3
+            Access them by:
+            - attribute access::
+            >>> Color.RED
+            <Color.RED: 1>
+            - value lookup:
+            >>> Color(1)
+            <Color.RED: 1>
+            - name lookup:
+            >>> Color['RED']
+            <Color.RED: 1>
+            Enumerations can be iterated over, and know how many members they have:
+            >>> len(Color)
+            3
+            >>> list(Color)
+            [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+            Methods can be added to enumerations, and members can have their own
+            attributes -- see the documentation for details.
+      - name: comment
+        value: string
+        description: |
+          Optional. Comment associated with the request. At most 200 characters, can only contain lowercase/uppercase letters (a-z, A-Z), numbers (0-9), punctuation, and spaces.
+      - name: securable_permissions
+        value: array
+        description: |
+          List of securables and their corresponding requested UC privileges. At most 30 securables can be requested for a principal per batched call. Each securable can only be requested once per principal.
+        props:
+        - name: permissions
+          value: array
+          items:
+            type: string
+        - name: securable
+          value: object
+          description: |
+            The securable for which the access request destinations are being requested.
+          props:
+          - name: full_name
+            value: string
+            description: |
+              Required. The full name of the catalog/schema/table. Optional if resource_name is present.
+          - name: provider_share
+            value: string
+            description: |
+              Optional. The name of the Share object that contains the securable when the securable is getting shared in D2D Delta Sharing.
+          - name: type
+            value: string
+            description: |
+              Required. The type of securable (catalog/schema/table). Optional if resource_name is present.
 ```
 </TabItem>
 </Tabs>
@@ -293,7 +355,7 @@ SET
 access_request_destinations = '{{ access_request_destinations }}'
 WHERE 
 update_mask = '{{ update_mask }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND access_request_destinations = '{{ access_request_destinations }}' --required
 RETURNING
 full_name,

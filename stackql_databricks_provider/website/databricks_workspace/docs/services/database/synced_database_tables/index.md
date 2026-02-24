@@ -697,35 +697,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get a Synced Database Table.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>This API is currently unimplemented, but exposed for Terraform support.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-synced_table"><code>synced_table</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-synced_table"><code>synced_table</code></a></td>
     <td></td>
     <td>Create a Synced Database Table.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-synced_table"><code>synced_table</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-synced_table"><code>synced_table</code></a></td>
     <td></td>
     <td>This API is currently unimplemented, but exposed for Terraform support.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-purge_data"><code>purge_data</code></a></td>
     <td>Delete a Synced Database Table.</td>
 </tr>
@@ -745,11 +745,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-instance_name">
     <td><CopyableCode code="instance_name" /></td>
     <td><code>string</code></td>
@@ -765,9 +760,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The list of fields to update. Setting this field is not yet supported.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Upper bound for items returned.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -777,7 +777,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-purge_data">
     <td><CopyableCode code="purge_data" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td></td>
 </tr>
 </tbody>
@@ -808,7 +808,7 @@ spec,
 unity_catalog_provisioning_state
 FROM databricks_workspace.database.synced_database_tables
 WHERE name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -828,7 +828,7 @@ spec,
 unity_catalog_provisioning_state
 FROM databricks_workspace.database.synced_database_tables
 WHERE instance_name = '{{ instance_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -853,11 +853,11 @@ Create a Synced Database Table.
 ```sql
 INSERT INTO databricks_workspace.database.synced_database_tables (
 synced_table,
-deployment_name
+workspace
 )
 SELECT 
 '{{ synced_table }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 name,
 database_instance_name,
@@ -876,13 +876,260 @@ unity_catalog_provisioning_state
 # Description fields are for documentation purposes
 - name: synced_database_tables
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the synced_database_tables resource.
     - name: synced_table
-      value: string
+      value: object
       description: |
         :returns: :class:`SyncedDatabaseTable`
+      props:
+      - name: name
+        value: string
+        description: |
+          Full three-part (catalog, schema, table) name of the table.
+      - name: data_synchronization_status
+        value: object
+        description: |
+          Synced Table data synchronization status
+        props:
+        - name: continuous_update_status
+          value: object
+          description: |
+            Detailed status of a synced table. Shown if the synced table is in the SYNCED_CONTINUOUS_UPDATE
+            or the SYNCED_UPDATING_PIPELINE_RESOURCES state.
+          props:
+          - name: initial_pipeline_sync_progress
+            value: object
+            description: |
+              Progress of the initial data synchronization.
+            props:
+            - name: estimated_completion_time_seconds
+              value: number
+              description: |
+                The estimated time remaining to complete this update in seconds.
+            - name: latest_version_currently_processing
+              value: integer
+              description: |
+                The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet.
+            - name: provisioning_phase
+              value: string
+              description: |
+                The current phase of the data synchronization pipeline.
+            - name: sync_progress_completion
+              value: number
+              description: |
+                The completion ratio of this update. This is a number between 0 and 1.
+            - name: synced_row_count
+              value: integer
+              description: |
+                The number of rows that have been synced in this update.
+            - name: total_row_count
+              value: integer
+              description: |
+                The total number of rows that need to be synced in this update. This number may be an estimate.
+          - name: last_processed_commit_version
+            value: integer
+            description: |
+              The last source table Delta version that was successfully synced to the synced table.
+          - name: timestamp
+            value: string
+            description: |
+              The end timestamp of the last time any data was synchronized from the source table to the synced table. This is when the data is available in the synced table.
+        - name: detailed_state
+          value: string
+          description: |
+            The state of the synced table.
+        - name: failed_status
+          value: object
+          description: |
+            Detailed status of a synced table. Shown if the synced table is in the OFFLINE_FAILED or the
+            SYNCED_PIPELINE_FAILED state.
+          props:
+          - name: last_processed_commit_version
+            value: integer
+            description: |
+              The last source table Delta version that was successfully synced to the synced table. The last source table Delta version that was synced to the synced table. Only populated if the table is still synced and available for serving.
+          - name: timestamp
+            value: string
+            description: |
+              The end timestamp of the last time any data was synchronized from the source table to the synced table. Only populated if the table is still synced and available for serving.
+        - name: last_sync
+          value: object
+          description: |
+            Summary of the last successful synchronization from source to destination. Will always be present if there has been a successful sync. Even if the most recent syncs have failed. Limitation: The only exception is if the synced table is doing a FULL REFRESH, then the last sync information will not be available until the full refresh is complete. This limitation will be addressed in a future version. This top-level field is a convenience for consumers who want easy access to last sync information without having to traverse detailed_status.
+          props:
+          - name: delta_table_sync_info
+            value: object
+            props:
+            - name: delta_commit_timestamp
+              value: string
+            - name: delta_commit_version
+              value: integer
+              description: |
+                The Delta Lake commit version that was last successfully synced.
+          - name: sync_end_timestamp
+            value: string
+            description: |
+              The end timestamp of the most recent successful synchronization. This is the time when the data is available in the synced table.
+          - name: sync_start_timestamp
+            value: string
+            description: |
+              The starting timestamp of the most recent successful synchronization from the source table to the destination (synced) table. Note this is the starting timestamp of the sync operation, not the end time. E.g., for a batch, this is the time when the sync operation started.
+        - name: message
+          value: string
+          description: |
+            A text description of the current state of the synced table.
+        - name: pipeline_id
+          value: string
+          description: |
+            ID of the associated pipeline. The pipeline ID may have been provided by the client (in the case of bin packing), or generated by the server (when creating a new pipeline).
+        - name: provisioning_status
+          value: object
+          description: |
+            Detailed status of a synced table. Shown if the synced table is in the
+            PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state.
+          props:
+          - name: initial_pipeline_sync_progress
+            value: object
+            description: |
+              Details about initial data synchronization. Only populated when in the PROVISIONING_INITIAL_SNAPSHOT state.
+            props:
+            - name: estimated_completion_time_seconds
+              value: number
+              description: |
+                The estimated time remaining to complete this update in seconds.
+            - name: latest_version_currently_processing
+              value: integer
+              description: |
+                The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet.
+            - name: provisioning_phase
+              value: string
+              description: |
+                The current phase of the data synchronization pipeline.
+            - name: sync_progress_completion
+              value: number
+              description: |
+                The completion ratio of this update. This is a number between 0 and 1.
+            - name: synced_row_count
+              value: integer
+              description: |
+                The number of rows that have been synced in this update.
+            - name: total_row_count
+              value: integer
+              description: |
+                The total number of rows that need to be synced in this update. This number may be an estimate.
+        - name: triggered_update_status
+          value: object
+          description: |
+            Detailed status of a synced table. Shown if the synced table is in the SYNCED_TRIGGERED_UPDATE
+            or the SYNCED_NO_PENDING_UPDATE state.
+          props:
+          - name: last_processed_commit_version
+            value: integer
+            description: |
+              The last source table Delta version that was successfully synced to the synced table.
+          - name: timestamp
+            value: string
+            description: |
+              The end timestamp of the last time any data was synchronized from the source table to the synced table. This is when the data is available in the synced table.
+          - name: triggered_update_progress
+            value: object
+            description: |
+              Progress of the active data synchronization pipeline.
+            props:
+            - name: estimated_completion_time_seconds
+              value: number
+              description: |
+                The estimated time remaining to complete this update in seconds.
+            - name: latest_version_currently_processing
+              value: integer
+              description: |
+                The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet.
+            - name: provisioning_phase
+              value: string
+              description: |
+                The current phase of the data synchronization pipeline.
+            - name: sync_progress_completion
+              value: number
+              description: |
+                The completion ratio of this update. This is a number between 0 and 1.
+            - name: synced_row_count
+              value: integer
+              description: |
+                The number of rows that have been synced in this update.
+            - name: total_row_count
+              value: integer
+              description: |
+                The total number of rows that need to be synced in this update. This number may be an estimate.
+      - name: database_instance_name
+        value: string
+        description: |
+          Name of the target database instance. This is required when creating synced database tables in standard catalogs. This is optional when creating synced database tables in registered catalogs. If this field is specified when creating synced database tables in registered catalogs, the database instance name MUST match that of the registered catalog (or the request will be rejected).
+      - name: effective_database_instance_name
+        value: string
+        description: |
+          The name of the database instance that this table is registered to. This field is always returned, and for tables inside database catalogs is inferred database instance associated with the catalog. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+      - name: effective_logical_database_name
+        value: string
+        description: |
+          The name of the logical database that this table is registered to. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
+      - name: logical_database_name
+        value: string
+        description: |
+          Target Postgres database object (logical database) name for this table. When creating a synced table in a registered Postgres catalog, the target Postgres database name is inferred to be that of the registered catalog. If this field is specified in this scenario, the Postgres database name MUST match that of the registered catalog (or the request will be rejected). When creating a synced table in a standard catalog, this field is required. In this scenario, specifying this field will allow targeting an arbitrary postgres database. Note that this has implications for the `create_database_objects_is_missing` field in `spec`.
+      - name: spec
+        value: object
+        description: |
+          Specification of a synced database table.
+        props:
+        - name: create_database_objects_if_missing
+          value: boolean
+          description: |
+            If true, the synced table's logical database and schema resources in PG will be created if they do not already exist.
+        - name: existing_pipeline_id
+          value: string
+          description: |
+            At most one of existing_pipeline_id and new_pipeline_spec should be defined. If existing_pipeline_id is defined, the synced table will be bin packed into the existing pipeline referenced. This avoids creating a new pipeline and allows sharing existing compute. In this case, the scheduling_policy of this synced table must match the scheduling policy of the existing pipeline.
+        - name: new_pipeline_spec
+          value: object
+          description: |
+            At most one of existing_pipeline_id and new_pipeline_spec should be defined. If new_pipeline_spec is defined, a new pipeline is created for this synced table. The location pointed to is used to store intermediate files (checkpoints, event logs etc). The caller must have write permissions to create Delta tables in the specified catalog and schema. Again, note this requires write permissions, whereas the source table only requires read permissions.
+          props:
+          - name: budget_policy_id
+            value: string
+            description: |
+              Budget policy to set on the newly created pipeline.
+          - name: storage_catalog
+            value: string
+            description: |
+              This field needs to be specified if the destination catalog is a managed postgres catalog. UC catalog for the pipeline to store intermediate files (checkpoints, event logs etc). This needs to be a standard catalog where the user has permissions to create Delta tables.
+          - name: storage_schema
+            value: string
+            description: |
+              This field needs to be specified if the destination catalog is a managed postgres catalog. UC schema for the pipeline to store intermediate files (checkpoints, event logs etc). This needs to be in the standard catalog where the user has permissions to create Delta tables.
+        - name: primary_key_columns
+          value: array
+          description: |
+            Primary Key columns to be used for data insert/update in the destination.
+          items:
+            type: string
+        - name: scheduling_policy
+          value: string
+          description: |
+            Scheduling policy of the underlying pipeline.
+        - name: source_table_full_name
+          value: string
+          description: |
+            Three-part (catalog, schema, table) name of the source Delta table.
+        - name: timeseries_key
+          value: string
+          description: |
+            Time series key to deduplicate (tie-break) rows with the same primary key.
+      - name: unity_catalog_provisioning_state
+        value: string
+        description: |
+          The provisioning state of the synced table entity in Unity Catalog. This is distinct from the state of the data synchronization pipeline (i.e. the table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it runs asynchronously).
 ```
 </TabItem>
 </Tabs>
@@ -907,7 +1154,7 @@ synced_table = '{{ synced_table }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND synced_table = '{{ synced_table }}' --required
 RETURNING
 name,
@@ -938,7 +1185,7 @@ Delete a Synced Database Table.
 ```sql
 DELETE FROM databricks_workspace.database.synced_database_tables
 WHERE name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND purge_data = '{{ purge_data }}'
 ;
 ```

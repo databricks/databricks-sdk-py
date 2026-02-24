@@ -93,21 +93,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List all secrets associated with the given service principal. This operation only returns information</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Create a secret for the given service principal.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-secret_id"><code>secret_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-secret_id"><code>secret_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Delete a secret from the given service principal.</td>
 </tr>
@@ -127,11 +127,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-secret_id">
     <td><CopyableCode code="secret_id" /></td>
     <td><code>string</code></td>
@@ -142,9 +137,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The service principal ID.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>:param page_token: str (optional) An opaque page token which was the `next_page_token` in the response of the previous request to list the secrets for this service principal. Provide this token to retrieve the next page of secret entries. When providing a `page_token`, all other parameters provided to the request must match the previous request. To list all of the secrets for a service principal, it is necessary to continue requesting pages of entries until the response contains no `next_page_token`. Note that the number of entries returned must not be used to determine when the listing is complete.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -177,7 +177,7 @@ status,
 update_time
 FROM databricks_workspace.oauth2.service_principal_secrets
 WHERE service_principal_id = '{{ service_principal_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -203,12 +203,12 @@ Create a secret for the given service principal.
 INSERT INTO databricks_workspace.oauth2.service_principal_secrets (
 lifetime,
 service_principal_id,
-deployment_name
+workspace
 )
 SELECT 
 '{{ lifetime }}',
 '{{ service_principal_id }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 create_time,
@@ -229,7 +229,7 @@ update_time
     - name: service_principal_id
       value: string
       description: Required parameter for the service_principal_secrets resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the service_principal_secrets resource.
     - name: lifetime
@@ -257,7 +257,7 @@ Delete a secret from the given service principal.
 DELETE FROM databricks_workspace.oauth2.service_principal_secrets
 WHERE service_principal_id = '{{ service_principal_id }}' --required
 AND secret_id = '{{ secret_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

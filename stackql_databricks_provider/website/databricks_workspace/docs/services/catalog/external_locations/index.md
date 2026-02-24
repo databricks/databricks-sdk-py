@@ -248,7 +248,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
   },
   {
     "name": "owner",
@@ -486,7 +486,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
   },
   {
     "name": "owner",
@@ -535,35 +535,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a></td>
     <td>Gets an external location from the metastore. The caller must be either a metastore admin, the owner</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-include_unbound"><code>include_unbound</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-credential_name"><code>credential_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-credential_name"><code>credential_name</code></a></td>
     <td></td>
     <td>Creates a new external location entry in the metastore. The caller must be a metastore admin or have</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates an external location in the metastore. The caller must be the owner of the external location,</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
     <td>Deletes the specified external location from the metastore. The caller must be the owner of the</td>
 </tr>
@@ -583,34 +583,34 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Name of the external location.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-force">
     <td><CopyableCode code="force" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Force deletion even if there are dependent external tables or mounts.</td>
 </tr>
 <tr id="parameter-include_browse">
     <td><CopyableCode code="include_browse" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Whether to include external locations in the response for which the principal can only access selective metadata for</td>
 </tr>
 <tr id="parameter-include_unbound">
     <td><CopyableCode code="include_unbound" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Whether to include external locations not bound to the workspace. Effective only if the user has permission to update the location–workspace binding.</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of external locations to return. If not set, all the external locations are returned (not recommended). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to 0, the page length is set to a server configured value (recommended); - when set to a value less than 0, an invalid parameter error is returned;</td>
 </tr>
 <tr id="parameter-page_token">
@@ -656,7 +656,7 @@ updated_by,
 url
 FROM databricks_workspace.catalog.external_locations
 WHERE name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND include_browse = '{{ include_browse }}'
 ;
 ```
@@ -686,7 +686,7 @@ updated_at,
 updated_by,
 url
 FROM databricks_workspace.catalog.external_locations
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND include_browse = '{{ include_browse }}'
 AND include_unbound = '{{ include_unbound }}'
 AND max_results = '{{ max_results }}'
@@ -722,20 +722,20 @@ fallback,
 file_event_queue,
 read_only,
 skip_validation,
-deployment_name
+workspace
 )
 SELECT 
 '{{ name }}' /* required */,
 '{{ url }}' /* required */,
 '{{ credential_name }}' /* required */,
 '{{ comment }}',
-'{{ enable_file_events }}',
+{{ enable_file_events }},
 '{{ encryption_details }}',
-'{{ fallback }}',
+{{ fallback }},
 '{{ file_event_queue }}',
-'{{ read_only }}',
-'{{ skip_validation }}',
-'{{ deployment_name }}'
+{{ read_only }},
+{{ skip_validation }},
+'{{ workspace }}'
 RETURNING
 name,
 credential_id,
@@ -764,7 +764,7 @@ url
 # Description fields are for documentation purposes
 - name: external_locations
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the external_locations resource.
     - name: name
@@ -784,25 +784,110 @@ url
       description: |
         User-provided free-form text description.
     - name: enable_file_events
-      value: string
+      value: boolean
       description: |
         Whether to enable file events on this external location. Default to `true`. Set to `false` to disable file events.
     - name: encryption_details
-      value: string
+      value: object
       description: |
         :param fallback: bool (optional) Indicates whether fallback mode is enabled for this external location. When fallback mode is enabled, the access to the location falls back to cluster credentials if UC credentials are not sufficient.
+      props:
+      - name: sse_encryption_details
+        value: object
+        description: |
+          Server-Side Encryption properties for clients communicating with AWS s3.
+        props:
+        - name: algorithm
+          value: string
+          description: |
+            Sets the value of the 'x-amz-server-side-encryption' header in S3 request.
+        - name: aws_kms_key_arn
+          value: string
+          description: |
+            Optional. The ARN of the SSE-KMS key used with the S3 location, when algorithm = "SSE-KMS". Sets the value of the 'x-amz-server-side-encryption-aws-kms-key-id' header.
     - name: fallback
-      value: string
+      value: boolean
     - name: file_event_queue
-      value: string
+      value: object
       description: |
         File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly one of the documented properties.
+      props:
+      - name: managed_aqs
+        value: object
+        props:
+        - name: managed_resource_id
+          value: string
+        - name: queue_url
+          value: string
+          description: |
+            The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name} Only required for provided_aqs.
+        - name: resource_group
+          value: string
+          description: |
+            Optional resource group for the queue, event grid subscription, and external location storage account. Only required for locations with a service principal storage credential
+        - name: subscription_id
+          value: string
+          description: |
+            Optional subscription id for the queue, event grid subscription, and external location storage account. Required for locations with a service principal storage credential
+      - name: managed_pubsub
+        value: object
+        props:
+        - name: managed_resource_id
+          value: string
+        - name: subscription_name
+          value: string
+          description: |
+            The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}. Only required for provided_pubsub.
+      - name: managed_sqs
+        value: object
+        props:
+        - name: managed_resource_id
+          value: string
+        - name: queue_url
+          value: string
+          description: |
+            The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}. Only required for provided_sqs.
+      - name: provided_aqs
+        value: object
+        props:
+        - name: managed_resource_id
+          value: string
+        - name: queue_url
+          value: string
+          description: |
+            The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name} Only required for provided_aqs.
+        - name: resource_group
+          value: string
+          description: |
+            Optional resource group for the queue, event grid subscription, and external location storage account. Only required for locations with a service principal storage credential
+        - name: subscription_id
+          value: string
+          description: |
+            Optional subscription id for the queue, event grid subscription, and external location storage account. Required for locations with a service principal storage credential
+      - name: provided_pubsub
+        value: object
+        props:
+        - name: managed_resource_id
+          value: string
+        - name: subscription_name
+          value: string
+          description: |
+            The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}. Only required for provided_pubsub.
+      - name: provided_sqs
+        value: object
+        props:
+        - name: managed_resource_id
+          value: string
+        - name: queue_url
+          value: string
+          description: |
+            The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}. Only required for provided_sqs.
     - name: read_only
-      value: string
+      value: boolean
       description: |
         Indicates whether the external location is read-only.
     - name: skip_validation
-      value: string
+      value: boolean
       description: |
         Skips validation of the storage credential associated with the external location.
 ```
@@ -827,20 +912,20 @@ UPDATE databricks_workspace.catalog.external_locations
 SET 
 comment = '{{ comment }}',
 credential_name = '{{ credential_name }}',
-enable_file_events = '{{ enable_file_events }}',
+enable_file_events = {{ enable_file_events }},
 encryption_details = '{{ encryption_details }}',
-fallback = '{{ fallback }}',
+fallback = {{ fallback }},
 file_event_queue = '{{ file_event_queue }}',
-force = '{{ force }}',
+force = {{ force }},
 isolation_mode = '{{ isolation_mode }}',
 new_name = '{{ new_name }}',
 owner = '{{ owner }}',
-read_only = '{{ read_only }}',
-skip_validation = '{{ skip_validation }}',
+read_only = {{ read_only }},
+skip_validation = {{ skip_validation }},
 url = '{{ url }}'
 WHERE 
 name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 name,
 credential_id,
@@ -880,7 +965,7 @@ Deletes the specified external location from the metastore. The caller must be t
 ```sql
 DELETE FROM databricks_workspace.catalog.external_locations
 WHERE name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND force = '{{ force }}'
 ;
 ```

@@ -273,7 +273,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>:param page_token: str (optional)</td>
 </tr>
 <tr id="parameter-page_token">
@@ -392,9 +392,67 @@ update_time
       value: string
       description: Required parameter for the account_federation_policy resource.
     - name: policy
-      value: string
+      value: object
       description: |
         :param policy_id: str (optional) The identifier for the federation policy. The identifier must contain only lowercase alphanumeric characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.
+      props:
+      - name: create_time
+        value: string
+      - name: description
+        value: string
+        description: |
+          Description of the federation policy.
+      - name: name
+        value: string
+        description: |
+          Resource name for the federation policy. Example values include `accounts/<account-id>/federationPolicies/my-federation-policy` for Account Federation Policies, and `accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy` for Service Principal Federation Policies. Typically an output parameter, which does not need to be specified in create or update requests. If specified in a request, must match the value in the request URL.
+      - name: oidc_policy
+        value: object
+        description: |
+          Specifies the policy to use for validating OIDC claims in your federated tokens.
+        props:
+        - name: audiences
+          value: array
+          description: |
+            The allowed token audiences, as specified in the 'aud' claim of federated tokens. The audience identifier is intended to represent the recipient of the token. Can be any non-empty string value. As long as the audience in the token matches at least one audience in the policy, the token is considered a match. If audiences is unspecified, defaults to your Databricks account id.
+          items:
+            type: string
+        - name: issuer
+          value: string
+          description: |
+            The required token issuer, as specified in the 'iss' claim of federated tokens.
+        - name: jwks_json
+          value: string
+          description: |
+            The public keys used to validate the signature of federated tokens, in JWKS format. Most use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks automatically fetches the public keys from your issuer’s well known endpoint. Databricks strongly recommends relying on your issuer’s well known endpoint for discovering public keys.
+        - name: jwks_uri
+          value: string
+          description: |
+            URL of the public keys used to validate the signature of federated tokens, in JWKS format. Most use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks automatically fetches the public keys from your issuer’s well known endpoint. Databricks strongly recommends relying on your issuer’s well known endpoint for discovering public keys.
+        - name: subject
+          value: string
+          description: |
+            The required token subject, as specified in the subject claim of federated tokens. Must be specified for service principal federation policies. Must not be specified for account federation policies.
+        - name: subject_claim
+          value: string
+          description: |
+            The claim that contains the subject of the token. If unspecified, the default value is 'sub'.
+      - name: policy_id
+        value: string
+        description: |
+          The ID of the federation policy. Output only.
+      - name: service_principal_id
+        value: integer
+        description: |
+          The service principal ID that this federation policy applies to. Output only. Only set for service principal federation policies.
+      - name: uid
+        value: string
+        description: |
+          Unique, immutable id of the federation policy.
+      - name: update_time
+        value: string
+        description: |
+          Last update time of the federation policy.
     - name: policy_id
       value: string
 ```

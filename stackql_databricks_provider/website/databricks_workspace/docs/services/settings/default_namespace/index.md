@@ -85,21 +85,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-etag"><code>etag</code></a></td>
     <td>Gets the default namespace setting.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-allow_missing"><code>allow_missing</code></a>, <a href="#parameter-setting"><code>setting</code></a>, <a href="#parameter-field_mask"><code>field_mask</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-allow_missing"><code>allow_missing</code></a>, <a href="#parameter-setting"><code>setting</code></a>, <a href="#parameter-field_mask"><code>field_mask</code></a></td>
     <td></td>
     <td>Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-etag"><code>etag</code></a></td>
     <td>Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`</td>
 </tr>
@@ -119,10 +119,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
     <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-etag">
     <td><CopyableCode code="etag" /></td>
@@ -150,7 +150,7 @@ setting_name,
 etag,
 namespace
 FROM databricks_workspace.settings.default_namespace
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND etag = '{{ etag }}'
 ;
 ```
@@ -177,7 +177,7 @@ allow_missing = {{ allow_missing }},
 setting = '{{ setting }}',
 field_mask = '{{ field_mask }}'
 WHERE 
-deployment_name = '{{ deployment_name }}' --required
+workspace = '{{ workspace }}' --required
 AND allow_missing = {{ allow_missing }} --required
 AND setting = '{{ setting }}' --required
 AND field_mask = '{{ field_mask }}' --required
@@ -204,7 +204,7 @@ Deletes the default namespace setting for the workspace. A fresh etag needs to b
 
 ```sql
 DELETE FROM databricks_workspace.settings.default_namespace
-WHERE deployment_name = '{{ deployment_name }}' --required
+WHERE workspace = '{{ workspace }}' --required
 AND etag = '{{ etag }}'
 ;
 ```

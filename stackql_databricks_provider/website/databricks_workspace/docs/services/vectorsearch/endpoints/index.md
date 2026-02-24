@@ -227,49 +227,49 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get details for a single vector search endpoint.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List all vector search endpoints in the workspace.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-endpoint_type"><code>endpoint_type</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-endpoint_type"><code>endpoint_type</code></a></td>
     <td></td>
     <td>Create a new endpoint.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Delete a vector search endpoint.</td>
 </tr>
 <tr>
     <td><a href="#retrieve_user_visible_metrics"><CopyableCode code="retrieve_user_visible_metrics" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Retrieve user-visible metrics for an endpoint</td>
 </tr>
 <tr>
     <td><a href="#update_endpoint_budget_policy"><CopyableCode code="update_endpoint_budget_policy" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-budget_policy_id"><code>budget_policy_id</code></a></td>
+    <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-budget_policy_id"><code>budget_policy_id</code></a></td>
     <td></td>
     <td>Update the budget policy of an endpoint</td>
 </tr>
 <tr>
     <td><a href="#update_endpoint_custom_tags"><CopyableCode code="update_endpoint_custom_tags" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-custom_tags"><code>custom_tags</code></a></td>
+    <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-custom_tags"><code>custom_tags</code></a></td>
     <td></td>
     <td>Update the custom tags of an endpoint.</td>
 </tr>
@@ -289,11 +289,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-endpoint_name">
     <td><CopyableCode code="endpoint_name" /></td>
     <td><code>string</code></td>
@@ -303,6 +298,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Vector search endpoint name</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_token">
     <td><CopyableCode code="page_token" /></td>
@@ -340,7 +340,7 @@ last_updated_user,
 num_indexes
 FROM databricks_workspace.vectorsearch.endpoints
 WHERE endpoint_name = '{{ endpoint_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -362,7 +362,7 @@ last_updated_timestamp,
 last_updated_user,
 num_indexes
 FROM databricks_workspace.vectorsearch.endpoints
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND page_token = '{{ page_token }}'
 ;
 ```
@@ -388,13 +388,13 @@ INSERT INTO databricks_workspace.vectorsearch.endpoints (
 name,
 endpoint_type,
 budget_policy_id,
-deployment_name
+workspace
 )
 SELECT 
 '{{ name }}' /* required */,
 '{{ endpoint_type }}' /* required */,
 '{{ budget_policy_id }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 name,
@@ -416,7 +416,7 @@ num_indexes
 # Description fields are for documentation purposes
 - name: endpoints
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the endpoints resource.
     - name: name
@@ -451,7 +451,7 @@ Delete a vector search endpoint.
 ```sql
 DELETE FROM databricks_workspace.vectorsearch.endpoints
 WHERE endpoint_name = '{{ endpoint_name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -475,11 +475,11 @@ Retrieve user-visible metrics for an endpoint
 ```sql
 EXEC databricks_workspace.vectorsearch.endpoints.retrieve_user_visible_metrics 
 @name='{{ name }}' --required, 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "end_time": "{{ end_time }}", 
-"granularity_in_seconds": "{{ granularity_in_seconds }}", 
+"granularity_in_seconds": {{ granularity_in_seconds }}, 
 "metrics": "{{ metrics }}", 
 "page_token": "{{ page_token }}", 
 "start_time": "{{ start_time }}"
@@ -494,7 +494,7 @@ Update the budget policy of an endpoint
 ```sql
 EXEC databricks_workspace.vectorsearch.endpoints.update_endpoint_budget_policy 
 @endpoint_name='{{ endpoint_name }}' --required, 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "budget_policy_id": "{{ budget_policy_id }}"
@@ -509,7 +509,7 @@ Update the custom tags of an endpoint.
 ```sql
 EXEC databricks_workspace.vectorsearch.endpoints.update_endpoint_custom_tags 
 @endpoint_name='{{ endpoint_name }}' --required, 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "custom_tags": "{{ custom_tags }}"

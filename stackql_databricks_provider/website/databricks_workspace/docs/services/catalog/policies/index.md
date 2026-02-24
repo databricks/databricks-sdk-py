@@ -369,35 +369,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get the policy definition on a securable</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-include_inherited"><code>include_inherited</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List all policies defined on a securable. Optionally, the list can include inherited policies defined</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-policy_info"><code>policy_info</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-policy_info"><code>policy_info</code></a></td>
     <td></td>
     <td>Creates a new policy on a securable. The new policy applies to the securable and all its descendants.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-policy_info"><code>policy_info</code></a></td>
+    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-policy_info"><code>policy_info</code></a></td>
     <td><a href="#parameter-update_mask"><code>update_mask</code></a></td>
     <td>Update an ABAC policy on a securable.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Delete an ABAC policy defined on a securable.</td>
 </tr>
@@ -417,11 +417,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
@@ -437,14 +432,19 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Required. The type of the securable to delete the policy from.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-include_inherited">
     <td><CopyableCode code="include_inherited" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Optional. Whether to include policies defined on parent securables. By default, the inherited policies are not included.</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Optional. Maximum number of policies to return on a single page (page length). - When not set or set to 0, the page length is set to a server configured value (recommended); - When set to a value greater than 0, the page length is the minimum of this value and a server configured value;</td>
 </tr>
 <tr id="parameter-page_token">
@@ -496,7 +496,7 @@ FROM databricks_workspace.catalog.policies
 WHERE on_securable_type = '{{ on_securable_type }}' -- required
 AND on_securable_fullname = '{{ on_securable_fullname }}' -- required
 AND name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -526,7 +526,7 @@ when_condition
 FROM databricks_workspace.catalog.policies
 WHERE on_securable_type = '{{ on_securable_type }}' -- required
 AND on_securable_fullname = '{{ on_securable_fullname }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND include_inherited = '{{ include_inherited }}'
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
@@ -552,11 +552,11 @@ Creates a new policy on a securable. The new policy applies to the securable and
 ```sql
 INSERT INTO databricks_workspace.catalog.policies (
 policy_info,
-deployment_name
+workspace
 )
 SELECT 
 '{{ policy_info }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 name,
@@ -584,13 +584,123 @@ when_condition
 # Description fields are for documentation purposes
 - name: policies
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the policies resource.
     - name: policy_info
-      value: string
+      value: object
       description: |
         Required. The policy to create.
+      props:
+      - name: to_principals
+        value: array
+        items:
+          type: string
+      - name: for_securable_type
+        value: string
+        description: |
+          Type of securables that the policy should take effect on. Only `TABLE` is supported at this moment. Required on create and optional on update.
+      - name: policy_type
+        value: string
+        description: |
+          Type of the policy. Required on create.
+      - name: column_mask
+        value: object
+        description: |
+          Options for column mask policies. Valid only if `policy_type` is `POLICY_TYPE_COLUMN_MASK`. Required on create and optional on update. When specified on update, the new options will replace the existing options as a whole.
+        props:
+        - name: function_name
+          value: string
+        - name: on_column
+          value: string
+          description: |
+            The alias of the column to be masked. The alias must refer to one of matched columns. The values of the column is passed to the column mask function as the first argument. Required on create and update.
+        - name: using
+          value: array
+          description: |
+            Optional list of column aliases or constant literals to be passed as additional arguments to the column mask function. The type of each column should match the positional argument of the column mask function.
+          props:
+          - name: alias
+            value: string
+          - name: constant
+            value: string
+            description: |
+              A constant literal.
+      - name: comment
+        value: string
+        description: |
+          Optional description of the policy.
+      - name: created_at
+        value: integer
+        description: |
+          Time at which the policy was created, in epoch milliseconds. Output only.
+      - name: created_by
+        value: string
+        description: |
+          Username of the user who created the policy. Output only.
+      - name: except_principals
+        value: array
+        description: |
+          Optional list of user or group names that should be excluded from the policy.
+        items:
+          type: string
+      - name: id
+        value: string
+        description: |
+          Unique identifier of the policy. This field is output only and is generated by the system.
+      - name: match_columns
+        value: array
+        description: |
+          Optional list of condition expressions used to match table columns. Only valid when `for_securable_type` is `TABLE`. When specified, the policy only applies to tables whose columns satisfy all match conditions.
+        props:
+        - name: alias
+          value: string
+        - name: condition
+          value: string
+          description: |
+            The condition expression used to match a table column.
+      - name: name
+        value: string
+        description: |
+          Name of the policy. Required on create and optional on update. To rename the policy, set `name` to a different value on update.
+      - name: on_securable_fullname
+        value: string
+        description: |
+          Full name of the securable on which the policy is defined. Required on create.
+      - name: on_securable_type
+        value: string
+        description: |
+          Type of the securable on which the policy is defined. Only `CATALOG`, `SCHEMA` and `TABLE` are supported at this moment. Required on create.
+      - name: row_filter
+        value: object
+        description: |
+          Options for row filter policies. Valid only if `policy_type` is `POLICY_TYPE_ROW_FILTER`. Required on create and optional on update. When specified on update, the new options will replace the existing options as a whole.
+        props:
+        - name: function_name
+          value: string
+        - name: using
+          value: array
+          description: |
+            Optional list of column aliases or constant literals to be passed as arguments to the row filter function. The type of each column should match the positional argument of the row filter function.
+          props:
+          - name: alias
+            value: string
+          - name: constant
+            value: string
+            description: |
+              A constant literal.
+      - name: updated_at
+        value: integer
+        description: |
+          Time at which the policy was last modified, in epoch milliseconds. Output only.
+      - name: updated_by
+        value: string
+        description: |
+          Username of the user who last modified the policy. Output only.
+      - name: when_condition
+        value: string
+        description: |
+          Optional condition when the policy should take effect.
 ```
 </TabItem>
 </Tabs>
@@ -616,7 +726,7 @@ WHERE
 on_securable_type = '{{ on_securable_type }}' --required
 AND on_securable_fullname = '{{ on_securable_fullname }}' --required
 AND name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND policy_info = '{{ policy_info }}' --required
 AND update_mask = '{{ update_mask}}'
 RETURNING
@@ -659,7 +769,7 @@ DELETE FROM databricks_workspace.catalog.policies
 WHERE on_securable_type = '{{ on_securable_type }}' --required
 AND on_securable_fullname = '{{ on_securable_fullname }}' --required
 AND name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

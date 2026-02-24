@@ -169,49 +169,49 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get a draft dashboard.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-show_trashed"><code>show_trashed</code></a>, <a href="#parameter-view"><code>view</code></a></td>
     <td>List dashboards.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-dashboard"><code>dashboard</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-dashboard"><code>dashboard</code></a></td>
     <td><a href="#parameter-dataset_catalog"><code>dataset_catalog</code></a>, <a href="#parameter-dataset_schema"><code>dataset_schema</code></a></td>
     <td>Create a draft dashboard.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-dashboard"><code>dashboard</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-dashboard"><code>dashboard</code></a></td>
     <td><a href="#parameter-dataset_catalog"><code>dataset_catalog</code></a>, <a href="#parameter-dataset_schema"><code>dataset_schema</code></a></td>
     <td>Update a draft dashboard.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-dashboard"><code>dashboard</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-dashboard"><code>dashboard</code></a></td>
     <td><a href="#parameter-dataset_catalog"><code>dataset_catalog</code></a>, <a href="#parameter-dataset_schema"><code>dataset_schema</code></a></td>
     <td>Update a draft dashboard.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Trash a dashboard.</td>
 </tr>
 <tr>
     <td><a href="#migrate"><CopyableCode code="migrate" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-source_dashboard_id"><code>source_dashboard_id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-source_dashboard_id"><code>source_dashboard_id</code></a></td>
     <td></td>
     <td>Migrates a classic SQL dashboard to Lakeview.</td>
 </tr>
@@ -236,10 +236,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>UUID identifying the dashboard.</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
     <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-dataset_catalog">
     <td><CopyableCode code="dataset_catalog" /></td>
@@ -253,7 +253,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>The number of dashboards to return per page.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -263,7 +263,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-show_trashed">
     <td><CopyableCode code="show_trashed" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>The flag to include dashboards located in the trash. If unspecified, only active dashboards will be returned.</td>
 </tr>
 <tr id="parameter-view">
@@ -301,7 +301,7 @@ serialized_dashboard,
 update_time
 FROM databricks_workspace.dashboards.lakeview
 WHERE dashboard_id = '{{ dashboard_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -322,7 +322,7 @@ path,
 serialized_dashboard,
 update_time
 FROM databricks_workspace.dashboards.lakeview
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 AND show_trashed = '{{ show_trashed }}'
@@ -349,13 +349,13 @@ Create a draft dashboard.
 ```sql
 INSERT INTO databricks_workspace.dashboards.lakeview (
 dashboard,
-deployment_name,
+workspace,
 dataset_catalog,
 dataset_schema
 )
 SELECT 
 '{{ dashboard }}' /* required */,
-'{{ deployment_name }}',
+'{{ workspace }}',
 '{{ dataset_catalog }}',
 '{{ dataset_schema }}'
 RETURNING
@@ -378,13 +378,52 @@ update_time
 # Description fields are for documentation purposes
 - name: lakeview
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the lakeview resource.
     - name: dashboard
-      value: string
+      value: object
       description: |
         :param dataset_catalog: str (optional) Sets the default catalog for all datasets in this dashboard. Does not impact table references that use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset’s existing configuration.
+      props:
+      - name: create_time
+        value: string
+      - name: dashboard_id
+        value: string
+        description: |
+          UUID identifying the dashboard.
+      - name: display_name
+        value: string
+        description: |
+          The display name of the dashboard.
+      - name: etag
+        value: string
+        description: |
+          The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard has not been modified since the last read. This field is excluded in List Dashboards responses.
+      - name: lifecycle_state
+        value: string
+        description: |
+          The state of the dashboard resource. Used for tracking trashed status.
+      - name: parent_path
+        value: string
+        description: |
+          The workspace path of the folder containing the dashboard. Includes leading slash and no trailing slash. This field is excluded in List Dashboards responses.
+      - name: path
+        value: string
+        description: |
+          The workspace path of the dashboard asset, including the file name. Exported dashboards always have the file extension `.lvdash.json`. This field is excluded in List Dashboards responses.
+      - name: serialized_dashboard
+        value: string
+        description: |
+          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards responses. Use the [get dashboard API] to retrieve an example response, which includes the `serialized_dashboard` field. This field provides the structure of the JSON string that represents the dashboard's layout and components. [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
+      - name: update_time
+        value: string
+        description: |
+          The timestamp of when the dashboard was last updated by the user. This field is excluded in List Dashboards responses.
+      - name: warehouse_id
+        value: string
+        description: |
+          The warehouse ID used to run the dashboard.
     - name: dataset_catalog
       value: string
     - name: dataset_schema
@@ -413,7 +452,7 @@ SET
 dashboard = '{{ dashboard }}'
 WHERE 
 dashboard_id = '{{ dashboard_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND dashboard = '{{ dashboard }}' --required
 AND dataset_catalog = '{{ dataset_catalog}}'
 AND dataset_schema = '{{ dataset_schema}}'
@@ -451,7 +490,7 @@ SET
 dashboard = '{{ dashboard }}'
 WHERE 
 dashboard_id = '{{ dashboard_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND dashboard = '{{ dashboard }}' --required
 AND dataset_catalog = '{{ dataset_catalog}}'
 AND dataset_schema = '{{ dataset_schema}}'
@@ -486,7 +525,7 @@ Trash a dashboard.
 ```sql
 DELETE FROM databricks_workspace.dashboards.lakeview
 WHERE dashboard_id = '{{ dashboard_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -507,13 +546,13 @@ Migrates a classic SQL dashboard to Lakeview.
 
 ```sql
 EXEC databricks_workspace.dashboards.lakeview.migrate 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "source_dashboard_id": "{{ source_dashboard_id }}", 
 "display_name": "{{ display_name }}", 
 "parent_path": "{{ parent_path }}", 
-"update_parameter_syntax": "{{ update_parameter_syntax }}"
+"update_parameter_syntax": {{ update_parameter_syntax }}
 }'
 ;
 ```

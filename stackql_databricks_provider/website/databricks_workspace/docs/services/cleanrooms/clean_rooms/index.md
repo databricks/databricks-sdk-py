@@ -50,7 +50,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "access_restricted",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CSP_MISMATCH, NO_RESTRICTION)"
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CSP_MISMATCH, NO_RESTRICTION)"
   },
   {
     "name": "comment",
@@ -80,7 +80,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CREATED, NOT_CREATED, NOT_ELIGIBLE)"
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CREATED, NOT_CREATED, NOT_ELIGIBLE)"
       }
     ]
   },
@@ -230,7 +230,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "access_restricted",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CSP_MISMATCH, NO_RESTRICTION)"
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CSP_MISMATCH, NO_RESTRICTION)"
   },
   {
     "name": "comment",
@@ -260,7 +260,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CREATED, NOT_CREATED, NOT_ELIGIBLE)"
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CREATED, NOT_CREATED, NOT_ELIGIBLE)"
       }
     ]
   },
@@ -419,42 +419,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get the details of a clean room given its name.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-clean_room"><code>clean_room</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-clean_room"><code>clean_room</code></a></td>
     <td></td>
     <td>Create a new clean room with the specified collaborators. This method is asynchronous; the returned</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Delete a clean room. After deletion, the clean room will be removed from the metastore. If the other</td>
 </tr>
 <tr>
     <td><a href="#create_output_catalog"><CopyableCode code="create_output_catalog" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-output_catalog"><code>output_catalog</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-output_catalog"><code>output_catalog</code></a></td>
     <td></td>
     <td>Create the output catalog of the clean room.</td>
 </tr>
@@ -479,19 +479,19 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Name of the clean room.</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Name of the clean room.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of clean rooms to return (i.e., the page length). Defaults to 100.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -529,7 +529,7 @@ status,
 updated_at
 FROM databricks_workspace.cleanrooms.clean_rooms
 WHERE name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -550,7 +550,7 @@ remote_detailed_info,
 status,
 updated_at
 FROM databricks_workspace.cleanrooms.clean_rooms
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -575,11 +575,11 @@ Create a new clean room with the specified collaborators. This method is asynchr
 ```sql
 INSERT INTO databricks_workspace.cleanrooms.clean_rooms (
 clean_room,
-deployment_name
+workspace
 )
 SELECT 
 '{{ clean_room }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 name,
 access_restricted,
@@ -600,13 +600,191 @@ updated_at
 # Description fields are for documentation purposes
 - name: clean_rooms
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the clean_rooms resource.
     - name: clean_room
-      value: string
+      value: object
       description: |
         :returns: Long-running operation waiter for :class:`CleanRoom`. See :method:wait_get_clean_room_active for more details.
+      props:
+      - name: access_restricted
+        value: string
+        description: |
+          Create a collection of name/value pairs.
+          Example enumeration:
+          >>> class Color(Enum):
+          ...     RED = 1
+          ...     BLUE = 2
+          ...     GREEN = 3
+          Access them by:
+          - attribute access::
+          >>> Color.RED
+          <Color.RED: 1>
+          - value lookup:
+          >>> Color(1)
+          <Color.RED: 1>
+          - name lookup:
+          >>> Color['RED']
+          <Color.RED: 1>
+          Enumerations can be iterated over, and know how many members they have:
+          >>> len(Color)
+          3
+          >>> list(Color)
+          [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+          Methods can be added to enumerations, and members can have their own
+          attributes -- see the documentation for details.
+      - name: comment
+        value: string
+      - name: created_at
+        value: integer
+        description: |
+          When the clean room was created, in epoch milliseconds.
+      - name: local_collaborator_alias
+        value: string
+        description: |
+          The alias of the collaborator tied to the local clean room.
+      - name: name
+        value: string
+        description: |
+          The name of the clean room. It should follow [UC securable naming requirements]. [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
+      - name: output_catalog
+        value: object
+        description: |
+          Output catalog of the clean room. It is an output only field. Output catalog is manipulated using the separate CreateCleanRoomOutputCatalog API.
+        props:
+        - name: catalog_name
+          value: string
+        - name: status
+          value: string
+          description: |
+            Create a collection of name/value pairs.
+            Example enumeration:
+            >>> class Color(Enum):
+            ...     RED = 1
+            ...     BLUE = 2
+            ...     GREEN = 3
+            Access them by:
+            - attribute access::
+            >>> Color.RED
+            <Color.RED: 1>
+            - value lookup:
+            >>> Color(1)
+            <Color.RED: 1>
+            - name lookup:
+            >>> Color['RED']
+            <Color.RED: 1>
+            Enumerations can be iterated over, and know how many members they have:
+            >>> len(Color)
+            3
+            >>> list(Color)
+            [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+            Methods can be added to enumerations, and members can have their own
+            attributes -- see the documentation for details.
+      - name: owner
+        value: string
+        description: |
+          This is the Databricks username of the owner of the local clean room securable for permission management.
+      - name: remote_detailed_info
+        value: object
+        description: |
+          Central clean room details. During creation, users need to specify cloud_vendor, region, and collaborators.global_metastore_id. This field will not be filled in the ListCleanRooms call.
+        props:
+        - name: central_clean_room_id
+          value: string
+          description: |
+            Central clean room ID.
+        - name: cloud_vendor
+          value: string
+          description: |
+            Cloud vendor (aws,azure,gcp) of the central clean room.
+        - name: collaborators
+          value: array
+          description: |
+            Collaborators in the central clean room. There should one and only one collaborator in the list that satisfies the owner condition: 1. It has the creator's global_metastore_id (determined by caller of CreateCleanRoom). 2. Its invite_recipient_email is empty.
+          props:
+          - name: collaborator_alias
+            value: string
+            description: |
+              Collaborator alias specified by the clean room creator. It is unique across all collaborators of this clean room, and used to derive multiple values internally such as catalog alias and clean room name for single metastore clean rooms. It should follow [UC securable naming requirements]. [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
+          - name: display_name
+            value: string
+            description: |
+              Generated display name for the collaborator. In the case of a single metastore clean room, it is the clean room name. For x-metastore clean rooms, it is the organization name of the metastore. It is not restricted to these values and could change in the future
+          - name: global_metastore_id
+            value: string
+            description: |
+              The global Unity Catalog metastore ID of the collaborator. The identifier is of format cloud:region:metastore-uuid.
+          - name: invite_recipient_email
+            value: string
+            description: |
+              Email of the user who is receiving the clean room "invitation". It should be empty for the creator of the clean room, and non-empty for the invitees of the clean room. It is only returned in the output when clean room creator calls GET
+          - name: invite_recipient_workspace_id
+            value: integer
+            description: |
+              Workspace ID of the user who is receiving the clean room "invitation". Must be specified if invite_recipient_email is specified. It should be empty when the collaborator is the creator of the clean room.
+          - name: organization_name
+            value: string
+            description: |
+              [Organization name](:method:metastores/list#metastores-delta_sharing_organization_name) configured in the metastore
+        - name: compliance_security_profile
+          value: object
+          description: |
+            The compliance security profile used to process regulated data following compliance standards.
+          props:
+          - name: compliance_standards
+            value: string
+            description: |
+              The list of compliance standards that the compliance security profile is configured to enforce.
+          - name: is_enabled
+            value: boolean
+            description: |
+              Whether the compliance security profile is enabled.
+        - name: creator
+          value: object
+          description: |
+            Collaborator who creates the clean room.
+          props:
+          - name: collaborator_alias
+            value: string
+            description: |
+              Collaborator alias specified by the clean room creator. It is unique across all collaborators of this clean room, and used to derive multiple values internally such as catalog alias and clean room name for single metastore clean rooms. It should follow [UC securable naming requirements]. [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
+          - name: display_name
+            value: string
+            description: |
+              Generated display name for the collaborator. In the case of a single metastore clean room, it is the clean room name. For x-metastore clean rooms, it is the organization name of the metastore. It is not restricted to these values and could change in the future
+          - name: global_metastore_id
+            value: string
+            description: |
+              The global Unity Catalog metastore ID of the collaborator. The identifier is of format cloud:region:metastore-uuid.
+          - name: invite_recipient_email
+            value: string
+            description: |
+              Email of the user who is receiving the clean room "invitation". It should be empty for the creator of the clean room, and non-empty for the invitees of the clean room. It is only returned in the output when clean room creator calls GET
+          - name: invite_recipient_workspace_id
+            value: integer
+            description: |
+              Workspace ID of the user who is receiving the clean room "invitation". Must be specified if invite_recipient_email is specified. It should be empty when the collaborator is the creator of the clean room.
+          - name: organization_name
+            value: string
+            description: |
+              [Organization name](:method:metastores/list#metastores-delta_sharing_organization_name) configured in the metastore
+        - name: egress_network_policy
+          value: string
+          description: |
+            Egress network policy to apply to the central clean room workspace.
+        - name: region
+          value: string
+          description: |
+            Region of the central clean room.
+      - name: status
+        value: string
+        description: |
+          Clean room status.
+      - name: updated_at
+        value: integer
+        description: |
+          When the clean room was last updated, in epoch milliseconds.
 ```
 </TabItem>
 </Tabs>
@@ -630,7 +808,7 @@ SET
 clean_room = '{{ clean_room }}'
 WHERE 
 name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 name,
 access_restricted,
@@ -662,7 +840,7 @@ Delete a clean room. After deletion, the clean room will be removed from the met
 ```sql
 DELETE FROM databricks_workspace.cleanrooms.clean_rooms
 WHERE name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -684,7 +862,7 @@ Create the output catalog of the clean room.
 ```sql
 EXEC databricks_workspace.cleanrooms.clean_rooms.create_output_catalog 
 @clean_room_name='{{ clean_room_name }}' --required, 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "output_catalog": "{{ output_catalog }}"

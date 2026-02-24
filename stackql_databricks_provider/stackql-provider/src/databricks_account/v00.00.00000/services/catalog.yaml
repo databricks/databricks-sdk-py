@@ -9,6 +9,7 @@ info:
   x-stackql-sdk-namespace: databricks.sdk.service.catalog
 servers:
 - url: https://accounts.cloud.databricks.com
+  description: Databricks account
 paths:
   /api/2.0/accounts/{account_id}/workspaces/{workspace_id}/metastores/{metastore_id}:
     post:
@@ -52,7 +53,21 @@ paths:
               type: object
               properties:
                 metastore_assignment:
-                  $ref: '#/components/schemas/CreateMetastoreAssignment'
+                  type: object
+                  properties:
+                    workspace_id:
+                      type: integer
+                    metastore_id:
+                      type: string
+                      description: The unique ID of the metastore.
+                    default_catalog_name:
+                      type: string
+                      description: The name of the default catalog in the metastore. This field is deprecated. Please use
+                        "Default Namespace API" to configure the default catalog for a Databricks workspace.
+                  required:
+                  - workspace_id
+                  - metastore_id
+                  - default_catalog_name
                   description: ':returns: :class:`AccountsCreateMetastoreAssignmentResponse`'
       responses:
         '200':
@@ -167,7 +182,19 @@ paths:
               type: object
               properties:
                 metastore_assignment:
-                  $ref: '#/components/schemas/UpdateMetastoreAssignment'
+                  type: object
+                  properties:
+                    workspace_id:
+                      type: integer
+                    default_catalog_name:
+                      type: string
+                      description: The name of the default catalog in the metastore. This field is deprecated. Please use
+                        "Default Namespace API" to configure the default catalog for a Databricks workspace.
+                    metastore_id:
+                      type: string
+                      description: The unique ID of the metastore.
+                  required:
+                  - workspace_id
                   description: ':returns: :class:`AccountsUpdateMetastoreAssignmentResponse`'
       responses:
         '200':
@@ -306,7 +333,21 @@ paths:
               type: object
               properties:
                 metastore_info:
-                  $ref: '#/components/schemas/CreateAccountsMetastore'
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    external_access_enabled:
+                      type: boolean
+                      description: Whether to allow non-DBR clients to directly access entities under the metastore.
+                    region:
+                      type: string
+                      description: Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+                    storage_root:
+                      type: string
+                      description: The storage root URL for metastore
+                  required:
+                  - name
                   description: ':returns: :class:`AccountsCreateMetastoreResponse`'
       responses:
         '200':
@@ -494,7 +535,31 @@ paths:
               type: object
               properties:
                 metastore_info:
-                  $ref: '#/components/schemas/UpdateAccountsMetastore'
+                  type: object
+                  properties:
+                    delta_sharing_organization_name:
+                      type: string
+                    delta_sharing_recipient_token_lifetime_in_seconds:
+                      type: integer
+                      description: The lifetime of delta sharing recipient token in seconds.
+                    delta_sharing_scope:
+                      type: string
+                      x-enum:
+                      - INTERNAL
+                      - INTERNAL_AND_EXTERNAL
+                      description: The scope of Delta Sharing enabled for the metastore.
+                    external_access_enabled:
+                      type: boolean
+                      description: Whether to allow non-DBR clients to directly access entities under the metastore.
+                    owner:
+                      type: string
+                      description: The owner of the metastore.
+                    privilege_model_version:
+                      type: string
+                      description: Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`).
+                    storage_root_credential_id:
+                      type: string
+                      description: UUID of storage credential to access the metastore storage_root.
                   description: Properties of the metastore to change.
       responses:
         '200':
@@ -557,7 +622,80 @@ paths:
               type: object
               properties:
                 credential_info:
-                  $ref: '#/components/schemas/CreateAccountsStorageCredential'
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    aws_iam_role:
+                      type: object
+                      properties:
+                        role_arn:
+                          type: string
+                          description: The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials.
+                      required:
+                      - role_arn
+                      description: The AWS IAM role configuration.
+                    azure_managed_identity:
+                      type: object
+                      properties:
+                        access_connector_id:
+                          type: string
+                          description: The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+                        managed_identity_id:
+                          type: string
+                          description: The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+                            This is only available for user-assgined identities. For system-assigned identities, the access_connector_id
+                            is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity
+                            is using the system-assigned identity.
+                      required:
+                      - access_connector_id
+                      description: The Azure managed identity configuration.
+                    azure_service_principal:
+                      type: object
+                      properties:
+                        directory_id:
+                          type: string
+                          description: The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application.
+                        application_id:
+                          type: string
+                          description: The application ID of the application registration within the referenced AAD tenant.
+                        client_secret:
+                          type: string
+                          description: The client secret generated for the above app ID in AAD.
+                      required:
+                      - directory_id
+                      - application_id
+                      - client_secret
+                      description: The Azure service principal configuration.
+                    cloudflare_api_token:
+                      type: object
+                      properties:
+                        access_key_id:
+                          type: string
+                          description: The access key ID associated with the API token.
+                        secret_access_key:
+                          type: string
+                          description: The secret access token generated for the above access key ID.
+                        account_id:
+                          type: string
+                          description: The ID of the account associated with the API token.
+                      required:
+                      - access_key_id
+                      - secret_access_key
+                      description: The Cloudflare API token configuration.
+                    comment:
+                      type: string
+                      description: Comment associated with the credential.
+                    databricks_gcp_service_account:
+                      type: object
+                      properties: {}
+                      description: The Databricks managed GCP service account configuration.
+                    read_only:
+                      type: boolean
+                      description: Whether the credential is usable only for read operations. Only applicable when purpose
+                        is **STORAGE**.
+                  required:
+                  - name
                   description: ':param skip_validation: bool (optional) Optional, default false. Supplying true to this argument
                     skips validation of the created set of credentials.'
                 skip_validation:
@@ -784,7 +922,88 @@ paths:
               type: object
               properties:
                 credential_info:
-                  $ref: '#/components/schemas/UpdateAccountsStorageCredential'
+                  type: object
+                  properties:
+                    aws_iam_role:
+                      type: object
+                      properties:
+                        role_arn:
+                          type: string
+                          description: The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials.
+                      required:
+                      - role_arn
+                      description: The AWS IAM role configuration
+                    azure_managed_identity:
+                      type: object
+                      properties:
+                        access_connector_id:
+                          type: string
+                          description: The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+                        credential_id:
+                          type: string
+                          description: The Databricks internal ID that represents this managed identity.
+                        managed_identity_id:
+                          type: string
+                          description: The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+                            This is only available for user-assgined identities. For system-assigned identities, the access_connector_id
+                            is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity
+                            is using the system-assigned identity.
+                      required:
+                      - access_connector_id
+                      description: The Azure managed identity configuration.
+                    azure_service_principal:
+                      type: object
+                      properties:
+                        directory_id:
+                          type: string
+                          description: The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application.
+                        application_id:
+                          type: string
+                          description: The application ID of the application registration within the referenced AAD tenant.
+                        client_secret:
+                          type: string
+                          description: The client secret generated for the above app ID in AAD.
+                      required:
+                      - directory_id
+                      - application_id
+                      - client_secret
+                      description: The Azure service principal configuration.
+                    cloudflare_api_token:
+                      type: object
+                      properties:
+                        access_key_id:
+                          type: string
+                          description: The access key ID associated with the API token.
+                        secret_access_key:
+                          type: string
+                          description: The secret access token generated for the above access key ID.
+                        account_id:
+                          type: string
+                          description: The ID of the account associated with the API token.
+                      required:
+                      - access_key_id
+                      - secret_access_key
+                      description: The Cloudflare API token configuration.
+                    comment:
+                      type: string
+                      description: Comment associated with the credential.
+                    databricks_gcp_service_account:
+                      type: object
+                      properties: {}
+                      description: The Databricks managed GCP service account configuration.
+                    isolation_mode:
+                      type: string
+                      x-enum:
+                      - ISOLATION_MODE_ISOLATED
+                      - ISOLATION_MODE_OPEN
+                      description: Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+                    owner:
+                      type: string
+                      description: Username of current owner of credential.
+                    read_only:
+                      type: boolean
+                      description: Whether the credential is usable only for read operations. Only applicable when purpose
+                        is **STORAGE**.
                   description: ':param skip_validation: bool (optional) Optional. Supplying true to this argument skips validation
                     of the updated set of credentials.'
                 skip_validation:
@@ -855,22 +1074,75 @@ paths:
                   description: The credential name. The name must be unique among storage and service credentials within the
                     metastore.
                 aws_iam_role:
-                  $ref: '#/components/schemas/AwsIamRole'
+                  type: object
+                  properties:
+                    external_id:
+                      type: string
+                      description: The external ID used in role assumption to prevent the confused deputy problem.
+                    role_arn:
+                      type: string
+                      description: The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials.
+                    unity_catalog_iam_arn:
+                      type: string
+                      description: The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks. This is the identity
+                        that is going to assume the AWS IAM role.
                   description: The AWS IAM role configuration.
                 azure_managed_identity:
-                  $ref: '#/components/schemas/AzureManagedIdentity'
+                  type: object
+                  properties:
+                    access_connector_id:
+                      type: string
+                      description: The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+                    credential_id:
+                      type: string
+                      description: The Databricks internal ID that represents this managed identity.
+                    managed_identity_id:
+                      type: string
+                      description: The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+                        This is only available for user-assgined identities. For system-assigned identities, the access_connector_id
+                        is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity
+                        is using the system-assigned identity.
+                  required:
+                  - access_connector_id
                   description: The Azure managed identity configuration.
                 azure_service_principal:
-                  $ref: '#/components/schemas/AzureServicePrincipal'
+                  type: object
+                  properties:
+                    directory_id:
+                      type: string
+                      description: The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application.
+                    application_id:
+                      type: string
+                      description: The application ID of the application registration within the referenced AAD tenant.
+                    client_secret:
+                      type: string
+                      description: The client secret generated for the above app ID in AAD.
+                  required:
+                  - directory_id
+                  - application_id
+                  - client_secret
                   description: The Azure service principal configuration.
                 comment:
                   type: string
                   description: Comment associated with the credential.
                 databricks_gcp_service_account:
-                  $ref: '#/components/schemas/DatabricksGcpServiceAccount'
+                  type: object
+                  properties:
+                    credential_id:
+                      type: string
+                      description: The Databricks internal ID that represents this managed identity.
+                    email:
+                      type: string
+                      description: The email of the service account.
+                    private_key_id:
+                      type: string
+                      description: The ID that represents the private key for this Service Account
                   description: The Databricks managed GCP service account configuration.
                 purpose:
-                  $ref: '#/components/schemas/CredentialPurpose'
+                  type: string
+                  x-enum:
+                  - SERVICE
+                  - STORAGE
                   description: Indicates the purpose of the credential.
                 read_only:
                   type: boolean
@@ -1118,26 +1390,79 @@ paths:
               type: object
               properties:
                 aws_iam_role:
-                  $ref: '#/components/schemas/AwsIamRole'
+                  type: object
+                  properties:
+                    external_id:
+                      type: string
+                      description: The external ID used in role assumption to prevent the confused deputy problem.
+                    role_arn:
+                      type: string
+                      description: The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials.
+                    unity_catalog_iam_arn:
+                      type: string
+                      description: The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks. This is the identity
+                        that is going to assume the AWS IAM role.
                   description: The AWS IAM role configuration.
                 azure_managed_identity:
-                  $ref: '#/components/schemas/AzureManagedIdentity'
+                  type: object
+                  properties:
+                    access_connector_id:
+                      type: string
+                      description: The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+                    credential_id:
+                      type: string
+                      description: The Databricks internal ID that represents this managed identity.
+                    managed_identity_id:
+                      type: string
+                      description: The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+                        This is only available for user-assgined identities. For system-assigned identities, the access_connector_id
+                        is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity
+                        is using the system-assigned identity.
+                  required:
+                  - access_connector_id
                   description: The Azure managed identity configuration.
                 azure_service_principal:
-                  $ref: '#/components/schemas/AzureServicePrincipal'
+                  type: object
+                  properties:
+                    directory_id:
+                      type: string
+                      description: The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application.
+                    application_id:
+                      type: string
+                      description: The application ID of the application registration within the referenced AAD tenant.
+                    client_secret:
+                      type: string
+                      description: The client secret generated for the above app ID in AAD.
+                  required:
+                  - directory_id
+                  - application_id
+                  - client_secret
                   description: The Azure service principal configuration.
                 comment:
                   type: string
                   description: Comment associated with the credential.
                 databricks_gcp_service_account:
-                  $ref: '#/components/schemas/DatabricksGcpServiceAccount'
+                  type: object
+                  properties:
+                    credential_id:
+                      type: string
+                      description: The Databricks internal ID that represents this managed identity.
+                    email:
+                      type: string
+                      description: The email of the service account.
+                    private_key_id:
+                      type: string
+                      description: The ID that represents the private key for this Service Account
                   description: The Databricks managed GCP service account configuration.
                 force:
                   type: boolean
                   description: Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent
                     external locations and external tables (when purpose is **STORAGE**).
                 isolation_mode:
-                  $ref: '#/components/schemas/IsolationMode'
+                  type: string
+                  x-enum:
+                  - ISOLATION_MODE_ISOLATED
+                  - ISOLATION_MODE_OPEN
                   description: Whether the current securable is accessible from all workspaces or a specific set of workspaces.
                 new_name:
                   type: string
@@ -1198,10 +1523,25 @@ paths:
                   type: string
                   description: The name of the service credential used to generate a temporary credential
                 azure_options:
-                  $ref: '#/components/schemas/GenerateTemporaryServiceCredentialAzureOptions'
+                  type: object
+                  properties:
+                    resources:
+                      type: array
+                      items:
+                        type: string
+                      description: The resources to which the temporary Azure credential should apply. These resources are
+                        the scopes that are passed to the token provider (see https://learn.microsoft.com/python/api/azure-core/azure.core.credentials.tokencredential?view=azure-python)
                   description: ':param gcp_options: :class:`GenerateTemporaryServiceCredentialGcpOptions` (optional)'
                 gcp_options:
-                  $ref: '#/components/schemas/GenerateTemporaryServiceCredentialGcpOptions'
+                  type: object
+                  properties:
+                    scopes:
+                      type: array
+                      items:
+                        type: string
+                      description: The scopes to which the temporary GCP credential should apply. These resources are the
+                        scopes that are passed to the token provider (see https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials)
+                  description: The GCP cloud options to customize the requested temporary credential
               required:
               - credential_name
       responses:
@@ -1269,21 +1609,61 @@ paths:
               type: object
               properties:
                 aws_iam_role:
-                  $ref: '#/components/schemas/AwsIamRole'
+                  type: object
+                  properties:
+                    external_id:
+                      type: string
+                      description: The external ID used in role assumption to prevent the confused deputy problem.
+                    role_arn:
+                      type: string
+                      description: The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials.
+                    unity_catalog_iam_arn:
+                      type: string
+                      description: The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks. This is the identity
+                        that is going to assume the AWS IAM role.
                   description: ':param azure_managed_identity: :class:`AzureManagedIdentity` (optional)'
                 azure_managed_identity:
-                  $ref: '#/components/schemas/AzureManagedIdentity'
+                  type: object
+                  properties:
+                    access_connector_id:
+                      type: string
+                      description: The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+                    credential_id:
+                      type: string
+                      description: The Databricks internal ID that represents this managed identity.
+                    managed_identity_id:
+                      type: string
+                      description: The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+                        This is only available for user-assgined identities. For system-assigned identities, the access_connector_id
+                        is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity
+                        is using the system-assigned identity.
+                  required:
+                  - access_connector_id
+                  description: The Azure managed identity configuration.
                 credential_name:
                   type: string
                   description: Required. The name of an existing credential or long-lived cloud credential to validate.
                 databricks_gcp_service_account:
-                  $ref: '#/components/schemas/DatabricksGcpServiceAccount'
+                  type: object
+                  properties:
+                    credential_id:
+                      type: string
+                      description: The Databricks internal ID that represents this managed identity.
+                    email:
+                      type: string
+                      description: The email of the service account.
+                    private_key_id:
+                      type: string
+                      description: The ID that represents the private key for this Service Account
                   description: ':param external_location_name: str (optional) The name of an existing external location to
                     validate. Only applicable for storage credentials (purpose is **STORAGE**.)'
                 external_location_name:
                   type: string
                 purpose:
-                  $ref: '#/components/schemas/CredentialPurpose'
+                  type: string
+                  x-enum:
+                  - SERVICE
+                  - STORAGE
                   description: The purpose of the credential. This should only be used when the credential is specified.
                 read_only:
                   type: boolean

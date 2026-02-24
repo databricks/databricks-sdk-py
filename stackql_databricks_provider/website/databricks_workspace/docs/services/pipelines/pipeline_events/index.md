@@ -289,7 +289,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-order_by"><code>order_by</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Retrieves events for a pipeline.</td>
 </tr>
@@ -309,15 +309,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-pipeline_id">
     <td><CopyableCode code="pipeline_id" /></td>
     <td><code>string</code></td>
     <td>The pipeline to return events for.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-filter">
     <td><CopyableCode code="filter" /></td>
@@ -326,12 +326,12 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Max number of entries to return in a single page. The system may return fewer than max_results events in a response, even if there are more events available.</td>
 </tr>
 <tr id="parameter-order_by">
     <td><CopyableCode code="order_by" /></td>
-    <td><code>string</code></td>
+    <td><code>array</code></td>
     <td>A string indicating a sort order by timestamp for the results, for example, ["timestamp asc"]. The sort order can be ascending or descending. By default, events are returned in descending order by timestamp.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -368,7 +368,7 @@ timestamp,
 truncation
 FROM databricks_workspace.pipelines.pipeline_events
 WHERE pipeline_id = '{{ pipeline_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND filter = '{{ filter }}'
 AND max_results = '{{ max_results }}'
 AND order_by = '{{ order_by }}'

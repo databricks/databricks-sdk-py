@@ -387,9 +387,20 @@ use_case
       description: |
         The ID of the VPC endpoint object in AWS.
     - name: gcp_vpc_endpoint_info
-      value: string
+      value: object
       description: |
         The cloud info of this vpc endpoint.
+      props:
+      - name: project_id
+        value: string
+      - name: psc_endpoint_name
+        value: string
+      - name: endpoint_region
+        value: string
+      - name: psc_connection_id
+        value: string
+      - name: service_attachment_id
+        value: string
     - name: region
       value: string
       description: |

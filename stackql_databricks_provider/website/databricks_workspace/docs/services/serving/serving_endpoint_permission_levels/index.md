@@ -80,7 +80,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-serving_endpoint_id"><code>serving_endpoint_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-serving_endpoint_id"><code>serving_endpoint_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets the permission levels that a user can have on an object.</td>
 </tr>
@@ -100,15 +100,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-serving_endpoint_id">
     <td><CopyableCode code="serving_endpoint_id" /></td>
     <td><code>string</code></td>
     <td>The serving endpoint for which to get or manage permissions.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -130,7 +130,7 @@ SELECT
 permission_levels
 FROM databricks_workspace.serving.serving_endpoint_permission_levels
 WHERE serving_endpoint_id = '{{ serving_endpoint_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>

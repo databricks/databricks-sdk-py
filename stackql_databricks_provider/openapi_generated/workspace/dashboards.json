@@ -1373,7 +1373,12 @@
                 "type": "object",
                 "properties": {
                   "rating": {
-                    "$ref": "#/components/schemas/GenieFeedbackRating",
+                    "type": "string",
+                    "x-enum": [
+                      "NEGATIVE",
+                      "NONE",
+                      "POSITIVE"
+                    ],
                     "description": "The rating (POSITIVE, NEGATIVE, or NONE)."
                   }
                 },
@@ -1516,7 +1521,52 @@
                 "type": "object",
                 "properties": {
                   "dashboard": {
-                    "$ref": "#/components/schemas/Dashboard",
+                    "type": "object",
+                    "properties": {
+                      "create_time": {
+                        "type": "string"
+                      },
+                      "dashboard_id": {
+                        "type": "string",
+                        "description": "UUID identifying the dashboard."
+                      },
+                      "display_name": {
+                        "type": "string",
+                        "description": "The display name of the dashboard."
+                      },
+                      "etag": {
+                        "type": "string",
+                        "description": "The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard has not been modified since the last read. This field is excluded in List Dashboards responses."
+                      },
+                      "lifecycle_state": {
+                        "type": "string",
+                        "x-enum": [
+                          "ACTIVE",
+                          "TRASHED"
+                        ],
+                        "description": "The state of the dashboard resource. Used for tracking trashed status."
+                      },
+                      "parent_path": {
+                        "type": "string",
+                        "description": "The workspace path of the folder containing the dashboard. Includes leading slash and no trailing slash. This field is excluded in List Dashboards responses."
+                      },
+                      "path": {
+                        "type": "string",
+                        "description": "The workspace path of the dashboard asset, including the file name. Exported dashboards always have the file extension `.lvdash.json`. This field is excluded in List Dashboards responses."
+                      },
+                      "serialized_dashboard": {
+                        "type": "string",
+                        "description": "The contents of the dashboard in serialized string form. This field is excluded in List Dashboards responses. Use the [get dashboard API] to retrieve an example response, which includes the `serialized_dashboard` field. This field provides the structure of the JSON string that represents the dashboard's layout and components. [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get"
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "The timestamp of when the dashboard was last updated by the user. This field is excluded in List Dashboards responses."
+                      },
+                      "warehouse_id": {
+                        "type": "string",
+                        "description": "The warehouse ID used to run the dashboard."
+                      }
+                    },
                     "description": ":param dataset_catalog: str (optional) Sets the default catalog for all datasets in this dashboard. Does not impact table references that use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset\u2019s existing configuration."
                   }
                 },
@@ -1665,7 +1715,64 @@
                 "type": "object",
                 "properties": {
                   "schedule": {
-                    "$ref": "#/components/schemas/Schedule",
+                    "type": "object",
+                    "properties": {
+                      "cron_schedule": {
+                        "type": "object",
+                        "properties": {
+                          "quartz_cron_expression": {
+                            "type": "string"
+                          },
+                          "timezone_id": {
+                            "type": "string",
+                            "description": "A Java timezone id. The schedule will be resolved with respect to this timezone. See [Java TimeZone] for details. [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html"
+                          }
+                        },
+                        "required": [
+                          "quartz_cron_expression",
+                          "timezone_id"
+                        ]
+                      },
+                      "create_time": {
+                        "type": "string",
+                        "description": "A timestamp indicating when the schedule was created."
+                      },
+                      "dashboard_id": {
+                        "type": "string",
+                        "description": "UUID identifying the dashboard to which the schedule belongs."
+                      },
+                      "display_name": {
+                        "type": "string",
+                        "description": "The display name for schedule."
+                      },
+                      "etag": {
+                        "type": "string",
+                        "description": "The etag for the schedule. Must be left empty on create, must be provided on updates to ensure that the schedule has not been modified since the last read, and can be optionally provided on delete."
+                      },
+                      "pause_status": {
+                        "type": "string",
+                        "x-enum": [
+                          "PAUSED",
+                          "UNPAUSED"
+                        ],
+                        "description": "The status indicates whether this schedule is paused or not."
+                      },
+                      "schedule_id": {
+                        "type": "string",
+                        "description": "UUID identifying the schedule."
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "A timestamp indicating when the schedule was last updated."
+                      },
+                      "warehouse_id": {
+                        "type": "string",
+                        "description": "The warehouse id to run the dashboard with for the schedule."
+                      }
+                    },
+                    "required": [
+                      "cron_schedule"
+                    ],
                     "description": "The schedule to create. A dashboard is limited to 10 schedules."
                   }
                 },
@@ -1814,7 +1921,68 @@
                 "type": "object",
                 "properties": {
                   "subscription": {
-                    "$ref": "#/components/schemas/Subscription",
+                    "type": "object",
+                    "properties": {
+                      "subscriber": {
+                        "type": "object",
+                        "properties": {
+                          "destination_subscriber": {
+                            "type": "object",
+                            "properties": {
+                              "destination_id": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "destination_id"
+                            ]
+                          },
+                          "user_subscriber": {
+                            "type": "object",
+                            "properties": {
+                              "user_id": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "user_id"
+                            ],
+                            "description": "The user to receive the subscription email. This parameter is mutually exclusive with `destination_subscriber`."
+                          }
+                        }
+                      },
+                      "create_time": {
+                        "type": "string",
+                        "description": "A timestamp indicating when the subscription was created."
+                      },
+                      "created_by_user_id": {
+                        "type": "integer",
+                        "description": "UserId of the user who adds subscribers (users or notification destinations) to the dashboard's schedule."
+                      },
+                      "dashboard_id": {
+                        "type": "string",
+                        "description": "UUID identifying the dashboard to which the subscription belongs."
+                      },
+                      "etag": {
+                        "type": "string",
+                        "description": "The etag for the subscription. Must be left empty on create, can be optionally provided on delete to ensure that the subscription has not been deleted since the last read."
+                      },
+                      "schedule_id": {
+                        "type": "string",
+                        "description": "UUID identifying the schedule to which the subscription belongs."
+                      },
+                      "subscription_id": {
+                        "type": "string",
+                        "description": "UUID identifying the subscription."
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "A timestamp indicating when the subscription was last updated."
+                      }
+                    },
+                    "required": [
+                      "subscriber"
+                    ],
                     "description": "The subscription to create. A schedule is limited to 100 subscriptions."
                   }
                 },
@@ -2094,7 +2262,64 @@
                 "type": "object",
                 "properties": {
                   "schedule": {
-                    "$ref": "#/components/schemas/Schedule",
+                    "type": "object",
+                    "properties": {
+                      "cron_schedule": {
+                        "type": "object",
+                        "properties": {
+                          "quartz_cron_expression": {
+                            "type": "string"
+                          },
+                          "timezone_id": {
+                            "type": "string",
+                            "description": "A Java timezone id. The schedule will be resolved with respect to this timezone. See [Java TimeZone] for details. [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html"
+                          }
+                        },
+                        "required": [
+                          "quartz_cron_expression",
+                          "timezone_id"
+                        ]
+                      },
+                      "create_time": {
+                        "type": "string",
+                        "description": "A timestamp indicating when the schedule was created."
+                      },
+                      "dashboard_id": {
+                        "type": "string",
+                        "description": "UUID identifying the dashboard to which the schedule belongs."
+                      },
+                      "display_name": {
+                        "type": "string",
+                        "description": "The display name for schedule."
+                      },
+                      "etag": {
+                        "type": "string",
+                        "description": "The etag for the schedule. Must be left empty on create, must be provided on updates to ensure that the schedule has not been modified since the last read, and can be optionally provided on delete."
+                      },
+                      "pause_status": {
+                        "type": "string",
+                        "x-enum": [
+                          "PAUSED",
+                          "UNPAUSED"
+                        ],
+                        "description": "The status indicates whether this schedule is paused or not."
+                      },
+                      "schedule_id": {
+                        "type": "string",
+                        "description": "UUID identifying the schedule."
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "A timestamp indicating when the schedule was last updated."
+                      },
+                      "warehouse_id": {
+                        "type": "string",
+                        "description": "The warehouse id to run the dashboard with for the schedule."
+                      }
+                    },
+                    "required": [
+                      "cron_schedule"
+                    ],
                     "description": "The schedule to update."
                   }
                 },
@@ -2419,7 +2644,52 @@
                 "type": "object",
                 "properties": {
                   "dashboard": {
-                    "$ref": "#/components/schemas/Dashboard",
+                    "type": "object",
+                    "properties": {
+                      "create_time": {
+                        "type": "string"
+                      },
+                      "dashboard_id": {
+                        "type": "string",
+                        "description": "UUID identifying the dashboard."
+                      },
+                      "display_name": {
+                        "type": "string",
+                        "description": "The display name of the dashboard."
+                      },
+                      "etag": {
+                        "type": "string",
+                        "description": "The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard has not been modified since the last read. This field is excluded in List Dashboards responses."
+                      },
+                      "lifecycle_state": {
+                        "type": "string",
+                        "x-enum": [
+                          "ACTIVE",
+                          "TRASHED"
+                        ],
+                        "description": "The state of the dashboard resource. Used for tracking trashed status."
+                      },
+                      "parent_path": {
+                        "type": "string",
+                        "description": "The workspace path of the folder containing the dashboard. Includes leading slash and no trailing slash. This field is excluded in List Dashboards responses."
+                      },
+                      "path": {
+                        "type": "string",
+                        "description": "The workspace path of the dashboard asset, including the file name. Exported dashboards always have the file extension `.lvdash.json`. This field is excluded in List Dashboards responses."
+                      },
+                      "serialized_dashboard": {
+                        "type": "string",
+                        "description": "The contents of the dashboard in serialized string form. This field is excluded in List Dashboards responses. Use the [get dashboard API] to retrieve an example response, which includes the `serialized_dashboard` field. This field provides the structure of the JSON string that represents the dashboard's layout and components. [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get"
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "The timestamp of when the dashboard was last updated by the user. This field is excluded in List Dashboards responses."
+                      },
+                      "warehouse_id": {
+                        "type": "string",
+                        "description": "The warehouse ID used to run the dashboard."
+                      }
+                    },
                     "description": ":param dataset_catalog: str (optional) Sets the default catalog for all datasets in this dashboard. Does not impact table references that use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset\u2019s existing configuration."
                   }
                 },

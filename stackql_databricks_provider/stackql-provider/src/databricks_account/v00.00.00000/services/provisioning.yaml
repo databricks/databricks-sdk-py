@@ -9,6 +9,7 @@ info:
   x-stackql-sdk-namespace: databricks.sdk.service.provisioning
 servers:
 - url: https://accounts.cloud.databricks.com
+  description: Databricks account
 paths:
   /api/2.0/accounts/{account_id}/credentials:
     post:
@@ -52,7 +53,13 @@ paths:
                   type: string
                   description: The human-readable name of the credential configuration object.
                 aws_credentials:
-                  $ref: '#/components/schemas/CreateCredentialAwsCredentials'
+                  type: object
+                  properties:
+                    sts_role:
+                      type: object
+                      properties:
+                        role_arn:
+                          type: string
                   description: ':returns: :class:`Credential`'
               required:
               - credentials_name
@@ -245,13 +252,81 @@ paths:
                 use_cases:
                   type: array
                   items:
-                    $ref: '#/components/schemas/KeyUseCase'
+                    type: string
+                    x-enum:
+                    - MANAGED_SERVICES
+                    - STORAGE
+                    description: |-
+                      Create a collection of name/value pairs.
+
+                      Example enumeration:
+
+                      >>> class Color(Enum):
+                      ...     RED = 1
+                      ...     BLUE = 2
+                      ...     GREEN = 3
+
+                      Access them by:
+
+                      - attribute access::
+
+                      >>> Color.RED
+                      <Color.RED: 1>
+
+                      - value lookup:
+
+                      >>> Color(1)
+                      <Color.RED: 1>
+
+                      - name lookup:
+
+                      >>> Color['RED']
+                      <Color.RED: 1>
+
+                      Enumerations can be iterated over, and know how many members they have:
+
+                      >>> len(Color)
+                      3
+
+                      >>> list(Color)
+                      [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+                      Methods can be added to enumerations, and members can have their own
+                      attributes -- see the documentation for details.
                   description: The cases that the key can be used for.
                 aws_key_info:
-                  $ref: '#/components/schemas/CreateAwsKeyInfo'
+                  type: object
+                  properties:
+                    key_arn:
+                      type: string
+                    key_alias:
+                      type: string
+                      description: The AWS KMS key alias.
+                    key_region:
+                      type: string
+                      description: The AWS KMS key region.
+                    reuse_key_for_cluster_volumes:
+                      type: boolean
+                      description: This field applies only if the `use_cases` property includes `STORAGE`. If this is set
+                        to true or omitted, the key is also used to encrypt cluster EBS volumes. If you do not want to use
+                        this key for encrypting EBS volumes, set to false.
+                  required:
+                  - key_arn
                   description: ':param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)'
                 gcp_key_info:
-                  $ref: '#/components/schemas/CreateGcpKeyInfo'
+                  type: object
+                  properties:
+                    kms_key_id:
+                      type: string
+                    gcp_service_account:
+                      type: object
+                      properties:
+                        service_account_email:
+                          type: string
+                      description: Globally unique service account email that has access to the KMS key. The service account
+                        exists within the Databricks CP project.
+                  required:
+                  - kms_key_id
               required:
               - use_cases
       responses:
@@ -449,7 +524,33 @@ paths:
               type: object
               properties:
                 gcp_network_info:
-                  $ref: '#/components/schemas/GcpNetworkInfo'
+                  type: object
+                  properties:
+                    network_project_id:
+                      type: string
+                    vpc_id:
+                      type: string
+                      description: The customer-provided VPC ID.
+                    subnet_id:
+                      type: string
+                      description: The customer-provided Subnet ID that will be available to Clusters in Workspaces using
+                        this Network.
+                    subnet_region:
+                      type: string
+                    pod_ip_range_name:
+                      type: string
+                      description: Name of the secondary range within the subnet that will be used by GKE as Pod IP range.
+                        This is BYO VPC specific. DB VPC uses network.getGcpManagedNetworkConfig.getGkeClusterPodIpRange
+                    service_ip_range_name:
+                      type: string
+                      description: Name of the secondary range within the subnet that will be used by GKE as Service IP range.
+                  required:
+                  - network_project_id
+                  - vpc_id
+                  - subnet_id
+                  - subnet_region
+                  - pod_ip_range_name
+                  - service_ip_range_name
                   description: ':param network_name: str (optional) The human-readable name of the network configuration.'
                 network_name:
                   type: string
@@ -466,7 +567,17 @@ paths:
                   description: IDs of at least two subnets associated with this network. Subnet IDs **cannot** be used in
                     multiple network configurations.
                 vpc_endpoints:
-                  $ref: '#/components/schemas/NetworkVpcEndpoints'
+                  type: object
+                  properties:
+                    dataplane_relay:
+                      type: array
+                      items:
+                        type: string
+                    rest_api:
+                      type: array
+                      items:
+                        type: string
+                      description: The VPC endpoint ID used by this network to access the Databricks REST API.
                   description: ':param vpc_id: str (optional) The ID of the VPC associated with this network configuration.
                     VPC IDs can be used in multiple networks.'
                 vpc_id:
@@ -677,7 +788,10 @@ paths:
                     to your workspace is enabled by setting public_access_enabled to true, this control only works for PrivateLink
                     connections. To control how your workspace is accessed via public internet, see IP access lists.'
                 private_access_level:
-                  $ref: '#/components/schemas/PrivateAccessLevel'
+                  type: string
+                  x-enum:
+                  - ACCOUNT
+                  - ENDPOINT
                   description: The private access level controls which VPC endpoints can connect to the UI or API of any workspace
                     that attaches this private access settings object. `ACCOUNT` level access (the default) allows only VPC
                     endpoints that are registered in your Databricks account connect to your workspace. `ENDPOINT` level access
@@ -878,7 +992,46 @@ paths:
               type: object
               properties:
                 customer_facing_private_access_settings:
-                  $ref: '#/components/schemas/PrivateAccessSettings'
+                  type: object
+                  properties:
+                    account_id:
+                      type: string
+                      description: The Databricks account ID that hosts the private access settings.
+                    allowed_vpc_endpoint_ids:
+                      type: array
+                      items:
+                        type: string
+                      description: An array of Databricks VPC endpoint IDs. This is the Databricks ID that is returned when
+                        registering the VPC endpoint configuration in your Databricks account. This is not the ID of the VPC
+                        endpoint in AWS. Only used when private_access_level is set to ENDPOINT. This is an allow list of
+                        VPC endpoints that in your account that can connect to your workspace over AWS PrivateLink. If hybrid
+                        access to your workspace is enabled by setting public_access_enabled to true, this control only works
+                        for PrivateLink connections. To control how your workspace is accessed via public internet, see IP
+                        access lists.
+                    private_access_level:
+                      type: string
+                      x-enum:
+                      - ACCOUNT
+                      - ENDPOINT
+                      description: The private access level controls which VPC endpoints can connect to the UI or API of any
+                        workspace that attaches this private access settings object. `ACCOUNT` level access (the default)
+                        allows only VPC endpoints that are registered in your Databricks account connect to your workspace.
+                        `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details,
+                        see allowed_vpc_endpoint_ids.
+                    private_access_settings_id:
+                      type: string
+                      description: Databricks private access settings ID.
+                    private_access_settings_name:
+                      type: string
+                      description: The human-readable name of the private access settings object.
+                    public_access_enabled:
+                      type: boolean
+                      description: Determines if the workspace can be accessed over public internet. For fully private workspaces,
+                        you can optionally specify false, but only if you implement both the front-end and the back-end PrivateLink
+                        connections. Otherwise, specify true, which means that public access is enabled.
+                    region:
+                      type: string
+                      description: The AWS region for workspaces attached to this private access settings object.
                   description: Properties of the new private access settings object.
               required:
               - customer_facing_private_access_settings
@@ -939,7 +1092,10 @@ paths:
                   type: string
                   description: The human-readable name of the storage configuration.
                 root_bucket_info:
-                  $ref: '#/components/schemas/RootBucketInfo'
+                  type: object
+                  properties:
+                    bucket_name:
+                      type: string
                   description: Root S3 bucket information.
                 role_arn:
                   type: string
@@ -1140,7 +1296,22 @@ paths:
                   type: string
                   description: The ID of the VPC endpoint object in AWS.
                 gcp_vpc_endpoint_info:
-                  $ref: '#/components/schemas/GcpVpcEndpointInfo'
+                  type: object
+                  properties:
+                    project_id:
+                      type: string
+                    psc_endpoint_name:
+                      type: string
+                    endpoint_region:
+                      type: string
+                    psc_connection_id:
+                      type: string
+                    service_attachment_id:
+                      type: string
+                  required:
+                  - project_id
+                  - psc_endpoint_name
+                  - endpoint_region
                   description: The cloud info of this vpc endpoint.
                 region:
                   type: string
@@ -1421,14 +1592,26 @@ paths:
                 cloud:
                   type: string
                 cloud_resource_container:
-                  $ref: '#/components/schemas/CloudResourceContainer'
+                  type: object
+                  properties:
+                    gcp:
+                      type: object
+                      properties:
+                        project_id:
+                          type: string
                   description: ':param compute_mode: :class:`CustomerFacingComputeMode` (optional) If the compute mode is
                     `SERVERLESS`, a serverless workspace is created that comes pre-configured with serverless compute and
                     default storage, providing a fully-managed, enterprise-ready SaaS experience. This means you don''t need
                     to provide any resources managed by you, such as credentials, storage, or network. If the compute mode
                     is `HYBRID` (which is the default option), a classic workspace is created that uses customer-managed resources.'
                 compute_mode:
-                  $ref: '#/components/schemas/CustomerFacingComputeMode'
+                  type: string
+                  x-enum:
+                  - HYBRID
+                  - SERVERLESS
+                  description: |-
+                    Corresponds to compute mode defined here:
+                    https://src.dev.databricks.com/databricks/universe@9076536b18479afd639d1c1f9dd5a59f72215e69/-/blob/central/api/common.proto?L872
                 credentials_id:
                   type: string
                   description: ID of the workspace's credential configuration object.
@@ -1453,10 +1636,33 @@ paths:
                     This value must be unique across all non-deleted deployments across all AWS regions. If a new workspace
                     omits this property, the server generates a unique deployment name for you with the pattern dbc-xxxxxxxx-xxxx.
                 gcp_managed_network_config:
-                  $ref: '#/components/schemas/GcpManagedNetworkConfig'
+                  type: object
+                  properties:
+                    gke_cluster_pod_ip_range:
+                      type: string
+                      description: The IP range that will be used to allocate GKE cluster Pods from.
+                    gke_cluster_service_ip_range:
+                      type: string
+                      description: The IP range that will be used to allocate GKE cluster Services from.
+                    subnet_cidr:
+                      type: string
+                      description: 'The IP range which will be used to allocate GKE cluster nodes from. Note: Pods, services
+                        and master IP range must be mutually exclusive.'
                   description: ':param gke_config: :class:`GkeConfig` (optional)'
                 gke_config:
-                  $ref: '#/components/schemas/GkeConfig'
+                  type: object
+                  properties:
+                    connectivity_type:
+                      type: string
+                      x-enum:
+                      - PRIVATE_NODE_PUBLIC_MASTER
+                      - PUBLIC_NODE_PUBLIC_MASTER
+                      description: The type of network connectivity of the GKE cluster.
+                    master_ip_range:
+                      type: string
+                      description: The IP range that will be used to allocate GKE cluster master resources from. This field
+                        must not be set if gke_cluster_type=PUBLIC_NODE_PUBLIC_MASTER.
+                  description: The configurations of the GKE cluster used by the GCP workspace.
                 location:
                   type: string
                   description: The Google Cloud region of the workspace data plane in your Google account (for example, `us-east4`).
@@ -1474,7 +1680,14 @@ paths:
                   description: The ID of the workspace's network configuration object. To use AWS PrivateLink, this field
                     is required.
                 pricing_tier:
-                  $ref: '#/components/schemas/PricingTier'
+                  type: string
+                  x-enum:
+                  - COMMUNITY_EDITION
+                  - DEDICATED
+                  - ENTERPRISE
+                  - PREMIUM
+                  - STANDARD
+                  - UNKNOWN
                   description: ':param private_access_settings_id: str (optional) ID of the workspace''s private access settings
                     object. Only used for PrivateLink. You must specify this ID if you are using [AWS PrivateLink] for either
                     front-end (user-to-workspace connection), back-end (data plane to control plane connection), or both connection
@@ -1692,7 +1905,228 @@ paths:
               type: object
               properties:
                 customer_facing_workspace:
-                  $ref: '#/components/schemas/Workspace'
+                  type: object
+                  properties:
+                    account_id:
+                      type: string
+                    aws_region:
+                      type: string
+                    azure_workspace_info:
+                      type: object
+                      properties:
+                        resource_group:
+                          type: string
+                        subscription_id:
+                          type: string
+                          description: Azure Subscription ID
+                    cloud:
+                      type: string
+                      description: The cloud name. This field can have values like `azure`, `gcp`.
+                    cloud_resource_container:
+                      type: object
+                      properties:
+                        gcp:
+                          type: object
+                          properties:
+                            project_id:
+                              type: string
+                    compute_mode:
+                      type: string
+                      x-enum:
+                      - HYBRID
+                      - SERVERLESS
+                      description: The compute mode of the workspace.
+                    creation_time:
+                      type: integer
+                      description: Time in epoch milliseconds when the workspace was created.
+                    credentials_id:
+                      type: string
+                      description: ID of the workspace's credential configuration object.
+                    custom_tags:
+                      type: object
+                      description: The custom tags key-value pairing that is attached to this workspace. The key-value pair
+                        is a string of utf-8 characters. The value can be an empty string, with maximum length of 255 characters.
+                        The key can be of maximum length of 127 characters, and cannot be empty.
+                    deployment_name:
+                      type: string
+                    expected_workspace_status:
+                      type: string
+                      x-enum:
+                      - BANNED
+                      - CANCELLING
+                      - FAILED
+                      - NOT_PROVISIONED
+                      - PROVISIONING
+                      - RUNNING
+                      description: A client owned field used to indicate the workspace status that the client expects to be
+                        in. For now this is only used to unblock Temporal workflow for GCP least privileged workspace.
+                    gcp_managed_network_config:
+                      type: object
+                      properties:
+                        gke_cluster_pod_ip_range:
+                          type: string
+                          description: The IP range that will be used to allocate GKE cluster Pods from.
+                        gke_cluster_service_ip_range:
+                          type: string
+                          description: The IP range that will be used to allocate GKE cluster Services from.
+                        subnet_cidr:
+                          type: string
+                          description: 'The IP range which will be used to allocate GKE cluster nodes from. Note: Pods, services
+                            and master IP range must be mutually exclusive.'
+                      description: The network configuration for the workspace.
+                    gke_config:
+                      type: object
+                      properties:
+                        connectivity_type:
+                          type: string
+                          x-enum:
+                          - PRIVATE_NODE_PUBLIC_MASTER
+                          - PUBLIC_NODE_PUBLIC_MASTER
+                          description: The type of network connectivity of the GKE cluster.
+                        master_ip_range:
+                          type: string
+                          description: The IP range that will be used to allocate GKE cluster master resources from. This
+                            field must not be set if gke_cluster_type=PUBLIC_NODE_PUBLIC_MASTER.
+                      description: The configurations of the GKE cluster used by the GCP workspace.
+                    location:
+                      type: string
+                      description: The Google Cloud region of the workspace data plane in your Google account (for example,
+                        `us-east4`).
+                    managed_services_customer_managed_key_id:
+                      type: string
+                      description: ID of the key configuration for encrypting managed services.
+                    network:
+                      type: object
+                      properties:
+                        gcp_common_network_config:
+                          type: object
+                          properties:
+                            gke_cluster_master_ip_range:
+                              type: string
+                              description: The IP range that will be used to allocate GKE cluster master resources from. This
+                                field must not be set if gke_cluster_type=PUBLIC_NODE_PUBLIC_MASTER.
+                            gke_connectivity_type:
+                              type: string
+                              x-enum:
+                              - PRIVATE_NODE_PUBLIC_MASTER
+                              - PUBLIC_NODE_PUBLIC_MASTER
+                              description: The type of network connectivity of the GKE cluster.
+                          description: The shared network config for GCP workspace. This object has common network configurations
+                            that are network attributions of a workspace. This object is input-only.
+                        gcp_managed_network_config:
+                          type: object
+                          properties:
+                            gke_cluster_pod_ip_range:
+                              type: string
+                              description: The IP range that will be used to allocate GKE cluster Pods from.
+                            gke_cluster_service_ip_range:
+                              type: string
+                              description: The IP range that will be used to allocate GKE cluster Services from.
+                            subnet_cidr:
+                              type: string
+                              description: 'The IP range which will be used to allocate GKE cluster nodes from. Note: Pods,
+                                services and master IP range must be mutually exclusive.'
+                          description: The mutually exclusive network deployment modes. The option decides which network mode
+                            the workspace will use. The network config for GCP workspace with Databricks managed network.
+                            This object is input-only and will not be provided when listing workspaces. See go/gcp-byovpc-alpha-design
+                            for interface decisions.
+                        network_id:
+                          type: string
+                          description: The ID of the network object, if the workspace is a BYOVPC workspace. This should apply
+                            to workspaces on all clouds in internal services. In accounts-rest-api, user will use workspace.network_id
+                            for input and output instead. Currently (2021-06-19) the network ID is only used by GCP.
+                      description: The network configuration for the workspace. DEPRECATED. Use `network_id` instead.
+                    network_connectivity_config_id:
+                      type: string
+                      description: The object ID of network connectivity config.
+                    network_id:
+                      type: string
+                      description: If this workspace is BYO VPC, then the network_id will be populated. If this workspace
+                        is not BYO VPC, then the network_id will be empty.
+                    pricing_tier:
+                      type: string
+                      x-enum:
+                      - COMMUNITY_EDITION
+                      - DEDICATED
+                      - ENTERPRISE
+                      - PREMIUM
+                      - STANDARD
+                      - UNKNOWN
+                      description: |-
+                        Create a collection of name/value pairs.
+
+                        Example enumeration:
+
+                        >>> class Color(Enum):
+                        ...     RED = 1
+                        ...     BLUE = 2
+                        ...     GREEN = 3
+
+                        Access them by:
+
+                        - attribute access::
+
+                        >>> Color.RED
+                        <Color.RED: 1>
+
+                        - value lookup:
+
+                        >>> Color(1)
+                        <Color.RED: 1>
+
+                        - name lookup:
+
+                        >>> Color['RED']
+                        <Color.RED: 1>
+
+                        Enumerations can be iterated over, and know how many members they have:
+
+                        >>> len(Color)
+                        3
+
+                        >>> list(Color)
+                        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+                        Methods can be added to enumerations, and members can have their own
+                        attributes -- see the documentation for details.
+                    private_access_settings_id:
+                      type: string
+                      description: 'ID of the workspace''s private access settings object. Only used for PrivateLink. You
+                        must specify this ID if you are using [AWS PrivateLink] for either front-end (user-to-workspace connection),
+                        back-end (data plane to control plane connection), or both connection types. Before configuring PrivateLink,
+                        read the [Databricks article about PrivateLink].", [AWS PrivateLink]: https://aws.amazon.com/privatelink/
+                        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html'
+                    storage_configuration_id:
+                      type: string
+                      description: ID of the workspace's storage configuration object.
+                    storage_customer_managed_key_id:
+                      type: string
+                      description: ID of the key configuration for encrypting workspace storage.
+                    storage_mode:
+                      type: string
+                      x-enum:
+                      - CUSTOMER_HOSTED
+                      - DEFAULT_STORAGE
+                      description: The storage mode of the workspace.
+                    workspace_id:
+                      type: integer
+                      description: A unique integer ID for the workspace
+                    workspace_name:
+                      type: string
+                      description: The human-readable name of the workspace.
+                    workspace_status:
+                      type: string
+                      x-enum:
+                      - BANNED
+                      - CANCELLING
+                      - FAILED
+                      - NOT_PROVISIONED
+                      - PROVISIONING
+                      - RUNNING
+                      description: The status of a workspace
+                    workspace_status_message:
+                      type: string
+                      description: Message describing the current workspace status.
                   description: ':param update_mask: str (optional) The field mask must be a single string, with multiple fields
                     separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`)
                     to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields

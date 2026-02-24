@@ -9,11 +9,12 @@ info:
   x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.vectorsearch
 servers:
-  - url: https://{deployment_name}.cloud.databricks.com
+  - url: https://{workspace}.cloud.databricks.com
+    description: Databricks workspace
     variables:
-      deployment_name:
-        description: The Databricks Workspace Deployment Name
-        default: dbc-abcd0123-a1bc
+      workspace:
+        default: your-workspace
+        description: Your Databricks workspace name
 paths:
   /api/2.0/vector-search/endpoints:
     post:
@@ -45,7 +46,9 @@ paths:
                   type: string
                   description: Name of the vector search endpoint
                 endpoint_type:
-                  $ref: '#/components/schemas/EndpointType'
+                  type: string
+                  x-enum:
+                    - STANDARD
                   description: Type of endpoint
                 budget_policy_id:
                   type: string
@@ -230,7 +233,28 @@ paths:
                 metrics:
                   type: array
                   items:
-                    $ref: '#/components/schemas/Metric'
+                    type: object
+                    properties:
+                      labels:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: Label name
+                            value:
+                              type: string
+                              description: Label value
+                          description: Label for a metric
+                        description: Metric labels
+                      name:
+                        type: string
+                        description: Metric name
+                      percentile:
+                        type: number
+                        description: Percentile for the metric
+                    description: Metric specification
                   description: List of metrics to retrieve
                 page_token:
                   type: string
@@ -342,7 +366,17 @@ paths:
                 custom_tags:
                   type: array
                   items:
-                    $ref: '#/components/schemas/CustomTag'
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      value:
+                        type: string
+                        description: >-
+                          [Optional] Value field for a vector search endpoint
+                          tag.
+                    required:
+                      - key
                   description: The new custom tags for the vector search endpoint
               required:
                 - custom_tags
@@ -408,16 +442,109 @@ paths:
                   type: string
                   description: Primary key of the index
                 index_type:
-                  $ref: '#/components/schemas/VectorIndexType'
+                  type: string
+                  x-enum:
+                    - DELTA_SYNC
+                    - DIRECT_ACCESS
                   description: >-
                     :param delta_sync_index_spec:
                     :class:`DeltaSyncVectorIndexSpecRequest` (optional)
                     Specification for Delta Sync Index. Required if `index_type`
                     is `DELTA_SYNC`.
                 delta_sync_index_spec:
-                  $ref: '#/components/schemas/DeltaSyncVectorIndexSpecRequest'
+                  type: object
+                  properties:
+                    columns_to_sync:
+                      type: array
+                      items:
+                        type: string
+                    embedding_source_columns:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          embedding_model_endpoint_name:
+                            type: string
+                          model_endpoint_name_for_query:
+                            type: string
+                            description: >-
+                              Name of the embedding model endpoint which, if
+                              specified, is used for querying (not ingestion).
+                          name:
+                            type: string
+                            description: Name of the column
+                      description: The columns that contain the embedding source.
+                    embedding_vector_columns:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          embedding_dimension:
+                            type: integer
+                          name:
+                            type: string
+                            description: Name of the column
+                      description: The columns that contain the embedding vectors.
+                    embedding_writeback_table:
+                      type: string
+                      description: >-
+                        [Optional] Name of the Delta table to sync the vector
+                        index contents and computed embeddings to.
+                    pipeline_type:
+                      type: string
+                      x-enum:
+                        - CONTINUOUS
+                        - TRIGGERED
+                      description: >-
+                        Pipeline execution mode. - `TRIGGERED`: If the pipeline
+                        uses the triggered execution mode, the system stops
+                        processing after successfully refreshing the source
+                        table in the pipeline once, ensuring the table is
+                        updated based on the data available when the update
+                        started. - `CONTINUOUS`: If the pipeline uses continuous
+                        execution, the pipeline processes new data as it arrives
+                        in the source table to keep vector index fresh.
+                    source_table:
+                      type: string
+                      description: The name of the source table.
                 direct_access_index_spec:
-                  $ref: '#/components/schemas/DirectAccessVectorIndexSpec'
+                  type: object
+                  properties:
+                    embedding_source_columns:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          embedding_model_endpoint_name:
+                            type: string
+                          model_endpoint_name_for_query:
+                            type: string
+                            description: >-
+                              Name of the embedding model endpoint which, if
+                              specified, is used for querying (not ingestion).
+                          name:
+                            type: string
+                            description: Name of the column
+                    embedding_vector_columns:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          embedding_dimension:
+                            type: integer
+                          name:
+                            type: string
+                            description: Name of the column
+                      description: >-
+                        The columns that contain the embedding vectors. The
+                        format should be array[double].
+                    schema_json:
+                      type: string
+                      description: >-
+                        The schema of the index in JSON format. Supported types
+                        are `integer`, `long`, `float`, `double`, `boolean`,
+                        `string`, `date`, `timestamp`. Supported types for
+                        vector column: `array<float>`, `array<double>`,`.
                   description: >-
                     Specification for Direct Vector Access Index. Required if
                     `index_type` is `DIRECT_ACCESS`.
@@ -728,7 +855,17 @@ paths:
                     Query vector. Required for Direct Vector Access Index and
                     Delta Sync Index using self-managed vectors.
                 reranker:
-                  $ref: '#/components/schemas/RerankerConfig'
+                  type: object
+                  properties:
+                    model:
+                      type: string
+                    parameters:
+                      type: object
+                      properties:
+                        columns_to_rerank:
+                          type: array
+                          items:
+                            type: string
                   description: >-
                     If set, the top 50 results are reranked with the Databricks
                     Reranker model before returning the `num_results` results to

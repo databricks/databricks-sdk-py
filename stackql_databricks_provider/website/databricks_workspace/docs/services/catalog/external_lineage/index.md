@@ -325,28 +325,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-object_info"><code>object_info</code></a>, <a href="#parameter-lineage_direction"><code>lineage_direction</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-object_info"><code>object_info</code></a>, <a href="#parameter-lineage_direction"><code>lineage_direction</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Lists external lineage relationships of a Databricks object or external metadata given a supplied</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-external_lineage_relationship"><code>external_lineage_relationship</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-external_lineage_relationship"><code>external_lineage_relationship</code></a></td>
     <td></td>
     <td>Creates an external lineage relationship between a Databricks or external metadata object and another</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-external_lineage_relationship"><code>external_lineage_relationship</code></a></td>
+    <td><a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-external_lineage_relationship"><code>external_lineage_relationship</code></a></td>
     <td></td>
     <td>Updates an external lineage relationship between a Databricks or external metadata object and another</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-external_lineage_relationship"><code>external_lineage_relationship</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-external_lineage_relationship"><code>external_lineage_relationship</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes an external lineage relationship between a Databricks or external metadata object and another</td>
 </tr>
@@ -366,14 +366,9 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-external_lineage_relationship">
     <td><CopyableCode code="external_lineage_relationship" /></td>
-    <td><code>string</code></td>
+    <td><code>object</code></td>
     <td>:class:`DeleteRequestExternalLineage`</td>
 </tr>
 <tr id="parameter-lineage_direction">
@@ -383,7 +378,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-object_info">
     <td><CopyableCode code="object_info" /></td>
-    <td><code>string</code></td>
+    <td><code>object</code></td>
     <td>The object to query external lineage relationships for. Since this field is a query parameter, please flatten the nested fields. For example, if the object is a table, the query parameter should look like: `object_info.table.name=main.sales.customers`</td>
 </tr>
 <tr id="parameter-update_mask">
@@ -391,9 +386,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td></td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Specifies the maximum number of external lineage relationships to return in a single response. The value must be less than or equal to 1000.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -426,7 +426,7 @@ table_info
 FROM databricks_workspace.catalog.external_lineage
 WHERE object_info = '{{ object_info }}' -- required
 AND lineage_direction = '{{ lineage_direction }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -451,11 +451,11 @@ Creates an external lineage relationship between a Databricks or external metada
 ```sql
 INSERT INTO databricks_workspace.catalog.external_lineage (
 external_lineage_relationship,
-deployment_name
+workspace
 )
 SELECT 
 '{{ external_lineage_relationship }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 columns,
@@ -471,13 +471,83 @@ target
 # Description fields are for documentation purposes
 - name: external_lineage
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the external_lineage resource.
     - name: external_lineage_relationship
-      value: string
+      value: object
       description: |
         :returns: :class:`ExternalLineageRelationship`
+      props:
+      - name: source
+        value: object
+        props:
+        - name: external_metadata
+          value: object
+          props:
+          - name: name
+            value: string
+        - name: model_version
+          value: object
+          props:
+          - name: name
+            value: string
+          - name: version
+            value: string
+        - name: path
+          value: object
+          props:
+          - name: url
+            value: string
+        - name: table
+          value: object
+          props:
+          - name: name
+            value: string
+      - name: target
+        value: object
+        description: |
+          Target object of the external lineage relationship.
+        props:
+        - name: external_metadata
+          value: object
+          props:
+          - name: name
+            value: string
+        - name: model_version
+          value: object
+          props:
+          - name: name
+            value: string
+          - name: version
+            value: string
+        - name: path
+          value: object
+          props:
+          - name: url
+            value: string
+        - name: table
+          value: object
+          props:
+          - name: name
+            value: string
+      - name: columns
+        value: array
+        description: |
+          List of column relationships between source and target objects.
+        props:
+        - name: source
+          value: string
+        - name: target
+          value: string
+      - name: id
+        value: string
+        description: |
+          Unique identifier of the external lineage relationship.
+      - name: properties
+        value: object
+        description: |
+          Key-value properties associated with the external lineage relationship.
 ```
 </TabItem>
 </Tabs>
@@ -501,7 +571,7 @@ SET
 external_lineage_relationship = '{{ external_lineage_relationship }}'
 WHERE 
 update_mask = '{{ update_mask }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND external_lineage_relationship = '{{ external_lineage_relationship }}' --required
 RETURNING
 id,
@@ -529,7 +599,7 @@ Deletes an external lineage relationship between a Databricks or external metada
 ```sql
 DELETE FROM databricks_workspace.catalog.external_lineage
 WHERE external_lineage_relationship = '{{ external_lineage_relationship }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

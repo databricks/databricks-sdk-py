@@ -454,17 +454,17 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-force">
     <td><CopyableCode code="force" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent external locations and external tables (when purpose is **STORAGE**).</td>
 </tr>
 <tr id="parameter-include_unbound">
     <td><CopyableCode code="include_unbound" /></td>
-    <td><code>string</code></td>
+    <td><code>boolean</code></td>
     <td>Whether to include credentials not bound to the workspace. Effective only if the user has permission to update the credential–workspace binding.</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of credentials to return. - If not set, the default max page size is used. - When set to a value greater than 0, the page length is the minimum of this value and a server-configured value. - When set to 0, the page length is set to a server-configured value (recommended). - When set to a value less than 0, an invalid parameter error is returned.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -588,8 +588,8 @@ SELECT
 '{{ comment }}',
 '{{ databricks_gcp_service_account }}',
 '{{ purpose }}',
-'{{ read_only }}',
-'{{ skip_validation }}'
+{{ read_only }},
+{{ skip_validation }}
 RETURNING
 id,
 name,
@@ -656,7 +656,7 @@ SELECT
 '{{ databricks_gcp_service_account }}',
 '{{ external_location_name }}',
 '{{ purpose }}',
-'{{ read_only }}',
+{{ read_only }},
 '{{ url }}'
 RETURNING
 isDir,
@@ -675,33 +675,87 @@ results
       description: |
         The credential name. The name must be unique among storage and service credentials within the metastore.
     - name: aws_iam_role
-      value: string
+      value: object
       description: |
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
+      props:
+      - name: external_id
+        value: string
+        description: |
+          The external ID used in role assumption to prevent the confused deputy problem.
+      - name: role_arn
+        value: string
+        description: |
+          The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials.
+      - name: unity_catalog_iam_arn
+        value: string
+        description: |
+          The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks. This is the identity that is going to assume the AWS IAM role.
     - name: azure_managed_identity
-      value: string
+      value: object
+      description: |
+        The Azure managed identity configuration.
+      props:
+      - name: access_connector_id
+        value: string
+        description: |
+          The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+      - name: credential_id
+        value: string
+        description: |
+          The Databricks internal ID that represents this managed identity.
+      - name: managed_identity_id
+        value: string
+        description: |
+          The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}` This is only available for user-assgined identities. For system-assigned identities, the access_connector_id is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity is using the system-assigned identity.
     - name: azure_service_principal
-      value: string
+      value: object
       description: |
         The Azure service principal configuration.
+      props:
+      - name: directory_id
+        value: string
+        description: |
+          The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application.
+      - name: application_id
+        value: string
+        description: |
+          The application ID of the application registration within the referenced AAD tenant.
+      - name: client_secret
+        value: string
+        description: |
+          The client secret generated for the above app ID in AAD.
     - name: comment
       value: string
       description: |
         Comment associated with the credential.
     - name: databricks_gcp_service_account
-      value: string
+      value: object
       description: |
         :param external_location_name: str (optional) The name of an existing external location to validate. Only applicable for storage credentials (purpose is **STORAGE**.)
+      props:
+      - name: credential_id
+        value: string
+        description: |
+          The Databricks internal ID that represents this managed identity.
+      - name: email
+        value: string
+        description: |
+          The email of the service account.
+      - name: private_key_id
+        value: string
+        description: |
+          The ID that represents the private key for this Service Account
     - name: purpose
       value: string
       description: |
         The purpose of the credential. This should only be used when the credential is specified.
     - name: read_only
-      value: string
+      value: boolean
       description: |
         Whether the credential is only usable for read operations. Only applicable for storage credentials (purpose is **STORAGE**.)
     - name: skip_validation
-      value: string
+      value: boolean
       description: |
         Optional. Supplying true to this argument skips validation of the created set of credentials.
     - name: credential_name
@@ -709,11 +763,27 @@ results
       description: |
         Required. The name of an existing credential or long-lived cloud credential to validate.
     - name: azure_options
-      value: string
+      value: object
       description: |
         :param gcp_options: :class:`GenerateTemporaryServiceCredentialGcpOptions` (optional)
+      props:
+      - name: resources
+        value: array
+        description: |
+          The resources to which the temporary Azure credential should apply. These resources are the scopes that are passed to the token provider (see https://learn.microsoft.com/python/api/azure-core/azure.core.credentials.tokencredential?view=azure-python)
+        items:
+          type: string
     - name: gcp_options
-      value: string
+      value: object
+      description: |
+        The GCP cloud options to customize the requested temporary credential
+      props:
+      - name: scopes
+        value: array
+        description: |
+          The scopes to which the temporary GCP credential should apply. These resources are the scopes that are passed to the token provider (see https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials)
+        items:
+          type: string
     - name: external_location_name
       value: string
     - name: url
@@ -745,12 +815,12 @@ azure_managed_identity = '{{ azure_managed_identity }}',
 azure_service_principal = '{{ azure_service_principal }}',
 comment = '{{ comment }}',
 databricks_gcp_service_account = '{{ databricks_gcp_service_account }}',
-force = '{{ force }}',
+force = {{ force }},
 isolation_mode = '{{ isolation_mode }}',
 new_name = '{{ new_name }}',
 owner = '{{ owner }}',
-read_only = '{{ read_only }}',
-skip_validation = '{{ skip_validation }}'
+read_only = {{ read_only }},
+skip_validation = {{ skip_validation }}
 WHERE 
 name_arg = '{{ name_arg }}' --required
 RETURNING

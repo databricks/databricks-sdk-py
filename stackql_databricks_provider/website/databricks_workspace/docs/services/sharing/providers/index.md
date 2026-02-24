@@ -243,35 +243,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets a specific authentication provider. The caller must supply the name of the provider, and must</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-data_provider_global_metastore_id"><code>data_provider_global_metastore_id</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets an array of available authentication providers. The caller must either be a metastore admin, have</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-authentication_type"><code>authentication_type</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-authentication_type"><code>authentication_type</code></a></td>
     <td></td>
     <td>Creates a new authentication provider minimally based on a name and authentication type. The caller</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates the information for an authentication provider, if the caller is a metastore admin or is the</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes an authentication provider, if the caller is a metastore admin or is the owner of the</td>
 </tr>
@@ -291,15 +291,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Name of the provider.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-data_provider_global_metastore_id">
     <td><CopyableCode code="data_provider_global_metastore_id" /></td>
@@ -308,7 +308,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of providers to return. - when set to 0, the page length is set to a server configured value (recommended); - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to a value less than 0, an invalid parameter error is returned; - If not set, all valid providers are returned (not recommended). - Note: The number of returned providers might be less than the specified max_results size, even zero. The only definitive indication that no further providers can be fetched is when the next_page_token is unset from the response.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -350,7 +350,7 @@ updated_at,
 updated_by
 FROM databricks_workspace.sharing.providers
 WHERE name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -375,7 +375,7 @@ region,
 updated_at,
 updated_by
 FROM databricks_workspace.sharing.providers
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND data_provider_global_metastore_id = '{{ data_provider_global_metastore_id }}'
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
@@ -404,14 +404,14 @@ name,
 authentication_type,
 comment,
 recipient_profile_str,
-deployment_name
+workspace
 )
 SELECT 
 '{{ name }}' /* required */,
 '{{ authentication_type }}' /* required */,
 '{{ comment }}',
 '{{ recipient_profile_str }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 name,
 data_provider_global_metastore_id,
@@ -436,7 +436,7 @@ updated_by
 # Description fields are for documentation purposes
 - name: providers
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the providers resource.
     - name: name
@@ -479,7 +479,7 @@ owner = '{{ owner }}',
 recipient_profile_str = '{{ recipient_profile_str }}'
 WHERE 
 name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 name,
 data_provider_global_metastore_id,
@@ -515,7 +515,7 @@ Deletes an authentication provider, if the caller is a metastore admin or is the
 ```sql
 DELETE FROM databricks_workspace.sharing.providers
 WHERE name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

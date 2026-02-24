@@ -139,35 +139,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-rule_id"><code>rule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-rule_id"><code>rule_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get a auto-approval rule by rule ID</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List all auto-approval rules for the caller</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-auto_approval_rule"><code>auto_approval_rule</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-auto_approval_rule"><code>auto_approval_rule</code></a></td>
     <td></td>
     <td>Create an auto-approval rule</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-rule_id"><code>rule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-auto_approval_rule"><code>auto_approval_rule</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-rule_id"><code>rule_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-auto_approval_rule"><code>auto_approval_rule</code></a></td>
     <td></td>
     <td>Update a auto-approval rule by rule ID</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-rule_id"><code>rule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-rule_id"><code>rule_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Delete a auto-approval rule by rule ID</td>
 </tr>
@@ -192,19 +192,19 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>:param rule_id: str</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-rule_id">
     <td><CopyableCode code="rule_id" /></td>
     <td><code>string</code></td>
     <td></td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td></td>
 </tr>
 <tr id="parameter-page_token">
@@ -240,7 +240,7 @@ runner_collaborator_alias
 FROM databricks_workspace.cleanrooms.auto_approval_rules
 WHERE clean_room_name = '{{ clean_room_name }}' -- required
 AND rule_id = '{{ rule_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -259,7 +259,7 @@ rule_owner_collaborator_alias,
 runner_collaborator_alias
 FROM databricks_workspace.cleanrooms.auto_approval_rules
 WHERE clean_room_name = '{{ clean_room_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -285,12 +285,12 @@ Create an auto-approval rule
 INSERT INTO databricks_workspace.cleanrooms.auto_approval_rules (
 auto_approval_rule,
 clean_room_name,
-deployment_name
+workspace
 )
 SELECT 
 '{{ auto_approval_rule }}' /* required */,
 '{{ clean_room_name }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 rule_id,
 clean_room_name,
@@ -311,13 +311,40 @@ runner_collaborator_alias
     - name: clean_room_name
       value: string
       description: Required parameter for the auto_approval_rules resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the auto_approval_rules resource.
     - name: auto_approval_rule
-      value: string
+      value: object
       description: |
         :returns: :class:`CleanRoomAutoApprovalRule`
+      props:
+      - name: author_collaborator_alias
+        value: string
+      - name: author_scope
+        value: string
+        description: |
+          Scope of authors covered by the rule. Only one of `author_collaborator_alias` and `author_scope` can be set.
+      - name: clean_room_name
+        value: string
+        description: |
+          The name of the clean room this auto-approval rule belongs to.
+      - name: created_at
+        value: integer
+        description: |
+          Timestamp of when the rule was created, in epoch milliseconds.
+      - name: rule_id
+        value: string
+        description: |
+          A generated UUID identifying the rule.
+      - name: rule_owner_collaborator_alias
+        value: string
+        description: |
+          The owner of the rule to whom the rule applies.
+      - name: runner_collaborator_alias
+        value: string
+        description: |
+          Collaborator alias of the runner covered by the rule.
 ```
 </TabItem>
 </Tabs>
@@ -342,7 +369,7 @@ auto_approval_rule = '{{ auto_approval_rule }}'
 WHERE 
 clean_room_name = '{{ clean_room_name }}' --required
 AND rule_id = '{{ rule_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND auto_approval_rule = '{{ auto_approval_rule }}' --required
 RETURNING
 rule_id,
@@ -373,7 +400,7 @@ Delete a auto-approval rule by rule ID
 DELETE FROM databricks_workspace.cleanrooms.auto_approval_rules
 WHERE clean_room_name = '{{ clean_room_name }}' --required
 AND rule_id = '{{ rule_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

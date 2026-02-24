@@ -106,13 +106,34 @@
                 "type": "object",
                 "properties": {
                   "artifact_type": {
-                    "$ref": "#/components/schemas/ArtifactType",
+                    "type": "string",
+                    "x-enum": [
+                      "INIT_SCRIPT",
+                      "LIBRARY_JAR",
+                      "LIBRARY_MAVEN"
+                    ],
                     "description": "The artifact type of the allowlist."
                   },
                   "artifact_matchers": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ArtifactMatcher"
+                      "type": "object",
+                      "properties": {
+                        "artifact": {
+                          "type": "string"
+                        },
+                        "match_type": {
+                          "type": "string",
+                          "x-enum": [
+                            "PREFIX_MATCH"
+                          ],
+                          "description": "The pattern matching type of the artifact"
+                        }
+                      },
+                      "required": [
+                        "artifact",
+                        "match_type"
+                      ]
                     },
                     "description": "A list of allowed artifact match patterns."
                   },
@@ -480,11 +501,20 @@
                     "description": "User-provided free-form text description."
                   },
                   "enable_predictive_optimization": {
-                    "$ref": "#/components/schemas/EnablePredictiveOptimization",
+                    "type": "string",
+                    "x-enum": [
+                      "DISABLE",
+                      "ENABLE",
+                      "INHERIT"
+                    ],
                     "description": "Whether predictive optimization should be enabled for this object and objects under it."
                   },
                   "isolation_mode": {
-                    "$ref": "#/components/schemas/CatalogIsolationMode",
+                    "type": "string",
+                    "x-enum": [
+                      "ISOLATED",
+                      "OPEN"
+                    ],
                     "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces."
                   },
                   "new_name": {
@@ -561,7 +591,29 @@
                     "description": "Name of the connection."
                   },
                   "connection_type": {
-                    "$ref": "#/components/schemas/ConnectionType",
+                    "type": "string",
+                    "x-enum": [
+                      "BIGQUERY",
+                      "DATABRICKS",
+                      "GA4_RAW_DATA",
+                      "GLUE",
+                      "HIVE_METASTORE",
+                      "HTTP",
+                      "MYSQL",
+                      "ORACLE",
+                      "POSTGRESQL",
+                      "POWER_BI",
+                      "REDSHIFT",
+                      "SALESFORCE",
+                      "SALESFORCE_DATA_CLOUD",
+                      "SERVICENOW",
+                      "SNOWFLAKE",
+                      "SQLDW",
+                      "SQLSERVER",
+                      "TERADATA",
+                      "UNKNOWN_CONNECTION_TYPE",
+                      "WORKDAY_RAAS"
+                    ],
                     "description": "The type of connection."
                   },
                   "options": {
@@ -873,7 +925,30 @@
                 "type": "object",
                 "properties": {
                   "tag_assignment": {
-                    "$ref": "#/components/schemas/EntityTagAssignment",
+                    "type": "object",
+                    "properties": {
+                      "entity_name": {
+                        "type": "string",
+                        "description": "The fully qualified name of the entity to which the tag is assigned"
+                      },
+                      "tag_key": {
+                        "type": "string",
+                        "description": "The key of the tag"
+                      },
+                      "entity_type": {
+                        "type": "string",
+                        "description": "The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables, columns, volumes."
+                      },
+                      "tag_value": {
+                        "type": "string",
+                        "description": "The value of the tag"
+                      }
+                    },
+                    "required": [
+                      "entity_name",
+                      "tag_key",
+                      "entity_type"
+                    ],
                     "description": ":returns: :class:`EntityTagAssignment`"
                   }
                 },
@@ -1101,7 +1176,30 @@
                 "type": "object",
                 "properties": {
                   "tag_assignment": {
-                    "$ref": "#/components/schemas/EntityTagAssignment",
+                    "type": "object",
+                    "properties": {
+                      "entity_name": {
+                        "type": "string",
+                        "description": "The fully qualified name of the entity to which the tag is assigned"
+                      },
+                      "tag_key": {
+                        "type": "string",
+                        "description": "The key of the tag"
+                      },
+                      "entity_type": {
+                        "type": "string",
+                        "description": "The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables, columns, volumes."
+                      },
+                      "tag_value": {
+                        "type": "string",
+                        "description": "The value of the tag"
+                      }
+                    },
+                    "required": [
+                      "entity_name",
+                      "tag_key",
+                      "entity_type"
+                    ],
                     "description": ":param update_mask: str The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
                   }
                 },
@@ -1241,7 +1339,117 @@
                 "type": "object",
                 "properties": {
                   "external_lineage_relationship": {
-                    "$ref": "#/components/schemas/CreateRequestExternalLineage",
+                    "type": "object",
+                    "properties": {
+                      "source": {
+                        "type": "object",
+                        "properties": {
+                          "external_metadata": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "model_version": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "version": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "path": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "table": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "target": {
+                        "type": "object",
+                        "properties": {
+                          "external_metadata": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "model_version": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "version": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "path": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "table": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "description": "Target object of the external lineage relationship."
+                      },
+                      "columns": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "source": {
+                              "type": "string"
+                            },
+                            "target": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "description": "List of column relationships between source and target objects."
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "Unique identifier of the external lineage relationship."
+                      },
+                      "properties": {
+                        "type": "object",
+                        "description": "Key-value properties associated with the external lineage relationship."
+                      }
+                    },
+                    "required": [
+                      "source",
+                      "target"
+                    ],
                     "description": ":returns: :class:`ExternalLineageRelationship`"
                   }
                 },
@@ -1431,7 +1639,117 @@
                 "type": "object",
                 "properties": {
                   "external_lineage_relationship": {
-                    "$ref": "#/components/schemas/UpdateRequestExternalLineage",
+                    "type": "object",
+                    "properties": {
+                      "source": {
+                        "type": "object",
+                        "properties": {
+                          "external_metadata": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "model_version": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "version": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "path": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "table": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "target": {
+                        "type": "object",
+                        "properties": {
+                          "external_metadata": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "model_version": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "version": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "path": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "table": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "description": "Target object of the external lineage relationship."
+                      },
+                      "columns": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "source": {
+                              "type": "string"
+                            },
+                            "target": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "description": "List of column relationships between source and target objects."
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "Unique identifier of the external lineage relationship."
+                      },
+                      "properties": {
+                        "type": "object",
+                        "description": "Key-value properties associated with the external lineage relationship."
+                      }
+                    },
+                    "required": [
+                      "source",
+                      "target"
+                    ],
                     "description": ":param update_mask: str The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
                   }
                 },
@@ -1511,14 +1829,124 @@
                     "description": "Whether to enable file events on this external location. Default to `true`. Set to `false` to disable file events."
                   },
                   "encryption_details": {
-                    "$ref": "#/components/schemas/EncryptionDetails",
+                    "type": "object",
+                    "properties": {
+                      "sse_encryption_details": {
+                        "type": "object",
+                        "properties": {
+                          "algorithm": {
+                            "type": "string",
+                            "x-enum": [
+                              "AWS_SSE_KMS",
+                              "AWS_SSE_S3"
+                            ],
+                            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request."
+                          },
+                          "aws_kms_key_arn": {
+                            "type": "string",
+                            "description": "Optional. The ARN of the SSE-KMS key used with the S3 location, when algorithm = \"SSE-KMS\". Sets the value of the 'x-amz-server-side-encryption-aws-kms-key-id' header."
+                          }
+                        },
+                        "description": "Server-Side Encryption properties for clients communicating with AWS s3."
+                      }
+                    },
                     "description": ":param fallback: bool (optional) Indicates whether fallback mode is enabled for this external location. When fallback mode is enabled, the access to the location falls back to cluster credentials if UC credentials are not sufficient."
                   },
                   "fallback": {
                     "type": "boolean"
                   },
                   "file_event_queue": {
-                    "$ref": "#/components/schemas/FileEventQueue",
+                    "type": "object",
+                    "properties": {
+                      "managed_aqs": {
+                        "type": "object",
+                        "properties": {
+                          "managed_resource_id": {
+                            "type": "string"
+                          },
+                          "queue_url": {
+                            "type": "string",
+                            "description": "The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name} Only required for provided_aqs."
+                          },
+                          "resource_group": {
+                            "type": "string",
+                            "description": "Optional resource group for the queue, event grid subscription, and external location storage account. Only required for locations with a service principal storage credential"
+                          },
+                          "subscription_id": {
+                            "type": "string",
+                            "description": "Optional subscription id for the queue, event grid subscription, and external location storage account. Required for locations with a service principal storage credential"
+                          }
+                        }
+                      },
+                      "managed_pubsub": {
+                        "type": "object",
+                        "properties": {
+                          "managed_resource_id": {
+                            "type": "string"
+                          },
+                          "subscription_name": {
+                            "type": "string",
+                            "description": "The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}. Only required for provided_pubsub."
+                          }
+                        }
+                      },
+                      "managed_sqs": {
+                        "type": "object",
+                        "properties": {
+                          "managed_resource_id": {
+                            "type": "string"
+                          },
+                          "queue_url": {
+                            "type": "string",
+                            "description": "The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}. Only required for provided_sqs."
+                          }
+                        }
+                      },
+                      "provided_aqs": {
+                        "type": "object",
+                        "properties": {
+                          "managed_resource_id": {
+                            "type": "string"
+                          },
+                          "queue_url": {
+                            "type": "string",
+                            "description": "The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name} Only required for provided_aqs."
+                          },
+                          "resource_group": {
+                            "type": "string",
+                            "description": "Optional resource group for the queue, event grid subscription, and external location storage account. Only required for locations with a service principal storage credential"
+                          },
+                          "subscription_id": {
+                            "type": "string",
+                            "description": "Optional subscription id for the queue, event grid subscription, and external location storage account. Required for locations with a service principal storage credential"
+                          }
+                        }
+                      },
+                      "provided_pubsub": {
+                        "type": "object",
+                        "properties": {
+                          "managed_resource_id": {
+                            "type": "string"
+                          },
+                          "subscription_name": {
+                            "type": "string",
+                            "description": "The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}. Only required for provided_pubsub."
+                          }
+                        }
+                      },
+                      "provided_sqs": {
+                        "type": "object",
+                        "properties": {
+                          "managed_resource_id": {
+                            "type": "string"
+                          },
+                          "queue_url": {
+                            "type": "string",
+                            "description": "The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}. Only required for provided_sqs."
+                          }
+                        }
+                      }
+                    },
                     "description": "File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly one of the documented properties."
                   },
                   "read_only": {
@@ -1802,14 +2230,124 @@
                     "description": "Whether to enable file events on this external location. Default to `true`. Set to `false` to disable file events."
                   },
                   "encryption_details": {
-                    "$ref": "#/components/schemas/EncryptionDetails",
+                    "type": "object",
+                    "properties": {
+                      "sse_encryption_details": {
+                        "type": "object",
+                        "properties": {
+                          "algorithm": {
+                            "type": "string",
+                            "x-enum": [
+                              "AWS_SSE_KMS",
+                              "AWS_SSE_S3"
+                            ],
+                            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request."
+                          },
+                          "aws_kms_key_arn": {
+                            "type": "string",
+                            "description": "Optional. The ARN of the SSE-KMS key used with the S3 location, when algorithm = \"SSE-KMS\". Sets the value of the 'x-amz-server-side-encryption-aws-kms-key-id' header."
+                          }
+                        },
+                        "description": "Server-Side Encryption properties for clients communicating with AWS s3."
+                      }
+                    },
                     "description": ":param fallback: bool (optional) Indicates whether fallback mode is enabled for this external location. When fallback mode is enabled, the access to the location falls back to cluster credentials if UC credentials are not sufficient."
                   },
                   "fallback": {
                     "type": "boolean"
                   },
                   "file_event_queue": {
-                    "$ref": "#/components/schemas/FileEventQueue",
+                    "type": "object",
+                    "properties": {
+                      "managed_aqs": {
+                        "type": "object",
+                        "properties": {
+                          "managed_resource_id": {
+                            "type": "string"
+                          },
+                          "queue_url": {
+                            "type": "string",
+                            "description": "The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name} Only required for provided_aqs."
+                          },
+                          "resource_group": {
+                            "type": "string",
+                            "description": "Optional resource group for the queue, event grid subscription, and external location storage account. Only required for locations with a service principal storage credential"
+                          },
+                          "subscription_id": {
+                            "type": "string",
+                            "description": "Optional subscription id for the queue, event grid subscription, and external location storage account. Required for locations with a service principal storage credential"
+                          }
+                        }
+                      },
+                      "managed_pubsub": {
+                        "type": "object",
+                        "properties": {
+                          "managed_resource_id": {
+                            "type": "string"
+                          },
+                          "subscription_name": {
+                            "type": "string",
+                            "description": "The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}. Only required for provided_pubsub."
+                          }
+                        }
+                      },
+                      "managed_sqs": {
+                        "type": "object",
+                        "properties": {
+                          "managed_resource_id": {
+                            "type": "string"
+                          },
+                          "queue_url": {
+                            "type": "string",
+                            "description": "The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}. Only required for provided_sqs."
+                          }
+                        }
+                      },
+                      "provided_aqs": {
+                        "type": "object",
+                        "properties": {
+                          "managed_resource_id": {
+                            "type": "string"
+                          },
+                          "queue_url": {
+                            "type": "string",
+                            "description": "The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name} Only required for provided_aqs."
+                          },
+                          "resource_group": {
+                            "type": "string",
+                            "description": "Optional resource group for the queue, event grid subscription, and external location storage account. Only required for locations with a service principal storage credential"
+                          },
+                          "subscription_id": {
+                            "type": "string",
+                            "description": "Optional subscription id for the queue, event grid subscription, and external location storage account. Required for locations with a service principal storage credential"
+                          }
+                        }
+                      },
+                      "provided_pubsub": {
+                        "type": "object",
+                        "properties": {
+                          "managed_resource_id": {
+                            "type": "string"
+                          },
+                          "subscription_name": {
+                            "type": "string",
+                            "description": "The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}. Only required for provided_pubsub."
+                          }
+                        }
+                      },
+                      "provided_sqs": {
+                        "type": "object",
+                        "properties": {
+                          "managed_resource_id": {
+                            "type": "string"
+                          },
+                          "queue_url": {
+                            "type": "string",
+                            "description": "The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}. Only required for provided_sqs."
+                          }
+                        }
+                      }
+                    },
                     "description": "File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly one of the documented properties."
                   },
                   "force": {
@@ -1817,7 +2355,11 @@
                     "description": "Force update even if changing url invalidates dependent external tables or mounts."
                   },
                   "isolation_mode": {
-                    "$ref": "#/components/schemas/IsolationMode",
+                    "type": "string",
+                    "x-enum": [
+                      "ISOLATION_MODE_ISOLATED",
+                      "ISOLATION_MODE_OPEN"
+                    ],
                     "description": ":param new_name: str (optional) New name for the external location."
                   },
                   "new_name": {
@@ -1893,7 +2435,97 @@
                 "type": "object",
                 "properties": {
                   "external_metadata": {
-                    "$ref": "#/components/schemas/ExternalMetadata",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "system_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "AMAZON_REDSHIFT",
+                          "AZURE_SYNAPSE",
+                          "CONFLUENT",
+                          "DATABRICKS",
+                          "GOOGLE_BIGQUERY",
+                          "KAFKA",
+                          "LOOKER",
+                          "MICROSOFT_FABRIC",
+                          "MICROSOFT_SQL_SERVER",
+                          "MONGODB",
+                          "MYSQL",
+                          "ORACLE",
+                          "OTHER",
+                          "POSTGRESQL",
+                          "POWER_BI",
+                          "SALESFORCE",
+                          "SAP",
+                          "SERVICENOW",
+                          "SNOWFLAKE",
+                          "STREAM_NATIVE",
+                          "TABLEAU",
+                          "TERADATA",
+                          "WORKDAY"
+                        ],
+                        "description": "Type of external system."
+                      },
+                      "entity_type": {
+                        "type": "string",
+                        "description": "Type of entity within the external system."
+                      },
+                      "columns": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "List of columns associated with the external metadata object."
+                      },
+                      "create_time": {
+                        "type": "string",
+                        "description": "Time at which this external metadata object was created."
+                      },
+                      "created_by": {
+                        "type": "string",
+                        "description": "Username of external metadata object creator."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "User-provided free-form text description."
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "Unique identifier of the external metadata object."
+                      },
+                      "metastore_id": {
+                        "type": "string",
+                        "description": "Unique identifier of parent metastore."
+                      },
+                      "owner": {
+                        "type": "string",
+                        "description": "Owner of the external metadata object."
+                      },
+                      "properties": {
+                        "type": "object",
+                        "description": "A map of key-value properties attached to the external metadata object."
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "Time at which this external metadata object was last modified."
+                      },
+                      "updated_by": {
+                        "type": "string",
+                        "description": "Username of user who last modified external metadata object."
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "URL associated with the external metadata object."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "system_type",
+                      "entity_type"
+                    ],
                     "description": ":returns: :class:`ExternalMetadata`"
                   }
                 },
@@ -2127,7 +2759,97 @@
                 "type": "object",
                 "properties": {
                   "external_metadata": {
-                    "$ref": "#/components/schemas/ExternalMetadata",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "system_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "AMAZON_REDSHIFT",
+                          "AZURE_SYNAPSE",
+                          "CONFLUENT",
+                          "DATABRICKS",
+                          "GOOGLE_BIGQUERY",
+                          "KAFKA",
+                          "LOOKER",
+                          "MICROSOFT_FABRIC",
+                          "MICROSOFT_SQL_SERVER",
+                          "MONGODB",
+                          "MYSQL",
+                          "ORACLE",
+                          "OTHER",
+                          "POSTGRESQL",
+                          "POWER_BI",
+                          "SALESFORCE",
+                          "SAP",
+                          "SERVICENOW",
+                          "SNOWFLAKE",
+                          "STREAM_NATIVE",
+                          "TABLEAU",
+                          "TERADATA",
+                          "WORKDAY"
+                        ],
+                        "description": "Type of external system."
+                      },
+                      "entity_type": {
+                        "type": "string",
+                        "description": "Type of entity within the external system."
+                      },
+                      "columns": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "List of columns associated with the external metadata object."
+                      },
+                      "create_time": {
+                        "type": "string",
+                        "description": "Time at which this external metadata object was created."
+                      },
+                      "created_by": {
+                        "type": "string",
+                        "description": "Username of external metadata object creator."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "User-provided free-form text description."
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "Unique identifier of the external metadata object."
+                      },
+                      "metastore_id": {
+                        "type": "string",
+                        "description": "Unique identifier of parent metastore."
+                      },
+                      "owner": {
+                        "type": "string",
+                        "description": "Owner of the external metadata object."
+                      },
+                      "properties": {
+                        "type": "object",
+                        "description": "A map of key-value properties attached to the external metadata object."
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "Time at which this external metadata object was last modified."
+                      },
+                      "updated_by": {
+                        "type": "string",
+                        "description": "Username of user who last modified external metadata object."
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "URL associated with the external metadata object."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "system_type",
+                      "entity_type"
+                    ],
                     "description": ":param update_mask: str The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
                   }
                 },
@@ -2187,7 +2909,399 @@
                 "type": "object",
                 "properties": {
                   "function_info": {
-                    "$ref": "#/components/schemas/CreateFunction",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "catalog_name": {
+                        "type": "string",
+                        "description": "Name of parent Catalog."
+                      },
+                      "schema_name": {
+                        "type": "string",
+                        "description": "Name of parent Schema relative to its parent Catalog."
+                      },
+                      "input_params": {
+                        "type": "object",
+                        "properties": {
+                          "parameters": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "type_text": {
+                                  "type": "string",
+                                  "description": "Full data type spec, SQL/catalogString text."
+                                },
+                                "type_name": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "ARRAY",
+                                    "BINARY",
+                                    "BOOLEAN",
+                                    "BYTE",
+                                    "CHAR",
+                                    "DATE",
+                                    "DECIMAL",
+                                    "DOUBLE",
+                                    "FLOAT",
+                                    "GEOGRAPHY",
+                                    "GEOMETRY",
+                                    "INT",
+                                    "INTERVAL",
+                                    "LONG",
+                                    "MAP",
+                                    "NULL",
+                                    "SHORT",
+                                    "STRING",
+                                    "STRUCT",
+                                    "TABLE_TYPE",
+                                    "TIMESTAMP",
+                                    "TIMESTAMP_NTZ",
+                                    "USER_DEFINED_TYPE",
+                                    "VARIANT"
+                                  ],
+                                  "description": "Name of type (INT, STRUCT, MAP, etc.)"
+                                },
+                                "position": {
+                                  "type": "integer",
+                                  "description": "Ordinal position of column (starting at position 0)."
+                                },
+                                "comment": {
+                                  "type": "string",
+                                  "description": "User-provided free-form text description."
+                                },
+                                "parameter_default": {
+                                  "type": "string",
+                                  "description": "Default value of the parameter."
+                                },
+                                "parameter_mode": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "IN"
+                                  ],
+                                  "description": "Function parameter mode."
+                                },
+                                "parameter_type": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "COLUMN",
+                                    "PARAM"
+                                  ],
+                                  "description": "Function parameter type."
+                                },
+                                "type_interval_type": {
+                                  "type": "string",
+                                  "description": "Format of IntervalType."
+                                },
+                                "type_json": {
+                                  "type": "string",
+                                  "description": "Full data type spec, JSON-serialized."
+                                },
+                                "type_precision": {
+                                  "type": "integer",
+                                  "description": "Digits of precision; required on Create for DecimalTypes."
+                                },
+                                "type_scale": {
+                                  "type": "integer",
+                                  "description": "Digits to right of decimal; Required on Create for DecimalTypes."
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "type_text",
+                                "type_name",
+                                "position"
+                              ]
+                            }
+                          }
+                        },
+                        "description": "Function input parameters."
+                      },
+                      "data_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "ARRAY",
+                          "BINARY",
+                          "BOOLEAN",
+                          "BYTE",
+                          "CHAR",
+                          "DATE",
+                          "DECIMAL",
+                          "DOUBLE",
+                          "FLOAT",
+                          "GEOGRAPHY",
+                          "GEOMETRY",
+                          "INT",
+                          "INTERVAL",
+                          "LONG",
+                          "MAP",
+                          "NULL",
+                          "SHORT",
+                          "STRING",
+                          "STRUCT",
+                          "TABLE_TYPE",
+                          "TIMESTAMP",
+                          "TIMESTAMP_NTZ",
+                          "USER_DEFINED_TYPE",
+                          "VARIANT"
+                        ],
+                        "description": "Scalar function return data type."
+                      },
+                      "full_data_type": {
+                        "type": "string",
+                        "description": "Pretty printed function data type."
+                      },
+                      "routine_body": {
+                        "type": "string",
+                        "x-enum": [
+                          "EXTERNAL",
+                          "SQL"
+                        ],
+                        "description": "Function language. When **EXTERNAL** is used, the language of the routine function should be specified in the **external_language** field, and the **return_params** of the function cannot be used (as **TABLE** return type is not supported), and the **sql_data_access** field must be **NO_SQL**."
+                      },
+                      "routine_definition": {
+                        "type": "string",
+                        "description": "Function body."
+                      },
+                      "parameter_style": {
+                        "type": "string",
+                        "x-enum": [
+                          "S"
+                        ],
+                        "description": "Function parameter style. **S** is the value for SQL."
+                      },
+                      "is_deterministic": {
+                        "type": "boolean",
+                        "description": "Whether the function is deterministic."
+                      },
+                      "sql_data_access": {
+                        "type": "string",
+                        "x-enum": [
+                          "CONTAINS_SQL",
+                          "NO_SQL",
+                          "READS_SQL_DATA"
+                        ],
+                        "description": "Function SQL data access."
+                      },
+                      "is_null_call": {
+                        "type": "boolean",
+                        "description": "Function null call."
+                      },
+                      "security_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "DEFINER"
+                        ],
+                        "description": "Function security type."
+                      },
+                      "specific_name": {
+                        "type": "string",
+                        "description": "Specific name of the function; Reserved for future use."
+                      },
+                      "comment": {
+                        "type": "string",
+                        "description": "User-provided free-form text description."
+                      },
+                      "external_language": {
+                        "type": "string",
+                        "description": "External function language."
+                      },
+                      "external_name": {
+                        "type": "string",
+                        "description": "External function name."
+                      },
+                      "properties": {
+                        "type": "string",
+                        "description": "JSON-serialized key-value pair map, encoded (escaped) as a string."
+                      },
+                      "return_params": {
+                        "type": "object",
+                        "properties": {
+                          "parameters": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "type_text": {
+                                  "type": "string",
+                                  "description": "Full data type spec, SQL/catalogString text."
+                                },
+                                "type_name": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "ARRAY",
+                                    "BINARY",
+                                    "BOOLEAN",
+                                    "BYTE",
+                                    "CHAR",
+                                    "DATE",
+                                    "DECIMAL",
+                                    "DOUBLE",
+                                    "FLOAT",
+                                    "GEOGRAPHY",
+                                    "GEOMETRY",
+                                    "INT",
+                                    "INTERVAL",
+                                    "LONG",
+                                    "MAP",
+                                    "NULL",
+                                    "SHORT",
+                                    "STRING",
+                                    "STRUCT",
+                                    "TABLE_TYPE",
+                                    "TIMESTAMP",
+                                    "TIMESTAMP_NTZ",
+                                    "USER_DEFINED_TYPE",
+                                    "VARIANT"
+                                  ],
+                                  "description": "Name of type (INT, STRUCT, MAP, etc.)"
+                                },
+                                "position": {
+                                  "type": "integer",
+                                  "description": "Ordinal position of column (starting at position 0)."
+                                },
+                                "comment": {
+                                  "type": "string",
+                                  "description": "User-provided free-form text description."
+                                },
+                                "parameter_default": {
+                                  "type": "string",
+                                  "description": "Default value of the parameter."
+                                },
+                                "parameter_mode": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "IN"
+                                  ],
+                                  "description": "Function parameter mode."
+                                },
+                                "parameter_type": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "COLUMN",
+                                    "PARAM"
+                                  ],
+                                  "description": "Function parameter type."
+                                },
+                                "type_interval_type": {
+                                  "type": "string",
+                                  "description": "Format of IntervalType."
+                                },
+                                "type_json": {
+                                  "type": "string",
+                                  "description": "Full data type spec, JSON-serialized."
+                                },
+                                "type_precision": {
+                                  "type": "integer",
+                                  "description": "Digits of precision; required on Create for DecimalTypes."
+                                },
+                                "type_scale": {
+                                  "type": "integer",
+                                  "description": "Digits to right of decimal; Required on Create for DecimalTypes."
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "type_text",
+                                "type_name",
+                                "position"
+                              ]
+                            }
+                          }
+                        },
+                        "description": "Table function return parameters."
+                      },
+                      "routine_dependencies": {
+                        "type": "object",
+                        "properties": {
+                          "dependencies": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "connection": {
+                                  "type": "object",
+                                  "properties": {
+                                    "connection_name": {
+                                      "type": "string",
+                                      "description": "Full name of the dependent connection, in the form of __connection_name__."
+                                    }
+                                  },
+                                  "description": "A connection that is dependent on a SQL object."
+                                },
+                                "credential": {
+                                  "type": "object",
+                                  "properties": {
+                                    "credential_name": {
+                                      "type": "string",
+                                      "description": "Full name of the dependent credential, in the form of __credential_name__."
+                                    }
+                                  },
+                                  "description": "A credential that is dependent on a SQL object."
+                                },
+                                "function": {
+                                  "type": "object",
+                                  "properties": {
+                                    "function_full_name": {
+                                      "type": "string",
+                                      "description": "Full name of the dependent function, in the form of __catalog_name__.__schema_name__.__function_name__."
+                                    }
+                                  },
+                                  "required": [
+                                    "function_full_name"
+                                  ],
+                                  "description": "A function that is dependent on a SQL object."
+                                },
+                                "table": {
+                                  "type": "object",
+                                  "properties": {
+                                    "table_full_name": {
+                                      "type": "string",
+                                      "description": "Full name of the dependent table, in the form of __catalog_name__.__schema_name__.__table_name__."
+                                    }
+                                  },
+                                  "required": [
+                                    "table_full_name"
+                                  ],
+                                  "description": "A table that is dependent on a SQL object."
+                                }
+                              },
+                              "description": "A dependency of a SQL object. One of the following fields must be defined: __table__,\n    __function__, __connection__, or __credential__."
+                            },
+                            "description": "Array of dependencies."
+                          }
+                        },
+                        "description": "function dependencies."
+                      },
+                      "sql_path": {
+                        "type": "string",
+                        "description": "List of schemes whose objects can be referenced without qualification."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "catalog_name",
+                      "schema_name",
+                      "input_params",
+                      "data_type",
+                      "full_data_type",
+                      "routine_body",
+                      "routine_definition",
+                      "parameter_style",
+                      "is_deterministic",
+                      "sql_data_access",
+                      "is_null_call",
+                      "security_type",
+                      "specific_name"
+                    ],
                     "description": "Partial __FunctionInfo__ specifying the function to be created."
                   }
                 },
@@ -2624,7 +3738,132 @@
                   "changes": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/PermissionsChange"
+                      "type": "object",
+                      "properties": {
+                        "add": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "x-enum": [
+                              "ACCESS",
+                              "ALL_PRIVILEGES",
+                              "APPLY_TAG",
+                              "BROWSE",
+                              "CREATE",
+                              "CREATE_CATALOG",
+                              "CREATE_CLEAN_ROOM",
+                              "CREATE_CONNECTION",
+                              "CREATE_EXTERNAL_LOCATION",
+                              "CREATE_EXTERNAL_TABLE",
+                              "CREATE_EXTERNAL_VOLUME",
+                              "CREATE_FOREIGN_CATALOG",
+                              "CREATE_FOREIGN_SECURABLE",
+                              "CREATE_FUNCTION",
+                              "CREATE_MANAGED_STORAGE",
+                              "CREATE_MATERIALIZED_VIEW",
+                              "CREATE_MODEL",
+                              "CREATE_PROVIDER",
+                              "CREATE_RECIPIENT",
+                              "CREATE_SCHEMA",
+                              "CREATE_SERVICE_CREDENTIAL",
+                              "CREATE_SHARE",
+                              "CREATE_STORAGE_CREDENTIAL",
+                              "CREATE_TABLE",
+                              "CREATE_VIEW",
+                              "CREATE_VOLUME",
+                              "EXECUTE",
+                              "EXECUTE_CLEAN_ROOM_TASK",
+                              "EXTERNAL_USE_SCHEMA",
+                              "MANAGE",
+                              "MANAGE_ALLOWLIST",
+                              "MODIFY",
+                              "MODIFY_CLEAN_ROOM",
+                              "READ_FILES",
+                              "READ_PRIVATE_FILES",
+                              "READ_VOLUME",
+                              "REFRESH",
+                              "SELECT",
+                              "SET_SHARE_PERMISSION",
+                              "USAGE",
+                              "USE_CATALOG",
+                              "USE_CONNECTION",
+                              "USE_MARKETPLACE_ASSETS",
+                              "USE_PROVIDER",
+                              "USE_RECIPIENT",
+                              "USE_SCHEMA",
+                              "USE_SHARE",
+                              "WRITE_FILES",
+                              "WRITE_PRIVATE_FILES",
+                              "WRITE_VOLUME"
+                            ],
+                            "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                          }
+                        },
+                        "principal": {
+                          "type": "string",
+                          "description": "The principal whose privileges we are changing. Only one of principal or principal_id should be specified, never both at the same time."
+                        },
+                        "remove": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "x-enum": [
+                              "ACCESS",
+                              "ALL_PRIVILEGES",
+                              "APPLY_TAG",
+                              "BROWSE",
+                              "CREATE",
+                              "CREATE_CATALOG",
+                              "CREATE_CLEAN_ROOM",
+                              "CREATE_CONNECTION",
+                              "CREATE_EXTERNAL_LOCATION",
+                              "CREATE_EXTERNAL_TABLE",
+                              "CREATE_EXTERNAL_VOLUME",
+                              "CREATE_FOREIGN_CATALOG",
+                              "CREATE_FOREIGN_SECURABLE",
+                              "CREATE_FUNCTION",
+                              "CREATE_MANAGED_STORAGE",
+                              "CREATE_MATERIALIZED_VIEW",
+                              "CREATE_MODEL",
+                              "CREATE_PROVIDER",
+                              "CREATE_RECIPIENT",
+                              "CREATE_SCHEMA",
+                              "CREATE_SERVICE_CREDENTIAL",
+                              "CREATE_SHARE",
+                              "CREATE_STORAGE_CREDENTIAL",
+                              "CREATE_TABLE",
+                              "CREATE_VIEW",
+                              "CREATE_VOLUME",
+                              "EXECUTE",
+                              "EXECUTE_CLEAN_ROOM_TASK",
+                              "EXTERNAL_USE_SCHEMA",
+                              "MANAGE",
+                              "MANAGE_ALLOWLIST",
+                              "MODIFY",
+                              "MODIFY_CLEAN_ROOM",
+                              "READ_FILES",
+                              "READ_PRIVATE_FILES",
+                              "READ_VOLUME",
+                              "REFRESH",
+                              "SELECT",
+                              "SET_SHARE_PERMISSION",
+                              "USAGE",
+                              "USE_CATALOG",
+                              "USE_CONNECTION",
+                              "USE_MARKETPLACE_ASSETS",
+                              "USE_PROVIDER",
+                              "USE_RECIPIENT",
+                              "USE_SCHEMA",
+                              "USE_SHARE",
+                              "WRITE_FILES",
+                              "WRITE_PRIVATE_FILES",
+                              "WRITE_VOLUME"
+                            ],
+                            "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                          },
+                          "description": "The set of privileges to remove."
+                        }
+                      }
                     },
                     "description": "Array of permissions change objects."
                   }
@@ -3253,7 +4492,11 @@
                     "description": "The lifetime of delta sharing recipient token in seconds."
                   },
                   "delta_sharing_scope": {
-                    "$ref": "#/components/schemas/DeltaSharingScopeEnum",
+                    "type": "string",
+                    "x-enum": [
+                      "INTERNAL",
+                      "INTERNAL_AND_EXTERNAL"
+                    ],
                     "description": "The scope of Delta Sharing enabled for the metastore."
                   },
                   "external_access_enabled": {
@@ -3525,7 +4768,32 @@
                   "aliases": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/RegisteredModelAlias"
+                      "type": "object",
+                      "properties": {
+                        "alias_name": {
+                          "type": "string"
+                        },
+                        "catalog_name": {
+                          "type": "string",
+                          "description": "The name of the catalog containing the model version"
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "The unique identifier of the alias"
+                        },
+                        "model_name": {
+                          "type": "string",
+                          "description": "The name of the parent registered model of the model version, relative to parent schema"
+                        },
+                        "schema_name": {
+                          "type": "string",
+                          "description": "The name of the schema containing the model version, relative to parent catalog"
+                        },
+                        "version_num": {
+                          "type": "integer",
+                          "description": "Integer version number of the model version to which this alias points."
+                        }
+                      }
                     },
                     "description": "List of aliases associated with the model version"
                   },
@@ -3557,7 +4825,65 @@
                     "description": "The name of the parent registered model of the model version, relative to parent schema"
                   },
                   "model_version_dependencies": {
-                    "$ref": "#/components/schemas/DependencyList",
+                    "type": "object",
+                    "properties": {
+                      "dependencies": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "connection": {
+                              "type": "object",
+                              "properties": {
+                                "connection_name": {
+                                  "type": "string",
+                                  "description": "Full name of the dependent connection, in the form of __connection_name__."
+                                }
+                              },
+                              "description": "A connection that is dependent on a SQL object."
+                            },
+                            "credential": {
+                              "type": "object",
+                              "properties": {
+                                "credential_name": {
+                                  "type": "string",
+                                  "description": "Full name of the dependent credential, in the form of __credential_name__."
+                                }
+                              },
+                              "description": "A credential that is dependent on a SQL object."
+                            },
+                            "function": {
+                              "type": "object",
+                              "properties": {
+                                "function_full_name": {
+                                  "type": "string",
+                                  "description": "Full name of the dependent function, in the form of __catalog_name__.__schema_name__.__function_name__."
+                                }
+                              },
+                              "required": [
+                                "function_full_name"
+                              ],
+                              "description": "A function that is dependent on a SQL object."
+                            },
+                            "table": {
+                              "type": "object",
+                              "properties": {
+                                "table_full_name": {
+                                  "type": "string",
+                                  "description": "Full name of the dependent table, in the form of __catalog_name__.__schema_name__.__table_name__."
+                                }
+                              },
+                              "required": [
+                                "table_full_name"
+                              ],
+                              "description": "A table that is dependent on a SQL object."
+                            }
+                          },
+                          "description": "A dependency of a SQL object. One of the following fields must be defined: __table__,\n    __function__, __connection__, or __credential__."
+                        },
+                        "description": "Array of dependencies."
+                      }
+                    },
                     "description": "Model version dependencies, for feature-store packaged models"
                   },
                   "run_id": {
@@ -3577,7 +4903,13 @@
                     "description": "URI indicating the location of the source artifacts (files) for the model version"
                   },
                   "status": {
-                    "$ref": "#/components/schemas/ModelVersionInfoStatus",
+                    "type": "string",
+                    "x-enum": [
+                      "FAILED_REGISTRATION",
+                      "MODEL_VERSION_STATUS_UNKNOWN",
+                      "PENDING_REGISTRATION",
+                      "READY"
+                    ],
                     "description": "Current status of the model version. Newly created model versions start in PENDING_REGISTRATION status, then move to READY status once the model version files are uploaded and the model version is finalized. Only model versions in READY status can be loaded for inference or served."
                   },
                   "storage_location": {
@@ -3927,7 +5259,221 @@
                 "type": "object",
                 "properties": {
                   "table": {
-                    "$ref": "#/components/schemas/OnlineTable",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Full three-part (catalog, schema, table) name of the table."
+                      },
+                      "spec": {
+                        "type": "object",
+                        "properties": {
+                          "perform_full_copy": {
+                            "type": "boolean",
+                            "description": "Whether to create a full-copy pipeline -- a pipeline that stops after creates a full copy of the source table upon initialization and does not process any change data feeds (CDFs) afterwards. The pipeline can still be manually triggered afterwards, but it always perform a full copy of the source table and there are no incremental updates. This mode is useful for syncing views or tables without CDFs to online tables. Note that the full-copy pipeline only supports \"triggered\" scheduling policy."
+                          },
+                          "pipeline_id": {
+                            "type": "string",
+                            "description": "ID of the associated pipeline. Generated by the server - cannot be set by the caller."
+                          },
+                          "primary_key_columns": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Primary Key columns to be used for data insert/update in the destination."
+                          },
+                          "run_continuously": {
+                            "type": "object",
+                            "properties": {},
+                            "description": "Pipeline runs continuously after generating the initial data."
+                          },
+                          "run_triggered": {
+                            "type": "object",
+                            "properties": {},
+                            "description": "Pipeline stops after generating the initial data and can be triggered later (manually, through a cron job or through data triggers)"
+                          },
+                          "source_table_full_name": {
+                            "type": "string",
+                            "description": "Three-part (catalog, schema, table) name of the source Delta table."
+                          },
+                          "timeseries_key": {
+                            "type": "string",
+                            "description": "Time series key to deduplicate (tie-break) rows with the same primary key."
+                          }
+                        },
+                        "description": "Specification of the online table."
+                      },
+                      "status": {
+                        "type": "object",
+                        "properties": {
+                          "continuous_update_status": {
+                            "type": "object",
+                            "properties": {
+                              "initial_pipeline_sync_progress": {
+                                "type": "object",
+                                "properties": {
+                                  "estimated_completion_time_seconds": {
+                                    "type": "number",
+                                    "description": "The estimated time remaining to complete this update in seconds."
+                                  },
+                                  "latest_version_currently_processing": {
+                                    "type": "integer",
+                                    "description": "The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet."
+                                  },
+                                  "sync_progress_completion": {
+                                    "type": "number",
+                                    "description": "The completion ratio of this update. This is a number between 0 and 1."
+                                  },
+                                  "synced_row_count": {
+                                    "type": "integer",
+                                    "description": "The number of rows that have been synced in this update."
+                                  },
+                                  "total_row_count": {
+                                    "type": "integer",
+                                    "description": "The total number of rows that need to be synced in this update. This number may be an estimate."
+                                  }
+                                },
+                                "description": "Progress of the initial data synchronization."
+                              },
+                              "last_processed_commit_version": {
+                                "type": "integer",
+                                "description": "The last source table Delta version that was synced to the online table. Note that this Delta version may not be completely synced to the online table yet."
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "The timestamp of the last time any data was synchronized from the source table to the online table."
+                              }
+                            },
+                            "description": "Detailed status of an online table. Shown if the online table is in the ONLINE_CONTINUOUS_UPDATE\n    or the ONLINE_UPDATING_PIPELINE_RESOURCES state."
+                          },
+                          "detailed_state": {
+                            "type": "string",
+                            "x-enum": [
+                              "OFFLINE",
+                              "OFFLINE_FAILED",
+                              "ONLINE",
+                              "ONLINE_CONTINUOUS_UPDATE",
+                              "ONLINE_NO_PENDING_UPDATE",
+                              "ONLINE_PIPELINE_FAILED",
+                              "ONLINE_TRIGGERED_UPDATE",
+                              "ONLINE_UPDATING_PIPELINE_RESOURCES",
+                              "PROVISIONING",
+                              "PROVISIONING_INITIAL_SNAPSHOT",
+                              "PROVISIONING_PIPELINE_RESOURCES"
+                            ],
+                            "description": "The state of the online table."
+                          },
+                          "failed_status": {
+                            "type": "object",
+                            "properties": {
+                              "last_processed_commit_version": {
+                                "type": "integer",
+                                "description": "The last source table Delta version that was synced to the online table. Note that this Delta version may only be partially synced to the online table. Only populated if the table is still online and available for serving."
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "The timestamp of the last time any data was synchronized from the source table to the online table. Only populated if the table is still online and available for serving."
+                              }
+                            },
+                            "description": "Detailed status of an online table. Shown if the online table is in the OFFLINE_FAILED or the\n    ONLINE_PIPELINE_FAILED state."
+                          },
+                          "message": {
+                            "type": "string",
+                            "description": "A text description of the current state of the online table."
+                          },
+                          "provisioning_status": {
+                            "type": "object",
+                            "properties": {
+                              "initial_pipeline_sync_progress": {
+                                "type": "object",
+                                "properties": {
+                                  "estimated_completion_time_seconds": {
+                                    "type": "number",
+                                    "description": "The estimated time remaining to complete this update in seconds."
+                                  },
+                                  "latest_version_currently_processing": {
+                                    "type": "integer",
+                                    "description": "The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet."
+                                  },
+                                  "sync_progress_completion": {
+                                    "type": "number",
+                                    "description": "The completion ratio of this update. This is a number between 0 and 1."
+                                  },
+                                  "synced_row_count": {
+                                    "type": "integer",
+                                    "description": "The number of rows that have been synced in this update."
+                                  },
+                                  "total_row_count": {
+                                    "type": "integer",
+                                    "description": "The total number of rows that need to be synced in this update. This number may be an estimate."
+                                  }
+                                },
+                                "description": "Details about initial data synchronization. Only populated when in the PROVISIONING_INITIAL_SNAPSHOT state."
+                              }
+                            },
+                            "description": "Detailed status of an online table. Shown if the online table is in the\n    PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state."
+                          },
+                          "triggered_update_status": {
+                            "type": "object",
+                            "properties": {
+                              "last_processed_commit_version": {
+                                "type": "integer",
+                                "description": "The last source table Delta version that was synced to the online table. Note that this Delta version may not be completely synced to the online table yet."
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "The timestamp of the last time any data was synchronized from the source table to the online table."
+                              },
+                              "triggered_update_progress": {
+                                "type": "object",
+                                "properties": {
+                                  "estimated_completion_time_seconds": {
+                                    "type": "number",
+                                    "description": "The estimated time remaining to complete this update in seconds."
+                                  },
+                                  "latest_version_currently_processing": {
+                                    "type": "integer",
+                                    "description": "The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet."
+                                  },
+                                  "sync_progress_completion": {
+                                    "type": "number",
+                                    "description": "The completion ratio of this update. This is a number between 0 and 1."
+                                  },
+                                  "synced_row_count": {
+                                    "type": "integer",
+                                    "description": "The number of rows that have been synced in this update."
+                                  },
+                                  "total_row_count": {
+                                    "type": "integer",
+                                    "description": "The total number of rows that need to be synced in this update. This number may be an estimate."
+                                  }
+                                },
+                                "description": "Progress of the active data synchronization pipeline."
+                              }
+                            },
+                            "description": "Detailed status of an online table. Shown if the online table is in the ONLINE_TRIGGERED_UPDATE\n    or the ONLINE_NO_PENDING_UPDATE state."
+                          }
+                        },
+                        "description": "Online Table data synchronization status"
+                      },
+                      "table_serving_url": {
+                        "type": "string",
+                        "description": "Data serving REST API URL for this table"
+                      },
+                      "unity_catalog_provisioning_state": {
+                        "type": "string",
+                        "x-enum": [
+                          "ACTIVE",
+                          "DEGRADED",
+                          "DELETING",
+                          "FAILED",
+                          "PROVISIONING",
+                          "UPDATING"
+                        ],
+                        "description": "The provisioning state of the online table entity in Unity Catalog. This is distinct from the state of the data synchronization pipeline (i.e. the table may be in \"ACTIVE\" but the pipeline may be in \"PROVISIONING\" as it runs asynchronously)."
+                      }
+                    },
                     "description": "Specification of the online table to be created."
                   }
                 },
@@ -4084,7 +5630,194 @@
                 "type": "object",
                 "properties": {
                   "policy_info": {
-                    "$ref": "#/components/schemas/PolicyInfo",
+                    "type": "object",
+                    "properties": {
+                      "to_principals": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "for_securable_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "CATALOG",
+                          "CLEAN_ROOM",
+                          "CONNECTION",
+                          "CREDENTIAL",
+                          "EXTERNAL_LOCATION",
+                          "EXTERNAL_METADATA",
+                          "FUNCTION",
+                          "METASTORE",
+                          "PIPELINE",
+                          "PROVIDER",
+                          "RECIPIENT",
+                          "SCHEMA",
+                          "SHARE",
+                          "STAGING_TABLE",
+                          "STORAGE_CREDENTIAL",
+                          "TABLE",
+                          "VOLUME"
+                        ],
+                        "description": "Type of securables that the policy should take effect on. Only `TABLE` is supported at this moment. Required on create and optional on update."
+                      },
+                      "policy_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "POLICY_TYPE_COLUMN_MASK",
+                          "POLICY_TYPE_ROW_FILTER"
+                        ],
+                        "description": "Type of the policy. Required on create."
+                      },
+                      "column_mask": {
+                        "type": "object",
+                        "properties": {
+                          "function_name": {
+                            "type": "string"
+                          },
+                          "on_column": {
+                            "type": "string",
+                            "description": "The alias of the column to be masked. The alias must refer to one of matched columns. The values of the column is passed to the column mask function as the first argument. Required on create and update."
+                          },
+                          "using": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "alias": {
+                                  "type": "string"
+                                },
+                                "constant": {
+                                  "type": "string",
+                                  "description": "A constant literal."
+                                }
+                              }
+                            },
+                            "description": "Optional list of column aliases or constant literals to be passed as additional arguments to the column mask function. The type of each column should match the positional argument of the column mask function."
+                          }
+                        },
+                        "required": [
+                          "function_name",
+                          "on_column"
+                        ],
+                        "description": "Options for column mask policies. Valid only if `policy_type` is `POLICY_TYPE_COLUMN_MASK`. Required on create and optional on update. When specified on update, the new options will replace the existing options as a whole."
+                      },
+                      "comment": {
+                        "type": "string",
+                        "description": "Optional description of the policy."
+                      },
+                      "created_at": {
+                        "type": "integer",
+                        "description": "Time at which the policy was created, in epoch milliseconds. Output only."
+                      },
+                      "created_by": {
+                        "type": "string",
+                        "description": "Username of the user who created the policy. Output only."
+                      },
+                      "except_principals": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "Optional list of user or group names that should be excluded from the policy."
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "Unique identifier of the policy. This field is output only and is generated by the system."
+                      },
+                      "match_columns": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "alias": {
+                              "type": "string"
+                            },
+                            "condition": {
+                              "type": "string",
+                              "description": "The condition expression used to match a table column."
+                            }
+                          }
+                        },
+                        "description": "Optional list of condition expressions used to match table columns. Only valid when `for_securable_type` is `TABLE`. When specified, the policy only applies to tables whose columns satisfy all match conditions."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the policy. Required on create and optional on update. To rename the policy, set `name` to a different value on update."
+                      },
+                      "on_securable_fullname": {
+                        "type": "string",
+                        "description": "Full name of the securable on which the policy is defined. Required on create."
+                      },
+                      "on_securable_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "CATALOG",
+                          "CLEAN_ROOM",
+                          "CONNECTION",
+                          "CREDENTIAL",
+                          "EXTERNAL_LOCATION",
+                          "EXTERNAL_METADATA",
+                          "FUNCTION",
+                          "METASTORE",
+                          "PIPELINE",
+                          "PROVIDER",
+                          "RECIPIENT",
+                          "SCHEMA",
+                          "SHARE",
+                          "STAGING_TABLE",
+                          "STORAGE_CREDENTIAL",
+                          "TABLE",
+                          "VOLUME"
+                        ],
+                        "description": "Type of the securable on which the policy is defined. Only `CATALOG`, `SCHEMA` and `TABLE` are supported at this moment. Required on create."
+                      },
+                      "row_filter": {
+                        "type": "object",
+                        "properties": {
+                          "function_name": {
+                            "type": "string"
+                          },
+                          "using": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "alias": {
+                                  "type": "string"
+                                },
+                                "constant": {
+                                  "type": "string",
+                                  "description": "A constant literal."
+                                }
+                              }
+                            },
+                            "description": "Optional list of column aliases or constant literals to be passed as arguments to the row filter function. The type of each column should match the positional argument of the row filter function."
+                          }
+                        },
+                        "required": [
+                          "function_name"
+                        ],
+                        "description": "Options for row filter policies. Valid only if `policy_type` is `POLICY_TYPE_ROW_FILTER`. Required on create and optional on update. When specified on update, the new options will replace the existing options as a whole."
+                      },
+                      "updated_at": {
+                        "type": "integer",
+                        "description": "Time at which the policy was last modified, in epoch milliseconds. Output only."
+                      },
+                      "updated_by": {
+                        "type": "string",
+                        "description": "Username of the user who last modified the policy. Output only."
+                      },
+                      "when_condition": {
+                        "type": "string",
+                        "description": "Optional condition when the policy should take effect."
+                      }
+                    },
+                    "required": [
+                      "to_principals",
+                      "for_securable_type",
+                      "policy_type"
+                    ],
                     "description": "Required. The policy to create."
                   }
                 },
@@ -4320,7 +6053,194 @@
                 "type": "object",
                 "properties": {
                   "policy_info": {
-                    "$ref": "#/components/schemas/PolicyInfo",
+                    "type": "object",
+                    "properties": {
+                      "to_principals": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "for_securable_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "CATALOG",
+                          "CLEAN_ROOM",
+                          "CONNECTION",
+                          "CREDENTIAL",
+                          "EXTERNAL_LOCATION",
+                          "EXTERNAL_METADATA",
+                          "FUNCTION",
+                          "METASTORE",
+                          "PIPELINE",
+                          "PROVIDER",
+                          "RECIPIENT",
+                          "SCHEMA",
+                          "SHARE",
+                          "STAGING_TABLE",
+                          "STORAGE_CREDENTIAL",
+                          "TABLE",
+                          "VOLUME"
+                        ],
+                        "description": "Type of securables that the policy should take effect on. Only `TABLE` is supported at this moment. Required on create and optional on update."
+                      },
+                      "policy_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "POLICY_TYPE_COLUMN_MASK",
+                          "POLICY_TYPE_ROW_FILTER"
+                        ],
+                        "description": "Type of the policy. Required on create."
+                      },
+                      "column_mask": {
+                        "type": "object",
+                        "properties": {
+                          "function_name": {
+                            "type": "string"
+                          },
+                          "on_column": {
+                            "type": "string",
+                            "description": "The alias of the column to be masked. The alias must refer to one of matched columns. The values of the column is passed to the column mask function as the first argument. Required on create and update."
+                          },
+                          "using": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "alias": {
+                                  "type": "string"
+                                },
+                                "constant": {
+                                  "type": "string",
+                                  "description": "A constant literal."
+                                }
+                              }
+                            },
+                            "description": "Optional list of column aliases or constant literals to be passed as additional arguments to the column mask function. The type of each column should match the positional argument of the column mask function."
+                          }
+                        },
+                        "required": [
+                          "function_name",
+                          "on_column"
+                        ],
+                        "description": "Options for column mask policies. Valid only if `policy_type` is `POLICY_TYPE_COLUMN_MASK`. Required on create and optional on update. When specified on update, the new options will replace the existing options as a whole."
+                      },
+                      "comment": {
+                        "type": "string",
+                        "description": "Optional description of the policy."
+                      },
+                      "created_at": {
+                        "type": "integer",
+                        "description": "Time at which the policy was created, in epoch milliseconds. Output only."
+                      },
+                      "created_by": {
+                        "type": "string",
+                        "description": "Username of the user who created the policy. Output only."
+                      },
+                      "except_principals": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "Optional list of user or group names that should be excluded from the policy."
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "Unique identifier of the policy. This field is output only and is generated by the system."
+                      },
+                      "match_columns": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "alias": {
+                              "type": "string"
+                            },
+                            "condition": {
+                              "type": "string",
+                              "description": "The condition expression used to match a table column."
+                            }
+                          }
+                        },
+                        "description": "Optional list of condition expressions used to match table columns. Only valid when `for_securable_type` is `TABLE`. When specified, the policy only applies to tables whose columns satisfy all match conditions."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the policy. Required on create and optional on update. To rename the policy, set `name` to a different value on update."
+                      },
+                      "on_securable_fullname": {
+                        "type": "string",
+                        "description": "Full name of the securable on which the policy is defined. Required on create."
+                      },
+                      "on_securable_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "CATALOG",
+                          "CLEAN_ROOM",
+                          "CONNECTION",
+                          "CREDENTIAL",
+                          "EXTERNAL_LOCATION",
+                          "EXTERNAL_METADATA",
+                          "FUNCTION",
+                          "METASTORE",
+                          "PIPELINE",
+                          "PROVIDER",
+                          "RECIPIENT",
+                          "SCHEMA",
+                          "SHARE",
+                          "STAGING_TABLE",
+                          "STORAGE_CREDENTIAL",
+                          "TABLE",
+                          "VOLUME"
+                        ],
+                        "description": "Type of the securable on which the policy is defined. Only `CATALOG`, `SCHEMA` and `TABLE` are supported at this moment. Required on create."
+                      },
+                      "row_filter": {
+                        "type": "object",
+                        "properties": {
+                          "function_name": {
+                            "type": "string"
+                          },
+                          "using": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "alias": {
+                                  "type": "string"
+                                },
+                                "constant": {
+                                  "type": "string",
+                                  "description": "A constant literal."
+                                }
+                              }
+                            },
+                            "description": "Optional list of column aliases or constant literals to be passed as arguments to the row filter function. The type of each column should match the positional argument of the row filter function."
+                          }
+                        },
+                        "required": [
+                          "function_name"
+                        ],
+                        "description": "Options for row filter policies. Valid only if `policy_type` is `POLICY_TYPE_ROW_FILTER`. Required on create and optional on update. When specified on update, the new options will replace the existing options as a whole."
+                      },
+                      "updated_at": {
+                        "type": "integer",
+                        "description": "Time at which the policy was last modified, in epoch milliseconds. Output only."
+                      },
+                      "updated_by": {
+                        "type": "string",
+                        "description": "Username of the user who last modified the policy. Output only."
+                      },
+                      "when_condition": {
+                        "type": "string",
+                        "description": "Optional condition when the policy should take effect."
+                      }
+                    },
+                    "required": [
+                      "to_principals",
+                      "for_securable_type",
+                      "policy_type"
+                    ],
                     "description": "Optional fields to update. This is the request body for updating a policy. Use `update_mask` field to specify which fields in the request is to be updated. - If `update_mask` is empty or \"*\", all specified fields will be updated. - If `update_mask` is specified, only the fields specified in the `update_mask` will be updated. If a field is specified in `update_mask` and not set in the request, the field will be cleared. Users can use the update mask to explicitly unset optional fields such as `exception_principals` and `when_condition`."
                   }
                 },
@@ -4549,27 +6469,162 @@
                   "custom_metrics": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/MonitorMetric"
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the metric in the output tables."
+                        },
+                        "definition": {
+                          "type": "string",
+                          "description": "Jinja template for a SQL expression that specifies how to compute the metric. See [create metric definition]. [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition"
+                        },
+                        "input_columns": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "A list of column names in the input table the metric should be computed for. Can use ``\":table\"`` to indicate that the metric needs information from multiple columns."
+                        },
+                        "output_data_type": {
+                          "type": "string",
+                          "description": "The output type of the custom metric."
+                        },
+                        "type": {
+                          "type": "string",
+                          "x-enum": [
+                            "CUSTOM_METRIC_TYPE_AGGREGATE",
+                            "CUSTOM_METRIC_TYPE_DERIVED",
+                            "CUSTOM_METRIC_TYPE_DRIFT"
+                          ],
+                          "description": "Can only be one of ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"``, ``\"CUSTOM_METRIC_TYPE_DERIVED\"``, or ``\"CUSTOM_METRIC_TYPE_DRIFT\"``. The ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"`` and ``\"CUSTOM_METRIC_TYPE_DERIVED\"`` metrics are computed on a single table, whereas the ``\"CUSTOM_METRIC_TYPE_DRIFT\"`` compare metrics across baseline and input table, or across the two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "definition",
+                        "input_columns",
+                        "output_data_type",
+                        "type"
+                      ],
+                      "description": "Custom metric definition."
                     },
                     "description": "[Create:OPT Update:OPT] Custom metrics."
                   },
                   "data_classification_config": {
-                    "$ref": "#/components/schemas/MonitorDataClassificationConfig",
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether to enable data classification."
+                      }
+                    },
                     "description": "[Create:OPT Update:OPT] Data classification related config."
                   },
                   "inference_log": {
-                    "$ref": "#/components/schemas/MonitorInferenceLog",
+                    "type": "object",
+                    "properties": {
+                      "problem_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "PROBLEM_TYPE_CLASSIFICATION",
+                          "PROBLEM_TYPE_REGRESSION"
+                        ],
+                        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                      },
+                      "timestamp_col": {
+                        "type": "string",
+                        "description": "Column for the timestamp."
+                      },
+                      "granularities": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "List of granularities to use when aggregating data into time windows based on their timestamp."
+                      },
+                      "prediction_col": {
+                        "type": "string",
+                        "description": "Column for the prediction."
+                      },
+                      "model_id_col": {
+                        "type": "string",
+                        "description": "Column for the model identifier."
+                      },
+                      "label_col": {
+                        "type": "string",
+                        "description": "Column for the label."
+                      },
+                      "prediction_proba_col": {
+                        "type": "string",
+                        "description": "Column for prediction probabilities"
+                      }
+                    },
+                    "required": [
+                      "problem_type",
+                      "timestamp_col",
+                      "granularities",
+                      "prediction_col",
+                      "model_id_col"
+                    ],
                     "description": ":param latest_monitor_failure_msg: str (optional) [Create:ERR Update:IGN] The latest error message for a monitor failure."
                   },
                   "latest_monitor_failure_msg": {
                     "type": "string"
                   },
                   "notifications": {
-                    "$ref": "#/components/schemas/MonitorNotifications",
+                    "type": "object",
+                    "properties": {
+                      "on_failure": {
+                        "type": "object",
+                        "properties": {
+                          "email_addresses": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "on_new_classification_tag_detected": {
+                        "type": "object",
+                        "properties": {
+                          "email_addresses": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "description": "Destinations to send notifications on new classification tag detected."
+                      }
+                    },
                     "description": "[Create:OPT Update:OPT] Field for specifying notification settings."
                   },
                   "schedule": {
-                    "$ref": "#/components/schemas/MonitorCronSchedule",
+                    "type": "object",
+                    "properties": {
+                      "quartz_cron_expression": {
+                        "type": "string"
+                      },
+                      "timezone_id": {
+                        "type": "string",
+                        "description": "The timezone id (e.g., ``PST``) in which to evaluate the quartz expression."
+                      },
+                      "pause_status": {
+                        "type": "string",
+                        "x-enum": [
+                          "PAUSED",
+                          "UNPAUSED",
+                          "UNSPECIFIED"
+                        ],
+                        "description": "Read only field that indicates whether a schedule is paused or not."
+                      }
+                    },
+                    "required": [
+                      "quartz_cron_expression",
+                      "timezone_id"
+                    ],
                     "description": "[Create:OPT Update:OPT] The monitor schedule."
                   },
                   "skip_builtin_dashboard": {
@@ -4584,11 +6639,29 @@
                     "description": "[Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The data is grouped by each expression independently, resulting in a separate slice for each predicate and its complements. For example `slicing_exprs=[\u201ccol_1\u201d, \u201ccol_2 > 10\u201d]` will generate the following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate slices."
                   },
                   "snapshot": {
-                    "$ref": "#/components/schemas/MonitorSnapshot",
+                    "type": "object",
+                    "properties": {},
                     "description": "Configuration for monitoring snapshot tables."
                   },
                   "time_series": {
-                    "$ref": "#/components/schemas/MonitorTimeSeries",
+                    "type": "object",
+                    "properties": {
+                      "timestamp_col": {
+                        "type": "string",
+                        "description": "Column for the timestamp."
+                      },
+                      "granularities": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "Granularities for aggregating data into time windows based on their timestamp. Currently the following static granularities are supported: {``\\\"5 minutes\\\"``, ``\\\"30 minutes\\\"``, ``\\\"1 hour\\\"``, ``\\\"1 day\\\"``, ``\\\"\\u003cn\\u003e week(s)\\\"``, ``\\\"1 month\\\"``, ``\\\"1 year\\\"``}."
+                      }
+                    },
+                    "required": [
+                      "timestamp_col",
+                      "granularities"
+                    ],
                     "description": "Configuration for monitoring time series tables."
                   },
                   "warehouse_id": {
@@ -4774,7 +6847,45 @@
                   "custom_metrics": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/MonitorMetric"
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the metric in the output tables."
+                        },
+                        "definition": {
+                          "type": "string",
+                          "description": "Jinja template for a SQL expression that specifies how to compute the metric. See [create metric definition]. [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition"
+                        },
+                        "input_columns": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "A list of column names in the input table the metric should be computed for. Can use ``\":table\"`` to indicate that the metric needs information from multiple columns."
+                        },
+                        "output_data_type": {
+                          "type": "string",
+                          "description": "The output type of the custom metric."
+                        },
+                        "type": {
+                          "type": "string",
+                          "x-enum": [
+                            "CUSTOM_METRIC_TYPE_AGGREGATE",
+                            "CUSTOM_METRIC_TYPE_DERIVED",
+                            "CUSTOM_METRIC_TYPE_DRIFT"
+                          ],
+                          "description": "Can only be one of ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"``, ``\"CUSTOM_METRIC_TYPE_DERIVED\"``, or ``\"CUSTOM_METRIC_TYPE_DRIFT\"``. The ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"`` and ``\"CUSTOM_METRIC_TYPE_DERIVED\"`` metrics are computed on a single table, whereas the ``\"CUSTOM_METRIC_TYPE_DRIFT\"`` compare metrics across baseline and input table, or across the two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "definition",
+                        "input_columns",
+                        "output_data_type",
+                        "type"
+                      ],
+                      "description": "Custom metric definition."
                     },
                     "description": "[Create:OPT Update:OPT] Custom metrics."
                   },
@@ -4783,22 +6894,119 @@
                     "description": "[Create:ERR Update:OPT] Id of dashboard that visualizes the computed metrics. This can be empty if the monitor is in PENDING state."
                   },
                   "data_classification_config": {
-                    "$ref": "#/components/schemas/MonitorDataClassificationConfig",
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether to enable data classification."
+                      }
+                    },
                     "description": "[Create:OPT Update:OPT] Data classification related config."
                   },
                   "inference_log": {
-                    "$ref": "#/components/schemas/MonitorInferenceLog",
+                    "type": "object",
+                    "properties": {
+                      "problem_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "PROBLEM_TYPE_CLASSIFICATION",
+                          "PROBLEM_TYPE_REGRESSION"
+                        ],
+                        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                      },
+                      "timestamp_col": {
+                        "type": "string",
+                        "description": "Column for the timestamp."
+                      },
+                      "granularities": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "List of granularities to use when aggregating data into time windows based on their timestamp."
+                      },
+                      "prediction_col": {
+                        "type": "string",
+                        "description": "Column for the prediction."
+                      },
+                      "model_id_col": {
+                        "type": "string",
+                        "description": "Column for the model identifier."
+                      },
+                      "label_col": {
+                        "type": "string",
+                        "description": "Column for the label."
+                      },
+                      "prediction_proba_col": {
+                        "type": "string",
+                        "description": "Column for prediction probabilities"
+                      }
+                    },
+                    "required": [
+                      "problem_type",
+                      "timestamp_col",
+                      "granularities",
+                      "prediction_col",
+                      "model_id_col"
+                    ],
                     "description": ":param latest_monitor_failure_msg: str (optional) [Create:ERR Update:IGN] The latest error message for a monitor failure."
                   },
                   "latest_monitor_failure_msg": {
                     "type": "string"
                   },
                   "notifications": {
-                    "$ref": "#/components/schemas/MonitorNotifications",
+                    "type": "object",
+                    "properties": {
+                      "on_failure": {
+                        "type": "object",
+                        "properties": {
+                          "email_addresses": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "on_new_classification_tag_detected": {
+                        "type": "object",
+                        "properties": {
+                          "email_addresses": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "description": "Destinations to send notifications on new classification tag detected."
+                      }
+                    },
                     "description": "[Create:OPT Update:OPT] Field for specifying notification settings."
                   },
                   "schedule": {
-                    "$ref": "#/components/schemas/MonitorCronSchedule",
+                    "type": "object",
+                    "properties": {
+                      "quartz_cron_expression": {
+                        "type": "string"
+                      },
+                      "timezone_id": {
+                        "type": "string",
+                        "description": "The timezone id (e.g., ``PST``) in which to evaluate the quartz expression."
+                      },
+                      "pause_status": {
+                        "type": "string",
+                        "x-enum": [
+                          "PAUSED",
+                          "UNPAUSED",
+                          "UNSPECIFIED"
+                        ],
+                        "description": "Read only field that indicates whether a schedule is paused or not."
+                      }
+                    },
+                    "required": [
+                      "quartz_cron_expression",
+                      "timezone_id"
+                    ],
                     "description": "[Create:OPT Update:OPT] The monitor schedule."
                   },
                   "slicing_exprs": {
@@ -4809,11 +7017,29 @@
                     "description": "[Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The data is grouped by each expression independently, resulting in a separate slice for each predicate and its complements. For example `slicing_exprs=[\u201ccol_1\u201d, \u201ccol_2 > 10\u201d]` will generate the following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate slices."
                   },
                   "snapshot": {
-                    "$ref": "#/components/schemas/MonitorSnapshot",
+                    "type": "object",
+                    "properties": {},
                     "description": "Configuration for monitoring snapshot tables."
                   },
                   "time_series": {
-                    "$ref": "#/components/schemas/MonitorTimeSeries",
+                    "type": "object",
+                    "properties": {
+                      "timestamp_col": {
+                        "type": "string",
+                        "description": "Column for the timestamp."
+                      },
+                      "granularities": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "Granularities for aggregating data into time windows based on their timestamp. Currently the following static granularities are supported: {``\\\"5 minutes\\\"``, ``\\\"30 minutes\\\"``, ``\\\"1 hour\\\"``, ``\\\"1 day\\\"``, ``\\\"\\u003cn\\u003e week(s)\\\"``, ``\\\"1 month\\\"``, ``\\\"1 year\\\"``}."
+                      }
+                    },
+                    "required": [
+                      "timestamp_col",
+                      "granularities"
+                    ],
                     "description": "Configuration for monitoring time series tables."
                   }
                 },
@@ -5109,7 +7335,32 @@
                   "aliases": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/RegisteredModelAlias"
+                      "type": "object",
+                      "properties": {
+                        "alias_name": {
+                          "type": "string"
+                        },
+                        "catalog_name": {
+                          "type": "string",
+                          "description": "The name of the catalog containing the model version"
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "The unique identifier of the alias"
+                        },
+                        "model_name": {
+                          "type": "string",
+                          "description": "The name of the parent registered model of the model version, relative to parent schema"
+                        },
+                        "schema_name": {
+                          "type": "string",
+                          "description": "The name of the schema containing the model version, relative to parent catalog"
+                        },
+                        "version_num": {
+                          "type": "integer",
+                          "description": "Integer version number of the model version to which this alias points."
+                        }
+                      }
                     },
                     "description": "List of aliases associated with the registered model"
                   },
@@ -5432,7 +7683,32 @@
                   "aliases": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/RegisteredModelAlias"
+                      "type": "object",
+                      "properties": {
+                        "alias_name": {
+                          "type": "string"
+                        },
+                        "catalog_name": {
+                          "type": "string",
+                          "description": "The name of the catalog containing the model version"
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "The unique identifier of the alias"
+                        },
+                        "model_name": {
+                          "type": "string",
+                          "description": "The name of the parent registered model of the model version, relative to parent schema"
+                        },
+                        "schema_name": {
+                          "type": "string",
+                          "description": "The name of the schema containing the model version, relative to parent catalog"
+                        },
+                        "version_num": {
+                          "type": "integer",
+                          "description": "Integer version number of the model version to which this alias points."
+                        }
+                      }
                     },
                     "description": "List of aliases associated with the registered model"
                   },
@@ -5677,7 +7953,82 @@
                   "requests": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/CreateAccessRequest"
+                      "type": "object",
+                      "properties": {
+                        "behalf_of": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "principal_type": {
+                              "type": "string",
+                              "x-enum": [
+                                "GROUP_PRINCIPAL",
+                                "SERVICE_PRINCIPAL",
+                                "USER_PRINCIPAL"
+                              ],
+                              "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                            }
+                          }
+                        },
+                        "comment": {
+                          "type": "string",
+                          "description": "Optional. Comment associated with the request. At most 200 characters, can only contain lowercase/uppercase letters (a-z, A-Z), numbers (0-9), punctuation, and spaces."
+                        },
+                        "securable_permissions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "permissions": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "securable": {
+                                "type": "object",
+                                "properties": {
+                                  "full_name": {
+                                    "type": "string",
+                                    "description": "Required. The full name of the catalog/schema/table. Optional if resource_name is present."
+                                  },
+                                  "provider_share": {
+                                    "type": "string",
+                                    "description": "Optional. The name of the Share object that contains the securable when the securable is getting shared in D2D Delta Sharing."
+                                  },
+                                  "type": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "CATALOG",
+                                      "CLEAN_ROOM",
+                                      "CONNECTION",
+                                      "CREDENTIAL",
+                                      "EXTERNAL_LOCATION",
+                                      "EXTERNAL_METADATA",
+                                      "FUNCTION",
+                                      "METASTORE",
+                                      "PIPELINE",
+                                      "PROVIDER",
+                                      "RECIPIENT",
+                                      "SCHEMA",
+                                      "SHARE",
+                                      "STAGING_TABLE",
+                                      "STORAGE_CREDENTIAL",
+                                      "TABLE",
+                                      "VOLUME"
+                                    ],
+                                    "description": "Required. The type of securable (catalog/schema/table). Optional if resource_name is present."
+                                  }
+                                },
+                                "description": "The securable for which the access request destinations are being requested."
+                              }
+                            }
+                          },
+                          "description": "List of securables and their corresponding requested UC privileges. At most 30 securables can be requested for a principal per batched call. Each securable can only be requested once per principal."
+                        }
+                      }
                     },
                     "description": "A list of individual access requests, where each request corresponds to a set of permissions being requested on a list of securables for a specified principal. At most 30 requests per API call."
                   }
@@ -5808,7 +8159,132 @@
                 "type": "object",
                 "properties": {
                   "access_request_destinations": {
-                    "$ref": "#/components/schemas/AccessRequestDestinations",
+                    "type": "object",
+                    "properties": {
+                      "securable": {
+                        "type": "object",
+                        "properties": {
+                          "full_name": {
+                            "type": "string",
+                            "description": "Required. The full name of the catalog/schema/table. Optional if resource_name is present."
+                          },
+                          "provider_share": {
+                            "type": "string",
+                            "description": "Optional. The name of the Share object that contains the securable when the securable is getting shared in D2D Delta Sharing."
+                          },
+                          "type": {
+                            "type": "string",
+                            "x-enum": [
+                              "CATALOG",
+                              "CLEAN_ROOM",
+                              "CONNECTION",
+                              "CREDENTIAL",
+                              "EXTERNAL_LOCATION",
+                              "EXTERNAL_METADATA",
+                              "FUNCTION",
+                              "METASTORE",
+                              "PIPELINE",
+                              "PROVIDER",
+                              "RECIPIENT",
+                              "SCHEMA",
+                              "SHARE",
+                              "STAGING_TABLE",
+                              "STORAGE_CREDENTIAL",
+                              "TABLE",
+                              "VOLUME"
+                            ],
+                            "description": "Required. The type of securable (catalog/schema/table). Optional if resource_name is present."
+                          }
+                        },
+                        "description": "Generic definition of a securable, which is uniquely defined in a metastore by its type and full\n    name."
+                      },
+                      "are_any_destinations_hidden": {
+                        "type": "boolean",
+                        "description": "Indicates whether any destinations are hidden from the caller due to a lack of permissions. This value is true if the caller does not have permission to see all destinations."
+                      },
+                      "destination_source_securable": {
+                        "type": "object",
+                        "properties": {
+                          "full_name": {
+                            "type": "string",
+                            "description": "Required. The full name of the catalog/schema/table. Optional if resource_name is present."
+                          },
+                          "provider_share": {
+                            "type": "string",
+                            "description": "Optional. The name of the Share object that contains the securable when the securable is getting shared in D2D Delta Sharing."
+                          },
+                          "type": {
+                            "type": "string",
+                            "x-enum": [
+                              "CATALOG",
+                              "CLEAN_ROOM",
+                              "CONNECTION",
+                              "CREDENTIAL",
+                              "EXTERNAL_LOCATION",
+                              "EXTERNAL_METADATA",
+                              "FUNCTION",
+                              "METASTORE",
+                              "PIPELINE",
+                              "PROVIDER",
+                              "RECIPIENT",
+                              "SCHEMA",
+                              "SHARE",
+                              "STAGING_TABLE",
+                              "STORAGE_CREDENTIAL",
+                              "TABLE",
+                              "VOLUME"
+                            ],
+                            "description": "Required. The type of securable (catalog/schema/table). Optional if resource_name is present."
+                          }
+                        },
+                        "description": "The source securable from which the destinations are inherited. Either the same value as securable (if destination is set directly on the securable) or the nearest parent securable with destinations set."
+                      },
+                      "destinations": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "destination_id": {
+                              "type": "string"
+                            },
+                            "destination_type": {
+                              "type": "string",
+                              "x-enum": [
+                                "EMAIL",
+                                "GENERIC_WEBHOOK",
+                                "MICROSOFT_TEAMS",
+                                "SLACK",
+                                "URL"
+                              ],
+                              "description": "The type of the destination."
+                            },
+                            "special_destination": {
+                              "type": "string",
+                              "x-enum": [
+                                "SPECIAL_DESTINATION_CATALOG_OWNER",
+                                "SPECIAL_DESTINATION_CONNECTION_OWNER",
+                                "SPECIAL_DESTINATION_CREDENTIAL_OWNER",
+                                "SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER",
+                                "SPECIAL_DESTINATION_METASTORE_OWNER"
+                              ],
+                              "description": "This field is used to denote whether the destination is the email of the owner of the securable object. The special destination cannot be assigned to a securable and only represents the default destination of the securable. The securable types that support default special destinations are: \"catalog\", \"external_location\", \"connection\", \"credential\", and \"metastore\". The **destination_type** of a **special_destination** is always EMAIL."
+                            }
+                          }
+                        },
+                        "description": "The access request destinations for the securable."
+                      },
+                      "full_name": {
+                        "type": "string",
+                        "description": "The full name of the securable. Redundant with the name in the securable object, but necessary for Terraform integration"
+                      },
+                      "securable_type": {
+                        "type": "string",
+                        "description": "The type of the securable. Redundant with the type in the securable object, but necessary for Terraform integration"
+                      }
+                    },
+                    "required": [
+                      "securable"
+                    ],
                     "description": "The access request destinations to assign to the securable. For each destination, a **destination_id** and **destination_type** must be defined."
                   }
                 },
@@ -6151,7 +8627,12 @@
                     "description": "User-provided free-form text description."
                   },
                   "enable_predictive_optimization": {
-                    "$ref": "#/components/schemas/EnablePredictiveOptimization",
+                    "type": "string",
+                    "x-enum": [
+                      "DISABLE",
+                      "ENABLE",
+                      "INHERIT"
+                    ],
                     "description": "Whether predictive optimization should be enabled for this object and objects under it."
                   },
                   "new_name": {
@@ -6224,19 +8705,78 @@
                     "description": "The credential name. The name must be unique among storage and service credentials within the metastore."
                   },
                   "aws_iam_role": {
-                    "$ref": "#/components/schemas/AwsIamRoleRequest",
+                    "type": "object",
+                    "properties": {
+                      "role_arn": {
+                        "type": "string",
+                        "description": "The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials."
+                      }
+                    },
+                    "required": [
+                      "role_arn"
+                    ],
                     "description": "The AWS IAM role configuration."
                   },
                   "azure_managed_identity": {
-                    "$ref": "#/components/schemas/AzureManagedIdentityRequest",
+                    "type": "object",
+                    "properties": {
+                      "access_connector_id": {
+                        "type": "string",
+                        "description": "The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."
+                      },
+                      "managed_identity_id": {
+                        "type": "string",
+                        "description": "The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}` This is only available for user-assgined identities. For system-assigned identities, the access_connector_id is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity is using the system-assigned identity."
+                      }
+                    },
+                    "required": [
+                      "access_connector_id"
+                    ],
                     "description": "The Azure managed identity configuration."
                   },
                   "azure_service_principal": {
-                    "$ref": "#/components/schemas/AzureServicePrincipal",
+                    "type": "object",
+                    "properties": {
+                      "directory_id": {
+                        "type": "string",
+                        "description": "The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application."
+                      },
+                      "application_id": {
+                        "type": "string",
+                        "description": "The application ID of the application registration within the referenced AAD tenant."
+                      },
+                      "client_secret": {
+                        "type": "string",
+                        "description": "The client secret generated for the above app ID in AAD."
+                      }
+                    },
+                    "required": [
+                      "directory_id",
+                      "application_id",
+                      "client_secret"
+                    ],
                     "description": "The Azure service principal configuration."
                   },
                   "cloudflare_api_token": {
-                    "$ref": "#/components/schemas/CloudflareApiToken",
+                    "type": "object",
+                    "properties": {
+                      "access_key_id": {
+                        "type": "string",
+                        "description": "The access key ID associated with the API token."
+                      },
+                      "secret_access_key": {
+                        "type": "string",
+                        "description": "The secret access token generated for the above access key ID."
+                      },
+                      "account_id": {
+                        "type": "string",
+                        "description": "The ID of the account associated with the API token."
+                      }
+                    },
+                    "required": [
+                      "access_key_id",
+                      "secret_access_key"
+                    ],
                     "description": "The Cloudflare API token configuration."
                   },
                   "comment": {
@@ -6244,7 +8784,8 @@
                     "description": "Comment associated with the credential."
                   },
                   "databricks_gcp_service_account": {
-                    "$ref": "#/components/schemas/DatabricksGcpServiceAccountRequest",
+                    "type": "object",
+                    "properties": {},
                     "description": "The Databricks managed GCP service account configuration."
                   },
                   "read_only": {
@@ -6496,19 +9037,82 @@
                 "type": "object",
                 "properties": {
                   "aws_iam_role": {
-                    "$ref": "#/components/schemas/AwsIamRoleRequest",
+                    "type": "object",
+                    "properties": {
+                      "role_arn": {
+                        "type": "string",
+                        "description": "The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials."
+                      }
+                    },
+                    "required": [
+                      "role_arn"
+                    ],
                     "description": "The AWS IAM role configuration."
                   },
                   "azure_managed_identity": {
-                    "$ref": "#/components/schemas/AzureManagedIdentityResponse",
+                    "type": "object",
+                    "properties": {
+                      "access_connector_id": {
+                        "type": "string",
+                        "description": "The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."
+                      },
+                      "credential_id": {
+                        "type": "string",
+                        "description": "The Databricks internal ID that represents this managed identity."
+                      },
+                      "managed_identity_id": {
+                        "type": "string",
+                        "description": "The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}` This is only available for user-assgined identities. For system-assigned identities, the access_connector_id is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity is using the system-assigned identity."
+                      }
+                    },
+                    "required": [
+                      "access_connector_id"
+                    ],
                     "description": "The Azure managed identity configuration."
                   },
                   "azure_service_principal": {
-                    "$ref": "#/components/schemas/AzureServicePrincipal",
+                    "type": "object",
+                    "properties": {
+                      "directory_id": {
+                        "type": "string",
+                        "description": "The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application."
+                      },
+                      "application_id": {
+                        "type": "string",
+                        "description": "The application ID of the application registration within the referenced AAD tenant."
+                      },
+                      "client_secret": {
+                        "type": "string",
+                        "description": "The client secret generated for the above app ID in AAD."
+                      }
+                    },
+                    "required": [
+                      "directory_id",
+                      "application_id",
+                      "client_secret"
+                    ],
                     "description": "The Azure service principal configuration."
                   },
                   "cloudflare_api_token": {
-                    "$ref": "#/components/schemas/CloudflareApiToken",
+                    "type": "object",
+                    "properties": {
+                      "access_key_id": {
+                        "type": "string",
+                        "description": "The access key ID associated with the API token."
+                      },
+                      "secret_access_key": {
+                        "type": "string",
+                        "description": "The secret access token generated for the above access key ID."
+                      },
+                      "account_id": {
+                        "type": "string",
+                        "description": "The ID of the account associated with the API token."
+                      }
+                    },
+                    "required": [
+                      "access_key_id",
+                      "secret_access_key"
+                    ],
                     "description": "The Cloudflare API token configuration."
                   },
                   "comment": {
@@ -6516,7 +9120,8 @@
                     "description": "Comment associated with the credential."
                   },
                   "databricks_gcp_service_account": {
-                    "$ref": "#/components/schemas/DatabricksGcpServiceAccountRequest",
+                    "type": "object",
+                    "properties": {},
                     "description": "The Databricks managed GCP service account configuration."
                   },
                   "force": {
@@ -6524,7 +9129,11 @@
                     "description": "Force update even if there are dependent external locations or external tables."
                   },
                   "isolation_mode": {
-                    "$ref": "#/components/schemas/IsolationMode",
+                    "type": "string",
+                    "x-enum": [
+                      "ISOLATION_MODE_ISOLATED",
+                      "ISOLATION_MODE_OPEN"
+                    ],
                     "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces."
                   },
                   "new_name": {
@@ -6597,23 +9206,83 @@
                 "type": "object",
                 "properties": {
                   "aws_iam_role": {
-                    "$ref": "#/components/schemas/AwsIamRoleRequest",
+                    "type": "object",
+                    "properties": {
+                      "role_arn": {
+                        "type": "string",
+                        "description": "The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials."
+                      }
+                    },
+                    "required": [
+                      "role_arn"
+                    ],
                     "description": "The AWS IAM role configuration."
                   },
                   "azure_managed_identity": {
-                    "$ref": "#/components/schemas/AzureManagedIdentityRequest",
+                    "type": "object",
+                    "properties": {
+                      "access_connector_id": {
+                        "type": "string",
+                        "description": "The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."
+                      },
+                      "managed_identity_id": {
+                        "type": "string",
+                        "description": "The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}` This is only available for user-assgined identities. For system-assigned identities, the access_connector_id is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity is using the system-assigned identity."
+                      }
+                    },
+                    "required": [
+                      "access_connector_id"
+                    ],
                     "description": "The Azure managed identity configuration."
                   },
                   "azure_service_principal": {
-                    "$ref": "#/components/schemas/AzureServicePrincipal",
+                    "type": "object",
+                    "properties": {
+                      "directory_id": {
+                        "type": "string",
+                        "description": "The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application."
+                      },
+                      "application_id": {
+                        "type": "string",
+                        "description": "The application ID of the application registration within the referenced AAD tenant."
+                      },
+                      "client_secret": {
+                        "type": "string",
+                        "description": "The client secret generated for the above app ID in AAD."
+                      }
+                    },
+                    "required": [
+                      "directory_id",
+                      "application_id",
+                      "client_secret"
+                    ],
                     "description": "The Azure service principal configuration."
                   },
                   "cloudflare_api_token": {
-                    "$ref": "#/components/schemas/CloudflareApiToken",
+                    "type": "object",
+                    "properties": {
+                      "access_key_id": {
+                        "type": "string",
+                        "description": "The access key ID associated with the API token."
+                      },
+                      "secret_access_key": {
+                        "type": "string",
+                        "description": "The secret access token generated for the above access key ID."
+                      },
+                      "account_id": {
+                        "type": "string",
+                        "description": "The ID of the account associated with the API token."
+                      }
+                    },
+                    "required": [
+                      "access_key_id",
+                      "secret_access_key"
+                    ],
                     "description": "The Cloudflare API token configuration."
                   },
                   "databricks_gcp_service_account": {
-                    "$ref": "#/components/schemas/DatabricksGcpServiceAccountRequest",
+                    "type": "object",
+                    "properties": {},
                     "description": "The Databricks created GCP service account configuration."
                   },
                   "external_location_name": {
@@ -6884,7 +9553,86 @@
                     "description": "The full name of the table referenced by the constraint."
                   },
                   "constraint": {
-                    "$ref": "#/components/schemas/TableConstraint",
+                    "type": "object",
+                    "properties": {
+                      "foreign_key_constraint": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "child_columns": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Column names for this constraint."
+                          },
+                          "parent_table": {
+                            "type": "string",
+                            "description": "The full name of the parent constraint."
+                          },
+                          "parent_columns": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Column names for this constraint."
+                          },
+                          "rely": {
+                            "type": "boolean",
+                            "description": "True if the constraint is RELY, false or unset if NORELY."
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "child_columns",
+                          "parent_table",
+                          "parent_columns"
+                        ]
+                      },
+                      "named_table_constraint": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name"
+                        ]
+                      },
+                      "primary_key_constraint": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "child_columns": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Column names for this constraint."
+                          },
+                          "rely": {
+                            "type": "boolean",
+                            "description": "True if the constraint is RELY, false or unset if NORELY."
+                          },
+                          "timeseries_columns": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Column names that represent a timeseries."
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "child_columns"
+                        ]
+                      }
+                    },
                     "description": ":returns: :class:`TableConstraint`"
                   }
                 },
@@ -7021,11 +9769,55 @@
                     "description": "Name of parent schema relative to its parent catalog."
                   },
                   "table_type": {
-                    "$ref": "#/components/schemas/TableType",
+                    "type": "string",
+                    "x-enum": [
+                      "EXTERNAL",
+                      "EXTERNAL_SHALLOW_CLONE",
+                      "FOREIGN",
+                      "MANAGED",
+                      "MANAGED_SHALLOW_CLONE",
+                      "MATERIALIZED_VIEW",
+                      "METRIC_VIEW",
+                      "STREAMING_TABLE",
+                      "VIEW"
+                    ],
                     "description": ":param data_source_format: :class:`DataSourceFormat`"
                   },
                   "data_source_format": {
-                    "$ref": "#/components/schemas/DataSourceFormat"
+                    "type": "string",
+                    "x-enum": [
+                      "AVRO",
+                      "BIGQUERY_FORMAT",
+                      "CSV",
+                      "DATABRICKS_FORMAT",
+                      "DATABRICKS_ROW_STORE_FORMAT",
+                      "DELTA",
+                      "DELTASHARING",
+                      "DELTA_UNIFORM_HUDI",
+                      "DELTA_UNIFORM_ICEBERG",
+                      "HIVE",
+                      "ICEBERG",
+                      "JSON",
+                      "MONGODB_FORMAT",
+                      "MYSQL_FORMAT",
+                      "NETSUITE_FORMAT",
+                      "ORACLE_FORMAT",
+                      "ORC",
+                      "PARQUET",
+                      "POSTGRESQL_FORMAT",
+                      "REDSHIFT_FORMAT",
+                      "SALESFORCE_DATA_CLOUD_FORMAT",
+                      "SALESFORCE_FORMAT",
+                      "SNOWFLAKE_FORMAT",
+                      "SQLDW_FORMAT",
+                      "SQLSERVER_FORMAT",
+                      "TERADATA_FORMAT",
+                      "TEXT",
+                      "UNITY_CATALOG",
+                      "VECTOR_INDEX_FORMAT",
+                      "WORKDAY_RAAS_FORMAT"
+                    ],
+                    "description": "Data source format"
                   },
                   "storage_location": {
                     "type": "string",
@@ -7034,7 +9826,93 @@
                   "columns": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ColumnInfo"
+                      "type": "object",
+                      "properties": {
+                        "comment": {
+                          "type": "string"
+                        },
+                        "mask": {
+                          "type": "object",
+                          "properties": {
+                            "function_name": {
+                              "type": "string"
+                            },
+                            "using_column_names": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "The list of additional table columns to be passed as input to the column mask function. The first arg of the mask function should be of the type of the column being masked and the types of the rest of the args should match the types of columns in 'using_column_names'."
+                            }
+                          }
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of Column."
+                        },
+                        "nullable": {
+                          "type": "boolean",
+                          "description": "Whether field may be Null (default: true)."
+                        },
+                        "partition_index": {
+                          "type": "integer",
+                          "description": "Partition index for column."
+                        },
+                        "position": {
+                          "type": "integer",
+                          "description": "Ordinal position of column (starting at position 0)."
+                        },
+                        "type_interval_type": {
+                          "type": "string",
+                          "description": "Format of IntervalType."
+                        },
+                        "type_json": {
+                          "type": "string",
+                          "description": "Full data type specification, JSON-serialized."
+                        },
+                        "type_name": {
+                          "type": "string",
+                          "x-enum": [
+                            "ARRAY",
+                            "BINARY",
+                            "BOOLEAN",
+                            "BYTE",
+                            "CHAR",
+                            "DATE",
+                            "DECIMAL",
+                            "DOUBLE",
+                            "FLOAT",
+                            "GEOGRAPHY",
+                            "GEOMETRY",
+                            "INT",
+                            "INTERVAL",
+                            "LONG",
+                            "MAP",
+                            "NULL",
+                            "SHORT",
+                            "STRING",
+                            "STRUCT",
+                            "TABLE_TYPE",
+                            "TIMESTAMP",
+                            "TIMESTAMP_NTZ",
+                            "USER_DEFINED_TYPE",
+                            "VARIANT"
+                          ],
+                          "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                        },
+                        "type_precision": {
+                          "type": "integer",
+                          "description": "Digits of precision; required for DecimalTypes."
+                        },
+                        "type_scale": {
+                          "type": "integer",
+                          "description": "Digits to right of decimal; Required for DecimalTypes."
+                        },
+                        "type_text": {
+                          "type": "string",
+                          "description": "Full data type specification as SQL/catalogString text."
+                        }
+                      }
                     },
                     "description": "The array of __ColumnInfo__ definitions of the table's columns."
                   },
@@ -7565,7 +10443,12 @@
                     "description": "URL for path-based access."
                   },
                   "operation": {
-                    "$ref": "#/components/schemas/PathOperation",
+                    "type": "string",
+                    "x-enum": [
+                      "PATH_CREATE_TABLE",
+                      "PATH_READ",
+                      "PATH_READ_WRITE"
+                    ],
                     "description": "The operation being performed on the path."
                   },
                   "dry_run": {
@@ -7630,7 +10513,11 @@
                 "type": "object",
                 "properties": {
                   "operation": {
-                    "$ref": "#/components/schemas/TableOperation",
+                    "type": "string",
+                    "x-enum": [
+                      "READ",
+                      "READ_WRITE"
+                    ],
                     "description": "The operation performed against the table data, either READ or READ_WRITE. If READ_WRITE is specified, the credentials returned will have write permissions, otherwise, it will be read only."
                   },
                   "table_id": {
@@ -7703,7 +10590,11 @@
                     "description": "The name of the volume"
                   },
                   "volume_type": {
-                    "$ref": "#/components/schemas/VolumeType",
+                    "type": "string",
+                    "x-enum": [
+                      "EXTERNAL",
+                      "MANAGED"
+                    ],
                     "description": "The type of the volume. An external volume is located in the specified external location. A managed volume is located in the default location which is specified by the parent schema, or the parent catalog, or the Metastore. [Learn more] [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"
                   },
                   "comment": {
@@ -8270,14 +11161,46 @@
                   "add": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/WorkspaceBinding"
+                      "type": "object",
+                      "properties": {
+                        "workspace_id": {
+                          "type": "integer"
+                        },
+                        "binding_type": {
+                          "type": "string",
+                          "x-enum": [
+                            "BINDING_TYPE_READ_ONLY",
+                            "BINDING_TYPE_READ_WRITE"
+                          ],
+                          "description": "One of READ_WRITE/READ_ONLY. Default is READ_WRITE."
+                        }
+                      },
+                      "required": [
+                        "workspace_id"
+                      ]
                     },
                     "description": "List of workspace bindings to add. If a binding for the workspace already exists with a different binding_type, adding it again with a new binding_type will update the existing binding (e.g., from READ_WRITE to READ_ONLY)."
                   },
                   "remove": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/WorkspaceBinding"
+                      "type": "object",
+                      "properties": {
+                        "workspace_id": {
+                          "type": "integer"
+                        },
+                        "binding_type": {
+                          "type": "string",
+                          "x-enum": [
+                            "BINDING_TYPE_READ_ONLY",
+                            "BINDING_TYPE_READ_WRITE"
+                          ],
+                          "description": "One of READ_WRITE/READ_ONLY. Default is READ_WRITE."
+                        }
+                      },
+                      "required": [
+                        "workspace_id"
+                      ]
                     },
                     "description": "List of workspace bindings to remove."
                   }

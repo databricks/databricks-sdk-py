@@ -263,35 +263,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets a connection from it's name.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List all connections.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-connection_type"><code>connection_type</code></a>, <a href="#parameter-options"><code>options</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-connection_type"><code>connection_type</code></a>, <a href="#parameter-options"><code>options</code></a></td>
     <td></td>
     <td>Creates a new connection</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-options"><code>options</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-options"><code>options</code></a></td>
     <td></td>
     <td>Updates the connection that matches the supplied name.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes the connection that matches the supplied name.</td>
 </tr>
@@ -311,19 +311,19 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>The name of the connection to be deleted.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of connections to return. - If not set, all connections are returned (not recommended). - when set to a value greater than 0, the page length is the minimum of this value and a server configured value; - when set to 0, the page length is set to a server configured value (recommended); - when set to a value less than 0, an invalid parameter error is returned;</td>
 </tr>
 <tr id="parameter-page_token">
@@ -369,7 +369,7 @@ updated_by,
 url
 FROM databricks_workspace.catalog.connections
 WHERE name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -398,7 +398,7 @@ updated_at,
 updated_by,
 url
 FROM databricks_workspace.catalog.connections
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -428,7 +428,7 @@ options,
 comment,
 properties,
 read_only,
-deployment_name
+workspace
 )
 SELECT 
 '{{ name }}' /* required */,
@@ -436,8 +436,8 @@ SELECT
 '{{ options }}' /* required */,
 '{{ comment }}',
 '{{ properties }}',
-'{{ read_only }}',
-'{{ deployment_name }}'
+{{ read_only }},
+'{{ workspace }}'
 RETURNING
 name,
 connection_id,
@@ -466,7 +466,7 @@ url
 # Description fields are for documentation purposes
 - name: connections
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the connections resource.
     - name: name
@@ -478,7 +478,7 @@ url
       description: |
         The type of connection.
     - name: options
-      value: string
+      value: object
       description: |
         A map of key-value properties attached to the securable.
     - name: comment
@@ -486,11 +486,11 @@ url
       description: |
         User-provided free-form text description.
     - name: properties
-      value: string
+      value: object
       description: |
         A map of key-value properties attached to the securable.
     - name: read_only
-      value: string
+      value: boolean
       description: |
         If the connection is read only.
 ```
@@ -518,7 +518,7 @@ new_name = '{{ new_name }}',
 owner = '{{ owner }}'
 WHERE 
 name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND options = '{{ options }}' --required
 RETURNING
 name,
@@ -559,7 +559,7 @@ Deletes the connection that matches the supplied name.
 ```sql
 DELETE FROM databricks_workspace.catalog.connections
 WHERE name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

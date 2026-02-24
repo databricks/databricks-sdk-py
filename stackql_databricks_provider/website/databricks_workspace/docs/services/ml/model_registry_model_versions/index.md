@@ -230,56 +230,56 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get a model version.</td>
 </tr>
 <tr>
     <td><a href="#search"><CopyableCode code="search" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-order_by"><code>order_by</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Searches for specific model versions based on the supplied __filter__.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-source"><code>source</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-source"><code>source</code></a></td>
     <td></td>
     <td>Creates a model version.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a></td>
     <td></td>
     <td>Updates the model version.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes a model version.</td>
 </tr>
 <tr>
     <td><a href="#delete_tag"><CopyableCode code="delete_tag" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes a model version tag.</td>
 </tr>
 <tr>
     <td><a href="#get_latest"><CopyableCode code="get_latest" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Gets the latest version of a registered model.</td>
 </tr>
 <tr>
     <td><a href="#set_tag"><CopyableCode code="set_tag" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-value"><code>value</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-value"><code>value</code></a></td>
     <td></td>
     <td>Sets a model version tag.</td>
 </tr>
@@ -299,11 +299,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-key">
     <td><CopyableCode code="key" /></td>
     <td><code>string</code></td>
@@ -319,6 +314,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Model version number that the tag was logged under.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-filter">
     <td><CopyableCode code="filter" /></td>
     <td><code>string</code></td>
@@ -326,12 +326,12 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Maximum number of models desired. Max threshold is 10K.</td>
 </tr>
 <tr id="parameter-order_by">
     <td><CopyableCode code="order_by" /></td>
-    <td><code>string</code></td>
+    <td><code>array</code></td>
     <td>List of columns to be ordered by including model name, version, stage with an optional "DESC" or "ASC" annotation, where "ASC" is the default. Tiebreaks are done by latest stage transition timestamp, followed by name ASC, followed by version DESC.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -361,7 +361,7 @@ model_version
 FROM databricks_workspace.ml.model_registry_model_versions
 WHERE name = '{{ name }}' -- required
 AND version = '{{ version }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -385,7 +385,7 @@ status_message,
 tags,
 version
 FROM databricks_workspace.ml.model_registry_model_versions
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND filter = '{{ filter }}'
 AND max_results = '{{ max_results }}'
 AND order_by = '{{ order_by }}'
@@ -417,7 +417,7 @@ description,
 run_id,
 run_link,
 tags,
-deployment_name
+workspace
 )
 SELECT 
 '{{ name }}' /* required */,
@@ -426,7 +426,7 @@ SELECT
 '{{ run_id }}',
 '{{ run_link }}',
 '{{ tags }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 model_version
 ;
@@ -438,7 +438,7 @@ model_version
 # Description fields are for documentation purposes
 - name: model_registry_model_versions
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the model_registry_model_versions resource.
     - name: name
@@ -462,9 +462,16 @@ model_version
       description: |
         MLflow run link - this is the exact link of the run that generated this model version, potentially hosted at another instance of MLflow.
     - name: tags
-      value: string
+      value: array
       description: |
         Additional metadata for model version.
+      props:
+      - name: key
+        value: string
+      - name: value
+        value: string
+        description: |
+          The tag value.
 ```
 </TabItem>
 </Tabs>
@@ -489,7 +496,7 @@ name = '{{ name }}',
 version = '{{ version }}',
 description = '{{ description }}'
 WHERE 
-deployment_name = '{{ deployment_name }}' --required
+workspace = '{{ workspace }}' --required
 AND name = '{{ name }}' --required
 AND version = '{{ version }}' --required
 RETURNING
@@ -518,7 +525,7 @@ Deletes a model version.
 EXEC databricks_workspace.ml.model_registry_model_versions.delete 
 @name='{{ name }}' --required, 
 @version='{{ version }}' --required, 
-@deployment_name='{{ deployment_name }}' --required
+@workspace='{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -531,7 +538,7 @@ EXEC databricks_workspace.ml.model_registry_model_versions.delete_tag
 @name='{{ name }}' --required, 
 @version='{{ version }}' --required, 
 @key='{{ key }}' --required, 
-@deployment_name='{{ deployment_name }}' --required
+@workspace='{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -541,7 +548,7 @@ Gets the latest version of a registered model.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry_model_versions.get_latest 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "name": "{{ name }}", 
@@ -556,7 +563,7 @@ Sets a model version tag.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry_model_versions.set_tag 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "name": "{{ name }}", 

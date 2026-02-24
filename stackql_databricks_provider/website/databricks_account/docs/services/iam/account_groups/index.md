@@ -333,7 +333,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-count">
     <td><CopyableCode code="count" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Desired number of results per page. Default is 10000.</td>
 </tr>
 <tr id="parameter-excluded_attributes">
@@ -358,7 +358,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-start_index">
     <td><CopyableCode code="start_index" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Specifies the index of the first result. First item is number 1.</td>
 </tr>
 </tbody>
@@ -482,15 +482,40 @@ roles
     - name: id
       value: string
     - name: members
-      value: string
+      value: array
       description: |
         :param meta: :class:`ResourceMeta` (optional) Container for the group identifier. Workspace local versus account.
+      props:
+      - name: display
+        value: string
+      - name: primary
+        value: boolean
+      - name: $ref
+        value: string
+      - name: type
+        value: string
+      - name: value
+        value: string
     - name: meta
-      value: string
+      value: object
+      props:
+      - name: resourceType
+        value: string
     - name: roles
-      value: string
+      value: array
       description: |
         Indicates if the group has the admin role.
+      props:
+      - name: display
+        value: string
+      - name: primary
+        value: boolean
+      - name: $ref
+        value: string
+      - name: type
+        value: string
+      - name: value
+        value: string
 ```
 </TabItem>
 </Tabs>

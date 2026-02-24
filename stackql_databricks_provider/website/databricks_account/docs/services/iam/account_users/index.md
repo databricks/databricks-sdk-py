@@ -363,7 +363,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-count">
     <td><CopyableCode code="count" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Desired number of results per page. Default is 10000.</td>
 </tr>
 <tr id="parameter-excluded_attributes">
@@ -388,7 +388,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-start_index">
     <td><CopyableCode code="start_index" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Specifies the index of the first result. First item is number 1.</td>
 </tr>
 </tbody>
@@ -487,7 +487,7 @@ user_name,
 account_id
 )
 SELECT 
-'{{ active }}',
+{{ active }},
 '{{ display_name }}',
 '{{ emails }}',
 '{{ external_id }}',
@@ -519,7 +519,7 @@ userName
       value: string
       description: Required parameter for the account_users resource.
     - name: active
-      value: string
+      value: boolean
       description: |
         If this user is active
     - name: display_name
@@ -527,9 +527,20 @@ userName
       description: |
         String that represents a concatenation of given and family names. For example `John Smith`.
     - name: emails
-      value: string
+      value: array
       description: |
         All the emails associated with the Databricks user.
+      props:
+      - name: display
+        value: string
+      - name: primary
+        value: boolean
+      - name: $ref
+        value: string
+      - name: type
+        value: string
+      - name: value
+        value: string
     - name: external_id
       value: string
       description: |
@@ -539,11 +550,29 @@ userName
       description: |
         Databricks user ID.
     - name: name
-      value: string
+      value: object
       description: |
         :param roles: List[:class:`ComplexValue`] (optional) Indicates if the group has the admin role.
+      props:
+      - name: familyName
+        value: string
+      - name: givenName
+        value: string
+        description: |
+          Given name of the Databricks user.
     - name: roles
-      value: string
+      value: array
+      props:
+      - name: display
+        value: string
+      - name: primary
+        value: boolean
+      - name: $ref
+        value: string
+      - name: type
+        value: string
+      - name: value
+        value: string
     - name: user_name
       value: string
       description: |
@@ -593,7 +622,7 @@ Replaces a user's information with the data supplied in request.
 ```sql
 REPLACE databricks_account.iam.account_users
 SET 
-active = '{{ active }}',
+active = {{ active }},
 display_name = '{{ display_name }}',
 emails = '{{ emails }}',
 external_id = '{{ external_id }}',

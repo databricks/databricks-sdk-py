@@ -136,14 +136,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-parent_securable_type"><code>parent_securable_type</code></a>, <a href="#parameter-parent_full_name"><code>parent_full_name</code></a>, <a href="#parameter-quota_name"><code>quota_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-parent_securable_type"><code>parent_securable_type</code></a>, <a href="#parameter-parent_full_name"><code>parent_full_name</code></a>, <a href="#parameter-quota_name"><code>quota_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>The GetQuota API returns usage information for a single resource quota, defined as a child-parent</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the</td>
 </tr>
@@ -163,11 +163,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-parent_full_name">
     <td><CopyableCode code="parent_full_name" /></td>
     <td><code>string</code></td>
@@ -183,9 +178,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Name of the quota. Follows the pattern of the quota type, with "-quota" added as a suffix.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>The number of quotas to return.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -216,7 +216,7 @@ FROM databricks_workspace.catalog.resource_quotas
 WHERE parent_securable_type = '{{ parent_securable_type }}' -- required
 AND parent_full_name = '{{ parent_full_name }}' -- required
 AND quota_name = '{{ quota_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -233,7 +233,7 @@ parent_securable_type,
 quota_count,
 quota_limit
 FROM databricks_workspace.catalog.resource_quotas
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 ;

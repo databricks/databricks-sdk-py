@@ -49,7 +49,69 @@
                 "type": "object",
                 "properties": {
                   "policy": {
-                    "$ref": "#/components/schemas/FederationPolicy",
+                    "type": "object",
+                    "properties": {
+                      "create_time": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Description of the federation policy."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Resource name for the federation policy. Example values include `accounts/<account-id>/federationPolicies/my-federation-policy` for Account Federation Policies, and `accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy` for Service Principal Federation Policies. Typically an output parameter, which does not need to be specified in create or update requests. If specified in a request, must match the value in the request URL."
+                      },
+                      "oidc_policy": {
+                        "type": "object",
+                        "properties": {
+                          "audiences": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "The allowed token audiences, as specified in the 'aud' claim of federated tokens. The audience identifier is intended to represent the recipient of the token. Can be any non-empty string value. As long as the audience in the token matches at least one audience in the policy, the token is considered a match. If audiences is unspecified, defaults to your Databricks account id."
+                          },
+                          "issuer": {
+                            "type": "string",
+                            "description": "The required token issuer, as specified in the 'iss' claim of federated tokens."
+                          },
+                          "jwks_json": {
+                            "type": "string",
+                            "description": "The public keys used to validate the signature of federated tokens, in JWKS format. Most use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks automatically fetches the public keys from your issuer\u2019s well known endpoint. Databricks strongly recommends relying on your issuer\u2019s well known endpoint for discovering public keys."
+                          },
+                          "jwks_uri": {
+                            "type": "string",
+                            "description": "URL of the public keys used to validate the signature of federated tokens, in JWKS format. Most use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks automatically fetches the public keys from your issuer\u2019s well known endpoint. Databricks strongly recommends relying on your issuer\u2019s well known endpoint for discovering public keys."
+                          },
+                          "subject": {
+                            "type": "string",
+                            "description": "The required token subject, as specified in the subject claim of federated tokens. Must be specified for service principal federation policies. Must not be specified for account federation policies."
+                          },
+                          "subject_claim": {
+                            "type": "string",
+                            "description": "The claim that contains the subject of the token. If unspecified, the default value is 'sub'."
+                          }
+                        },
+                        "description": "Specifies the policy to use for validating OIDC claims in your federated tokens."
+                      },
+                      "policy_id": {
+                        "type": "string",
+                        "description": "The ID of the federation policy. Output only."
+                      },
+                      "service_principal_id": {
+                        "type": "integer",
+                        "description": "The service principal ID that this federation policy applies to. Output only. Only set for service principal federation policies."
+                      },
+                      "uid": {
+                        "type": "string",
+                        "description": "Unique, immutable id of the federation policy."
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "Last update time of the federation policy."
+                      }
+                    },
                     "description": ":param policy_id: str (optional) The identifier for the federation policy. The identifier must contain only lowercase alphanumeric characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks."
                   }
                 },
@@ -314,7 +376,69 @@
                 "type": "object",
                 "properties": {
                   "policy": {
-                    "$ref": "#/components/schemas/FederationPolicy",
+                    "type": "object",
+                    "properties": {
+                      "create_time": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Description of the federation policy."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Resource name for the federation policy. Example values include `accounts/<account-id>/federationPolicies/my-federation-policy` for Account Federation Policies, and `accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy` for Service Principal Federation Policies. Typically an output parameter, which does not need to be specified in create or update requests. If specified in a request, must match the value in the request URL."
+                      },
+                      "oidc_policy": {
+                        "type": "object",
+                        "properties": {
+                          "audiences": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "The allowed token audiences, as specified in the 'aud' claim of federated tokens. The audience identifier is intended to represent the recipient of the token. Can be any non-empty string value. As long as the audience in the token matches at least one audience in the policy, the token is considered a match. If audiences is unspecified, defaults to your Databricks account id."
+                          },
+                          "issuer": {
+                            "type": "string",
+                            "description": "The required token issuer, as specified in the 'iss' claim of federated tokens."
+                          },
+                          "jwks_json": {
+                            "type": "string",
+                            "description": "The public keys used to validate the signature of federated tokens, in JWKS format. Most use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks automatically fetches the public keys from your issuer\u2019s well known endpoint. Databricks strongly recommends relying on your issuer\u2019s well known endpoint for discovering public keys."
+                          },
+                          "jwks_uri": {
+                            "type": "string",
+                            "description": "URL of the public keys used to validate the signature of federated tokens, in JWKS format. Most use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks automatically fetches the public keys from your issuer\u2019s well known endpoint. Databricks strongly recommends relying on your issuer\u2019s well known endpoint for discovering public keys."
+                          },
+                          "subject": {
+                            "type": "string",
+                            "description": "The required token subject, as specified in the subject claim of federated tokens. Must be specified for service principal federation policies. Must not be specified for account federation policies."
+                          },
+                          "subject_claim": {
+                            "type": "string",
+                            "description": "The claim that contains the subject of the token. If unspecified, the default value is 'sub'."
+                          }
+                        },
+                        "description": "Specifies the policy to use for validating OIDC claims in your federated tokens."
+                      },
+                      "policy_id": {
+                        "type": "string",
+                        "description": "The ID of the federation policy. Output only."
+                      },
+                      "service_principal_id": {
+                        "type": "integer",
+                        "description": "The service principal ID that this federation policy applies to. Output only. Only set for service principal federation policies."
+                      },
+                      "uid": {
+                        "type": "string",
+                        "description": "Unique, immutable id of the federation policy."
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "Last update time of the federation policy."
+                      }
+                    },
                     "description": ":param update_mask: str (optional) The field mask specifies which fields of the policy to update. To specify multiple fields in the field mask, use comma as the separator (no space). The special value '*' indicates that all fields should be updated (full replacement). If unspecified, all fields that are set in the policy provided in the update request will overwrite the corresponding fields in the existing policy. Example value: 'description,oidc_policy.audiences'."
                   }
                 },
@@ -406,7 +530,24 @@
                     "description": "OAuth scopes granted to the application. Supported scopes: all-apis, sql, offline_access, openid, profile, email."
                   },
                   "token_access_policy": {
-                    "$ref": "#/components/schemas/TokenAccessPolicy",
+                    "type": "object",
+                    "properties": {
+                      "absolute_session_lifetime_in_minutes": {
+                        "type": "integer"
+                      },
+                      "access_token_ttl_in_minutes": {
+                        "type": "integer",
+                        "description": "access token time to live in minutes"
+                      },
+                      "enable_single_use_refresh_tokens": {
+                        "type": "boolean",
+                        "description": "Whether to enable single-use refresh tokens (refresh token rotation). If this feature is enabled, upon successfully getting a new access token using a refresh token, Databricks will issue a new refresh token along with the access token in the response and invalidate the old refresh token. The client should use the new refresh token to get access tokens in future requests."
+                      },
+                      "refresh_token_ttl_in_minutes": {
+                        "type": "integer",
+                        "description": "Refresh token time to live in minutes. When single-use refresh tokens are enabled, this represents the TTL of an individual refresh token. If the refresh token is used before it expires, a new one is issued with a renewed individual TTL."
+                      }
+                    },
                     "description": "Token access policy"
                   },
                   "user_authorized_scopes": {
@@ -689,7 +830,24 @@
                     "description": "List of OAuth scopes to be updated in the custom OAuth app integration, similar to redirect URIs this will fully replace the existing values instead of appending"
                   },
                   "token_access_policy": {
-                    "$ref": "#/components/schemas/TokenAccessPolicy",
+                    "type": "object",
+                    "properties": {
+                      "absolute_session_lifetime_in_minutes": {
+                        "type": "integer"
+                      },
+                      "access_token_ttl_in_minutes": {
+                        "type": "integer",
+                        "description": "access token time to live in minutes"
+                      },
+                      "enable_single_use_refresh_tokens": {
+                        "type": "boolean",
+                        "description": "Whether to enable single-use refresh tokens (refresh token rotation). If this feature is enabled, upon successfully getting a new access token using a refresh token, Databricks will issue a new refresh token along with the access token in the response and invalidate the old refresh token. The client should use the new refresh token to get access tokens in future requests."
+                      },
+                      "refresh_token_ttl_in_minutes": {
+                        "type": "integer",
+                        "description": "Refresh token time to live in minutes. When single-use refresh tokens are enabled, this represents the TTL of an individual refresh token. If the refresh token is used before it expires, a new one is issued with a renewed individual TTL."
+                      }
+                    },
                     "description": "Token access policy to be updated in the custom OAuth app integration"
                   },
                   "user_authorized_scopes": {
@@ -830,7 +988,24 @@
                     "description": "App id of the OAuth published app integration. For example power-bi, tableau-deskop"
                   },
                   "token_access_policy": {
-                    "$ref": "#/components/schemas/TokenAccessPolicy",
+                    "type": "object",
+                    "properties": {
+                      "absolute_session_lifetime_in_minutes": {
+                        "type": "integer"
+                      },
+                      "access_token_ttl_in_minutes": {
+                        "type": "integer",
+                        "description": "access token time to live in minutes"
+                      },
+                      "enable_single_use_refresh_tokens": {
+                        "type": "boolean",
+                        "description": "Whether to enable single-use refresh tokens (refresh token rotation). If this feature is enabled, upon successfully getting a new access token using a refresh token, Databricks will issue a new refresh token along with the access token in the response and invalidate the old refresh token. The client should use the new refresh token to get access tokens in future requests."
+                      },
+                      "refresh_token_ttl_in_minutes": {
+                        "type": "integer",
+                        "description": "Refresh token time to live in minutes. When single-use refresh tokens are enabled, this represents the TTL of an individual refresh token. If the refresh token is used before it expires, a new one is issued with a renewed individual TTL."
+                      }
+                    },
                     "description": "Token access policy"
                   }
                 }
@@ -1084,7 +1259,24 @@
                 "type": "object",
                 "properties": {
                   "token_access_policy": {
-                    "$ref": "#/components/schemas/TokenAccessPolicy"
+                    "type": "object",
+                    "properties": {
+                      "absolute_session_lifetime_in_minutes": {
+                        "type": "integer"
+                      },
+                      "access_token_ttl_in_minutes": {
+                        "type": "integer",
+                        "description": "access token time to live in minutes"
+                      },
+                      "enable_single_use_refresh_tokens": {
+                        "type": "boolean",
+                        "description": "Whether to enable single-use refresh tokens (refresh token rotation). If this feature is enabled, upon successfully getting a new access token using a refresh token, Databricks will issue a new refresh token along with the access token in the response and invalidate the old refresh token. The client should use the new refresh token to get access tokens in future requests."
+                      },
+                      "refresh_token_ttl_in_minutes": {
+                        "type": "integer",
+                        "description": "Refresh token time to live in minutes. When single-use refresh tokens are enabled, this represents the TTL of an individual refresh token. If the refresh token is used before it expires, a new one is issued with a renewed individual TTL."
+                      }
+                    }
                   }
                 }
               }
@@ -1160,7 +1352,69 @@
                 "type": "object",
                 "properties": {
                   "policy": {
-                    "$ref": "#/components/schemas/FederationPolicy",
+                    "type": "object",
+                    "properties": {
+                      "create_time": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Description of the federation policy."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Resource name for the federation policy. Example values include `accounts/<account-id>/federationPolicies/my-federation-policy` for Account Federation Policies, and `accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy` for Service Principal Federation Policies. Typically an output parameter, which does not need to be specified in create or update requests. If specified in a request, must match the value in the request URL."
+                      },
+                      "oidc_policy": {
+                        "type": "object",
+                        "properties": {
+                          "audiences": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "The allowed token audiences, as specified in the 'aud' claim of federated tokens. The audience identifier is intended to represent the recipient of the token. Can be any non-empty string value. As long as the audience in the token matches at least one audience in the policy, the token is considered a match. If audiences is unspecified, defaults to your Databricks account id."
+                          },
+                          "issuer": {
+                            "type": "string",
+                            "description": "The required token issuer, as specified in the 'iss' claim of federated tokens."
+                          },
+                          "jwks_json": {
+                            "type": "string",
+                            "description": "The public keys used to validate the signature of federated tokens, in JWKS format. Most use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks automatically fetches the public keys from your issuer\u2019s well known endpoint. Databricks strongly recommends relying on your issuer\u2019s well known endpoint for discovering public keys."
+                          },
+                          "jwks_uri": {
+                            "type": "string",
+                            "description": "URL of the public keys used to validate the signature of federated tokens, in JWKS format. Most use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks automatically fetches the public keys from your issuer\u2019s well known endpoint. Databricks strongly recommends relying on your issuer\u2019s well known endpoint for discovering public keys."
+                          },
+                          "subject": {
+                            "type": "string",
+                            "description": "The required token subject, as specified in the subject claim of federated tokens. Must be specified for service principal federation policies. Must not be specified for account federation policies."
+                          },
+                          "subject_claim": {
+                            "type": "string",
+                            "description": "The claim that contains the subject of the token. If unspecified, the default value is 'sub'."
+                          }
+                        },
+                        "description": "Specifies the policy to use for validating OIDC claims in your federated tokens."
+                      },
+                      "policy_id": {
+                        "type": "string",
+                        "description": "The ID of the federation policy. Output only."
+                      },
+                      "service_principal_id": {
+                        "type": "integer",
+                        "description": "The service principal ID that this federation policy applies to. Output only. Only set for service principal federation policies."
+                      },
+                      "uid": {
+                        "type": "string",
+                        "description": "Unique, immutable id of the federation policy."
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "Last update time of the federation policy."
+                      }
+                    },
                     "description": ":param policy_id: str (optional) The identifier for the federation policy. The identifier must contain only lowercase alphanumeric characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks."
                   }
                 },
@@ -1461,7 +1715,69 @@
                 "type": "object",
                 "properties": {
                   "policy": {
-                    "$ref": "#/components/schemas/FederationPolicy",
+                    "type": "object",
+                    "properties": {
+                      "create_time": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Description of the federation policy."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Resource name for the federation policy. Example values include `accounts/<account-id>/federationPolicies/my-federation-policy` for Account Federation Policies, and `accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy` for Service Principal Federation Policies. Typically an output parameter, which does not need to be specified in create or update requests. If specified in a request, must match the value in the request URL."
+                      },
+                      "oidc_policy": {
+                        "type": "object",
+                        "properties": {
+                          "audiences": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "The allowed token audiences, as specified in the 'aud' claim of federated tokens. The audience identifier is intended to represent the recipient of the token. Can be any non-empty string value. As long as the audience in the token matches at least one audience in the policy, the token is considered a match. If audiences is unspecified, defaults to your Databricks account id."
+                          },
+                          "issuer": {
+                            "type": "string",
+                            "description": "The required token issuer, as specified in the 'iss' claim of federated tokens."
+                          },
+                          "jwks_json": {
+                            "type": "string",
+                            "description": "The public keys used to validate the signature of federated tokens, in JWKS format. Most use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks automatically fetches the public keys from your issuer\u2019s well known endpoint. Databricks strongly recommends relying on your issuer\u2019s well known endpoint for discovering public keys."
+                          },
+                          "jwks_uri": {
+                            "type": "string",
+                            "description": "URL of the public keys used to validate the signature of federated tokens, in JWKS format. Most use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks automatically fetches the public keys from your issuer\u2019s well known endpoint. Databricks strongly recommends relying on your issuer\u2019s well known endpoint for discovering public keys."
+                          },
+                          "subject": {
+                            "type": "string",
+                            "description": "The required token subject, as specified in the subject claim of federated tokens. Must be specified for service principal federation policies. Must not be specified for account federation policies."
+                          },
+                          "subject_claim": {
+                            "type": "string",
+                            "description": "The claim that contains the subject of the token. If unspecified, the default value is 'sub'."
+                          }
+                        },
+                        "description": "Specifies the policy to use for validating OIDC claims in your federated tokens."
+                      },
+                      "policy_id": {
+                        "type": "string",
+                        "description": "The ID of the federation policy. Output only."
+                      },
+                      "service_principal_id": {
+                        "type": "integer",
+                        "description": "The service principal ID that this federation policy applies to. Output only. Only set for service principal federation policies."
+                      },
+                      "uid": {
+                        "type": "string",
+                        "description": "Unique, immutable id of the federation policy."
+                      },
+                      "update_time": {
+                        "type": "string",
+                        "description": "Last update time of the federation policy."
+                      }
+                    },
                     "description": ":param update_mask: str (optional) The field mask specifies which fields of the policy to update. To specify multiple fields in the field mask, use comma as the separator (no space). The special value '*' indicates that all fields should be updated (full replacement). If unspecified, all fields that are set in the policy provided in the update request will overwrite the corresponding fields in the existing policy. Example value: 'description,oidc_policy.audiences'."
                   }
                 },

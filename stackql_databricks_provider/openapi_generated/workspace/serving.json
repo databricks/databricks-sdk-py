@@ -103,7 +103,172 @@
                     "description": "The name of the serving endpoint. This field is required and must be unique across a Databricks workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."
                   },
                   "ai_gateway": {
-                    "$ref": "#/components/schemas/AiGatewayConfig",
+                    "type": "object",
+                    "properties": {
+                      "fallback_config": {
+                        "type": "object",
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "enabled"
+                        ]
+                      },
+                      "guardrails": {
+                        "type": "object",
+                        "properties": {
+                          "input": {
+                            "type": "object",
+                            "properties": {
+                              "invalid_keywords": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "pii": {
+                                "type": "object",
+                                "properties": {
+                                  "behavior": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "BLOCK",
+                                      "MASK",
+                                      "NONE"
+                                    ],
+                                    "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                                  }
+                                },
+                                "description": "Configuration for guardrail PII filter."
+                              },
+                              "safety": {
+                                "type": "boolean",
+                                "description": "Indicates whether the safety filter is enabled."
+                              },
+                              "valid_topics": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "The list of allowed topics. Given a chat request, this guardrail flags the request if its topic is not in the allowed topics."
+                              }
+                            }
+                          },
+                          "output": {
+                            "type": "object",
+                            "properties": {
+                              "invalid_keywords": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "pii": {
+                                "type": "object",
+                                "properties": {
+                                  "behavior": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "BLOCK",
+                                      "MASK",
+                                      "NONE"
+                                    ],
+                                    "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                                  }
+                                },
+                                "description": "Configuration for guardrail PII filter."
+                              },
+                              "safety": {
+                                "type": "boolean",
+                                "description": "Indicates whether the safety filter is enabled."
+                              },
+                              "valid_topics": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "The list of allowed topics. Given a chat request, this guardrail flags the request if its topic is not in the allowed topics."
+                              }
+                            },
+                            "description": "Configuration for output guardrail filters."
+                          }
+                        },
+                        "description": "Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses."
+                      },
+                      "inference_table_config": {
+                        "type": "object",
+                        "properties": {
+                          "catalog_name": {
+                            "type": "string"
+                          },
+                          "enabled": {
+                            "type": "boolean",
+                            "description": "Indicates whether the inference table is enabled."
+                          },
+                          "schema_name": {
+                            "type": "string",
+                            "description": "The name of the schema in Unity Catalog. Required when enabling inference tables. NOTE: On update, you have to disable inference table first in order to change the schema name."
+                          },
+                          "table_name_prefix": {
+                            "type": "string",
+                            "description": "The prefix of the table in Unity Catalog. NOTE: On update, you have to disable inference table first in order to change the prefix name."
+                          }
+                        },
+                        "description": "Configuration for payload logging using inference tables. Use these tables to monitor and audit data being sent to and received from model APIs and to improve model quality."
+                      },
+                      "rate_limits": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "renewal_period": {
+                              "type": "string",
+                              "x-enum": [
+                                "minute"
+                              ],
+                              "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                            },
+                            "calls": {
+                              "type": "integer",
+                              "description": "Used to specify how many calls are allowed for a key within the renewal_period."
+                            },
+                            "key": {
+                              "type": "string",
+                              "x-enum": [
+                                "endpoint",
+                                "service_principal",
+                                "user",
+                                "user_group"
+                              ],
+                              "description": "Key field for a rate limit. Currently, 'user', 'user_group, 'service_principal', and 'endpoint' are supported, with 'endpoint' being the default if not specified."
+                            },
+                            "principal": {
+                              "type": "string",
+                              "description": "Principal field for a user, user group, or service principal to apply rate limiting to. Accepts a user email, group name, or service principal application ID."
+                            },
+                            "tokens": {
+                              "type": "integer",
+                              "description": "Used to specify how many tokens are allowed for a key within the renewal_period."
+                            }
+                          },
+                          "required": [
+                            "renewal_period"
+                          ]
+                        },
+                        "description": "Configuration for rate limits which can be set to limit endpoint traffic."
+                      },
+                      "usage_tracking_config": {
+                        "type": "object",
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean"
+                          }
+                        },
+                        "description": "Configuration to enable usage tracking using system tables. These tables allow you to monitor operational usage on endpoints and their associated costs."
+                      }
+                    },
                     "description": "The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned throughput, and pay-per-token endpoints are fully supported; agent endpoints currently only support inference tables."
                   },
                   "budget_policy_id": {
@@ -111,7 +276,481 @@
                     "description": "The budget policy to be applied to the serving endpoint."
                   },
                   "config": {
-                    "$ref": "#/components/schemas/EndpointCoreConfigInput",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "auto_capture_config": {
+                        "type": "object",
+                        "properties": {
+                          "catalog_name": {
+                            "type": "string"
+                          },
+                          "enabled": {
+                            "type": "boolean",
+                            "description": "Indicates whether the inference table is enabled."
+                          },
+                          "schema_name": {
+                            "type": "string",
+                            "description": "The name of the schema in Unity Catalog. NOTE: On update, you cannot change the schema name if the inference table is already enabled."
+                          },
+                          "table_name_prefix": {
+                            "type": "string",
+                            "description": "The prefix of the table in Unity Catalog. NOTE: On update, you cannot change the prefix name if the inference table is already enabled."
+                          }
+                        },
+                        "description": "Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or updating existing provisioned throughput endpoints that never have inference table configured; in these cases please use AI Gateway to manage inference tables."
+                      },
+                      "served_entities": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "burst_scaling_enabled": {
+                              "type": "boolean"
+                            },
+                            "entity_name": {
+                              "type": "string",
+                              "description": "The name of the entity to be served. The entity may be a model in the Databricks Model Registry, a model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC object, the full name of the object should be given in the form of **catalog_name.schema_name.model_name**."
+                            },
+                            "entity_version": {
+                              "type": "string"
+                            },
+                            "environment_vars": {
+                              "type": "object",
+                              "description": "An object containing a set of optional, user-specified environment variable key-value pairs used for serving this entity. Note: this is an experimental feature and subject to change. Example entity environment variables that refer to Databricks secrets: `{\"OPENAI_API_KEY\": \"{{secrets/my_scope/my_key}}\", \"DATABRICKS_TOKEN\": \"{{secrets/my_scope2/my_key2}}\"}`"
+                            },
+                            "external_model": {
+                              "type": "object",
+                              "properties": {
+                                "provider": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "ai21labs",
+                                    "amazon-bedrock",
+                                    "anthropic",
+                                    "cohere",
+                                    "custom",
+                                    "databricks-model-serving",
+                                    "google-cloud-vertex-ai",
+                                    "openai",
+                                    "palm"
+                                  ],
+                                  "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "The name of the external model."
+                                },
+                                "task": {
+                                  "type": "string",
+                                  "description": "The task type of the external model."
+                                },
+                                "ai21labs_config": {
+                                  "type": "object",
+                                  "properties": {
+                                    "ai21labs_api_key": {
+                                      "type": "string"
+                                    },
+                                    "ai21labs_api_key_plaintext": {
+                                      "type": "string",
+                                      "description": "An AI21 Labs API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `ai21labs_api_key`. You must provide an API key using one of the following fields: `ai21labs_api_key` or `ai21labs_api_key_plaintext`."
+                                    }
+                                  },
+                                  "description": "AI21Labs Config. Only required if the provider is 'ai21labs'."
+                                },
+                                "amazon_bedrock_config": {
+                                  "type": "object",
+                                  "properties": {
+                                    "aws_region": {
+                                      "type": "string"
+                                    },
+                                    "bedrock_provider": {
+                                      "type": "string",
+                                      "x-enum": [
+                                        "ai21labs",
+                                        "amazon",
+                                        "anthropic",
+                                        "cohere"
+                                      ],
+                                      "description": "The underlying provider in Amazon Bedrock. Supported values (case insensitive) include: Anthropic, Cohere, AI21Labs, Amazon."
+                                    },
+                                    "aws_access_key_id": {
+                                      "type": "string",
+                                      "description": "The Databricks secret key reference for an AWS access key ID with permissions to interact with Bedrock services. If you prefer to paste your API key directly, see `aws_access_key_id_plaintext`. You must provide an API key using one of the following fields: `aws_access_key_id` or `aws_access_key_id_plaintext`."
+                                    },
+                                    "aws_access_key_id_plaintext": {
+                                      "type": "string",
+                                      "description": "An AWS access key ID with permissions to interact with Bedrock services provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `aws_access_key_id`. You must provide an API key using one of the following fields: `aws_access_key_id` or `aws_access_key_id_plaintext`."
+                                    },
+                                    "aws_secret_access_key": {
+                                      "type": "string",
+                                      "description": "The Databricks secret key reference for an AWS secret access key paired with the access key ID, with permissions to interact with Bedrock services. If you prefer to paste your API key directly, see `aws_secret_access_key_plaintext`. You must provide an API key using one of the following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`."
+                                    },
+                                    "aws_secret_access_key_plaintext": {
+                                      "type": "string",
+                                      "description": "An AWS secret access key paired with the access key ID, with permissions to interact with Bedrock services provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `aws_secret_access_key`. You must provide an API key using one of the following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`."
+                                    },
+                                    "instance_profile_arn": {
+                                      "type": "string",
+                                      "description": "ARN of the instance profile that the external model will use to access AWS resources. You must authenticate using an instance profile or access keys. If you prefer to authenticate using access keys, see `aws_access_key_id`, `aws_access_key_id_plaintext`, `aws_secret_access_key` and `aws_secret_access_key_plaintext`."
+                                    }
+                                  },
+                                  "required": [
+                                    "aws_region",
+                                    "bedrock_provider"
+                                  ],
+                                  "description": "Amazon Bedrock Config. Only required if the provider is 'amazon-bedrock'."
+                                },
+                                "anthropic_config": {
+                                  "type": "object",
+                                  "properties": {
+                                    "anthropic_api_key": {
+                                      "type": "string"
+                                    },
+                                    "anthropic_api_key_plaintext": {
+                                      "type": "string",
+                                      "description": "The Anthropic API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `anthropic_api_key`. You must provide an API key using one of the following fields: `anthropic_api_key` or `anthropic_api_key_plaintext`."
+                                    }
+                                  },
+                                  "description": "Anthropic Config. Only required if the provider is 'anthropic'."
+                                },
+                                "cohere_config": {
+                                  "type": "object",
+                                  "properties": {
+                                    "cohere_api_base": {
+                                      "type": "string"
+                                    },
+                                    "cohere_api_key": {
+                                      "type": "string",
+                                      "description": "The Databricks secret key reference for a Cohere API key. If you prefer to paste your API key directly, see `cohere_api_key_plaintext`. You must provide an API key using one of the following fields: `cohere_api_key` or `cohere_api_key_plaintext`."
+                                    },
+                                    "cohere_api_key_plaintext": {
+                                      "type": "string",
+                                      "description": "The Cohere API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `cohere_api_key`. You must provide an API key using one of the following fields: `cohere_api_key` or `cohere_api_key_plaintext`."
+                                    }
+                                  },
+                                  "description": "Cohere Config. Only required if the provider is 'cohere'."
+                                },
+                                "custom_provider_config": {
+                                  "type": "object",
+                                  "properties": {
+                                    "custom_provider_url": {
+                                      "type": "string",
+                                      "description": "This is a field to provide the URL of the custom provider API."
+                                    },
+                                    "api_key_auth": {
+                                      "type": "object",
+                                      "properties": {
+                                        "key": {
+                                          "type": "string"
+                                        },
+                                        "value": {
+                                          "type": "string",
+                                          "description": "The Databricks secret key reference for an API Key. If you prefer to paste your token directly, see `value_plaintext`."
+                                        },
+                                        "value_plaintext": {
+                                          "type": "string",
+                                          "description": "The API Key provided as a plaintext string. If you prefer to reference your token using Databricks Secrets, see `value`."
+                                        }
+                                      },
+                                      "required": [
+                                        "key"
+                                      ],
+                                      "description": "This is a field to provide API key authentication for the custom provider API. You can only specify one authentication method."
+                                    },
+                                    "bearer_token_auth": {
+                                      "type": "object",
+                                      "properties": {
+                                        "token": {
+                                          "type": "string"
+                                        },
+                                        "token_plaintext": {
+                                          "type": "string",
+                                          "description": "The token provided as a plaintext string. If you prefer to reference your token using Databricks Secrets, see `token`."
+                                        }
+                                      },
+                                      "description": "This is a field to provide bearer token authentication for the custom provider API. You can only specify one authentication method."
+                                    }
+                                  },
+                                  "required": [
+                                    "custom_provider_url"
+                                  ],
+                                  "description": "Custom Provider Config. Only required if the provider is 'custom'."
+                                },
+                                "databricks_model_serving_config": {
+                                  "type": "object",
+                                  "properties": {
+                                    "databricks_workspace_url": {
+                                      "type": "string"
+                                    },
+                                    "databricks_api_token": {
+                                      "type": "string",
+                                      "description": "The Databricks secret key reference for a Databricks API token that corresponds to a user or service principal with Can Query access to the model serving endpoint pointed to by this external model. If you prefer to paste your API key directly, see `databricks_api_token_plaintext`. You must provide an API key using one of the following fields: `databricks_api_token` or `databricks_api_token_plaintext`."
+                                    },
+                                    "databricks_api_token_plaintext": {
+                                      "type": "string",
+                                      "description": "The Databricks API token that corresponds to a user or service principal with Can Query access to the model serving endpoint pointed to by this external model provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `databricks_api_token`. You must provide an API key using one of the following fields: `databricks_api_token` or `databricks_api_token_plaintext`."
+                                    }
+                                  },
+                                  "required": [
+                                    "databricks_workspace_url"
+                                  ],
+                                  "description": "Databricks Model Serving Config. Only required if the provider is 'databricks-model-serving'."
+                                },
+                                "google_cloud_vertex_ai_config": {
+                                  "type": "object",
+                                  "properties": {
+                                    "project_id": {
+                                      "type": "string"
+                                    },
+                                    "region": {
+                                      "type": "string",
+                                      "description": "This is the region for the Google Cloud Vertex AI Service. See [supported regions] for more details. Some models are only available in specific regions. [supported regions]: https://cloud.google.com/vertex-ai/docs/general/locations"
+                                    },
+                                    "private_key": {
+                                      "type": "string",
+                                      "description": "The Databricks secret key reference for a private key for the service account which has access to the Google Cloud Vertex AI Service. See [Best practices for managing service account keys]. If you prefer to paste your API key directly, see `private_key_plaintext`. You must provide an API key using one of the following fields: `private_key` or `private_key_plaintext` [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"
+                                    },
+                                    "private_key_plaintext": {
+                                      "type": "string",
+                                      "description": "The private key for the service account which has access to the Google Cloud Vertex AI Service provided as a plaintext secret. See [Best practices for managing service account keys]. If you prefer to reference your key using Databricks Secrets, see `private_key`. You must provide an API key using one of the following fields: `private_key` or `private_key_plaintext`. [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"
+                                    }
+                                  },
+                                  "required": [
+                                    "project_id",
+                                    "region"
+                                  ],
+                                  "description": "Google Cloud Vertex AI Config. Only required if the provider is 'google-cloud-vertex-ai'."
+                                },
+                                "openai_config": {
+                                  "type": "object",
+                                  "properties": {
+                                    "microsoft_entra_client_id": {
+                                      "type": "string",
+                                      "description": "This field is only required for Azure AD OpenAI and is the Microsoft Entra Client ID."
+                                    },
+                                    "microsoft_entra_client_secret": {
+                                      "type": "string",
+                                      "description": "The Databricks secret key reference for a client secret used for Microsoft Entra ID authentication. If you prefer to paste your client secret directly, see `microsoft_entra_client_secret_plaintext`. You must provide an API key using one of the following fields: `microsoft_entra_client_secret` or `microsoft_entra_client_secret_plaintext`."
+                                    },
+                                    "microsoft_entra_client_secret_plaintext": {
+                                      "type": "string",
+                                      "description": "The client secret used for Microsoft Entra ID authentication provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `microsoft_entra_client_secret`. You must provide an API key using one of the following fields: `microsoft_entra_client_secret` or `microsoft_entra_client_secret_plaintext`."
+                                    },
+                                    "microsoft_entra_tenant_id": {
+                                      "type": "string",
+                                      "description": "This field is only required for Azure AD OpenAI and is the Microsoft Entra Tenant ID."
+                                    },
+                                    "openai_api_base": {
+                                      "type": "string",
+                                      "description": "This is a field to provide a customized base URl for the OpenAI API. For Azure OpenAI, this field is required, and is the base URL for the Azure OpenAI API service provided by Azure. For other OpenAI API types, this field is optional, and if left unspecified, the standard OpenAI base URL is used."
+                                    },
+                                    "openai_api_key": {
+                                      "type": "string",
+                                      "description": "The Databricks secret key reference for an OpenAI API key using the OpenAI or Azure service. If you prefer to paste your API key directly, see `openai_api_key_plaintext`. You must provide an API key using one of the following fields: `openai_api_key` or `openai_api_key_plaintext`."
+                                    },
+                                    "openai_api_key_plaintext": {
+                                      "type": "string",
+                                      "description": "The OpenAI API key using the OpenAI or Azure service provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `openai_api_key`. You must provide an API key using one of the following fields: `openai_api_key` or `openai_api_key_plaintext`."
+                                    },
+                                    "openai_api_type": {
+                                      "type": "string",
+                                      "description": "This is an optional field to specify the type of OpenAI API to use. For Azure OpenAI, this field is required, and adjust this parameter to represent the preferred security access validation protocol. For access token validation, use azure. For authentication using Azure Active Directory (Azure AD) use, azuread."
+                                    },
+                                    "openai_api_version": {
+                                      "type": "string",
+                                      "description": "This is an optional field to specify the OpenAI API version. For Azure OpenAI, this field is required, and is the version of the Azure OpenAI service to utilize, specified by a date."
+                                    },
+                                    "openai_deployment_name": {
+                                      "type": "string",
+                                      "description": "This field is only required for Azure OpenAI and is the name of the deployment resource for the Azure OpenAI service."
+                                    },
+                                    "openai_organization": {
+                                      "type": "string",
+                                      "description": "This is an optional field to specify the organization in OpenAI or Azure OpenAI."
+                                    }
+                                  },
+                                  "description": "OpenAI Config. Only required if the provider is 'openai'."
+                                },
+                                "palm_config": {
+                                  "type": "object",
+                                  "properties": {
+                                    "palm_api_key": {
+                                      "type": "string"
+                                    },
+                                    "palm_api_key_plaintext": {
+                                      "type": "string",
+                                      "description": "The PaLM API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `palm_api_key`. You must provide an API key using one of the following fields: `palm_api_key` or `palm_api_key_plaintext`."
+                                    }
+                                  },
+                                  "description": "PaLM Config. Only required if the provider is 'palm'."
+                                }
+                              },
+                              "required": [
+                                "provider",
+                                "name",
+                                "task"
+                              ],
+                              "description": "The external model to be served. NOTE: Only one of external_model and (entity_name, entity_version, workload_size, workload_type, and scale_to_zero_enabled) can be specified with the latter set being used for custom model serving for a Databricks registered model. For an existing endpoint with external_model, it cannot be updated to an endpoint without external_model. If the endpoint is created without external_model, users cannot update it to add external_model later. The task type of all external models within an endpoint must be the same."
+                            },
+                            "instance_profile_arn": {
+                              "type": "string",
+                              "description": "ARN of the instance profile that the served entity uses to access AWS resources."
+                            },
+                            "max_provisioned_concurrency": {
+                              "type": "integer",
+                              "description": "The maximum provisioned concurrency that the endpoint can scale up to. Do not use if workload_size is specified."
+                            },
+                            "max_provisioned_throughput": {
+                              "type": "integer",
+                              "description": "The maximum tokens per second that the endpoint can scale up to."
+                            },
+                            "min_provisioned_concurrency": {
+                              "type": "integer",
+                              "description": "The minimum provisioned concurrency that the endpoint can scale down to. Do not use if workload_size is specified."
+                            },
+                            "min_provisioned_throughput": {
+                              "type": "integer",
+                              "description": "The minimum tokens per second that the endpoint can scale down to."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version."
+                            },
+                            "provisioned_model_units": {
+                              "type": "integer",
+                              "description": "The number of model units provisioned."
+                            },
+                            "scale_to_zero_enabled": {
+                              "type": "boolean",
+                              "description": "Whether the compute resources for the served entity should scale down to zero."
+                            },
+                            "workload_size": {
+                              "type": "string",
+                              "description": "The workload size of the served entity. The workload size corresponds to a range of provisioned concurrency that the compute autoscales between. A single unit of provisioned concurrency can process one request at a time. Valid workload sizes are \"Small\" (4 - 4 provisioned concurrency), \"Medium\" (8 - 16 provisioned concurrency), and \"Large\" (16 - 64 provisioned concurrency). Additional custom workload sizes can also be used when available in the workspace. If scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."
+                            },
+                            "workload_type": {
+                              "type": "string",
+                              "x-enum": [
+                                "CPU",
+                                "GPU_LARGE",
+                                "GPU_MEDIUM",
+                                "GPU_SMALL",
+                                "MULTIGPU_MEDIUM"
+                              ],
+                              "description": "The workload type of the served entity. The workload type selects which type of compute to use in the endpoint. The default value for this parameter is \"CPU\". For deep learning workloads, GPU acceleration is available by selecting workload types like GPU_SMALL and others. See the available [GPU types]. [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"
+                            }
+                          }
+                        },
+                        "description": "The list of served entities under the serving endpoint config."
+                      },
+                      "served_models": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "scale_to_zero_enabled": {
+                              "type": "boolean"
+                            },
+                            "model_name": {
+                              "type": "string"
+                            },
+                            "model_version": {
+                              "type": "string"
+                            },
+                            "burst_scaling_enabled": {
+                              "type": "boolean",
+                              "description": "Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains fixed capacity at provisioned_model_units."
+                            },
+                            "environment_vars": {
+                              "type": "object",
+                              "description": "An object containing a set of optional, user-specified environment variable key-value pairs used for serving this entity. Note: this is an experimental feature and subject to change. Example entity environment variables that refer to Databricks secrets: `{\"OPENAI_API_KEY\": \"{{secrets/my_scope/my_key}}\", \"DATABRICKS_TOKEN\": \"{{secrets/my_scope2/my_key2}}\"}`"
+                            },
+                            "instance_profile_arn": {
+                              "type": "string",
+                              "description": "ARN of the instance profile that the served entity uses to access AWS resources."
+                            },
+                            "max_provisioned_concurrency": {
+                              "type": "integer",
+                              "description": "The maximum provisioned concurrency that the endpoint can scale up to. Do not use if workload_size is specified."
+                            },
+                            "max_provisioned_throughput": {
+                              "type": "integer",
+                              "description": "The maximum tokens per second that the endpoint can scale up to."
+                            },
+                            "min_provisioned_concurrency": {
+                              "type": "integer",
+                              "description": "The minimum provisioned concurrency that the endpoint can scale down to. Do not use if workload_size is specified."
+                            },
+                            "min_provisioned_throughput": {
+                              "type": "integer",
+                              "description": "The minimum tokens per second that the endpoint can scale down to."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version."
+                            },
+                            "provisioned_model_units": {
+                              "type": "integer",
+                              "description": "The number of model units provisioned."
+                            },
+                            "workload_size": {
+                              "type": "string",
+                              "description": "The workload size of the served entity. The workload size corresponds to a range of provisioned concurrency that the compute autoscales between. A single unit of provisioned concurrency can process one request at a time. Valid workload sizes are \"Small\" (4 - 4 provisioned concurrency), \"Medium\" (8 - 16 provisioned concurrency), and \"Large\" (16 - 64 provisioned concurrency). Additional custom workload sizes can also be used when available in the workspace. If scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."
+                            },
+                            "workload_type": {
+                              "type": "string",
+                              "x-enum": [
+                                "CPU",
+                                "GPU_LARGE",
+                                "GPU_MEDIUM",
+                                "GPU_SMALL",
+                                "MULTIGPU_MEDIUM"
+                              ],
+                              "description": "The workload type of the served entity. The workload type selects which type of compute to use in the endpoint. The default value for this parameter is \"CPU\". For deep learning workloads, GPU acceleration is available by selecting workload types like GPU_SMALL and others. See the available [GPU types]. [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"
+                            }
+                          },
+                          "required": [
+                            "scale_to_zero_enabled",
+                            "model_name",
+                            "model_version"
+                          ]
+                        },
+                        "description": "(Deprecated, use served_entities instead) The list of served models under the serving endpoint config."
+                      },
+                      "traffic_config": {
+                        "type": "object",
+                        "properties": {
+                          "routes": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "traffic_percentage": {
+                                  "type": "integer"
+                                },
+                                "served_entity_name": {
+                                  "type": "string"
+                                },
+                                "served_model_name": {
+                                  "type": "string",
+                                  "description": "The name of the served model this route configures traffic for."
+                                }
+                              },
+                              "required": [
+                                "traffic_percentage"
+                              ]
+                            }
+                          }
+                        },
+                        "description": "The traffic configuration associated with the serving endpoint config."
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
                     "description": "The core config of the serving endpoint."
                   },
                   "description": {
@@ -119,12 +758,51 @@
                     "description": ":param email_notifications: :class:`EmailNotifications` (optional) Email notification settings."
                   },
                   "email_notifications": {
-                    "$ref": "#/components/schemas/EmailNotifications"
+                    "type": "object",
+                    "properties": {
+                      "on_update_failure": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "on_update_success": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "A list of email addresses to be notified when an endpoint successfully updates its configuration or state."
+                      }
+                    }
                   },
                   "rate_limits": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/RateLimit"
+                      "type": "object",
+                      "properties": {
+                        "calls": {
+                          "type": "integer"
+                        },
+                        "renewal_period": {
+                          "type": "string",
+                          "x-enum": [
+                            "minute"
+                          ],
+                          "description": "Renewal period field for a serving endpoint rate limit. Currently, only 'minute' is supported."
+                        },
+                        "key": {
+                          "type": "string",
+                          "x-enum": [
+                            "endpoint",
+                            "user"
+                          ],
+                          "description": "Key field for a serving endpoint rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint' being the default if not specified."
+                        }
+                      },
+                      "required": [
+                        "calls",
+                        "renewal_period"
+                      ]
                     },
                     "description": "Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI Gateway to manage rate limits."
                   },
@@ -135,7 +813,19 @@
                   "tags": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/EndpointTag"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "Optional value field for a serving endpoint tag."
+                        }
+                      },
+                      "required": [
+                        "key"
+                      ]
                     },
                     "description": "Tags to be attached to the serving endpoint and automatically propagated to billing logs."
                   }
@@ -240,11 +930,234 @@
                     "description": "The name of the serving endpoint. This field is required and must be unique across a Databricks workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."
                   },
                   "config": {
-                    "$ref": "#/components/schemas/PtEndpointCoreConfig",
+                    "type": "object",
+                    "properties": {
+                      "served_entities": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "entity_name": {
+                              "type": "string"
+                            },
+                            "provisioned_model_units": {
+                              "type": "integer",
+                              "description": "The number of model units to be provisioned."
+                            },
+                            "burst_scaling_enabled": {
+                              "type": "boolean",
+                              "description": "Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains fixed capacity at provisioned_model_units."
+                            },
+                            "entity_version": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version."
+                            }
+                          },
+                          "required": [
+                            "entity_name",
+                            "provisioned_model_units"
+                          ]
+                        }
+                      },
+                      "traffic_config": {
+                        "type": "object",
+                        "properties": {
+                          "routes": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "traffic_percentage": {
+                                  "type": "integer"
+                                },
+                                "served_entity_name": {
+                                  "type": "string"
+                                },
+                                "served_model_name": {
+                                  "type": "string",
+                                  "description": "The name of the served model this route configures traffic for."
+                                }
+                              },
+                              "required": [
+                                "traffic_percentage"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    },
                     "description": "The core config of the serving endpoint."
                   },
                   "ai_gateway": {
-                    "$ref": "#/components/schemas/AiGatewayConfig",
+                    "type": "object",
+                    "properties": {
+                      "fallback_config": {
+                        "type": "object",
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "enabled"
+                        ]
+                      },
+                      "guardrails": {
+                        "type": "object",
+                        "properties": {
+                          "input": {
+                            "type": "object",
+                            "properties": {
+                              "invalid_keywords": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "pii": {
+                                "type": "object",
+                                "properties": {
+                                  "behavior": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "BLOCK",
+                                      "MASK",
+                                      "NONE"
+                                    ],
+                                    "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                                  }
+                                },
+                                "description": "Configuration for guardrail PII filter."
+                              },
+                              "safety": {
+                                "type": "boolean",
+                                "description": "Indicates whether the safety filter is enabled."
+                              },
+                              "valid_topics": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "The list of allowed topics. Given a chat request, this guardrail flags the request if its topic is not in the allowed topics."
+                              }
+                            }
+                          },
+                          "output": {
+                            "type": "object",
+                            "properties": {
+                              "invalid_keywords": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "pii": {
+                                "type": "object",
+                                "properties": {
+                                  "behavior": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "BLOCK",
+                                      "MASK",
+                                      "NONE"
+                                    ],
+                                    "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                                  }
+                                },
+                                "description": "Configuration for guardrail PII filter."
+                              },
+                              "safety": {
+                                "type": "boolean",
+                                "description": "Indicates whether the safety filter is enabled."
+                              },
+                              "valid_topics": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "The list of allowed topics. Given a chat request, this guardrail flags the request if its topic is not in the allowed topics."
+                              }
+                            },
+                            "description": "Configuration for output guardrail filters."
+                          }
+                        },
+                        "description": "Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses."
+                      },
+                      "inference_table_config": {
+                        "type": "object",
+                        "properties": {
+                          "catalog_name": {
+                            "type": "string"
+                          },
+                          "enabled": {
+                            "type": "boolean",
+                            "description": "Indicates whether the inference table is enabled."
+                          },
+                          "schema_name": {
+                            "type": "string",
+                            "description": "The name of the schema in Unity Catalog. Required when enabling inference tables. NOTE: On update, you have to disable inference table first in order to change the schema name."
+                          },
+                          "table_name_prefix": {
+                            "type": "string",
+                            "description": "The prefix of the table in Unity Catalog. NOTE: On update, you have to disable inference table first in order to change the prefix name."
+                          }
+                        },
+                        "description": "Configuration for payload logging using inference tables. Use these tables to monitor and audit data being sent to and received from model APIs and to improve model quality."
+                      },
+                      "rate_limits": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "renewal_period": {
+                              "type": "string",
+                              "x-enum": [
+                                "minute"
+                              ],
+                              "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                            },
+                            "calls": {
+                              "type": "integer",
+                              "description": "Used to specify how many calls are allowed for a key within the renewal_period."
+                            },
+                            "key": {
+                              "type": "string",
+                              "x-enum": [
+                                "endpoint",
+                                "service_principal",
+                                "user",
+                                "user_group"
+                              ],
+                              "description": "Key field for a rate limit. Currently, 'user', 'user_group, 'service_principal', and 'endpoint' are supported, with 'endpoint' being the default if not specified."
+                            },
+                            "principal": {
+                              "type": "string",
+                              "description": "Principal field for a user, user group, or service principal to apply rate limiting to. Accepts a user email, group name, or service principal application ID."
+                            },
+                            "tokens": {
+                              "type": "integer",
+                              "description": "Used to specify how many tokens are allowed for a key within the renewal_period."
+                            }
+                          },
+                          "required": [
+                            "renewal_period"
+                          ]
+                        },
+                        "description": "Configuration for rate limits which can be set to limit endpoint traffic."
+                      },
+                      "usage_tracking_config": {
+                        "type": "object",
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean"
+                          }
+                        },
+                        "description": "Configuration to enable usage tracking using system tables. These tables allow you to monitor operational usage on endpoints and their associated costs."
+                      }
+                    },
                     "description": "The AI Gateway configuration for the serving endpoint."
                   },
                   "budget_policy_id": {
@@ -252,13 +1165,40 @@
                     "description": "The budget policy associated with the endpoint."
                   },
                   "email_notifications": {
-                    "$ref": "#/components/schemas/EmailNotifications",
+                    "type": "object",
+                    "properties": {
+                      "on_update_failure": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "on_update_success": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "A list of email addresses to be notified when an endpoint successfully updates its configuration or state."
+                      }
+                    },
                     "description": "Email notification settings."
                   },
                   "tags": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/EndpointTag"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "Optional value field for a serving endpoint tag."
+                        }
+                      },
+                      "required": [
+                        "key"
+                      ]
                     },
                     "description": "Tags to be attached to the serving endpoint and automatically propagated to billing logs."
                   }
@@ -650,7 +1590,29 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ServingEndpointAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_MANAGE",
+                            "CAN_QUERY",
+                            "CAN_VIEW"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`ServingEndpointPermissions`"
                   }
@@ -719,7 +1681,29 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ServingEndpointAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_MANAGE",
+                            "CAN_QUERY",
+                            "CAN_VIEW"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`ServingEndpointPermissions`"
                   }
@@ -781,7 +1765,14 @@
                     "description": "The connection name to use. This is required to identify the external connection."
                   },
                   "method": {
-                    "$ref": "#/components/schemas/ExternalFunctionRequestHttpMethod",
+                    "type": "string",
+                    "x-enum": [
+                      "DELETE",
+                      "GET",
+                      "PATCH",
+                      "POST",
+                      "PUT"
+                    ],
                     "description": "The HTTP method to use (e.g., 'GET', 'POST')."
                   },
                   "path": {
@@ -935,7 +1926,19 @@
                   "add_tags": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/EndpointTag"
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "Optional value field for a serving endpoint tag."
+                        }
+                      },
+                      "required": [
+                        "key"
+                      ]
                     },
                     "description": "List of endpoint tags to add"
                   },
@@ -1013,7 +2016,31 @@
                   "rate_limits": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/RateLimit"
+                      "type": "object",
+                      "properties": {
+                        "calls": {
+                          "type": "integer"
+                        },
+                        "renewal_period": {
+                          "type": "string",
+                          "x-enum": [
+                            "minute"
+                          ],
+                          "description": "Renewal period field for a serving endpoint rate limit. Currently, only 'minute' is supported."
+                        },
+                        "key": {
+                          "type": "string",
+                          "x-enum": [
+                            "endpoint",
+                            "user"
+                          ],
+                          "description": "Key field for a serving endpoint rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint' being the default if not specified."
+                        }
+                      },
+                      "required": [
+                        "calls",
+                        "renewal_period"
+                      ]
                     },
                     "description": "The list of endpoint rate limits."
                   }
@@ -1082,26 +2109,167 @@
                 "type": "object",
                 "properties": {
                   "fallback_config": {
-                    "$ref": "#/components/schemas/FallbackConfig",
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "enabled"
+                    ],
                     "description": "Configuration for traffic fallback which auto fallbacks to other served entities if the request to a served entity fails with certain error codes, to increase availability."
                   },
                   "guardrails": {
-                    "$ref": "#/components/schemas/AiGatewayGuardrails",
+                    "type": "object",
+                    "properties": {
+                      "input": {
+                        "type": "object",
+                        "properties": {
+                          "invalid_keywords": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "pii": {
+                            "type": "object",
+                            "properties": {
+                              "behavior": {
+                                "type": "string",
+                                "x-enum": [
+                                  "BLOCK",
+                                  "MASK",
+                                  "NONE"
+                                ],
+                                "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                              }
+                            },
+                            "description": "Configuration for guardrail PII filter."
+                          },
+                          "safety": {
+                            "type": "boolean",
+                            "description": "Indicates whether the safety filter is enabled."
+                          },
+                          "valid_topics": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "The list of allowed topics. Given a chat request, this guardrail flags the request if its topic is not in the allowed topics."
+                          }
+                        }
+                      },
+                      "output": {
+                        "type": "object",
+                        "properties": {
+                          "invalid_keywords": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "pii": {
+                            "type": "object",
+                            "properties": {
+                              "behavior": {
+                                "type": "string",
+                                "x-enum": [
+                                  "BLOCK",
+                                  "MASK",
+                                  "NONE"
+                                ],
+                                "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                              }
+                            },
+                            "description": "Configuration for guardrail PII filter."
+                          },
+                          "safety": {
+                            "type": "boolean",
+                            "description": "Indicates whether the safety filter is enabled."
+                          },
+                          "valid_topics": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "The list of allowed topics. Given a chat request, this guardrail flags the request if its topic is not in the allowed topics."
+                          }
+                        },
+                        "description": "Configuration for output guardrail filters."
+                      }
+                    },
                     "description": "Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses."
                   },
                   "inference_table_config": {
-                    "$ref": "#/components/schemas/AiGatewayInferenceTableConfig",
+                    "type": "object",
+                    "properties": {
+                      "catalog_name": {
+                        "type": "string"
+                      },
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Indicates whether the inference table is enabled."
+                      },
+                      "schema_name": {
+                        "type": "string",
+                        "description": "The name of the schema in Unity Catalog. Required when enabling inference tables. NOTE: On update, you have to disable inference table first in order to change the schema name."
+                      },
+                      "table_name_prefix": {
+                        "type": "string",
+                        "description": "The prefix of the table in Unity Catalog. NOTE: On update, you have to disable inference table first in order to change the prefix name."
+                      }
+                    },
                     "description": "Configuration for payload logging using inference tables. Use these tables to monitor and audit data being sent to and received from model APIs and to improve model quality."
                   },
                   "rate_limits": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/AiGatewayRateLimit"
+                      "type": "object",
+                      "properties": {
+                        "renewal_period": {
+                          "type": "string",
+                          "x-enum": [
+                            "minute"
+                          ],
+                          "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                        },
+                        "calls": {
+                          "type": "integer",
+                          "description": "Used to specify how many calls are allowed for a key within the renewal_period."
+                        },
+                        "key": {
+                          "type": "string",
+                          "x-enum": [
+                            "endpoint",
+                            "service_principal",
+                            "user",
+                            "user_group"
+                          ],
+                          "description": "Key field for a rate limit. Currently, 'user', 'user_group, 'service_principal', and 'endpoint' are supported, with 'endpoint' being the default if not specified."
+                        },
+                        "principal": {
+                          "type": "string",
+                          "description": "Principal field for a user, user group, or service principal to apply rate limiting to. Accepts a user email, group name, or service principal application ID."
+                        },
+                        "tokens": {
+                          "type": "integer",
+                          "description": "Used to specify how many tokens are allowed for a key within the renewal_period."
+                        }
+                      },
+                      "required": [
+                        "renewal_period"
+                      ]
                     },
                     "description": "Configuration for rate limits which can be set to limit endpoint traffic."
                   },
                   "usage_tracking_config": {
-                    "$ref": "#/components/schemas/AiGatewayUsageTrackingConfig",
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean"
+                      }
+                    },
                     "description": "Configuration to enable usage tracking using system tables. These tables allow you to monitor operational usage on endpoints and their associated costs."
                   }
                 }
@@ -1180,7 +2348,29 @@
                     "description": "Pandas Dataframe input in the records orientation."
                   },
                   "dataframe_split": {
-                    "$ref": "#/components/schemas/DataframeSplitInput",
+                    "type": "object",
+                    "properties": {
+                      "columns": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        },
+                        "description": "Data array for the dataframe"
+                      },
+                      "index": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        },
+                        "description": "Index array for the dataframe"
+                      }
+                    },
                     "description": "Pandas Dataframe input in the split orientation."
                   },
                   "extra_params": {
@@ -1209,7 +2399,21 @@
                   "messages": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ChatMessage"
+                      "type": "object",
+                      "properties": {
+                        "content": {
+                          "type": "string"
+                        },
+                        "role": {
+                          "type": "string",
+                          "x-enum": [
+                            "assistant",
+                            "system",
+                            "user"
+                          ],
+                          "description": "The role of the message. One of [system, user, assistant]."
+                        }
+                      }
                     },
                     "description": "The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an array of ChatMessage objects and should only be used with other chat query fields."
                   },
@@ -1305,25 +2509,469 @@
                 "type": "object",
                 "properties": {
                   "auto_capture_config": {
-                    "$ref": "#/components/schemas/AutoCaptureConfigInput",
+                    "type": "object",
+                    "properties": {
+                      "catalog_name": {
+                        "type": "string"
+                      },
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Indicates whether the inference table is enabled."
+                      },
+                      "schema_name": {
+                        "type": "string",
+                        "description": "The name of the schema in Unity Catalog. NOTE: On update, you cannot change the schema name if the inference table is already enabled."
+                      },
+                      "table_name_prefix": {
+                        "type": "string",
+                        "description": "The prefix of the table in Unity Catalog. NOTE: On update, you cannot change the prefix name if the inference table is already enabled."
+                      }
+                    },
                     "description": "Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or updating existing provisioned throughput endpoints that never have inference table configured; in these cases please use AI Gateway to manage inference tables."
                   },
                   "served_entities": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ServedEntityInput"
+                      "type": "object",
+                      "properties": {
+                        "burst_scaling_enabled": {
+                          "type": "boolean"
+                        },
+                        "entity_name": {
+                          "type": "string",
+                          "description": "The name of the entity to be served. The entity may be a model in the Databricks Model Registry, a model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC object, the full name of the object should be given in the form of **catalog_name.schema_name.model_name**."
+                        },
+                        "entity_version": {
+                          "type": "string"
+                        },
+                        "environment_vars": {
+                          "type": "object",
+                          "description": "An object containing a set of optional, user-specified environment variable key-value pairs used for serving this entity. Note: this is an experimental feature and subject to change. Example entity environment variables that refer to Databricks secrets: `{\"OPENAI_API_KEY\": \"{{secrets/my_scope/my_key}}\", \"DATABRICKS_TOKEN\": \"{{secrets/my_scope2/my_key2}}\"}`"
+                        },
+                        "external_model": {
+                          "type": "object",
+                          "properties": {
+                            "provider": {
+                              "type": "string",
+                              "x-enum": [
+                                "ai21labs",
+                                "amazon-bedrock",
+                                "anthropic",
+                                "cohere",
+                                "custom",
+                                "databricks-model-serving",
+                                "google-cloud-vertex-ai",
+                                "openai",
+                                "palm"
+                              ],
+                              "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "The name of the external model."
+                            },
+                            "task": {
+                              "type": "string",
+                              "description": "The task type of the external model."
+                            },
+                            "ai21labs_config": {
+                              "type": "object",
+                              "properties": {
+                                "ai21labs_api_key": {
+                                  "type": "string"
+                                },
+                                "ai21labs_api_key_plaintext": {
+                                  "type": "string",
+                                  "description": "An AI21 Labs API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `ai21labs_api_key`. You must provide an API key using one of the following fields: `ai21labs_api_key` or `ai21labs_api_key_plaintext`."
+                                }
+                              },
+                              "description": "AI21Labs Config. Only required if the provider is 'ai21labs'."
+                            },
+                            "amazon_bedrock_config": {
+                              "type": "object",
+                              "properties": {
+                                "aws_region": {
+                                  "type": "string"
+                                },
+                                "bedrock_provider": {
+                                  "type": "string",
+                                  "x-enum": [
+                                    "ai21labs",
+                                    "amazon",
+                                    "anthropic",
+                                    "cohere"
+                                  ],
+                                  "description": "The underlying provider in Amazon Bedrock. Supported values (case insensitive) include: Anthropic, Cohere, AI21Labs, Amazon."
+                                },
+                                "aws_access_key_id": {
+                                  "type": "string",
+                                  "description": "The Databricks secret key reference for an AWS access key ID with permissions to interact with Bedrock services. If you prefer to paste your API key directly, see `aws_access_key_id_plaintext`. You must provide an API key using one of the following fields: `aws_access_key_id` or `aws_access_key_id_plaintext`."
+                                },
+                                "aws_access_key_id_plaintext": {
+                                  "type": "string",
+                                  "description": "An AWS access key ID with permissions to interact with Bedrock services provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `aws_access_key_id`. You must provide an API key using one of the following fields: `aws_access_key_id` or `aws_access_key_id_plaintext`."
+                                },
+                                "aws_secret_access_key": {
+                                  "type": "string",
+                                  "description": "The Databricks secret key reference for an AWS secret access key paired with the access key ID, with permissions to interact with Bedrock services. If you prefer to paste your API key directly, see `aws_secret_access_key_plaintext`. You must provide an API key using one of the following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`."
+                                },
+                                "aws_secret_access_key_plaintext": {
+                                  "type": "string",
+                                  "description": "An AWS secret access key paired with the access key ID, with permissions to interact with Bedrock services provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `aws_secret_access_key`. You must provide an API key using one of the following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`."
+                                },
+                                "instance_profile_arn": {
+                                  "type": "string",
+                                  "description": "ARN of the instance profile that the external model will use to access AWS resources. You must authenticate using an instance profile or access keys. If you prefer to authenticate using access keys, see `aws_access_key_id`, `aws_access_key_id_plaintext`, `aws_secret_access_key` and `aws_secret_access_key_plaintext`."
+                                }
+                              },
+                              "required": [
+                                "aws_region",
+                                "bedrock_provider"
+                              ],
+                              "description": "Amazon Bedrock Config. Only required if the provider is 'amazon-bedrock'."
+                            },
+                            "anthropic_config": {
+                              "type": "object",
+                              "properties": {
+                                "anthropic_api_key": {
+                                  "type": "string"
+                                },
+                                "anthropic_api_key_plaintext": {
+                                  "type": "string",
+                                  "description": "The Anthropic API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `anthropic_api_key`. You must provide an API key using one of the following fields: `anthropic_api_key` or `anthropic_api_key_plaintext`."
+                                }
+                              },
+                              "description": "Anthropic Config. Only required if the provider is 'anthropic'."
+                            },
+                            "cohere_config": {
+                              "type": "object",
+                              "properties": {
+                                "cohere_api_base": {
+                                  "type": "string"
+                                },
+                                "cohere_api_key": {
+                                  "type": "string",
+                                  "description": "The Databricks secret key reference for a Cohere API key. If you prefer to paste your API key directly, see `cohere_api_key_plaintext`. You must provide an API key using one of the following fields: `cohere_api_key` or `cohere_api_key_plaintext`."
+                                },
+                                "cohere_api_key_plaintext": {
+                                  "type": "string",
+                                  "description": "The Cohere API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `cohere_api_key`. You must provide an API key using one of the following fields: `cohere_api_key` or `cohere_api_key_plaintext`."
+                                }
+                              },
+                              "description": "Cohere Config. Only required if the provider is 'cohere'."
+                            },
+                            "custom_provider_config": {
+                              "type": "object",
+                              "properties": {
+                                "custom_provider_url": {
+                                  "type": "string",
+                                  "description": "This is a field to provide the URL of the custom provider API."
+                                },
+                                "api_key_auth": {
+                                  "type": "object",
+                                  "properties": {
+                                    "key": {
+                                      "type": "string"
+                                    },
+                                    "value": {
+                                      "type": "string",
+                                      "description": "The Databricks secret key reference for an API Key. If you prefer to paste your token directly, see `value_plaintext`."
+                                    },
+                                    "value_plaintext": {
+                                      "type": "string",
+                                      "description": "The API Key provided as a plaintext string. If you prefer to reference your token using Databricks Secrets, see `value`."
+                                    }
+                                  },
+                                  "required": [
+                                    "key"
+                                  ],
+                                  "description": "This is a field to provide API key authentication for the custom provider API. You can only specify one authentication method."
+                                },
+                                "bearer_token_auth": {
+                                  "type": "object",
+                                  "properties": {
+                                    "token": {
+                                      "type": "string"
+                                    },
+                                    "token_plaintext": {
+                                      "type": "string",
+                                      "description": "The token provided as a plaintext string. If you prefer to reference your token using Databricks Secrets, see `token`."
+                                    }
+                                  },
+                                  "description": "This is a field to provide bearer token authentication for the custom provider API. You can only specify one authentication method."
+                                }
+                              },
+                              "required": [
+                                "custom_provider_url"
+                              ],
+                              "description": "Custom Provider Config. Only required if the provider is 'custom'."
+                            },
+                            "databricks_model_serving_config": {
+                              "type": "object",
+                              "properties": {
+                                "databricks_workspace_url": {
+                                  "type": "string"
+                                },
+                                "databricks_api_token": {
+                                  "type": "string",
+                                  "description": "The Databricks secret key reference for a Databricks API token that corresponds to a user or service principal with Can Query access to the model serving endpoint pointed to by this external model. If you prefer to paste your API key directly, see `databricks_api_token_plaintext`. You must provide an API key using one of the following fields: `databricks_api_token` or `databricks_api_token_plaintext`."
+                                },
+                                "databricks_api_token_plaintext": {
+                                  "type": "string",
+                                  "description": "The Databricks API token that corresponds to a user or service principal with Can Query access to the model serving endpoint pointed to by this external model provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `databricks_api_token`. You must provide an API key using one of the following fields: `databricks_api_token` or `databricks_api_token_plaintext`."
+                                }
+                              },
+                              "required": [
+                                "databricks_workspace_url"
+                              ],
+                              "description": "Databricks Model Serving Config. Only required if the provider is 'databricks-model-serving'."
+                            },
+                            "google_cloud_vertex_ai_config": {
+                              "type": "object",
+                              "properties": {
+                                "project_id": {
+                                  "type": "string"
+                                },
+                                "region": {
+                                  "type": "string",
+                                  "description": "This is the region for the Google Cloud Vertex AI Service. See [supported regions] for more details. Some models are only available in specific regions. [supported regions]: https://cloud.google.com/vertex-ai/docs/general/locations"
+                                },
+                                "private_key": {
+                                  "type": "string",
+                                  "description": "The Databricks secret key reference for a private key for the service account which has access to the Google Cloud Vertex AI Service. See [Best practices for managing service account keys]. If you prefer to paste your API key directly, see `private_key_plaintext`. You must provide an API key using one of the following fields: `private_key` or `private_key_plaintext` [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"
+                                },
+                                "private_key_plaintext": {
+                                  "type": "string",
+                                  "description": "The private key for the service account which has access to the Google Cloud Vertex AI Service provided as a plaintext secret. See [Best practices for managing service account keys]. If you prefer to reference your key using Databricks Secrets, see `private_key`. You must provide an API key using one of the following fields: `private_key` or `private_key_plaintext`. [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"
+                                }
+                              },
+                              "required": [
+                                "project_id",
+                                "region"
+                              ],
+                              "description": "Google Cloud Vertex AI Config. Only required if the provider is 'google-cloud-vertex-ai'."
+                            },
+                            "openai_config": {
+                              "type": "object",
+                              "properties": {
+                                "microsoft_entra_client_id": {
+                                  "type": "string",
+                                  "description": "This field is only required for Azure AD OpenAI and is the Microsoft Entra Client ID."
+                                },
+                                "microsoft_entra_client_secret": {
+                                  "type": "string",
+                                  "description": "The Databricks secret key reference for a client secret used for Microsoft Entra ID authentication. If you prefer to paste your client secret directly, see `microsoft_entra_client_secret_plaintext`. You must provide an API key using one of the following fields: `microsoft_entra_client_secret` or `microsoft_entra_client_secret_plaintext`."
+                                },
+                                "microsoft_entra_client_secret_plaintext": {
+                                  "type": "string",
+                                  "description": "The client secret used for Microsoft Entra ID authentication provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `microsoft_entra_client_secret`. You must provide an API key using one of the following fields: `microsoft_entra_client_secret` or `microsoft_entra_client_secret_plaintext`."
+                                },
+                                "microsoft_entra_tenant_id": {
+                                  "type": "string",
+                                  "description": "This field is only required for Azure AD OpenAI and is the Microsoft Entra Tenant ID."
+                                },
+                                "openai_api_base": {
+                                  "type": "string",
+                                  "description": "This is a field to provide a customized base URl for the OpenAI API. For Azure OpenAI, this field is required, and is the base URL for the Azure OpenAI API service provided by Azure. For other OpenAI API types, this field is optional, and if left unspecified, the standard OpenAI base URL is used."
+                                },
+                                "openai_api_key": {
+                                  "type": "string",
+                                  "description": "The Databricks secret key reference for an OpenAI API key using the OpenAI or Azure service. If you prefer to paste your API key directly, see `openai_api_key_plaintext`. You must provide an API key using one of the following fields: `openai_api_key` or `openai_api_key_plaintext`."
+                                },
+                                "openai_api_key_plaintext": {
+                                  "type": "string",
+                                  "description": "The OpenAI API key using the OpenAI or Azure service provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `openai_api_key`. You must provide an API key using one of the following fields: `openai_api_key` or `openai_api_key_plaintext`."
+                                },
+                                "openai_api_type": {
+                                  "type": "string",
+                                  "description": "This is an optional field to specify the type of OpenAI API to use. For Azure OpenAI, this field is required, and adjust this parameter to represent the preferred security access validation protocol. For access token validation, use azure. For authentication using Azure Active Directory (Azure AD) use, azuread."
+                                },
+                                "openai_api_version": {
+                                  "type": "string",
+                                  "description": "This is an optional field to specify the OpenAI API version. For Azure OpenAI, this field is required, and is the version of the Azure OpenAI service to utilize, specified by a date."
+                                },
+                                "openai_deployment_name": {
+                                  "type": "string",
+                                  "description": "This field is only required for Azure OpenAI and is the name of the deployment resource for the Azure OpenAI service."
+                                },
+                                "openai_organization": {
+                                  "type": "string",
+                                  "description": "This is an optional field to specify the organization in OpenAI or Azure OpenAI."
+                                }
+                              },
+                              "description": "OpenAI Config. Only required if the provider is 'openai'."
+                            },
+                            "palm_config": {
+                              "type": "object",
+                              "properties": {
+                                "palm_api_key": {
+                                  "type": "string"
+                                },
+                                "palm_api_key_plaintext": {
+                                  "type": "string",
+                                  "description": "The PaLM API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `palm_api_key`. You must provide an API key using one of the following fields: `palm_api_key` or `palm_api_key_plaintext`."
+                                }
+                              },
+                              "description": "PaLM Config. Only required if the provider is 'palm'."
+                            }
+                          },
+                          "required": [
+                            "provider",
+                            "name",
+                            "task"
+                          ],
+                          "description": "The external model to be served. NOTE: Only one of external_model and (entity_name, entity_version, workload_size, workload_type, and scale_to_zero_enabled) can be specified with the latter set being used for custom model serving for a Databricks registered model. For an existing endpoint with external_model, it cannot be updated to an endpoint without external_model. If the endpoint is created without external_model, users cannot update it to add external_model later. The task type of all external models within an endpoint must be the same."
+                        },
+                        "instance_profile_arn": {
+                          "type": "string",
+                          "description": "ARN of the instance profile that the served entity uses to access AWS resources."
+                        },
+                        "max_provisioned_concurrency": {
+                          "type": "integer",
+                          "description": "The maximum provisioned concurrency that the endpoint can scale up to. Do not use if workload_size is specified."
+                        },
+                        "max_provisioned_throughput": {
+                          "type": "integer",
+                          "description": "The maximum tokens per second that the endpoint can scale up to."
+                        },
+                        "min_provisioned_concurrency": {
+                          "type": "integer",
+                          "description": "The minimum provisioned concurrency that the endpoint can scale down to. Do not use if workload_size is specified."
+                        },
+                        "min_provisioned_throughput": {
+                          "type": "integer",
+                          "description": "The minimum tokens per second that the endpoint can scale down to."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version."
+                        },
+                        "provisioned_model_units": {
+                          "type": "integer",
+                          "description": "The number of model units provisioned."
+                        },
+                        "scale_to_zero_enabled": {
+                          "type": "boolean",
+                          "description": "Whether the compute resources for the served entity should scale down to zero."
+                        },
+                        "workload_size": {
+                          "type": "string",
+                          "description": "The workload size of the served entity. The workload size corresponds to a range of provisioned concurrency that the compute autoscales between. A single unit of provisioned concurrency can process one request at a time. Valid workload sizes are \"Small\" (4 - 4 provisioned concurrency), \"Medium\" (8 - 16 provisioned concurrency), and \"Large\" (16 - 64 provisioned concurrency). Additional custom workload sizes can also be used when available in the workspace. If scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."
+                        },
+                        "workload_type": {
+                          "type": "string",
+                          "x-enum": [
+                            "CPU",
+                            "GPU_LARGE",
+                            "GPU_MEDIUM",
+                            "GPU_SMALL",
+                            "MULTIGPU_MEDIUM"
+                          ],
+                          "description": "The workload type of the served entity. The workload type selects which type of compute to use in the endpoint. The default value for this parameter is \"CPU\". For deep learning workloads, GPU acceleration is available by selecting workload types like GPU_SMALL and others. See the available [GPU types]. [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"
+                        }
+                      }
                     },
                     "description": "The list of served entities under the serving endpoint config."
                   },
                   "served_models": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ServedModelInput"
+                      "type": "object",
+                      "properties": {
+                        "scale_to_zero_enabled": {
+                          "type": "boolean"
+                        },
+                        "model_name": {
+                          "type": "string"
+                        },
+                        "model_version": {
+                          "type": "string"
+                        },
+                        "burst_scaling_enabled": {
+                          "type": "boolean",
+                          "description": "Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains fixed capacity at provisioned_model_units."
+                        },
+                        "environment_vars": {
+                          "type": "object",
+                          "description": "An object containing a set of optional, user-specified environment variable key-value pairs used for serving this entity. Note: this is an experimental feature and subject to change. Example entity environment variables that refer to Databricks secrets: `{\"OPENAI_API_KEY\": \"{{secrets/my_scope/my_key}}\", \"DATABRICKS_TOKEN\": \"{{secrets/my_scope2/my_key2}}\"}`"
+                        },
+                        "instance_profile_arn": {
+                          "type": "string",
+                          "description": "ARN of the instance profile that the served entity uses to access AWS resources."
+                        },
+                        "max_provisioned_concurrency": {
+                          "type": "integer",
+                          "description": "The maximum provisioned concurrency that the endpoint can scale up to. Do not use if workload_size is specified."
+                        },
+                        "max_provisioned_throughput": {
+                          "type": "integer",
+                          "description": "The maximum tokens per second that the endpoint can scale up to."
+                        },
+                        "min_provisioned_concurrency": {
+                          "type": "integer",
+                          "description": "The minimum provisioned concurrency that the endpoint can scale down to. Do not use if workload_size is specified."
+                        },
+                        "min_provisioned_throughput": {
+                          "type": "integer",
+                          "description": "The minimum tokens per second that the endpoint can scale down to."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version."
+                        },
+                        "provisioned_model_units": {
+                          "type": "integer",
+                          "description": "The number of model units provisioned."
+                        },
+                        "workload_size": {
+                          "type": "string",
+                          "description": "The workload size of the served entity. The workload size corresponds to a range of provisioned concurrency that the compute autoscales between. A single unit of provisioned concurrency can process one request at a time. Valid workload sizes are \"Small\" (4 - 4 provisioned concurrency), \"Medium\" (8 - 16 provisioned concurrency), and \"Large\" (16 - 64 provisioned concurrency). Additional custom workload sizes can also be used when available in the workspace. If scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."
+                        },
+                        "workload_type": {
+                          "type": "string",
+                          "x-enum": [
+                            "CPU",
+                            "GPU_LARGE",
+                            "GPU_MEDIUM",
+                            "GPU_SMALL",
+                            "MULTIGPU_MEDIUM"
+                          ],
+                          "description": "The workload type of the served entity. The workload type selects which type of compute to use in the endpoint. The default value for this parameter is \"CPU\". For deep learning workloads, GPU acceleration is available by selecting workload types like GPU_SMALL and others. See the available [GPU types]. [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"
+                        }
+                      },
+                      "required": [
+                        "scale_to_zero_enabled",
+                        "model_name",
+                        "model_version"
+                      ]
                     },
                     "description": "(Deprecated, use served_entities instead) The list of served models under the serving endpoint config."
                   },
                   "traffic_config": {
-                    "$ref": "#/components/schemas/TrafficConfig",
+                    "type": "object",
+                    "properties": {
+                      "routes": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "traffic_percentage": {
+                              "type": "integer"
+                            },
+                            "served_entity_name": {
+                              "type": "string"
+                            },
+                            "served_model_name": {
+                              "type": "string",
+                              "description": "The name of the served model this route configures traffic for."
+                            }
+                          },
+                          "required": [
+                            "traffic_percentage"
+                          ]
+                        }
+                      }
+                    },
                     "description": "The traffic configuration associated with the serving endpoint config."
                   }
                 }
@@ -1391,7 +3039,22 @@
                 "type": "object",
                 "properties": {
                   "email_notifications": {
-                    "$ref": "#/components/schemas/EmailNotifications",
+                    "type": "object",
+                    "properties": {
+                      "on_update_failure": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "on_update_success": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "A list of email addresses to be notified when an endpoint successfully updates its configuration or state."
+                      }
+                    },
                     "description": "The email notification settings to update. Specify email addresses to notify when endpoint state changes occur."
                   }
                 }
@@ -1459,7 +3122,65 @@
                 "type": "object",
                 "properties": {
                   "config": {
-                    "$ref": "#/components/schemas/PtEndpointCoreConfig",
+                    "type": "object",
+                    "properties": {
+                      "served_entities": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "entity_name": {
+                              "type": "string"
+                            },
+                            "provisioned_model_units": {
+                              "type": "integer",
+                              "description": "The number of model units to be provisioned."
+                            },
+                            "burst_scaling_enabled": {
+                              "type": "boolean",
+                              "description": "Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains fixed capacity at provisioned_model_units."
+                            },
+                            "entity_version": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version."
+                            }
+                          },
+                          "required": [
+                            "entity_name",
+                            "provisioned_model_units"
+                          ]
+                        }
+                      },
+                      "traffic_config": {
+                        "type": "object",
+                        "properties": {
+                          "routes": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "traffic_percentage": {
+                                  "type": "integer"
+                                },
+                                "served_entity_name": {
+                                  "type": "string"
+                                },
+                                "served_model_name": {
+                                  "type": "string",
+                                  "description": "The name of the served model this route configures traffic for."
+                                }
+                              },
+                              "required": [
+                                "traffic_percentage"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    },
                     "description": ":returns: Long-running operation waiter for :class:`ServingEndpointDetailed`. See :method:wait_get_serving_endpoint_not_updating for more details."
                   }
                 },

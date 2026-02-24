@@ -60,7 +60,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "asset_type",
     "type": "string",
-    "description": "The type of the asset. (FOREIGN_TABLE, NOTEBOOK_FILE, TABLE, VIEW, VOLUME)"
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (FOREIGN_TABLE, NOTEBOOK_FILE, TABLE, VIEW, VOLUME)"
   },
   {
     "name": "foreign_table",
@@ -246,42 +246,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get the details of a clean room asset by its type and full name.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List assets.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-asset"><code>asset</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-asset"><code>asset</code></a></td>
     <td></td>
     <td>Create a clean room asset —share an asset like a notebook or table into the clean room. For each UC</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-asset"><code>asset</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-asset"><code>asset</code></a></td>
     <td></td>
     <td>Update a clean room asset. For example, updating the content of a notebook; changing the shared</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Delete a clean room asset - unshare/remove the asset from the clean room</td>
 </tr>
 <tr>
     <td><a href="#review"><CopyableCode code="review" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a></td>
     <td></td>
     <td>Submit an asset review</td>
 </tr>
@@ -316,15 +316,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Name of the clean room</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Name of the asset</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_token">
     <td><CopyableCode code="page_token" /></td>
@@ -368,7 +368,7 @@ WHERE clean_room_name = '{{ clean_room_name }}' -- required
 AND asset_type.value = '{{ asset_type.value }}' -- required
 AND name = '{{ name }}' -- required
 AND asset_type = '{{ asset_type }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -381,7 +381,7 @@ SELECT
 *
 FROM databricks_workspace.cleanrooms.assets
 WHERE clean_room_name = '{{ clean_room_name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_token = '{{ page_token }}'
 ;
 ```
@@ -406,12 +406,12 @@ Create a clean room asset —share an asset like a notebook or table into the cl
 INSERT INTO databricks_workspace.cleanrooms.assets (
 asset,
 clean_room_name,
-deployment_name
+workspace
 )
 SELECT 
 '{{ asset }}' /* required */,
 '{{ clean_room_name }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 name,
 clean_room_name,
@@ -439,13 +439,135 @@ volume_local_details
     - name: clean_room_name
       value: string
       description: Required parameter for the assets resource.
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the assets resource.
     - name: asset
-      value: string
+      value: object
       description: |
         :returns: :class:`CleanRoomAsset`
+      props:
+      - name: name
+        value: string
+        description: |
+          A fully qualified name that uniquely identifies the asset within the clean room. This is also the name displayed in the clean room UI. For UC securable assets (tables, volumes, etc.), the format is *shared_catalog*.*shared_schema*.*asset_name* For notebooks, the name is the notebook file name. For jar analyses, the name is the jar analysis name.
+      - name: asset_type
+        value: string
+        description: |
+          The type of the asset.
+      - name: added_at
+        value: integer
+        description: |
+          When the asset is added to the clean room, in epoch milliseconds.
+      - name: clean_room_name
+        value: string
+        description: |
+          The name of the clean room this asset belongs to. This field is required for create operations and populated by the server for responses.
+      - name: foreign_table
+        value: object
+        description: |
+          Foreign table details available to all collaborators of the clean room. Present if and only if **asset_type** is **FOREIGN_TABLE**
+        props:
+        - name: columns
+          value: string
+      - name: foreign_table_local_details
+        value: object
+        description: |
+          Local details for a foreign that are only available to its owner. Present if and only if **asset_type** is **FOREIGN_TABLE**
+        props:
+        - name: local_name
+          value: string
+      - name: notebook
+        value: object
+        description: |
+          Notebook details available to all collaborators of the clean room. Present if and only if **asset_type** is **NOTEBOOK_FILE**
+        props:
+        - name: notebook_content
+          value: string
+        - name: etag
+          value: string
+          description: |
+            Server generated etag that represents the notebook version.
+        - name: review_state
+          value: string
+          description: |
+            Top-level status derived from all reviews
+        - name: reviews
+          value: array
+          description: |
+            All existing approvals or rejections
+          props:
+          - name: comment
+            value: string
+          - name: created_at_millis
+            value: integer
+            description: |
+              When the review was submitted, in epoch milliseconds
+          - name: review_state
+            value: string
+            description: |
+              Review outcome
+          - name: review_sub_reason
+            value: string
+            description: |
+              Specified when the review was not explicitly made by a user
+          - name: reviewer_collaborator_alias
+            value: string
+            description: |
+              Collaborator alias of the reviewer
+        - name: runner_collaborator_aliases
+          value: array
+          description: |
+            Aliases of collaborators that can run the notebook.
+          items:
+            type: string
+      - name: owner_collaborator_alias
+        value: string
+        description: |
+          The alias of the collaborator who owns this asset
+      - name: status
+        value: string
+        description: |
+          Status of the asset
+      - name: table
+        value: object
+        description: |
+          Table details available to all collaborators of the clean room. Present if and only if **asset_type** is **TABLE**
+        props:
+        - name: columns
+          value: string
+      - name: table_local_details
+        value: object
+        description: |
+          Local details for a table that are only available to its owner. Present if and only if **asset_type** is **TABLE**
+        props:
+        - name: local_name
+          value: string
+        - name: partitions
+          value: string
+          description: |
+            Partition filtering specification for a shared table.
+      - name: view
+        value: object
+        description: |
+          View details available to all collaborators of the clean room. Present if and only if **asset_type** is **VIEW**
+        props:
+        - name: columns
+          value: string
+      - name: view_local_details
+        value: object
+        description: |
+          Local details for a view that are only available to its owner. Present if and only if **asset_type** is **VIEW**
+        props:
+        - name: local_name
+          value: string
+      - name: volume_local_details
+        value: object
+        description: |
+          Local details for a volume that are only available to its owner. Present if and only if **asset_type** is **VOLUME**
+        props:
+        - name: local_name
+          value: string
 ```
 </TabItem>
 </Tabs>
@@ -472,7 +594,7 @@ WHERE
 clean_room_name = '{{ clean_room_name }}' --required
 AND asset_type.value = '{{ asset_type.value }}' --required
 AND name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND asset_type = '{{ asset_type }}' --required
 AND asset = '{{ asset }}' --required
 RETURNING
@@ -513,7 +635,7 @@ WHERE clean_room_name = '{{ clean_room_name }}' --required
 AND asset_type.value = '{{ asset_type.value }}' --required
 AND name = '{{ name }}' --required
 AND asset_type = '{{ asset_type }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -537,7 +659,7 @@ EXEC databricks_workspace.cleanrooms.assets.review
 @clean_room_name='{{ clean_room_name }}' --required, 
 @asset_type.value='{{ asset_type.value }}' --required, 
 @name='{{ name }}' --required, 
-@deployment_name='{{ deployment_name }}' --required 
+@workspace='{{ workspace }}' --required 
 @@json=
 '{
 "asset_type": "{{ asset_type }}", 

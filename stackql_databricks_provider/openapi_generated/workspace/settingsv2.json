@@ -99,7 +99,348 @@
                 "type": "object",
                 "properties": {
                   "setting": {
-                    "$ref": "#/components/schemas/Setting",
+                    "type": "object",
+                    "properties": {
+                      "aibi_dashboard_embedding_access_policy": {
+                        "type": "object",
+                        "properties": {
+                          "access_policy_type": {
+                            "type": "string",
+                            "x-enum": [
+                              "ALLOW_ALL_DOMAINS",
+                              "ALLOW_APPROVED_DOMAINS",
+                              "DENY_ALL_DOMAINS"
+                            ],
+                            "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                          }
+                        },
+                        "required": [
+                          "access_policy_type"
+                        ]
+                      },
+                      "aibi_dashboard_embedding_approved_domains": {
+                        "type": "object",
+                        "properties": {
+                          "approved_domains": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "description": "Setting value for aibi_dashboard_embedding_approved_domains setting. This is the setting value set by consumers, check effective_aibi_dashboard_embedding_approved_domains for final setting value."
+                      },
+                      "automatic_cluster_update_workspace": {
+                        "type": "object",
+                        "properties": {
+                          "can_toggle": {
+                            "type": "boolean"
+                          },
+                          "enabled": {
+                            "type": "boolean"
+                          },
+                          "enablement_details": {
+                            "type": "object",
+                            "properties": {
+                              "forced_for_compliance_mode": {
+                                "type": "boolean",
+                                "description": "The feature is force enabled if compliance mode is active"
+                              },
+                              "unavailable_for_disabled_entitlement": {
+                                "type": "boolean",
+                                "description": "The feature is unavailable if the corresponding entitlement disabled (see getShieldEntitlementEnable)"
+                              },
+                              "unavailable_for_non_enterprise_tier": {
+                                "type": "boolean",
+                                "description": "The feature is unavailable if the customer doesn't have enterprise tier"
+                              }
+                            },
+                            "description": "Contains an information about the enablement status judging (e.g. whether the enterprise tier is\n    enabled) This is only additional information that MUST NOT be used to decide whether the setting\n    is enabled or not. This is intended to use only for purposes like showing an error message to\n    the customer with the additional details. For example, using these details we can check why\n    exactly the feature is disabled for this customer."
+                          },
+                          "maintenance_window": {
+                            "type": "object",
+                            "properties": {
+                              "week_day_based_schedule": {
+                                "type": "object",
+                                "properties": {
+                                  "day_of_week": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "FRIDAY",
+                                      "MONDAY",
+                                      "SATURDAY",
+                                      "SUNDAY",
+                                      "THURSDAY",
+                                      "TUESDAY",
+                                      "WEDNESDAY"
+                                    ],
+                                    "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                                  },
+                                  "frequency": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "EVERY_WEEK",
+                                      "FIRST_AND_THIRD_OF_MONTH",
+                                      "FIRST_OF_MONTH",
+                                      "FOURTH_OF_MONTH",
+                                      "SECOND_AND_FOURTH_OF_MONTH",
+                                      "SECOND_OF_MONTH",
+                                      "THIRD_OF_MONTH"
+                                    ],
+                                    "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                                  },
+                                  "window_start_time": {
+                                    "type": "object",
+                                    "properties": {
+                                      "hours": {
+                                        "type": "integer"
+                                      },
+                                      "minutes": {
+                                        "type": "integer"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "restart_even_if_no_updates_available": {
+                            "type": "boolean"
+                          }
+                        },
+                        "description": "Setting value for automatic_cluster_update_workspace setting. This is the setting value set by consumers, check effective_automatic_cluster_update_workspace for final setting value."
+                      },
+                      "boolean_val": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "boolean"
+                          }
+                        },
+                        "description": "Setting value for boolean type setting. This is the setting value set by consumers, check effective_boolean_val for final setting value."
+                      },
+                      "effective_aibi_dashboard_embedding_access_policy": {
+                        "type": "object",
+                        "properties": {
+                          "access_policy_type": {
+                            "type": "string",
+                            "x-enum": [
+                              "ALLOW_ALL_DOMAINS",
+                              "ALLOW_APPROVED_DOMAINS",
+                              "DENY_ALL_DOMAINS"
+                            ],
+                            "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                          }
+                        },
+                        "required": [
+                          "access_policy_type"
+                        ],
+                        "description": "Effective setting value for aibi_dashboard_embedding_access_policy setting. This is the final effective value of setting. To set a value use aibi_dashboard_embedding_access_policy."
+                      },
+                      "effective_aibi_dashboard_embedding_approved_domains": {
+                        "type": "object",
+                        "properties": {
+                          "approved_domains": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "description": "Effective setting value for aibi_dashboard_embedding_approved_domains setting. This is the final effective value of setting. To set a value use aibi_dashboard_embedding_approved_domains."
+                      },
+                      "effective_automatic_cluster_update_workspace": {
+                        "type": "object",
+                        "properties": {
+                          "can_toggle": {
+                            "type": "boolean"
+                          },
+                          "enabled": {
+                            "type": "boolean"
+                          },
+                          "enablement_details": {
+                            "type": "object",
+                            "properties": {
+                              "forced_for_compliance_mode": {
+                                "type": "boolean",
+                                "description": "The feature is force enabled if compliance mode is active"
+                              },
+                              "unavailable_for_disabled_entitlement": {
+                                "type": "boolean",
+                                "description": "The feature is unavailable if the corresponding entitlement disabled (see getShieldEntitlementEnable)"
+                              },
+                              "unavailable_for_non_enterprise_tier": {
+                                "type": "boolean",
+                                "description": "The feature is unavailable if the customer doesn't have enterprise tier"
+                              }
+                            },
+                            "description": "Contains an information about the enablement status judging (e.g. whether the enterprise tier is\n    enabled) This is only additional information that MUST NOT be used to decide whether the setting\n    is enabled or not. This is intended to use only for purposes like showing an error message to\n    the customer with the additional details. For example, using these details we can check why\n    exactly the feature is disabled for this customer."
+                          },
+                          "maintenance_window": {
+                            "type": "object",
+                            "properties": {
+                              "week_day_based_schedule": {
+                                "type": "object",
+                                "properties": {
+                                  "day_of_week": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "FRIDAY",
+                                      "MONDAY",
+                                      "SATURDAY",
+                                      "SUNDAY",
+                                      "THURSDAY",
+                                      "TUESDAY",
+                                      "WEDNESDAY"
+                                    ],
+                                    "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                                  },
+                                  "frequency": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "EVERY_WEEK",
+                                      "FIRST_AND_THIRD_OF_MONTH",
+                                      "FIRST_OF_MONTH",
+                                      "FOURTH_OF_MONTH",
+                                      "SECOND_AND_FOURTH_OF_MONTH",
+                                      "SECOND_OF_MONTH",
+                                      "THIRD_OF_MONTH"
+                                    ],
+                                    "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                                  },
+                                  "window_start_time": {
+                                    "type": "object",
+                                    "properties": {
+                                      "hours": {
+                                        "type": "integer"
+                                      },
+                                      "minutes": {
+                                        "type": "integer"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "restart_even_if_no_updates_available": {
+                            "type": "boolean"
+                          }
+                        },
+                        "description": "Effective setting value for automatic_cluster_update_workspace setting. This is the final effective value of setting. To set a value use automatic_cluster_update_workspace."
+                      },
+                      "effective_boolean_val": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "boolean"
+                          }
+                        },
+                        "description": "Effective setting value for boolean type setting. This is the final effective value of setting. To set a value use boolean_val."
+                      },
+                      "effective_integer_val": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "integer"
+                          }
+                        },
+                        "description": "Effective setting value for integer type setting. This is the final effective value of setting. To set a value use integer_val."
+                      },
+                      "effective_personal_compute": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string",
+                            "x-enum": [
+                              "DELEGATE",
+                              "ON"
+                            ],
+                            "description": "ON: Grants all users in all workspaces access to the Personal Compute default policy, allowing\nall users to create single-machine compute resources. DELEGATE: Moves access control for the\nPersonal Compute default policy to individual workspaces and requires a workspace\u2019s users or\ngroups to be added to the ACLs of that workspace\u2019s Personal Compute default policy before they\nwill be able to create compute resources through that policy."
+                          }
+                        },
+                        "description": "Effective setting value for personal_compute setting. This is the final effective value of setting. To set a value use personal_compute."
+                      },
+                      "effective_restrict_workspace_admins": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "x-enum": [
+                              "ALLOW_ALL",
+                              "RESTRICT_TOKENS_AND_JOB_RUN_AS"
+                            ],
+                            "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                          }
+                        },
+                        "required": [
+                          "status"
+                        ],
+                        "description": "Effective setting value for restrict_workspace_admins setting. This is the final effective value of setting. To set a value use restrict_workspace_admins."
+                      },
+                      "effective_string_val": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string"
+                          }
+                        },
+                        "description": "Effective setting value for string type setting. This is the final effective value of setting. To set a value use string_val."
+                      },
+                      "integer_val": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "integer"
+                          }
+                        },
+                        "description": "Setting value for integer type setting. This is the setting value set by consumers, check effective_integer_val for final setting value."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the setting."
+                      },
+                      "personal_compute": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string",
+                            "x-enum": [
+                              "DELEGATE",
+                              "ON"
+                            ],
+                            "description": "ON: Grants all users in all workspaces access to the Personal Compute default policy, allowing\nall users to create single-machine compute resources. DELEGATE: Moves access control for the\nPersonal Compute default policy to individual workspaces and requires a workspace\u2019s users or\ngroups to be added to the ACLs of that workspace\u2019s Personal Compute default policy before they\nwill be able to create compute resources through that policy."
+                          }
+                        },
+                        "description": "Setting value for personal_compute setting. This is the setting value set by consumers, check effective_personal_compute for final setting value."
+                      },
+                      "restrict_workspace_admins": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "x-enum": [
+                              "ALLOW_ALL",
+                              "RESTRICT_TOKENS_AND_JOB_RUN_AS"
+                            ],
+                            "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+                          }
+                        },
+                        "required": [
+                          "status"
+                        ],
+                        "description": "Setting value for restrict_workspace_admins setting. This is the setting value set by consumers, check effective_restrict_workspace_admins for final setting value."
+                      },
+                      "string_val": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string"
+                          }
+                        },
+                        "description": "Setting value for string type setting. This is the setting value set by consumers, check effective_string_val for final setting value."
+                      }
+                    },
                     "description": ":returns: :class:`Setting`"
                   }
                 },

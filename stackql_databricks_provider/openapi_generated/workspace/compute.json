@@ -47,7 +47,79 @@
                   "libraries": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Library"
+                      "type": "object",
+                      "properties": {
+                        "cran": {
+                          "type": "object",
+                          "properties": {
+                            "package": {
+                              "type": "string"
+                            },
+                            "repo": {
+                              "type": "string",
+                              "description": "The repository where the package can be found. If not specified, the default CRAN repo is used."
+                            }
+                          },
+                          "required": [
+                            "package"
+                          ]
+                        },
+                        "egg": {
+                          "type": "string",
+                          "description": "Deprecated. URI of the egg library to install. Installing Python egg files is deprecated and is not supported in Databricks Runtime 14.0 and above."
+                        },
+                        "jar": {
+                          "type": "string",
+                          "description": "URI of the JAR library to install. Supported URIs include Workspace paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ \"jar\": \"/Workspace/path/to/library.jar\" }`, `{ \"jar\" : \"/Volumes/path/to/library.jar\" }` or `{ \"jar\": \"s3://my-bucket/library.jar\" }`. If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the S3 URI."
+                        },
+                        "maven": {
+                          "type": "object",
+                          "properties": {
+                            "coordinates": {
+                              "type": "string"
+                            },
+                            "exclusions": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "List of dependences to exclude. For example: `[\"slf4j:slf4j\", \"*:hadoop-client\"]`. Maven dependency exclusions: https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html."
+                            },
+                            "repo": {
+                              "type": "string",
+                              "description": "Maven repo to install the Maven package from. If omitted, both Maven Central Repository and Spark Packages are searched."
+                            }
+                          },
+                          "required": [
+                            "coordinates"
+                          ],
+                          "description": "Specification of a maven library to be installed. For example: `{ \"coordinates\": \"org.jsoup:jsoup:1.7.2\" }`"
+                        },
+                        "pypi": {
+                          "type": "object",
+                          "properties": {
+                            "package": {
+                              "type": "string"
+                            },
+                            "repo": {
+                              "type": "string",
+                              "description": "The repository where the package can be found. If not specified, the default pip index is used."
+                            }
+                          },
+                          "required": [
+                            "package"
+                          ],
+                          "description": "Specification of a PyPi library to be installed. For example: `{ \"package\": \"simplejson\" }`"
+                        },
+                        "requirements": {
+                          "type": "string",
+                          "description": "URI of the requirements.txt file to install. Only Workspace paths and Unity Catalog Volumes paths are supported. For example: `{ \"requirements\": \"/Workspace/path/to/requirements.txt\" }` or `{ \"requirements\" : \"/Volumes/path/to/requirements.txt\" }`"
+                        },
+                        "whl": {
+                          "type": "string",
+                          "description": "URI of the wheel library to install. Supported URIs include Workspace paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ \"whl\": \"/Workspace/path/to/library.whl\" }`, `{ \"whl\" : \"/Volumes/path/to/library.whl\" }` or `{ \"whl\": \"s3://my-bucket/library.whl\" }`. If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the S3 URI."
+                        }
+                      }
                     },
                     "description": "A list of libraries to be installed on the next cluster restart that uses this policy. The maximum number of libraries is 500."
                   },
@@ -188,7 +260,79 @@
                   "libraries": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Library"
+                      "type": "object",
+                      "properties": {
+                        "cran": {
+                          "type": "object",
+                          "properties": {
+                            "package": {
+                              "type": "string"
+                            },
+                            "repo": {
+                              "type": "string",
+                              "description": "The repository where the package can be found. If not specified, the default CRAN repo is used."
+                            }
+                          },
+                          "required": [
+                            "package"
+                          ]
+                        },
+                        "egg": {
+                          "type": "string",
+                          "description": "Deprecated. URI of the egg library to install. Installing Python egg files is deprecated and is not supported in Databricks Runtime 14.0 and above."
+                        },
+                        "jar": {
+                          "type": "string",
+                          "description": "URI of the JAR library to install. Supported URIs include Workspace paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ \"jar\": \"/Workspace/path/to/library.jar\" }`, `{ \"jar\" : \"/Volumes/path/to/library.jar\" }` or `{ \"jar\": \"s3://my-bucket/library.jar\" }`. If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the S3 URI."
+                        },
+                        "maven": {
+                          "type": "object",
+                          "properties": {
+                            "coordinates": {
+                              "type": "string"
+                            },
+                            "exclusions": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "List of dependences to exclude. For example: `[\"slf4j:slf4j\", \"*:hadoop-client\"]`. Maven dependency exclusions: https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html."
+                            },
+                            "repo": {
+                              "type": "string",
+                              "description": "Maven repo to install the Maven package from. If omitted, both Maven Central Repository and Spark Packages are searched."
+                            }
+                          },
+                          "required": [
+                            "coordinates"
+                          ],
+                          "description": "Specification of a maven library to be installed. For example: `{ \"coordinates\": \"org.jsoup:jsoup:1.7.2\" }`"
+                        },
+                        "pypi": {
+                          "type": "object",
+                          "properties": {
+                            "package": {
+                              "type": "string"
+                            },
+                            "repo": {
+                              "type": "string",
+                              "description": "The repository where the package can be found. If not specified, the default pip index is used."
+                            }
+                          },
+                          "required": [
+                            "package"
+                          ],
+                          "description": "Specification of a PyPi library to be installed. For example: `{ \"package\": \"simplejson\" }`"
+                        },
+                        "requirements": {
+                          "type": "string",
+                          "description": "URI of the requirements.txt file to install. Only Workspace paths and Unity Catalog Volumes paths are supported. For example: `{ \"requirements\": \"/Workspace/path/to/requirements.txt\" }` or `{ \"requirements\" : \"/Volumes/path/to/requirements.txt\" }`"
+                        },
+                        "whl": {
+                          "type": "string",
+                          "description": "URI of the wheel library to install. Supported URIs include Workspace paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ \"whl\": \"/Workspace/path/to/library.whl\" }`, `{ \"whl\" : \"/Volumes/path/to/library.whl\" }` or `{ \"whl\": \"s3://my-bucket/library.whl\" }`. If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the S3 URI."
+                        }
+                      }
                     },
                     "description": "A list of libraries to be installed on the next cluster restart that uses this policy. The maximum number of libraries is 500."
                   },
@@ -428,7 +572,27 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ClusterPolicyAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_USE"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`ClusterPolicyPermissions`"
                   }
@@ -497,7 +661,27 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ClusterPolicyAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_USE"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`ClusterPolicyPermissions`"
                   }
@@ -682,7 +866,16 @@
                     "description": "When set to true, fixed and default values from the policy will be used for fields that are omitted. When set to false, only fixed values from the policy will be applied."
                   },
                   "autoscale": {
-                    "$ref": "#/components/schemas/AutoScale",
+                    "type": "object",
+                    "properties": {
+                      "max_workers": {
+                        "type": "integer"
+                      },
+                      "min_workers": {
+                        "type": "integer",
+                        "description": "The minimum number of workers to which the cluster can scale down when underutilized. It is also the initial number of workers the cluster will have after creation."
+                      }
+                    },
                     "description": "Parameters needed in order to automatically scale clusters up and down based on load. Note: autoscaling works best with DB runtime versions 3.0 or later."
                   },
                   "autotermination_minutes": {
@@ -690,19 +883,174 @@
                     "description": "Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this cluster will not be automatically terminated. If specified, the threshold must be between 10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic termination."
                   },
                   "aws_attributes": {
-                    "$ref": "#/components/schemas/AwsAttributes",
+                    "type": "object",
+                    "properties": {
+                      "availability": {
+                        "type": "string",
+                        "x-enum": [
+                          "ON_DEMAND",
+                          "SPOT",
+                          "SPOT_WITH_FALLBACK"
+                        ],
+                        "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones.\n\nNote: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+                      },
+                      "ebs_volume_count": {
+                        "type": "integer",
+                        "description": "The number of volumes launched for each instance. Users can choose up to 10 volumes. This feature is only enabled for supported node types. Legacy node types cannot specify custom EBS volumes. For node types with no instance store, at least one EBS volume needs to be specified; otherwise, cluster creation will fail. These EBS volumes will be mounted at `/ebs0`, `/ebs1`, and etc. Instance store volumes will be mounted at `/local_disk0`, `/local_disk1`, and etc. If EBS volumes are attached, Databricks will configure Spark to use only the EBS volumes for scratch storage because heterogenously sized scratch devices can lead to inefficient disk utilization. If no EBS volumes are attached, Databricks will configure Spark to use instance store volumes. Please note that if EBS volumes are specified, then the Spark configuration `spark.local.dir` will be overridden."
+                      },
+                      "ebs_volume_iops": {
+                        "type": "integer",
+                        "description": "If using gp3 volumes, what IOPS to use for the disk. If this is not set, the maximum performance of a gp2 volume with the same volume size will be used."
+                      },
+                      "ebs_volume_size": {
+                        "type": "integer",
+                        "description": "The size of each EBS volume (in GiB) launched for each instance. For general purpose SSD, this value must be within the range 100 - 4096. For throughput optimized HDD, this value must be within the range 500 - 4096."
+                      },
+                      "ebs_volume_throughput": {
+                        "type": "integer",
+                        "description": "If using gp3 volumes, what throughput to use for the disk. If this is not set, the maximum performance of a gp2 volume with the same volume size will be used."
+                      },
+                      "ebs_volume_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "GENERAL_PURPOSE_SSD",
+                          "THROUGHPUT_OPTIMIZED_HDD"
+                        ],
+                        "description": "The type of EBS volumes that will be launched with this cluster."
+                      },
+                      "first_on_demand": {
+                        "type": "integer",
+                        "description": "The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. If this value is greater than 0, the cluster driver node in particular will be placed on an on-demand instance. If this value is greater than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently be mutated over the lifetime of a cluster."
+                      },
+                      "instance_profile_arn": {
+                        "type": "string",
+                        "description": "Nodes for this cluster will only be placed on AWS instances with this instance profile. If ommitted, nodes will be placed on instances without an IAM instance profile. The instance profile must have previously been added to the Databricks environment by an account administrator. This feature may only be available to certain customer plans."
+                      },
+                      "spot_bid_price_percent": {
+                        "type": "integer",
+                        "description": "The bid price for AWS spot instances, as a percentage of the corresponding instance type's on-demand price. For example, if this field is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then the bid price is half of the price of on-demand `r3.xlarge` instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand `r3.xlarge` instances. If not specified, the default value is 100. When spot instances are requested for this cluster, only spot instances whose bid price percentage matches this field will be considered. Note that, for safety, we enforce this field to be no more than 10000."
+                      },
+                      "zone_id": {
+                        "type": "string",
+                        "description": "Identifier for the availability zone/datacenter in which the cluster resides. This string will be of a form like \"us-west-2a\". The provided availability zone must be in the same region as the Databricks deployment. For example, \"us-west-2a\" is not a valid zone id if the Databricks deployment resides in the \"us-east-1\" region. This is an optional field at cluster creation, and if not specified, the zone \"auto\" will be used. If the zone specified is \"auto\", will try to place cluster in a zone with high availability, and will retry placement in a different AZ if there is not enough capacity. The list of available zones as well as the default value can be found by using the `List Zones` method."
+                      }
+                    },
                     "description": "Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation, a set of default values will be used."
                   },
                   "azure_attributes": {
-                    "$ref": "#/components/schemas/AzureAttributes",
+                    "type": "object",
+                    "properties": {
+                      "availability": {
+                        "type": "string",
+                        "x-enum": [
+                          "ON_DEMAND_AZURE",
+                          "SPOT_AZURE",
+                          "SPOT_WITH_FALLBACK_AZURE"
+                        ],
+                        "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+                      },
+                      "first_on_demand": {
+                        "type": "integer",
+                        "description": "The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This value should be greater than 0, to make sure the cluster driver node is placed on an on-demand instance. If this value is greater than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently be mutated over the lifetime of a cluster."
+                      },
+                      "log_analytics_info": {
+                        "type": "object",
+                        "properties": {
+                          "log_analytics_primary_key": {
+                            "type": "string"
+                          },
+                          "log_analytics_workspace_id": {
+                            "type": "string"
+                          }
+                        },
+                        "description": "Defines values necessary to configure and run Azure Log Analytics agent"
+                      },
+                      "spot_bid_max_price": {
+                        "type": "number",
+                        "description": "The max bid price to be used for Azure spot instances. The Max price for the bid cannot be higher than the on-demand price of the instance. If not specified, the default value is -1, which specifies that the instance cannot be evicted on the basis of price, and only on the basis of availability. Further, the value should > 0 or -1."
+                      }
+                    },
                     "description": "Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a set of default values will be used."
                   },
                   "clone_from": {
-                    "$ref": "#/components/schemas/CloneCluster",
+                    "type": "object",
+                    "properties": {
+                      "source_cluster_id": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "source_cluster_id"
+                    ],
                     "description": "When specified, this clones libraries from a source cluster during the creation of a new cluster."
                   },
                   "cluster_log_conf": {
-                    "$ref": "#/components/schemas/ClusterLogConf",
+                    "type": "object",
+                    "properties": {
+                      "dbfs": {
+                        "type": "object",
+                        "properties": {
+                          "destination": {
+                            "type": "string",
+                            "description": "dbfs destination, e.g. `dbfs:/my/path`"
+                          }
+                        },
+                        "required": [
+                          "destination"
+                        ],
+                        "description": "destination needs to be provided. e.g. `{ \"dbfs\" : { \"destination\" : \"dbfs:/home/cluster_log\" } }`"
+                      },
+                      "s3": {
+                        "type": "object",
+                        "properties": {
+                          "destination": {
+                            "type": "string",
+                            "description": "S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster iam role, please make sure you set cluster iam role and the role has write access to the destination. Please also note that you cannot use AWS keys to deliver logs."
+                          },
+                          "canned_acl": {
+                            "type": "string",
+                            "description": "(Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If `canned_cal` is set, please make sure the cluster iam role has `s3:PutObjectAcl` permission on the destination bucket and prefix. The full list of possible canned acl can be found at http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl. Please also note that by default only the object owner gets full controls. If you are using cross account role for writing data, you may want to set `bucket-owner-full-control` to make bucket owner able to read the logs."
+                          },
+                          "enable_encryption": {
+                            "type": "boolean",
+                            "description": "(Optional) Flag to enable server side encryption, `false` by default."
+                          },
+                          "encryption_type": {
+                            "type": "string",
+                            "description": "(Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will be used only when encryption is enabled and the default type is `sse-s3`."
+                          },
+                          "endpoint": {
+                            "type": "string",
+                            "description": "S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or endpoint needs to be set. If both are set, endpoint will be used."
+                          },
+                          "kms_key": {
+                            "type": "string",
+                            "description": "(Optional) Kms key which will be used if encryption is enabled and encryption type is set to `sse-kms`."
+                          },
+                          "region": {
+                            "type": "string",
+                            "description": "S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If both are set, endpoint will be used."
+                          }
+                        },
+                        "required": [
+                          "destination"
+                        ],
+                        "description": "destination and either the region or endpoint need to be provided. e.g. `{ \"s3\": { \"destination\" : \"s3://cluster_log_bucket/prefix\", \"region\" : \"us-west-2\" } }` Cluster iam role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to write data to the s3 destination."
+                      },
+                      "volumes": {
+                        "type": "object",
+                        "properties": {
+                          "destination": {
+                            "type": "string",
+                            "description": "UC Volumes destination, e.g. `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`"
+                          }
+                        },
+                        "required": [
+                          "destination"
+                        ],
+                        "description": "destination needs to be provided, e.g. `{ \"volumes\": { \"destination\": \"/Volumes/catalog/schema/volume/cluster_log\" } }`"
+                      }
+                    },
                     "description": "The configuration for delivering spark logs to a long-term storage destination. Three kinds of destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be specified for one cluster. If the conf is given, the logs will be delivered to the destination every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is `$destination/$clusterId/executor`."
                   },
                   "cluster_name": {
@@ -714,18 +1062,57 @@
                     "description": "Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS instances and EBS volumes) with these tags in addition to `default_tags`. Notes: - Currently, Databricks allows at most 45 custom tags - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags"
                   },
                   "data_security_mode": {
-                    "$ref": "#/components/schemas/DataSecurityMode",
+                    "type": "string",
+                    "x-enum": [
+                      "DATA_SECURITY_MODE_AUTO",
+                      "DATA_SECURITY_MODE_DEDICATED",
+                      "DATA_SECURITY_MODE_STANDARD",
+                      "LEGACY_PASSTHROUGH",
+                      "LEGACY_SINGLE_USER",
+                      "LEGACY_SINGLE_USER_STANDARD",
+                      "LEGACY_TABLE_ACL",
+                      "NONE",
+                      "SINGLE_USER",
+                      "USER_ISOLATION"
+                    ],
                     "description": ":param docker_image: :class:`DockerImage` (optional) Custom docker image BYOC"
                   },
                   "docker_image": {
-                    "$ref": "#/components/schemas/DockerImage"
+                    "type": "object",
+                    "properties": {
+                      "basic_auth": {
+                        "type": "object",
+                        "properties": {
+                          "password": {
+                            "type": "string"
+                          },
+                          "username": {
+                            "type": "string",
+                            "description": "Name of the user"
+                          }
+                        }
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "URL of the docker image."
+                      }
+                    }
                   },
                   "driver_instance_pool_id": {
                     "type": "string",
                     "description": "The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."
                   },
                   "driver_node_type_flexibility": {
-                    "$ref": "#/components/schemas/NodeTypeFlexibility",
+                    "type": "object",
+                    "properties": {
+                      "alternate_node_type_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "A list of node type IDs to use as fallbacks when the primary node type is unavailable."
+                      }
+                    },
                     "description": "Flexible node type configuration for the driver node."
                   },
                   "driver_node_type_id": {
@@ -741,13 +1128,165 @@
                     "description": "Whether to enable LUKS on cluster VMs' local disks"
                   },
                   "gcp_attributes": {
-                    "$ref": "#/components/schemas/GcpAttributes",
+                    "type": "object",
+                    "properties": {
+                      "availability": {
+                        "type": "string",
+                        "x-enum": [
+                          "ON_DEMAND_GCP",
+                          "PREEMPTIBLE_GCP",
+                          "PREEMPTIBLE_WITH_FALLBACK_GCP"
+                        ],
+                        "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable."
+                      },
+                      "boot_disk_size": {
+                        "type": "integer",
+                        "description": "Boot disk size in GB"
+                      },
+                      "first_on_demand": {
+                        "type": "integer",
+                        "description": "The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This value should be greater than 0, to make sure the cluster driver node is placed on an on-demand instance. If this value is greater than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently be mutated over the lifetime of a cluster."
+                      },
+                      "google_service_account": {
+                        "type": "string",
+                        "description": "If provided, the cluster will impersonate the google service account when accessing gcloud services (like GCS). The google service account must have previously been added to the Databricks environment by an account administrator."
+                      },
+                      "local_ssd_count": {
+                        "type": "integer",
+                        "description": "If provided, each node (workers and driver) in the cluster will have this number of local SSDs attached. Each local SSD is 375GB in size. Refer to [GCP documentation] for the supported number of local SSDs for each instance type. [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds"
+                      },
+                      "use_preemptible_executors": {
+                        "type": "boolean",
+                        "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs (when set to true) versus standard compute engine VMs (when set to false; default). Note: Soon to be deprecated, use the 'availability' field instead."
+                      },
+                      "zone_id": {
+                        "type": "string",
+                        "description": "Identifier for the availability zone in which the cluster resides. This can be one of the following: - \"HA\" => High availability, spread nodes across availability zones for a Databricks deployment region [default]. - \"AUTO\" => Databricks picks an availability zone to schedule the cluster on. - A GCP availability zone => Pick One of the available zones for (machine type + region) from https://cloud.google.com/compute/docs/regions-zones."
+                      }
+                    },
                     "description": "Attributes related to clusters running on Google Cloud Platform. If not specified at cluster creation, a set of default values will be used."
                   },
                   "init_scripts": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/InitScriptInfo"
+                      "type": "object",
+                      "properties": {
+                        "abfss": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string",
+                              "description": "abfss destination, e.g. `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`."
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination needs to be provided, e.g. `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`"
+                        },
+                        "dbfs": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string",
+                              "description": "dbfs destination, e.g. `dbfs:/my/path`"
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination needs to be provided. e.g. `{ \"dbfs\": { \"destination\" : \"dbfs:/home/cluster_log\" } }`"
+                        },
+                        "file": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination needs to be provided, e.g. `{ \"file\": { \"destination\": \"file:/my/local/file.sh\" } }`"
+                        },
+                        "gcs": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string",
+                              "description": "GCS destination/URI, e.g. `gs://my-bucket/some-prefix`"
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination needs to be provided, e.g. `{ \"gcs\": { \"destination\": \"gs://my-bucket/file.sh\" } }`"
+                        },
+                        "s3": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string",
+                              "description": "S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster iam role, please make sure you set cluster iam role and the role has write access to the destination. Please also note that you cannot use AWS keys to deliver logs."
+                            },
+                            "canned_acl": {
+                              "type": "string",
+                              "description": "(Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If `canned_cal` is set, please make sure the cluster iam role has `s3:PutObjectAcl` permission on the destination bucket and prefix. The full list of possible canned acl can be found at http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl. Please also note that by default only the object owner gets full controls. If you are using cross account role for writing data, you may want to set `bucket-owner-full-control` to make bucket owner able to read the logs."
+                            },
+                            "enable_encryption": {
+                              "type": "boolean",
+                              "description": "(Optional) Flag to enable server side encryption, `false` by default."
+                            },
+                            "encryption_type": {
+                              "type": "string",
+                              "description": "(Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will be used only when encryption is enabled and the default type is `sse-s3`."
+                            },
+                            "endpoint": {
+                              "type": "string",
+                              "description": "S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or endpoint needs to be set. If both are set, endpoint will be used."
+                            },
+                            "kms_key": {
+                              "type": "string",
+                              "description": "(Optional) Kms key which will be used if encryption is enabled and encryption type is set to `sse-kms`."
+                            },
+                            "region": {
+                              "type": "string",
+                              "description": "S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If both are set, endpoint will be used."
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination and either the region or endpoint need to be provided. e.g. `{ \\\"s3\\\": { \\\"destination\\\": \\\"s3://cluster_log_bucket/prefix\\\", \\\"region\\\": \\\"us-west-2\\\" } }` Cluster iam role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to write data to the s3 destination."
+                        },
+                        "volumes": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string",
+                              "description": "UC Volumes destination, e.g. `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`"
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination needs to be provided. e.g. `{ \\\"volumes\\\" : { \\\"destination\\\" : \\\"/Volumes/my-init.sh\\\" } }`"
+                        },
+                        "workspace": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string",
+                              "description": "wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`"
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination needs to be provided, e.g. `{ \"workspace\": { \"destination\": \"/cluster-init-scripts/setup-datadog.sh\" } }`"
+                        }
+                      },
+                      "description": "Config for an individual init script Next ID: 11"
                     },
                     "description": "The configuration for storing init scripts. Any number of destinations can be specified. The scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."
                   },
@@ -760,7 +1299,10 @@
                     "description": "This field can only be used when `kind = CLASSIC_PREVIEW`. When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`, and `num_workers`"
                   },
                   "kind": {
-                    "$ref": "#/components/schemas/Kind",
+                    "type": "string",
+                    "x-enum": [
+                      "CLASSIC_PREVIEW"
+                    ],
                     "description": ":param node_type_id: str (optional) This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads. A list of available node types can be retrieved by using the :method:clusters/listNodeTypes API call."
                   },
                   "node_type_id": {
@@ -779,7 +1321,12 @@
                     "description": "If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported for GCP HYPERDISK_BALANCED disks."
                   },
                   "runtime_engine": {
-                    "$ref": "#/components/schemas/RuntimeEngine",
+                    "type": "string",
+                    "x-enum": [
+                      "NULL",
+                      "PHOTON",
+                      "STANDARD"
+                    ],
                     "description": "Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used."
                   },
                   "single_user_name": {
@@ -810,11 +1357,38 @@
                     "description": "This field can only be used when `kind = CLASSIC_PREVIEW`. `effective_spark_version` is determined by `spark_version` (DBR release), this field `use_ml_runtime`, and whether `node_type_id` is gpu node or not."
                   },
                   "worker_node_type_flexibility": {
-                    "$ref": "#/components/schemas/NodeTypeFlexibility",
+                    "type": "object",
+                    "properties": {
+                      "alternate_node_type_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "A list of node type IDs to use as fallbacks when the primary node type is unavailable."
+                      }
+                    },
                     "description": "Flexible node type configuration for worker nodes."
                   },
                   "workload_type": {
-                    "$ref": "#/components/schemas/WorkloadType",
+                    "type": "object",
+                    "properties": {
+                      "clients": {
+                        "type": "object",
+                        "properties": {
+                          "jobs": {
+                            "type": "boolean"
+                          },
+                          "notebooks": {
+                            "type": "boolean",
+                            "description": "With notebooks set, this cluster can be used for notebooks"
+                          }
+                        },
+                        "description": "defined what type of clients can use the cluster. E.g. Notebooks, Jobs"
+                      }
+                    },
+                    "required": [
+                      "clients"
+                    ],
                     "description": ":returns: Long-running operation waiter for :class:`ClusterDetails`. See :method:wait_get_cluster_running for more details."
                   }
                 },
@@ -946,7 +1520,16 @@
                     "description": "When set to true, fixed and default values from the policy will be used for fields that are omitted. When set to false, only fixed values from the policy will be applied."
                   },
                   "autoscale": {
-                    "$ref": "#/components/schemas/AutoScale",
+                    "type": "object",
+                    "properties": {
+                      "max_workers": {
+                        "type": "integer"
+                      },
+                      "min_workers": {
+                        "type": "integer",
+                        "description": "The minimum number of workers to which the cluster can scale down when underutilized. It is also the initial number of workers the cluster will have after creation."
+                      }
+                    },
                     "description": "Parameters needed in order to automatically scale clusters up and down based on load. Note: autoscaling works best with DB runtime versions 3.0 or later."
                   },
                   "autotermination_minutes": {
@@ -954,15 +1537,162 @@
                     "description": "Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this cluster will not be automatically terminated. If specified, the threshold must be between 10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic termination."
                   },
                   "aws_attributes": {
-                    "$ref": "#/components/schemas/AwsAttributes",
+                    "type": "object",
+                    "properties": {
+                      "availability": {
+                        "type": "string",
+                        "x-enum": [
+                          "ON_DEMAND",
+                          "SPOT",
+                          "SPOT_WITH_FALLBACK"
+                        ],
+                        "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones.\n\nNote: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+                      },
+                      "ebs_volume_count": {
+                        "type": "integer",
+                        "description": "The number of volumes launched for each instance. Users can choose up to 10 volumes. This feature is only enabled for supported node types. Legacy node types cannot specify custom EBS volumes. For node types with no instance store, at least one EBS volume needs to be specified; otherwise, cluster creation will fail. These EBS volumes will be mounted at `/ebs0`, `/ebs1`, and etc. Instance store volumes will be mounted at `/local_disk0`, `/local_disk1`, and etc. If EBS volumes are attached, Databricks will configure Spark to use only the EBS volumes for scratch storage because heterogenously sized scratch devices can lead to inefficient disk utilization. If no EBS volumes are attached, Databricks will configure Spark to use instance store volumes. Please note that if EBS volumes are specified, then the Spark configuration `spark.local.dir` will be overridden."
+                      },
+                      "ebs_volume_iops": {
+                        "type": "integer",
+                        "description": "If using gp3 volumes, what IOPS to use for the disk. If this is not set, the maximum performance of a gp2 volume with the same volume size will be used."
+                      },
+                      "ebs_volume_size": {
+                        "type": "integer",
+                        "description": "The size of each EBS volume (in GiB) launched for each instance. For general purpose SSD, this value must be within the range 100 - 4096. For throughput optimized HDD, this value must be within the range 500 - 4096."
+                      },
+                      "ebs_volume_throughput": {
+                        "type": "integer",
+                        "description": "If using gp3 volumes, what throughput to use for the disk. If this is not set, the maximum performance of a gp2 volume with the same volume size will be used."
+                      },
+                      "ebs_volume_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "GENERAL_PURPOSE_SSD",
+                          "THROUGHPUT_OPTIMIZED_HDD"
+                        ],
+                        "description": "The type of EBS volumes that will be launched with this cluster."
+                      },
+                      "first_on_demand": {
+                        "type": "integer",
+                        "description": "The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. If this value is greater than 0, the cluster driver node in particular will be placed on an on-demand instance. If this value is greater than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently be mutated over the lifetime of a cluster."
+                      },
+                      "instance_profile_arn": {
+                        "type": "string",
+                        "description": "Nodes for this cluster will only be placed on AWS instances with this instance profile. If ommitted, nodes will be placed on instances without an IAM instance profile. The instance profile must have previously been added to the Databricks environment by an account administrator. This feature may only be available to certain customer plans."
+                      },
+                      "spot_bid_price_percent": {
+                        "type": "integer",
+                        "description": "The bid price for AWS spot instances, as a percentage of the corresponding instance type's on-demand price. For example, if this field is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then the bid price is half of the price of on-demand `r3.xlarge` instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand `r3.xlarge` instances. If not specified, the default value is 100. When spot instances are requested for this cluster, only spot instances whose bid price percentage matches this field will be considered. Note that, for safety, we enforce this field to be no more than 10000."
+                      },
+                      "zone_id": {
+                        "type": "string",
+                        "description": "Identifier for the availability zone/datacenter in which the cluster resides. This string will be of a form like \"us-west-2a\". The provided availability zone must be in the same region as the Databricks deployment. For example, \"us-west-2a\" is not a valid zone id if the Databricks deployment resides in the \"us-east-1\" region. This is an optional field at cluster creation, and if not specified, the zone \"auto\" will be used. If the zone specified is \"auto\", will try to place cluster in a zone with high availability, and will retry placement in a different AZ if there is not enough capacity. The list of available zones as well as the default value can be found by using the `List Zones` method."
+                      }
+                    },
                     "description": "Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation, a set of default values will be used."
                   },
                   "azure_attributes": {
-                    "$ref": "#/components/schemas/AzureAttributes",
+                    "type": "object",
+                    "properties": {
+                      "availability": {
+                        "type": "string",
+                        "x-enum": [
+                          "ON_DEMAND_AZURE",
+                          "SPOT_AZURE",
+                          "SPOT_WITH_FALLBACK_AZURE"
+                        ],
+                        "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+                      },
+                      "first_on_demand": {
+                        "type": "integer",
+                        "description": "The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This value should be greater than 0, to make sure the cluster driver node is placed on an on-demand instance. If this value is greater than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently be mutated over the lifetime of a cluster."
+                      },
+                      "log_analytics_info": {
+                        "type": "object",
+                        "properties": {
+                          "log_analytics_primary_key": {
+                            "type": "string"
+                          },
+                          "log_analytics_workspace_id": {
+                            "type": "string"
+                          }
+                        },
+                        "description": "Defines values necessary to configure and run Azure Log Analytics agent"
+                      },
+                      "spot_bid_max_price": {
+                        "type": "number",
+                        "description": "The max bid price to be used for Azure spot instances. The Max price for the bid cannot be higher than the on-demand price of the instance. If not specified, the default value is -1, which specifies that the instance cannot be evicted on the basis of price, and only on the basis of availability. Further, the value should > 0 or -1."
+                      }
+                    },
                     "description": "Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a set of default values will be used."
                   },
                   "cluster_log_conf": {
-                    "$ref": "#/components/schemas/ClusterLogConf",
+                    "type": "object",
+                    "properties": {
+                      "dbfs": {
+                        "type": "object",
+                        "properties": {
+                          "destination": {
+                            "type": "string",
+                            "description": "dbfs destination, e.g. `dbfs:/my/path`"
+                          }
+                        },
+                        "required": [
+                          "destination"
+                        ],
+                        "description": "destination needs to be provided. e.g. `{ \"dbfs\" : { \"destination\" : \"dbfs:/home/cluster_log\" } }`"
+                      },
+                      "s3": {
+                        "type": "object",
+                        "properties": {
+                          "destination": {
+                            "type": "string",
+                            "description": "S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster iam role, please make sure you set cluster iam role and the role has write access to the destination. Please also note that you cannot use AWS keys to deliver logs."
+                          },
+                          "canned_acl": {
+                            "type": "string",
+                            "description": "(Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If `canned_cal` is set, please make sure the cluster iam role has `s3:PutObjectAcl` permission on the destination bucket and prefix. The full list of possible canned acl can be found at http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl. Please also note that by default only the object owner gets full controls. If you are using cross account role for writing data, you may want to set `bucket-owner-full-control` to make bucket owner able to read the logs."
+                          },
+                          "enable_encryption": {
+                            "type": "boolean",
+                            "description": "(Optional) Flag to enable server side encryption, `false` by default."
+                          },
+                          "encryption_type": {
+                            "type": "string",
+                            "description": "(Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will be used only when encryption is enabled and the default type is `sse-s3`."
+                          },
+                          "endpoint": {
+                            "type": "string",
+                            "description": "S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or endpoint needs to be set. If both are set, endpoint will be used."
+                          },
+                          "kms_key": {
+                            "type": "string",
+                            "description": "(Optional) Kms key which will be used if encryption is enabled and encryption type is set to `sse-kms`."
+                          },
+                          "region": {
+                            "type": "string",
+                            "description": "S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If both are set, endpoint will be used."
+                          }
+                        },
+                        "required": [
+                          "destination"
+                        ],
+                        "description": "destination and either the region or endpoint need to be provided. e.g. `{ \"s3\": { \"destination\" : \"s3://cluster_log_bucket/prefix\", \"region\" : \"us-west-2\" } }` Cluster iam role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to write data to the s3 destination."
+                      },
+                      "volumes": {
+                        "type": "object",
+                        "properties": {
+                          "destination": {
+                            "type": "string",
+                            "description": "UC Volumes destination, e.g. `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`"
+                          }
+                        },
+                        "required": [
+                          "destination"
+                        ],
+                        "description": "destination needs to be provided, e.g. `{ \"volumes\": { \"destination\": \"/Volumes/catalog/schema/volume/cluster_log\" } }`"
+                      }
+                    },
                     "description": "The configuration for delivering spark logs to a long-term storage destination. Three kinds of destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be specified for one cluster. If the conf is given, the logs will be delivered to the destination every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is `$destination/$clusterId/executor`."
                   },
                   "cluster_name": {
@@ -974,18 +1704,57 @@
                     "description": "Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS instances and EBS volumes) with these tags in addition to `default_tags`. Notes: - Currently, Databricks allows at most 45 custom tags - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags"
                   },
                   "data_security_mode": {
-                    "$ref": "#/components/schemas/DataSecurityMode",
+                    "type": "string",
+                    "x-enum": [
+                      "DATA_SECURITY_MODE_AUTO",
+                      "DATA_SECURITY_MODE_DEDICATED",
+                      "DATA_SECURITY_MODE_STANDARD",
+                      "LEGACY_PASSTHROUGH",
+                      "LEGACY_SINGLE_USER",
+                      "LEGACY_SINGLE_USER_STANDARD",
+                      "LEGACY_TABLE_ACL",
+                      "NONE",
+                      "SINGLE_USER",
+                      "USER_ISOLATION"
+                    ],
                     "description": ":param docker_image: :class:`DockerImage` (optional) Custom docker image BYOC"
                   },
                   "docker_image": {
-                    "$ref": "#/components/schemas/DockerImage"
+                    "type": "object",
+                    "properties": {
+                      "basic_auth": {
+                        "type": "object",
+                        "properties": {
+                          "password": {
+                            "type": "string"
+                          },
+                          "username": {
+                            "type": "string",
+                            "description": "Name of the user"
+                          }
+                        }
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "URL of the docker image."
+                      }
+                    }
                   },
                   "driver_instance_pool_id": {
                     "type": "string",
                     "description": "The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."
                   },
                   "driver_node_type_flexibility": {
-                    "$ref": "#/components/schemas/NodeTypeFlexibility",
+                    "type": "object",
+                    "properties": {
+                      "alternate_node_type_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "A list of node type IDs to use as fallbacks when the primary node type is unavailable."
+                      }
+                    },
                     "description": "Flexible node type configuration for the driver node."
                   },
                   "driver_node_type_id": {
@@ -1001,13 +1770,165 @@
                     "description": "Whether to enable LUKS on cluster VMs' local disks"
                   },
                   "gcp_attributes": {
-                    "$ref": "#/components/schemas/GcpAttributes",
+                    "type": "object",
+                    "properties": {
+                      "availability": {
+                        "type": "string",
+                        "x-enum": [
+                          "ON_DEMAND_GCP",
+                          "PREEMPTIBLE_GCP",
+                          "PREEMPTIBLE_WITH_FALLBACK_GCP"
+                        ],
+                        "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable."
+                      },
+                      "boot_disk_size": {
+                        "type": "integer",
+                        "description": "Boot disk size in GB"
+                      },
+                      "first_on_demand": {
+                        "type": "integer",
+                        "description": "The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This value should be greater than 0, to make sure the cluster driver node is placed on an on-demand instance. If this value is greater than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently be mutated over the lifetime of a cluster."
+                      },
+                      "google_service_account": {
+                        "type": "string",
+                        "description": "If provided, the cluster will impersonate the google service account when accessing gcloud services (like GCS). The google service account must have previously been added to the Databricks environment by an account administrator."
+                      },
+                      "local_ssd_count": {
+                        "type": "integer",
+                        "description": "If provided, each node (workers and driver) in the cluster will have this number of local SSDs attached. Each local SSD is 375GB in size. Refer to [GCP documentation] for the supported number of local SSDs for each instance type. [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds"
+                      },
+                      "use_preemptible_executors": {
+                        "type": "boolean",
+                        "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs (when set to true) versus standard compute engine VMs (when set to false; default). Note: Soon to be deprecated, use the 'availability' field instead."
+                      },
+                      "zone_id": {
+                        "type": "string",
+                        "description": "Identifier for the availability zone in which the cluster resides. This can be one of the following: - \"HA\" => High availability, spread nodes across availability zones for a Databricks deployment region [default]. - \"AUTO\" => Databricks picks an availability zone to schedule the cluster on. - A GCP availability zone => Pick One of the available zones for (machine type + region) from https://cloud.google.com/compute/docs/regions-zones."
+                      }
+                    },
                     "description": "Attributes related to clusters running on Google Cloud Platform. If not specified at cluster creation, a set of default values will be used."
                   },
                   "init_scripts": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/InitScriptInfo"
+                      "type": "object",
+                      "properties": {
+                        "abfss": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string",
+                              "description": "abfss destination, e.g. `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`."
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination needs to be provided, e.g. `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`"
+                        },
+                        "dbfs": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string",
+                              "description": "dbfs destination, e.g. `dbfs:/my/path`"
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination needs to be provided. e.g. `{ \"dbfs\": { \"destination\" : \"dbfs:/home/cluster_log\" } }`"
+                        },
+                        "file": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination needs to be provided, e.g. `{ \"file\": { \"destination\": \"file:/my/local/file.sh\" } }`"
+                        },
+                        "gcs": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string",
+                              "description": "GCS destination/URI, e.g. `gs://my-bucket/some-prefix`"
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination needs to be provided, e.g. `{ \"gcs\": { \"destination\": \"gs://my-bucket/file.sh\" } }`"
+                        },
+                        "s3": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string",
+                              "description": "S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster iam role, please make sure you set cluster iam role and the role has write access to the destination. Please also note that you cannot use AWS keys to deliver logs."
+                            },
+                            "canned_acl": {
+                              "type": "string",
+                              "description": "(Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If `canned_cal` is set, please make sure the cluster iam role has `s3:PutObjectAcl` permission on the destination bucket and prefix. The full list of possible canned acl can be found at http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl. Please also note that by default only the object owner gets full controls. If you are using cross account role for writing data, you may want to set `bucket-owner-full-control` to make bucket owner able to read the logs."
+                            },
+                            "enable_encryption": {
+                              "type": "boolean",
+                              "description": "(Optional) Flag to enable server side encryption, `false` by default."
+                            },
+                            "encryption_type": {
+                              "type": "string",
+                              "description": "(Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will be used only when encryption is enabled and the default type is `sse-s3`."
+                            },
+                            "endpoint": {
+                              "type": "string",
+                              "description": "S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or endpoint needs to be set. If both are set, endpoint will be used."
+                            },
+                            "kms_key": {
+                              "type": "string",
+                              "description": "(Optional) Kms key which will be used if encryption is enabled and encryption type is set to `sse-kms`."
+                            },
+                            "region": {
+                              "type": "string",
+                              "description": "S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If both are set, endpoint will be used."
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination and either the region or endpoint need to be provided. e.g. `{ \\\"s3\\\": { \\\"destination\\\": \\\"s3://cluster_log_bucket/prefix\\\", \\\"region\\\": \\\"us-west-2\\\" } }` Cluster iam role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to write data to the s3 destination."
+                        },
+                        "volumes": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string",
+                              "description": "UC Volumes destination, e.g. `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`"
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination needs to be provided. e.g. `{ \\\"volumes\\\" : { \\\"destination\\\" : \\\"/Volumes/my-init.sh\\\" } }`"
+                        },
+                        "workspace": {
+                          "type": "object",
+                          "properties": {
+                            "destination": {
+                              "type": "string",
+                              "description": "wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`"
+                            }
+                          },
+                          "required": [
+                            "destination"
+                          ],
+                          "description": "destination needs to be provided, e.g. `{ \"workspace\": { \"destination\": \"/cluster-init-scripts/setup-datadog.sh\" } }`"
+                        }
+                      },
+                      "description": "Config for an individual init script Next ID: 11"
                     },
                     "description": "The configuration for storing init scripts. Any number of destinations can be specified. The scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."
                   },
@@ -1020,7 +1941,10 @@
                     "description": "This field can only be used when `kind = CLASSIC_PREVIEW`. When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`, and `num_workers`"
                   },
                   "kind": {
-                    "$ref": "#/components/schemas/Kind",
+                    "type": "string",
+                    "x-enum": [
+                      "CLASSIC_PREVIEW"
+                    ],
                     "description": ":param node_type_id: str (optional) This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads. A list of available node types can be retrieved by using the :method:clusters/listNodeTypes API call."
                   },
                   "node_type_id": {
@@ -1039,7 +1963,12 @@
                     "description": "If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported for GCP HYPERDISK_BALANCED disks."
                   },
                   "runtime_engine": {
-                    "$ref": "#/components/schemas/RuntimeEngine",
+                    "type": "string",
+                    "x-enum": [
+                      "NULL",
+                      "PHOTON",
+                      "STANDARD"
+                    ],
                     "description": "Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used."
                   },
                   "single_user_name": {
@@ -1070,11 +1999,38 @@
                     "description": "This field can only be used when `kind = CLASSIC_PREVIEW`. `effective_spark_version` is determined by `spark_version` (DBR release), this field `use_ml_runtime`, and whether `node_type_id` is gpu node or not."
                   },
                   "worker_node_type_flexibility": {
-                    "$ref": "#/components/schemas/NodeTypeFlexibility",
+                    "type": "object",
+                    "properties": {
+                      "alternate_node_type_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "A list of node type IDs to use as fallbacks when the primary node type is unavailable."
+                      }
+                    },
                     "description": "Flexible node type configuration for worker nodes."
                   },
                   "workload_type": {
-                    "$ref": "#/components/schemas/WorkloadType",
+                    "type": "object",
+                    "properties": {
+                      "clients": {
+                        "type": "object",
+                        "properties": {
+                          "jobs": {
+                            "type": "boolean"
+                          },
+                          "notebooks": {
+                            "type": "boolean",
+                            "description": "With notebooks set, this cluster can be used for notebooks"
+                          }
+                        },
+                        "description": "defined what type of clients can use the cluster. E.g. Notebooks, Jobs"
+                      }
+                    },
+                    "required": [
+                      "clients"
+                    ],
                     "description": ":returns: Long-running operation waiter for :class:`ClusterDetails`. See :method:wait_get_cluster_running for more details."
                   }
                 },
@@ -1145,7 +2101,43 @@
                   "event_types": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/EventType"
+                      "type": "string",
+                      "x-enum": [
+                        "ADD_NODES_FAILED",
+                        "AUTOMATIC_CLUSTER_UPDATE",
+                        "AUTOSCALING_BACKOFF",
+                        "AUTOSCALING_FAILED",
+                        "AUTOSCALING_STATS_REPORT",
+                        "CLUSTER_MIGRATED",
+                        "CREATING",
+                        "DBFS_DOWN",
+                        "DECOMMISSION_ENDED",
+                        "DECOMMISSION_STARTED",
+                        "DID_NOT_EXPAND_DISK",
+                        "DRIVER_HEALTHY",
+                        "DRIVER_NOT_RESPONDING",
+                        "DRIVER_UNAVAILABLE",
+                        "EDITED",
+                        "EXPANDED_DISK",
+                        "FAILED_TO_EXPAND_DISK",
+                        "INIT_SCRIPTS_FINISHED",
+                        "INIT_SCRIPTS_STARTED",
+                        "METASTORE_DOWN",
+                        "NODES_LOST",
+                        "NODE_BLACKLISTED",
+                        "NODE_EXCLUDED_DECOMMISSIONED",
+                        "PINNED",
+                        "RESIZING",
+                        "RESTARTING",
+                        "RUNNING",
+                        "SPARK_EXCEPTION",
+                        "STARTING",
+                        "TERMINATING",
+                        "UC_VOLUME_MISCONFIGURED",
+                        "UNPINNED",
+                        "UPSIZE_COMPLETED"
+                      ],
+                      "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
                     },
                     "description": "An optional set of event types to filter on. If empty, all event types are returned."
                   },
@@ -1158,7 +2150,11 @@
                     "description": "Deprecated: use page_token in combination with page_size instead. The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the results are requested in descending order, the end_time field is required."
                   },
                   "order": {
-                    "$ref": "#/components/schemas/GetEventsOrder",
+                    "type": "string",
+                    "x-enum": [
+                      "ASC",
+                      "DESC"
+                    ],
                     "description": "The order to list events in; either \"ASC\" or \"DESC\". Defaults to \"DESC\"."
                   },
                   "page_size": {
@@ -1400,7 +2396,29 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ClusterAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_ATTACH_TO",
+                            "CAN_MANAGE",
+                            "CAN_RESTART"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`ClusterPermissions`"
                   }
@@ -1469,7 +2487,29 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ClusterAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_ATTACH_TO",
+                            "CAN_MANAGE",
+                            "CAN_RESTART"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`ClusterPermissions`"
                   }
@@ -1801,7 +2841,16 @@
                     "description": "The cluster to be resized."
                   },
                   "autoscale": {
-                    "$ref": "#/components/schemas/AutoScale",
+                    "type": "object",
+                    "properties": {
+                      "max_workers": {
+                        "type": "integer"
+                      },
+                      "min_workers": {
+                        "type": "integer",
+                        "description": "The minimum number of workers to which the cluster can scale down when underutilized. It is also the initial number of workers the cluster will have after creation."
+                      }
+                    },
                     "description": "Parameters needed in order to automatically scale clusters up and down based on load. Note: autoscaling works best with DB runtime versions 3.0 or later."
                   },
                   "num_workers": {
@@ -2092,7 +3141,528 @@
                     "description": "Used to specify which cluster attributes and size fields to update. See https://google.aip.dev/161 for more details. The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
                   },
                   "cluster": {
-                    "$ref": "#/components/schemas/UpdateClusterResource",
+                    "type": "object",
+                    "properties": {
+                      "autoscale": {
+                        "type": "object",
+                        "properties": {
+                          "max_workers": {
+                            "type": "integer"
+                          },
+                          "min_workers": {
+                            "type": "integer",
+                            "description": "The minimum number of workers to which the cluster can scale down when underutilized. It is also the initial number of workers the cluster will have after creation."
+                          }
+                        }
+                      },
+                      "autotermination_minutes": {
+                        "type": "integer",
+                        "description": "Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this cluster will not be automatically terminated. If specified, the threshold must be between 10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic termination."
+                      },
+                      "aws_attributes": {
+                        "type": "object",
+                        "properties": {
+                          "availability": {
+                            "type": "string",
+                            "x-enum": [
+                              "ON_DEMAND",
+                              "SPOT",
+                              "SPOT_WITH_FALLBACK"
+                            ],
+                            "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones.\n\nNote: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+                          },
+                          "ebs_volume_count": {
+                            "type": "integer",
+                            "description": "The number of volumes launched for each instance. Users can choose up to 10 volumes. This feature is only enabled for supported node types. Legacy node types cannot specify custom EBS volumes. For node types with no instance store, at least one EBS volume needs to be specified; otherwise, cluster creation will fail. These EBS volumes will be mounted at `/ebs0`, `/ebs1`, and etc. Instance store volumes will be mounted at `/local_disk0`, `/local_disk1`, and etc. If EBS volumes are attached, Databricks will configure Spark to use only the EBS volumes for scratch storage because heterogenously sized scratch devices can lead to inefficient disk utilization. If no EBS volumes are attached, Databricks will configure Spark to use instance store volumes. Please note that if EBS volumes are specified, then the Spark configuration `spark.local.dir` will be overridden."
+                          },
+                          "ebs_volume_iops": {
+                            "type": "integer",
+                            "description": "If using gp3 volumes, what IOPS to use for the disk. If this is not set, the maximum performance of a gp2 volume with the same volume size will be used."
+                          },
+                          "ebs_volume_size": {
+                            "type": "integer",
+                            "description": "The size of each EBS volume (in GiB) launched for each instance. For general purpose SSD, this value must be within the range 100 - 4096. For throughput optimized HDD, this value must be within the range 500 - 4096."
+                          },
+                          "ebs_volume_throughput": {
+                            "type": "integer",
+                            "description": "If using gp3 volumes, what throughput to use for the disk. If this is not set, the maximum performance of a gp2 volume with the same volume size will be used."
+                          },
+                          "ebs_volume_type": {
+                            "type": "string",
+                            "x-enum": [
+                              "GENERAL_PURPOSE_SSD",
+                              "THROUGHPUT_OPTIMIZED_HDD"
+                            ],
+                            "description": "The type of EBS volumes that will be launched with this cluster."
+                          },
+                          "first_on_demand": {
+                            "type": "integer",
+                            "description": "The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. If this value is greater than 0, the cluster driver node in particular will be placed on an on-demand instance. If this value is greater than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently be mutated over the lifetime of a cluster."
+                          },
+                          "instance_profile_arn": {
+                            "type": "string",
+                            "description": "Nodes for this cluster will only be placed on AWS instances with this instance profile. If ommitted, nodes will be placed on instances without an IAM instance profile. The instance profile must have previously been added to the Databricks environment by an account administrator. This feature may only be available to certain customer plans."
+                          },
+                          "spot_bid_price_percent": {
+                            "type": "integer",
+                            "description": "The bid price for AWS spot instances, as a percentage of the corresponding instance type's on-demand price. For example, if this field is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then the bid price is half of the price of on-demand `r3.xlarge` instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand `r3.xlarge` instances. If not specified, the default value is 100. When spot instances are requested for this cluster, only spot instances whose bid price percentage matches this field will be considered. Note that, for safety, we enforce this field to be no more than 10000."
+                          },
+                          "zone_id": {
+                            "type": "string",
+                            "description": "Identifier for the availability zone/datacenter in which the cluster resides. This string will be of a form like \"us-west-2a\". The provided availability zone must be in the same region as the Databricks deployment. For example, \"us-west-2a\" is not a valid zone id if the Databricks deployment resides in the \"us-east-1\" region. This is an optional field at cluster creation, and if not specified, the zone \"auto\" will be used. If the zone specified is \"auto\", will try to place cluster in a zone with high availability, and will retry placement in a different AZ if there is not enough capacity. The list of available zones as well as the default value can be found by using the `List Zones` method."
+                          }
+                        },
+                        "description": "Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation, a set of default values will be used."
+                      },
+                      "azure_attributes": {
+                        "type": "object",
+                        "properties": {
+                          "availability": {
+                            "type": "string",
+                            "x-enum": [
+                              "ON_DEMAND_AZURE",
+                              "SPOT_AZURE",
+                              "SPOT_WITH_FALLBACK_AZURE"
+                            ],
+                            "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+                          },
+                          "first_on_demand": {
+                            "type": "integer",
+                            "description": "The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This value should be greater than 0, to make sure the cluster driver node is placed on an on-demand instance. If this value is greater than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently be mutated over the lifetime of a cluster."
+                          },
+                          "log_analytics_info": {
+                            "type": "object",
+                            "properties": {
+                              "log_analytics_primary_key": {
+                                "type": "string"
+                              },
+                              "log_analytics_workspace_id": {
+                                "type": "string"
+                              }
+                            },
+                            "description": "Defines values necessary to configure and run Azure Log Analytics agent"
+                          },
+                          "spot_bid_max_price": {
+                            "type": "number",
+                            "description": "The max bid price to be used for Azure spot instances. The Max price for the bid cannot be higher than the on-demand price of the instance. If not specified, the default value is -1, which specifies that the instance cannot be evicted on the basis of price, and only on the basis of availability. Further, the value should > 0 or -1."
+                          }
+                        },
+                        "description": "Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a set of default values will be used."
+                      },
+                      "cluster_log_conf": {
+                        "type": "object",
+                        "properties": {
+                          "dbfs": {
+                            "type": "object",
+                            "properties": {
+                              "destination": {
+                                "type": "string",
+                                "description": "dbfs destination, e.g. `dbfs:/my/path`"
+                              }
+                            },
+                            "required": [
+                              "destination"
+                            ],
+                            "description": "destination needs to be provided. e.g. `{ \"dbfs\" : { \"destination\" : \"dbfs:/home/cluster_log\" } }`"
+                          },
+                          "s3": {
+                            "type": "object",
+                            "properties": {
+                              "destination": {
+                                "type": "string",
+                                "description": "S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster iam role, please make sure you set cluster iam role and the role has write access to the destination. Please also note that you cannot use AWS keys to deliver logs."
+                              },
+                              "canned_acl": {
+                                "type": "string",
+                                "description": "(Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If `canned_cal` is set, please make sure the cluster iam role has `s3:PutObjectAcl` permission on the destination bucket and prefix. The full list of possible canned acl can be found at http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl. Please also note that by default only the object owner gets full controls. If you are using cross account role for writing data, you may want to set `bucket-owner-full-control` to make bucket owner able to read the logs."
+                              },
+                              "enable_encryption": {
+                                "type": "boolean",
+                                "description": "(Optional) Flag to enable server side encryption, `false` by default."
+                              },
+                              "encryption_type": {
+                                "type": "string",
+                                "description": "(Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will be used only when encryption is enabled and the default type is `sse-s3`."
+                              },
+                              "endpoint": {
+                                "type": "string",
+                                "description": "S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or endpoint needs to be set. If both are set, endpoint will be used."
+                              },
+                              "kms_key": {
+                                "type": "string",
+                                "description": "(Optional) Kms key which will be used if encryption is enabled and encryption type is set to `sse-kms`."
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If both are set, endpoint will be used."
+                              }
+                            },
+                            "required": [
+                              "destination"
+                            ],
+                            "description": "destination and either the region or endpoint need to be provided. e.g. `{ \"s3\": { \"destination\" : \"s3://cluster_log_bucket/prefix\", \"region\" : \"us-west-2\" } }` Cluster iam role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to write data to the s3 destination."
+                          },
+                          "volumes": {
+                            "type": "object",
+                            "properties": {
+                              "destination": {
+                                "type": "string",
+                                "description": "UC Volumes destination, e.g. `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`"
+                              }
+                            },
+                            "required": [
+                              "destination"
+                            ],
+                            "description": "destination needs to be provided, e.g. `{ \"volumes\": { \"destination\": \"/Volumes/catalog/schema/volume/cluster_log\" } }`"
+                          }
+                        },
+                        "description": "The configuration for delivering spark logs to a long-term storage destination. Three kinds of destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be specified for one cluster. If the conf is given, the logs will be delivered to the destination every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is `$destination/$clusterId/executor`."
+                      },
+                      "cluster_name": {
+                        "type": "string",
+                        "description": "Cluster name requested by the user. This doesn't have to be unique. If not specified at creation, the cluster name will be an empty string. For job clusters, the cluster name is automatically set based on the job and job run IDs."
+                      },
+                      "custom_tags": {
+                        "type": "object",
+                        "description": "Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS instances and EBS volumes) with these tags in addition to `default_tags`. Notes: - Currently, Databricks allows at most 45 custom tags - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags"
+                      },
+                      "data_security_mode": {
+                        "type": "string",
+                        "x-enum": [
+                          "DATA_SECURITY_MODE_AUTO",
+                          "DATA_SECURITY_MODE_DEDICATED",
+                          "DATA_SECURITY_MODE_STANDARD",
+                          "LEGACY_PASSTHROUGH",
+                          "LEGACY_SINGLE_USER",
+                          "LEGACY_SINGLE_USER_STANDARD",
+                          "LEGACY_TABLE_ACL",
+                          "NONE",
+                          "SINGLE_USER",
+                          "USER_ISOLATION"
+                        ],
+                        "description": "Data security mode decides what data governance model to use when accessing data from a cluster.\n\nThe following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:\nDatabricks will choose the most appropriate access mode depending on your compute configuration.\n* `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:\nAlias for `SINGLE_USER`.\n\nThe following modes can be used regardless of `kind`. * `NONE`: No security isolation for\nmultiple users sharing the cluster. Data governance features are not available in this mode. *\n`SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in\n`single_user_name`. Most programming languages, cluster features and data governance features\nare available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple\nusers. Cluster users are fully isolated so that they cannot see each other's data and\ncredentials. Most data governance features are supported in this mode. But programming languages\nand cluster features might be limited.\n\nThe following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for\nfuture Databricks Runtime versions:\n\n* `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *\n`LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high\nconcurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy\nPassthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that\ndoesn\u2019t have UC nor passthrough enabled."
+                      },
+                      "docker_image": {
+                        "type": "object",
+                        "properties": {
+                          "basic_auth": {
+                            "type": "object",
+                            "properties": {
+                              "password": {
+                                "type": "string"
+                              },
+                              "username": {
+                                "type": "string",
+                                "description": "Name of the user"
+                              }
+                            }
+                          },
+                          "url": {
+                            "type": "string",
+                            "description": "URL of the docker image."
+                          }
+                        },
+                        "description": "Custom docker image BYOC"
+                      },
+                      "driver_instance_pool_id": {
+                        "type": "string",
+                        "description": "The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."
+                      },
+                      "driver_node_type_flexibility": {
+                        "type": "object",
+                        "properties": {
+                          "alternate_node_type_ids": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "A list of node type IDs to use as fallbacks when the primary node type is unavailable."
+                          }
+                        },
+                        "description": "Flexible node type configuration for the driver node."
+                      },
+                      "driver_node_type_id": {
+                        "type": "string",
+                        "description": "The node type of the Spark driver. Note that this field is optional; if unset, the driver node type will be set as the same value as `node_type_id` defined above. This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and node_type_id take precedence."
+                      },
+                      "enable_elastic_disk": {
+                        "type": "boolean",
+                        "description": "Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space when its Spark workers are running low on disk space."
+                      },
+                      "enable_local_disk_encryption": {
+                        "type": "boolean",
+                        "description": "Whether to enable LUKS on cluster VMs' local disks"
+                      },
+                      "gcp_attributes": {
+                        "type": "object",
+                        "properties": {
+                          "availability": {
+                            "type": "string",
+                            "x-enum": [
+                              "ON_DEMAND_GCP",
+                              "PREEMPTIBLE_GCP",
+                              "PREEMPTIBLE_WITH_FALLBACK_GCP"
+                            ],
+                            "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable."
+                          },
+                          "boot_disk_size": {
+                            "type": "integer",
+                            "description": "Boot disk size in GB"
+                          },
+                          "first_on_demand": {
+                            "type": "integer",
+                            "description": "The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This value should be greater than 0, to make sure the cluster driver node is placed on an on-demand instance. If this value is greater than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently be mutated over the lifetime of a cluster."
+                          },
+                          "google_service_account": {
+                            "type": "string",
+                            "description": "If provided, the cluster will impersonate the google service account when accessing gcloud services (like GCS). The google service account must have previously been added to the Databricks environment by an account administrator."
+                          },
+                          "local_ssd_count": {
+                            "type": "integer",
+                            "description": "If provided, each node (workers and driver) in the cluster will have this number of local SSDs attached. Each local SSD is 375GB in size. Refer to [GCP documentation] for the supported number of local SSDs for each instance type. [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds"
+                          },
+                          "use_preemptible_executors": {
+                            "type": "boolean",
+                            "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs (when set to true) versus standard compute engine VMs (when set to false; default). Note: Soon to be deprecated, use the 'availability' field instead."
+                          },
+                          "zone_id": {
+                            "type": "string",
+                            "description": "Identifier for the availability zone in which the cluster resides. This can be one of the following: - \"HA\" => High availability, spread nodes across availability zones for a Databricks deployment region [default]. - \"AUTO\" => Databricks picks an availability zone to schedule the cluster on. - A GCP availability zone => Pick One of the available zones for (machine type + region) from https://cloud.google.com/compute/docs/regions-zones."
+                          }
+                        },
+                        "description": "Attributes related to clusters running on Google Cloud Platform. If not specified at cluster creation, a set of default values will be used."
+                      },
+                      "init_scripts": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "abfss": {
+                              "type": "object",
+                              "properties": {
+                                "destination": {
+                                  "type": "string",
+                                  "description": "abfss destination, e.g. `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`."
+                                }
+                              },
+                              "required": [
+                                "destination"
+                              ],
+                              "description": "destination needs to be provided, e.g. `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`"
+                            },
+                            "dbfs": {
+                              "type": "object",
+                              "properties": {
+                                "destination": {
+                                  "type": "string",
+                                  "description": "dbfs destination, e.g. `dbfs:/my/path`"
+                                }
+                              },
+                              "required": [
+                                "destination"
+                              ],
+                              "description": "destination needs to be provided. e.g. `{ \"dbfs\": { \"destination\" : \"dbfs:/home/cluster_log\" } }`"
+                            },
+                            "file": {
+                              "type": "object",
+                              "properties": {
+                                "destination": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "destination"
+                              ],
+                              "description": "destination needs to be provided, e.g. `{ \"file\": { \"destination\": \"file:/my/local/file.sh\" } }`"
+                            },
+                            "gcs": {
+                              "type": "object",
+                              "properties": {
+                                "destination": {
+                                  "type": "string",
+                                  "description": "GCS destination/URI, e.g. `gs://my-bucket/some-prefix`"
+                                }
+                              },
+                              "required": [
+                                "destination"
+                              ],
+                              "description": "destination needs to be provided, e.g. `{ \"gcs\": { \"destination\": \"gs://my-bucket/file.sh\" } }`"
+                            },
+                            "s3": {
+                              "type": "object",
+                              "properties": {
+                                "destination": {
+                                  "type": "string",
+                                  "description": "S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster iam role, please make sure you set cluster iam role and the role has write access to the destination. Please also note that you cannot use AWS keys to deliver logs."
+                                },
+                                "canned_acl": {
+                                  "type": "string",
+                                  "description": "(Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If `canned_cal` is set, please make sure the cluster iam role has `s3:PutObjectAcl` permission on the destination bucket and prefix. The full list of possible canned acl can be found at http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl. Please also note that by default only the object owner gets full controls. If you are using cross account role for writing data, you may want to set `bucket-owner-full-control` to make bucket owner able to read the logs."
+                                },
+                                "enable_encryption": {
+                                  "type": "boolean",
+                                  "description": "(Optional) Flag to enable server side encryption, `false` by default."
+                                },
+                                "encryption_type": {
+                                  "type": "string",
+                                  "description": "(Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will be used only when encryption is enabled and the default type is `sse-s3`."
+                                },
+                                "endpoint": {
+                                  "type": "string",
+                                  "description": "S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or endpoint needs to be set. If both are set, endpoint will be used."
+                                },
+                                "kms_key": {
+                                  "type": "string",
+                                  "description": "(Optional) Kms key which will be used if encryption is enabled and encryption type is set to `sse-kms`."
+                                },
+                                "region": {
+                                  "type": "string",
+                                  "description": "S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If both are set, endpoint will be used."
+                                }
+                              },
+                              "required": [
+                                "destination"
+                              ],
+                              "description": "destination and either the region or endpoint need to be provided. e.g. `{ \\\"s3\\\": { \\\"destination\\\": \\\"s3://cluster_log_bucket/prefix\\\", \\\"region\\\": \\\"us-west-2\\\" } }` Cluster iam role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to write data to the s3 destination."
+                            },
+                            "volumes": {
+                              "type": "object",
+                              "properties": {
+                                "destination": {
+                                  "type": "string",
+                                  "description": "UC Volumes destination, e.g. `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`"
+                                }
+                              },
+                              "required": [
+                                "destination"
+                              ],
+                              "description": "destination needs to be provided. e.g. `{ \\\"volumes\\\" : { \\\"destination\\\" : \\\"/Volumes/my-init.sh\\\" } }`"
+                            },
+                            "workspace": {
+                              "type": "object",
+                              "properties": {
+                                "destination": {
+                                  "type": "string",
+                                  "description": "wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`"
+                                }
+                              },
+                              "required": [
+                                "destination"
+                              ],
+                              "description": "destination needs to be provided, e.g. `{ \"workspace\": { \"destination\": \"/cluster-init-scripts/setup-datadog.sh\" } }`"
+                            }
+                          },
+                          "description": "Config for an individual init script Next ID: 11"
+                        },
+                        "description": "The configuration for storing init scripts. Any number of destinations can be specified. The scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."
+                      },
+                      "instance_pool_id": {
+                        "type": "string",
+                        "description": "The optional ID of the instance pool to which the cluster belongs."
+                      },
+                      "is_single_node": {
+                        "type": "boolean",
+                        "description": "This field can only be used when `kind = CLASSIC_PREVIEW`. When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`, and `num_workers`"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "x-enum": [
+                          "CLASSIC_PREVIEW"
+                        ],
+                        "description": "The kind of compute described by this compute specification.\n\nDepending on `kind`, different validations and default values will be applied.\n\nClusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no\nspecified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *\n[use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *\n[data_security_mode](/api/workspace/clusters/create#data_security_mode) set to\n`DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`\n\nBy using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.\n\n[simple form]: https://docs.databricks.com/compute/simple-form.html"
+                      },
+                      "node_type_id": {
+                        "type": "string",
+                        "description": "This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads. A list of available node types can be retrieved by using the :method:clusters/listNodeTypes API call."
+                      },
+                      "num_workers": {
+                        "type": "integer",
+                        "description": "Number of worker nodes that this cluster should have. A cluster has one Spark Driver and `num_workers` Executors for a total of `num_workers` + 1 Spark nodes. Note: When reading the properties of a cluster, this field reflects the desired number of workers rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10 workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are provisioned."
+                      },
+                      "policy_id": {
+                        "type": "string",
+                        "description": "The ID of the cluster policy used to create the cluster if applicable."
+                      },
+                      "remote_disk_throughput": {
+                        "type": "integer",
+                        "description": "If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported for GCP HYPERDISK_BALANCED disks."
+                      },
+                      "runtime_engine": {
+                        "type": "string",
+                        "x-enum": [
+                          "NULL",
+                          "PHOTON",
+                          "STANDARD"
+                        ],
+                        "description": "Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used."
+                      },
+                      "single_user_name": {
+                        "type": "string",
+                        "description": "Single user name if data_security_mode is `SINGLE_USER`"
+                      },
+                      "spark_conf": {
+                        "type": "object",
+                        "description": "An object containing a set of optional, user-specified Spark configuration key-value pairs. Users can also pass in a string of extra JVM options to the driver and the executors via `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively."
+                      },
+                      "spark_env_vars": {
+                        "type": "object",
+                        "description": "An object containing a set of optional, user-specified environment variable key-value pairs. Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the driver and workers. In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks managed environmental variables are included as well. Example Spark environment variables: `{\"SPARK_WORKER_MEMORY\": \"28000m\", \"SPARK_LOCAL_DIRS\": \"/local_disk0\"}` or `{\"SPARK_DAEMON_JAVA_OPTS\": \"$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true\"}`"
+                      },
+                      "spark_version": {
+                        "type": "string",
+                        "description": "The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be retrieved by using the :method:clusters/sparkVersions API call."
+                      },
+                      "ssh_public_keys": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "SSH public key contents that will be added to each Spark node in this cluster. The corresponding private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be specified."
+                      },
+                      "total_initial_remote_disk_size": {
+                        "type": "integer",
+                        "description": "If set, what the total initial volume size (in GB) of the remote disks should be. Currently only supported for GCP HYPERDISK_BALANCED disks."
+                      },
+                      "use_ml_runtime": {
+                        "type": "boolean",
+                        "description": "This field can only be used when `kind = CLASSIC_PREVIEW`. `effective_spark_version` is determined by `spark_version` (DBR release), this field `use_ml_runtime`, and whether `node_type_id` is gpu node or not."
+                      },
+                      "worker_node_type_flexibility": {
+                        "type": "object",
+                        "properties": {
+                          "alternate_node_type_ids": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "A list of node type IDs to use as fallbacks when the primary node type is unavailable."
+                          }
+                        },
+                        "description": "Flexible node type configuration for worker nodes."
+                      },
+                      "workload_type": {
+                        "type": "object",
+                        "properties": {
+                          "clients": {
+                            "type": "object",
+                            "properties": {
+                              "jobs": {
+                                "type": "boolean"
+                              },
+                              "notebooks": {
+                                "type": "boolean",
+                                "description": "With notebooks set, this cluster can be used for notebooks"
+                              }
+                            },
+                            "description": "defined what type of clients can use the cluster. E.g. Notebooks, Jobs"
+                          }
+                        },
+                        "required": [
+                          "clients"
+                        ],
+                        "description": "Cluster Attributes showing for clusters workload types."
+                      }
+                    },
                     "description": "The cluster to be updated."
                   }
                 },
@@ -2352,7 +3922,13 @@
                     "description": "Running cluster id"
                   },
                   "language": {
-                    "$ref": "#/components/schemas/Language",
+                    "type": "string",
+                    "x-enum": [
+                      "python",
+                      "r",
+                      "scala",
+                      "sql"
+                    ],
                     "description": ":returns: Long-running operation waiter for :class:`ContextStatusResponse`. See :method:wait_context_status_command_execution_running for more details."
                   }
                 }
@@ -2478,7 +4054,13 @@
                     "description": "Running context id"
                   },
                   "language": {
-                    "$ref": "#/components/schemas/Language",
+                    "type": "string",
+                    "x-enum": [
+                      "python",
+                      "r",
+                      "scala",
+                      "sql"
+                    ],
                     "description": ":returns: Long-running operation waiter for :class:`CommandStatusResponse`. See :method:wait_command_status_command_execution_finished_or_error for more details."
                   }
                 }
@@ -2828,11 +4410,47 @@
                     "description": "This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads. A list of available node types can be retrieved by using the :method:clusters/listNodeTypes API call."
                   },
                   "aws_attributes": {
-                    "$ref": "#/components/schemas/InstancePoolAwsAttributes",
+                    "type": "object",
+                    "properties": {
+                      "availability": {
+                        "type": "string",
+                        "x-enum": [
+                          "ON_DEMAND",
+                          "SPOT"
+                        ],
+                        "description": "Availability type used for the spot nodes."
+                      },
+                      "instance_profile_arn": {
+                        "type": "string",
+                        "description": "All AWS instances belonging to the instance pool will have this instance profile. If omitted, instances will initially be launched with the workspace's default instance profile. If defined, clusters that use the pool will inherit the instance profile, and must not specify their own instance profile on cluster creation or update. If the pool does not specify an instance profile, clusters using the pool may specify any instance profile. The instance profile must have previously been added to the Databricks environment by an account administrator. This feature may only be available to certain customer plans."
+                      },
+                      "spot_bid_price_percent": {
+                        "type": "integer",
+                        "description": "Calculates the bid price for AWS spot instances, as a percentage of the corresponding instance type's on-demand price. For example, if this field is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then the bid price is half of the price of on-demand `r3.xlarge` instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand `r3.xlarge` instances. If not specified, the default value is 100. When spot instances are requested for this cluster, only spot instances whose bid price percentage matches this field will be considered. Note that, for safety, we enforce this field to be no more than 10000."
+                      },
+                      "zone_id": {
+                        "type": "string",
+                        "description": "Identifier for the availability zone/datacenter in which the cluster resides. This string will be of a form like \"us-west-2a\". The provided availability zone must be in the same region as the Databricks deployment. For example, \"us-west-2a\" is not a valid zone id if the Databricks deployment resides in the \"us-east-1\" region. This is an optional field at cluster creation, and if not specified, a default zone will be used. The list of available zones as well as the default value can be found by using the `List Zones` method."
+                      }
+                    },
                     "description": "Attributes related to instance pools running on Amazon Web Services. If not specified at pool creation, a set of default values will be used."
                   },
                   "azure_attributes": {
-                    "$ref": "#/components/schemas/InstancePoolAzureAttributes",
+                    "type": "object",
+                    "properties": {
+                      "availability": {
+                        "type": "string",
+                        "x-enum": [
+                          "ON_DEMAND_AZURE",
+                          "SPOT_AZURE"
+                        ],
+                        "description": "Availability type used for the spot nodes."
+                      },
+                      "spot_bid_max_price": {
+                        "type": "number",
+                        "description": "With variable pricing, you have option to set a max price, in US dollars (USD) For example, the value 2 would be a max price of $2.00 USD per hour. If you set the max price to be -1, the VM won't be evicted based on price. The price for the VM will be the current price for spot or the price for a standard VM, which ever is less, as long as there is capacity and quota available."
+                      }
+                    },
                     "description": "Attributes related to instance pools running on Azure. If not specified at pool creation, a set of default values will be used."
                   },
                   "custom_tags": {
@@ -2840,7 +4458,45 @@
                     "description": "Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and EBS volumes) with these tags in addition to `default_tags`. Notes: - Currently, Databricks allows at most 45 custom tags"
                   },
                   "disk_spec": {
-                    "$ref": "#/components/schemas/DiskSpec",
+                    "type": "object",
+                    "properties": {
+                      "disk_count": {
+                        "type": "integer",
+                        "description": "The number of disks launched for each instance: - This feature is only enabled for supported node types. - Users can choose up to the limit of the disks supported by the node type. - For node types with no OS disk, at least one disk must be specified; otherwise, cluster creation will fail. If disks are attached, Databricks will configure Spark to use only the disks for scratch storage, because heterogenously sized scratch devices can lead to inefficient disk utilization. If no disks are attached, Databricks will configure Spark to use instance store disks. Note: If disks are specified, then the Spark configuration `spark.local.dir` will be overridden. Disks will be mounted at: - For AWS: `/ebs0`, `/ebs1`, and etc. - For Azure: `/remote_volume0`, `/remote_volume1`, and etc."
+                      },
+                      "disk_iops": {
+                        "type": "integer"
+                      },
+                      "disk_size": {
+                        "type": "integer",
+                        "description": "The size of each disk (in GiB) launched for each instance. Values must fall into the supported range for a particular instance type. For AWS: - General Purpose SSD: 100 - 4096 GiB - Throughput Optimized HDD: 500 - 4096 GiB For Azure: - Premium LRS (SSD): 1 - 1023 GiB - Standard LRS (HDD): 1- 1023 GiB"
+                      },
+                      "disk_throughput": {
+                        "type": "integer"
+                      },
+                      "disk_type": {
+                        "type": "object",
+                        "properties": {
+                          "azure_disk_volume_type": {
+                            "type": "string",
+                            "x-enum": [
+                              "PREMIUM_LRS",
+                              "STANDARD_LRS"
+                            ],
+                            "description": "All Azure Disk types that Databricks supports. See\nhttps://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks"
+                          },
+                          "ebs_volume_type": {
+                            "type": "string",
+                            "x-enum": [
+                              "GENERAL_PURPOSE_SSD",
+                              "THROUGHPUT_OPTIMIZED_HDD"
+                            ],
+                            "description": "All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for\ndetails."
+                          }
+                        },
+                        "description": "The type of disks that will be launched with this cluster."
+                      }
+                    },
                     "description": "Defines the specification of the disks that will be attached to all spark containers."
                   },
                   "enable_elastic_disk": {
@@ -2848,7 +4504,26 @@
                     "description": "Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire additional disk space when its Spark workers are running low on disk space. In AWS, this feature requires specific AWS permissions to function correctly - refer to the User Guide for more details."
                   },
                   "gcp_attributes": {
-                    "$ref": "#/components/schemas/InstancePoolGcpAttributes",
+                    "type": "object",
+                    "properties": {
+                      "gcp_availability": {
+                        "type": "string",
+                        "x-enum": [
+                          "ON_DEMAND_GCP",
+                          "PREEMPTIBLE_GCP",
+                          "PREEMPTIBLE_WITH_FALLBACK_GCP"
+                        ],
+                        "description": "This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or\npreemptible VMs with a fallback to on-demand VMs if the former is unavailable."
+                      },
+                      "local_ssd_count": {
+                        "type": "integer",
+                        "description": "If provided, each node in the instance pool will have this number of local SSDs attached. Each local SSD is 375GB in size. Refer to [GCP documentation] for the supported number of local SSDs for each instance type. [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds"
+                      },
+                      "zone_id": {
+                        "type": "string",
+                        "description": "Identifier for the availability zone/datacenter in which the cluster resides. This string will be of a form like \"us-west1-a\". The provided availability zone must be in the same region as the Databricks workspace. For example, \"us-west1-a\" is not a valid zone id if the Databricks workspace resides in the \"us-east1\" region. This is an optional field at instance pool creation, and if not specified, a default zone will be used. This field can be one of the following: - \"HA\" => High availability, spread nodes across availability zones for a Databricks deployment region - A GCP availability zone => Pick One of the available zones for (machine type + region) from https://cloud.google.com/compute/docs/regions-zones (e.g. \"us-west1-a\"). If empty, Databricks picks an availability zone to schedule the cluster on."
+                      }
+                    },
                     "description": "Attributes related to instance pools running on Google Cloud Platform. If not specified at pool creation, a set of default values will be used."
                   },
                   "idle_instance_autotermination_minutes": {
@@ -2864,13 +4539,40 @@
                     "description": "Minimum number of idle instances to keep in the instance pool"
                   },
                   "node_type_flexibility": {
-                    "$ref": "#/components/schemas/NodeTypeFlexibility",
+                    "type": "object",
+                    "properties": {
+                      "alternate_node_type_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "A list of node type IDs to use as fallbacks when the primary node type is unavailable."
+                      }
+                    },
                     "description": "Flexible node type configuration for the pool."
                   },
                   "preloaded_docker_images": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/DockerImage"
+                      "type": "object",
+                      "properties": {
+                        "basic_auth": {
+                          "type": "object",
+                          "properties": {
+                            "password": {
+                              "type": "string"
+                            },
+                            "username": {
+                              "type": "string",
+                              "description": "Name of the user"
+                            }
+                          }
+                        },
+                        "url": {
+                          "type": "string",
+                          "description": "URL of the docker image."
+                        }
+                      }
                     },
                     "description": "Custom Docker Image BYOC"
                   },
@@ -3028,7 +4730,16 @@
                     "description": "Minimum number of idle instances to keep in the instance pool"
                   },
                   "node_type_flexibility": {
-                    "$ref": "#/components/schemas/NodeTypeFlexibility",
+                    "type": "object",
+                    "properties": {
+                      "alternate_node_type_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "A list of node type IDs to use as fallbacks when the primary node type is unavailable."
+                      }
+                    },
                     "description": "Flexible node type configuration for the pool."
                   },
                   "remote_disk_throughput": {
@@ -3261,7 +4972,28 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/InstancePoolAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_ATTACH_TO",
+                            "CAN_MANAGE"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`InstancePoolPermissions`"
                   }
@@ -3330,7 +5062,28 @@
                   "access_control_list": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/InstancePoolAccessControlRequest"
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        },
+                        "permission_level": {
+                          "type": "string",
+                          "x-enum": [
+                            "CAN_ATTACH_TO",
+                            "CAN_MANAGE"
+                          ],
+                          "description": "Permission level"
+                        },
+                        "service_principal_name": {
+                          "type": "string",
+                          "description": "application ID of a service principal"
+                        },
+                        "user_name": {
+                          "type": "string",
+                          "description": "name of the user"
+                        }
+                      }
                     },
                     "description": ":returns: :class:`InstancePoolPermissions`"
                   }
@@ -3752,7 +5505,79 @@
                   "libraries": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Library"
+                      "type": "object",
+                      "properties": {
+                        "cran": {
+                          "type": "object",
+                          "properties": {
+                            "package": {
+                              "type": "string"
+                            },
+                            "repo": {
+                              "type": "string",
+                              "description": "The repository where the package can be found. If not specified, the default CRAN repo is used."
+                            }
+                          },
+                          "required": [
+                            "package"
+                          ]
+                        },
+                        "egg": {
+                          "type": "string",
+                          "description": "Deprecated. URI of the egg library to install. Installing Python egg files is deprecated and is not supported in Databricks Runtime 14.0 and above."
+                        },
+                        "jar": {
+                          "type": "string",
+                          "description": "URI of the JAR library to install. Supported URIs include Workspace paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ \"jar\": \"/Workspace/path/to/library.jar\" }`, `{ \"jar\" : \"/Volumes/path/to/library.jar\" }` or `{ \"jar\": \"s3://my-bucket/library.jar\" }`. If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the S3 URI."
+                        },
+                        "maven": {
+                          "type": "object",
+                          "properties": {
+                            "coordinates": {
+                              "type": "string"
+                            },
+                            "exclusions": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "List of dependences to exclude. For example: `[\"slf4j:slf4j\", \"*:hadoop-client\"]`. Maven dependency exclusions: https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html."
+                            },
+                            "repo": {
+                              "type": "string",
+                              "description": "Maven repo to install the Maven package from. If omitted, both Maven Central Repository and Spark Packages are searched."
+                            }
+                          },
+                          "required": [
+                            "coordinates"
+                          ],
+                          "description": "Specification of a maven library to be installed. For example: `{ \"coordinates\": \"org.jsoup:jsoup:1.7.2\" }`"
+                        },
+                        "pypi": {
+                          "type": "object",
+                          "properties": {
+                            "package": {
+                              "type": "string"
+                            },
+                            "repo": {
+                              "type": "string",
+                              "description": "The repository where the package can be found. If not specified, the default pip index is used."
+                            }
+                          },
+                          "required": [
+                            "package"
+                          ],
+                          "description": "Specification of a PyPi library to be installed. For example: `{ \"package\": \"simplejson\" }`"
+                        },
+                        "requirements": {
+                          "type": "string",
+                          "description": "URI of the requirements.txt file to install. Only Workspace paths and Unity Catalog Volumes paths are supported. For example: `{ \"requirements\": \"/Workspace/path/to/requirements.txt\" }` or `{ \"requirements\" : \"/Volumes/path/to/requirements.txt\" }`"
+                        },
+                        "whl": {
+                          "type": "string",
+                          "description": "URI of the wheel library to install. Supported URIs include Workspace paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ \"whl\": \"/Workspace/path/to/library.whl\" }`, `{ \"whl\" : \"/Volumes/path/to/library.whl\" }` or `{ \"whl\": \"s3://my-bucket/library.whl\" }`. If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the S3 URI."
+                        }
+                      }
                     },
                     "description": "The libraries to install."
                   }
@@ -3813,7 +5638,79 @@
                   "libraries": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/Library"
+                      "type": "object",
+                      "properties": {
+                        "cran": {
+                          "type": "object",
+                          "properties": {
+                            "package": {
+                              "type": "string"
+                            },
+                            "repo": {
+                              "type": "string",
+                              "description": "The repository where the package can be found. If not specified, the default CRAN repo is used."
+                            }
+                          },
+                          "required": [
+                            "package"
+                          ]
+                        },
+                        "egg": {
+                          "type": "string",
+                          "description": "Deprecated. URI of the egg library to install. Installing Python egg files is deprecated and is not supported in Databricks Runtime 14.0 and above."
+                        },
+                        "jar": {
+                          "type": "string",
+                          "description": "URI of the JAR library to install. Supported URIs include Workspace paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ \"jar\": \"/Workspace/path/to/library.jar\" }`, `{ \"jar\" : \"/Volumes/path/to/library.jar\" }` or `{ \"jar\": \"s3://my-bucket/library.jar\" }`. If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the S3 URI."
+                        },
+                        "maven": {
+                          "type": "object",
+                          "properties": {
+                            "coordinates": {
+                              "type": "string"
+                            },
+                            "exclusions": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "List of dependences to exclude. For example: `[\"slf4j:slf4j\", \"*:hadoop-client\"]`. Maven dependency exclusions: https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html."
+                            },
+                            "repo": {
+                              "type": "string",
+                              "description": "Maven repo to install the Maven package from. If omitted, both Maven Central Repository and Spark Packages are searched."
+                            }
+                          },
+                          "required": [
+                            "coordinates"
+                          ],
+                          "description": "Specification of a maven library to be installed. For example: `{ \"coordinates\": \"org.jsoup:jsoup:1.7.2\" }`"
+                        },
+                        "pypi": {
+                          "type": "object",
+                          "properties": {
+                            "package": {
+                              "type": "string"
+                            },
+                            "repo": {
+                              "type": "string",
+                              "description": "The repository where the package can be found. If not specified, the default pip index is used."
+                            }
+                          },
+                          "required": [
+                            "package"
+                          ],
+                          "description": "Specification of a PyPi library to be installed. For example: `{ \"package\": \"simplejson\" }`"
+                        },
+                        "requirements": {
+                          "type": "string",
+                          "description": "URI of the requirements.txt file to install. Only Workspace paths and Unity Catalog Volumes paths are supported. For example: `{ \"requirements\": \"/Workspace/path/to/requirements.txt\" }` or `{ \"requirements\" : \"/Volumes/path/to/requirements.txt\" }`"
+                        },
+                        "whl": {
+                          "type": "string",
+                          "description": "URI of the wheel library to install. Supported URIs include Workspace paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ \"whl\": \"/Workspace/path/to/library.whl\" }`, `{ \"whl\" : \"/Volumes/path/to/library.whl\" }` or `{ \"whl\": \"s3://my-bucket/library.whl\" }`. If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the S3 URI."
+                        }
+                      }
                     },
                     "description": "The libraries to uninstall."
                   }

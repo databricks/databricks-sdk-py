@@ -103,28 +103,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list_for_listing"><CopyableCode code="list_for_listing" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List exchanges associated with a listing</td>
 </tr>
 <tr>
     <td><a href="#list_for_exchange"><CopyableCode code="list_for_exchange" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-exchange_id"><code>exchange_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-exchange_id"><code>exchange_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List listings associated with an exchange</td>
 </tr>
 <tr>
     <td><a href="#add"><CopyableCode code="add" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-exchange_id"><code>exchange_id</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-exchange_id"><code>exchange_id</code></a></td>
     <td></td>
     <td>Associate an exchange with a listing</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Disassociate an exchange with a listing</td>
 </tr>
@@ -144,11 +144,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-exchange_id">
     <td><CopyableCode code="exchange_id" /></td>
     <td><code>string</code></td>
@@ -164,9 +159,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>:param page_size: int (optional)</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td></td>
 </tr>
 <tr id="parameter-page_token">
@@ -201,7 +201,7 @@ created_at,
 created_by
 FROM databricks_workspace.marketplace.provider_exchange_listings
 WHERE listing_id = '{{ listing_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -216,7 +216,7 @@ SELECT
 *
 FROM databricks_workspace.marketplace.provider_exchange_listings
 WHERE exchange_id = '{{ exchange_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -242,12 +242,12 @@ Associate an exchange with a listing
 INSERT INTO databricks_workspace.marketplace.provider_exchange_listings (
 listing_id,
 exchange_id,
-deployment_name
+workspace
 )
 SELECT 
 '{{ listing_id }}' /* required */,
 '{{ exchange_id }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 exchange_for_listing
 ;
@@ -259,7 +259,7 @@ exchange_for_listing
 # Description fields are for documentation purposes
 - name: provider_exchange_listings
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the provider_exchange_listings resource.
     - name: listing_id
@@ -288,7 +288,7 @@ Disassociate an exchange with a listing
 ```sql
 DELETE FROM databricks_workspace.marketplace.provider_exchange_listings
 WHERE id = '{{ id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

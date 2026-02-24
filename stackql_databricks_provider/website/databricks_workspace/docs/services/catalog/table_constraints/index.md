@@ -53,14 +53,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-full_name_arg"><code>full_name_arg</code></a>, <a href="#parameter-constraint"><code>constraint</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-full_name_arg"><code>full_name_arg</code></a>, <a href="#parameter-constraint"><code>constraint</code></a></td>
     <td></td>
     <td>Creates a new table constraint.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-constraint_name"><code>constraint_name</code></a>, <a href="#parameter-cascade"><code>cascade</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-constraint_name"><code>constraint_name</code></a>, <a href="#parameter-cascade"><code>cascade</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes a table constraint.</td>
 </tr>
@@ -90,15 +90,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The name of the constraint to delete.</td>
 </tr>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-full_name">
     <td><CopyableCode code="full_name" /></td>
     <td><code>string</code></td>
     <td>Full name of the table referenced by the constraint.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -120,12 +120,12 @@ Creates a new table constraint.
 INSERT INTO databricks_workspace.catalog.table_constraints (
 full_name_arg,
 constraint,
-deployment_name
+workspace
 )
 SELECT 
 '{{ full_name_arg }}' /* required */,
 '{{ constraint }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 foreign_key_constraint,
 named_table_constraint,
@@ -139,7 +139,7 @@ primary_key_constraint
 # Description fields are for documentation purposes
 - name: table_constraints
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the table_constraints resource.
     - name: full_name_arg
@@ -147,9 +147,61 @@ primary_key_constraint
       description: |
         The full name of the table referenced by the constraint.
     - name: constraint
-      value: string
+      value: object
       description: |
         :returns: :class:`TableConstraint`
+      props:
+      - name: foreign_key_constraint
+        value: object
+        props:
+        - name: name
+          value: string
+        - name: child_columns
+          value: array
+          description: |
+            Column names for this constraint.
+          items:
+            type: string
+        - name: parent_table
+          value: string
+          description: |
+            The full name of the parent constraint.
+        - name: parent_columns
+          value: array
+          description: |
+            Column names for this constraint.
+          items:
+            type: string
+        - name: rely
+          value: boolean
+          description: |
+            True if the constraint is RELY, false or unset if NORELY.
+      - name: named_table_constraint
+        value: object
+        props:
+        - name: name
+          value: string
+      - name: primary_key_constraint
+        value: object
+        props:
+        - name: name
+          value: string
+        - name: child_columns
+          value: array
+          description: |
+            Column names for this constraint.
+          items:
+            type: string
+        - name: rely
+          value: boolean
+          description: |
+            True if the constraint is RELY, false or unset if NORELY.
+        - name: timeseries_columns
+          value: array
+          description: |
+            Column names that represent a timeseries.
+          items:
+            type: string
 ```
 </TabItem>
 </Tabs>
@@ -172,7 +224,7 @@ DELETE FROM databricks_workspace.catalog.table_constraints
 WHERE full_name = '{{ full_name }}' --required
 AND constraint_name = '{{ constraint_name }}' --required
 AND cascade = '{{ cascade }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

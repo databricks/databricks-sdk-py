@@ -273,35 +273,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Get a Kafka config. During PrPr, Kafka configs can be read and used when creating features under the</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List Kafka configs. During PrPr, Kafka configs can be read and used when creating features under the</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-kafka_config"><code>kafka_config</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-kafka_config"><code>kafka_config</code></a></td>
     <td></td>
     <td>Create a Kafka config. During PrPr, Kafka configs can be read and used when creating features under</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-kafka_config"><code>kafka_config</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-kafka_config"><code>kafka_config</code></a></td>
     <td></td>
     <td>Update a Kafka config. During PrPr, Kafka configs can be read and used when creating features under</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Delete a Kafka config. During PrPr, Kafka configs can be read and used when creating features under</td>
 </tr>
@@ -321,11 +321,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
@@ -333,12 +328,17 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-update_mask">
     <td><CopyableCode code="update_mask" /></td>
-    <td><code>string</code></td>
+    <td><code>object</code></td>
     <td>The list of fields to update.</td>
+</tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>The maximum number of results to return.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -374,7 +374,7 @@ subscription_mode,
 value_schema
 FROM databricks_workspace.ml.feature_kafka_configs
 WHERE name = '{{ name }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -393,7 +393,7 @@ key_schema,
 subscription_mode,
 value_schema
 FROM databricks_workspace.ml.feature_kafka_configs
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -418,11 +418,11 @@ Create a Kafka config. During PrPr, Kafka configs can be read and used when crea
 ```sql
 INSERT INTO databricks_workspace.ml.feature_kafka_configs (
 kafka_config,
-deployment_name
+workspace
 )
 SELECT 
 '{{ kafka_config }}' /* required */,
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 name,
 auth_config,
@@ -441,13 +441,80 @@ value_schema
 # Description fields are for documentation purposes
 - name: feature_kafka_configs
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the feature_kafka_configs resource.
     - name: kafka_config
-      value: string
+      value: object
       description: |
         :returns: :class:`KafkaConfig`
+      props:
+      - name: name
+        value: string
+      - name: bootstrap_servers
+        value: string
+        description: |
+          A comma-separated list of host/port pairs pointing to Kafka cluster.
+      - name: subscription_mode
+        value: object
+        description: |
+          Options to configure which Kafka topics to pull data from.
+        props:
+        - name: assign
+          value: string
+        - name: subscribe
+          value: string
+          description: |
+            A comma-separated list of Kafka topics to read from. For example, 'topicA,topicB,topicC'.
+        - name: subscribe_pattern
+          value: string
+          description: |
+            A regular expression matching topics to subscribe to. For example, 'topic.*' will subscribe to all topics starting with 'topic'.
+      - name: auth_config
+        value: object
+        description: |
+          Authentication configuration for connection to topics.
+        props:
+        - name: uc_service_credential_name
+          value: string
+      - name: backfill_source
+        value: object
+        description: |
+          A user-provided and managed source for backfilling data. Historical data is used when creating a training set from streaming features linked to this Kafka config. In the future, a separate table will be maintained by Databricks for forward filling data. The schema for this source must match exactly that of the key and value schemas specified for this Kafka config.
+        props:
+        - name: delta_table_source
+          value: object
+          props:
+          - name: full_name
+            value: string
+          - name: entity_columns
+            value: array
+            description: |
+              The entity columns of the Delta table.
+            items:
+              type: string
+          - name: timeseries_column
+            value: string
+            description: |
+              The timeseries column of the Delta table.
+      - name: extra_options
+        value: object
+        description: |
+          Catch-all for miscellaneous options. Keys should be source options or Kafka consumer options (kafka.*)
+      - name: key_schema
+        value: object
+        description: |
+          Schema configuration for extracting message keys from topics. At least one of key_schema and value_schema must be provided.
+        props:
+        - name: json_schema
+          value: string
+      - name: value_schema
+        value: object
+        description: |
+          Schema configuration for extracting message values from topics. At least one of key_schema and value_schema must be provided.
+        props:
+        - name: json_schema
+          value: string
 ```
 </TabItem>
 </Tabs>
@@ -472,7 +539,7 @@ kafka_config = '{{ kafka_config }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 AND kafka_config = '{{ kafka_config }}' --required
 RETURNING
 name,
@@ -503,7 +570,7 @@ Delete a Kafka config. During PrPr, Kafka configs can be read and used when crea
 ```sql
 DELETE FROM databricks_workspace.ml.feature_kafka_configs
 WHERE name = '{{ name }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>

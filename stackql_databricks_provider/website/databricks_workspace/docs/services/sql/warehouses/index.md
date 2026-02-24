@@ -75,7 +75,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "name",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CHANNEL_NAME_CURRENT, CHANNEL_NAME_CUSTOM, CHANNEL_NAME_PREVIEW, CHANNEL_NAME_PREVIOUS)"
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CHANNEL_NAME_CURRENT, CHANNEL_NAME_CUSTOM, CHANNEL_NAME_PREVIEW, CHANNEL_NAME_PREVIOUS)"
       }
     ]
   },
@@ -277,7 +277,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "name",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CHANNEL_NAME_CURRENT, CHANNEL_NAME_CUSTOM, CHANNEL_NAME_PREVIEW, CHANNEL_NAME_PREVIOUS)"
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CHANNEL_NAME_CURRENT, CHANNEL_NAME_CUSTOM, CHANNEL_NAME_PREVIEW, CHANNEL_NAME_PREVIOUS)"
       }
     ]
   },
@@ -463,49 +463,49 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets the information for a single SQL warehouse.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-run_as_user_id"><code>run_as_user_id</code></a></td>
     <td>Lists all SQL warehouses that a user has access to.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Creates a new SQL warehouse.</td>
 </tr>
 <tr>
     <td><a href="#edit"><CopyableCode code="edit" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates the configuration for a SQL warehouse.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Deletes a SQL warehouse.</td>
 </tr>
 <tr>
     <td><a href="#start"><CopyableCode code="start" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Starts a SQL warehouse.</td>
 </tr>
 <tr>
     <td><a href="#stop"><CopyableCode code="stop" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Stops a SQL warehouse.</td>
 </tr>
@@ -525,19 +525,19 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
-    <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
-</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>Required. Id of the SQL warehouse.</td>
 </tr>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
+    <td><code>string</code></td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
+</tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>The max number of warehouses to return.</td>
 </tr>
 <tr id="parameter-page_token">
@@ -547,7 +547,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-run_as_user_id">
     <td><CopyableCode code="run_as_user_id" /></td>
-    <td><code>string</code></td>
+    <td><code>integer</code></td>
     <td>Service Principal which will be used to fetch the list of endpoints. If not specified, SQL Gateway will use the user from the session header.</td>
 </tr>
 </tbody>
@@ -590,7 +590,7 @@ tags,
 warehouse_type
 FROM databricks_workspace.sql.warehouses
 WHERE id = '{{ id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -621,7 +621,7 @@ state,
 tags,
 warehouse_type
 FROM databricks_workspace.sql.warehouses
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE workspace = '{{ workspace }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 AND run_as_user_id = '{{ run_as_user_id }}'
@@ -659,23 +659,23 @@ name,
 spot_instance_policy,
 tags,
 warehouse_type,
-deployment_name
+workspace
 )
 SELECT 
-'{{ auto_stop_mins }}',
+{{ auto_stop_mins }},
 '{{ channel }}',
 '{{ cluster_size }}',
 '{{ creator_name }}',
-'{{ enable_photon }}',
-'{{ enable_serverless_compute }}',
+{{ enable_photon }},
+{{ enable_serverless_compute }},
 '{{ instance_profile_arn }}',
-'{{ max_num_clusters }}',
-'{{ min_num_clusters }}',
+{{ max_num_clusters }},
+{{ min_num_clusters }},
 '{{ name }}',
 '{{ spot_instance_policy }}',
 '{{ tags }}',
 '{{ warehouse_type }}',
-'{{ deployment_name }}'
+'{{ workspace }}'
 RETURNING
 id,
 name,
@@ -706,17 +706,46 @@ warehouse_type
 # Description fields are for documentation purposes
 - name: warehouses
   props:
-    - name: deployment_name
+    - name: workspace
       value: string
       description: Required parameter for the warehouses resource.
     - name: auto_stop_mins
-      value: string
+      value: integer
       description: |
         The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it is automatically stopped. Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop. Defaults to 120 mins
     - name: channel
-      value: string
+      value: object
       description: |
         Channel Details
+      props:
+      - name: dbsql_version
+        value: string
+      - name: name
+        value: string
+        description: |
+          Create a collection of name/value pairs.
+          Example enumeration:
+          >>> class Color(Enum):
+          ...     RED = 1
+          ...     BLUE = 2
+          ...     GREEN = 3
+          Access them by:
+          - attribute access::
+          >>> Color.RED
+          <Color.RED: 1>
+          - value lookup:
+          >>> Color(1)
+          <Color.RED: 1>
+          - name lookup:
+          >>> Color['RED']
+          <Color.RED: 1>
+          Enumerations can be iterated over, and know how many members they have:
+          >>> len(Color)
+          3
+          >>> list(Color)
+          [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+          Methods can be added to enumerations, and members can have their own
+          attributes -- see the documentation for details.
     - name: cluster_size
       value: string
       description: |
@@ -726,11 +755,11 @@ warehouse_type
       description: |
         warehouse creator name
     - name: enable_photon
-      value: string
+      value: boolean
       description: |
         Configures whether the warehouse should use Photon optimized clusters. Defaults to false.
     - name: enable_serverless_compute
-      value: string
+      value: boolean
       description: |
         Configures whether the warehouse should use serverless compute
     - name: instance_profile_arn
@@ -738,11 +767,11 @@ warehouse_type
       description: |
         Deprecated. Instance profile used to pass IAM role to the cluster
     - name: max_num_clusters
-      value: string
+      value: integer
       description: |
         Maximum number of clusters that the autoscaler will create to handle concurrent queries. Supported values: - Must be >= min_num_clusters - Must be <= 40. Defaults to min_clusters if unset.
     - name: min_num_clusters
-      value: string
+      value: integer
       description: |
         Minimum number of available clusters that will be maintained for this SQL warehouse. Increasing this will ensure that a larger number of clusters are always running and therefore may reduce the cold start time for new queries. This is similar to reserved vs. revocable cores in a resource manager. Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30) Defaults to 1
     - name: name
@@ -754,9 +783,17 @@ warehouse_type
       description: |
         Configurations whether the endpoint should use spot instances.
     - name: tags
-      value: string
+      value: object
       description: |
         A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated with this SQL warehouse. Supported values: - Number of tags < 45.
+      props:
+      - name: custom_tags
+        value: array
+        props:
+        - name: key
+          value: string
+        - name: value
+          value: string
     - name: warehouse_type
       value: string
       description: |
@@ -781,22 +818,22 @@ Updates the configuration for a SQL warehouse.
 ```sql
 REPLACE databricks_workspace.sql.warehouses
 SET 
-auto_stop_mins = '{{ auto_stop_mins }}',
+auto_stop_mins = {{ auto_stop_mins }},
 channel = '{{ channel }}',
 cluster_size = '{{ cluster_size }}',
 creator_name = '{{ creator_name }}',
-enable_photon = '{{ enable_photon }}',
-enable_serverless_compute = '{{ enable_serverless_compute }}',
+enable_photon = {{ enable_photon }},
+enable_serverless_compute = {{ enable_serverless_compute }},
 instance_profile_arn = '{{ instance_profile_arn }}',
-max_num_clusters = '{{ max_num_clusters }}',
-min_num_clusters = '{{ min_num_clusters }}',
+max_num_clusters = {{ max_num_clusters }},
+min_num_clusters = {{ min_num_clusters }},
 name = '{{ name }}',
 spot_instance_policy = '{{ spot_instance_policy }}',
 tags = '{{ tags }}',
 warehouse_type = '{{ warehouse_type }}'
 WHERE 
 id = '{{ id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 id,
 name,
@@ -838,7 +875,7 @@ Deletes a SQL warehouse.
 ```sql
 DELETE FROM databricks_workspace.sql.warehouses
 WHERE id = '{{ id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -861,7 +898,7 @@ Starts a SQL warehouse.
 ```sql
 EXEC databricks_workspace.sql.warehouses.start 
 @id='{{ id }}' --required, 
-@deployment_name='{{ deployment_name }}' --required
+@workspace='{{ workspace }}' --required
 ;
 ```
 </TabItem>
@@ -872,7 +909,7 @@ Stops a SQL warehouse.
 ```sql
 EXEC databricks_workspace.sql.warehouses.stop 
 @id='{{ id }}' --required, 
-@deployment_name='{{ deployment_name }}' --required
+@workspace='{{ workspace }}' --required
 ;
 ```
 </TabItem>

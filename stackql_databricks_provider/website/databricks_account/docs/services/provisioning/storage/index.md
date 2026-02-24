@@ -293,9 +293,12 @@ root_bucket_info
       description: |
         The human-readable name of the storage configuration.
     - name: root_bucket_info
-      value: string
+      value: object
       description: |
         Root S3 bucket information.
+      props:
+      - name: bucket_name
+        value: string
     - name: role_arn
       value: string
       description: |

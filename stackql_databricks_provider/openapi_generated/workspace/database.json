@@ -36,7 +36,31 @@
                 "type": "object",
                 "properties": {
                   "catalog": {
-                    "$ref": "#/components/schemas/DatabaseCatalog",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "database_instance_name": {
+                        "type": "string",
+                        "description": "The name of the DatabaseInstance housing the database."
+                      },
+                      "database_name": {
+                        "type": "string",
+                        "description": "The name of the database (in a instance) associated with the catalog."
+                      },
+                      "create_database_if_not_exists": {
+                        "type": "boolean"
+                      },
+                      "uid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "database_instance_name",
+                      "database_name"
+                    ],
                     "description": ":returns: :class:`DatabaseCatalog`"
                   }
                 },
@@ -95,7 +119,196 @@
                 "type": "object",
                 "properties": {
                   "database_instance": {
-                    "$ref": "#/components/schemas/DatabaseInstance",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "The name of the instance. This is the unique identifier for the instance."
+                      },
+                      "capacity": {
+                        "type": "string",
+                        "description": "The sku of the instance. Valid values are \"CU_1\", \"CU_2\", \"CU_4\", \"CU_8\"."
+                      },
+                      "child_instance_refs": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "branch_time": {
+                              "type": "string",
+                              "description": "Branch time of the ref database instance. For a parent ref instance, this is the point in time on the parent instance from which the instance was created. For a child ref instance, this is the point in time on the instance from which the child instance was created. Input: For specifying the point in time to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+                            },
+                            "effective_lsn": {
+                              "type": "string",
+                              "description": "For a parent ref instance, this is the LSN on the parent instance from which the instance was created. For a child ref instance, this is the LSN on the instance from which the child instance was created. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                            },
+                            "lsn": {
+                              "type": "string",
+                              "description": "User-specified WAL LSN of the ref database instance. Input: For specifying the WAL LSN to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Name of the ref database instance."
+                            },
+                            "uid": {
+                              "type": "string",
+                              "description": "Id of the ref database instance."
+                            }
+                          },
+                          "description": "DatabaseInstanceRef is a reference to a database instance. It is used in the DatabaseInstance\n    object to refer to the parent instance of an instance and to refer the child instances of an\n    instance. To specify as a parent instance during creation of an instance, the lsn and\n    branch_time fields are optional. If not specified, the child instance will be created from the\n    latest lsn of the parent. If both lsn and branch_time are specified, the lsn will be used to\n    create the child instance."
+                        },
+                        "description": "The refs of the child instances. This is only available if the instance is parent instance."
+                      },
+                      "creation_time": {
+                        "type": "string",
+                        "description": "The timestamp when the instance was created."
+                      },
+                      "creator": {
+                        "type": "string",
+                        "description": "The email of the creator of the instance."
+                      },
+                      "custom_tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string",
+                              "description": "The value of the custom tag."
+                            }
+                          }
+                        },
+                        "description": "Custom tags associated with the instance. This field is only included on create and update responses."
+                      },
+                      "effective_capacity": {
+                        "type": "string",
+                        "description": "Deprecated. The sku of the instance; this field will always match the value of capacity. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_custom_tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string",
+                              "description": "The value of the custom tag."
+                            }
+                          }
+                        },
+                        "description": "The recorded custom tags associated with the instance. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_enable_pg_native_login": {
+                        "type": "boolean",
+                        "description": "Whether the instance has PG native password login enabled. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_enable_readable_secondaries": {
+                        "type": "boolean",
+                        "description": "Whether secondaries serving read-only traffic are enabled. Defaults to false. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_node_count": {
+                        "type": "integer",
+                        "description": "The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults to 1 primary and 0 secondaries. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_retention_window_in_days": {
+                        "type": "integer",
+                        "description": "The retention window for the instance. This is the time window in days for which the historical data is retained. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_stopped": {
+                        "type": "boolean",
+                        "description": "Whether the instance is stopped. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_usage_policy_id": {
+                        "type": "string",
+                        "description": "The policy that is applied to the instance. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "enable_pg_native_login": {
+                        "type": "boolean",
+                        "description": "Whether to enable PG native password login on the instance. Defaults to false."
+                      },
+                      "enable_readable_secondaries": {
+                        "type": "boolean",
+                        "description": "Whether to enable secondaries to serve read-only traffic. Defaults to false."
+                      },
+                      "node_count": {
+                        "type": "integer",
+                        "description": "The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults to 1 primary and 0 secondaries. This field is input only, see effective_node_count for the output."
+                      },
+                      "parent_instance_ref": {
+                        "type": "object",
+                        "properties": {
+                          "branch_time": {
+                            "type": "string",
+                            "description": "Branch time of the ref database instance. For a parent ref instance, this is the point in time on the parent instance from which the instance was created. For a child ref instance, this is the point in time on the instance from which the child instance was created. Input: For specifying the point in time to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+                          },
+                          "effective_lsn": {
+                            "type": "string",
+                            "description": "For a parent ref instance, this is the LSN on the parent instance from which the instance was created. For a child ref instance, this is the LSN on the instance from which the child instance was created. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                          },
+                          "lsn": {
+                            "type": "string",
+                            "description": "User-specified WAL LSN of the ref database instance. Input: For specifying the WAL LSN to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Name of the ref database instance."
+                          },
+                          "uid": {
+                            "type": "string",
+                            "description": "Id of the ref database instance."
+                          }
+                        },
+                        "description": "The ref of the parent instance. This is only available if the instance is child instance. Input: For specifying the parent instance to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+                      },
+                      "pg_version": {
+                        "type": "string",
+                        "description": "The version of Postgres running on the instance."
+                      },
+                      "read_only_dns": {
+                        "type": "string",
+                        "description": "The DNS endpoint to connect to the instance for read only access. This is only available if enable_readable_secondaries is true."
+                      },
+                      "read_write_dns": {
+                        "type": "string",
+                        "description": "The DNS endpoint to connect to the instance for read+write access."
+                      },
+                      "retention_window_in_days": {
+                        "type": "integer",
+                        "description": "The retention window for the instance. This is the time window in days for which the historical data is retained. The default value is 7 days. Valid values are 2 to 35 days."
+                      },
+                      "state": {
+                        "type": "string",
+                        "x-enum": [
+                          "AVAILABLE",
+                          "DELETING",
+                          "FAILING_OVER",
+                          "STARTING",
+                          "STOPPED",
+                          "UPDATING"
+                        ],
+                        "description": "The current state of the instance."
+                      },
+                      "stopped": {
+                        "type": "boolean",
+                        "description": "Whether to stop the instance. An input only param, see effective_stopped for the output."
+                      },
+                      "uid": {
+                        "type": "string",
+                        "description": "An immutable UUID identifier for the instance."
+                      },
+                      "usage_policy_id": {
+                        "type": "string",
+                        "description": "The desired usage policy to associate with the instance."
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
                     "description": "Instance to create."
                   }
                 },
@@ -233,7 +446,67 @@
                 "type": "object",
                 "properties": {
                   "database_instance_role": {
-                    "$ref": "#/components/schemas/DatabaseInstanceRole"
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "The name of the role. This is the unique identifier for the role in an instance."
+                      },
+                      "attributes": {
+                        "type": "object",
+                        "properties": {
+                          "bypassrls": {
+                            "type": "boolean"
+                          },
+                          "createdb": {
+                            "type": "boolean"
+                          },
+                          "createrole": {
+                            "type": "boolean"
+                          }
+                        },
+                        "description": "The desired API-exposed Postgres role attribute to associate with the role. Optional."
+                      },
+                      "effective_attributes": {
+                        "type": "object",
+                        "properties": {
+                          "bypassrls": {
+                            "type": "boolean"
+                          },
+                          "createdb": {
+                            "type": "boolean"
+                          },
+                          "createrole": {
+                            "type": "boolean"
+                          }
+                        },
+                        "description": "The attributes that are applied to the role. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "identity_type": {
+                        "type": "string",
+                        "x-enum": [
+                          "GROUP",
+                          "PG_ONLY",
+                          "SERVICE_PRINCIPAL",
+                          "USER"
+                        ],
+                        "description": "The type of the role."
+                      },
+                      "instance_name": {
+                        "type": "string"
+                      },
+                      "membership_role": {
+                        "type": "string",
+                        "x-enum": [
+                          "DATABRICKS_SUPERUSER"
+                        ],
+                        "description": "An enum value for a standard role that this role is a member of."
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "description": "A DatabaseInstanceRole represents a Postgres role in a database instance."
                   }
                 },
                 "required": [
@@ -358,7 +631,24 @@
                 "type": "object",
                 "properties": {
                   "table": {
-                    "$ref": "#/components/schemas/DatabaseTable",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Full three-part (catalog, schema, table) name of the table."
+                      },
+                      "database_instance_name": {
+                        "type": "string",
+                        "description": "Name of the target database instance. This is required when creating database tables in standard catalogs. This is optional when creating database tables in registered catalogs. If this field is specified when creating database tables in registered catalogs, the database instance name MUST match that of the registered catalog (or the request will be rejected)."
+                      },
+                      "logical_database_name": {
+                        "type": "string",
+                        "description": "Target Postgres database object (logical database) name for this table. When creating a table in a standard catalog, this field is required. In this scenario, specifying this field will allow targeting an arbitrary postgres database. Registration of database tables via /database/tables is currently only supported in standard catalogs."
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
                     "description": ":returns: :class:`DatabaseTable`"
                   }
                 },
@@ -417,7 +707,310 @@
                 "type": "object",
                 "properties": {
                   "synced_table": {
-                    "$ref": "#/components/schemas/SyncedDatabaseTable",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Full three-part (catalog, schema, table) name of the table."
+                      },
+                      "data_synchronization_status": {
+                        "type": "object",
+                        "properties": {
+                          "continuous_update_status": {
+                            "type": "object",
+                            "properties": {
+                              "initial_pipeline_sync_progress": {
+                                "type": "object",
+                                "properties": {
+                                  "estimated_completion_time_seconds": {
+                                    "type": "number",
+                                    "description": "The estimated time remaining to complete this update in seconds."
+                                  },
+                                  "latest_version_currently_processing": {
+                                    "type": "integer",
+                                    "description": "The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet."
+                                  },
+                                  "provisioning_phase": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "PROVISIONING_PHASE_INDEX_SCAN",
+                                      "PROVISIONING_PHASE_INDEX_SORT",
+                                      "PROVISIONING_PHASE_MAIN"
+                                    ],
+                                    "description": "The current phase of the data synchronization pipeline."
+                                  },
+                                  "sync_progress_completion": {
+                                    "type": "number",
+                                    "description": "The completion ratio of this update. This is a number between 0 and 1."
+                                  },
+                                  "synced_row_count": {
+                                    "type": "integer",
+                                    "description": "The number of rows that have been synced in this update."
+                                  },
+                                  "total_row_count": {
+                                    "type": "integer",
+                                    "description": "The total number of rows that need to be synced in this update. This number may be an estimate."
+                                  }
+                                },
+                                "description": "Progress of the initial data synchronization."
+                              },
+                              "last_processed_commit_version": {
+                                "type": "integer",
+                                "description": "The last source table Delta version that was successfully synced to the synced table."
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "The end timestamp of the last time any data was synchronized from the source table to the synced table. This is when the data is available in the synced table."
+                              }
+                            },
+                            "description": "Detailed status of a synced table. Shown if the synced table is in the SYNCED_CONTINUOUS_UPDATE\n    or the SYNCED_UPDATING_PIPELINE_RESOURCES state."
+                          },
+                          "detailed_state": {
+                            "type": "string",
+                            "x-enum": [
+                              "SYNCED_TABLED_OFFLINE",
+                              "SYNCED_TABLE_OFFLINE_FAILED",
+                              "SYNCED_TABLE_ONLINE",
+                              "SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE",
+                              "SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE",
+                              "SYNCED_TABLE_ONLINE_PIPELINE_FAILED",
+                              "SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE",
+                              "SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES",
+                              "SYNCED_TABLE_PROVISIONING",
+                              "SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT",
+                              "SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES"
+                            ],
+                            "description": "The state of the synced table."
+                          },
+                          "failed_status": {
+                            "type": "object",
+                            "properties": {
+                              "last_processed_commit_version": {
+                                "type": "integer",
+                                "description": "The last source table Delta version that was successfully synced to the synced table. The last source table Delta version that was synced to the synced table. Only populated if the table is still synced and available for serving."
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "The end timestamp of the last time any data was synchronized from the source table to the synced table. Only populated if the table is still synced and available for serving."
+                              }
+                            },
+                            "description": "Detailed status of a synced table. Shown if the synced table is in the OFFLINE_FAILED or the\n    SYNCED_PIPELINE_FAILED state."
+                          },
+                          "last_sync": {
+                            "type": "object",
+                            "properties": {
+                              "delta_table_sync_info": {
+                                "type": "object",
+                                "properties": {
+                                  "delta_commit_timestamp": {
+                                    "type": "string"
+                                  },
+                                  "delta_commit_version": {
+                                    "type": "integer",
+                                    "description": "The Delta Lake commit version that was last successfully synced."
+                                  }
+                                }
+                              },
+                              "sync_end_timestamp": {
+                                "type": "string",
+                                "description": "The end timestamp of the most recent successful synchronization. This is the time when the data is available in the synced table."
+                              },
+                              "sync_start_timestamp": {
+                                "type": "string",
+                                "description": "The starting timestamp of the most recent successful synchronization from the source table to the destination (synced) table. Note this is the starting timestamp of the sync operation, not the end time. E.g., for a batch, this is the time when the sync operation started."
+                              }
+                            },
+                            "description": "Summary of the last successful synchronization from source to destination. Will always be present if there has been a successful sync. Even if the most recent syncs have failed. Limitation: The only exception is if the synced table is doing a FULL REFRESH, then the last sync information will not be available until the full refresh is complete. This limitation will be addressed in a future version. This top-level field is a convenience for consumers who want easy access to last sync information without having to traverse detailed_status."
+                          },
+                          "message": {
+                            "type": "string",
+                            "description": "A text description of the current state of the synced table."
+                          },
+                          "pipeline_id": {
+                            "type": "string",
+                            "description": "ID of the associated pipeline. The pipeline ID may have been provided by the client (in the case of bin packing), or generated by the server (when creating a new pipeline)."
+                          },
+                          "provisioning_status": {
+                            "type": "object",
+                            "properties": {
+                              "initial_pipeline_sync_progress": {
+                                "type": "object",
+                                "properties": {
+                                  "estimated_completion_time_seconds": {
+                                    "type": "number",
+                                    "description": "The estimated time remaining to complete this update in seconds."
+                                  },
+                                  "latest_version_currently_processing": {
+                                    "type": "integer",
+                                    "description": "The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet."
+                                  },
+                                  "provisioning_phase": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "PROVISIONING_PHASE_INDEX_SCAN",
+                                      "PROVISIONING_PHASE_INDEX_SORT",
+                                      "PROVISIONING_PHASE_MAIN"
+                                    ],
+                                    "description": "The current phase of the data synchronization pipeline."
+                                  },
+                                  "sync_progress_completion": {
+                                    "type": "number",
+                                    "description": "The completion ratio of this update. This is a number between 0 and 1."
+                                  },
+                                  "synced_row_count": {
+                                    "type": "integer",
+                                    "description": "The number of rows that have been synced in this update."
+                                  },
+                                  "total_row_count": {
+                                    "type": "integer",
+                                    "description": "The total number of rows that need to be synced in this update. This number may be an estimate."
+                                  }
+                                },
+                                "description": "Details about initial data synchronization. Only populated when in the PROVISIONING_INITIAL_SNAPSHOT state."
+                              }
+                            },
+                            "description": "Detailed status of a synced table. Shown if the synced table is in the\n    PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state."
+                          },
+                          "triggered_update_status": {
+                            "type": "object",
+                            "properties": {
+                              "last_processed_commit_version": {
+                                "type": "integer",
+                                "description": "The last source table Delta version that was successfully synced to the synced table."
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "The end timestamp of the last time any data was synchronized from the source table to the synced table. This is when the data is available in the synced table."
+                              },
+                              "triggered_update_progress": {
+                                "type": "object",
+                                "properties": {
+                                  "estimated_completion_time_seconds": {
+                                    "type": "number",
+                                    "description": "The estimated time remaining to complete this update in seconds."
+                                  },
+                                  "latest_version_currently_processing": {
+                                    "type": "integer",
+                                    "description": "The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet."
+                                  },
+                                  "provisioning_phase": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "PROVISIONING_PHASE_INDEX_SCAN",
+                                      "PROVISIONING_PHASE_INDEX_SORT",
+                                      "PROVISIONING_PHASE_MAIN"
+                                    ],
+                                    "description": "The current phase of the data synchronization pipeline."
+                                  },
+                                  "sync_progress_completion": {
+                                    "type": "number",
+                                    "description": "The completion ratio of this update. This is a number between 0 and 1."
+                                  },
+                                  "synced_row_count": {
+                                    "type": "integer",
+                                    "description": "The number of rows that have been synced in this update."
+                                  },
+                                  "total_row_count": {
+                                    "type": "integer",
+                                    "description": "The total number of rows that need to be synced in this update. This number may be an estimate."
+                                  }
+                                },
+                                "description": "Progress of the active data synchronization pipeline."
+                              }
+                            },
+                            "description": "Detailed status of a synced table. Shown if the synced table is in the SYNCED_TRIGGERED_UPDATE\n    or the SYNCED_NO_PENDING_UPDATE state."
+                          }
+                        },
+                        "description": "Synced Table data synchronization status"
+                      },
+                      "database_instance_name": {
+                        "type": "string",
+                        "description": "Name of the target database instance. This is required when creating synced database tables in standard catalogs. This is optional when creating synced database tables in registered catalogs. If this field is specified when creating synced database tables in registered catalogs, the database instance name MUST match that of the registered catalog (or the request will be rejected)."
+                      },
+                      "effective_database_instance_name": {
+                        "type": "string",
+                        "description": "The name of the database instance that this table is registered to. This field is always returned, and for tables inside database catalogs is inferred database instance associated with the catalog. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_logical_database_name": {
+                        "type": "string",
+                        "description": "The name of the logical database that this table is registered to. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "logical_database_name": {
+                        "type": "string",
+                        "description": "Target Postgres database object (logical database) name for this table. When creating a synced table in a registered Postgres catalog, the target Postgres database name is inferred to be that of the registered catalog. If this field is specified in this scenario, the Postgres database name MUST match that of the registered catalog (or the request will be rejected). When creating a synced table in a standard catalog, this field is required. In this scenario, specifying this field will allow targeting an arbitrary postgres database. Note that this has implications for the `create_database_objects_is_missing` field in `spec`."
+                      },
+                      "spec": {
+                        "type": "object",
+                        "properties": {
+                          "create_database_objects_if_missing": {
+                            "type": "boolean",
+                            "description": "If true, the synced table's logical database and schema resources in PG will be created if they do not already exist."
+                          },
+                          "existing_pipeline_id": {
+                            "type": "string",
+                            "description": "At most one of existing_pipeline_id and new_pipeline_spec should be defined. If existing_pipeline_id is defined, the synced table will be bin packed into the existing pipeline referenced. This avoids creating a new pipeline and allows sharing existing compute. In this case, the scheduling_policy of this synced table must match the scheduling policy of the existing pipeline."
+                          },
+                          "new_pipeline_spec": {
+                            "type": "object",
+                            "properties": {
+                              "budget_policy_id": {
+                                "type": "string",
+                                "description": "Budget policy to set on the newly created pipeline."
+                              },
+                              "storage_catalog": {
+                                "type": "string",
+                                "description": "This field needs to be specified if the destination catalog is a managed postgres catalog. UC catalog for the pipeline to store intermediate files (checkpoints, event logs etc). This needs to be a standard catalog where the user has permissions to create Delta tables."
+                              },
+                              "storage_schema": {
+                                "type": "string",
+                                "description": "This field needs to be specified if the destination catalog is a managed postgres catalog. UC schema for the pipeline to store intermediate files (checkpoints, event logs etc). This needs to be in the standard catalog where the user has permissions to create Delta tables."
+                              }
+                            },
+                            "description": "At most one of existing_pipeline_id and new_pipeline_spec should be defined. If new_pipeline_spec is defined, a new pipeline is created for this synced table. The location pointed to is used to store intermediate files (checkpoints, event logs etc). The caller must have write permissions to create Delta tables in the specified catalog and schema. Again, note this requires write permissions, whereas the source table only requires read permissions."
+                          },
+                          "primary_key_columns": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Primary Key columns to be used for data insert/update in the destination."
+                          },
+                          "scheduling_policy": {
+                            "type": "string",
+                            "x-enum": [
+                              "CONTINUOUS",
+                              "SNAPSHOT",
+                              "TRIGGERED"
+                            ],
+                            "description": "Scheduling policy of the underlying pipeline."
+                          },
+                          "source_table_full_name": {
+                            "type": "string",
+                            "description": "Three-part (catalog, schema, table) name of the source Delta table."
+                          },
+                          "timeseries_key": {
+                            "type": "string",
+                            "description": "Time series key to deduplicate (tie-break) rows with the same primary key."
+                          }
+                        },
+                        "description": "Specification of a synced database table."
+                      },
+                      "unity_catalog_provisioning_state": {
+                        "type": "string",
+                        "x-enum": [
+                          "ACTIVE",
+                          "DEGRADED",
+                          "DELETING",
+                          "FAILED",
+                          "PROVISIONING",
+                          "UPDATING"
+                        ],
+                        "description": "The provisioning state of the synced table entity in Unity Catalog. This is distinct from the state of the data synchronization pipeline (i.e. the table may be in \"ACTIVE\" but the pipeline may be in \"PROVISIONING\" as it runs asynchronously)."
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
                     "description": ":returns: :class:`SyncedDatabaseTable`"
                   }
                 },
@@ -589,7 +1182,31 @@
                 "type": "object",
                 "properties": {
                   "database_catalog": {
-                    "$ref": "#/components/schemas/DatabaseCatalog",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "database_instance_name": {
+                        "type": "string",
+                        "description": "The name of the DatabaseInstance housing the database."
+                      },
+                      "database_name": {
+                        "type": "string",
+                        "description": "The name of the database (in a instance) associated with the catalog."
+                      },
+                      "create_database_if_not_exists": {
+                        "type": "boolean"
+                      },
+                      "uid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "database_instance_name",
+                      "database_name"
+                    ],
                     "description": "Note that updating a database catalog is not yet supported."
                   }
                 },
@@ -778,7 +1395,196 @@
                 "type": "object",
                 "properties": {
                   "database_instance": {
-                    "$ref": "#/components/schemas/DatabaseInstance",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "The name of the instance. This is the unique identifier for the instance."
+                      },
+                      "capacity": {
+                        "type": "string",
+                        "description": "The sku of the instance. Valid values are \"CU_1\", \"CU_2\", \"CU_4\", \"CU_8\"."
+                      },
+                      "child_instance_refs": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "branch_time": {
+                              "type": "string",
+                              "description": "Branch time of the ref database instance. For a parent ref instance, this is the point in time on the parent instance from which the instance was created. For a child ref instance, this is the point in time on the instance from which the child instance was created. Input: For specifying the point in time to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+                            },
+                            "effective_lsn": {
+                              "type": "string",
+                              "description": "For a parent ref instance, this is the LSN on the parent instance from which the instance was created. For a child ref instance, this is the LSN on the instance from which the child instance was created. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                            },
+                            "lsn": {
+                              "type": "string",
+                              "description": "User-specified WAL LSN of the ref database instance. Input: For specifying the WAL LSN to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Name of the ref database instance."
+                            },
+                            "uid": {
+                              "type": "string",
+                              "description": "Id of the ref database instance."
+                            }
+                          },
+                          "description": "DatabaseInstanceRef is a reference to a database instance. It is used in the DatabaseInstance\n    object to refer to the parent instance of an instance and to refer the child instances of an\n    instance. To specify as a parent instance during creation of an instance, the lsn and\n    branch_time fields are optional. If not specified, the child instance will be created from the\n    latest lsn of the parent. If both lsn and branch_time are specified, the lsn will be used to\n    create the child instance."
+                        },
+                        "description": "The refs of the child instances. This is only available if the instance is parent instance."
+                      },
+                      "creation_time": {
+                        "type": "string",
+                        "description": "The timestamp when the instance was created."
+                      },
+                      "creator": {
+                        "type": "string",
+                        "description": "The email of the creator of the instance."
+                      },
+                      "custom_tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string",
+                              "description": "The value of the custom tag."
+                            }
+                          }
+                        },
+                        "description": "Custom tags associated with the instance. This field is only included on create and update responses."
+                      },
+                      "effective_capacity": {
+                        "type": "string",
+                        "description": "Deprecated. The sku of the instance; this field will always match the value of capacity. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_custom_tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string",
+                              "description": "The value of the custom tag."
+                            }
+                          }
+                        },
+                        "description": "The recorded custom tags associated with the instance. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_enable_pg_native_login": {
+                        "type": "boolean",
+                        "description": "Whether the instance has PG native password login enabled. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_enable_readable_secondaries": {
+                        "type": "boolean",
+                        "description": "Whether secondaries serving read-only traffic are enabled. Defaults to false. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_node_count": {
+                        "type": "integer",
+                        "description": "The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults to 1 primary and 0 secondaries. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_retention_window_in_days": {
+                        "type": "integer",
+                        "description": "The retention window for the instance. This is the time window in days for which the historical data is retained. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_stopped": {
+                        "type": "boolean",
+                        "description": "Whether the instance is stopped. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_usage_policy_id": {
+                        "type": "string",
+                        "description": "The policy that is applied to the instance. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "enable_pg_native_login": {
+                        "type": "boolean",
+                        "description": "Whether to enable PG native password login on the instance. Defaults to false."
+                      },
+                      "enable_readable_secondaries": {
+                        "type": "boolean",
+                        "description": "Whether to enable secondaries to serve read-only traffic. Defaults to false."
+                      },
+                      "node_count": {
+                        "type": "integer",
+                        "description": "The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults to 1 primary and 0 secondaries. This field is input only, see effective_node_count for the output."
+                      },
+                      "parent_instance_ref": {
+                        "type": "object",
+                        "properties": {
+                          "branch_time": {
+                            "type": "string",
+                            "description": "Branch time of the ref database instance. For a parent ref instance, this is the point in time on the parent instance from which the instance was created. For a child ref instance, this is the point in time on the instance from which the child instance was created. Input: For specifying the point in time to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+                          },
+                          "effective_lsn": {
+                            "type": "string",
+                            "description": "For a parent ref instance, this is the LSN on the parent instance from which the instance was created. For a child ref instance, this is the LSN on the instance from which the child instance was created. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                          },
+                          "lsn": {
+                            "type": "string",
+                            "description": "User-specified WAL LSN of the ref database instance. Input: For specifying the WAL LSN to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Name of the ref database instance."
+                          },
+                          "uid": {
+                            "type": "string",
+                            "description": "Id of the ref database instance."
+                          }
+                        },
+                        "description": "The ref of the parent instance. This is only available if the instance is child instance. Input: For specifying the parent instance to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+                      },
+                      "pg_version": {
+                        "type": "string",
+                        "description": "The version of Postgres running on the instance."
+                      },
+                      "read_only_dns": {
+                        "type": "string",
+                        "description": "The DNS endpoint to connect to the instance for read only access. This is only available if enable_readable_secondaries is true."
+                      },
+                      "read_write_dns": {
+                        "type": "string",
+                        "description": "The DNS endpoint to connect to the instance for read+write access."
+                      },
+                      "retention_window_in_days": {
+                        "type": "integer",
+                        "description": "The retention window for the instance. This is the time window in days for which the historical data is retained. The default value is 7 days. Valid values are 2 to 35 days."
+                      },
+                      "state": {
+                        "type": "string",
+                        "x-enum": [
+                          "AVAILABLE",
+                          "DELETING",
+                          "FAILING_OVER",
+                          "STARTING",
+                          "STOPPED",
+                          "UPDATING"
+                        ],
+                        "description": "The current state of the instance."
+                      },
+                      "stopped": {
+                        "type": "boolean",
+                        "description": "Whether to stop the instance. An input only param, see effective_stopped for the output."
+                      },
+                      "uid": {
+                        "type": "string",
+                        "description": "An immutable UUID identifier for the instance."
+                      },
+                      "usage_policy_id": {
+                        "type": "string",
+                        "description": "The desired usage policy to associate with the instance."
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
                     "description": ":param update_mask: str The list of fields to update. If unspecified, all fields will be updated when possible. To wipe out custom_tags, specify custom_tags in the update_mask with an empty custom_tags map."
                   }
                 },
@@ -1182,7 +1988,310 @@
                 "type": "object",
                 "properties": {
                   "synced_table": {
-                    "$ref": "#/components/schemas/SyncedDatabaseTable",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Full three-part (catalog, schema, table) name of the table."
+                      },
+                      "data_synchronization_status": {
+                        "type": "object",
+                        "properties": {
+                          "continuous_update_status": {
+                            "type": "object",
+                            "properties": {
+                              "initial_pipeline_sync_progress": {
+                                "type": "object",
+                                "properties": {
+                                  "estimated_completion_time_seconds": {
+                                    "type": "number",
+                                    "description": "The estimated time remaining to complete this update in seconds."
+                                  },
+                                  "latest_version_currently_processing": {
+                                    "type": "integer",
+                                    "description": "The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet."
+                                  },
+                                  "provisioning_phase": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "PROVISIONING_PHASE_INDEX_SCAN",
+                                      "PROVISIONING_PHASE_INDEX_SORT",
+                                      "PROVISIONING_PHASE_MAIN"
+                                    ],
+                                    "description": "The current phase of the data synchronization pipeline."
+                                  },
+                                  "sync_progress_completion": {
+                                    "type": "number",
+                                    "description": "The completion ratio of this update. This is a number between 0 and 1."
+                                  },
+                                  "synced_row_count": {
+                                    "type": "integer",
+                                    "description": "The number of rows that have been synced in this update."
+                                  },
+                                  "total_row_count": {
+                                    "type": "integer",
+                                    "description": "The total number of rows that need to be synced in this update. This number may be an estimate."
+                                  }
+                                },
+                                "description": "Progress of the initial data synchronization."
+                              },
+                              "last_processed_commit_version": {
+                                "type": "integer",
+                                "description": "The last source table Delta version that was successfully synced to the synced table."
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "The end timestamp of the last time any data was synchronized from the source table to the synced table. This is when the data is available in the synced table."
+                              }
+                            },
+                            "description": "Detailed status of a synced table. Shown if the synced table is in the SYNCED_CONTINUOUS_UPDATE\n    or the SYNCED_UPDATING_PIPELINE_RESOURCES state."
+                          },
+                          "detailed_state": {
+                            "type": "string",
+                            "x-enum": [
+                              "SYNCED_TABLED_OFFLINE",
+                              "SYNCED_TABLE_OFFLINE_FAILED",
+                              "SYNCED_TABLE_ONLINE",
+                              "SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE",
+                              "SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE",
+                              "SYNCED_TABLE_ONLINE_PIPELINE_FAILED",
+                              "SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE",
+                              "SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES",
+                              "SYNCED_TABLE_PROVISIONING",
+                              "SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT",
+                              "SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES"
+                            ],
+                            "description": "The state of the synced table."
+                          },
+                          "failed_status": {
+                            "type": "object",
+                            "properties": {
+                              "last_processed_commit_version": {
+                                "type": "integer",
+                                "description": "The last source table Delta version that was successfully synced to the synced table. The last source table Delta version that was synced to the synced table. Only populated if the table is still synced and available for serving."
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "The end timestamp of the last time any data was synchronized from the source table to the synced table. Only populated if the table is still synced and available for serving."
+                              }
+                            },
+                            "description": "Detailed status of a synced table. Shown if the synced table is in the OFFLINE_FAILED or the\n    SYNCED_PIPELINE_FAILED state."
+                          },
+                          "last_sync": {
+                            "type": "object",
+                            "properties": {
+                              "delta_table_sync_info": {
+                                "type": "object",
+                                "properties": {
+                                  "delta_commit_timestamp": {
+                                    "type": "string"
+                                  },
+                                  "delta_commit_version": {
+                                    "type": "integer",
+                                    "description": "The Delta Lake commit version that was last successfully synced."
+                                  }
+                                }
+                              },
+                              "sync_end_timestamp": {
+                                "type": "string",
+                                "description": "The end timestamp of the most recent successful synchronization. This is the time when the data is available in the synced table."
+                              },
+                              "sync_start_timestamp": {
+                                "type": "string",
+                                "description": "The starting timestamp of the most recent successful synchronization from the source table to the destination (synced) table. Note this is the starting timestamp of the sync operation, not the end time. E.g., for a batch, this is the time when the sync operation started."
+                              }
+                            },
+                            "description": "Summary of the last successful synchronization from source to destination. Will always be present if there has been a successful sync. Even if the most recent syncs have failed. Limitation: The only exception is if the synced table is doing a FULL REFRESH, then the last sync information will not be available until the full refresh is complete. This limitation will be addressed in a future version. This top-level field is a convenience for consumers who want easy access to last sync information without having to traverse detailed_status."
+                          },
+                          "message": {
+                            "type": "string",
+                            "description": "A text description of the current state of the synced table."
+                          },
+                          "pipeline_id": {
+                            "type": "string",
+                            "description": "ID of the associated pipeline. The pipeline ID may have been provided by the client (in the case of bin packing), or generated by the server (when creating a new pipeline)."
+                          },
+                          "provisioning_status": {
+                            "type": "object",
+                            "properties": {
+                              "initial_pipeline_sync_progress": {
+                                "type": "object",
+                                "properties": {
+                                  "estimated_completion_time_seconds": {
+                                    "type": "number",
+                                    "description": "The estimated time remaining to complete this update in seconds."
+                                  },
+                                  "latest_version_currently_processing": {
+                                    "type": "integer",
+                                    "description": "The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet."
+                                  },
+                                  "provisioning_phase": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "PROVISIONING_PHASE_INDEX_SCAN",
+                                      "PROVISIONING_PHASE_INDEX_SORT",
+                                      "PROVISIONING_PHASE_MAIN"
+                                    ],
+                                    "description": "The current phase of the data synchronization pipeline."
+                                  },
+                                  "sync_progress_completion": {
+                                    "type": "number",
+                                    "description": "The completion ratio of this update. This is a number between 0 and 1."
+                                  },
+                                  "synced_row_count": {
+                                    "type": "integer",
+                                    "description": "The number of rows that have been synced in this update."
+                                  },
+                                  "total_row_count": {
+                                    "type": "integer",
+                                    "description": "The total number of rows that need to be synced in this update. This number may be an estimate."
+                                  }
+                                },
+                                "description": "Details about initial data synchronization. Only populated when in the PROVISIONING_INITIAL_SNAPSHOT state."
+                              }
+                            },
+                            "description": "Detailed status of a synced table. Shown if the synced table is in the\n    PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state."
+                          },
+                          "triggered_update_status": {
+                            "type": "object",
+                            "properties": {
+                              "last_processed_commit_version": {
+                                "type": "integer",
+                                "description": "The last source table Delta version that was successfully synced to the synced table."
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "The end timestamp of the last time any data was synchronized from the source table to the synced table. This is when the data is available in the synced table."
+                              },
+                              "triggered_update_progress": {
+                                "type": "object",
+                                "properties": {
+                                  "estimated_completion_time_seconds": {
+                                    "type": "number",
+                                    "description": "The estimated time remaining to complete this update in seconds."
+                                  },
+                                  "latest_version_currently_processing": {
+                                    "type": "integer",
+                                    "description": "The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet."
+                                  },
+                                  "provisioning_phase": {
+                                    "type": "string",
+                                    "x-enum": [
+                                      "PROVISIONING_PHASE_INDEX_SCAN",
+                                      "PROVISIONING_PHASE_INDEX_SORT",
+                                      "PROVISIONING_PHASE_MAIN"
+                                    ],
+                                    "description": "The current phase of the data synchronization pipeline."
+                                  },
+                                  "sync_progress_completion": {
+                                    "type": "number",
+                                    "description": "The completion ratio of this update. This is a number between 0 and 1."
+                                  },
+                                  "synced_row_count": {
+                                    "type": "integer",
+                                    "description": "The number of rows that have been synced in this update."
+                                  },
+                                  "total_row_count": {
+                                    "type": "integer",
+                                    "description": "The total number of rows that need to be synced in this update. This number may be an estimate."
+                                  }
+                                },
+                                "description": "Progress of the active data synchronization pipeline."
+                              }
+                            },
+                            "description": "Detailed status of a synced table. Shown if the synced table is in the SYNCED_TRIGGERED_UPDATE\n    or the SYNCED_NO_PENDING_UPDATE state."
+                          }
+                        },
+                        "description": "Synced Table data synchronization status"
+                      },
+                      "database_instance_name": {
+                        "type": "string",
+                        "description": "Name of the target database instance. This is required when creating synced database tables in standard catalogs. This is optional when creating synced database tables in registered catalogs. If this field is specified when creating synced database tables in registered catalogs, the database instance name MUST match that of the registered catalog (or the request will be rejected)."
+                      },
+                      "effective_database_instance_name": {
+                        "type": "string",
+                        "description": "The name of the database instance that this table is registered to. This field is always returned, and for tables inside database catalogs is inferred database instance associated with the catalog. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "effective_logical_database_name": {
+                        "type": "string",
+                        "description": "The name of the logical database that this table is registered to. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+                      },
+                      "logical_database_name": {
+                        "type": "string",
+                        "description": "Target Postgres database object (logical database) name for this table. When creating a synced table in a registered Postgres catalog, the target Postgres database name is inferred to be that of the registered catalog. If this field is specified in this scenario, the Postgres database name MUST match that of the registered catalog (or the request will be rejected). When creating a synced table in a standard catalog, this field is required. In this scenario, specifying this field will allow targeting an arbitrary postgres database. Note that this has implications for the `create_database_objects_is_missing` field in `spec`."
+                      },
+                      "spec": {
+                        "type": "object",
+                        "properties": {
+                          "create_database_objects_if_missing": {
+                            "type": "boolean",
+                            "description": "If true, the synced table's logical database and schema resources in PG will be created if they do not already exist."
+                          },
+                          "existing_pipeline_id": {
+                            "type": "string",
+                            "description": "At most one of existing_pipeline_id and new_pipeline_spec should be defined. If existing_pipeline_id is defined, the synced table will be bin packed into the existing pipeline referenced. This avoids creating a new pipeline and allows sharing existing compute. In this case, the scheduling_policy of this synced table must match the scheduling policy of the existing pipeline."
+                          },
+                          "new_pipeline_spec": {
+                            "type": "object",
+                            "properties": {
+                              "budget_policy_id": {
+                                "type": "string",
+                                "description": "Budget policy to set on the newly created pipeline."
+                              },
+                              "storage_catalog": {
+                                "type": "string",
+                                "description": "This field needs to be specified if the destination catalog is a managed postgres catalog. UC catalog for the pipeline to store intermediate files (checkpoints, event logs etc). This needs to be a standard catalog where the user has permissions to create Delta tables."
+                              },
+                              "storage_schema": {
+                                "type": "string",
+                                "description": "This field needs to be specified if the destination catalog is a managed postgres catalog. UC schema for the pipeline to store intermediate files (checkpoints, event logs etc). This needs to be in the standard catalog where the user has permissions to create Delta tables."
+                              }
+                            },
+                            "description": "At most one of existing_pipeline_id and new_pipeline_spec should be defined. If new_pipeline_spec is defined, a new pipeline is created for this synced table. The location pointed to is used to store intermediate files (checkpoints, event logs etc). The caller must have write permissions to create Delta tables in the specified catalog and schema. Again, note this requires write permissions, whereas the source table only requires read permissions."
+                          },
+                          "primary_key_columns": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Primary Key columns to be used for data insert/update in the destination."
+                          },
+                          "scheduling_policy": {
+                            "type": "string",
+                            "x-enum": [
+                              "CONTINUOUS",
+                              "SNAPSHOT",
+                              "TRIGGERED"
+                            ],
+                            "description": "Scheduling policy of the underlying pipeline."
+                          },
+                          "source_table_full_name": {
+                            "type": "string",
+                            "description": "Three-part (catalog, schema, table) name of the source Delta table."
+                          },
+                          "timeseries_key": {
+                            "type": "string",
+                            "description": "Time series key to deduplicate (tie-break) rows with the same primary key."
+                          }
+                        },
+                        "description": "Specification of a synced database table."
+                      },
+                      "unity_catalog_provisioning_state": {
+                        "type": "string",
+                        "x-enum": [
+                          "ACTIVE",
+                          "DEGRADED",
+                          "DELETING",
+                          "FAILED",
+                          "PROVISIONING",
+                          "UPDATING"
+                        ],
+                        "description": "The provisioning state of the synced table entity in Unity Catalog. This is distinct from the state of the data synchronization pipeline (i.e. the table may be in \"ACTIVE\" but the pipeline may be in \"PROVISIONING\" as it runs asynchronously)."
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
                     "description": "Note that updating a synced database table is not yet supported."
                   }
                 },
@@ -1295,7 +2404,30 @@
                   "claims": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/RequestedClaims"
+                      "type": "object",
+                      "properties": {
+                        "permission_set": {
+                          "type": "string",
+                          "x-enum": [
+                            "READ_ONLY"
+                          ],
+                          "description": "Might add WRITE in the future"
+                        },
+                        "resources": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "table_name": {
+                                "type": "string"
+                              },
+                              "unspecified_resource_name": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
                     },
                     "description": "The returned token will be scoped to the union of instance_names and instances containing the specified UC tables, so instance_names is allowed to be empty."
                   },

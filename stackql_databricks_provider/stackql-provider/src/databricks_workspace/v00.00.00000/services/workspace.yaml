@@ -9,11 +9,12 @@ info:
   x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.workspace
 servers:
-  - url: https://{deployment_name}.cloud.databricks.com
+  - url: https://{workspace}.cloud.databricks.com
+    description: Databricks workspace
     variables:
-      deployment_name:
-        description: The Databricks Workspace Deployment Name
-        default: dbc-abcd0123-a1bc
+      workspace:
+        default: your-workspace
+        description: Your Databricks workspace name
 paths:
   /api/2.0/git-credentials:
     post:
@@ -446,7 +447,16 @@ paths:
                     `/Repos`, path must be in the format
                     `/Repos/{folder}/{repo-name}`.
                 sparse_checkout:
-                  $ref: '#/components/schemas/SparseCheckout'
+                  type: object
+                  properties:
+                    patterns:
+                      type: array
+                      items:
+                        type: string
+                      description: >-
+                        List of sparse checkout cone patterns, see [cone mode
+                        handling] for details. [cone mode handling]:
+                        https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
                   description: >-
                     If specified, the repo will be created with sparse checkout
                     enabled. You cannot enable/disable sparse checkout after the
@@ -652,7 +662,16 @@ paths:
                   type: string
                   description: Branch that the local version of the repo is checked out to.
                 sparse_checkout:
-                  $ref: '#/components/schemas/SparseCheckoutUpdate'
+                  type: object
+                  properties:
+                    patterns:
+                      type: array
+                      items:
+                        type: string
+                      description: >-
+                        List of sparse checkout cone patterns, see [cone mode
+                        handling] for details. [cone mode handling]:
+                        https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
                   description: >-
                     If specified, update the sparse checkout settings. The
                     update will fail if sparse checkout is not enabled for the
@@ -802,7 +821,24 @@ paths:
                 access_control_list:
                   type: array
                   items:
-                    $ref: '#/components/schemas/RepoAccessControlRequest'
+                    type: object
+                    properties:
+                      group_name:
+                        type: string
+                      permission_level:
+                        type: string
+                        x-enum:
+                          - CAN_EDIT
+                          - CAN_MANAGE
+                          - CAN_READ
+                          - CAN_RUN
+                        description: Permission level
+                      service_principal_name:
+                        type: string
+                        description: application ID of a service principal
+                      user_name:
+                        type: string
+                        description: name of the user
                   description: ':returns: :class:`RepoPermissions`'
       responses:
         '200':
@@ -859,7 +895,24 @@ paths:
                 access_control_list:
                   type: array
                   items:
-                    $ref: '#/components/schemas/RepoAccessControlRequest'
+                    type: object
+                    properties:
+                      group_name:
+                        type: string
+                      permission_level:
+                        type: string
+                        x-enum:
+                          - CAN_EDIT
+                          - CAN_MANAGE
+                          - CAN_READ
+                          - CAN_RUN
+                        description: Permission level
+                      service_principal_name:
+                        type: string
+                        description: application ID of a service principal
+                      user_name:
+                        type: string
+                        description: name of the user
                   description: ':returns: :class:`RepoPermissions`'
       responses:
         '200':
@@ -981,7 +1034,19 @@ paths:
                   type: string
                   description: Scope name requested by the user. Scope names are unique.
                 backend_azure_keyvault:
-                  $ref: '#/components/schemas/AzureKeyVaultSecretScopeMetadata'
+                  type: object
+                  properties:
+                    resource_id:
+                      type: string
+                      description: >-
+                        The resource id of the azure KeyVault that user wants to
+                        associate the scope with.
+                    dns_name:
+                      type: string
+                      description: The DNS of the KeyVault
+                  required:
+                    - resource_id
+                    - dns_name
                   description: >-
                     The metadata for the secret scope if the type is
                     ``AZURE_KEYVAULT``
@@ -991,7 +1056,10 @@ paths:
                     The principal that is initially granted ``MANAGE``
                     permission to the created scope.
                 scope_backend_type:
-                  $ref: '#/components/schemas/ScopeBackendType'
+                  type: string
+                  x-enum:
+                    - AZURE_KEYVAULT
+                    - DATABRICKS
                   description: >-
                     The backend type the scope will be created with. If not
                     specified, will default to ``DATABRICKS``
@@ -1647,7 +1715,11 @@ paths:
                   type: string
                   description: The principal in which the permission is applied.
                 permission:
-                  $ref: '#/components/schemas/AclPermission'
+                  type: string
+                  x-enum:
+                    - MANAGE
+                    - READ
+                    - WRITE
                   description: The permission level applied to the principal.
               required:
                 - scope
@@ -2092,7 +2164,24 @@ paths:
                 access_control_list:
                   type: array
                   items:
-                    $ref: '#/components/schemas/WorkspaceObjectAccessControlRequest'
+                    type: object
+                    properties:
+                      group_name:
+                        type: string
+                      permission_level:
+                        type: string
+                        x-enum:
+                          - CAN_EDIT
+                          - CAN_MANAGE
+                          - CAN_READ
+                          - CAN_RUN
+                        description: Permission level
+                      service_principal_name:
+                        type: string
+                        description: application ID of a service principal
+                      user_name:
+                        type: string
+                        description: name of the user
                   description: ':returns: :class:`WorkspaceObjectPermissions`'
       responses:
         '200':
@@ -2164,7 +2253,24 @@ paths:
                 access_control_list:
                   type: array
                   items:
-                    $ref: '#/components/schemas/WorkspaceObjectAccessControlRequest'
+                    type: object
+                    properties:
+                      group_name:
+                        type: string
+                      permission_level:
+                        type: string
+                        x-enum:
+                          - CAN_EDIT
+                          - CAN_MANAGE
+                          - CAN_READ
+                          - CAN_RUN
+                        description: Permission level
+                      service_principal_name:
+                        type: string
+                        description: application ID of a service principal
+                      user_name:
+                        type: string
+                        description: name of the user
                   description: ':returns: :class:`WorkspaceObjectPermissions`'
       responses:
         '200':
@@ -2298,7 +2404,15 @@ paths:
                     **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown. This parameter
                     might be absent, and instead a posted file is used.
                 format:
-                  $ref: '#/components/schemas/ImportFormat'
+                  type: string
+                  x-enum:
+                    - AUTO
+                    - DBC
+                    - HTML
+                    - JUPYTER
+                    - RAW
+                    - R_MARKDOWN
+                    - SOURCE
                   description: >-
                     This specifies the format of the file to be imported. The
                     value is case sensitive. - `AUTO`: The item is imported
@@ -2313,7 +2427,12 @@ paths:
                     for directories. - `R_MARKDOWN`: The notebook is imported
                     from R Markdown format.
                 language:
-                  $ref: '#/components/schemas/Language'
+                  type: string
+                  x-enum:
+                    - PYTHON
+                    - R
+                    - SCALA
+                    - SQL
                   description: >-
                     The language of the object. This value is set only if the
                     object type is `NOTEBOOK`.

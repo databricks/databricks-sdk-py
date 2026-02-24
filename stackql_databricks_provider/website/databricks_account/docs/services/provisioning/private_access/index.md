@@ -275,7 +275,7 @@ SELECT
 '{{ allowed_vpc_endpoint_ids }}',
 '{{ private_access_level }}',
 '{{ private_access_settings_name }}',
-'{{ public_access_enabled }}',
+{{ public_access_enabled }},
 '{{ region }}',
 '{{ account_id }}'
 RETURNING
@@ -299,9 +299,11 @@ region
       value: string
       description: Required parameter for the private_access resource.
     - name: allowed_vpc_endpoint_ids
-      value: string
+      value: array
       description: |
         An array of Databricks VPC endpoint IDs. This is the Databricks ID returned when registering the VPC endpoint configuration in your Databricks account. This is not the ID of the VPC endpoint in AWS. Only used when private_access_level is set to ENDPOINT. This is an allow list of VPC endpoints registered in your Databricks account that can connect to your workspace over AWS PrivateLink. Note: If hybrid access to your workspace is enabled by setting public_access_enabled to true, this control only works for PrivateLink connections. To control how your workspace is accessed via public internet, see IP access lists.
+      items:
+        type: string
     - name: private_access_level
       value: string
       description: |
@@ -311,7 +313,7 @@ region
       description: |
         The human-readable name of the private access settings object.
     - name: public_access_enabled
-      value: string
+      value: boolean
       description: |
         Determines if the workspace can be accessed over public internet. For fully private workspaces, you can optionally specify false, but only if you implement both the front-end and the back-end PrivateLink connections. Otherwise, specify true, which means that public access is enabled.
     - name: region

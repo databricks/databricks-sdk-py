@@ -122,21 +122,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace_object_type"><code>workspace_object_type</code></a>, <a href="#parameter-workspace_object_id"><code>workspace_object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace_object_type"><code>workspace_object_type</code></a>, <a href="#parameter-workspace_object_id"><code>workspace_object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Gets the permissions of a workspace object. Workspace objects can inherit permissions from their</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-workspace_object_type"><code>workspace_object_type</code></a>, <a href="#parameter-workspace_object_id"><code>workspace_object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace_object_type"><code>workspace_object_type</code></a>, <a href="#parameter-workspace_object_id"><code>workspace_object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Updates the permissions on a workspace object. Workspace objects can inherit permissions from their</td>
 </tr>
 <tr>
     <td><a href="#set"><CopyableCode code="set" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-workspace_object_type"><code>workspace_object_type</code></a>, <a href="#parameter-workspace_object_id"><code>workspace_object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-workspace_object_type"><code>workspace_object_type</code></a>, <a href="#parameter-workspace_object_id"><code>workspace_object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
     <td></td>
     <td>Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct</td>
 </tr>
@@ -156,10 +156,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-deployment_name">
-    <td><CopyableCode code="deployment_name" /></td>
+<tr id="parameter-workspace">
+    <td><CopyableCode code="workspace" /></td>
     <td><code>string</code></td>
-    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-workspace_object_id">
     <td><CopyableCode code="workspace_object_id" /></td>
@@ -194,7 +194,7 @@ object_type
 FROM databricks_workspace.workspace.object_permissions
 WHERE workspace_object_type = '{{ workspace_object_type }}' -- required
 AND workspace_object_id = '{{ workspace_object_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+AND workspace = '{{ workspace }}' -- required
 ;
 ```
 </TabItem>
@@ -220,7 +220,7 @@ access_control_list = '{{ access_control_list }}'
 WHERE 
 workspace_object_type = '{{ workspace_object_type }}' --required
 AND workspace_object_id = '{{ workspace_object_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 object_id,
 access_control_list,
@@ -249,7 +249,7 @@ access_control_list = '{{ access_control_list }}'
 WHERE 
 workspace_object_type = '{{ workspace_object_type }}' --required
 AND workspace_object_id = '{{ workspace_object_id }}' --required
-AND deployment_name = '{{ deployment_name }}' --required
+AND workspace = '{{ workspace }}' --required
 RETURNING
 object_id,
 access_control_list,
