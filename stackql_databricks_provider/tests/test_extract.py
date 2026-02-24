@@ -307,13 +307,13 @@ class TestGetSchemaFromEnum:
         schema = get_schema_from_enum(state)
         assert "State" in schema
         assert schema["State"]["type"] == "string"
-        assert "enum" in schema["State"]
+        assert "x-enum" in schema["State"]
 
     def test_enum_values(self):
         enums = get_enums(agentbricks)
         state = next(e for e in enums if e.__name__ == "State")
         schema = get_schema_from_enum(state)
-        values = schema["State"]["enum"]
+        values = schema["State"]["x-enum"]
         assert "CANCELLED" in values
         assert "COMPLETED" in values
         assert "RUNNING" in values
