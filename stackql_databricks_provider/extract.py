@@ -128,12 +128,12 @@ def get_operation_details(
         "description": docstring,
     }
 
-    parameters = _build_parameters(path_params, query_params, sig, docstring)
+    parameters = _build_parameters(path_params, query_params, sig, docstring, service_module)
     if parameters:
         operation["parameters"] = parameters
 
     if body_params:
-        operation["requestBody"] = _build_request_body(body_params, sig, docstring)
+        operation["requestBody"] = _build_request_body(body_params, sig, docstring, service_module)
 
     return_type = _get_return_type(method)
     # For Iterator methods, use the list response wrapper schema instead
@@ -405,6 +405,7 @@ def _build_parameters(
     query_params: List[str],
     sig: inspect.Signature,
     docstring: str,
+    service_module=None,
 ) -> List[Dict[str, Any]]:
     """Build OpenAPI parameter objects for path and query params."""
     params = []
@@ -415,7 +416,7 @@ def _build_parameters(
             "name": name,
             "in": "path",
             "required": True,
-            "schema": _python_type_to_openapi(sig.parameters.get(name)),
+            "schema": _python_type_to_openapi(sig.parameters.get(name), service_module),
         }
         desc = param_docs.get(name)
         if desc:
@@ -428,7 +429,7 @@ def _build_parameters(
             "name": name,
             "in": "query",
             "required": _is_param_required(sig_param),
-            "schema": _python_type_to_openapi(sig_param),
+            "schema": _python_type_to_openapi(sig_param, service_module),
         }
         desc = param_docs.get(name)
         if desc:
@@ -442,6 +443,7 @@ def _build_request_body(
     body_params: List[str],
     sig: inspect.Signature,
     docstring: str,
+    service_module=None,
 ) -> Dict[str, Any]:
     """Build an OpenAPI requestBody object."""
     param_docs = _parse_param_docs(docstring)
@@ -450,7 +452,7 @@ def _build_request_body(
 
     for name in body_params:
         sig_param = sig.parameters.get(name)
-        prop = _python_type_to_openapi(sig_param)
+        prop = _python_type_to_openapi(sig_param, service_module)
         desc = param_docs.get(name)
         if desc:
             prop["description"] = desc
@@ -736,7 +738,7 @@ def _parse_param_docs(docstring: str) -> Dict[str, str]:
     return result
 
 
-def _python_type_to_openapi(param: Optional[inspect.Parameter] = None) -> Dict[str, Any]:
+def _python_type_to_openapi(param: Optional[inspect.Parameter] = None, service_module=None) -> Dict[str, Any]:
     """Convert a Python parameter annotation to an OpenAPI schema snippet."""
     if param is None:
         return {"type": "string"}
@@ -745,10 +747,10 @@ def _python_type_to_openapi(param: Optional[inspect.Parameter] = None) -> Dict[s
     if annotation is inspect.Parameter.empty:
         return {"type": "string"}
 
-    return _annotation_to_schema(annotation)
+    return _annotation_to_schema(annotation, service_module)
 
 
-def _annotation_to_schema(annotation) -> Dict[str, Any]:
+def _annotation_to_schema(annotation, service_module=None) -> Dict[str, Any]:
     """Convert a Python type annotation to an OpenAPI schema."""
     if annotation is inspect.Parameter.empty or annotation is None:
         return {"type": "string"}
@@ -763,6 +765,11 @@ def _annotation_to_schema(annotation) -> Dict[str, Any]:
             return {"type": "number"}
         if annotation == "bool":
             return {"type": "boolean"}
+        # Try to resolve non-primitive string annotations (e.g. dataclass names)
+        if service_module is not None:
+            resolved = _resolve_string_annotation(annotation, service_module)
+            if resolved is not annotation and not isinstance(resolved, str):
+                return _annotation_to_schema(resolved, service_module)
         return {"type": "string"}
 
     # Basic types
@@ -800,11 +807,11 @@ def _annotation_to_schema(annotation) -> Dict[str, Any]:
         if origin_name == "Union" and args and type(None) in args:
             non_none = [a for a in args if a is not type(None)]
             if len(non_none) == 1:
-                return _annotation_to_schema(non_none[0])
+                return _annotation_to_schema(non_none[0], service_module)
         # List[X]
         if origin_name in ("List", "list"):
             if args:
-                return {"type": "array", "items": _annotation_to_schema(args[0])}
+                return {"type": "array", "items": _annotation_to_schema(args[0], service_module)}
             return {"type": "array", "items": {"type": "string"}}
         # Dict[K, V]
         if origin_name in ("Dict", "dict"):
@@ -812,7 +819,7 @@ def _annotation_to_schema(annotation) -> Dict[str, Any]:
         # Iterator[X]
         if origin_name == "Iterator":
             if args:
-                return _annotation_to_schema(args[0])
+                return _annotation_to_schema(args[0], service_module)
             return {"type": "string"}
 
     # Enum
@@ -839,7 +846,7 @@ def _field_to_property(field: dataclasses.Field, service_module) -> Dict[str, An
     # Resolve string annotations (from __future__ import annotations)
     if isinstance(annotation, str):
         annotation = _resolve_string_annotation(annotation, service_module)
-    schema = _annotation_to_schema(annotation)
+    schema = _annotation_to_schema(annotation, service_module)
     return schema
 
 

@@ -3,7 +3,7 @@
 import json
 
 import pytest
-from databricks.sdk.service import agentbricks, billing, catalog, compute, iam
+from databricks.sdk.service import agentbricks, billing, catalog, compute, iam, provisioning
 
 from stackql_databricks_provider.extract import (
     get_data_classes,
@@ -388,3 +388,49 @@ class TestResponseMediaType:
             for verb, operation in methods.items():
                 resp_200 = operation["responses"]["200"]
                 assert "application/json" in resp_200["content"]
+
+
+# ---------------------------------------------------------------------------
+# Object field expansion in request bodies
+# ---------------------------------------------------------------------------
+
+class TestObjectFieldExpansion:
+    def test_credentials_create_aws_credentials_is_ref(self):
+        """aws_credentials param should be a $ref, not type: string."""
+        details = get_operation_details(
+            provisioning, "CredentialsAPI", "create",
+            service_name="provisioning", resource_snake_name="credentials",
+        )
+        path = "/api/2.0/accounts/{account_id}/credentials"
+        schema = details[path]["post"]["requestBody"]["content"]["application/json"]["schema"]
+        aws_creds = schema["properties"]["aws_credentials"]
+        assert "$ref" in aws_creds, (
+            f"aws_credentials should be a $ref but got: {aws_creds}"
+        )
+        assert aws_creds["$ref"] == "#/components/schemas/CreateCredentialAwsCredentials"
+
+    def test_encryption_keys_create_has_object_refs(self):
+        """Encryption key creation params like aws_key_info should be $ref."""
+        details = get_operation_details(
+            provisioning, "EncryptionKeysAPI", "create",
+            service_name="provisioning", resource_snake_name="encryption_keys",
+        )
+        for path, methods in details.items():
+            schema = methods["post"]["requestBody"]["content"]["application/json"]["schema"]
+            aws_key = schema["properties"].get("aws_key_info")
+            if aws_key:
+                assert "$ref" in aws_key, (
+                    f"aws_key_info should be a $ref but got: {aws_key}"
+                )
+
+    def test_string_params_stay_string(self):
+        """Simple string params like credentials_name should remain type: string."""
+        details = get_operation_details(
+            provisioning, "CredentialsAPI", "create",
+            service_name="provisioning", resource_snake_name="credentials",
+        )
+        path = "/api/2.0/accounts/{account_id}/credentials"
+        schema = details[path]["post"]["requestBody"]["content"]["application/json"]["schema"]
+        cred_name = schema["properties"]["credentials_name"]
+        assert cred_name.get("type") == "string"
+        assert "$ref" not in cred_name
