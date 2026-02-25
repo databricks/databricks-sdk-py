@@ -47,9 +47,7 @@ def test_token_cache_unique_filename_by_profile():
         redirect_url="http://localhost:8020",
         oidc_endpoints=OidcEndpoints("http://localhost:1234", "http://localhost:1234"),
     )
-    assert (
-        TokenCache(profile="dev", **common_args).filename != TokenCache(profile="prod", **common_args).filename
-    )
+    assert TokenCache(profile="dev", **common_args).filename != TokenCache(profile="prod", **common_args).filename
 
 
 def test_token_cache_filename_no_profile_matches_empty_profile():
