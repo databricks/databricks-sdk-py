@@ -782,3 +782,107 @@ def test_oidc_scopes_sent_to_token_endpoint(requests_mock, tmp_path, scopes_inpu
     config.authenticate()
 
     assert _get_scope_from_request(token_mock.last_request.text) == expected_scope
+
+
+_DUMMY_WS_HOST = "https://dummy-workspace.databricks.com"
+_DUMMY_ACC_HOST = "https://dummy-accounts.databricks.com"
+_DUMMY_ACCOUNT_ID = "00000000-0000-0000-0000-000000000001"
+_DUMMY_WORKSPACE_ID = "111111111111111"
+_DUMMY_AUTH_ENDPOINT = f"{_DUMMY_WS_HOST}/oidc/v1/authorize"
+_DUMMY_TOKEN_ENDPOINT = f"{_DUMMY_WS_HOST}/oidc/v1/token"
+
+
+def test_discovery_url_from_env(monkeypatch):
+    monkeypatch.setenv("DATABRICKS_DISCOVERY_URL", "https://custom.idp.example.com/oidc")
+    config = Config(host=_DUMMY_WS_HOST, token="t")
+    assert config.discovery_url == "https://custom.idp.example.com/oidc"
+
+
+def test_databricks_oidc_endpoints_uses_discovery_url(requests_mock):
+    discovery_url = f"{_DUMMY_WS_HOST}/oidc"
+    requests_mock.get(
+        discovery_url,
+        json={"authorization_endpoint": _DUMMY_AUTH_ENDPOINT, "token_endpoint": _DUMMY_TOKEN_ENDPOINT},
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t", discovery_url=discovery_url)
+    endpoints = config.databricks_oidc_endpoints
+    assert endpoints.authorization_endpoint == _DUMMY_AUTH_ENDPOINT
+    assert endpoints.token_endpoint == _DUMMY_TOKEN_ENDPOINT
+
+
+@pytest.mark.parametrize(
+    "host,response_json,config_kwargs,expected_fields",
+    [
+        pytest.param(
+            _DUMMY_WS_HOST,
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+                "account_id": _DUMMY_ACCOUNT_ID,
+                "workspace_id": _DUMMY_WORKSPACE_ID,
+            },
+            {},
+            {
+                "account_id": _DUMMY_ACCOUNT_ID,
+                "workspace_id": _DUMMY_WORKSPACE_ID,
+                "discovery_url": f"{_DUMMY_WS_HOST}/oidc",
+            },
+            id="workspace-populates-all-fields",
+        ),
+        pytest.param(
+            _DUMMY_ACC_HOST,
+            {"oidc_endpoint": f"{_DUMMY_ACC_HOST}/oidc/accounts/{{account_id}}"},
+            {"account_id": _DUMMY_ACCOUNT_ID},
+            {"discovery_url": f"{_DUMMY_ACC_HOST}/oidc/accounts/{_DUMMY_ACCOUNT_ID}"},
+            id="account-substitutes-account-id",
+        ),
+        pytest.param(
+            _DUMMY_WS_HOST,
+            {"oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc", "account_id": "other-account", "workspace_id": "other-ws"},
+            {"account_id": _DUMMY_ACCOUNT_ID, "workspace_id": _DUMMY_WORKSPACE_ID},
+            {"account_id": _DUMMY_ACCOUNT_ID, "workspace_id": _DUMMY_WORKSPACE_ID},
+            id="does-not-overwrite-existing-fields",
+        ),
+    ],
+)
+def test_resolve_host_metadata(requests_mock, host, response_json, config_kwargs, expected_fields):
+    requests_mock.get(f"{host}/.well-known/databricks-config", json=response_json)
+    config = Config(host=host, token="t", **config_kwargs)
+    config._resolve_host_metadata()
+    for field, expected in expected_fields.items():
+        assert getattr(config, field) == expected
+
+
+@pytest.mark.parametrize(
+    "host,response_json,status_code,config_kwargs,error_match",
+    [
+        pytest.param(
+            _DUMMY_ACC_HOST,
+            {"oidc_endpoint": f"{_DUMMY_ACC_HOST}/oidc/accounts/{{account_id}}"},
+            200,
+            {},
+            "account_id is not configured",
+            id="missing-account-id",
+        ),
+        pytest.param(
+            _DUMMY_WS_HOST,
+            {"account_id": _DUMMY_ACCOUNT_ID},
+            200,
+            {},
+            "discovery_url is not configured",
+            id="missing-oidc-endpoint",
+        ),
+        pytest.param(
+            _DUMMY_WS_HOST,
+            {},
+            500,
+            {},
+            "Failed to fetch host metadata",
+            id="http-error",
+        ),
+    ],
+)
+def test_resolve_host_metadata_raises(requests_mock, host, response_json, status_code, config_kwargs, error_match):
+    requests_mock.get(f"{host}/.well-known/databricks-config", status_code=status_code, json=response_json)
+    config = Config(host=host, token="t", **config_kwargs)
+    with pytest.raises(ValueError, match=error_match):
+        config._resolve_host_metadata()
