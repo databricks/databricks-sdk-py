@@ -2,7 +2,8 @@ import pytest
 
 from databricks.sdk._base_client import _BaseClient
 from databricks.sdk.oauth import (HostMetadata, OidcEndpoints, TokenCache,
-                                  get_account_endpoints, get_host_metadata,
+                                  get_account_endpoints,
+                                  get_endpoints_from_url, get_host_metadata,
                                   get_workspace_endpoints)
 
 from .clock import FakeClock
@@ -186,3 +187,19 @@ def test_get_host_metadata_raises_on_http_error(requests_mock):
     client = _BaseClient(clock=FakeClock())
     with pytest.raises(ValueError, match="Failed to fetch host metadata"):
         get_host_metadata(_DUMMY_HOST, client=client)
+
+
+def test_get_endpoints_from_url(requests_mock):
+    requests_mock.get(
+        f"{_DUMMY_HOST}/oidc",
+        json={
+            "authorization_endpoint": f"{_DUMMY_HOST}/oidc/v1/authorize",
+            "token_endpoint": f"{_DUMMY_HOST}/oidc/v1/token",
+        },
+    )
+    client = _BaseClient(clock=FakeClock())
+    endpoints = get_endpoints_from_url(f"{_DUMMY_HOST}/oidc", client=client)
+    assert endpoints == OidcEndpoints(
+        authorization_endpoint=f"{_DUMMY_HOST}/oidc/v1/authorize",
+        token_endpoint=f"{_DUMMY_HOST}/oidc/v1/token",
+    )
