@@ -390,7 +390,7 @@ class TestDatabricksCliTokenSourceArgs:
 
         call_kwargs = mock_init.call_args
         cmd = call_kwargs.kwargs["cmd"]
-        host_cmd = call_kwargs.kwargs["host_cmd"]
+        host_cmd = call_kwargs.kwargs["fallback_cmd"]
 
         assert cmd == ["/path/to/databricks", "auth", "token", "--profile", "my-profile"]
         assert host_cmd is not None
@@ -416,7 +416,7 @@ class TestDatabricksCliTokenSourceArgs:
 
         call_kwargs = mock_init.call_args
         cmd = call_kwargs.kwargs["cmd"]
-        host_cmd = call_kwargs.kwargs["host_cmd"]
+        host_cmd = call_kwargs.kwargs["fallback_cmd"]
 
         assert cmd == ["/path/to/databricks", "auth", "token", "--profile", "my-profile"]
         assert host_cmd is None
@@ -426,20 +426,20 @@ class TestDatabricksCliTokenSourceArgs:
 class TestCliTokenSourceFallback:
     """Tests that CliTokenSource falls back to --host when CLI doesn't support --profile."""
 
-    def _make_token_source(self, host_cmd=None):
+    def _make_token_source(self, fallback_cmd=None):
         ts = credentials_provider.CliTokenSource.__new__(credentials_provider.CliTokenSource)
         ts._cmd = ["databricks", "auth", "token", "--profile", "my-profile"]
-        ts._host_cmd = host_cmd
+        ts._fallback_cmd = fallback_cmd
         ts._token_type_field = "token_type"
         ts._access_token_field = "access_token"
         ts._expiry_field = "expiry"
         return ts
 
-    def _make_process_error(self, stderr: str):
+    def _make_process_error(self, stderr: str, stdout: str = ""):
         import subprocess
 
         err = subprocess.CalledProcessError(1, ["databricks"])
-        err.stdout = b""
+        err.stdout = stdout.encode()
         err.stderr = stderr.encode()
         return err
 
@@ -456,31 +456,49 @@ class TestCliTokenSourceFallback:
             Mock(stdout=valid_response.encode()),
         ]
 
-        host_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
-        ts = self._make_token_source(host_cmd=host_cmd)
+        fallback_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
+        ts = self._make_token_source(fallback_cmd=fallback_cmd)
         token = ts.refresh()
         assert token.access_token == "fallback-token"
         assert mock_run.call_count == 2
-        assert mock_run.call_args_list[1][0][0] == host_cmd
+        assert mock_run.call_args_list[1][0][0] == fallback_cmd
+
+    def test_fallback_triggered_when_unknown_flag_in_stderr_only(self, mocker):
+        """Fallback triggers even when CLI also writes usage text to stdout."""
+        import json
+
+        expiry = (datetime.now() + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S")
+        valid_response = json.dumps({"access_token": "fallback-token", "token_type": "Bearer", "expiry": expiry})
+
+        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
+        mock_run.side_effect = [
+            self._make_process_error(stderr="Error: unknown flag: --profile", stdout="Usage: databricks auth token"),
+            Mock(stdout=valid_response.encode()),
+        ]
+
+        fallback_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
+        ts = self._make_token_source(fallback_cmd=fallback_cmd)
+        token = ts.refresh()
+        assert token.access_token == "fallback-token"
 
     def test_no_fallback_on_real_auth_error(self, mocker):
         """When --profile fails with a real error (not unknown flag), no fallback is attempted."""
         mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
         mock_run.side_effect = self._make_process_error("cache: databricks OAuth is not configured for this host")
 
-        host_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
-        ts = self._make_token_source(host_cmd=host_cmd)
+        fallback_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
+        ts = self._make_token_source(fallback_cmd=fallback_cmd)
         with pytest.raises(IOError) as exc_info:
             ts.refresh()
         assert "databricks OAuth is not configured" in str(exc_info.value)
         assert mock_run.call_count == 1
 
-    def test_no_fallback_when_host_cmd_not_set(self, mocker):
-        """When host_cmd is None and --profile fails, the original error is raised."""
+    def test_no_fallback_when_fallback_cmd_not_set(self, mocker):
+        """When fallback_cmd is None and --profile fails, the original error is raised."""
         mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
         mock_run.side_effect = self._make_process_error("Error: unknown flag: --profile")
 
-        ts = self._make_token_source(host_cmd=None)
+        ts = self._make_token_source(fallback_cmd=None)
         with pytest.raises(IOError) as exc_info:
             ts.refresh()
         assert "unknown flag: --profile" in str(exc_info.value)

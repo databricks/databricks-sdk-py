@@ -648,13 +648,15 @@ class CliTokenSource(oauth.Refreshable):
         access_token_field: str,
         expiry_field: str,
         disable_async: bool = True,
-        host_cmd: Optional[List[str]] = None,
+        fallback_cmd: Optional[List[str]] = None,
     ):
         super().__init__(disable_async=disable_async)
         self._cmd = cmd
-        # host_cmd is a fallback command using --host, used when the primary --profile
-        # command fails because the CLI is too old to support --profile.
-        self._host_cmd = host_cmd
+        # fallback_cmd is tried when the primary command fails with "unknown flag: --profile",
+        # indicating the CLI is too old to support --profile. Can be removed once support
+        # for CLI versions predating --profile is dropped.
+        # See: https://github.com/databricks/databricks-sdk-go/pull/1497
+        self._fallback_cmd = fallback_cmd
         self._token_type_field = token_type_field
         self._access_token_field = access_token_field
         self._expiry_field = expiry_field
@@ -685,19 +687,19 @@ class CliTokenSource(oauth.Refreshable):
         except subprocess.CalledProcessError as e:
             stdout = e.stdout.decode().strip()
             stderr = e.stderr.decode().strip()
-            message = stdout or stderr
+            message = "\n".join(filter(None, [stdout, stderr]))
             raise IOError(f"cannot get access token: {message}") from e
 
     def refresh(self) -> oauth.Token:
         try:
             return self._exec_cli_command(self._cmd)
         except IOError as e:
-            if self._host_cmd is not None and "unknown flag: --profile" in str(e):
+            if self._fallback_cmd is not None and "unknown flag: --profile" in str(e):
                 logger.warning(
                     "Databricks CLI does not support --profile flag. Falling back to --host. "
                     "Please upgrade your CLI to the latest version."
                 )
-                return self._exec_cli_command(self._host_cmd)
+                return self._exec_cli_command(self._fallback_cmd)
             raise
 
 
@@ -887,14 +889,14 @@ class DatabricksCliTokenSource(CliTokenSource):
         elif cli_path.count("/") == 0:
             cli_path = self.__class__._find_executable(cli_path)
 
-        host_cmd = None
+        fallback_cmd = None
         if cfg.profile:
             # When profile is set, use --profile as the primary command.
             # The profile contains the full config (host, account_id, etc.).
             args = ["auth", "token", "--profile", cfg.profile]
             # Build a --host fallback for older CLIs that don't support --profile.
             if cfg.host:
-                host_cmd = [cli_path, *self.__class__._build_host_args(cfg)]
+                fallback_cmd = [cli_path, *self.__class__._build_host_args(cfg)]
         else:
             args = self.__class__._build_host_args(cfg)
 
@@ -904,7 +906,7 @@ class DatabricksCliTokenSource(CliTokenSource):
             access_token_field="access_token",
             expiry_field="expiry",
             disable_async=cfg.disable_async_token_refresh,
-            host_cmd=host_cmd,
+            fallback_cmd=fallback_cmd,
         )
 
     @staticmethod
