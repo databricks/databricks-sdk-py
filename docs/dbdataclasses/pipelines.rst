@@ -393,6 +393,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: PublishingMode
+
+   Enum representing the publishing mode of a pipeline.
+
+   .. py:attribute:: DEFAULT_PUBLISHING_MODE
+      :value: "DEFAULT_PUBLISHING_MODE"
+
+   .. py:attribute:: LEGACY_PUBLISHING_MODE
+      :value: "LEGACY_PUBLISHING_MODE"
+
 .. autoclass:: ReplaceWhereOverride
    :members:
    :undoc-members:

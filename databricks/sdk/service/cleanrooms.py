@@ -1141,7 +1141,7 @@ class CreateCleanRoomAssetReviewResponse:
 
 @dataclass
 class CreateCleanRoomOutputCatalogResponse:
-    output_catalog: Optional[CleanRoomOutputCatalog] = None
+    output_catalog: CleanRoomOutputCatalog
 
     def as_dict(self) -> dict:
         """Serializes the CreateCleanRoomOutputCatalogResponse into a dictionary suitable for use as a JSON request body."""
