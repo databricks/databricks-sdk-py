@@ -426,64 +426,65 @@ class TestDatabricksCliTokenSourceArgs:
 class TestCliTokenSourceFallback:
     """Tests that CliTokenSource falls back to --host when CLI doesn't support --profile."""
 
-    def _make_token_source(self, cmd, host_cmd=None):
+    def _make_token_source(self, host_cmd=None):
         ts = credentials_provider.CliTokenSource.__new__(credentials_provider.CliTokenSource)
-        ts._cmd = cmd
+        ts._cmd = ["databricks", "auth", "token", "--profile", "my-profile"]
         ts._host_cmd = host_cmd
         ts._token_type_field = "token_type"
         ts._access_token_field = "access_token"
         ts._expiry_field = "expiry"
         return ts
 
-    def test_fallback_on_unknown_profile_flag(self, tmp_path):
+    def _make_process_error(self, stderr: str):
+        import subprocess
+
+        err = subprocess.CalledProcessError(1, ["databricks"])
+        err.stdout = b""
+        err.stderr = stderr.encode()
+        return err
+
+    def test_fallback_on_unknown_profile_flag(self, mocker):
         """When --profile fails with 'unknown flag: --profile', falls back to --host command."""
-        import json, os, stat
+        import json
+
         expiry = (datetime.now() + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S")
         valid_response = json.dumps({"access_token": "fallback-token", "token_type": "Bearer", "expiry": expiry})
 
-        profile_script = tmp_path / "profile_cli.sh"
-        profile_script.write_text("#!/bin/sh\necho 'Error: unknown flag: --profile' >&2\nexit 1\n")
-        profile_script.chmod(profile_script.stat().st_mode | stat.S_IEXEC)
+        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
+        mock_run.side_effect = [
+            self._make_process_error("Error: unknown flag: --profile"),
+            Mock(stdout=valid_response.encode()),
+        ]
 
-        host_script = tmp_path / "host_cli.sh"
-        host_script.write_text(f"#!/bin/sh\necho '{valid_response}'\n")
-        host_script.chmod(host_script.stat().st_mode | stat.S_IEXEC)
-
-        ts = self._make_token_source(cmd=[str(profile_script)], host_cmd=[str(host_script)])
+        host_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
+        ts = self._make_token_source(host_cmd=host_cmd)
         token = ts.refresh()
         assert token.access_token == "fallback-token"
+        assert mock_run.call_count == 2
+        assert mock_run.call_args_list[1][0][0] == host_cmd
 
-    def test_no_fallback_on_real_auth_error(self, tmp_path):
+    def test_no_fallback_on_real_auth_error(self, mocker):
         """When --profile fails with a real error (not unknown flag), no fallback is attempted."""
-        import stat
+        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
+        mock_run.side_effect = self._make_process_error("cache: databricks OAuth is not configured for this host")
 
-        profile_script = tmp_path / "profile_cli.sh"
-        profile_script.write_text(
-            "#!/bin/sh\necho 'cache: databricks OAuth is not configured for this host' >&2\nexit 1\n"
-        )
-        profile_script.chmod(profile_script.stat().st_mode | stat.S_IEXEC)
-
-        host_script = tmp_path / "host_cli.sh"
-        host_script.write_text("#!/bin/sh\necho 'should not reach here' >&2\nexit 1\n")
-        host_script.chmod(host_script.stat().st_mode | stat.S_IEXEC)
-
-        ts = self._make_token_source(cmd=[str(profile_script)], host_cmd=[str(host_script)])
+        host_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
+        ts = self._make_token_source(host_cmd=host_cmd)
         with pytest.raises(IOError) as exc_info:
             ts.refresh()
         assert "databricks OAuth is not configured" in str(exc_info.value)
+        assert mock_run.call_count == 1
 
-    def test_no_fallback_when_host_cmd_not_set(self, tmp_path):
+    def test_no_fallback_when_host_cmd_not_set(self, mocker):
         """When host_cmd is None and --profile fails, the original error is raised."""
-        import stat
+        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
+        mock_run.side_effect = self._make_process_error("Error: unknown flag: --profile")
 
-        profile_script = tmp_path / "profile_cli.sh"
-        profile_script.write_text("#!/bin/sh\necho 'Error: unknown flag: --profile' >&2\nexit 1\n")
-        profile_script.chmod(profile_script.stat().st_mode | stat.S_IEXEC)
-
-        ts = self._make_token_source(cmd=[str(profile_script)], host_cmd=None)
+        ts = self._make_token_source(host_cmd=None)
         with pytest.raises(IOError) as exc_info:
             ts.refresh()
         assert "unknown flag: --profile" in str(exc_info.value)
+        assert mock_run.call_count == 1
 
 
 # Tests for cloud-agnostic hosts and removed cloud checks
