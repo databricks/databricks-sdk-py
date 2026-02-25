@@ -292,6 +292,7 @@ class TestDatabricksCliTokenSourceArgs:
         )
 
         mock_cfg = Mock()
+        mock_cfg.profile = None
         mock_cfg.host = "https://example.databricks.com"
         mock_cfg.experimental_is_unified_host = True
         mock_cfg.account_id = "test-account-id"
@@ -325,6 +326,7 @@ class TestDatabricksCliTokenSourceArgs:
         )
 
         mock_cfg = Mock()
+        mock_cfg.profile = None
         mock_cfg.host = "https://example.databricks.com"
         mock_cfg.experimental_is_unified_host = True
         mock_cfg.account_id = "test-account-id"
@@ -351,6 +353,7 @@ class TestDatabricksCliTokenSourceArgs:
         )
 
         mock_cfg = Mock()
+        mock_cfg.profile = None
         mock_cfg.host = "https://accounts.cloud.databricks.com"
         mock_cfg.experimental_is_unified_host = False
         mock_cfg.account_id = "test-account-id"
@@ -367,6 +370,120 @@ class TestDatabricksCliTokenSourceArgs:
         assert "--account-id" in cmd
         assert "test-account-id" in cmd
         assert "--workspace-id" not in cmd
+
+    def test_profile_uses_profile_flag_with_host_fallback(self, mocker):
+        """When profile is set, --profile is used as primary and --host as fallback."""
+        mock_init = mocker.patch.object(
+            credentials_provider.CliTokenSource,
+            "__init__",
+            return_value=None,
+        )
+
+        mock_cfg = Mock()
+        mock_cfg.profile = "my-profile"
+        mock_cfg.host = "https://workspace.databricks.com"
+        mock_cfg.experimental_is_unified_host = False
+        mock_cfg.databricks_cli_path = "/path/to/databricks"
+        mock_cfg.disable_async_token_refresh = False
+
+        credentials_provider.DatabricksCliTokenSource(mock_cfg)
+
+        call_kwargs = mock_init.call_args
+        cmd = call_kwargs.kwargs["cmd"]
+        host_cmd = call_kwargs.kwargs["host_cmd"]
+
+        assert cmd == ["/path/to/databricks", "auth", "token", "--profile", "my-profile"]
+        assert host_cmd is not None
+        assert "--host" in host_cmd
+        assert "https://workspace.databricks.com" in host_cmd
+        assert "--profile" not in host_cmd
+
+    def test_profile_without_host_no_fallback(self, mocker):
+        """When profile is set but host is absent, no fallback is built."""
+        mock_init = mocker.patch.object(
+            credentials_provider.CliTokenSource,
+            "__init__",
+            return_value=None,
+        )
+
+        mock_cfg = Mock()
+        mock_cfg.profile = "my-profile"
+        mock_cfg.host = None
+        mock_cfg.databricks_cli_path = "/path/to/databricks"
+        mock_cfg.disable_async_token_refresh = False
+
+        credentials_provider.DatabricksCliTokenSource(mock_cfg)
+
+        call_kwargs = mock_init.call_args
+        cmd = call_kwargs.kwargs["cmd"]
+        host_cmd = call_kwargs.kwargs["host_cmd"]
+
+        assert cmd == ["/path/to/databricks", "auth", "token", "--profile", "my-profile"]
+        assert host_cmd is None
+
+
+# Tests for CliTokenSource fallback on unknown --profile flag
+class TestCliTokenSourceFallback:
+    """Tests that CliTokenSource falls back to --host when CLI doesn't support --profile."""
+
+    def _make_token_source(self, cmd, host_cmd=None):
+        ts = credentials_provider.CliTokenSource.__new__(credentials_provider.CliTokenSource)
+        ts._cmd = cmd
+        ts._host_cmd = host_cmd
+        ts._token_type_field = "token_type"
+        ts._access_token_field = "access_token"
+        ts._expiry_field = "expiry"
+        return ts
+
+    def test_fallback_on_unknown_profile_flag(self, tmp_path):
+        """When --profile fails with 'unknown flag: --profile', falls back to --host command."""
+        import json, os, stat
+        expiry = (datetime.now() + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S")
+        valid_response = json.dumps({"access_token": "fallback-token", "token_type": "Bearer", "expiry": expiry})
+
+        profile_script = tmp_path / "profile_cli.sh"
+        profile_script.write_text("#!/bin/sh\necho 'Error: unknown flag: --profile' >&2\nexit 1\n")
+        profile_script.chmod(profile_script.stat().st_mode | stat.S_IEXEC)
+
+        host_script = tmp_path / "host_cli.sh"
+        host_script.write_text(f"#!/bin/sh\necho '{valid_response}'\n")
+        host_script.chmod(host_script.stat().st_mode | stat.S_IEXEC)
+
+        ts = self._make_token_source(cmd=[str(profile_script)], host_cmd=[str(host_script)])
+        token = ts.refresh()
+        assert token.access_token == "fallback-token"
+
+    def test_no_fallback_on_real_auth_error(self, tmp_path):
+        """When --profile fails with a real error (not unknown flag), no fallback is attempted."""
+        import stat
+
+        profile_script = tmp_path / "profile_cli.sh"
+        profile_script.write_text(
+            "#!/bin/sh\necho 'cache: databricks OAuth is not configured for this host' >&2\nexit 1\n"
+        )
+        profile_script.chmod(profile_script.stat().st_mode | stat.S_IEXEC)
+
+        host_script = tmp_path / "host_cli.sh"
+        host_script.write_text("#!/bin/sh\necho 'should not reach here' >&2\nexit 1\n")
+        host_script.chmod(host_script.stat().st_mode | stat.S_IEXEC)
+
+        ts = self._make_token_source(cmd=[str(profile_script)], host_cmd=[str(host_script)])
+        with pytest.raises(IOError) as exc_info:
+            ts.refresh()
+        assert "databricks OAuth is not configured" in str(exc_info.value)
+
+    def test_no_fallback_when_host_cmd_not_set(self, tmp_path):
+        """When host_cmd is None and --profile fails, the original error is raised."""
+        import stat
+
+        profile_script = tmp_path / "profile_cli.sh"
+        profile_script.write_text("#!/bin/sh\necho 'Error: unknown flag: --profile' >&2\nexit 1\n")
+        profile_script.chmod(profile_script.stat().st_mode | stat.S_IEXEC)
+
+        ts = self._make_token_source(cmd=[str(profile_script)], host_cmd=None)
+        with pytest.raises(IOError) as exc_info:
+            ts.refresh()
+        assert "unknown flag: --profile" in str(exc_info.value)
 
 
 # Tests for cloud-agnostic hosts and removed cloud checks
