@@ -395,6 +395,45 @@ class _OAuthCallback(BaseHTTPRequestHandler):
         self.wfile.write(b"You can close this tab.")
 
 
+@dataclass
+class HostMetadata:
+    """Parsed response from the /.well-known/databricks-config discovery endpoint."""
+
+    oidc_endpoint: str
+    account_id: Optional[str] = None
+    workspace_id: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d: dict) -> "HostMetadata":
+        return HostMetadata(
+            oidc_endpoint=d.get("oidc_endpoint", ""),
+            account_id=d.get("account_id"),
+            workspace_id=d.get("workspace_id"),
+        )
+
+    def as_dict(self) -> dict:
+        return {
+            "oidc_endpoint": self.oidc_endpoint,
+            "account_id": self.account_id,
+            "workspace_id": self.workspace_id,
+        }
+
+
+def get_host_metadata(host: str, client: _BaseClient = _BaseClient()) -> HostMetadata:
+    """
+    [Experimental] Fetch the raw Databricks well-known configuration from {host}/.well-known/databricks-config.
+
+    :param host: The Databricks host (workspace or account console).
+    :return: Parsed :class:`HostMetadata` as returned by the server.
+    """
+    host = _fix_host_if_needed(host)
+    try:
+        resp = client.do("GET", f"{host}/.well-known/databricks-config")
+    except Exception as e:
+        raise ValueError(f"Failed to fetch host metadata from {host}/.well-known/databricks-config: {e}") from e
+    return HostMetadata.from_dict(resp)
+
+
 def get_account_endpoints(host: str, account_id: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
     """
     Get the OIDC endpoints for a given account.
