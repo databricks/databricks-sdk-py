@@ -14,3 +14,8 @@
 ### Internal Changes
 
 ### API Changes
+* Add `effective_publishing_mode` field for `databricks.sdk.service.pipelines.GetPipelineResponse`.
+* Add `dbr_autoscale` enum value for `databricks.sdk.service.compute.EventDetailsCause`.
+* Change `output_catalog` field for `databricks.sdk.service.cleanrooms.CreateCleanRoomOutputCatalogResponse` to be required.
+* [Breaking] Remove `internal_attributes` field for `databricks.sdk.service.sharing.Table`.
+* [Breaking] Remove `internal_attributes` field for `databricks.sdk.service.sharing.Volume`.

@@ -447,6 +447,9 @@ class GetPipelineResponse:
     effective_budget_policy_id: Optional[str] = None
     """Serverless budget policy ID of this pipeline."""
 
+    effective_publishing_mode: Optional[PublishingMode] = None
+    """Publishing mode of the pipeline"""
+
     health: Optional[GetPipelineResponseHealth] = None
     """The health of a pipeline."""
 
@@ -487,6 +490,8 @@ class GetPipelineResponse:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_publishing_mode is not None:
+            body["effective_publishing_mode"] = self.effective_publishing_mode.value
         if self.health is not None:
             body["health"] = self.health.value
         if self.last_modified is not None:
@@ -518,6 +523,8 @@ class GetPipelineResponse:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_publishing_mode is not None:
+            body["effective_publishing_mode"] = self.effective_publishing_mode
         if self.health is not None:
             body["health"] = self.health
         if self.last_modified is not None:
@@ -546,6 +553,7 @@ class GetPipelineResponse:
             cluster_id=d.get("cluster_id", None),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_publishing_mode=_enum(d, "effective_publishing_mode", PublishingMode),
             health=_enum(d, "health", GetPipelineResponseHealth),
             last_modified=d.get("last_modified", None),
             latest_updates=_repeated_dict(d, "latest_updates", UpdateStateInfo),
@@ -2593,6 +2601,13 @@ class PostgresSlotConfig:
     def from_dict(cls, d: Dict[str, Any]) -> PostgresSlotConfig:
         """Deserializes the PostgresSlotConfig from a dictionary."""
         return cls(publication_name=d.get("publication_name", None), slot_name=d.get("slot_name", None))
+
+
+class PublishingMode(Enum):
+    """Enum representing the publishing mode of a pipeline."""
+
+    DEFAULT_PUBLISHING_MODE = "DEFAULT_PUBLISHING_MODE"
+    LEGACY_PUBLISHING_MODE = "LEGACY_PUBLISHING_MODE"
 
 
 @dataclass

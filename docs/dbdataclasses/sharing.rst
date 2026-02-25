@@ -494,47 +494,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: TableInternalAttributes
-   :members:
-   :undoc-members:
-
-.. py:class:: TableInternalAttributesSharedTableType
-
-   .. py:attribute:: DELTA_ICEBERG_TABLE
-      :value: "DELTA_ICEBERG_TABLE"
-
-   .. py:attribute:: DIRECTORY_BASED_TABLE
-      :value: "DIRECTORY_BASED_TABLE"
-
-   .. py:attribute:: FILE_BASED_TABLE
-      :value: "FILE_BASED_TABLE"
-
-   .. py:attribute:: FOREIGN_ICEBERG_TABLE
-      :value: "FOREIGN_ICEBERG_TABLE"
-
-   .. py:attribute:: FOREIGN_TABLE
-      :value: "FOREIGN_TABLE"
-
-   .. py:attribute:: MATERIALIZED_VIEW
-      :value: "MATERIALIZED_VIEW"
-
-   .. py:attribute:: METRIC_VIEW
-      :value: "METRIC_VIEW"
-
-   .. py:attribute:: STREAMING_TABLE
-      :value: "STREAMING_TABLE"
-
-   .. py:attribute:: VIEW
-      :value: "VIEW"
-
 .. autoclass:: UpdateSharePermissionsResponse
    :members:
    :undoc-members:
 
 .. autoclass:: Volume
-   :members:
-   :undoc-members:
-
-.. autoclass:: VolumeInternalAttributes
    :members:
    :undoc-members:
