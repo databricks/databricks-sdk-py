@@ -895,6 +895,7 @@ class TokenCache:
         redirect_url: Optional[str] = None,
         client_secret: Optional[str] = None,
         scopes: Optional[List[str]] = None,
+        profile: Optional[str] = None,
     ) -> None:
         self._host = host
         self._client_id = client_id
@@ -902,15 +903,17 @@ class TokenCache:
         self._redirect_url = redirect_url
         self._client_secret = client_secret
         self._scopes = scopes or []
+        self._profile = profile
 
     @property
     def filename(self) -> str:
-        # Include host, client_id, and scopes in the cache filename to make it unique.
+        # Include host, client_id, scopes, and profile in the cache filename to make it unique.
         hash = hashlib.sha256()
         for chunk in [
             self._host,
             self._client_id,
             ",".join(self._scopes),
+            self._profile or "",
         ]:
             hash.update(chunk.encode("utf-8"))
         return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, hash.hexdigest() + ".json"))

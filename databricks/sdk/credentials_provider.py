@@ -281,6 +281,7 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         client_secret=client_secret,
         redirect_url=redirect_url,
         scopes=scopes,
+        profile=cfg.profile if cfg.profile else None,
     )
     credentials = token_cache.load()
     if credentials:
