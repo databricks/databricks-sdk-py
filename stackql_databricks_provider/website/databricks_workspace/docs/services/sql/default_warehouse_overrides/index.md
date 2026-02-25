@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -273,38 +274,25 @@ type
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: default_warehouse_overrides
   props:
     - name: default_warehouse_override_id
-      value: string
+      value: "{{ default_warehouse_override_id }}"
       description: Required parameter for the default_warehouse_overrides resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the default_warehouse_overrides resource.
     - name: default_warehouse_override
-      value: object
       description: |
         Required. The default warehouse override to create.
-      props:
-      - name: type
-        value: string
-        description: |
-          The type of override behavior.
-      - name: default_warehouse_override_id
-        value: string
-        description: |
-          The ID component of the resource name (user ID).
-      - name: name
-        value: string
-        description: |
-          The resource name of the default warehouse override. Format: default-warehouse-overrides/{default_warehouse_override_id}
-      - name: warehouse_id
-        value: string
-        description: |
-          The specific warehouse ID when type is CUSTOM. Not set for LAST_SELECTED type.
-```
+      value:
+        type: "{{ type }}"
+        default_warehouse_override_id: "{{ default_warehouse_override_id }}"
+        name: "{{ name }}"
+        warehouse_id: "{{ warehouse_id }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

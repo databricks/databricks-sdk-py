@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -231,21 +232,21 @@ settings
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: policy_compliance_for_jobs
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the policy_compliance_for_jobs resource.
     - name: job_id
-      value: integer
+      value: {{ job_id }}
       description: |
         The ID of the job you want to enforce policy compliance on.
     - name: validate_only
-      value: boolean
+      value: {{ validate_only }}
       description: |
         If set, previews changes made to the job to comply with its policy, but does not update the job.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>

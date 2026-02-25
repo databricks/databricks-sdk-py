@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -396,47 +397,41 @@ roles
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: account_service_principals
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the account_service_principals resource.
     - name: active
-      value: boolean
+      value: {{ active }}
       description: |
         If this user is active
     - name: application_id
-      value: string
+      value: "{{ application_id }}"
       description: |
         UUID relating to the service principal
     - name: display_name
-      value: string
+      value: "{{ display_name }}"
       description: |
         String that represents a concatenation of given and family names.
     - name: external_id
-      value: string
+      value: "{{ external_id }}"
       description: |
         :param id: str (optional) Databricks service principal ID.
     - name: id
-      value: string
+      value: "{{ id }}"
     - name: roles
-      value: array
       description: |
         Indicates if the group has the admin role.
-      props:
-      - name: display
-        value: string
-      - name: primary
-        value: boolean
-      - name: $ref
-        value: string
-      - name: type
-        value: string
-      - name: value
-        value: string
-```
+      value:
+        - display: "{{ display }}"
+          primary: {{ primary }}
+          $ref: "{{ $ref }}"
+          type: "{{ type }}"
+          value: "{{ value }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

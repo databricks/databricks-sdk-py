@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -492,38 +493,38 @@ volume_type
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: volumes
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the volumes resource.
     - name: catalog_name
-      value: string
+      value: "{{ catalog_name }}"
       description: |
         The name of the catalog where the schema and the volume are
     - name: schema_name
-      value: string
+      value: "{{ schema_name }}"
       description: |
         The name of the schema where the volume is
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         The name of the volume
     - name: volume_type
-      value: string
+      value: "{{ volume_type }}"
       description: |
         The type of the volume. An external volume is located in the specified external location. A managed volume is located in the default location which is specified by the parent schema, or the parent catalog, or the Metastore. [Learn more] [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
     - name: comment
-      value: string
+      value: "{{ comment }}"
       description: |
         The comment attached to the volume
     - name: storage_location
-      value: string
+      value: "{{ storage_location }}"
       description: |
         The storage location on the cloud
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -338,57 +339,32 @@ trigger
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: data_quality_refreshes
   props:
     - name: object_type
-      value: string
+      value: "{{ object_type }}"
       description: Required parameter for the data_quality_refreshes resource.
     - name: object_id
-      value: string
+      value: "{{ object_id }}"
       description: Required parameter for the data_quality_refreshes resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the data_quality_refreshes resource.
     - name: refresh
-      value: object
       description: |
         The refresh to create
-      props:
-      - name: object_type
-        value: string
-        description: |
-          The type of the monitored object. Can be one of the following: `schema`or `table`.
-      - name: object_id
-        value: string
-        description: |
-          The UUID of the request object. It is `schema_id` for `schema`, and `table_id` for `table`. Find the `schema_id` from either: 1. The [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab > the `Schema ID` field. Find the `table_id` from either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog Explorer] > select the `table` > go to the `Details` tab > the `Table ID` field. [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
-      - name: end_time_ms
-        value: integer
-        description: |
-          Time when the refresh ended (milliseconds since 1/1/1970 UTC).
-      - name: message
-        value: string
-        description: |
-          An optional message to give insight into the current state of the refresh (e.g. FAILURE messages).
-      - name: refresh_id
-        value: integer
-        description: |
-          Unique id of the refresh operation.
-      - name: start_time_ms
-        value: integer
-        description: |
-          Time when the refresh started (milliseconds since 1/1/1970 UTC).
-      - name: state
-        value: string
-        description: |
-          The current state of the refresh.
-      - name: trigger
-        value: string
-        description: |
-          What triggered the refresh.
-```
+      value:
+        object_type: "{{ object_type }}"
+        object_id: "{{ object_id }}"
+        end_time_ms: {{ end_time_ms }}
+        message: "{{ message }}"
+        refresh_id: {{ refresh_id }}
+        start_time_ms: {{ start_time_ms }}
+        state: "{{ state }}"
+        trigger: "{{ trigger }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

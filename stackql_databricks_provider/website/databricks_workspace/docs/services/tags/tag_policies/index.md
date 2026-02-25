@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -301,38 +302,25 @@ values
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: tag_policies
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the tag_policies resource.
     - name: tag_policy
-      value: object
       description: |
-        :returns: :class:`TagPolicy`
-      props:
-      - name: tag_key
-        value: string
-      - name: create_time
-        value: string
-        description: |
-          Timestamp when the tag policy was created
-      - name: description
-        value: string
-      - name: id
-        value: string
-      - name: update_time
-        value: string
-        description: |
-          Timestamp when the tag policy was last updated
-      - name: values
-        value: array
-        props:
-        - name: name
-          value: string
-```
+        :returns: :class:\`TagPolicy\`
+      value:
+        tag_key: "{{ tag_key }}"
+        create_time: "{{ create_time }}"
+        description: "{{ description }}"
+        id: "{{ id }}"
+        update_time: "{{ update_time }}"
+        values:
+          - name: "{{ name }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

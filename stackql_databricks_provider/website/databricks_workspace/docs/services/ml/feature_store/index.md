@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -345,65 +346,35 @@ state
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: feature_store
   props:
     - name: source_table_name
-      value: string
+      value: "{{ source_table_name }}"
       description: Required parameter for the feature_store resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the feature_store resource.
     - name: publish_spec
-      value: object
       description: |
         The specification for publishing the online table from the source table.
-      props:
-      - name: online_store
-        value: string
-      - name: online_table_name
-        value: string
-        description: |
-          The full three-part (catalog, schema, table) name of the online table.
-      - name: publish_mode
-        value: string
-        description: |
-          The publish mode of the pipeline that syncs the online table with the source table.
+      value:
+        online_store: "{{ online_store }}"
+        online_table_name: "{{ online_table_name }}"
+        publish_mode: "{{ publish_mode }}"
     - name: online_store
-      value: object
       description: |
         Online store to create.
-      props:
-      - name: name
-        value: string
-        description: |
-          The name of the online store. This is the unique identifier for the online store.
-      - name: capacity
-        value: string
-        description: |
-          The capacity of the online store. Valid values are "CU_1", "CU_2", "CU_4", "CU_8".
-      - name: creation_time
-        value: string
-        description: |
-          The timestamp when the online store was created.
-      - name: creator
-        value: string
-        description: |
-          The email of the creator of the online store.
-      - name: read_replica_count
-        value: integer
-        description: |
-          The number of read replicas for the online store. Defaults to 0.
-      - name: state
-        value: string
-        description: |
-          The current state of the online store.
-      - name: usage_policy_id
-        value: string
-        description: |
-          The usage policy applied to the online store to track billing.
-```
+      value:
+        name: "{{ name }}"
+        capacity: "{{ capacity }}"
+        creation_time: "{{ creation_time }}"
+        creator: "{{ creator }}"
+        read_replica_count: {{ read_replica_count }}
+        state: "{{ state }}"
+        usage_policy_id: "{{ usage_policy_id }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

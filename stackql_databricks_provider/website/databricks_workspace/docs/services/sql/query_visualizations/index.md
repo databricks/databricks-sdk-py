@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -235,37 +236,23 @@ update_time
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: query_visualizations
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the query_visualizations resource.
     - name: visualization
-      value: object
       description: |
-        :returns: :class:`Visualization`
-      props:
-      - name: display_name
-        value: string
-      - name: query_id
-        value: string
-        description: |
-          UUID of the query that the visualization is attached to.
-      - name: serialized_options
-        value: string
-        description: |
-          The visualization options varies widely from one visualization type to the next and is unsupported. Databricks does not recommend modifying visualization options directly.
-      - name: serialized_query_plan
-        value: string
-        description: |
-          The visualization query plan varies widely from one visualization type to the next and is unsupported. Databricks does not recommend modifying the visualization query plan directly.
-      - name: type
-        value: string
-        description: |
-          The type of visualization: counter, table, funnel, and so on.
-```
+        :returns: :class:\`Visualization\`
+      value:
+        display_name: "{{ display_name }}"
+        query_id: "{{ query_id }}"
+        serialized_options: "{{ serialized_options }}"
+        serialized_query_plan: "{{ serialized_query_plan }}"
+        type: "{{ type }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -426,33 +427,22 @@ metastore_info
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: account_metastores
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the account_metastores resource.
     - name: metastore_info
-      value: object
       description: |
-        :returns: :class:`AccountsCreateMetastoreResponse`
-      props:
-      - name: name
-        value: string
-      - name: external_access_enabled
-        value: boolean
-        description: |
-          Whether to allow non-DBR clients to directly access entities under the metastore.
-      - name: region
-        value: string
-        description: |
-          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
-      - name: storage_root
-        value: string
-        description: |
-          The storage root URL for metastore
-```
+        :returns: :class:\`AccountsCreateMetastoreResponse\`
+      value:
+        name: "{{ name }}"
+        external_access_enabled: {{ external_access_enabled }}
+        region: "{{ region }}"
+        storage_root: "{{ storage_root }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

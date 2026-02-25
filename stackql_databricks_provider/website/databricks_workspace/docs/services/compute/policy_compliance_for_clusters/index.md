@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -230,21 +231,21 @@ has_changes
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: policy_compliance_for_clusters
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the policy_compliance_for_clusters resource.
     - name: cluster_id
-      value: string
+      value: "{{ cluster_id }}"
       description: |
         The ID of the cluster you want to enforce policy compliance on.
     - name: validate_only
-      value: boolean
+      value: {{ validate_only }}
       description: |
         If set, previews the changes that would be made to a cluster to enforce compliance but does not update the cluster.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>

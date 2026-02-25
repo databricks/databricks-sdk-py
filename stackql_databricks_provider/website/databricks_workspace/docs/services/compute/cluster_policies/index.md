@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -505,96 +506,57 @@ policy_id
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: cluster_policies
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the cluster_policies resource.
     - name: definition
-      value: string
+      value: "{{ definition }}"
       description: |
         Policy definition document expressed in [Databricks Cluster Policy Definition Language]. [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
     - name: description
-      value: string
+      value: "{{ description }}"
       description: |
         Additional human-readable description of the cluster policy.
     - name: libraries
-      value: array
       description: |
         A list of libraries to be installed on the next cluster restart that uses this policy. The maximum number of libraries is 500.
-      props:
-      - name: cran
-        value: object
-        props:
-        - name: package
-          value: string
-        - name: repo
-          value: string
-          description: |
-            The repository where the package can be found. If not specified, the default CRAN repo is used.
-      - name: egg
-        value: string
-        description: |
-          Deprecated. URI of the egg library to install. Installing Python egg files is deprecated and is not supported in Databricks Runtime 14.0 and above.
-      - name: jar
-        value: string
-        description: |
-          URI of the JAR library to install. Supported URIs include Workspace paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "jar": "/Workspace/path/to/library.jar" }`, `{ "jar" : "/Volumes/path/to/library.jar" }` or `{ "jar": "s3://my-bucket/library.jar" }`. If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the S3 URI.
-      - name: maven
-        value: object
-        description: |
-          Specification of a maven library to be installed. For example: `{ "coordinates": "org.jsoup:jsoup:1.7.2" }`
-        props:
-        - name: coordinates
-          value: string
-        - name: exclusions
-          value: array
-          description: |
-            List of dependences to exclude. For example: `["slf4j:slf4j", "*:hadoop-client"]`. Maven dependency exclusions: https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html.
-          items:
-            type: string
-        - name: repo
-          value: string
-          description: |
-            Maven repo to install the Maven package from. If omitted, both Maven Central Repository and Spark Packages are searched.
-      - name: pypi
-        value: object
-        description: |
-          Specification of a PyPi library to be installed. For example: `{ "package": "simplejson" }`
-        props:
-        - name: package
-          value: string
-        - name: repo
-          value: string
-          description: |
-            The repository where the package can be found. If not specified, the default pip index is used.
-      - name: requirements
-        value: string
-        description: |
-          URI of the requirements.txt file to install. Only Workspace paths and Unity Catalog Volumes paths are supported. For example: `{ "requirements": "/Workspace/path/to/requirements.txt" }` or `{ "requirements" : "/Volumes/path/to/requirements.txt" }`
-      - name: whl
-        value: string
-        description: |
-          URI of the wheel library to install. Supported URIs include Workspace paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "whl": "/Workspace/path/to/library.whl" }`, `{ "whl" : "/Volumes/path/to/library.whl" }` or `{ "whl": "s3://my-bucket/library.whl" }`. If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the S3 URI.
+      value:
+        - cran:
+            package: "{{ package }}"
+            repo: "{{ repo }}"
+          egg: "{{ egg }}"
+          jar: "{{ jar }}"
+          maven:
+            coordinates: "{{ coordinates }}"
+            exclusions:
+              - "{{ exclusions }}"
+            repo: "{{ repo }}"
+          pypi:
+            package: "{{ package }}"
+            repo: "{{ repo }}"
+          requirements: "{{ requirements }}"
+          whl: "{{ whl }}"
     - name: max_clusters_per_user
-      value: integer
+      value: {{ max_clusters_per_user }}
       description: |
         Max number of clusters per user that can be active using this policy. If not present, there is no max limit.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100 characters.
     - name: policy_family_definition_overrides
-      value: string
+      value: "{{ policy_family_definition_overrides }}"
       description: |
         Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON document must be passed as a string and cannot be embedded in the requests. You can use this to customize the policy definition inherited from the policy family. Policy rules specified here are merged into the inherited policy definition. [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
     - name: policy_family_id
-      value: string
+      value: "{{ policy_family_id }}"
       description: |
-        ID of the policy family. The cluster policy's policy definition inherits the policy family's policy definition. Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the policy definition.
-```
+        ID of the policy family. The cluster policy's policy definition inherits the policy family's policy definition. Cannot be used with \`definition\`. Use \`policy_family_definition_overrides\` instead to customize the policy definition.
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

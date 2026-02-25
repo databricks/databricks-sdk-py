@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -263,76 +264,37 @@ SELECT
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: libraries
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the libraries resource.
     - name: cluster_id
-      value: string
+      value: "{{ cluster_id }}"
       description: |
         Unique identifier for the cluster on which to install these libraries.
     - name: libraries
-      value: array
       description: |
         The libraries to install.
-      props:
-      - name: cran
-        value: object
-        props:
-        - name: package
-          value: string
-        - name: repo
-          value: string
-          description: |
-            The repository where the package can be found. If not specified, the default CRAN repo is used.
-      - name: egg
-        value: string
-        description: |
-          Deprecated. URI of the egg library to install. Installing Python egg files is deprecated and is not supported in Databricks Runtime 14.0 and above.
-      - name: jar
-        value: string
-        description: |
-          URI of the JAR library to install. Supported URIs include Workspace paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "jar": "/Workspace/path/to/library.jar" }`, `{ "jar" : "/Volumes/path/to/library.jar" }` or `{ "jar": "s3://my-bucket/library.jar" }`. If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the S3 URI.
-      - name: maven
-        value: object
-        description: |
-          Specification of a maven library to be installed. For example: `{ "coordinates": "org.jsoup:jsoup:1.7.2" }`
-        props:
-        - name: coordinates
-          value: string
-        - name: exclusions
-          value: array
-          description: |
-            List of dependences to exclude. For example: `["slf4j:slf4j", "*:hadoop-client"]`. Maven dependency exclusions: https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html.
-          items:
-            type: string
-        - name: repo
-          value: string
-          description: |
-            Maven repo to install the Maven package from. If omitted, both Maven Central Repository and Spark Packages are searched.
-      - name: pypi
-        value: object
-        description: |
-          Specification of a PyPi library to be installed. For example: `{ "package": "simplejson" }`
-        props:
-        - name: package
-          value: string
-        - name: repo
-          value: string
-          description: |
-            The repository where the package can be found. If not specified, the default pip index is used.
-      - name: requirements
-        value: string
-        description: |
-          URI of the requirements.txt file to install. Only Workspace paths and Unity Catalog Volumes paths are supported. For example: `{ "requirements": "/Workspace/path/to/requirements.txt" }` or `{ "requirements" : "/Volumes/path/to/requirements.txt" }`
-      - name: whl
-        value: string
-        description: |
-          URI of the wheel library to install. Supported URIs include Workspace paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "whl": "/Workspace/path/to/library.whl" }`, `{ "whl" : "/Volumes/path/to/library.whl" }` or `{ "whl": "s3://my-bucket/library.whl" }`. If S3 is used, please make sure the cluster has read access on the library. You may need to launch the cluster with an IAM role to access the S3 URI.
-```
+      value:
+        - cran:
+            package: "{{ package }}"
+            repo: "{{ repo }}"
+          egg: "{{ egg }}"
+          jar: "{{ jar }}"
+          maven:
+            coordinates: "{{ coordinates }}"
+            exclusions:
+              - "{{ exclusions }}"
+            repo: "{{ repo }}"
+          pypi:
+            package: "{{ package }}"
+            repo: "{{ repo }}"
+          requirements: "{{ requirements }}"
+          whl: "{{ whl }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

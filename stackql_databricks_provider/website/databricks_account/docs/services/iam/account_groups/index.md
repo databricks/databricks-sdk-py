@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -464,59 +465,45 @@ roles
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: account_groups
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the account_groups resource.
     - name: display_name
-      value: string
+      value: "{{ display_name }}"
       description: |
         String that represents a human-readable group name
     - name: external_id
-      value: string
+      value: "{{ external_id }}"
       description: |
         :param id: str (optional) Databricks group ID
     - name: id
-      value: string
+      value: "{{ id }}"
     - name: members
-      value: array
       description: |
-        :param meta: :class:`ResourceMeta` (optional) Container for the group identifier. Workspace local versus account.
-      props:
-      - name: display
-        value: string
-      - name: primary
-        value: boolean
-      - name: $ref
-        value: string
-      - name: type
-        value: string
-      - name: value
-        value: string
+        :param meta: :class:\`ResourceMeta\` (optional) Container for the group identifier. Workspace local versus account.
+      value:
+        - display: "{{ display }}"
+          primary: {{ primary }}
+          $ref: "{{ $ref }}"
+          type: "{{ type }}"
+          value: "{{ value }}"
     - name: meta
-      value: object
-      props:
-      - name: resourceType
-        value: string
+      value:
+        resourceType: "{{ resourceType }}"
     - name: roles
-      value: array
       description: |
         Indicates if the group has the admin role.
-      props:
-      - name: display
-        value: string
-      - name: primary
-        value: boolean
-      - name: $ref
-        value: string
-      - name: type
-        value: string
-      - name: value
-        value: string
-```
+      value:
+        - display: "{{ display }}"
+          primary: {{ primary }}
+          $ref: "{{ $ref }}"
+          type: "{{ type }}"
+          value: "{{ value }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

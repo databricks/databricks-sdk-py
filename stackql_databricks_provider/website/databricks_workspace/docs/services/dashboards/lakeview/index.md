@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -374,62 +375,33 @@ update_time
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: lakeview
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the lakeview resource.
     - name: dashboard
-      value: object
       description: |
         :param dataset_catalog: str (optional) Sets the default catalog for all datasets in this dashboard. Does not impact table references that use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset’s existing configuration.
-      props:
-      - name: create_time
-        value: string
-      - name: dashboard_id
-        value: string
-        description: |
-          UUID identifying the dashboard.
-      - name: display_name
-        value: string
-        description: |
-          The display name of the dashboard.
-      - name: etag
-        value: string
-        description: |
-          The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard has not been modified since the last read. This field is excluded in List Dashboards responses.
-      - name: lifecycle_state
-        value: string
-        description: |
-          The state of the dashboard resource. Used for tracking trashed status.
-      - name: parent_path
-        value: string
-        description: |
-          The workspace path of the folder containing the dashboard. Includes leading slash and no trailing slash. This field is excluded in List Dashboards responses.
-      - name: path
-        value: string
-        description: |
-          The workspace path of the dashboard asset, including the file name. Exported dashboards always have the file extension `.lvdash.json`. This field is excluded in List Dashboards responses.
-      - name: serialized_dashboard
-        value: string
-        description: |
-          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards responses. Use the [get dashboard API] to retrieve an example response, which includes the `serialized_dashboard` field. This field provides the structure of the JSON string that represents the dashboard's layout and components. [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
-      - name: update_time
-        value: string
-        description: |
-          The timestamp of when the dashboard was last updated by the user. This field is excluded in List Dashboards responses.
-      - name: warehouse_id
-        value: string
-        description: |
-          The warehouse ID used to run the dashboard.
+      value:
+        create_time: "{{ create_time }}"
+        dashboard_id: "{{ dashboard_id }}"
+        display_name: "{{ display_name }}"
+        etag: "{{ etag }}"
+        lifecycle_state: "{{ lifecycle_state }}"
+        parent_path: "{{ parent_path }}"
+        path: "{{ path }}"
+        serialized_dashboard: "{{ serialized_dashboard }}"
+        update_time: "{{ update_time }}"
+        warehouse_id: "{{ warehouse_id }}"
     - name: dataset_catalog
-      value: string
+      value: "{{ dataset_catalog }}"
     - name: dataset_schema
-      value: string
+      value: "{{ dataset_schema }}"
       description: Sets the default schema for all datasets in this dashboard. Does not impact table references that use fully qualified schema names (ex: nyctaxi.trips). Leave blank to keep each dataset’s existing configuration.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

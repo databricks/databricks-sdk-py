@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -369,61 +370,36 @@ membership_role
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: database_instance_roles
   props:
     - name: instance_name
-      value: string
+      value: "{{ instance_name }}"
       description: Required parameter for the database_instance_roles resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the database_instance_roles resource.
     - name: database_instance_role
-      value: object
       description: |
         A DatabaseInstanceRole represents a Postgres role in a database instance.
-      props:
-      - name: name
-        value: string
-        description: |
-          The name of the role. This is the unique identifier for the role in an instance.
-      - name: attributes
-        value: object
-        description: |
-          The desired API-exposed Postgres role attribute to associate with the role. Optional.
-        props:
-        - name: bypassrls
-          value: boolean
-        - name: createdb
-          value: boolean
-        - name: createrole
-          value: boolean
-      - name: effective_attributes
-        value: object
-        description: |
-          The attributes that are applied to the role. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
-        props:
-        - name: bypassrls
-          value: boolean
-        - name: createdb
-          value: boolean
-        - name: createrole
-          value: boolean
-      - name: identity_type
-        value: string
-        description: |
-          The type of the role.
-      - name: instance_name
-        value: string
-      - name: membership_role
-        value: string
-        description: |
-          An enum value for a standard role that this role is a member of.
+      value:
+        name: "{{ name }}"
+        attributes:
+          bypassrls: {{ bypassrls }}
+          createdb: {{ createdb }}
+          createrole: {{ createrole }}
+        effective_attributes:
+          bypassrls: {{ bypassrls }}
+          createdb: {{ createdb }}
+          createrole: {{ createrole }}
+        identity_type: "{{ identity_type }}"
+        instance_name: "{{ instance_name }}"
+        membership_role: "{{ membership_role }}"
     - name: database_instance_name
-      value: string
-      description: :returns: :class:`DatabaseInstanceRole`
-```
+      value: "{{ database_instance_name }}"
+      description: :returns: :class:\`DatabaseInstanceRole\`
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

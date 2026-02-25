@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -493,30 +494,30 @@ updated_by
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: metastores
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the metastores resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         The user-specified name of the metastore.
     - name: external_access_enabled
-      value: boolean
+      value: {{ external_access_enabled }}
       description: |
         Whether to allow non-DBR clients to directly access entities under the metastore.
     - name: region
-      value: string
+      value: "{{ region }}"
       description: |
-        Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+        Cloud region which the metastore serves (e.g., \`us-west-2\`, \`westus\`).
     - name: storage_root
-      value: string
+      value: "{{ storage_root }}"
       description: |
         The storage root URL for metastore
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

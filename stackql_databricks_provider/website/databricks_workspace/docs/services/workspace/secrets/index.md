@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -221,30 +222,30 @@ SELECT
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: secrets
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the secrets resource.
     - name: scope
-      value: string
+      value: "{{ scope }}"
       description: |
         The name of the scope to which the secret will be associated with.
     - name: key
-      value: string
+      value: "{{ key }}"
       description: |
         A unique name to identify the secret.
     - name: bytes_value
-      value: string
+      value: "{{ bytes_value }}"
       description: |
         If specified, value will be stored as bytes.
     - name: string_value
-      value: string
+      value: "{{ string_value }}"
       description: |
         If specified, note that the value will be stored in UTF-8 (MB4) form.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

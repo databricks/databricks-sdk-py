@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -702,103 +703,71 @@ warehouse_type
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: warehouses
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the warehouses resource.
     - name: auto_stop_mins
-      value: integer
+      value: {{ auto_stop_mins }}
       description: |
         The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it is automatically stopped. Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop. Defaults to 120 mins
     - name: channel
-      value: object
       description: |
         Channel Details
-      props:
-      - name: dbsql_version
-        value: string
-      - name: name
-        value: string
-        description: |
-          Create a collection of name/value pairs.
-          Example enumeration:
-          >>> class Color(Enum):
-          ...     RED = 1
-          ...     BLUE = 2
-          ...     GREEN = 3
-          Access them by:
-          - attribute access::
-          >>> Color.RED
-          <Color.RED: 1>
-          - value lookup:
-          >>> Color(1)
-          <Color.RED: 1>
-          - name lookup:
-          >>> Color['RED']
-          <Color.RED: 1>
-          Enumerations can be iterated over, and know how many members they have:
-          >>> len(Color)
-          3
-          >>> list(Color)
-          [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-          Methods can be added to enumerations, and members can have their own
-          attributes -- see the documentation for details.
+      value:
+        dbsql_version: "{{ dbsql_version }}"
+        name: "{{ name }}"
     - name: cluster_size
-      value: string
+      value: "{{ cluster_size }}"
       description: |
         Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you to run larger queries on it. If you want to increase the number of concurrent queries, please tune max_num_clusters. Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large - 4X-Large
     - name: creator_name
-      value: string
+      value: "{{ creator_name }}"
       description: |
         warehouse creator name
     - name: enable_photon
-      value: boolean
+      value: {{ enable_photon }}
       description: |
         Configures whether the warehouse should use Photon optimized clusters. Defaults to false.
     - name: enable_serverless_compute
-      value: boolean
+      value: {{ enable_serverless_compute }}
       description: |
         Configures whether the warehouse should use serverless compute
     - name: instance_profile_arn
-      value: string
+      value: "{{ instance_profile_arn }}"
       description: |
         Deprecated. Instance profile used to pass IAM role to the cluster
     - name: max_num_clusters
-      value: integer
+      value: {{ max_num_clusters }}
       description: |
         Maximum number of clusters that the autoscaler will create to handle concurrent queries. Supported values: - Must be >= min_num_clusters - Must be <= 40. Defaults to min_clusters if unset.
     - name: min_num_clusters
-      value: integer
+      value: {{ min_num_clusters }}
       description: |
         Minimum number of available clusters that will be maintained for this SQL warehouse. Increasing this will ensure that a larger number of clusters are always running and therefore may reduce the cold start time for new queries. This is similar to reserved vs. revocable cores in a resource manager. Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30) Defaults to 1
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Logical name for the cluster. Supported values: - Must be unique within an org. - Must be less than 100 characters.
     - name: spot_instance_policy
-      value: string
+      value: "{{ spot_instance_policy }}"
       description: |
         Configurations whether the endpoint should use spot instances.
     - name: tags
-      value: object
       description: |
         A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes) associated with this SQL warehouse. Supported values: - Number of tags < 45.
-      props:
-      - name: custom_tags
-        value: array
-        props:
-        - name: key
-          value: string
-        - name: value
-          value: string
+      value:
+        custom_tags:
+          - key: "{{ key }}"
+            value: "{{ value }}"
     - name: warehouse_type
-      value: string
+      value: "{{ warehouse_type }}"
       description: |
-        Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and also set the field `enable_serverless_compute` to `true`.
-```
+        Warehouse type: \`PRO\` or \`CLASSIC\`. If you want to use serverless compute, you must set to \`PRO\` and also set the field \`enable_serverless_compute\` to \`true\`.
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

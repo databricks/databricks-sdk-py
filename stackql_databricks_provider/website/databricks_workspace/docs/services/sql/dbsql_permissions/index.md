@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -216,37 +217,31 @@ object_type
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: dbsql_permissions
   props:
     - name: object_type.value
-      value: string
+      value: "{{ object_type.value }}"
       description: Required parameter for the dbsql_permissions resource.
     - name: object_id
-      value: string
+      value: "{{ object_id }}"
       description: Required parameter for the dbsql_permissions resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the dbsql_permissions resource.
     - name: object_type
-      value: string
+      value: "{{ object_type }}"
       description: |
         The type of object permission to set.
     - name: access_control_list
-      value: array
       description: |
-        :returns: :class:`SetResponse`
-      props:
-      - name: group_name
-        value: string
-      - name: permission_level
-        value: string
-        description: |
-          * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
-      - name: user_name
-        value: string
-```
+        :returns: :class:\`SetResponse\`
+      value:
+        - group_name: "{{ group_name }}"
+          permission_level: "{{ permission_level }}"
+          user_name: "{{ user_name }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -397,131 +398,36 @@ egress
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: network_policies
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the network_policies resource.
     - name: network_policy
-      value: object
       description: |
         Network policy configuration details.
-      props:
-      - name: account_id
-        value: string
-      - name: egress
-        value: object
-        description: |
-          The network policies applying for egress traffic.
-        props:
-        - name: network_access
-          value: object
-          description: |
-            The access policy enforced for egress traffic to the internet.
-          props:
-          - name: restriction_mode
-            value: string
-            description: |
-              At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:
-              Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can
-              only access explicitly allowed internet and storage destinations, as well as UC connections and
-              external locations.
-          - name: allowed_internet_destinations
-            value: array
-            description: |
-              List of internet destinations that serverless workloads are allowed to access when in RESTRICTED_ACCESS mode.
-            props:
-            - name: destination
-              value: string
-              description: |
-                The internet destination to which access will be allowed. Format dependent on the destination type.
-            - name: internet_destination_type
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-          - name: allowed_storage_destinations
-            value: array
-            description: |
-              List of storage destinations that serverless workloads are allowed to access when in RESTRICTED_ACCESS mode.
-            props:
-            - name: azure_storage_account
-              value: string
-              description: |
-                The Azure storage account name.
-            - name: azure_storage_service
-              value: string
-              description: |
-                The Azure storage service type (blob, dfs, etc.).
-            - name: bucket_name
-              value: string
-            - name: region
-              value: string
-            - name: storage_destination_type
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-          - name: policy_enforcement
-            value: object
-            description: |
-              Optional. When policy_enforcement is not provided, we default to ENFORCE_MODE_ALL_SERVICES
-            props:
-            - name: dry_run_mode_product_filter
-              value: array
-            - name: enforcement_mode
-              value: string
-              description: |
-                The mode of policy enforcement. ENFORCED blocks traffic that violates policy, while DRY_RUN only logs violations without blocking. When not specified, defaults to ENFORCED.
-      - name: network_policy_id
-        value: string
-        description: |
-          The unique identifier for the network policy.
-```
+      value:
+        account_id: "{{ account_id }}"
+        egress:
+          network_access:
+            restriction_mode: "{{ restriction_mode }}"
+            allowed_internet_destinations:
+              - destination: "{{ destination }}"
+                internet_destination_type: "{{ internet_destination_type }}"
+            allowed_storage_destinations:
+              - azure_storage_account: "{{ azure_storage_account }}"
+                azure_storage_service: "{{ azure_storage_service }}"
+                bucket_name: "{{ bucket_name }}"
+                region: "{{ region }}"
+                storage_destination_type: "{{ storage_destination_type }}"
+            policy_enforcement:
+              dry_run_mode_product_filter:
+                - "{{ dry_run_mode_product_filter }}"
+              enforcement_mode: "{{ enforcement_mode }}"
+        network_policy_id: "{{ network_policy_id }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

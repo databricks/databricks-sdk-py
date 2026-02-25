@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -375,41 +376,35 @@ use_case
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: vpc_endpoints
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the vpc_endpoints resource.
     - name: aws_vpc_endpoint_id
-      value: string
+      value: "{{ aws_vpc_endpoint_id }}"
       description: |
         The ID of the VPC endpoint object in AWS.
     - name: gcp_vpc_endpoint_info
-      value: object
       description: |
         The cloud info of this vpc endpoint.
-      props:
-      - name: project_id
-        value: string
-      - name: psc_endpoint_name
-        value: string
-      - name: endpoint_region
-        value: string
-      - name: psc_connection_id
-        value: string
-      - name: service_attachment_id
-        value: string
+      value:
+        project_id: "{{ project_id }}"
+        psc_endpoint_name: "{{ psc_endpoint_name }}"
+        endpoint_region: "{{ endpoint_region }}"
+        psc_connection_id: "{{ psc_connection_id }}"
+        service_attachment_id: "{{ service_attachment_id }}"
     - name: region
-      value: string
+      value: "{{ region }}"
       description: |
         The region in which this VPC endpoint object exists.
     - name: vpc_endpoint_name
-      value: string
+      value: "{{ vpc_endpoint_name }}"
       description: |
         The human-readable name of the storage configuration.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

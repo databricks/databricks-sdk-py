@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -275,33 +276,22 @@ tag_value
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: workspace_entity_tag_assignments
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the workspace_entity_tag_assignments resource.
     - name: tag_assignment
-      value: object
       description: |
-        :returns: :class:`TagAssignment`
-      props:
-      - name: entity_type
-        value: string
-      - name: entity_id
-        value: string
-        description: |
-          The identifier of the entity to which the tag is assigned
-      - name: tag_key
-        value: string
-        description: |
-          The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed
-      - name: tag_value
-        value: string
-        description: |
-          The value of the tag
-```
+        :returns: :class:\`TagAssignment\`
+      value:
+        entity_type: "{{ entity_type }}"
+        entity_id: "{{ entity_id }}"
+        tag_key: "{{ tag_key }}"
+        tag_value: "{{ tag_value }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

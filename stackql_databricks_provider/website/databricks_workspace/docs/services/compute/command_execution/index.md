@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -260,22 +261,22 @@ status
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: command_execution
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the command_execution resource.
     - name: cluster_id
-      value: string
+      value: "{{ cluster_id }}"
       description: |
         Running cluster id
     - name: language
-      value: string
+      value: "{{ language }}"
       description: |
-        :returns: Long-running operation waiter for :class:`ContextStatusResponse`. See :method:wait_context_status_command_execution_running for more details.
-```
+        :returns: Long-running operation waiter for :class:\`ContextStatusResponse\`. See :method:wait_context_status_command_execution_running for more details.
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

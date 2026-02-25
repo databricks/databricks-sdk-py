@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -148,272 +149,87 @@ task
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: serving_endpoints_pt
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the serving_endpoints_pt resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         The name of the serving endpoint. This field is required and must be unique across a Databricks workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
     - name: config
-      value: object
       description: |
         The core config of the serving endpoint.
-      props:
-      - name: served_entities
-        value: array
-        props:
-        - name: entity_name
-          value: string
-        - name: provisioned_model_units
-          value: integer
-          description: |
-            The number of model units to be provisioned.
-        - name: burst_scaling_enabled
-          value: boolean
-          description: |
-            Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains fixed capacity at provisioned_model_units.
-        - name: entity_version
-          value: string
-        - name: name
-          value: string
-          description: |
-            The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version.
-      - name: traffic_config
-        value: object
-        props:
-        - name: routes
-          value: array
-          props:
-          - name: traffic_percentage
-            value: integer
-          - name: served_entity_name
-            value: string
-          - name: served_model_name
-            value: string
-            description: |
-              The name of the served model this route configures traffic for.
+      value:
+        served_entities:
+          - entity_name: "{{ entity_name }}"
+            provisioned_model_units: {{ provisioned_model_units }}
+            burst_scaling_enabled: {{ burst_scaling_enabled }}
+            entity_version: "{{ entity_version }}"
+            name: "{{ name }}"
+        traffic_config:
+          routes:
+            - traffic_percentage: {{ traffic_percentage }}
+              served_entity_name: "{{ served_entity_name }}"
+              served_model_name: "{{ served_model_name }}"
     - name: ai_gateway
-      value: object
       description: |
         The AI Gateway configuration for the serving endpoint.
-      props:
-      - name: fallback_config
-        value: object
-        props:
-        - name: enabled
-          value: boolean
-      - name: guardrails
-        value: object
-        description: |
-          Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses.
-        props:
-        - name: input
-          value: object
-          props:
-          - name: invalid_keywords
-            value: array
-            items:
-              type: string
-          - name: pii
-            value: object
-            description: |
-              Configuration for guardrail PII filter.
-            props:
-            - name: behavior
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-          - name: safety
-            value: boolean
-            description: |
-              Indicates whether the safety filter is enabled.
-          - name: valid_topics
-            value: array
-            description: |
-              The list of allowed topics. Given a chat request, this guardrail flags the request if its topic is not in the allowed topics.
-            items:
-              type: string
-        - name: output
-          value: object
-          description: |
-            Configuration for output guardrail filters.
-          props:
-          - name: invalid_keywords
-            value: array
-            items:
-              type: string
-          - name: pii
-            value: object
-            description: |
-              Configuration for guardrail PII filter.
-            props:
-            - name: behavior
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-          - name: safety
-            value: boolean
-            description: |
-              Indicates whether the safety filter is enabled.
-          - name: valid_topics
-            value: array
-            description: |
-              The list of allowed topics. Given a chat request, this guardrail flags the request if its topic is not in the allowed topics.
-            items:
-              type: string
-      - name: inference_table_config
-        value: object
-        description: |
-          Configuration for payload logging using inference tables. Use these tables to monitor and audit data being sent to and received from model APIs and to improve model quality.
-        props:
-        - name: catalog_name
-          value: string
-        - name: enabled
-          value: boolean
-          description: |
-            Indicates whether the inference table is enabled.
-        - name: schema_name
-          value: string
-          description: |
-            The name of the schema in Unity Catalog. Required when enabling inference tables. NOTE: On update, you have to disable inference table first in order to change the schema name.
-        - name: table_name_prefix
-          value: string
-          description: |
-            The prefix of the table in Unity Catalog. NOTE: On update, you have to disable inference table first in order to change the prefix name.
-      - name: rate_limits
-        value: array
-        description: |
-          Configuration for rate limits which can be set to limit endpoint traffic.
-        props:
-        - name: renewal_period
-          value: string
-          description: |
-            Create a collection of name/value pairs.
-            Example enumeration:
-            >>> class Color(Enum):
-            ...     RED = 1
-            ...     BLUE = 2
-            ...     GREEN = 3
-            Access them by:
-            - attribute access::
-            >>> Color.RED
-            <Color.RED: 1>
-            - value lookup:
-            >>> Color(1)
-            <Color.RED: 1>
-            - name lookup:
-            >>> Color['RED']
-            <Color.RED: 1>
-            Enumerations can be iterated over, and know how many members they have:
-            >>> len(Color)
-            3
-            >>> list(Color)
-            [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-            Methods can be added to enumerations, and members can have their own
-            attributes -- see the documentation for details.
-        - name: calls
-          value: integer
-          description: |
-            Used to specify how many calls are allowed for a key within the renewal_period.
-        - name: key
-          value: string
-          description: |
-            Key field for a rate limit. Currently, 'user', 'user_group, 'service_principal', and 'endpoint' are supported, with 'endpoint' being the default if not specified.
-        - name: principal
-          value: string
-          description: |
-            Principal field for a user, user group, or service principal to apply rate limiting to. Accepts a user email, group name, or service principal application ID.
-        - name: tokens
-          value: integer
-          description: |
-            Used to specify how many tokens are allowed for a key within the renewal_period.
-      - name: usage_tracking_config
-        value: object
-        description: |
-          Configuration to enable usage tracking using system tables. These tables allow you to monitor operational usage on endpoints and their associated costs.
-        props:
-        - name: enabled
-          value: boolean
+      value:
+        fallback_config:
+          enabled: {{ enabled }}
+        guardrails:
+          input:
+            invalid_keywords:
+              - "{{ invalid_keywords }}"
+            pii:
+              behavior: "{{ behavior }}"
+            safety: {{ safety }}
+            valid_topics:
+              - "{{ valid_topics }}"
+          output:
+            invalid_keywords:
+              - "{{ invalid_keywords }}"
+            pii:
+              behavior: "{{ behavior }}"
+            safety: {{ safety }}
+            valid_topics:
+              - "{{ valid_topics }}"
+        inference_table_config:
+          catalog_name: "{{ catalog_name }}"
+          enabled: {{ enabled }}
+          schema_name: "{{ schema_name }}"
+          table_name_prefix: "{{ table_name_prefix }}"
+        rate_limits:
+          - renewal_period: "{{ renewal_period }}"
+            calls: {{ calls }}
+            key: "{{ key }}"
+            principal: "{{ principal }}"
+            tokens: {{ tokens }}
+        usage_tracking_config:
+          enabled: {{ enabled }}
     - name: budget_policy_id
-      value: string
+      value: "{{ budget_policy_id }}"
       description: |
         The budget policy associated with the endpoint.
     - name: email_notifications
-      value: object
       description: |
         Email notification settings.
-      props:
-      - name: on_update_failure
-        value: array
-        items:
-          type: string
-      - name: on_update_success
-        value: array
-        description: |
-          A list of email addresses to be notified when an endpoint successfully updates its configuration or state.
-        items:
-          type: string
+      value:
+        on_update_failure:
+          - "{{ on_update_failure }}"
+        on_update_success:
+          - "{{ on_update_success }}"
     - name: tags
-      value: array
       description: |
         Tags to be attached to the serving endpoint and automatically propagated to billing logs.
-      props:
-      - name: key
-        value: string
-      - name: value
-        value: string
-        description: |
-          Optional value field for a serving endpoint tag.
-```
+      value:
+        - key: "{{ key }}"
+          value: "{{ value }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

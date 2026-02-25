@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -356,71 +357,36 @@ SELECT
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: postgres_roles
   props:
     - name: parent
-      value: string
+      value: "{{ parent }}"
       description: Required parameter for the postgres_roles resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the postgres_roles resource.
     - name: role
-      value: object
       description: |
         The desired specification of a Role.
-      props:
-      - name: create_time
-        value: string
-      - name: name
-        value: string
-        description: |
-          Output only. The full resource path of the role. Format: projects/{project_id}/branches/{branch_id}/roles/{role_id}
-      - name: parent
-        value: string
-        description: |
-          The Branch where this Role exists. Format: projects/{project_id}/branches/{branch_id}
-      - name: spec
-        value: object
-        description: |
-          The spec contains the role configuration, including identity type, authentication method, and role attributes.
-        props:
-        - name: auth_method
-          value: string
-          description: |
-            How the role is authenticated when connecting to Postgres.
-        - name: identity_type
-          value: string
-          description: |
-            The type of role. When specifying a managed-identity, the chosen role_id must be a valid: * application ID for SERVICE_PRINCIPAL * user email for USER * group name for GROUP
-        - name: postgres_role
-          value: string
-          description: |
-            The name of the Postgres role. This expects a valid Postgres identifier as specified in the link below. https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS Required when creating the Role. If you wish to create a Postgres Role backed by a managed Databricks identity, then postgres_role must be one of the following: 1. user email for IdentityType.USER 2. app ID for IdentityType.SERVICE_PRINCIPAL 2. group name for IdentityType.GROUP
-      - name: status
-        value: object
-        description: |
-          Current status of the role, including its identity type, authentication method, and role attributes.
-        props:
-        - name: auth_method
-          value: string
-          description: |
-            How the role is authenticated when connecting to Postgres.
-        - name: identity_type
-          value: string
-          description: |
-            The type of the role.
-        - name: postgres_role
-          value: string
-          description: |
-            The name of the Postgres role.
-      - name: update_time
-        value: string
+      value:
+        create_time: "{{ create_time }}"
+        name: "{{ name }}"
+        parent: "{{ parent }}"
+        spec:
+          auth_method: "{{ auth_method }}"
+          identity_type: "{{ identity_type }}"
+          postgres_role: "{{ postgres_role }}"
+        status:
+          auth_method: "{{ auth_method }}"
+          identity_type: "{{ identity_type }}"
+          postgres_role: "{{ postgres_role }}"
+        update_time: "{{ update_time }}"
     - name: role_id
-      value: string
+      value: "{{ role_id }}"
       description: The ID to use for the Role, which will become the final component of the role's resource name. This ID becomes the role in Postgres. This value should be 4-63 characters, and valid characters are lowercase letters, numbers, and hyphens, as defined by RFC 1123. If role_id is not specified in the request, it is generated automatically.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

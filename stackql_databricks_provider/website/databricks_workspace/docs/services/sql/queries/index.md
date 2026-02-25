@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -771,179 +772,67 @@ update_time
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: queries
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the queries resource.
     - name: auto_resolve_display_name
-      value: boolean
+      value: {{ auto_resolve_display_name }}
       description: |
         If true, automatically resolve query display name conflicts. Otherwise, fail the request if the query's display name conflicts with an existing query's display name.
     - name: query
-      value: object
       description: |
-        :returns: :class:`Query`
-      props:
-      - name: apply_auto_limit
-        value: boolean
-      - name: catalog
-        value: string
-        description: |
-          Name of the catalog where this query will be executed.
-      - name: description
-        value: string
-        description: |
-          General description that conveys additional information about this query such as usage notes.
-      - name: display_name
-        value: string
-        description: |
-          Display name of the query that appears in list views, widget headings, and on the query page.
-      - name: parameters
-        value: array
-        description: |
-          List of query parameter definitions.
-        props:
-        - name: date_range_value
-          value: object
-          props:
-          - name: date_range_value
-            value: object
-            props:
-            - name: start
-              value: string
-            - name: end
-              value: string
-          - name: dynamic_date_range_value
-            value: string
-            description: |
-              Dynamic date-time range value based on current date-time.
-          - name: precision
-            value: string
-            description: |
-              Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD).
-          - name: start_day_of_week
-            value: integer
-        - name: date_value
-          value: object
-          description: |
-            Date query parameter value. Can only specify one of `dynamic_date_value` or `date_value`.
-          props:
-          - name: date_value
-            value: string
-          - name: dynamic_date_value
-            value: string
-            description: |
-              Dynamic date-time value based on current date-time.
-          - name: precision
-            value: string
-            description: |
-              Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD).
-        - name: enum_value
-          value: object
-          description: |
-            Dropdown query parameter value.
-          props:
-          - name: enum_options
-            value: string
-          - name: multi_values_options
-            value: object
-            description: |
-              If specified, allows multiple values to be selected for this parameter.
-            props:
-            - name: prefix
-              value: string
-            - name: separator
-              value: string
-              description: |
-                Character that separates each selected parameter value. Defaults to a comma.
-            - name: suffix
-              value: string
-              description: |
-                Character that suffixes each selected parameter value.
-          - name: values
-            value: array
-            description: |
-              List of selected query parameter values.
-            items:
-              type: string
-        - name: name
-          value: string
-          description: |
-            Literal parameter marker that appears between double curly braces in the query text.
-        - name: numeric_value
-          value: object
-          description: |
-            Numeric query parameter value.
-          props:
-          - name: value
-            value: number
-        - name: query_backed_value
-          value: object
-          description: |
-            Query-based dropdown query parameter value.
-          props:
-          - name: multi_values_options
-            value: object
-            props:
-            - name: prefix
-              value: string
-            - name: separator
-              value: string
-              description: |
-                Character that separates each selected parameter value. Defaults to a comma.
-            - name: suffix
-              value: string
-              description: |
-                Character that suffixes each selected parameter value.
-          - name: query_id
-            value: string
-            description: |
-              UUID of the query that provides the parameter values.
-          - name: values
-            value: array
-            description: |
-              List of selected query parameter values.
-            items:
-              type: string
-        - name: text_value
-          value: object
-          description: |
-            Text query parameter value.
-          props:
-          - name: value
-            value: string
-        - name: title
-          value: string
-          description: |
-            Text displayed in the user-facing parameter widget in the UI.
-      - name: parent_path
-        value: string
-        description: |
-          Workspace path of the workspace folder containing the object.
-      - name: query_text
-        value: string
-        description: |
-          Text of the query to be run.
-      - name: run_as_mode
-        value: string
-        description: |
-          Sets the "Run as" role for the object.
-      - name: schema
-        value: string
-        description: |
-          Name of the schema where this query will be executed.
-      - name: tags
-        value: array
-        items:
-          type: string
-      - name: warehouse_id
-        value: string
-        description: |
-          ID of the SQL warehouse attached to the query.
-```
+        :returns: :class:\`Query\`
+      value:
+        apply_auto_limit: {{ apply_auto_limit }}
+        catalog: "{{ catalog }}"
+        description: "{{ description }}"
+        display_name: "{{ display_name }}"
+        parameters:
+          - date_range_value:
+              date_range_value:
+                start: "{{ start }}"
+                end: "{{ end }}"
+              dynamic_date_range_value: "{{ dynamic_date_range_value }}"
+              precision: "{{ precision }}"
+              start_day_of_week: {{ start_day_of_week }}
+            date_value:
+              date_value: "{{ date_value }}"
+              dynamic_date_value: "{{ dynamic_date_value }}"
+              precision: "{{ precision }}"
+            enum_value:
+              enum_options: "{{ enum_options }}"
+              multi_values_options:
+                prefix: "{{ prefix }}"
+                separator: "{{ separator }}"
+                suffix: "{{ suffix }}"
+              values:
+                - "{{ values }}"
+            name: "{{ name }}"
+            numeric_value:
+              value: {{ value }}
+            query_backed_value:
+              multi_values_options:
+                prefix: "{{ prefix }}"
+                separator: "{{ separator }}"
+                suffix: "{{ suffix }}"
+              query_id: "{{ query_id }}"
+              values:
+                - "{{ values }}"
+            text_value:
+              value: "{{ value }}"
+            title: "{{ title }}"
+        parent_path: "{{ parent_path }}"
+        query_text: "{{ query_text }}"
+        run_as_mode: "{{ run_as_mode }}"
+        schema: "{{ schema }}"
+        tags:
+          - "{{ tags }}"
+        warehouse_id: "{{ warehouse_id }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

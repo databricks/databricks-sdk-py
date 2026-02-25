@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -455,43 +456,36 @@ run
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: experiment_runs
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the experiment_runs resource.
     - name: experiment_id
-      value: string
+      value: "{{ experiment_id }}"
       description: |
         ID of the associated experiment.
     - name: run_name
-      value: string
+      value: "{{ run_name }}"
       description: |
         The name of the run.
     - name: start_time
-      value: integer
+      value: {{ start_time }}
       description: |
         Unix timestamp in milliseconds of when the run started.
     - name: tags
-      value: array
       description: |
         Additional metadata for run.
-      props:
-      - name: key
-        value: string
-        description: |
-          The tag key.
-      - name: value
-        value: string
-        description: |
-          The tag value.
+      value:
+        - key: "{{ key }}"
+          value: "{{ value }}"
     - name: user_id
-      value: string
+      value: "{{ user_id }}"
       description: |
         ID of the user executing the run. This field is deprecated as of MLflow 1.0, and will be removed in a future MLflow release. Use 'mlflow.user' tag instead.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

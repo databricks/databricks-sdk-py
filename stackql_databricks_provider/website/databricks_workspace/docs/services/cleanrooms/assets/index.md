@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -432,143 +433,54 @@ volume_local_details
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: assets
   props:
     - name: clean_room_name
-      value: string
+      value: "{{ clean_room_name }}"
       description: Required parameter for the assets resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the assets resource.
     - name: asset
-      value: object
       description: |
-        :returns: :class:`CleanRoomAsset`
-      props:
-      - name: name
-        value: string
-        description: |
-          A fully qualified name that uniquely identifies the asset within the clean room. This is also the name displayed in the clean room UI. For UC securable assets (tables, volumes, etc.), the format is *shared_catalog*.*shared_schema*.*asset_name* For notebooks, the name is the notebook file name. For jar analyses, the name is the jar analysis name.
-      - name: asset_type
-        value: string
-        description: |
-          The type of the asset.
-      - name: added_at
-        value: integer
-        description: |
-          When the asset is added to the clean room, in epoch milliseconds.
-      - name: clean_room_name
-        value: string
-        description: |
-          The name of the clean room this asset belongs to. This field is required for create operations and populated by the server for responses.
-      - name: foreign_table
-        value: object
-        description: |
-          Foreign table details available to all collaborators of the clean room. Present if and only if **asset_type** is **FOREIGN_TABLE**
-        props:
-        - name: columns
-          value: string
-      - name: foreign_table_local_details
-        value: object
-        description: |
-          Local details for a foreign that are only available to its owner. Present if and only if **asset_type** is **FOREIGN_TABLE**
-        props:
-        - name: local_name
-          value: string
-      - name: notebook
-        value: object
-        description: |
-          Notebook details available to all collaborators of the clean room. Present if and only if **asset_type** is **NOTEBOOK_FILE**
-        props:
-        - name: notebook_content
-          value: string
-        - name: etag
-          value: string
-          description: |
-            Server generated etag that represents the notebook version.
-        - name: review_state
-          value: string
-          description: |
-            Top-level status derived from all reviews
-        - name: reviews
-          value: array
-          description: |
-            All existing approvals or rejections
-          props:
-          - name: comment
-            value: string
-          - name: created_at_millis
-            value: integer
-            description: |
-              When the review was submitted, in epoch milliseconds
-          - name: review_state
-            value: string
-            description: |
-              Review outcome
-          - name: review_sub_reason
-            value: string
-            description: |
-              Specified when the review was not explicitly made by a user
-          - name: reviewer_collaborator_alias
-            value: string
-            description: |
-              Collaborator alias of the reviewer
-        - name: runner_collaborator_aliases
-          value: array
-          description: |
-            Aliases of collaborators that can run the notebook.
-          items:
-            type: string
-      - name: owner_collaborator_alias
-        value: string
-        description: |
-          The alias of the collaborator who owns this asset
-      - name: status
-        value: string
-        description: |
-          Status of the asset
-      - name: table
-        value: object
-        description: |
-          Table details available to all collaborators of the clean room. Present if and only if **asset_type** is **TABLE**
-        props:
-        - name: columns
-          value: string
-      - name: table_local_details
-        value: object
-        description: |
-          Local details for a table that are only available to its owner. Present if and only if **asset_type** is **TABLE**
-        props:
-        - name: local_name
-          value: string
-        - name: partitions
-          value: string
-          description: |
-            Partition filtering specification for a shared table.
-      - name: view
-        value: object
-        description: |
-          View details available to all collaborators of the clean room. Present if and only if **asset_type** is **VIEW**
-        props:
-        - name: columns
-          value: string
-      - name: view_local_details
-        value: object
-        description: |
-          Local details for a view that are only available to its owner. Present if and only if **asset_type** is **VIEW**
-        props:
-        - name: local_name
-          value: string
-      - name: volume_local_details
-        value: object
-        description: |
-          Local details for a volume that are only available to its owner. Present if and only if **asset_type** is **VOLUME**
-        props:
-        - name: local_name
-          value: string
-```
+        :returns: :class:\`CleanRoomAsset\`
+      value:
+        name: "{{ name }}"
+        asset_type: "{{ asset_type }}"
+        added_at: {{ added_at }}
+        clean_room_name: "{{ clean_room_name }}"
+        foreign_table:
+          columns: "{{ columns }}"
+        foreign_table_local_details:
+          local_name: "{{ local_name }}"
+        notebook:
+          notebook_content: "{{ notebook_content }}"
+          etag: "{{ etag }}"
+          review_state: "{{ review_state }}"
+          reviews:
+            - comment: "{{ comment }}"
+              created_at_millis: {{ created_at_millis }}
+              review_state: "{{ review_state }}"
+              review_sub_reason: "{{ review_sub_reason }}"
+              reviewer_collaborator_alias: "{{ reviewer_collaborator_alias }}"
+          runner_collaborator_aliases:
+            - "{{ runner_collaborator_aliases }}"
+        owner_collaborator_alias: "{{ owner_collaborator_alias }}"
+        status: "{{ status }}"
+        table:
+          columns: "{{ columns }}"
+        table_local_details:
+          local_name: "{{ local_name }}"
+          partitions: "{{ partitions }}"
+        view:
+          columns: "{{ columns }}"
+        view_local_details:
+          local_name: "{{ local_name }}"
+        volume_local_details:
+          local_name: "{{ local_name }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

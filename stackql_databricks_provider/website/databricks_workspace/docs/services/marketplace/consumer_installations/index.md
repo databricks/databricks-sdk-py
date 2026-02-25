@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -496,27 +497,24 @@ installation
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: consumer_installations
   props:
     - name: listing_id
-      value: string
+      value: "{{ listing_id }}"
       description: Required parameter for the consumer_installations resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the consumer_installations resource.
     - name: accepted_consumer_terms
-      value: object
-      props:
-      - name: version
-        value: string
+      value:
+        version: "{{ version }}"
     - name: catalog_name
-      value: string
+      value: "{{ catalog_name }}"
       description: |
-        :param recipient_type: :class:`DeltaSharingRecipientType` (optional)
+        :param recipient_type: :class:\`DeltaSharingRecipientType\` (optional)
     - name: recipient_type
-      value: string
+      value: "{{ recipient_type }}"
       description: |
         Create a collection of name/value pairs.
         Example enumeration:
@@ -542,21 +540,17 @@ installation
         Methods can be added to enumerations, and members can have their own
         attributes -- see the documentation for details.
     - name: repo_detail
-      value: object
       description: |
         for git repo installations
-      props:
-      - name: repo_name
-        value: string
-      - name: repo_path
-        value: string
-        description: |
-          refers to the full url file path that navigates the user to the repo's entrypoint (e.g. a README.md file, or the repo file view in the unified UI) should just be a relative path
+      value:
+        repo_name: "{{ repo_name }}"
+        repo_path: "{{ repo_path }}"
     - name: share_name
-      value: string
+      value: "{{ share_name }}"
       description: |
-        :returns: :class:`Installation`
-```
+        :returns: :class:\`Installation\`
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

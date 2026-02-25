@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -404,81 +405,33 @@ pipeline_schedule_state
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: feature_materialized
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the feature_materialized resource.
     - name: materialized_feature
-      value: object
       description: |
         The materialized feature to create.
-      props:
-      - name: feature_name
-        value: string
-        description: |
-          The full name of the feature in Unity Catalog.
-      - name: cron_schedule
-        value: string
-        description: |
-          The quartz cron expression that defines the schedule of the materialization pipeline. The schedule is evaluated in the UTC timezone.
-      - name: last_materialization_time
-        value: string
-        description: |
-          The timestamp when the pipeline last ran and updated the materialized feature values. If the pipeline has not run yet, this field will be null.
-      - name: materialized_feature_id
-        value: string
-        description: |
-          Unique identifier for the materialized feature.
-      - name: offline_store_config
-        value: object
-        description: |
-          Configuration for offline store destination.
-        props:
-        - name: catalog_name
-          value: string
-          description: |
-            The Unity Catalog catalog name.
-        - name: schema_name
-          value: string
-          description: |
-            The Unity Catalog schema name.
-        - name: table_name_prefix
-          value: string
-          description: |
-            Prefix for Unity Catalog table name. The materialized feature will be stored in a table with this prefix and a generated postfix.
-      - name: online_store_config
-        value: object
-        description: |
-          Configuration for online store destination.
-        props:
-        - name: catalog_name
-          value: string
-          description: |
-            The Unity Catalog catalog name. This name is also used as the Lakebase logical database name.
-        - name: schema_name
-          value: string
-          description: |
-            The Unity Catalog schema name.
-        - name: table_name_prefix
-          value: string
-          description: |
-            Prefix for Unity Catalog table name. The materialized feature will be stored in a Lakebase table with this prefix and a generated postfix.
-        - name: online_store_name
-          value: string
-          description: |
-            The name of the target online store.
-      - name: pipeline_schedule_state
-        value: string
-        description: |
-          The schedule state of the materialization pipeline.
-      - name: table_name
-        value: string
-        description: |
-          The fully qualified Unity Catalog path to the table containing the materialized feature (Delta table or Lakebase table). Output only.
-```
+      value:
+        feature_name: "{{ feature_name }}"
+        cron_schedule: "{{ cron_schedule }}"
+        last_materialization_time: "{{ last_materialization_time }}"
+        materialized_feature_id: "{{ materialized_feature_id }}"
+        offline_store_config:
+          catalog_name: "{{ catalog_name }}"
+          schema_name: "{{ schema_name }}"
+          table_name_prefix: "{{ table_name_prefix }}"
+        online_store_config:
+          catalog_name: "{{ catalog_name }}"
+          schema_name: "{{ schema_name }}"
+          table_name_prefix: "{{ table_name_prefix }}"
+          online_store_name: "{{ online_store_name }}"
+        pipeline_schedule_state: "{{ pipeline_schedule_state }}"
+        table_name: "{{ table_name }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

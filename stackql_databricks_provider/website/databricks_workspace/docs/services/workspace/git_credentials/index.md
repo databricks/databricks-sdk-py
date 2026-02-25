@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -289,42 +290,42 @@ is_default_for_provider
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: git_credentials
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the git_credentials resource.
     - name: git_provider
-      value: string
+      value: "{{ git_provider }}"
       description: |
-        Git provider. This field is case-insensitive. The available Git providers are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and `awsCodeCommit`.
+        Git provider. This field is case-insensitive. The available Git providers are \`gitHub\`, \`bitbucketCloud\`, \`gitLab\`, \`azureDevOpsServices\`, \`gitHubEnterprise\`, \`bitbucketServer\`, \`gitLabEnterpriseEdition\` and \`awsCodeCommit\`.
     - name: git_email
-      value: string
+      value: "{{ git_email }}"
       description: |
         The authenticating email associated with your Git provider user account. Used for authentication with the remote repository and also sets the author & committer identity for commits. Required for most Git providers except AWS CodeCommit. Learn more at https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider
     - name: git_username
-      value: string
+      value: "{{ git_username }}"
       description: |
         The username provided with your Git provider account and associated with the credential. For most Git providers it is only used to set the Git committer & author names for commits, however it may be required for authentication depending on your Git provider / token requirements. Required for AWS CodeCommit.
     - name: is_default_for_provider
-      value: boolean
+      value: {{ is_default_for_provider }}
       description: |
         if the credential is the default for the given provider
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         the name of the git credential, used for identification and ease of lookup
     - name: personal_access_token
-      value: string
+      value: "{{ personal_access_token }}"
       description: |
         The personal access token used to authenticate to the corresponding Git provider. For certain providers, support may exist for other types of scoped access tokens. [Learn more]. [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
     - name: principal_id
-      value: integer
+      value: {{ principal_id }}
       description: |
         The ID of the service principal whose credentials will be modified. Only service principal managers can perform this action.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

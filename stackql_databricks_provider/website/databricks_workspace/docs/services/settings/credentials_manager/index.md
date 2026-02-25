@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -113,34 +114,28 @@ values
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: credentials_manager
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the credentials_manager resource.
     - name: partition_id
-      value: object
       description: |
         The partition of Credentials store
-      props:
-      - name: workspaceId
-        value: integer
-        description: |
-          The ID of the workspace.
+      value:
+        workspaceId: {{ workspaceId }}
     - name: token_type
-      value: array
+      value:
+        - "{{ token_type }}"
       description: |
         A list of token types being requested
-      items:
-        type: string
     - name: scopes
-      value: array
+      value:
+        - "{{ scopes }}"
       description: |
         Array of scopes for the token request.
-      items:
-        type: string
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>

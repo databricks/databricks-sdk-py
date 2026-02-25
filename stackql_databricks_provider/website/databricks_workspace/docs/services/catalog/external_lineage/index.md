@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -467,88 +468,43 @@ target
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: external_lineage
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the external_lineage resource.
     - name: external_lineage_relationship
-      value: object
       description: |
-        :returns: :class:`ExternalLineageRelationship`
-      props:
-      - name: source
-        value: object
-        props:
-        - name: external_metadata
-          value: object
-          props:
-          - name: name
-            value: string
-        - name: model_version
-          value: object
-          props:
-          - name: name
-            value: string
-          - name: version
-            value: string
-        - name: path
-          value: object
-          props:
-          - name: url
-            value: string
-        - name: table
-          value: object
-          props:
-          - name: name
-            value: string
-      - name: target
-        value: object
-        description: |
-          Target object of the external lineage relationship.
-        props:
-        - name: external_metadata
-          value: object
-          props:
-          - name: name
-            value: string
-        - name: model_version
-          value: object
-          props:
-          - name: name
-            value: string
-          - name: version
-            value: string
-        - name: path
-          value: object
-          props:
-          - name: url
-            value: string
-        - name: table
-          value: object
-          props:
-          - name: name
-            value: string
-      - name: columns
-        value: array
-        description: |
-          List of column relationships between source and target objects.
-        props:
-        - name: source
-          value: string
-        - name: target
-          value: string
-      - name: id
-        value: string
-        description: |
-          Unique identifier of the external lineage relationship.
-      - name: properties
-        value: object
-        description: |
-          Key-value properties associated with the external lineage relationship.
-```
+        :returns: :class:\`ExternalLineageRelationship\`
+      value:
+        source:
+          external_metadata:
+            name: "{{ name }}"
+          model_version:
+            name: "{{ name }}"
+            version: "{{ version }}"
+          path:
+            url: "{{ url }}"
+          table:
+            name: "{{ name }}"
+        target:
+          external_metadata:
+            name: "{{ name }}"
+          model_version:
+            name: "{{ name }}"
+            version: "{{ version }}"
+          path:
+            url: "{{ url }}"
+          table:
+            name: "{{ name }}"
+        columns:
+          - source: "{{ source }}"
+            target: "{{ target }}"
+        id: "{{ id }}"
+        properties: "{{ properties }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

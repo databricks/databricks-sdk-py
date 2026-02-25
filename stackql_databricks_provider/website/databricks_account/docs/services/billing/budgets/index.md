@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -477,155 +478,37 @@ budget
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: budgets
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the budgets resource.
     - name: budget
-      value: object
       description: |
         Properties of the new budget configuration.
-      props:
-      - name: account_id
-        value: string
-      - name: alert_configurations
-        value: array
-        description: |
-          Alerts to configure when this budget is in a triggered state. Budgets must have exactly one alert configuration.
-        props:
-        - name: action_configurations
-          value: array
-          props:
-          - name: action_type
-            value: string
-            description: |
-              Create a collection of name/value pairs.
-              Example enumeration:
-              >>> class Color(Enum):
-              ...     RED = 1
-              ...     BLUE = 2
-              ...     GREEN = 3
-              Access them by:
-              - attribute access::
-              >>> Color.RED
-              <Color.RED: 1>
-              - value lookup:
-              >>> Color(1)
-              <Color.RED: 1>
-              - name lookup:
-              >>> Color['RED']
-              <Color.RED: 1>
-              Enumerations can be iterated over, and know how many members they have:
-              >>> len(Color)
-              3
-              >>> list(Color)
-              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-              Methods can be added to enumerations, and members can have their own
-              attributes -- see the documentation for details.
-          - name: target
-            value: string
-            description: |
-              Target for the action. For example, an email address.
-        - name: quantity_threshold
-          value: string
-          description: |
-            The threshold for the budget alert to determine if it is in a triggered state. The number is evaluated based on `quantity_type`.
-        - name: quantity_type
-          value: string
-          description: |
-            The way to calculate cost for this budget alert. This is what `quantity_threshold` is measured in.
-        - name: time_period
-          value: string
-          description: |
-            The time window of usage data for the budget.
-        - name: trigger_type
-          value: string
-          description: |
-            The evaluation method to determine when this budget alert is in a triggered state.
-      - name: display_name
-        value: string
-        description: |
-          Human-readable name of budget configuration. Max Length: 128
-      - name: filter
-        value: object
-        description: |
-          Configured filters for this budget. These are applied to your account's usage to limit the scope of what is considered for this budget. Leave empty to include all usage for this account. All provided filters must be matched for usage to be included.
-        props:
-        - name: tags
-          value: array
-          props:
-          - name: key
-            value: string
-          - name: value
-            value: object
-            props:
-            - name: operator
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-            - name: values
-              value: array
-        - name: workspace_id
-          value: object
-          description: |
-            If provided, usage must match with the provided Databricks workspace IDs.
-          props:
-          - name: operator
-            value: string
-            description: |
-              Create a collection of name/value pairs.
-              Example enumeration:
-              >>> class Color(Enum):
-              ...     RED = 1
-              ...     BLUE = 2
-              ...     GREEN = 3
-              Access them by:
-              - attribute access::
-              >>> Color.RED
-              <Color.RED: 1>
-              - value lookup:
-              >>> Color(1)
-              <Color.RED: 1>
-              - name lookup:
-              >>> Color['RED']
-              <Color.RED: 1>
-              Enumerations can be iterated over, and know how many members they have:
-              >>> len(Color)
-              3
-              >>> list(Color)
-              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-              Methods can be added to enumerations, and members can have their own
-              attributes -- see the documentation for details.
-          - name: values
-            value: array
-            items:
-              type: integer
-```
+      value:
+        account_id: "{{ account_id }}"
+        alert_configurations:
+          - action_configurations: "{{ action_configurations }}"
+            quantity_threshold: "{{ quantity_threshold }}"
+            quantity_type: "{{ quantity_type }}"
+            time_period: "{{ time_period }}"
+            trigger_type: "{{ trigger_type }}"
+        display_name: "{{ display_name }}"
+        filter:
+          tags:
+            - key: "{{ key }}"
+              value:
+                operator: "{{ operator }}"
+                values:
+                  - "{{ values }}"
+          workspace_id:
+            operator: "{{ operator }}"
+            values:
+              - {{ values }}
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

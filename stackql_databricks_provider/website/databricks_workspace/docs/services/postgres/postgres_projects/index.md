@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -331,130 +332,48 @@ SELECT
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: postgres_projects
   props:
     - name: project_id
-      value: string
+      value: "{{ project_id }}"
       description: Required parameter for the postgres_projects resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the postgres_projects resource.
     - name: project
-      value: object
       description: |
         The Project to create.
-      props:
-      - name: create_time
-        value: string
-      - name: name
-        value: string
-        description: |
-          Output only. The full resource path of the project. Format: projects/{project_id}
-      - name: spec
-        value: object
-        description: |
-          The spec contains the project configuration, including display_name, pg_version (Postgres version), history_retention_duration, and default_endpoint_settings.
-        props:
-        - name: default_endpoint_settings
-          value: object
-          description: |
-            A collection of settings for a compute endpoint.
-          props:
-          - name: autoscaling_limit_max_cu
-            value: number
-            description: |
-              The maximum number of Compute Units. Minimum value is 0.5.
-          - name: autoscaling_limit_min_cu
-            value: number
-            description: |
-              The minimum number of Compute Units. Minimum value is 0.5.
-          - name: no_suspension
-            value: boolean
-            description: |
-              When set to true, explicitly disables automatic suspension (never suspend). Should be set to true when provided.
-          - name: pg_settings
-            value: object
-            description: |
-              A raw representation of Postgres settings.
-          - name: suspend_timeout_duration
-            value: string
-            description: |
-              Duration of inactivity after which the compute endpoint is automatically suspended. If specified should be between 60s and 604800s (1 minute to 1 week).
-        - name: display_name
-          value: string
-          description: |
-            Human-readable project name. Length should be between 1 and 256 characters.
-        - name: history_retention_duration
-          value: string
-          description: |
-            The number of seconds to retain the shared history for point in time recovery for all branches in this project. Value should be between 0s and 2592000s (up to 30 days).
-        - name: pg_version
-          value: integer
-          description: |
-            The major Postgres version number. Supported versions are 16 and 17.
-      - name: status
-        value: object
-        description: |
-          The current status of a Project.
-        props:
-        - name: branch_logical_size_limit_bytes
-          value: integer
-        - name: default_endpoint_settings
-          value: object
-          description: |
-            The effective default endpoint settings.
-          props:
-          - name: autoscaling_limit_max_cu
-            value: number
-            description: |
-              The maximum number of Compute Units. Minimum value is 0.5.
-          - name: autoscaling_limit_min_cu
-            value: number
-            description: |
-              The minimum number of Compute Units. Minimum value is 0.5.
-          - name: no_suspension
-            value: boolean
-            description: |
-              When set to true, explicitly disables automatic suspension (never suspend). Should be set to true when provided.
-          - name: pg_settings
-            value: object
-            description: |
-              A raw representation of Postgres settings.
-          - name: suspend_timeout_duration
-            value: string
-            description: |
-              Duration of inactivity after which the compute endpoint is automatically suspended. If specified should be between 60s and 604800s (1 minute to 1 week).
-        - name: display_name
-          value: string
-          description: |
-            The effective human-readable project name.
-        - name: history_retention_duration
-          value: string
-          description: |
-            The effective number of seconds to retain the shared history for point in time recovery.
-        - name: owner
-          value: string
-          description: |
-            The email of the project owner.
-        - name: pg_version
-          value: integer
-          description: |
-            The effective major Postgres version number.
-        - name: synthetic_storage_size_bytes
-          value: integer
-          description: |
-            The current space occupied by the project in storage.
-      - name: uid
-        value: string
-        description: |
-          System-generated unique ID for the project.
-      - name: update_time
-        value: string
-        description: |
-          A timestamp indicating when the project was last updated.
-```
+      value:
+        create_time: "{{ create_time }}"
+        name: "{{ name }}"
+        spec:
+          default_endpoint_settings:
+            autoscaling_limit_max_cu: {{ autoscaling_limit_max_cu }}
+            autoscaling_limit_min_cu: {{ autoscaling_limit_min_cu }}
+            no_suspension: {{ no_suspension }}
+            pg_settings: "{{ pg_settings }}"
+            suspend_timeout_duration: "{{ suspend_timeout_duration }}"
+          display_name: "{{ display_name }}"
+          history_retention_duration: "{{ history_retention_duration }}"
+          pg_version: {{ pg_version }}
+        status:
+          branch_logical_size_limit_bytes: {{ branch_logical_size_limit_bytes }}
+          default_endpoint_settings:
+            autoscaling_limit_max_cu: {{ autoscaling_limit_max_cu }}
+            autoscaling_limit_min_cu: {{ autoscaling_limit_min_cu }}
+            no_suspension: {{ no_suspension }}
+            pg_settings: "{{ pg_settings }}"
+            suspend_timeout_duration: "{{ suspend_timeout_duration }}"
+          display_name: "{{ display_name }}"
+          history_retention_duration: "{{ history_retention_duration }}"
+          owner: "{{ owner }}"
+          pg_version: {{ pg_version }}
+          synthetic_storage_size_bytes: {{ synthetic_storage_size_bytes }}
+        uid: "{{ uid }}"
+        update_time: "{{ update_time }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

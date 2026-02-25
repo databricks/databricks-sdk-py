@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -784,111 +785,90 @@ workspace_status_message
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: workspaces
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the workspaces resource.
     - name: aws_region
-      value: string
+      value: "{{ aws_region }}"
       description: |
-        :param cloud: str (optional) The cloud name. This field always has the value `gcp`.
+        :param cloud: str (optional) The cloud name. This field always has the value \`gcp\`.
     - name: cloud
-      value: string
+      value: "{{ cloud }}"
     - name: cloud_resource_container
-      value: object
       description: |
-        :param compute_mode: :class:`CustomerFacingComputeMode` (optional) If the compute mode is `SERVERLESS`, a serverless workspace is created that comes pre-configured with serverless compute and default storage, providing a fully-managed, enterprise-ready SaaS experience. This means you don't need to provide any resources managed by you, such as credentials, storage, or network. If the compute mode is `HYBRID` (which is the default option), a classic workspace is created that uses customer-managed resources.
-      props:
-      - name: gcp
-        value: object
-        props:
-        - name: project_id
-          value: string
+        :param compute_mode: :class:\`CustomerFacingComputeMode\` (optional) If the compute mode is \`SERVERLESS\`, a serverless workspace is created that comes pre-configured with serverless compute and default storage, providing a fully-managed, enterprise-ready SaaS experience. This means you don't need to provide any resources managed by you, such as credentials, storage, or network. If the compute mode is \`HYBRID\` (which is the default option), a classic workspace is created that uses customer-managed resources.
+      value:
+        gcp:
+          project_id: "{{ project_id }}"
     - name: compute_mode
-      value: string
+      value: "{{ compute_mode }}"
       description: |
         Corresponds to compute mode defined here:
         https://src.dev.databricks.com/databricks/universe@9076536b18479afd639d1c1f9dd5a59f72215e69/-/blob/central/api/common.proto?L872
     - name: credentials_id
-      value: string
+      value: "{{ credentials_id }}"
       description: |
         ID of the workspace's credential configuration object.
     - name: custom_tags
-      value: object
+      value: "{{ custom_tags }}"
       description: |
         The custom tags key-value pairing that is attached to this workspace. The key-value pair is a string of utf-8 characters. The value can be an empty string, with maximum length of 255 characters. The key can be of maximum length of 127 characters, and cannot be empty.
     - name: deployment_name
-      value: string
+      value: "{{ deployment_name }}"
       description: |
         The deployment name defines part of the subdomain for the workspace. The workspace URL for the web application and REST APIs is <workspace-deployment-name>.cloud.databricks.com. For example, if the deployment name is abcsales, your workspace URL will be https://abcsales.cloud.databricks.com. Hyphens are allowed. This property supports only the set of characters that are allowed in a subdomain. To set this value, you must have a deployment name prefix. Contact your Databricks account team to add an account deployment name prefix to your account. Workspace deployment names follow the account prefix and a hyphen. For example, if your account's deployment prefix is acme and the workspace deployment name is workspace-1, the JSON response for the deployment_name field becomes acme-workspace-1. The workspace URL would be acme-workspace-1.cloud.databricks.com. You can also set the deployment_name to the reserved keyword EMPTY if you want the deployment name to only include the deployment prefix. For example, if your account's deployment prefix is acme and the workspace deployment name is EMPTY, the deployment_name becomes acme only and the workspace URL is acme.cloud.databricks.com. This value must be unique across all non-deleted deployments across all AWS regions. If a new workspace omits this property, the server generates a unique deployment name for you with the pattern dbc-xxxxxxxx-xxxx.
     - name: gcp_managed_network_config
-      value: object
       description: |
-        :param gke_config: :class:`GkeConfig` (optional)
-      props:
-      - name: gke_cluster_pod_ip_range
-        value: string
-        description: |
-          The IP range that will be used to allocate GKE cluster Pods from.
-      - name: gke_cluster_service_ip_range
-        value: string
-        description: |
-          The IP range that will be used to allocate GKE cluster Services from.
-      - name: subnet_cidr
-        value: string
-        description: |
-          The IP range which will be used to allocate GKE cluster nodes from. Note: Pods, services and master IP range must be mutually exclusive.
+        :param gke_config: :class:\`GkeConfig\` (optional)
+      value:
+        gke_cluster_pod_ip_range: "{{ gke_cluster_pod_ip_range }}"
+        gke_cluster_service_ip_range: "{{ gke_cluster_service_ip_range }}"
+        subnet_cidr: "{{ subnet_cidr }}"
     - name: gke_config
-      value: object
       description: |
         The configurations of the GKE cluster used by the GCP workspace.
-      props:
-      - name: connectivity_type
-        value: string
-        description: |
-          The type of network connectivity of the GKE cluster.
-      - name: master_ip_range
-        value: string
-        description: |
-          The IP range that will be used to allocate GKE cluster master resources from. This field must not be set if gke_cluster_type=PUBLIC_NODE_PUBLIC_MASTER.
+      value:
+        connectivity_type: "{{ connectivity_type }}"
+        master_ip_range: "{{ master_ip_range }}"
     - name: location
-      value: string
+      value: "{{ location }}"
       description: |
-        The Google Cloud region of the workspace data plane in your Google account (for example, `us-east4`).
+        The Google Cloud region of the workspace data plane in your Google account (for example, \`us-east4\`).
     - name: managed_services_customer_managed_key_id
-      value: string
+      value: "{{ managed_services_customer_managed_key_id }}"
       description: |
         The ID of the workspace's managed services encryption key configuration object. This is used to help protect and control access to the workspace's notebooks, secrets, Databricks SQL queries, and query history. The provided key configuration object property use_cases must contain MANAGED_SERVICES.
     - name: network_connectivity_config_id
-      value: string
+      value: "{{ network_connectivity_config_id }}"
       description: |
         The object ID of network connectivity config. Once assigned, the workspace serverless compute resources use the same set of stable IP CIDR blocks and optional private link to access your resources.
     - name: network_id
-      value: string
+      value: "{{ network_id }}"
       description: |
         The ID of the workspace's network configuration object. To use AWS PrivateLink, this field is required.
     - name: pricing_tier
-      value: string
+      value: "{{ pricing_tier }}"
       description: |
         :param private_access_settings_id: str (optional) ID of the workspace's private access settings object. Only used for PrivateLink. You must specify this ID if you are using [AWS PrivateLink] for either front-end (user-to-workspace connection), back-end (data plane to control plane connection), or both connection types. Before configuring PrivateLink, read the [Databricks article about PrivateLink].", [AWS PrivateLink]: https://aws.amazon.com/privatelink/ [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
     - name: private_access_settings_id
-      value: string
+      value: "{{ private_access_settings_id }}"
     - name: storage_configuration_id
-      value: string
+      value: "{{ storage_configuration_id }}"
       description: |
         ID of the workspace's storage configuration object.
     - name: storage_customer_managed_key_id
-      value: string
+      value: "{{ storage_customer_managed_key_id }}"
       description: |
         The ID of the workspace's storage encryption key configuration object. This is used to encrypt the workspace's root S3 bucket (root DBFS and system data) and, optionally, cluster EBS volumes. The provided key configuration object property use_cases must contain STORAGE.
     - name: workspace_name
-      value: string
+      value: "{{ workspace_name }}"
       description: |
         The human-readable name of the workspace.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

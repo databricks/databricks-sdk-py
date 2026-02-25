@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -181,31 +182,21 @@ logical_database_name
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: database_tables
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the database_tables resource.
     - name: table
-      value: object
       description: |
-        :returns: :class:`DatabaseTable`
-      props:
-      - name: name
-        value: string
-        description: |
-          Full three-part (catalog, schema, table) name of the table.
-      - name: database_instance_name
-        value: string
-        description: |
-          Name of the target database instance. This is required when creating database tables in standard catalogs. This is optional when creating database tables in registered catalogs. If this field is specified when creating database tables in registered catalogs, the database instance name MUST match that of the registered catalog (or the request will be rejected).
-      - name: logical_database_name
-        value: string
-        description: |
-          Target Postgres database object (logical database) name for this table. When creating a table in a standard catalog, this field is required. In this scenario, specifying this field will allow targeting an arbitrary postgres database. Registration of database tables via /database/tables is currently only supported in standard catalogs.
-```
+        :returns: :class:\`DatabaseTable\`
+      value:
+        name: "{{ name }}"
+        database_instance_name: "{{ database_instance_name }}"
+        logical_database_name: "{{ logical_database_name }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

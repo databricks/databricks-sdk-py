@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -304,118 +305,47 @@ SELECT
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: postgres_branches
   props:
     - name: parent
-      value: string
+      value: "{{ parent }}"
       description: Required parameter for the postgres_branches resource.
     - name: branch_id
-      value: string
+      value: "{{ branch_id }}"
       description: Required parameter for the postgres_branches resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the postgres_branches resource.
     - name: branch
-      value: object
       description: |
         The Branch to create.
-      props:
-      - name: create_time
-        value: string
-      - name: name
-        value: string
-        description: |
-          Output only. The full resource path of the branch. Format: projects/{project_id}/branches/{branch_id}
-      - name: parent
-        value: string
-        description: |
-          The project containing this branch (API resource hierarchy). Format: projects/{project_id} Note: This field indicates where the branch exists in the resource hierarchy. For point-in-time branching from another branch, see `status.source_branch`.
-      - name: spec
-        value: object
-        description: |
-          The spec contains the branch configuration.
-        props:
-        - name: expire_time
-          value: string
-        - name: is_protected
-          value: boolean
-          description: |
-            When set to true, protects the branch from deletion and reset. Associated compute endpoints and the project cannot be deleted while the branch is protected.
-        - name: no_expiry
-          value: boolean
-          description: |
-            Explicitly disable expiration. When set to true, the branch will not expire. If set to false, the request is invalid; provide either ttl or expire_time instead.
-        - name: source_branch
-          value: string
-          description: |
-            The name of the source branch from which this branch was created (data lineage for point-in-time recovery). If not specified, defaults to the project's default branch. Format: projects/{project_id}/branches/{branch_id}
-        - name: source_branch_lsn
-          value: string
-          description: |
-            The Log Sequence Number (LSN) on the source branch from which this branch was created.
-        - name: source_branch_time
-          value: string
-          description: |
-            The point in time on the source branch from which this branch was created.
-        - name: ttl
-          value: string
-          description: |
-            Relative time-to-live duration. When set, the branch will expire at creation_time + ttl.
-      - name: status
-        value: object
-        description: |
-          The current status of a Branch.
-        props:
-        - name: current_state
-          value: string
-          description: |
-            The state of the branch.
-        - name: default
-          value: boolean
-          description: |
-            Whether the branch is the project's default branch.
-        - name: expire_time
-          value: string
-          description: |
-            Absolute expiration time for the branch. Empty if expiration is disabled.
-        - name: is_protected
-          value: boolean
-          description: |
-            Whether the branch is protected.
-        - name: logical_size_bytes
-          value: integer
-          description: |
-            The logical size of the branch.
-        - name: pending_state
-          value: string
-          description: |
-            The pending state of the branch, if a state transition is in progress.
-        - name: source_branch
-          value: string
-          description: |
-            The name of the source branch from which this branch was created. Format: projects/{project_id}/branches/{branch_id}
-        - name: source_branch_lsn
-          value: string
-          description: |
-            The Log Sequence Number (LSN) on the source branch from which this branch was created.
-        - name: source_branch_time
-          value: string
-          description: |
-            The point in time on the source branch from which this branch was created.
-        - name: state_change_time
-          value: string
-          description: |
-            A timestamp indicating when the `current_state` began.
-      - name: uid
-        value: string
-        description: |
-          System-generated unique ID for the branch.
-      - name: update_time
-        value: string
-        description: |
-          A timestamp indicating when the branch was last updated.
-```
+      value:
+        create_time: "{{ create_time }}"
+        name: "{{ name }}"
+        parent: "{{ parent }}"
+        spec:
+          expire_time: "{{ expire_time }}"
+          is_protected: {{ is_protected }}
+          no_expiry: {{ no_expiry }}
+          source_branch: "{{ source_branch }}"
+          source_branch_lsn: "{{ source_branch_lsn }}"
+          source_branch_time: "{{ source_branch_time }}"
+          ttl: "{{ ttl }}"
+        status:
+          current_state: "{{ current_state }}"
+          default: {{ default }}
+          expire_time: "{{ expire_time }}"
+          is_protected: {{ is_protected }}
+          logical_size_bytes: {{ logical_size_bytes }}
+          pending_state: "{{ pending_state }}"
+          source_branch: "{{ source_branch }}"
+          source_branch_lsn: "{{ source_branch_lsn }}"
+          source_branch_time: "{{ source_branch_time }}"
+          state_change_time: "{{ state_change_time }}"
+        uid: "{{ uid }}"
+        update_time: "{{ update_time }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>

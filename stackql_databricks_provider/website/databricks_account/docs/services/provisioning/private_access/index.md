@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -291,36 +292,35 @@ region
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: private_access
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the private_access resource.
     - name: allowed_vpc_endpoint_ids
-      value: array
+      value:
+        - "{{ allowed_vpc_endpoint_ids }}"
       description: |
         An array of Databricks VPC endpoint IDs. This is the Databricks ID returned when registering the VPC endpoint configuration in your Databricks account. This is not the ID of the VPC endpoint in AWS. Only used when private_access_level is set to ENDPOINT. This is an allow list of VPC endpoints registered in your Databricks account that can connect to your workspace over AWS PrivateLink. Note: If hybrid access to your workspace is enabled by setting public_access_enabled to true, this control only works for PrivateLink connections. To control how your workspace is accessed via public internet, see IP access lists.
-      items:
-        type: string
     - name: private_access_level
-      value: string
+      value: "{{ private_access_level }}"
       description: |
-        The private access level controls which VPC endpoints can connect to the UI or API of any workspace that attaches this private access settings object. `ACCOUNT` level access (the default) allows only VPC endpoints that are registered in your Databricks account connect to your workspace. `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details, see allowed_vpc_endpoint_ids.
+        The private access level controls which VPC endpoints can connect to the UI or API of any workspace that attaches this private access settings object. \`ACCOUNT\` level access (the default) allows only VPC endpoints that are registered in your Databricks account connect to your workspace. \`ENDPOINT\` level access allows only specified VPC endpoints connect to your workspace. For details, see allowed_vpc_endpoint_ids.
     - name: private_access_settings_name
-      value: string
+      value: "{{ private_access_settings_name }}"
       description: |
         The human-readable name of the private access settings object.
     - name: public_access_enabled
-      value: boolean
+      value: {{ public_access_enabled }}
       description: |
         Determines if the workspace can be accessed over public internet. For fully private workspaces, you can optionally specify false, but only if you implement both the front-end and the back-end PrivateLink connections. Otherwise, specify true, which means that public access is enabled.
     - name: region
-      value: string
+      value: "{{ region }}"
       description: |
         The AWS region for workspaces attached to this private access settings object.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

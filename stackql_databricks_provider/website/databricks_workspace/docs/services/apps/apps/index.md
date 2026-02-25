@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -1542,557 +1543,138 @@ user_api_scopes
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: apps
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the apps resource.
     - name: app
-      value: object
       description: |
         :param no_compute: bool (optional) If true, the app will not be started after creation.
-      props:
-      - name: name
-        value: string
-      - name: active_deployment
-        value: object
-        description: |
-          The active deployment of the app. A deployment is considered active when it has been deployed to the app compute.
-        props:
-        - name: command
-          value: array
-          items:
-            type: string
-        - name: create_time
-          value: string
-          description: |
-            The creation time of the deployment. Formatted timestamp in ISO 6801.
-        - name: creator
-          value: string
-          description: |
-            The email of the user creates the deployment.
-        - name: deployment_artifacts
-          value: object
-          description: |
-            The deployment artifacts for an app.
-          props:
-          - name: source_code_path
-            value: string
-        - name: deployment_id
-          value: string
-          description: |
-            The unique id of the deployment.
-        - name: env_vars
-          value: array
-          description: |
-            The environment variables to set in the app runtime environment. This will override the environment variables specified in the app.yaml file.
-          props:
-          - name: name
-            value: string
-          - name: value
-            value: string
-            description: |
-              The value for the environment variable.
-          - name: value_from
-            value: string
-            description: |
-              The name of an external Databricks resource that contains the value, such as a secret or a database table.
-        - name: git_source
-          value: object
-          description: |
-            Git repository to use as the source for the app deployment.
-          props:
-          - name: branch
-            value: string
-            description: |
-              Git branch to checkout.
-          - name: commit
-            value: string
-            description: |
-              Git commit SHA to checkout.
-          - name: git_repository
-            value: object
-            description: |
-              Git repository configuration. Populated from the app's git_repository configuration.
-            props:
-            - name: url
-              value: string
-              description: |
-                URL of the Git repository.
-            - name: provider
-              value: string
-              description: |
-                Git provider. Case insensitive. Supported values: gitHub, gitHubEnterprise, bitbucketCloud, bitbucketServer, azureDevOpsServices, gitLab, gitLabEnterpriseEdition, awsCodeCommit.
-          - name: resolved_commit
-            value: string
-            description: |
-              The resolved commit SHA that was actually used for the deployment. This is populated by the system after resolving the reference (branch, tag, or commit). If commit is specified directly, this will match commit. If a branch or tag is specified, this contains the commit SHA that the branch or tag pointed to at deployment time.
-          - name: source_code_path
-            value: string
-            description: |
-              Relative path to the app source code within the Git repository. If not specified, the root of the repository is used.
-          - name: tag
-            value: string
-            description: |
-              Git tag to checkout.
-        - name: mode
-          value: string
-          description: |
-            The mode of which the deployment will manage the source code.
-        - name: source_code_path
-          value: string
-          description: |
-            The workspace file system path of the source code used to create the app deployment. This is different from `deployment_artifacts.source_code_path`, which is the path used by the deployed app. The former refers to the original source code location of the app in the workspace during deployment creation, whereas the latter provides a system generated stable snapshotted source code path used by the deployment.
-        - name: status
-          value: object
-          description: |
-            Status and status message of the deployment
-          props:
-          - name: message
-            value: string
-          - name: state
-            value: string
-            description: |
-              State of the deployment.
-        - name: update_time
-          value: string
-          description: |
-            The update time of the deployment. Formatted timestamp in ISO 6801.
-      - name: app_status
-        value: object
-        props:
-        - name: message
-          value: string
-        - name: state
-          value: string
-          description: |
-            State of the application.
-      - name: budget_policy_id
-        value: string
-      - name: compute_size
-        value: string
-        description: |
-          Create a collection of name/value pairs.
-          Example enumeration:
-          >>> class Color(Enum):
-          ...     RED = 1
-          ...     BLUE = 2
-          ...     GREEN = 3
-          Access them by:
-          - attribute access::
-          >>> Color.RED
-          <Color.RED: 1>
-          - value lookup:
-          >>> Color(1)
-          <Color.RED: 1>
-          - name lookup:
-          >>> Color['RED']
-          <Color.RED: 1>
-          Enumerations can be iterated over, and know how many members they have:
-          >>> len(Color)
-          3
-          >>> list(Color)
-          [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-          Methods can be added to enumerations, and members can have their own
-          attributes -- see the documentation for details.
-      - name: compute_status
-        value: object
-        props:
-        - name: active_instances
-          value: integer
-        - name: message
-          value: string
-          description: |
-            Compute status message
-        - name: state
-          value: string
-          description: |
-            State of the app compute.
-      - name: create_time
-        value: string
-        description: |
-          The creation time of the app. Formatted timestamp in ISO 6801.
-      - name: creator
-        value: string
-        description: |
-          The email of the user that created the app.
-      - name: default_source_code_path
-        value: string
-        description: |
-          The default workspace file system path of the source code from which app deployment are created. This field tracks the workspace source code path of the last active deployment.
-      - name: description
-        value: string
-        description: |
-          The description of the app.
-      - name: effective_budget_policy_id
-        value: string
-      - name: effective_usage_policy_id
-        value: string
-      - name: effective_user_api_scopes
-        value: array
-        description: |
-          The effective api scopes granted to the user access token.
-        items:
-          type: string
-      - name: git_repository
-        value: object
-        description: |
-          Git repository configuration for app deployments. When specified, deployments can reference code from this repository by providing only the git reference (branch, tag, or commit).
-        props:
-        - name: url
-          value: string
-          description: |
-            URL of the Git repository.
-        - name: provider
-          value: string
-          description: |
-            Git provider. Case insensitive. Supported values: gitHub, gitHubEnterprise, bitbucketCloud, bitbucketServer, azureDevOpsServices, gitLab, gitLabEnterpriseEdition, awsCodeCommit.
-      - name: id
-        value: string
-        description: |
-          The unique identifier of the app.
-      - name: oauth2_app_client_id
-        value: string
-      - name: oauth2_app_integration_id
-        value: string
-      - name: pending_deployment
-        value: object
-        description: |
-          The pending deployment of the app. A deployment is considered pending when it is being prepared for deployment to the app compute.
-        props:
-        - name: command
-          value: array
-          items:
-            type: string
-        - name: create_time
-          value: string
-          description: |
-            The creation time of the deployment. Formatted timestamp in ISO 6801.
-        - name: creator
-          value: string
-          description: |
-            The email of the user creates the deployment.
-        - name: deployment_artifacts
-          value: object
-          description: |
-            The deployment artifacts for an app.
-          props:
-          - name: source_code_path
-            value: string
-        - name: deployment_id
-          value: string
-          description: |
-            The unique id of the deployment.
-        - name: env_vars
-          value: array
-          description: |
-            The environment variables to set in the app runtime environment. This will override the environment variables specified in the app.yaml file.
-          props:
-          - name: name
-            value: string
-          - name: value
-            value: string
-            description: |
-              The value for the environment variable.
-          - name: value_from
-            value: string
-            description: |
-              The name of an external Databricks resource that contains the value, such as a secret or a database table.
-        - name: git_source
-          value: object
-          description: |
-            Git repository to use as the source for the app deployment.
-          props:
-          - name: branch
-            value: string
-            description: |
-              Git branch to checkout.
-          - name: commit
-            value: string
-            description: |
-              Git commit SHA to checkout.
-          - name: git_repository
-            value: object
-            description: |
-              Git repository configuration. Populated from the app's git_repository configuration.
-            props:
-            - name: url
-              value: string
-              description: |
-                URL of the Git repository.
-            - name: provider
-              value: string
-              description: |
-                Git provider. Case insensitive. Supported values: gitHub, gitHubEnterprise, bitbucketCloud, bitbucketServer, azureDevOpsServices, gitLab, gitLabEnterpriseEdition, awsCodeCommit.
-          - name: resolved_commit
-            value: string
-            description: |
-              The resolved commit SHA that was actually used for the deployment. This is populated by the system after resolving the reference (branch, tag, or commit). If commit is specified directly, this will match commit. If a branch or tag is specified, this contains the commit SHA that the branch or tag pointed to at deployment time.
-          - name: source_code_path
-            value: string
-            description: |
-              Relative path to the app source code within the Git repository. If not specified, the root of the repository is used.
-          - name: tag
-            value: string
-            description: |
-              Git tag to checkout.
-        - name: mode
-          value: string
-          description: |
-            The mode of which the deployment will manage the source code.
-        - name: source_code_path
-          value: string
-          description: |
-            The workspace file system path of the source code used to create the app deployment. This is different from `deployment_artifacts.source_code_path`, which is the path used by the deployed app. The former refers to the original source code location of the app in the workspace during deployment creation, whereas the latter provides a system generated stable snapshotted source code path used by the deployment.
-        - name: status
-          value: object
-          description: |
-            Status and status message of the deployment
-          props:
-          - name: message
-            value: string
-          - name: state
-            value: string
-            description: |
-              State of the deployment.
-        - name: update_time
-          value: string
-          description: |
-            The update time of the deployment. Formatted timestamp in ISO 6801.
-      - name: resources
-        value: array
-        description: |
-          Resources for the app.
-        props:
-        - name: name
-          value: string
-        - name: database
-          value: object
-          props:
-          - name: instance_name
-            value: string
-          - name: database_name
-            value: string
-          - name: permission
-            value: string
-            description: |
-              Create a collection of name/value pairs.
-              Example enumeration:
-              >>> class Color(Enum):
-              ...     RED = 1
-              ...     BLUE = 2
-              ...     GREEN = 3
-              Access them by:
-              - attribute access::
-              >>> Color.RED
-              <Color.RED: 1>
-              - value lookup:
-              >>> Color(1)
-              <Color.RED: 1>
-              - name lookup:
-              >>> Color['RED']
-              <Color.RED: 1>
-              Enumerations can be iterated over, and know how many members they have:
-              >>> len(Color)
-              3
-              >>> list(Color)
-              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-              Methods can be added to enumerations, and members can have their own
-              attributes -- see the documentation for details.
-        - name: description
-          value: string
-          description: |
-            Description of the App Resource.
-        - name: experiment
-          value: object
-          props:
-          - name: experiment_id
-            value: string
-          - name: permission
-            value: string
-            description: |
-              Create a collection of name/value pairs.
-              Example enumeration:
-              >>> class Color(Enum):
-              ...     RED = 1
-              ...     BLUE = 2
-              ...     GREEN = 3
-              Access them by:
-              - attribute access::
-              >>> Color.RED
-              <Color.RED: 1>
-              - value lookup:
-              >>> Color(1)
-              <Color.RED: 1>
-              - name lookup:
-              >>> Color['RED']
-              <Color.RED: 1>
-              Enumerations can be iterated over, and know how many members they have:
-              >>> len(Color)
-              3
-              >>> list(Color)
-              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-              Methods can be added to enumerations, and members can have their own
-              attributes -- see the documentation for details.
-        - name: genie_space
-          value: object
-          props:
-          - name: name
-            value: string
-          - name: space_id
-            value: string
-          - name: permission
-            value: string
-            description: |
-              Create a collection of name/value pairs.
-              Example enumeration:
-              >>> class Color(Enum):
-              ...     RED = 1
-              ...     BLUE = 2
-              ...     GREEN = 3
-              Access them by:
-              - attribute access::
-              >>> Color.RED
-              <Color.RED: 1>
-              - value lookup:
-              >>> Color(1)
-              <Color.RED: 1>
-              - name lookup:
-              >>> Color['RED']
-              <Color.RED: 1>
-              Enumerations can be iterated over, and know how many members they have:
-              >>> len(Color)
-              3
-              >>> list(Color)
-              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-              Methods can be added to enumerations, and members can have their own
-              attributes -- see the documentation for details.
-        - name: job
-          value: object
-          props:
-          - name: id
-            value: string
-          - name: permission
-            value: string
-            description: |
-              Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE", "IS_OWNER", "CAN_MANAGE_RUN", "CAN_VIEW".
-        - name: secret
-          value: object
-          props:
-          - name: scope
-            value: string
-          - name: key
-            value: string
-            description: |
-              Key of the secret to grant permission on.
-          - name: permission
-            value: string
-            description: |
-              Permission to grant on the secret scope. For secrets, only one permission is allowed. Permission must be one of: "READ", "WRITE", "MANAGE".
-        - name: serving_endpoint
-          value: object
-          props:
-          - name: name
-            value: string
-          - name: permission
-            value: string
-            description: |
-              Permission to grant on the serving endpoint. Supported permissions are: "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW".
-        - name: sql_warehouse
-          value: object
-          props:
-          - name: id
-            value: string
-          - name: permission
-            value: string
-            description: |
-              Permission to grant on the SQL warehouse. Supported permissions are: "CAN_MANAGE", "CAN_USE", "IS_OWNER".
-        - name: uc_securable
-          value: object
-          props:
-          - name: securable_full_name
-            value: string
-          - name: securable_type
-            value: string
-            description: |
-              Create a collection of name/value pairs.
-              Example enumeration:
-              >>> class Color(Enum):
-              ...     RED = 1
-              ...     BLUE = 2
-              ...     GREEN = 3
-              Access them by:
-              - attribute access::
-              >>> Color.RED
-              <Color.RED: 1>
-              - value lookup:
-              >>> Color(1)
-              <Color.RED: 1>
-              - name lookup:
-              >>> Color['RED']
-              <Color.RED: 1>
-              Enumerations can be iterated over, and know how many members they have:
-              >>> len(Color)
-              3
-              >>> list(Color)
-              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-              Methods can be added to enumerations, and members can have their own
-              attributes -- see the documentation for details.
-          - name: permission
-            value: string
-            description: |
-              Create a collection of name/value pairs.
-              Example enumeration:
-              >>> class Color(Enum):
-              ...     RED = 1
-              ...     BLUE = 2
-              ...     GREEN = 3
-              Access them by:
-              - attribute access::
-              >>> Color.RED
-              <Color.RED: 1>
-              - value lookup:
-              >>> Color(1)
-              <Color.RED: 1>
-              - name lookup:
-              >>> Color['RED']
-              <Color.RED: 1>
-              Enumerations can be iterated over, and know how many members they have:
-              >>> len(Color)
-              3
-              >>> list(Color)
-              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-              Methods can be added to enumerations, and members can have their own
-              attributes -- see the documentation for details.
-      - name: service_principal_client_id
-        value: string
-      - name: service_principal_id
-        value: integer
-      - name: service_principal_name
-        value: string
-      - name: update_time
-        value: string
-        description: |
-          The update time of the app. Formatted timestamp in ISO 6801.
-      - name: updater
-        value: string
-        description: |
-          The email of the user that last updated the app.
-      - name: url
-        value: string
-        description: |
-          The URL of the app once it is deployed.
-      - name: usage_policy_id
-        value: string
-      - name: user_api_scopes
-        value: array
-        items:
-          type: string
+      value:
+        name: "{{ name }}"
+        active_deployment:
+          command:
+            - "{{ command }}"
+          create_time: "{{ create_time }}"
+          creator: "{{ creator }}"
+          deployment_artifacts:
+            source_code_path: "{{ source_code_path }}"
+          deployment_id: "{{ deployment_id }}"
+          env_vars:
+            - name: "{{ name }}"
+              value: "{{ value }}"
+              value_from: "{{ value_from }}"
+          git_source:
+            branch: "{{ branch }}"
+            commit: "{{ commit }}"
+            git_repository:
+              url: "{{ url }}"
+              provider: "{{ provider }}"
+            resolved_commit: "{{ resolved_commit }}"
+            source_code_path: "{{ source_code_path }}"
+            tag: "{{ tag }}"
+          mode: "{{ mode }}"
+          source_code_path: "{{ source_code_path }}"
+          status:
+            message: "{{ message }}"
+            state: "{{ state }}"
+          update_time: "{{ update_time }}"
+        app_status:
+          message: "{{ message }}"
+          state: "{{ state }}"
+        budget_policy_id: "{{ budget_policy_id }}"
+        compute_size: "{{ compute_size }}"
+        compute_status:
+          active_instances: {{ active_instances }}
+          message: "{{ message }}"
+          state: "{{ state }}"
+        create_time: "{{ create_time }}"
+        creator: "{{ creator }}"
+        default_source_code_path: "{{ default_source_code_path }}"
+        description: "{{ description }}"
+        effective_budget_policy_id: "{{ effective_budget_policy_id }}"
+        effective_usage_policy_id: "{{ effective_usage_policy_id }}"
+        effective_user_api_scopes:
+          - "{{ effective_user_api_scopes }}"
+        git_repository:
+          url: "{{ url }}"
+          provider: "{{ provider }}"
+        id: "{{ id }}"
+        oauth2_app_client_id: "{{ oauth2_app_client_id }}"
+        oauth2_app_integration_id: "{{ oauth2_app_integration_id }}"
+        pending_deployment:
+          command:
+            - "{{ command }}"
+          create_time: "{{ create_time }}"
+          creator: "{{ creator }}"
+          deployment_artifacts:
+            source_code_path: "{{ source_code_path }}"
+          deployment_id: "{{ deployment_id }}"
+          env_vars:
+            - name: "{{ name }}"
+              value: "{{ value }}"
+              value_from: "{{ value_from }}"
+          git_source:
+            branch: "{{ branch }}"
+            commit: "{{ commit }}"
+            git_repository:
+              url: "{{ url }}"
+              provider: "{{ provider }}"
+            resolved_commit: "{{ resolved_commit }}"
+            source_code_path: "{{ source_code_path }}"
+            tag: "{{ tag }}"
+          mode: "{{ mode }}"
+          source_code_path: "{{ source_code_path }}"
+          status:
+            message: "{{ message }}"
+            state: "{{ state }}"
+          update_time: "{{ update_time }}"
+        resources:
+          - name: "{{ name }}"
+            database:
+              instance_name: "{{ instance_name }}"
+              database_name: "{{ database_name }}"
+              permission: "{{ permission }}"
+            description: "{{ description }}"
+            experiment:
+              experiment_id: "{{ experiment_id }}"
+              permission: "{{ permission }}"
+            genie_space:
+              name: "{{ name }}"
+              space_id: "{{ space_id }}"
+              permission: "{{ permission }}"
+            job:
+              id: "{{ id }}"
+              permission: "{{ permission }}"
+            secret:
+              scope: "{{ scope }}"
+              key: "{{ key }}"
+              permission: "{{ permission }}"
+            serving_endpoint:
+              name: "{{ name }}"
+              permission: "{{ permission }}"
+            sql_warehouse:
+              id: "{{ id }}"
+              permission: "{{ permission }}"
+            uc_securable:
+              securable_full_name: "{{ securable_full_name }}"
+              securable_type: "{{ securable_type }}"
+              permission: "{{ permission }}"
+        service_principal_client_id: "{{ service_principal_client_id }}"
+        service_principal_id: {{ service_principal_id }}
+        service_principal_name: "{{ service_principal_name }}"
+        update_time: "{{ update_time }}"
+        updater: "{{ updater }}"
+        url: "{{ url }}"
+        usage_policy_id: "{{ usage_policy_id }}"
+        user_api_scopes:
+          - "{{ user_api_scopes }}"
     - name: no_compute
-      value: boolean
-```
+      value: {{ no_compute }}
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

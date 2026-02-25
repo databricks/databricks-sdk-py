@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -324,26 +325,25 @@ ip_access_list
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: account_ip_access_lists
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the account_ip_access_lists resource.
     - name: label
-      value: string
+      value: "{{ label }}"
       description: |
         Label for the IP access list. This **cannot** be empty.
     - name: list_type
-      value: string
+      value: "{{ list_type }}"
       description: |
         :param ip_addresses: List[str] (optional)
     - name: ip_addresses
-      value: array
-      items:
-        type: string
-```
+      value:
+        - "{{ ip_addresses }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

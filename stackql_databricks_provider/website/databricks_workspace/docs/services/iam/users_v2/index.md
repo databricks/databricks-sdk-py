@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -651,107 +652,77 @@ userName
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: users_v2
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the users_v2 resource.
     - name: active
-      value: boolean
+      value: {{ active }}
       description: |
         If this user is active
     - name: display_name
-      value: string
+      value: "{{ display_name }}"
       description: |
-        String that represents a concatenation of given and family names. For example `John Smith`. This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to update `displayName`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
+        String that represents a concatenation of given and family names. For example \`John Smith\`. This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to update \`displayName\`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
     - name: emails
-      value: array
       description: |
         All the emails associated with the Databricks user.
-      props:
-      - name: display
-        value: string
-      - name: primary
-        value: boolean
-      - name: $ref
-        value: string
-      - name: type
-        value: string
-      - name: value
-        value: string
+      value:
+        - display: "{{ display }}"
+          primary: {{ primary }}
+          $ref: "{{ $ref }}"
+          type: "{{ type }}"
+          value: "{{ value }}"
     - name: entitlements
-      value: array
       description: |
         Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
-      props:
-      - name: display
-        value: string
-      - name: primary
-        value: boolean
-      - name: $ref
-        value: string
-      - name: type
-        value: string
-      - name: value
-        value: string
+      value:
+        - display: "{{ display }}"
+          primary: {{ primary }}
+          $ref: "{{ $ref }}"
+          type: "{{ type }}"
+          value: "{{ value }}"
     - name: external_id
-      value: string
+      value: "{{ external_id }}"
       description: |
         External ID is not currently supported. It is reserved for future use.
     - name: groups
-      value: array
       description: |
         :param id: str (optional) Databricks user ID.
-      props:
-      - name: display
-        value: string
-      - name: primary
-        value: boolean
-      - name: $ref
-        value: string
-      - name: type
-        value: string
-      - name: value
-        value: string
+      value:
+        - display: "{{ display }}"
+          primary: {{ primary }}
+          $ref: "{{ $ref }}"
+          type: "{{ type }}"
+          value: "{{ value }}"
     - name: id
-      value: string
+      value: "{{ id }}"
     - name: name
-      value: object
       description: |
-        :param roles: List[:class:`ComplexValue`] (optional) Corresponds to AWS instance profile/arn role.
-      props:
-      - name: familyName
-        value: string
-      - name: givenName
-        value: string
-        description: |
-          Given name of the Databricks user.
+        :param roles: List[:class:\`ComplexValue\`] (optional) Corresponds to AWS instance profile/arn role.
+      value:
+        familyName: "{{ familyName }}"
+        givenName: "{{ givenName }}"
     - name: roles
-      value: array
-      props:
-      - name: display
-        value: string
-      - name: primary
-        value: boolean
-      - name: $ref
-        value: string
-      - name: type
-        value: string
-      - name: value
-        value: string
+      value:
+        - display: "{{ display }}"
+          primary: {{ primary }}
+          $ref: "{{ $ref }}"
+          type: "{{ type }}"
+          value: "{{ value }}"
     - name: schemas
-      value: array
+      value:
+        - "{{ schemas }}"
       description: |
         The schema of the user.
-      items:
-        type: string
     - name: user_name
-      value: string
+      value: "{{ user_name }}"
       description: |
         Email address of the Databricks user.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

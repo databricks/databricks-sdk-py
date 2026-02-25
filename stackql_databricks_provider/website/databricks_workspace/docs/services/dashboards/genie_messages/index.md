@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -733,24 +734,24 @@ status
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: genie_messages
   props:
     - name: space_id
-      value: string
+      value: "{{ space_id }}"
       description: Required parameter for the genie_messages resource.
     - name: conversation_id
-      value: string
+      value: "{{ conversation_id }}"
       description: Required parameter for the genie_messages resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the genie_messages resource.
     - name: content
-      value: string
+      value: "{{ content }}"
       description: |
         User message content.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

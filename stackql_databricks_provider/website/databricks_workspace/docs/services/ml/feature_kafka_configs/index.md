@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -437,85 +438,37 @@ value_schema
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: feature_kafka_configs
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the feature_kafka_configs resource.
     - name: kafka_config
-      value: object
       description: |
-        :returns: :class:`KafkaConfig`
-      props:
-      - name: name
-        value: string
-      - name: bootstrap_servers
-        value: string
-        description: |
-          A comma-separated list of host/port pairs pointing to Kafka cluster.
-      - name: subscription_mode
-        value: object
-        description: |
-          Options to configure which Kafka topics to pull data from.
-        props:
-        - name: assign
-          value: string
-        - name: subscribe
-          value: string
-          description: |
-            A comma-separated list of Kafka topics to read from. For example, 'topicA,topicB,topicC'.
-        - name: subscribe_pattern
-          value: string
-          description: |
-            A regular expression matching topics to subscribe to. For example, 'topic.*' will subscribe to all topics starting with 'topic'.
-      - name: auth_config
-        value: object
-        description: |
-          Authentication configuration for connection to topics.
-        props:
-        - name: uc_service_credential_name
-          value: string
-      - name: backfill_source
-        value: object
-        description: |
-          A user-provided and managed source for backfilling data. Historical data is used when creating a training set from streaming features linked to this Kafka config. In the future, a separate table will be maintained by Databricks for forward filling data. The schema for this source must match exactly that of the key and value schemas specified for this Kafka config.
-        props:
-        - name: delta_table_source
-          value: object
-          props:
-          - name: full_name
-            value: string
-          - name: entity_columns
-            value: array
-            description: |
-              The entity columns of the Delta table.
-            items:
-              type: string
-          - name: timeseries_column
-            value: string
-            description: |
-              The timeseries column of the Delta table.
-      - name: extra_options
-        value: object
-        description: |
-          Catch-all for miscellaneous options. Keys should be source options or Kafka consumer options (kafka.*)
-      - name: key_schema
-        value: object
-        description: |
-          Schema configuration for extracting message keys from topics. At least one of key_schema and value_schema must be provided.
-        props:
-        - name: json_schema
-          value: string
-      - name: value_schema
-        value: object
-        description: |
-          Schema configuration for extracting message values from topics. At least one of key_schema and value_schema must be provided.
-        props:
-        - name: json_schema
-          value: string
-```
+        :returns: :class:\`KafkaConfig\`
+      value:
+        name: "{{ name }}"
+        bootstrap_servers: "{{ bootstrap_servers }}"
+        subscription_mode:
+          assign: "{{ assign }}"
+          subscribe: "{{ subscribe }}"
+          subscribe_pattern: "{{ subscribe_pattern }}"
+        auth_config:
+          uc_service_credential_name: "{{ uc_service_credential_name }}"
+        backfill_source:
+          delta_table_source:
+            full_name: "{{ full_name }}"
+            entity_columns:
+              - "{{ entity_columns }}"
+            timeseries_column: "{{ timeseries_column }}"
+        extra_options: "{{ extra_options }}"
+        key_schema:
+          json_schema: "{{ json_schema }}"
+        value_schema:
+          json_schema: "{{ json_schema }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -520,93 +521,76 @@ updated_by
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: registered_models
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the registered_models resource.
     - name: aliases
-      value: array
       description: |
         List of aliases associated with the registered model
-      props:
-      - name: alias_name
-        value: string
-      - name: catalog_name
-        value: string
-        description: |
-          The name of the catalog containing the model version
-      - name: id
-        value: string
-        description: |
-          The unique identifier of the alias
-      - name: model_name
-        value: string
-        description: |
-          The name of the parent registered model of the model version, relative to parent schema
-      - name: schema_name
-        value: string
-        description: |
-          The name of the schema containing the model version, relative to parent catalog
-      - name: version_num
-        value: integer
-        description: |
-          Integer version number of the model version to which this alias points.
+      value:
+        - alias_name: "{{ alias_name }}"
+          catalog_name: "{{ catalog_name }}"
+          id: "{{ id }}"
+          model_name: "{{ model_name }}"
+          schema_name: "{{ schema_name }}"
+          version_num: {{ version_num }}
     - name: browse_only
-      value: boolean
+      value: {{ browse_only }}
       description: |
         Indicates whether the principal is limited to retrieving metadata for the associated object through the BROWSE privilege when include_browse is enabled in the request.
     - name: catalog_name
-      value: string
+      value: "{{ catalog_name }}"
       description: |
         The name of the catalog where the schema and the registered model reside
     - name: comment
-      value: string
+      value: "{{ comment }}"
       description: |
         The comment attached to the registered model
     - name: created_at
-      value: integer
+      value: {{ created_at }}
       description: |
         Creation timestamp of the registered model in milliseconds since the Unix epoch
     - name: created_by
-      value: string
+      value: "{{ created_by }}"
       description: |
         The identifier of the user who created the registered model
     - name: full_name
-      value: string
+      value: "{{ full_name }}"
       description: |
         The three-level (fully qualified) name of the registered model
     - name: metastore_id
-      value: string
+      value: "{{ metastore_id }}"
       description: |
         The unique identifier of the metastore
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         The name of the registered model
     - name: owner
-      value: string
+      value: "{{ owner }}"
       description: |
         The identifier of the user who owns the registered model
     - name: schema_name
-      value: string
+      value: "{{ schema_name }}"
       description: |
         The name of the schema where the registered model resides
     - name: storage_location
-      value: string
+      value: "{{ storage_location }}"
       description: |
         The storage location on the cloud under which model version data files are stored
     - name: updated_at
-      value: integer
+      value: {{ updated_at }}
       description: |
         Last-update timestamp of the registered model in milliseconds since the Unix epoch
     - name: updated_by
-      value: string
+      value: "{{ updated_by }}"
       description: |
         The identifier of the user who updated the registered model last time
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

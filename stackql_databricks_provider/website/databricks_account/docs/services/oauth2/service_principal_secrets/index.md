@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -222,21 +223,21 @@ update_time
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: service_principal_secrets
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the service_principal_secrets resource.
     - name: service_principal_id
-      value: string
+      value: "{{ service_principal_id }}"
       description: Required parameter for the service_principal_secrets resource.
     - name: lifetime
-      value: string
+      value: "{{ lifetime }}"
       description: |
         The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a default lifetime of 730 days (63072000s).
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -574,80 +575,69 @@ status
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: statement_execution
   props:
     - name: statement_id
-      value: string
+      value: "{{ statement_id }}"
       description: Required parameter for the statement_execution resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the statement_execution resource.
     - name: statement
-      value: string
+      value: "{{ statement }}"
       description: |
-        The SQL statement to execute. The statement can optionally be parameterized, see `parameters`. The maximum query text size is 16 MiB.
+        The SQL statement to execute. The statement can optionally be parameterized, see \`parameters\`. The maximum query text size is 16 MiB.
     - name: warehouse_id
-      value: string
+      value: "{{ warehouse_id }}"
       description: |
         Warehouse upon which to execute a statement. See also [What are SQL warehouses?] [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html
     - name: byte_limit
-      value: integer
+      value: {{ byte_limit }}
       description: |
-        Applies the given byte limit to the statement's result size. Byte counts are based on internal data representations and might not match the final size in the requested `format`. If the result was truncated due to the byte limit, then `truncated` in the response is set to `true`. When using `EXTERNAL_LINKS` disposition, a default `byte_limit` of 100 GiB is applied if `byte_limit` is not explicitly set.
+        Applies the given byte limit to the statement's result size. Byte counts are based on internal data representations and might not match the final size in the requested \`format\`. If the result was truncated due to the byte limit, then \`truncated\` in the response is set to \`true\`. When using \`EXTERNAL_LINKS\` disposition, a default \`byte_limit\` of 100 GiB is applied if \`byte_limit\` is not explicitly set.
     - name: catalog
-      value: string
+      value: "{{ catalog }}"
       description: |
-        Sets default catalog for statement execution, similar to [`USE CATALOG`] in SQL. [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
+        Sets default catalog for statement execution, similar to [\`USE CATALOG\`] in SQL. [\`USE CATALOG\`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
     - name: disposition
-      value: string
+      value: "{{ disposition }}"
       description: |
-        The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`. Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY` format, in a series of chunks. If a given statement produces a result set with a size larger than 25 MiB, that statement execution is aborted, and no result set will be available. **NOTE** Byte limits are computed based upon internal representations of the result set data, and might not match the sizes visible in JSON responses. Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links: URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The resulting links have two important properties: 1. They point to resources _external_ to the Databricks compute; therefore any associated authentication information (typically a personal access token, OAuth token, or similar) _must be removed_ when fetching from these links. 2. These are URLs with a specific expiration, indicated in the response. The behavior when attempting to use an expired link is cloud specific.
+        The fetch disposition provides two modes of fetching results: \`INLINE\` and \`EXTERNAL_LINKS\`. Statements executed with \`INLINE\` disposition will return result data inline, in \`JSON_ARRAY\` format, in a series of chunks. If a given statement produces a result set with a size larger than 25 MiB, that statement execution is aborted, and no result set will be available. **NOTE** Byte limits are computed based upon internal representations of the result set data, and might not match the sizes visible in JSON responses. Statements executed with \`EXTERNAL_LINKS\` disposition will return result data as external links: URLs that point to cloud storage internal to the workspace. Using \`EXTERNAL_LINKS\` disposition allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The resulting links have two important properties: 1. They point to resources _external_ to the Databricks compute; therefore any associated authentication information (typically a personal access token, OAuth token, or similar) _must be removed_ when fetching from these links. 2. These are URLs with a specific expiration, indicated in the response. The behavior when attempting to use an expired link is cloud specific.
     - name: format
-      value: string
+      value: "{{ format }}"
       description: |
-        Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and `CSV`. Important: The formats `ARROW_STREAM` and `CSV` are supported only with `EXTERNAL_LINKS` disposition. `JSON_ARRAY` is supported in `INLINE` and `EXTERNAL_LINKS` disposition. When specifying `format=JSON_ARRAY`, result data will be formatted as an array of arrays of values, where each value is either the *string representation* of a value, or `null`. For example, the output of `SELECT concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)` would look like this: ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null ], ] ``` When specifying `format=JSON_ARRAY` and `disposition=EXTERNAL_LINKS`, each chunk in the result contains compact JSON with no indentation or extra whitespace. When specifying `format=ARROW_STREAM` and `disposition=EXTERNAL_LINKS`, each chunk in the result will be formatted as Apache Arrow Stream. See the [Apache Arrow streaming format]. When specifying `format=CSV` and `disposition=EXTERNAL_LINKS`, each chunk in the result will be a CSV according to [RFC 4180] standard. All the columns values will have *string representation* similar to the `JSON_ARRAY` format, and `null` values will be encoded as “null”. Only the first chunk in the result would contain a header row with column names. For example, the output of `SELECT concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM range(3)` would look like this: ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ``` [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
+        Statement execution supports three result formats: \`JSON_ARRAY\` (default), \`ARROW_STREAM\`, and \`CSV\`. Important: The formats \`ARROW_STREAM\` and \`CSV\` are supported only with \`EXTERNAL_LINKS\` disposition. \`JSON_ARRAY\` is supported in \`INLINE\` and \`EXTERNAL_LINKS\` disposition. When specifying \`format=JSON_ARRAY\`, result data will be formatted as an array of arrays of values, where each value is either the *string representation* of a value, or \`null\`. For example, the output of \`SELECT concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)\` would look like this: \`\`\` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null ], ] \`\`\` When specifying \`format=JSON_ARRAY\` and \`disposition=EXTERNAL_LINKS\`, each chunk in the result contains compact JSON with no indentation or extra whitespace. When specifying \`format=ARROW_STREAM\` and \`disposition=EXTERNAL_LINKS\`, each chunk in the result will be formatted as Apache Arrow Stream. See the [Apache Arrow streaming format]. When specifying \`format=CSV\` and \`disposition=EXTERNAL_LINKS\`, each chunk in the result will be a CSV according to [RFC 4180] standard. All the columns values will have *string representation* similar to the \`JSON_ARRAY\` format, and \`null\` values will be encoded as “null”. Only the first chunk in the result would contain a header row with column names. For example, the output of \`SELECT concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM range(3)\` would look like this: \`\`\` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null \`\`\` [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
     - name: on_wait_timeout
-      value: string
+      value: "{{ on_wait_timeout }}"
       description: |
-        When `wait_timeout > 0s`, the call will block up to the specified time. If the statement execution doesn't finish within this time, `on_wait_timeout` determines whether the execution should continue or be canceled. When set to `CONTINUE`, the statement execution continues asynchronously and the call returns a statement ID which can be used for polling with :method:statementexecution/getStatement. When set to `CANCEL`, the statement execution is canceled and the call returns with a `CANCELED` state.
+        When \`wait_timeout > 0s\`, the call will block up to the specified time. If the statement execution doesn't finish within this time, \`on_wait_timeout\` determines whether the execution should continue or be canceled. When set to \`CONTINUE\`, the statement execution continues asynchronously and the call returns a statement ID which can be used for polling with :method:statementexecution/getStatement. When set to \`CANCEL\`, the statement execution is canceled and the call returns with a \`CANCELED\` state.
     - name: parameters
-      value: array
       description: |
-        A list of parameters to pass into a SQL statement containing parameter markers. A parameter consists of a name, a value, and optionally a type. To represent a NULL value, the `value` field may be omitted or set to `null` explicitly. If the `type` field is omitted, the value is interpreted as a string. If the type is given, parameters will be checked for type correctness according to the given type. A value is correct if the provided string can be converted to the requested type using the `cast` function. The exact semantics are described in the section [`cast` function] of the SQL language reference. For example, the following statement contains two parameters, `my_name` and `my_date`: ``` SELECT * FROM my_table WHERE name = :my_name AND date = :my_date ``` The parameters can be passed in the request body as follows: ` { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date", "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value": "2020-01-01", "type": "DATE" } ] } ` Currently, positional parameters denoted by a `?` marker are not supported by the Databricks SQL Statement Execution API. Also see the section [Parameter markers] of the SQL language reference. [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
-      props:
-      - name: name
-        value: string
-      - name: type
-        value: string
-        description: |
-          The data type, given as a string. For example: `INT`, `STRING`, `DECIMAL(10,2)`. If no type is given the type is assumed to be `STRING`. Complex types, such as `ARRAY`, `MAP`, and `STRUCT` are not supported. For valid types, refer to the section [Data types] of the SQL language reference. [Data types]: https://docs.databricks.com/sql/language-manual/functions/cast.html
-      - name: value
-        value: string
-        description: |
-          The value to substitute, represented as a string. If omitted, the value is interpreted as NULL.
+        A list of parameters to pass into a SQL statement containing parameter markers. A parameter consists of a name, a value, and optionally a type. To represent a NULL value, the \`value\` field may be omitted or set to \`null\` explicitly. If the \`type\` field is omitted, the value is interpreted as a string. If the type is given, parameters will be checked for type correctness according to the given type. A value is correct if the provided string can be converted to the requested type using the \`cast\` function. The exact semantics are described in the section [\`cast\` function] of the SQL language reference. For example, the following statement contains two parameters, \`my_name\` and \`my_date\`: \`\`\` SELECT * FROM my_table WHERE name = :my_name AND date = :my_date \`\`\` The parameters can be passed in the request body as follows: \` { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date", "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value": "2020-01-01", "type": "DATE" } ] } \` Currently, positional parameters denoted by a \`?\` marker are not supported by the Databricks SQL Statement Execution API. Also see the section [Parameter markers] of the SQL language reference. [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html [\`cast\` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+      value:
+        - name: "{{ name }}"
+          type: "{{ type }}"
+          value: "{{ value }}"
     - name: query_tags
-      value: array
       description: |
-        An array of query tags to annotate a SQL statement. A query tag consists of a non-empty key and, optionally, a value. To represent a NULL value, either omit the `value` field or manually set it to `null` or white space. Refer to the SQL language reference for the format specification of query tags. There's no significance to the order of tags. Only one value per key will be recorded. A sequence in excess of 20 query tags will be coerced to 20. Example: { ..., "query_tags": [ { "key": "team", "value": "eng" }, { "key": "some key only tag" } ] }
-      props:
-      - name: key
-        value: string
-      - name: value
-        value: string
+        An array of query tags to annotate a SQL statement. A query tag consists of a non-empty key and, optionally, a value. To represent a NULL value, either omit the \`value\` field or manually set it to \`null\` or white space. Refer to the SQL language reference for the format specification of query tags. There's no significance to the order of tags. Only one value per key will be recorded. A sequence in excess of 20 query tags will be coerced to 20. Example: { ..., "query_tags": [ { "key": "team", "value": "eng" }, { "key": "some key only tag" } ] }
+      value:
+        - key: "{{ key }}"
+          value: "{{ value }}"
     - name: row_limit
-      value: integer
+      value: {{ row_limit }}
       description: |
-        Applies the given row limit to the statement's result set, but unlike the `LIMIT` clause in SQL, it also sets the `truncated` field in the response to indicate whether the result was trimmed due to the limit or not.
+        Applies the given row limit to the statement's result set, but unlike the \`LIMIT\` clause in SQL, it also sets the \`truncated\` field in the response to indicate whether the result was trimmed due to the limit or not.
     - name: schema
-      value: string
+      value: "{{ schema }}"
       description: |
-        Sets default schema for statement execution, similar to [`USE SCHEMA`] in SQL. [`USE SCHEMA`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-schema.html
+        Sets default schema for statement execution, similar to [\`USE SCHEMA\`] in SQL. [\`USE SCHEMA\`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-schema.html
     - name: wait_timeout
-      value: string
+      value: "{{ wait_timeout }}"
       description: |
-        The time in seconds the call will wait for the statement's result set as `Ns`, where `N` can be set to 0 or to a value between 5 and 50. When set to `0s`, the statement will execute in asynchronous mode and the call will not wait for the execution to finish. In this case, the call returns directly with `PENDING` state and a statement ID which can be used for polling with :method:statementexecution/getStatement. When set between 5 and 50 seconds, the call will behave synchronously up to this timeout and wait for the statement execution to finish. If the execution finishes within this time, the call returns immediately with a manifest and result data (or a `FAILED` state in case of an execution error). If the statement takes longer to execute, `on_wait_timeout` determines what should happen after the timeout is reached.
-```
+        The time in seconds the call will wait for the statement's result set as \`Ns\`, where \`N\` can be set to 0 or to a value between 5 and 50. When set to \`0s\`, the statement will execute in asynchronous mode and the call will not wait for the execution to finish. In this case, the call returns directly with \`PENDING\` state and a statement ID which can be used for polling with :method:statementexecution/getStatement. When set between 5 and 50 seconds, the call will behave synchronously up to this timeout and wait for the statement execution to finish. If the execution finishes within this time, the call returns immediately with a manifest and result data (or a \`FAILED\` state in case of an execution error). If the statement takes longer to execute, \`on_wait_timeout\` determines what should happen after the timeout is reached.
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>

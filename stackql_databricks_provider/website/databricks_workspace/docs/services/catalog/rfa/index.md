@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -259,80 +260,23 @@ responses
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: rfa
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the rfa resource.
     - name: requests
-      value: array
       description: |
         A list of individual access requests, where each request corresponds to a set of permissions being requested on a list of securables for a specified principal. At most 30 requests per API call.
-      props:
-      - name: behalf_of
-        value: object
-        props:
-        - name: id
-          value: string
-        - name: principal_type
-          value: string
-          description: |
-            Create a collection of name/value pairs.
-            Example enumeration:
-            >>> class Color(Enum):
-            ...     RED = 1
-            ...     BLUE = 2
-            ...     GREEN = 3
-            Access them by:
-            - attribute access::
-            >>> Color.RED
-            <Color.RED: 1>
-            - value lookup:
-            >>> Color(1)
-            <Color.RED: 1>
-            - name lookup:
-            >>> Color['RED']
-            <Color.RED: 1>
-            Enumerations can be iterated over, and know how many members they have:
-            >>> len(Color)
-            3
-            >>> list(Color)
-            [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-            Methods can be added to enumerations, and members can have their own
-            attributes -- see the documentation for details.
-      - name: comment
-        value: string
-        description: |
-          Optional. Comment associated with the request. At most 200 characters, can only contain lowercase/uppercase letters (a-z, A-Z), numbers (0-9), punctuation, and spaces.
-      - name: securable_permissions
-        value: array
-        description: |
-          List of securables and their corresponding requested UC privileges. At most 30 securables can be requested for a principal per batched call. Each securable can only be requested once per principal.
-        props:
-        - name: permissions
-          value: array
-          items:
-            type: string
-        - name: securable
-          value: object
-          description: |
-            The securable for which the access request destinations are being requested.
-          props:
-          - name: full_name
-            value: string
-            description: |
-              Required. The full name of the catalog/schema/table. Optional if resource_name is present.
-          - name: provider_share
-            value: string
-            description: |
-              Optional. The name of the Share object that contains the securable when the securable is getting shared in D2D Delta Sharing.
-          - name: type
-            value: string
-            description: |
-              Required. The type of securable (catalog/schema/table). Optional if resource_name is present.
-```
+      value:
+        - behalf_of:
+            id: "{{ id }}"
+            principal_type: "{{ principal_type }}"
+          comment: "{{ comment }}"
+          securable_permissions: "{{ securable_permissions }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

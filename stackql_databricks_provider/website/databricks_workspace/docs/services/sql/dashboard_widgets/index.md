@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -170,83 +171,47 @@ width
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: dashboard_widgets
   props:
     - name: id
-      value: string
+      value: "{{ id }}"
       description: Required parameter for the dashboard_widgets resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the dashboard_widgets resource.
     - name: dashboard_id
-      value: string
+      value: "{{ dashboard_id }}"
       description: |
         Dashboard ID returned by :method:dashboards/create.
     - name: options
-      value: object
       description: |
         :param width: int Width of a widget
-      props:
-      - name: created_at
-        value: string
-      - name: description
-        value: string
-        description: |
-          Custom description of the widget
-      - name: isHidden
-        value: boolean
-        description: |
-          Whether this widget is hidden on the dashboard.
-      - name: parameterMappings
-        value: object
-        description: |
-          How parameters used by the visualization in this widget relate to other widgets on the dashboard. Databricks does not recommend modifying this definition in JSON.
-      - name: position
-        value: object
-        description: |
-          Coordinates of this widget on a dashboard. This portion of the API changes frequently and is unsupported.
-        props:
-        - name: autoHeight
-          value: boolean
-          description: |
-            reserved for internal use
-        - name: col
-          value: integer
-          description: |
-            column in the dashboard grid. Values start with 0
-        - name: row
-          value: integer
-          description: |
-            row in the dashboard grid. Values start with 0
-        - name: sizeX
-          value: integer
-          description: |
-            width of the widget measured in dashboard grid cells
-        - name: sizeY
-          value: integer
-          description: |
-            height of the widget measured in dashboard grid cells
-      - name: title
-        value: string
-        description: |
-          Custom title of the widget
-      - name: updated_at
-        value: string
-        description: |
-          Timestamp of the last time this object was updated.
+      value:
+        created_at: "{{ created_at }}"
+        description: "{{ description }}"
+        isHidden: {{ isHidden }}
+        parameterMappings: "{{ parameterMappings }}"
+        position:
+          autoHeight: {{ autoHeight }}
+          col: {{ col }}
+          row: {{ row }}
+          sizeX: {{ sizeX }}
+          sizeY: {{ sizeY }}
+        title: "{{ title }}"
+        updated_at: "{{ updated_at }}"
     - name: width
-      value: integer
+      value: {{ width }}
     - name: text
-      value: string
+      value: "{{ text }}"
       description: |
-        If this is a textbox widget, the application displays this text. This field is ignored if the widget contains a visualization in the `visualization` field.
+        If this is a textbox widget, the application displays this text. This field is ignored if the widget contains a visualization in the \`visualization\` field.
     - name: visualization_id
-      value: string
+      value: "{{ visualization_id }}"
       description: |
         Query Vizualization ID returned by :method:queryvisualizations/create.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -246,22 +247,22 @@ handle
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: dbfs
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the dbfs resource.
     - name: path
-      value: string
+      value: "{{ path }}"
       description: |
         The path of the new file. The path should be the absolute DBFS path.
     - name: overwrite
-      value: boolean
+      value: {{ overwrite }}
       description: |
         The flag that specifies whether to overwrite existing file/files.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

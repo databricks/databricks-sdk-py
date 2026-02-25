@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -353,50 +354,20 @@ upload_url
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: provider_files
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the provider_files resource.
     - name: file_parent
-      value: object
       description: |
-        :param marketplace_file_type: :class:`MarketplaceFileType`
-      props:
-      - name: file_parent_type
-        value: string
-        description: |
-          Create a collection of name/value pairs.
-          Example enumeration:
-          >>> class Color(Enum):
-          ...     RED = 1
-          ...     BLUE = 2
-          ...     GREEN = 3
-          Access them by:
-          - attribute access::
-          >>> Color.RED
-          <Color.RED: 1>
-          - value lookup:
-          >>> Color(1)
-          <Color.RED: 1>
-          - name lookup:
-          >>> Color['RED']
-          <Color.RED: 1>
-          Enumerations can be iterated over, and know how many members they have:
-          >>> len(Color)
-          3
-          >>> list(Color)
-          [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-          Methods can be added to enumerations, and members can have their own
-          attributes -- see the documentation for details.
-      - name: parent_id
-        value: string
-        description: |
-          TODO make the following fields required
+        :param marketplace_file_type: :class:\`MarketplaceFileType\`
+      value:
+        file_parent_type: "{{ file_parent_type }}"
+        parent_id: "{{ parent_id }}"
     - name: marketplace_file_type
-      value: string
+      value: "{{ marketplace_file_type }}"
       description: |
         Create a collection of name/value pairs.
         Example enumeration:
@@ -422,12 +393,13 @@ upload_url
         Methods can be added to enumerations, and members can have their own
         attributes -- see the documentation for details.
     - name: mime_type
-      value: string
+      value: "{{ mime_type }}"
       description: |
         :param display_name: str (optional)
     - name: display_name
-      value: string
-```
+      value: "{{ display_name }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

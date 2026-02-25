@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -399,59 +400,45 @@ client_secret
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: custom_app_integration
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the custom_app_integration resource.
     - name: confidential
-      value: boolean
+      value: {{ confidential }}
       description: |
         This field indicates whether an OAuth client secret is required to authenticate this client.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Name of the custom OAuth app
     - name: redirect_urls
-      value: array
+      value:
+        - "{{ redirect_urls }}"
       description: |
         List of OAuth redirect urls
-      items:
-        type: string
     - name: scopes
-      value: array
+      value:
+        - "{{ scopes }}"
       description: |
         OAuth scopes granted to the application. Supported scopes: all-apis, sql, offline_access, openid, profile, email.
-      items:
-        type: string
     - name: token_access_policy
-      value: object
       description: |
         Token access policy
-      props:
-      - name: absolute_session_lifetime_in_minutes
-        value: integer
-      - name: access_token_ttl_in_minutes
-        value: integer
-        description: |
-          access token time to live in minutes
-      - name: enable_single_use_refresh_tokens
-        value: boolean
-        description: |
-          Whether to enable single-use refresh tokens (refresh token rotation). If this feature is enabled, upon successfully getting a new access token using a refresh token, Databricks will issue a new refresh token along with the access token in the response and invalidate the old refresh token. The client should use the new refresh token to get access tokens in future requests.
-      - name: refresh_token_ttl_in_minutes
-        value: integer
-        description: |
-          Refresh token time to live in minutes. When single-use refresh tokens are enabled, this represents the TTL of an individual refresh token. If the refresh token is used before it expires, a new one is issued with a renewed individual TTL.
+      value:
+        absolute_session_lifetime_in_minutes: {{ absolute_session_lifetime_in_minutes }}
+        access_token_ttl_in_minutes: {{ access_token_ttl_in_minutes }}
+        enable_single_use_refresh_tokens: {{ enable_single_use_refresh_tokens }}
+        refresh_token_ttl_in_minutes: {{ refresh_token_ttl_in_minutes }}
     - name: user_authorized_scopes
-      value: array
+      value:
+        - "{{ user_authorized_scopes }}"
       description: |
         Scopes that will need to be consented by end user to mint the access token. If the user does not authorize the access token will not be minted. Must be a subset of scopes.
-      items:
-        type: string
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

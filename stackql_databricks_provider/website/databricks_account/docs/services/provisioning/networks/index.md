@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -500,70 +501,46 @@ warning_messages
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: networks
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the networks resource.
     - name: gcp_network_info
-      value: object
       description: |
         :param network_name: str (optional) The human-readable name of the network configuration.
-      props:
-      - name: network_project_id
-        value: string
-      - name: vpc_id
-        value: string
-        description: |
-          The customer-provided VPC ID.
-      - name: subnet_id
-        value: string
-        description: |
-          The customer-provided Subnet ID that will be available to Clusters in Workspaces using this Network.
-      - name: subnet_region
-        value: string
-      - name: pod_ip_range_name
-        value: string
-        description: |
-          Name of the secondary range within the subnet that will be used by GKE as Pod IP range. This is BYO VPC specific. DB VPC uses network.getGcpManagedNetworkConfig.getGkeClusterPodIpRange
-      - name: service_ip_range_name
-        value: string
-        description: |
-          Name of the secondary range within the subnet that will be used by GKE as Service IP range.
+      value:
+        network_project_id: "{{ network_project_id }}"
+        vpc_id: "{{ vpc_id }}"
+        subnet_id: "{{ subnet_id }}"
+        subnet_region: "{{ subnet_region }}"
+        pod_ip_range_name: "{{ pod_ip_range_name }}"
+        service_ip_range_name: "{{ service_ip_range_name }}"
     - name: network_name
-      value: string
+      value: "{{ network_name }}"
     - name: security_group_ids
-      value: array
+      value:
+        - "{{ security_group_ids }}"
       description: |
         IDs of one to five security groups associated with this network. Security group IDs **cannot** be used in multiple network configurations.
-      items:
-        type: string
     - name: subnet_ids
-      value: array
+      value:
+        - "{{ subnet_ids }}"
       description: |
         IDs of at least two subnets associated with this network. Subnet IDs **cannot** be used in multiple network configurations.
-      items:
-        type: string
     - name: vpc_endpoints
-      value: object
       description: |
         :param vpc_id: str (optional) The ID of the VPC associated with this network configuration. VPC IDs can be used in multiple networks.
-      props:
-      - name: dataplane_relay
-        value: array
-        items:
-          type: string
-      - name: rest_api
-        value: array
-        description: |
-          The VPC endpoint ID used by this network to access the Databricks REST API.
-        items:
-          type: string
+      value:
+        dataplane_relay:
+          - "{{ dataplane_relay }}"
+        rest_api:
+          - "{{ rest_api }}"
     - name: vpc_id
-      value: string
-```
+      value: "{{ vpc_id }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

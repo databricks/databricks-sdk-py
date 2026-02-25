@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -352,63 +353,32 @@ update_time
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: lakeview_schedules
   props:
     - name: dashboard_id
-      value: string
+      value: "{{ dashboard_id }}"
       description: Required parameter for the lakeview_schedules resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the lakeview_schedules resource.
     - name: schedule
-      value: object
       description: |
         The schedule to create. A dashboard is limited to 10 schedules.
-      props:
-      - name: cron_schedule
-        value: object
-        props:
-        - name: quartz_cron_expression
-          value: string
-        - name: timezone_id
-          value: string
-          description: |
-            A Java timezone id. The schedule will be resolved with respect to this timezone. See [Java TimeZone] for details. [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
-      - name: create_time
-        value: string
-        description: |
-          A timestamp indicating when the schedule was created.
-      - name: dashboard_id
-        value: string
-        description: |
-          UUID identifying the dashboard to which the schedule belongs.
-      - name: display_name
-        value: string
-        description: |
-          The display name for schedule.
-      - name: etag
-        value: string
-        description: |
-          The etag for the schedule. Must be left empty on create, must be provided on updates to ensure that the schedule has not been modified since the last read, and can be optionally provided on delete.
-      - name: pause_status
-        value: string
-        description: |
-          The status indicates whether this schedule is paused or not.
-      - name: schedule_id
-        value: string
-        description: |
-          UUID identifying the schedule.
-      - name: update_time
-        value: string
-        description: |
-          A timestamp indicating when the schedule was last updated.
-      - name: warehouse_id
-        value: string
-        description: |
-          The warehouse id to run the dashboard with for the schedule.
-```
+      value:
+        cron_schedule:
+          quartz_cron_expression: "{{ quartz_cron_expression }}"
+          timezone_id: "{{ timezone_id }}"
+        create_time: "{{ create_time }}"
+        dashboard_id: "{{ dashboard_id }}"
+        display_name: "{{ display_name }}"
+        etag: "{{ etag }}"
+        pause_status: "{{ pause_status }}"
+        schedule_id: "{{ schedule_id }}"
+        update_time: "{{ update_time }}"
+        warehouse_id: "{{ warehouse_id }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

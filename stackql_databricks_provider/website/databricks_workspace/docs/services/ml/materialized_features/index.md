@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -253,29 +254,26 @@ value
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: materialized_features
   props:
     - name: table_name
-      value: string
+      value: "{{ table_name }}"
       description: Required parameter for the materialized_features resource.
     - name: feature_name
-      value: string
+      value: "{{ feature_name }}"
       description: Required parameter for the materialized_features resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the materialized_features resource.
     - name: feature_tag
-      value: object
       description: |
-        :returns: :class:`FeatureTag`
-      props:
-      - name: key
-        value: string
-      - name: value
-        value: string
-```
+        :returns: :class:\`FeatureTag\`
+      value:
+        key: "{{ key }}"
+        value: "{{ value }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

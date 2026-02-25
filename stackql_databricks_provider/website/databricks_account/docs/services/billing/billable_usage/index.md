@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -116,8 +117,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 <Tabs
     defaultValue="billable_usage_download"
     values={[
-        { label: 'billable_usage_download', value: 'billable_usage_download' },
-        { label: 'Export to CSV', value: 'export_to_csv' }
+        { label: 'billable_usage_download', value: 'billable_usage_download' }
     ]}
 >
 <TabItem value="billable_usage_download">
@@ -134,25 +134,5 @@ AND end_month = '{{ end_month }}' -- required
 AND personal_data = '{{ personal_data }}'
 ;
 ```
-</TabItem>
-
-<TabItem value="export_to_csv">
-
-Export billable usage data to a local CSV file using the StackQL CLI:
-
-```bash
-./stackql exec \
-  -o text \
-  --hideheaders \
-  -f billable_usage.csv \
-  "SELECT contents 
-  FROM databricks_account.billing.billable_usage 
-  WHERE start_month = '2025-12' 
-  AND end_month = '2026-01' 
-  AND account_id = 'your-account-id'"
-```
-
-This downloads the usage data in CSV format directly from the Databricks API.
-
 </TabItem>
 </Tabs>

@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -367,51 +368,32 @@ id
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: provider_providers
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the provider_providers resource.
     - name: provider
-      value: object
       description: |
-        :returns: :class:`CreateProviderResponse`
-      props:
-      - name: name
-        value: string
-      - name: business_contact_email
-        value: string
-      - name: term_of_service_link
-        value: string
-      - name: privacy_policy_link
-        value: string
-      - name: company_website_link
-        value: string
-      - name: dark_mode_icon_file_id
-        value: string
-      - name: dark_mode_icon_file_path
-        value: string
-      - name: description
-        value: string
-      - name: icon_file_id
-        value: string
-      - name: icon_file_path
-        value: string
-      - name: id
-        value: string
-      - name: is_featured
-        value: boolean
-        description: |
-          is_featured is accessible by consumers only
-      - name: published_by
-        value: string
-        description: |
-          published_by is only applicable to data aggregators (e.g. Crux)
-      - name: support_contact_email
-        value: string
-```
+        :returns: :class:\`CreateProviderResponse\`
+      value:
+        name: "{{ name }}"
+        business_contact_email: "{{ business_contact_email }}"
+        term_of_service_link: "{{ term_of_service_link }}"
+        privacy_policy_link: "{{ privacy_policy_link }}"
+        company_website_link: "{{ company_website_link }}"
+        dark_mode_icon_file_id: "{{ dark_mode_icon_file_id }}"
+        dark_mode_icon_file_path: "{{ dark_mode_icon_file_path }}"
+        description: "{{ description }}"
+        icon_file_id: "{{ icon_file_id }}"
+        icon_file_path: "{{ icon_file_path }}"
+        id: "{{ id }}"
+        is_featured: {{ is_featured }}
+        published_by: "{{ published_by }}"
+        support_contact_email: "{{ support_contact_email }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

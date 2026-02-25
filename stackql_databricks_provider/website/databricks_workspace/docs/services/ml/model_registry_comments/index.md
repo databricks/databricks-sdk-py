@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -132,26 +133,26 @@ comment
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: model_registry_comments
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the model_registry_comments resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Name of the model.
     - name: version
-      value: string
+      value: "{{ version }}"
       description: |
         Version of the model.
     - name: comment
-      value: string
+      value: "{{ comment }}"
       description: |
         User-provided comment on the action.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

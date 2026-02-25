@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -280,28 +281,24 @@ creation_time
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: credentials
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the credentials resource.
     - name: credentials_name
-      value: string
+      value: "{{ credentials_name }}"
       description: |
         The human-readable name of the credential configuration object.
     - name: aws_credentials
-      value: object
       description: |
-        :returns: :class:`Credential`
-      props:
-      - name: sts_role
-        value: object
-        props:
-        - name: role_arn
-          value: string
-```
+        :returns: :class:\`Credential\`
+      value:
+        sts_role:
+          role_arn: "{{ role_arn }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

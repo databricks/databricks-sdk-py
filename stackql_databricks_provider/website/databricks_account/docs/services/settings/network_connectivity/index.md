@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -670,27 +671,20 @@ updated_time
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: network_connectivity
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the network_connectivity resource.
     - name: network_connectivity_config
-      value: object
       description: |
-        :returns: :class:`NetworkConnectivityConfiguration`
-      props:
-      - name: name
-        value: string
-        description: |
-          The name of the network connectivity configuration. The name can contain alphanumeric characters, hyphens, and underscores. The length must be between 3 and 30 characters. The name must match the regular expression ^[0-9a-zA-Z-_]{3,30}$
-      - name: region
-        value: string
-        description: |
-          The region for the network connectivity configuration. Only workspaces in the same region can be attached to the network connectivity configuration.
-```
+        :returns: :class:\`NetworkConnectivityConfiguration\`
+      value:
+        name: "{{ name }}"
+        region: "{{ region }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

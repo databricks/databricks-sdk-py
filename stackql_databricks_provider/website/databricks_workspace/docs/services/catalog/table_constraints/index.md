@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -135,74 +136,39 @@ primary_key_constraint
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: table_constraints
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the table_constraints resource.
     - name: full_name_arg
-      value: string
+      value: "{{ full_name_arg }}"
       description: |
         The full name of the table referenced by the constraint.
     - name: constraint
-      value: object
       description: |
-        :returns: :class:`TableConstraint`
-      props:
-      - name: foreign_key_constraint
-        value: object
-        props:
-        - name: name
-          value: string
-        - name: child_columns
-          value: array
-          description: |
-            Column names for this constraint.
-          items:
-            type: string
-        - name: parent_table
-          value: string
-          description: |
-            The full name of the parent constraint.
-        - name: parent_columns
-          value: array
-          description: |
-            Column names for this constraint.
-          items:
-            type: string
-        - name: rely
-          value: boolean
-          description: |
-            True if the constraint is RELY, false or unset if NORELY.
-      - name: named_table_constraint
-        value: object
-        props:
-        - name: name
-          value: string
-      - name: primary_key_constraint
-        value: object
-        props:
-        - name: name
-          value: string
-        - name: child_columns
-          value: array
-          description: |
-            Column names for this constraint.
-          items:
-            type: string
-        - name: rely
-          value: boolean
-          description: |
-            True if the constraint is RELY, false or unset if NORELY.
-        - name: timeseries_columns
-          value: array
-          description: |
-            Column names that represent a timeseries.
-          items:
-            type: string
-```
+        :returns: :class:\`TableConstraint\`
+      value:
+        foreign_key_constraint:
+          name: "{{ name }}"
+          child_columns:
+            - "{{ child_columns }}"
+          parent_table: "{{ parent_table }}"
+          parent_columns:
+            - "{{ parent_columns }}"
+          rely: {{ rely }}
+        named_table_constraint:
+          name: "{{ name }}"
+        primary_key_constraint:
+          name: "{{ name }}"
+          child_columns:
+            - "{{ child_columns }}"
+          rely: {{ rely }}
+          timeseries_columns:
+            - "{{ timeseries_columns }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

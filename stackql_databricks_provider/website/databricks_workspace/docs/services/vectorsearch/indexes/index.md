@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -475,108 +476,56 @@ status
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: indexes
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the indexes resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Name of the index
     - name: endpoint_name
-      value: string
+      value: "{{ endpoint_name }}"
       description: |
         Name of the endpoint to be used for serving the index
     - name: primary_key
-      value: string
+      value: "{{ primary_key }}"
       description: |
         Primary key of the index
     - name: index_type
-      value: string
+      value: "{{ index_type }}"
       description: |
-        :param delta_sync_index_spec: :class:`DeltaSyncVectorIndexSpecRequest` (optional) Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
+        :param delta_sync_index_spec: :class:\`DeltaSyncVectorIndexSpecRequest\` (optional) Specification for Delta Sync Index. Required if \`index_type\` is \`DELTA_SYNC\`.
     - name: delta_sync_index_spec
-      value: object
-      props:
-      - name: columns_to_sync
-        value: array
-        items:
-          type: string
-      - name: embedding_source_columns
-        value: array
-        description: |
-          The columns that contain the embedding source.
-        props:
-        - name: embedding_model_endpoint_name
-          value: string
-        - name: model_endpoint_name_for_query
-          value: string
-          description: |
-            Name of the embedding model endpoint which, if specified, is used for querying (not ingestion).
-        - name: name
-          value: string
-          description: |
-            Name of the column
-      - name: embedding_vector_columns
-        value: array
-        description: |
-          The columns that contain the embedding vectors.
-        props:
-        - name: embedding_dimension
-          value: integer
-        - name: name
-          value: string
-          description: |
-            Name of the column
-      - name: embedding_writeback_table
-        value: string
-        description: |
-          [Optional] Name of the Delta table to sync the vector index contents and computed embeddings to.
-      - name: pipeline_type
-        value: string
-        description: |
-          Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system stops processing after successfully refreshing the source table in the pipeline once, ensuring the table is updated based on the data available when the update started. - `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it arrives in the source table to keep vector index fresh.
-      - name: source_table
-        value: string
-        description: |
-          The name of the source table.
+      value:
+        columns_to_sync:
+          - "{{ columns_to_sync }}"
+        embedding_source_columns:
+          - embedding_model_endpoint_name: "{{ embedding_model_endpoint_name }}"
+            model_endpoint_name_for_query: "{{ model_endpoint_name_for_query }}"
+            name: "{{ name }}"
+        embedding_vector_columns:
+          - embedding_dimension: {{ embedding_dimension }}
+            name: "{{ name }}"
+        embedding_writeback_table: "{{ embedding_writeback_table }}"
+        pipeline_type: "{{ pipeline_type }}"
+        source_table: "{{ source_table }}"
     - name: direct_access_index_spec
-      value: object
       description: |
-        Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
-      props:
-      - name: embedding_source_columns
-        value: array
-        props:
-        - name: embedding_model_endpoint_name
-          value: string
-        - name: model_endpoint_name_for_query
-          value: string
-          description: |
-            Name of the embedding model endpoint which, if specified, is used for querying (not ingestion).
-        - name: name
-          value: string
-          description: |
-            Name of the column
-      - name: embedding_vector_columns
-        value: array
-        description: |
-          The columns that contain the embedding vectors. The format should be array[double].
-        props:
-        - name: embedding_dimension
-          value: integer
-        - name: name
-          value: string
-          description: |
-            Name of the column
-      - name: schema_json
-        value: string
-        description: |
-          The schema of the index in JSON format. Supported types are `integer`, `long`, `float`, `double`, `boolean`, `string`, `date`, `timestamp`. Supported types for vector column: `array<float>`, `array<double>`,`.
-```
+        Specification for Direct Vector Access Index. Required if \`index_type\` is \`DIRECT_ACCESS\`.
+      value:
+        embedding_source_columns:
+          - embedding_model_endpoint_name: "{{ embedding_model_endpoint_name }}"
+            model_endpoint_name_for_query: "{{ model_endpoint_name_for_query }}"
+            name: "{{ name }}"
+        embedding_vector_columns:
+          - embedding_dimension: {{ embedding_dimension }}
+            name: "{{ name }}"
+        schema_json: "{{ schema_json }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

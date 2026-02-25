@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -762,173 +763,64 @@ update_time
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: alerts_v2
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the alerts_v2 resource.
     - name: alert
-      value: object
       description: |
-        :returns: :class:`AlertV2`
-      props:
-      - name: display_name
-        value: string
-      - name: query_text
-        value: string
-        description: |
-          Text of the query to be run.
-      - name: warehouse_id
-        value: string
-        description: |
-          ID of the SQL warehouse attached to the alert.
-      - name: evaluation
-        value: object
-        props:
-        - name: source
-          value: object
-          props:
-          - name: name
-            value: string
-          - name: aggregation
-            value: string
-            description: |
-              If not set, the behavior is equivalent to using `First row` in the UI.
-          - name: display
-            value: string
-        - name: comparison_operator
-          value: string
-          description: |
-            Operator used for comparison in alert evaluation.
-        - name: empty_result_state
-          value: string
-          description: |
-            Alert state if result is empty. Please avoid setting this field to be `UNKNOWN` because `UNKNOWN` state is planned to be deprecated.
-        - name: last_evaluated_at
-          value: string
-          description: |
-            Timestamp of the last evaluation.
-        - name: notification
-          value: object
-          description: |
-            User or Notification Destination to notify when alert is triggered.
-          props:
-          - name: notify_on_ok
-            value: boolean
-          - name: retrigger_seconds
-            value: integer
-            description: |
-              Number of seconds an alert waits after being triggered before it is allowed to send another notification. If set to 0 or omitted, the alert will not send any further notifications after the first trigger Setting this value to 1 allows the alert to send a notification on every evaluation where the condition is met, effectively making it always retrigger for notification purposes.
-          - name: subscriptions
-            value: array
-            props:
-            - name: destination_id
-              value: string
-            - name: user_email
-              value: string
-        - name: state
-          value: string
-          description: |
-            Latest state of alert evaluation.
-        - name: threshold
-          value: object
-          description: |
-            Threshold to user for alert evaluation, can be a column or a value.
-          props:
-          - name: column
-            value: object
-            props:
-            - name: name
-              value: string
-            - name: aggregation
-              value: string
-              description: |
-                If not set, the behavior is equivalent to using `First row` in the UI.
-            - name: display
-              value: string
-          - name: value
-            value: object
-            props:
-            - name: bool_value
-              value: boolean
-            - name: double_value
-              value: number
-            - name: string_value
-              value: string
-      - name: schedule
-        value: object
-        props:
-        - name: quartz_cron_schedule
-          value: string
-        - name: timezone_id
-          value: string
-          description: |
-            A Java timezone id. The schedule will be resolved using this timezone. This will be combined with the quartz_cron_schedule to determine the schedule. See https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html for details.
-        - name: pause_status
-          value: string
-          description: |
-            Indicate whether this schedule is paused or not.
-      - name: create_time
-        value: string
-        description: |
-          The timestamp indicating when the alert was created.
-      - name: custom_description
-        value: string
-        description: |
-          Custom description for the alert. support mustache template.
-      - name: custom_summary
-        value: string
-        description: |
-          Custom summary for the alert. support mustache template.
-      - name: effective_run_as
-        value: object
-        description: |
-          The actual identity that will be used to execute the alert. This is an output-only field that shows the resolved run-as identity after applying permissions and defaults.
-        props:
-        - name: service_principal_name
-          value: string
-        - name: user_name
-          value: string
-          description: |
-            The email of an active workspace user. Can only set this field to their own email.
-      - name: id
-        value: string
-        description: |
-          UUID identifying the alert.
-      - name: lifecycle_state
-        value: string
-        description: |
-          Indicates whether the query is trashed.
-      - name: owner_user_name
-        value: string
-        description: |
-          The owner's username. This field is set to "Unavailable" if the user has been deleted.
-      - name: parent_path
-        value: string
-        description: |
-          The workspace path of the folder containing the alert. Can only be set on create, and cannot be updated.
-      - name: run_as
-        value: object
-        description: |
-          Specifies the identity that will be used to run the alert. This field allows you to configure alerts to run as a specific user or service principal. - For user identity: Set `user_name` to the email of an active workspace user. Users can only set this to their own email. - For service principal: Set `service_principal_name` to the application ID. Requires the `servicePrincipal/user` role. If not specified, the alert will run as the request user.
-        props:
-        - name: service_principal_name
-          value: string
-        - name: user_name
-          value: string
-          description: |
-            The email of an active workspace user. Can only set this field to their own email.
-      - name: run_as_user_name
-        value: string
-        description: |
-          The run as username or application ID of service principal. On Create and Update, this field can be set to application ID of an active service principal. Setting this field requires the servicePrincipal/user role. Deprecated: Use `run_as` field instead. This field will be removed in a future release.
-      - name: update_time
-        value: string
-        description: |
-          The timestamp indicating when the alert was updated.
-```
+        :returns: :class:\`AlertV2\`
+      value:
+        display_name: "{{ display_name }}"
+        query_text: "{{ query_text }}"
+        warehouse_id: "{{ warehouse_id }}"
+        evaluation:
+          source:
+            name: "{{ name }}"
+            aggregation: "{{ aggregation }}"
+            display: "{{ display }}"
+          comparison_operator: "{{ comparison_operator }}"
+          empty_result_state: "{{ empty_result_state }}"
+          last_evaluated_at: "{{ last_evaluated_at }}"
+          notification:
+            notify_on_ok: {{ notify_on_ok }}
+            retrigger_seconds: {{ retrigger_seconds }}
+            subscriptions:
+              - destination_id: "{{ destination_id }}"
+                user_email: "{{ user_email }}"
+          state: "{{ state }}"
+          threshold:
+            column:
+              name: "{{ name }}"
+              aggregation: "{{ aggregation }}"
+              display: "{{ display }}"
+            value:
+              bool_value: {{ bool_value }}
+              double_value: {{ double_value }}
+              string_value: "{{ string_value }}"
+        schedule:
+          quartz_cron_schedule: "{{ quartz_cron_schedule }}"
+          timezone_id: "{{ timezone_id }}"
+          pause_status: "{{ pause_status }}"
+        create_time: "{{ create_time }}"
+        custom_description: "{{ custom_description }}"
+        custom_summary: "{{ custom_summary }}"
+        effective_run_as:
+          service_principal_name: "{{ service_principal_name }}"
+          user_name: "{{ user_name }}"
+        id: "{{ id }}"
+        lifecycle_state: "{{ lifecycle_state }}"
+        owner_user_name: "{{ owner_user_name }}"
+        parent_path: "{{ parent_path }}"
+        run_as:
+          service_principal_name: "{{ service_principal_name }}"
+          user_name: "{{ user_name }}"
+        run_as_user_name: "{{ run_as_user_name }}"
+        update_time: "{{ update_time }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

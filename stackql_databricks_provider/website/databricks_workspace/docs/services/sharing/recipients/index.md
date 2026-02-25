@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -636,69 +637,62 @@ updated_by
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: recipients
   props:
     - name: name
-      value: string
+      value: "{{ name }}"
       description: Required parameter for the recipients resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the recipients resource.
     - name: existing_token_expire_in_seconds
-      value: integer
+      value: {{ existing_token_expire_in_seconds }}
       description: |
         The expiration time of the bearer token in ISO 8601 format. This will set the expiration_time of existing token only to a smaller timestamp, it cannot extend the expiration_time. Use 0 to expire the existing token immediately, negative number will return an error.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Name of Recipient.
     - name: authentication_type
-      value: string
+      value: "{{ authentication_type }}"
       description: |
         :param comment: str (optional) Description about the recipient.
     - name: comment
-      value: string
+      value: "{{ comment }}"
     - name: data_recipient_global_metastore_id
-      value: string
+      value: "{{ data_recipient_global_metastore_id }}"
       description: |
         The global Unity Catalog metastore id provided by the data recipient. This field is only present when the __authentication_type__ is **DATABRICKS**. The identifier is of format __cloud__:__region__:__metastore-uuid__.
     - name: expiration_time
-      value: integer
+      value: {{ expiration_time }}
       description: |
         Expiration timestamp of the token, in epoch milliseconds.
     - name: id
-      value: string
+      value: "{{ id }}"
       description: |
         [Create,Update:IGN] common - id of the recipient
     - name: ip_access_list
-      value: object
       description: |
         IP Access List
-      props:
-      - name: allowed_ip_addresses
-        value: array
-        items:
-          type: string
+      value:
+        allowed_ip_addresses:
+          - "{{ allowed_ip_addresses }}"
     - name: owner
-      value: string
+      value: "{{ owner }}"
       description: |
         Username of the recipient owner.
     - name: properties_kvpairs
-      value: object
       description: |
         Recipient properties as map of string key-value pairs. When provided in update request, the specified properties will override the existing properties. To add and remove properties, one would need to perform a read-modify-write.
-      props:
-      - name: properties
-        value: object
-        description: |
-          A map of key-value properties attached to the securable.
+      value:
+        properties: "{{ properties }}"
     - name: sharing_code
-      value: string
+      value: "{{ sharing_code }}"
       description: |
         The one-time sharing code provided by the data recipient. This field is only present when the __authentication_type__ is **DATABRICKS**.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

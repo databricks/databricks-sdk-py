@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -280,33 +281,23 @@ uid
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: database_catalogs
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the database_catalogs resource.
     - name: catalog
-      value: object
       description: |
-        :returns: :class:`DatabaseCatalog`
-      props:
-      - name: name
-        value: string
-      - name: database_instance_name
-        value: string
-        description: |
-          The name of the DatabaseInstance housing the database.
-      - name: database_name
-        value: string
-        description: |
-          The name of the database (in a instance) associated with the catalog.
-      - name: create_database_if_not_exists
-        value: boolean
-      - name: uid
-        value: string
-```
+        :returns: :class:\`DatabaseCatalog\`
+      value:
+        name: "{{ name }}"
+        database_instance_name: "{{ database_instance_name }}"
+        database_name: "{{ database_name }}"
+        create_database_if_not_exists: {{ create_database_if_not_exists }}
+        uid: "{{ uid }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

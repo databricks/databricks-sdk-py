@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -432,28 +433,28 @@ updated_by
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: providers
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the providers resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         The name of the Provider.
     - name: authentication_type
-      value: string
+      value: "{{ authentication_type }}"
       description: |
         :param comment: str (optional) Description about the provider.
     - name: comment
-      value: string
+      value: "{{ comment }}"
     - name: recipient_profile_str
-      value: string
+      value: "{{ recipient_profile_str }}"
       description: |
         This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS** or not provided.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -115,29 +116,29 @@ permissions_migrated
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: permission_migration
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the permission_migration resource.
     - name: workspace_id
-      value: integer
+      value: {{ workspace_id }}
       description: |
         WorkspaceId of the associated workspace where the permission migration will occur.
     - name: from_workspace_group_name
-      value: string
+      value: "{{ from_workspace_group_name }}"
       description: |
         The name of the workspace group that permissions will be migrated from.
     - name: to_account_group_name
-      value: string
+      value: "{{ to_account_group_name }}"
       description: |
         The name of the account group that permissions will be migrated to.
     - name: size
-      value: integer
+      value: {{ size }}
       description: |
         The maximum number of permissions that will be migrated.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>

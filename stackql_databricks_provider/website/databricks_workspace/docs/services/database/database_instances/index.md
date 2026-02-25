@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -978,179 +979,58 @@ uid
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: database_instances
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the database_instances resource.
     - name: database_instance
-      value: object
       description: |
         Instance to create.
-      props:
-      - name: name
-        value: string
-        description: |
-          The name of the instance. This is the unique identifier for the instance.
-      - name: capacity
-        value: string
-        description: |
-          The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4", "CU_8".
-      - name: child_instance_refs
-        value: array
-        description: |
-          The refs of the child instances. This is only available if the instance is parent instance.
-        props:
-        - name: branch_time
-          value: string
-          description: |
-            Branch time of the ref database instance. For a parent ref instance, this is the point in time on the parent instance from which the instance was created. For a child ref instance, this is the point in time on the instance from which the child instance was created. Input: For specifying the point in time to create a child instance. Optional. Output: Only populated if provided as input to create a child instance.
-        - name: effective_lsn
-          value: string
-          description: |
-            For a parent ref instance, this is the LSN on the parent instance from which the instance was created. For a child ref instance, this is the LSN on the instance from which the child instance was created. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
-        - name: lsn
-          value: string
-          description: |
-            User-specified WAL LSN of the ref database instance. Input: For specifying the WAL LSN to create a child instance. Optional. Output: Only populated if provided as input to create a child instance.
-        - name: name
-          value: string
-          description: |
-            Name of the ref database instance.
-        - name: uid
-          value: string
-          description: |
-            Id of the ref database instance.
-      - name: creation_time
-        value: string
-        description: |
-          The timestamp when the instance was created.
-      - name: creator
-        value: string
-        description: |
-          The email of the creator of the instance.
-      - name: custom_tags
-        value: array
-        description: |
-          Custom tags associated with the instance. This field is only included on create and update responses.
-        props:
-        - name: key
-          value: string
-        - name: value
-          value: string
-          description: |
-            The value of the custom tag.
-      - name: effective_capacity
-        value: string
-        description: |
-          Deprecated. The sku of the instance; this field will always match the value of capacity. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
-      - name: effective_custom_tags
-        value: array
-        description: |
-          The recorded custom tags associated with the instance. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
-        props:
-        - name: key
-          value: string
-        - name: value
-          value: string
-          description: |
-            The value of the custom tag.
-      - name: effective_enable_pg_native_login
-        value: boolean
-        description: |
-          Whether the instance has PG native password login enabled. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
-      - name: effective_enable_readable_secondaries
-        value: boolean
-        description: |
-          Whether secondaries serving read-only traffic are enabled. Defaults to false. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
-      - name: effective_node_count
-        value: integer
-        description: |
-          The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults to 1 primary and 0 secondaries. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
-      - name: effective_retention_window_in_days
-        value: integer
-        description: |
-          The retention window for the instance. This is the time window in days for which the historical data is retained. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
-      - name: effective_stopped
-        value: boolean
-        description: |
-          Whether the instance is stopped. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
-      - name: effective_usage_policy_id
-        value: string
-        description: |
-          The policy that is applied to the instance. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
-      - name: enable_pg_native_login
-        value: boolean
-        description: |
-          Whether to enable PG native password login on the instance. Defaults to false.
-      - name: enable_readable_secondaries
-        value: boolean
-        description: |
-          Whether to enable secondaries to serve read-only traffic. Defaults to false.
-      - name: node_count
-        value: integer
-        description: |
-          The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults to 1 primary and 0 secondaries. This field is input only, see effective_node_count for the output.
-      - name: parent_instance_ref
-        value: object
-        description: |
-          The ref of the parent instance. This is only available if the instance is child instance. Input: For specifying the parent instance to create a child instance. Optional. Output: Only populated if provided as input to create a child instance.
-        props:
-        - name: branch_time
-          value: string
-          description: |
-            Branch time of the ref database instance. For a parent ref instance, this is the point in time on the parent instance from which the instance was created. For a child ref instance, this is the point in time on the instance from which the child instance was created. Input: For specifying the point in time to create a child instance. Optional. Output: Only populated if provided as input to create a child instance.
-        - name: effective_lsn
-          value: string
-          description: |
-            For a parent ref instance, this is the LSN on the parent instance from which the instance was created. For a child ref instance, this is the LSN on the instance from which the child instance was created. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value.
-        - name: lsn
-          value: string
-          description: |
-            User-specified WAL LSN of the ref database instance. Input: For specifying the WAL LSN to create a child instance. Optional. Output: Only populated if provided as input to create a child instance.
-        - name: name
-          value: string
-          description: |
-            Name of the ref database instance.
-        - name: uid
-          value: string
-          description: |
-            Id of the ref database instance.
-      - name: pg_version
-        value: string
-        description: |
-          The version of Postgres running on the instance.
-      - name: read_only_dns
-        value: string
-        description: |
-          The DNS endpoint to connect to the instance for read only access. This is only available if enable_readable_secondaries is true.
-      - name: read_write_dns
-        value: string
-        description: |
-          The DNS endpoint to connect to the instance for read+write access.
-      - name: retention_window_in_days
-        value: integer
-        description: |
-          The retention window for the instance. This is the time window in days for which the historical data is retained. The default value is 7 days. Valid values are 2 to 35 days.
-      - name: state
-        value: string
-        description: |
-          The current state of the instance.
-      - name: stopped
-        value: boolean
-        description: |
-          Whether to stop the instance. An input only param, see effective_stopped for the output.
-      - name: uid
-        value: string
-        description: |
-          An immutable UUID identifier for the instance.
-      - name: usage_policy_id
-        value: string
-        description: |
-          The desired usage policy to associate with the instance.
-```
+      value:
+        name: "{{ name }}"
+        capacity: "{{ capacity }}"
+        child_instance_refs:
+          - branch_time: "{{ branch_time }}"
+            effective_lsn: "{{ effective_lsn }}"
+            lsn: "{{ lsn }}"
+            name: "{{ name }}"
+            uid: "{{ uid }}"
+        creation_time: "{{ creation_time }}"
+        creator: "{{ creator }}"
+        custom_tags:
+          - key: "{{ key }}"
+            value: "{{ value }}"
+        effective_capacity: "{{ effective_capacity }}"
+        effective_custom_tags:
+          - key: "{{ key }}"
+            value: "{{ value }}"
+        effective_enable_pg_native_login: {{ effective_enable_pg_native_login }}
+        effective_enable_readable_secondaries: {{ effective_enable_readable_secondaries }}
+        effective_node_count: {{ effective_node_count }}
+        effective_retention_window_in_days: {{ effective_retention_window_in_days }}
+        effective_stopped: {{ effective_stopped }}
+        effective_usage_policy_id: "{{ effective_usage_policy_id }}"
+        enable_pg_native_login: {{ enable_pg_native_login }}
+        enable_readable_secondaries: {{ enable_readable_secondaries }}
+        node_count: {{ node_count }}
+        parent_instance_ref:
+          branch_time: "{{ branch_time }}"
+          effective_lsn: "{{ effective_lsn }}"
+          lsn: "{{ lsn }}"
+          name: "{{ name }}"
+          uid: "{{ uid }}"
+        pg_version: "{{ pg_version }}"
+        read_only_dns: "{{ read_only_dns }}"
+        read_write_dns: "{{ read_write_dns }}"
+        retention_window_in_days: {{ retention_window_in_days }}
+        state: "{{ state }}"
+        stopped: {{ stopped }}
+        uid: "{{ uid }}"
+        usage_policy_id: "{{ usage_policy_id }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

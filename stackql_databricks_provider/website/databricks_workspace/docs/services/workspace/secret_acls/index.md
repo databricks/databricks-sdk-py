@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -219,26 +220,26 @@ SELECT
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: secret_acls
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the secret_acls resource.
     - name: scope
-      value: string
+      value: "{{ scope }}"
       description: |
         The name of the scope to apply permissions to.
     - name: principal
-      value: string
+      value: "{{ principal }}"
       description: |
         The principal in which the permission is applied.
     - name: permission
-      value: string
+      value: "{{ permission }}"
       description: |
         The permission level applied to the principal.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

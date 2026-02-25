@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -315,37 +316,32 @@ url
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: repos
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the repos resource.
     - name: url
-      value: string
+      value: "{{ url }}"
       description: |
         URL of the Git repository to be linked.
     - name: provider
-      value: string
+      value: "{{ provider }}"
       description: |
-        Git provider. This field is case-insensitive. The available Git providers are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and `awsCodeCommit`.
+        Git provider. This field is case-insensitive. The available Git providers are \`gitHub\`, \`bitbucketCloud\`, \`gitLab\`, \`azureDevOpsServices\`, \`gitHubEnterprise\`, \`bitbucketServer\`, \`gitLabEnterpriseEdition\` and \`awsCodeCommit\`.
     - name: path
-      value: string
+      value: "{{ path }}"
       description: |
-        Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`.
+        Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo is created in \`/Repos\`, path must be in the format \`/Repos/{folder}/{repo-name}\`.
     - name: sparse_checkout
-      value: object
       description: |
         If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable sparse checkout after the repo is created.
-      props:
-      - name: patterns
-        value: array
-        description: |
-          List of sparse checkout cone patterns, see [cone mode handling] for details. [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
-        items:
-          type: string
-```
+      value:
+        patterns:
+          - "{{ patterns }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

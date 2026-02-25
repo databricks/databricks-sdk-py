@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -502,120 +503,46 @@ update_time
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: app_deployments
   props:
     - name: app_name
-      value: string
+      value: "{{ app_name }}"
       description: Required parameter for the app_deployments resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the app_deployments resource.
     - name: app_deployment
-      value: object
       description: |
         The app deployment configuration.
-      props:
-      - name: command
-        value: array
-        items:
-          type: string
-      - name: create_time
-        value: string
-        description: |
-          The creation time of the deployment. Formatted timestamp in ISO 6801.
-      - name: creator
-        value: string
-        description: |
-          The email of the user creates the deployment.
-      - name: deployment_artifacts
-        value: object
-        description: |
-          The deployment artifacts for an app.
-        props:
-        - name: source_code_path
-          value: string
-      - name: deployment_id
-        value: string
-        description: |
-          The unique id of the deployment.
-      - name: env_vars
-        value: array
-        description: |
-          The environment variables to set in the app runtime environment. This will override the environment variables specified in the app.yaml file.
-        props:
-        - name: name
-          value: string
-        - name: value
-          value: string
-          description: |
-            The value for the environment variable.
-        - name: value_from
-          value: string
-          description: |
-            The name of an external Databricks resource that contains the value, such as a secret or a database table.
-      - name: git_source
-        value: object
-        description: |
-          Git repository to use as the source for the app deployment.
-        props:
-        - name: branch
-          value: string
-          description: |
-            Git branch to checkout.
-        - name: commit
-          value: string
-          description: |
-            Git commit SHA to checkout.
-        - name: git_repository
-          value: object
-          description: |
-            Git repository configuration. Populated from the app's git_repository configuration.
-          props:
-          - name: url
-            value: string
-            description: |
-              URL of the Git repository.
-          - name: provider
-            value: string
-            description: |
-              Git provider. Case insensitive. Supported values: gitHub, gitHubEnterprise, bitbucketCloud, bitbucketServer, azureDevOpsServices, gitLab, gitLabEnterpriseEdition, awsCodeCommit.
-        - name: resolved_commit
-          value: string
-          description: |
-            The resolved commit SHA that was actually used for the deployment. This is populated by the system after resolving the reference (branch, tag, or commit). If commit is specified directly, this will match commit. If a branch or tag is specified, this contains the commit SHA that the branch or tag pointed to at deployment time.
-        - name: source_code_path
-          value: string
-          description: |
-            Relative path to the app source code within the Git repository. If not specified, the root of the repository is used.
-        - name: tag
-          value: string
-          description: |
-            Git tag to checkout.
-      - name: mode
-        value: string
-        description: |
-          The mode of which the deployment will manage the source code.
-      - name: source_code_path
-        value: string
-        description: |
-          The workspace file system path of the source code used to create the app deployment. This is different from `deployment_artifacts.source_code_path`, which is the path used by the deployed app. The former refers to the original source code location of the app in the workspace during deployment creation, whereas the latter provides a system generated stable snapshotted source code path used by the deployment.
-      - name: status
-        value: object
-        description: |
-          Status and status message of the deployment
-        props:
-        - name: message
-          value: string
-        - name: state
-          value: string
-          description: |
-            State of the deployment.
-      - name: update_time
-        value: string
-        description: |
-          The update time of the deployment. Formatted timestamp in ISO 6801.
-```
+      value:
+        command:
+          - "{{ command }}"
+        create_time: "{{ create_time }}"
+        creator: "{{ creator }}"
+        deployment_artifacts:
+          source_code_path: "{{ source_code_path }}"
+        deployment_id: "{{ deployment_id }}"
+        env_vars:
+          - name: "{{ name }}"
+            value: "{{ value }}"
+            value_from: "{{ value_from }}"
+        git_source:
+          branch: "{{ branch }}"
+          commit: "{{ commit }}"
+          git_repository:
+            url: "{{ url }}"
+            provider: "{{ provider }}"
+          resolved_commit: "{{ resolved_commit }}"
+          source_code_path: "{{ source_code_path }}"
+          tag: "{{ tag }}"
+        mode: "{{ mode }}"
+        source_code_path: "{{ source_code_path }}"
+        status:
+          message: "{{ message }}"
+          state: "{{ state }}"
+        update_time: "{{ update_time }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>

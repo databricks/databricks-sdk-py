@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -281,29 +282,27 @@ root_bucket_info
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: storage
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the storage resource.
     - name: storage_configuration_name
-      value: string
+      value: "{{ storage_configuration_name }}"
       description: |
         The human-readable name of the storage configuration.
     - name: root_bucket_info
-      value: object
       description: |
         Root S3 bucket information.
-      props:
-      - name: bucket_name
-        value: string
+      value:
+        bucket_name: "{{ bucket_name }}"
     - name: role_arn
-      value: string
+      value: "{{ role_arn }}"
       description: |
         Optional IAM role that is used to access the workspace catalog which is created during workspace creation for UC by Default. If a storage configuration with this field populated is used to create a workspace, then a workspace catalog is created together with the workspace. The workspace catalog shares the root bucket with internal workspace storage (including DBFS root) but uses a dedicated bucket path prefix.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

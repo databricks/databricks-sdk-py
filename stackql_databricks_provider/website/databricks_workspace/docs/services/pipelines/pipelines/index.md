@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -1058,723 +1059,325 @@ effective_settings
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: pipelines
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the pipelines resource.
     - name: allow_duplicate_names
-      value: boolean
+      value: {{ allow_duplicate_names }}
       description: |
         If false, deployment will fail if name conflicts with that of another pipeline.
     - name: budget_policy_id
-      value: string
+      value: "{{ budget_policy_id }}"
       description: |
         Budget policy of this pipeline.
     - name: catalog
-      value: string
+      value: "{{ catalog }}"
       description: |
-        A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables in this pipeline are published to a `target` schema inside `catalog` (for example, `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+        A catalog in Unity Catalog to publish data from this pipeline to. If \`target\` is specified, tables in this pipeline are published to a \`target\` schema inside \`catalog\` (for example, \`catalog\`.\`target\`.\`table\`). If \`target\` is not specified, no data is published to Unity Catalog.
     - name: channel
-      value: string
+      value: "{{ channel }}"
       description: |
         DLT Release Channel that specifies which version to use.
     - name: clusters
-      value: array
       description: |
         Cluster settings for this pipeline deployment.
-      props:
-      - name: apply_policy_default_values
-        value: boolean
-      - name: autoscale
-        value: object
-        description: |
-          Parameters needed in order to automatically scale clusters up and down based on load. Note: autoscaling works best with DB runtime versions 3.0 or later.
-        props:
-        - name: min_workers
-          value: integer
-        - name: max_workers
-          value: integer
-          description: |
-            The maximum number of workers to which the cluster can scale up when overloaded. `max_workers` must be strictly greater than `min_workers`.
-        - name: mode
-          value: string
-          description: |
-            Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating cluster resources based on workload volume, with minimal impact to the data processing latency of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy autoscaling feature is used for `maintenance` clusters.
-      - name: aws_attributes
-        value: string
-        description: |
-          Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation, a set of default values will be used.
-      - name: azure_attributes
-        value: string
-        description: |
-          Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a set of default values will be used.
-      - name: cluster_log_conf
-        value: string
-        description: |
-          The configuration for delivering spark logs to a long-term storage destination. Only dbfs destinations are supported. Only one destination can be specified for one cluster. If the conf is given, the logs will be delivered to the destination every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is `$destination/$clusterId/executor`.
-      - name: custom_tags
-        value: object
-        description: |
-          Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS instances and EBS volumes) with these tags in addition to `default_tags`. Notes: - Currently, Databricks allows at most 45 custom tags - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
-      - name: driver_instance_pool_id
-        value: string
-        description: |
-          The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses the instance pool with id (instance_pool_id) if the driver pool is not assigned.
-      - name: driver_node_type_id
-        value: string
-        description: |
-          The node type of the Spark driver. Note that this field is optional; if unset, the driver node type will be set as the same value as `node_type_id` defined above.
-      - name: enable_local_disk_encryption
-        value: boolean
-        description: |
-          Whether to enable local disk encryption for the cluster.
-      - name: gcp_attributes
-        value: string
-        description: |
-          Attributes related to clusters running on Google Cloud Platform. If not specified at cluster creation, a set of default values will be used.
-      - name: init_scripts
-        value: string
-        description: |
-          The configuration for storing init scripts. Any number of destinations can be specified. The scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script logs are sent to `<destination>/<cluster-ID>/init_scripts`.
-      - name: instance_pool_id
-        value: string
-        description: |
-          The optional ID of the instance pool to which the cluster belongs.
-      - name: label
-        value: string
-        description: |
-          A label for the cluster specification, either `default` to configure the default cluster, or `maintenance` to configure the maintenance cluster. This field is optional. The default value is `default`.
-      - name: node_type_id
-        value: string
-        description: |
-          This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads. A list of available node types can be retrieved by using the :method:clusters/listNodeTypes API call.
-      - name: num_workers
-        value: integer
-        description: |
-          Number of worker nodes that this cluster should have. A cluster has one Spark Driver and `num_workers` Executors for a total of `num_workers` + 1 Spark nodes. Note: When reading the properties of a cluster, this field reflects the desired number of workers rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10 workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are provisioned.
-      - name: policy_id
-        value: string
-        description: |
-          The ID of the cluster policy used to create the cluster if applicable.
-      - name: spark_conf
-        value: object
-        description: |
-          An object containing a set of optional, user-specified Spark configuration key-value pairs. See :method:clusters/create for more details.
-      - name: spark_env_vars
-        value: object
-        description: |
-          An object containing a set of optional, user-specified environment variable key-value pairs. Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the driver and workers. In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks managed environmental variables are included as well. Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
-      - name: ssh_public_keys
-        value: array
-        description: |
-          SSH public key contents that will be added to each Spark node in this cluster. The corresponding private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
-        items:
-          type: string
+      value:
+        - apply_policy_default_values: {{ apply_policy_default_values }}
+          autoscale:
+            min_workers: {{ min_workers }}
+            max_workers: {{ max_workers }}
+            mode: "{{ mode }}"
+          aws_attributes: "{{ aws_attributes }}"
+          azure_attributes: "{{ azure_attributes }}"
+          cluster_log_conf: "{{ cluster_log_conf }}"
+          custom_tags: "{{ custom_tags }}"
+          driver_instance_pool_id: "{{ driver_instance_pool_id }}"
+          driver_node_type_id: "{{ driver_node_type_id }}"
+          enable_local_disk_encryption: {{ enable_local_disk_encryption }}
+          gcp_attributes: "{{ gcp_attributes }}"
+          init_scripts: "{{ init_scripts }}"
+          instance_pool_id: "{{ instance_pool_id }}"
+          label: "{{ label }}"
+          node_type_id: "{{ node_type_id }}"
+          num_workers: {{ num_workers }}
+          policy_id: "{{ policy_id }}"
+          spark_conf: "{{ spark_conf }}"
+          spark_env_vars: "{{ spark_env_vars }}"
+          ssh_public_keys: "{{ ssh_public_keys }}"
     - name: configuration
-      value: object
+      value: "{{ configuration }}"
       description: |
         String-String configuration for this pipeline execution.
     - name: continuous
-      value: boolean
+      value: {{ continuous }}
       description: |
-        Whether the pipeline is continuous or triggered. This replaces `trigger`.
+        Whether the pipeline is continuous or triggered. This replaces \`trigger\`.
     - name: deployment
-      value: object
       description: |
         Deployment type of this pipeline.
-      props:
-      - name: kind
-        value: string
-        description: |
-          The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a
-          Databricks Asset Bundle.
-      - name: metadata_file_path
-        value: string
-        description: |
-          The path to the file containing metadata about the deployment.
+      value:
+        kind: "{{ kind }}"
+        metadata_file_path: "{{ metadata_file_path }}"
     - name: development
-      value: boolean
+      value: {{ development }}
       description: |
         Whether the pipeline is in Development mode. Defaults to false.
     - name: dry_run
-      value: boolean
+      value: {{ dry_run }}
       description: |
         :param edition: str (optional) Pipeline product edition.
     - name: edition
-      value: string
+      value: "{{ edition }}"
     - name: environment
-      value: object
       description: |
         Environment specification for this pipeline used to install dependencies.
-      props:
-      - name: dependencies
-        value: array
-        description: |
-          List of pip dependencies, as supported by the version of pip in this environment. Each dependency is a pip requirement file line https://pip.pypa.io/en/stable/reference/requirements-file-format/ Allowed dependency could be <requirement specifier>, <archive url/path>, <local project path>(WSFS or Volumes in Databricks), <vcs project url>
-        items:
-          type: string
+      value:
+        dependencies:
+          - "{{ dependencies }}"
     - name: event_log
-      value: object
       description: |
         Event log configuration for this pipeline
-      props:
-      - name: catalog
-        value: string
-        description: |
-          The UC catalog the event log is published under.
-      - name: name
-        value: string
-        description: |
-          The name the event log is published to in UC.
-      - name: schema
-        value: string
-        description: |
-          The UC schema the event log is published under.
+      value:
+        catalog: "{{ catalog }}"
+        name: "{{ name }}"
+        schema: "{{ schema }}"
     - name: filters
-      value: object
       description: |
         Filters on which Pipeline packages to include in the deployed graph.
-      props:
-      - name: exclude
-        value: array
-        items:
-          type: string
-      - name: include
-        value: array
-        description: |
-          Paths to include.
-        items:
-          type: string
+      value:
+        exclude:
+          - "{{ exclude }}"
+        include:
+          - "{{ include }}"
     - name: gateway_definition
-      value: object
       description: |
         The definition of a gateway pipeline to support change data capture.
-      props:
-      - name: connection_name
-        value: string
-      - name: gateway_storage_catalog
-        value: string
-        description: |
-          Required, Immutable. The name of the catalog for the gateway pipeline's storage location.
-      - name: gateway_storage_schema
-        value: string
-        description: |
-          Required, Immutable. The name of the schema for the gateway pipelines's storage location.
-      - name: connection_id
-        value: string
-        description: |
-          [Deprecated, use connection_name instead] Immutable. The Unity Catalog connection that this gateway pipeline uses to communicate with the source.
-      - name: connection_parameters
-        value: object
-        description: |
-          Optional, Internal. Parameters required to establish an initial connection with the source.
-        props:
-        - name: source_catalog
-          value: string
-      - name: gateway_storage_name
-        value: string
-        description: |
-          Optional. The Unity Catalog-compatible name for the gateway storage location. This is the destination to use for the data that is extracted by the gateway. Spark Declarative Pipelines system will automatically create the storage location under the catalog and schema.
+      value:
+        connection_name: "{{ connection_name }}"
+        gateway_storage_catalog: "{{ gateway_storage_catalog }}"
+        gateway_storage_schema: "{{ gateway_storage_schema }}"
+        connection_id: "{{ connection_id }}"
+        connection_parameters:
+          source_catalog: "{{ source_catalog }}"
+        gateway_storage_name: "{{ gateway_storage_name }}"
     - name: id
-      value: string
+      value: "{{ id }}"
       description: |
         Unique identifier for this pipeline.
     - name: ingestion_definition
-      value: object
       description: |
         The configuration for a managed ingestion pipeline. These settings cannot be used with the 'libraries', 'schema', 'target', or 'catalog' settings.
-      props:
-      - name: connection_name
-        value: string
-      - name: full_refresh_window
-        value: object
-        description: |
-          (Optional) A window that specifies a set of time ranges for snapshot queries in CDC.
-        props:
-        - name: start_hour
-          value: integer
-          description: |
-            An integer between 0 and 23 denoting the start hour for the window in the 24-hour day.
-        - name: days_of_week
-          value: array
-          description: |
-            Days of week in which the window is allowed to happen If not specified all days of the week will be used.
-          items:
-            type: string
-        - name: time_zone_id
-          value: string
-          description: |
-            Time zone id of window. See https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html for details. If not specified, UTC will be used.
-      - name: ingest_from_uc_foreign_catalog
-        value: boolean
-        description: |
-          Immutable. If set to true, the pipeline will ingest tables from the UC foreign catalogs directly without the need to specify a UC connection or ingestion gateway. The `source_catalog` fields in objects of IngestionConfig are interpreted as the UC foreign catalogs to ingest from.
-      - name: ingestion_gateway_id
-        value: string
-        description: |
-          Identifier for the gateway that is used by this ingestion pipeline to communicate with the source database. This is used with CDC connectors to databases like SQL Server using a gateway pipeline (connector_type = CDC). Under certain conditions, this can be replaced with connection_name to change the connector to Combined Cdc Managed Ingestion Pipeline.
-      - name: netsuite_jar_path
-        value: string
-        description: |
-          Netsuite only configuration. When the field is set for a netsuite connector, the jar stored in the field will be validated and added to the classpath of pipeline's cluster.
-      - name: objects
-        value: array
-        description: |
-          Required. Settings specifying tables to replicate and the destination for the replicated tables.
-        props:
-        - name: report
-          value: object
-          props:
-          - name: source_url
-            value: string
-          - name: destination_catalog
-            value: string
-            description: |
-              Required. Destination catalog to store table.
-          - name: destination_schema
-            value: string
-            description: |
-              Required. Destination schema to store table.
-          - name: destination_table
-            value: string
-            description: |
-              Required. Destination table name. The pipeline fails if a table with that name already exists.
-          - name: table_configuration
-            value: object
-            description: |
-              Configuration settings to control the ingestion of tables. These settings override the table_configuration defined in the IngestionPipelineDefinition object.
-            props:
-            - name: auto_full_refresh_policy
-              value: object
-              description: |
-                Policy for auto full refresh.
-            - name: exclude_columns
-              value: array
-              description: |
-                A list of column names to be excluded for the ingestion. When not specified, include_columns fully controls what columns to be ingested. When specified, all other columns including future ones will be automatically included for ingestion. This field in mutually exclusive with `include_columns`.
-            - name: include_columns
-              value: array
-              description: |
-                A list of column names to be included for the ingestion. When not specified, all columns except ones in exclude_columns will be included. Future columns will be automatically included. When specified, all other future columns will be automatically excluded from ingestion. This field in mutually exclusive with `exclude_columns`.
-            - name: primary_keys
-              value: array
-              description: |
-                The primary key of the table used to apply changes.
-            - name: query_based_connector_config
-              value: object
-              description: |
-                Configurations that are only applicable for query-based ingestion connectors.
-            - name: row_filter
-              value: string
-              description: |
-                (Optional, Immutable) The row filter condition to be applied to the table. It must not contain the WHERE keyword, only the actual filter condition. It must be in DBSQL format.
-            - name: salesforce_include_formula_fields
-              value: boolean
-              description: |
-                If true, formula fields defined in the table are included in the ingestion. This setting is only valid for the Salesforce connector
-            - name: scd_type
-              value: string
-              description: |
-                The SCD type to use to ingest the table.
-            - name: sequence_by
-              value: array
-              description: |
-                The column names specifying the logical order of events in the source data. Spark Declarative Pipelines uses this sequencing to handle change events that arrive out of order.
-            - name: workday_report_parameters
-              value: object
-              description: |
-                (Optional) Additional custom parameters for Workday Report
-        - name: schema
-          value: object
-          description: |
-            Select all tables from a specific source schema.
-          props:
-          - name: source_schema
-            value: string
-          - name: destination_catalog
-            value: string
-            description: |
-              Required. Destination catalog to store tables.
-          - name: destination_schema
-            value: string
-            description: |
-              Required. Destination schema to store tables in. Tables with the same name as the source tables are created in this destination schema. The pipeline fails If a table with the same name already exists.
-          - name: source_catalog
-            value: string
-            description: |
-              The source catalog name. Might be optional depending on the type of source.
-          - name: table_configuration
-            value: object
-            description: |
-              Configuration settings to control the ingestion of tables. These settings are applied to all tables in this schema and override the table_configuration defined in the IngestionPipelineDefinition object.
-            props:
-            - name: auto_full_refresh_policy
-              value: object
-              description: |
-                Policy for auto full refresh.
-            - name: exclude_columns
-              value: array
-              description: |
-                A list of column names to be excluded for the ingestion. When not specified, include_columns fully controls what columns to be ingested. When specified, all other columns including future ones will be automatically included for ingestion. This field in mutually exclusive with `include_columns`.
-            - name: include_columns
-              value: array
-              description: |
-                A list of column names to be included for the ingestion. When not specified, all columns except ones in exclude_columns will be included. Future columns will be automatically included. When specified, all other future columns will be automatically excluded from ingestion. This field in mutually exclusive with `exclude_columns`.
-            - name: primary_keys
-              value: array
-              description: |
-                The primary key of the table used to apply changes.
-            - name: query_based_connector_config
-              value: object
-              description: |
-                Configurations that are only applicable for query-based ingestion connectors.
-            - name: row_filter
-              value: string
-              description: |
-                (Optional, Immutable) The row filter condition to be applied to the table. It must not contain the WHERE keyword, only the actual filter condition. It must be in DBSQL format.
-            - name: salesforce_include_formula_fields
-              value: boolean
-              description: |
-                If true, formula fields defined in the table are included in the ingestion. This setting is only valid for the Salesforce connector
-            - name: scd_type
-              value: string
-              description: |
-                The SCD type to use to ingest the table.
-            - name: sequence_by
-              value: array
-              description: |
-                The column names specifying the logical order of events in the source data. Spark Declarative Pipelines uses this sequencing to handle change events that arrive out of order.
-            - name: workday_report_parameters
-              value: object
-              description: |
-                (Optional) Additional custom parameters for Workday Report
-        - name: table
-          value: object
-          description: |
-            Select a specific source table.
-          props:
-          - name: source_table
-            value: string
-          - name: destination_catalog
-            value: string
-            description: |
-              Required. Destination catalog to store table.
-          - name: destination_schema
-            value: string
-            description: |
-              Required. Destination schema to store table.
-          - name: destination_table
-            value: string
-            description: |
-              Optional. Destination table name. The pipeline fails if a table with that name already exists. If not set, the source table name is used.
-          - name: source_catalog
-            value: string
-            description: |
-              Source catalog name. Might be optional depending on the type of source.
-          - name: source_schema
-            value: string
-            description: |
-              Schema name in the source database. Might be optional depending on the type of source.
-          - name: table_configuration
-            value: object
-            description: |
-              Configuration settings to control the ingestion of tables. These settings override the table_configuration defined in the IngestionPipelineDefinition object and the SchemaSpec.
-            props:
-            - name: auto_full_refresh_policy
-              value: object
-              description: |
-                Policy for auto full refresh.
-            - name: exclude_columns
-              value: array
-              description: |
-                A list of column names to be excluded for the ingestion. When not specified, include_columns fully controls what columns to be ingested. When specified, all other columns including future ones will be automatically included for ingestion. This field in mutually exclusive with `include_columns`.
-            - name: include_columns
-              value: array
-              description: |
-                A list of column names to be included for the ingestion. When not specified, all columns except ones in exclude_columns will be included. Future columns will be automatically included. When specified, all other future columns will be automatically excluded from ingestion. This field in mutually exclusive with `exclude_columns`.
-            - name: primary_keys
-              value: array
-              description: |
-                The primary key of the table used to apply changes.
-            - name: query_based_connector_config
-              value: object
-              description: |
-                Configurations that are only applicable for query-based ingestion connectors.
-            - name: row_filter
-              value: string
-              description: |
-                (Optional, Immutable) The row filter condition to be applied to the table. It must not contain the WHERE keyword, only the actual filter condition. It must be in DBSQL format.
-            - name: salesforce_include_formula_fields
-              value: boolean
-              description: |
-                If true, formula fields defined in the table are included in the ingestion. This setting is only valid for the Salesforce connector
-            - name: scd_type
-              value: string
-              description: |
-                The SCD type to use to ingest the table.
-            - name: sequence_by
-              value: array
-              description: |
-                The column names specifying the logical order of events in the source data. Spark Declarative Pipelines uses this sequencing to handle change events that arrive out of order.
-            - name: workday_report_parameters
-              value: object
-              description: |
-                (Optional) Additional custom parameters for Workday Report
-      - name: source_configurations
-        value: array
-        description: |
-          Top-level source configurations
-        props:
-        - name: catalog
-          value: object
-          description: |
-            SourceCatalogConfig contains catalog-level custom configuration parameters for each source
-          props:
-          - name: postgres
-            value: object
-            description: |
-              Postgres-specific catalog-level configuration parameters
-            props:
-            - name: slot_config
-              value: object
-              description: |
-                Optional. The Postgres slot configuration to use for logical replication
-          - name: source_catalog
-            value: string
-            description: |
-              Source catalog name
-      - name: source_type
-        value: string
-        description: |
-          The type of the foreign source. The source type will be inferred from the source connection or ingestion gateway. This field is output only and will be ignored if provided.
-      - name: table_configuration
-        value: object
-        description: |
-          Configuration settings to control the ingestion of tables. These settings are applied to all tables in the pipeline.
-        props:
-        - name: auto_full_refresh_policy
-          value: object
-          description: |
-            Policy for auto full refresh.
-          props:
-          - name: enabled
-            value: boolean
-            description: |
-              (Required, Mutable) Whether to enable auto full refresh or not.
-          - name: min_interval_hours
-            value: integer
-            description: |
-              (Optional, Mutable) Specify the minimum interval in hours between the timestamp at which a table was last full refreshed and the current timestamp for triggering auto full If unspecified and autoFullRefresh is enabled then by default min_interval_hours is 24 hours.
-        - name: exclude_columns
-          value: array
-          description: |
-            A list of column names to be excluded for the ingestion. When not specified, include_columns fully controls what columns to be ingested. When specified, all other columns including future ones will be automatically included for ingestion. This field in mutually exclusive with `include_columns`.
-          items:
-            type: string
-        - name: include_columns
-          value: array
-          description: |
-            A list of column names to be included for the ingestion. When not specified, all columns except ones in exclude_columns will be included. Future columns will be automatically included. When specified, all other future columns will be automatically excluded from ingestion. This field in mutually exclusive with `exclude_columns`.
-          items:
-            type: string
-        - name: primary_keys
-          value: array
-          description: |
-            The primary key of the table used to apply changes.
-          items:
-            type: string
-        - name: query_based_connector_config
-          value: object
-          description: |
-            Configurations that are only applicable for query-based ingestion connectors.
-          props:
-          - name: cursor_columns
-            value: array
-            description: |
-              The names of the monotonically increasing columns in the source table that are used to enable the table to be read and ingested incrementally through structured streaming. The columns are allowed to have repeated values but have to be non-decreasing. If the source data is merged into the destination (e.g., using SCD Type 1 or Type 2), these columns will implicitly define the `sequence_by` behavior. You can still explicitly set `sequence_by` to override this default.
-            items:
-              type: string
-          - name: deletion_condition
-            value: string
-            description: |
-              Specifies a SQL WHERE condition that specifies that the source row has been deleted. This is sometimes referred to as "soft-deletes". For example: "Operation = 'DELETE'" or "is_deleted = true". This field is orthogonal to `hard_deletion_sync_interval_in_seconds`, one for soft-deletes and the other for hard-deletes. See also the hard_deletion_sync_min_interval_in_seconds field for handling of "hard deletes" where the source rows are physically removed from the table.
-          - name: hard_deletion_sync_min_interval_in_seconds
-            value: integer
-            description: |
-              Specifies the minimum interval (in seconds) between snapshots on primary keys for detecting and synchronizing hard deletions—i.e., rows that have been physically removed from the source table. This interval acts as a lower bound. If ingestion runs less frequently than this value, hard deletion synchronization will align with the actual ingestion frequency instead of happening more often. If not set, hard deletion synchronization via snapshots is disabled. This field is mutable and can be updated without triggering a full snapshot.
-        - name: row_filter
-          value: string
-          description: |
-            (Optional, Immutable) The row filter condition to be applied to the table. It must not contain the WHERE keyword, only the actual filter condition. It must be in DBSQL format.
-        - name: salesforce_include_formula_fields
-          value: boolean
-          description: |
-            If true, formula fields defined in the table are included in the ingestion. This setting is only valid for the Salesforce connector
-        - name: scd_type
-          value: string
-          description: |
-            The SCD type to use to ingest the table.
-        - name: sequence_by
-          value: array
-          description: |
-            The column names specifying the logical order of events in the source data. Spark Declarative Pipelines uses this sequencing to handle change events that arrive out of order.
-          items:
-            type: string
-        - name: workday_report_parameters
-          value: object
-          description: |
-            (Optional) Additional custom parameters for Workday Report
-          props:
-          - name: incremental
-            value: boolean
-          - name: parameters
-            value: object
-            description: |
-              Parameters for the Workday report. Each key represents the parameter name (e.g., "start_date", "end_date"), and the corresponding value is a SQL-like expression used to compute the parameter value at runtime. Example: { "start_date": "{ coalesce(current_offset(), date(\"2025-02-01\")) }", "end_date": "{ current_date() - INTERVAL 1 DAY }" }
-          - name: report_parameters
-            value: array
-            description: |
-              (Optional) Additional custom parameters for Workday Report This field is deprecated and should not be used. Use `parameters` instead.
-            props:
-            - name: key
-              value: string
-            - name: value
-              value: string
-              description: |
-                Value for the report parameter. Possible values it can take are these sql functions: 1. coalesce(current_offset(), date("YYYY-MM-DD")) -> if current_offset() is null, then the passed date, else current_offset() 2. current_date() 3. date_sub(current_date(), x) -> subtract x (some non-negative integer) days from current date
+      value:
+        connection_name: "{{ connection_name }}"
+        full_refresh_window:
+          start_hour: {{ start_hour }}
+          days_of_week:
+            - "{{ days_of_week }}"
+          time_zone_id: "{{ time_zone_id }}"
+        ingest_from_uc_foreign_catalog: {{ ingest_from_uc_foreign_catalog }}
+        ingestion_gateway_id: "{{ ingestion_gateway_id }}"
+        netsuite_jar_path: "{{ netsuite_jar_path }}"
+        objects:
+          - report:
+              source_url: "{{ source_url }}"
+              destination_catalog: "{{ destination_catalog }}"
+              destination_schema: "{{ destination_schema }}"
+              destination_table: "{{ destination_table }}"
+              table_configuration:
+                auto_full_refresh_policy:
+                  enabled: {{ enabled }}
+                  min_interval_hours: {{ min_interval_hours }}
+                exclude_columns:
+                  - "{{ exclude_columns }}"
+                include_columns:
+                  - "{{ include_columns }}"
+                primary_keys:
+                  - "{{ primary_keys }}"
+                query_based_connector_config:
+                  cursor_columns: "{{ cursor_columns }}"
+                  deletion_condition: "{{ deletion_condition }}"
+                  hard_deletion_sync_min_interval_in_seconds: {{ hard_deletion_sync_min_interval_in_seconds }}
+                row_filter: "{{ row_filter }}"
+                salesforce_include_formula_fields: {{ salesforce_include_formula_fields }}
+                scd_type: "{{ scd_type }}"
+                sequence_by:
+                  - "{{ sequence_by }}"
+                workday_report_parameters:
+                  incremental: {{ incremental }}
+                  parameters: "{{ parameters }}"
+                  report_parameters: "{{ report_parameters }}"
+            schema:
+              source_schema: "{{ source_schema }}"
+              destination_catalog: "{{ destination_catalog }}"
+              destination_schema: "{{ destination_schema }}"
+              source_catalog: "{{ source_catalog }}"
+              table_configuration:
+                auto_full_refresh_policy:
+                  enabled: {{ enabled }}
+                  min_interval_hours: {{ min_interval_hours }}
+                exclude_columns:
+                  - "{{ exclude_columns }}"
+                include_columns:
+                  - "{{ include_columns }}"
+                primary_keys:
+                  - "{{ primary_keys }}"
+                query_based_connector_config:
+                  cursor_columns: "{{ cursor_columns }}"
+                  deletion_condition: "{{ deletion_condition }}"
+                  hard_deletion_sync_min_interval_in_seconds: {{ hard_deletion_sync_min_interval_in_seconds }}
+                row_filter: "{{ row_filter }}"
+                salesforce_include_formula_fields: {{ salesforce_include_formula_fields }}
+                scd_type: "{{ scd_type }}"
+                sequence_by:
+                  - "{{ sequence_by }}"
+                workday_report_parameters:
+                  incremental: {{ incremental }}
+                  parameters: "{{ parameters }}"
+                  report_parameters: "{{ report_parameters }}"
+            table:
+              source_table: "{{ source_table }}"
+              destination_catalog: "{{ destination_catalog }}"
+              destination_schema: "{{ destination_schema }}"
+              destination_table: "{{ destination_table }}"
+              source_catalog: "{{ source_catalog }}"
+              source_schema: "{{ source_schema }}"
+              table_configuration:
+                auto_full_refresh_policy:
+                  enabled: {{ enabled }}
+                  min_interval_hours: {{ min_interval_hours }}
+                exclude_columns:
+                  - "{{ exclude_columns }}"
+                include_columns:
+                  - "{{ include_columns }}"
+                primary_keys:
+                  - "{{ primary_keys }}"
+                query_based_connector_config:
+                  cursor_columns: "{{ cursor_columns }}"
+                  deletion_condition: "{{ deletion_condition }}"
+                  hard_deletion_sync_min_interval_in_seconds: {{ hard_deletion_sync_min_interval_in_seconds }}
+                row_filter: "{{ row_filter }}"
+                salesforce_include_formula_fields: {{ salesforce_include_formula_fields }}
+                scd_type: "{{ scd_type }}"
+                sequence_by:
+                  - "{{ sequence_by }}"
+                workday_report_parameters:
+                  incremental: {{ incremental }}
+                  parameters: "{{ parameters }}"
+                  report_parameters: "{{ report_parameters }}"
+        source_configurations:
+          - catalog:
+              postgres:
+                slot_config:
+                  publication_name: "{{ publication_name }}"
+                  slot_name: "{{ slot_name }}"
+              source_catalog: "{{ source_catalog }}"
+        source_type: "{{ source_type }}"
+        table_configuration:
+          auto_full_refresh_policy:
+            enabled: {{ enabled }}
+            min_interval_hours: {{ min_interval_hours }}
+          exclude_columns:
+            - "{{ exclude_columns }}"
+          include_columns:
+            - "{{ include_columns }}"
+          primary_keys:
+            - "{{ primary_keys }}"
+          query_based_connector_config:
+            cursor_columns:
+              - "{{ cursor_columns }}"
+            deletion_condition: "{{ deletion_condition }}"
+            hard_deletion_sync_min_interval_in_seconds: {{ hard_deletion_sync_min_interval_in_seconds }}
+          row_filter: "{{ row_filter }}"
+          salesforce_include_formula_fields: {{ salesforce_include_formula_fields }}
+          scd_type: "{{ scd_type }}"
+          sequence_by:
+            - "{{ sequence_by }}"
+          workday_report_parameters:
+            incremental: {{ incremental }}
+            parameters: "{{ parameters }}"
+            report_parameters:
+              - key: "{{ key }}"
+                value: "{{ value }}"
     - name: libraries
-      value: array
       description: |
         Libraries or code needed by this deployment.
-      props:
-      - name: file
-        value: object
-        props:
-        - name: path
-          value: string
-      - name: glob
-        value: object
-        description: |
-          The unified field to include source codes. Each entry can be a notebook path, a file path, or a folder path that ends `/**`. This field cannot be used together with `notebook` or `file`.
-        props:
-        - name: include
-          value: string
-      - name: jar
-        value: string
-        description: |
-          URI of the jar to be installed. Currently only DBFS is supported.
-      - name: maven
-        value: string
-        description: |
-          Specification of a maven library to be installed.
-      - name: notebook
-        value: object
-        description: |
-          The path to a notebook that defines a pipeline and is stored in the Databricks workspace.
-        props:
-        - name: path
-          value: string
-      - name: whl
-        value: string
-        description: |
-          URI of the whl to be installed.
+      value:
+        - file:
+            path: "{{ path }}"
+          glob:
+            include: "{{ include }}"
+          jar: "{{ jar }}"
+          maven: "{{ maven }}"
+          notebook:
+            path: "{{ path }}"
+          whl: "{{ whl }}"
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Friendly identifier for this pipeline.
     - name: notifications
-      value: array
       description: |
         List of notification settings for this pipeline.
-      props:
-      - name: alerts
-        value: array
-        items:
-          type: string
-      - name: email_recipients
-        value: array
-        description: |
-          A list of email addresses notified when a configured alert is triggered.
-        items:
-          type: string
+      value:
+        - alerts: "{{ alerts }}"
+          email_recipients: "{{ email_recipients }}"
     - name: photon
-      value: boolean
+      value: {{ photon }}
       description: |
         Whether Photon is enabled for this pipeline.
     - name: restart_window
-      value: object
       description: |
         Restart window of this pipeline.
-      props:
-      - name: start_hour
-        value: integer
-      - name: days_of_week
-        value: array
-        description: |
-          Days of week in which the restart is allowed to happen (within a five-hour window starting at start_hour). If not specified all days of the week will be used.
-        items:
-          type: string
-      - name: time_zone_id
-        value: string
-        description: |
-          Time zone id of restart window. See https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html for details. If not specified, UTC will be used.
+      value:
+        start_hour: {{ start_hour }}
+        days_of_week:
+          - "{{ days_of_week }}"
+        time_zone_id: "{{ time_zone_id }}"
     - name: root_path
-      value: string
+      value: "{{ root_path }}"
       description: |
         Root path for this pipeline. This is used as the root directory when editing the pipeline in the Databricks user interface and it is added to sys.path when executing Python sources during pipeline execution.
     - name: run_as
-      value: object
       description: |
         :param schema: str (optional) The default schema (database) where tables are read from or published to.
-      props:
-      - name: service_principal_name
-        value: string
-        description: |
-          Application ID of an active service principal. Setting this field requires the `servicePrincipal/user` role.
-      - name: user_name
-        value: string
-        description: |
-          The email of an active workspace user. Users can only set this field to their own email.
+      value:
+        service_principal_name: "{{ service_principal_name }}"
+        user_name: "{{ user_name }}"
     - name: schema
-      value: string
+      value: "{{ schema }}"
     - name: serverless
-      value: boolean
+      value: {{ serverless }}
       description: |
         Whether serverless compute is enabled for this pipeline.
     - name: storage
-      value: string
+      value: "{{ storage }}"
       description: |
         DBFS root directory for storing checkpoints and tables.
     - name: tags
-      value: object
+      value: "{{ tags }}"
       description: |
         A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
     - name: target
-      value: string
+      value: "{{ target }}"
       description: |
-        Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated for pipeline creation in favor of the `schema` field.
+        Target schema (database) to add tables in this pipeline to. Exactly one of \`schema\` or \`target\` must be specified. To publish to Unity Catalog, also specify \`catalog\`. This legacy field is deprecated for pipeline creation in favor of the \`schema\` field.
     - name: trigger
-      value: object
       description: |
-        Which pipeline trigger to use. Deprecated: Use `continuous` instead.
-      props:
-      - name: cron
-        value: object
-        props:
-        - name: quartz_cron_schedule
-          value: string
-        - name: timezone_id
-          value: string
-      - name: manual
-        value: object
+        Which pipeline trigger to use. Deprecated: Use \`continuous\` instead.
+      value:
+        cron:
+          quartz_cron_schedule: "{{ quartz_cron_schedule }}"
+          timezone_id: "{{ timezone_id }}"
+        manual: "{{ manual }}"
     - name: usage_policy_id
-      value: string
+      value: "{{ usage_policy_id }}"
       description: |
         Usage policy of this pipeline.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

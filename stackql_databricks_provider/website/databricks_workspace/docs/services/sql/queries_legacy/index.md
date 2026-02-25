@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -1293,48 +1294,47 @@ visualizations
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: queries_legacy
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the queries_legacy resource.
     - name: data_source_id
-      value: string
+      value: "{{ data_source_id }}"
       description: |
         Data source ID maps to the ID of the data source used by the resource and is distinct from the warehouse ID. [Learn more] [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
     - name: description
-      value: string
+      value: "{{ description }}"
       description: |
         General description that conveys additional information about this query such as usage notes.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         The title of this query that appears in list views, widget headings, and on the query page.
     - name: options
-      value: object
+      value: "{{ options }}"
       description: |
-        Exclusively used for storing a list parameter definitions. A parameter is an object with `title`, `name`, `type`, and `value` properties. The `value` field here is the default value. It can be overridden at runtime.
+        Exclusively used for storing a list parameter definitions. A parameter is an object with \`title\`, \`name\`, \`type\`, and \`value\` properties. The \`value\` field here is the default value. It can be overridden at runtime.
     - name: parent
-      value: string
+      value: "{{ parent }}"
       description: |
         The identifier of the workspace folder containing the object.
     - name: query
-      value: string
+      value: "{{ query }}"
       description: |
         The text of the query to be run.
     - name: run_as_role
-      value: string
+      value: "{{ run_as_role }}"
       description: |
-        Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+        Sets the **Run as** role for the object. Must be set to one of \`"viewer"\` (signifying "run as viewer" behavior) or \`"owner"\` (signifying "run as owner" behavior)
     - name: tags
-      value: array
+      value:
+        - "{{ tags }}"
       description: |
-        :returns: :class:`LegacyQuery`
-      items:
-        type: string
-```
+        :returns: :class:\`LegacyQuery\`
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

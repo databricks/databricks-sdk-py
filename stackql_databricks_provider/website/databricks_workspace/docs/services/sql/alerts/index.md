@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -515,106 +516,38 @@ update_time
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: alerts
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the alerts resource.
     - name: alert
-      value: object
       description: |
         :param auto_resolve_display_name: bool (optional) If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the alert's display name conflicts with an existing alert's display name.
-      props:
-      - name: condition
-        value: object
-        props:
-        - name: empty_result_state
-          value: string
-          description: |
-            Create a collection of name/value pairs.
-            Example enumeration:
-            >>> class Color(Enum):
-            ...     RED = 1
-            ...     BLUE = 2
-            ...     GREEN = 3
-            Access them by:
-            - attribute access::
-            >>> Color.RED
-            <Color.RED: 1>
-            - value lookup:
-            >>> Color(1)
-            <Color.RED: 1>
-            - name lookup:
-            >>> Color['RED']
-            <Color.RED: 1>
-            Enumerations can be iterated over, and know how many members they have:
-            >>> len(Color)
-            3
-            >>> list(Color)
-            [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-            Methods can be added to enumerations, and members can have their own
-            attributes -- see the documentation for details.
-        - name: op
-          value: string
-          description: |
-            Operator used for comparison in alert evaluation.
-        - name: operand
-          value: object
-          description: |
-            Name of the column from the query result to use for comparison in alert evaluation.
-          props:
-          - name: column
-            value: object
-            props:
-            - name: name
-              value: string
-        - name: threshold
-          value: object
-          description: |
-            Threshold value used for comparison in alert evaluation.
-          props:
-          - name: value
-            value: object
-            props:
-            - name: bool_value
-              value: boolean
-            - name: double_value
-              value: number
-            - name: string_value
-              value: string
-      - name: custom_body
-        value: string
-        description: |
-          Custom body of alert notification, if it exists. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html
-      - name: custom_subject
-        value: string
-        description: |
-          Custom subject of alert notification, if it exists. This can include email subject entries and Slack notification headers, for example. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html
-      - name: display_name
-        value: string
-        description: |
-          The display name of the alert.
-      - name: notify_on_ok
-        value: boolean
-        description: |
-          Whether to notify alert subscribers when alert returns back to normal.
-      - name: parent_path
-        value: string
-        description: |
-          The workspace path of the folder containing the alert.
-      - name: query_id
-        value: string
-        description: |
-          UUID of the query attached to the alert.
-      - name: seconds_to_retrigger
-        value: integer
-        description: |
-          Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it can be triggered again. If 0 or not specified, the alert will not be triggered again.
+      value:
+        condition:
+          empty_result_state: "{{ empty_result_state }}"
+          op: "{{ op }}"
+          operand:
+            column:
+              name: "{{ name }}"
+          threshold:
+            value:
+              bool_value: {{ bool_value }}
+              double_value: {{ double_value }}
+              string_value: "{{ string_value }}"
+        custom_body: "{{ custom_body }}"
+        custom_subject: "{{ custom_subject }}"
+        display_name: "{{ display_name }}"
+        notify_on_ok: {{ notify_on_ok }}
+        parent_path: "{{ parent_path }}"
+        query_id: "{{ query_id }}"
+        seconds_to_retrigger: {{ seconds_to_retrigger }}
     - name: auto_resolve_display_name
-      value: boolean
-```
+      value: {{ auto_resolve_display_name }}
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

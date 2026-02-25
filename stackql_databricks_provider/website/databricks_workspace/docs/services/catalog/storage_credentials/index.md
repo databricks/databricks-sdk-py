@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -632,90 +633,59 @@ used_for_managed_storage
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: storage_credentials
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the storage_credentials resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         The credential name. The name must be unique among storage and service credentials within the metastore.
     - name: aws_iam_role
-      value: object
       description: |
         The AWS IAM role configuration.
-      props:
-      - name: role_arn
-        value: string
-        description: |
-          The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials.
+      value:
+        role_arn: "{{ role_arn }}"
     - name: azure_managed_identity
-      value: object
       description: |
         The Azure managed identity configuration.
-      props:
-      - name: access_connector_id
-        value: string
-        description: |
-          The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
-      - name: managed_identity_id
-        value: string
-        description: |
-          The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}` This is only available for user-assgined identities. For system-assigned identities, the access_connector_id is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity is using the system-assigned identity.
+      value:
+        access_connector_id: "{{ access_connector_id }}"
+        managed_identity_id: "{{ managed_identity_id }}"
     - name: azure_service_principal
-      value: object
       description: |
         The Azure service principal configuration.
-      props:
-      - name: directory_id
-        value: string
-        description: |
-          The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application.
-      - name: application_id
-        value: string
-        description: |
-          The application ID of the application registration within the referenced AAD tenant.
-      - name: client_secret
-        value: string
-        description: |
-          The client secret generated for the above app ID in AAD.
+      value:
+        directory_id: "{{ directory_id }}"
+        application_id: "{{ application_id }}"
+        client_secret: "{{ client_secret }}"
     - name: cloudflare_api_token
-      value: object
       description: |
         The Cloudflare API token configuration.
-      props:
-      - name: access_key_id
-        value: string
-        description: |
-          The access key ID associated with the API token.
-      - name: secret_access_key
-        value: string
-        description: |
-          The secret access token generated for the above access key ID.
-      - name: account_id
-        value: string
-        description: |
-          The ID of the account associated with the API token.
+      value:
+        access_key_id: "{{ access_key_id }}"
+        secret_access_key: "{{ secret_access_key }}"
+        account_id: "{{ account_id }}"
     - name: comment
-      value: string
+      value: "{{ comment }}"
       description: |
         Comment associated with the credential.
     - name: databricks_gcp_service_account
-      value: object
+      value: "{{ databricks_gcp_service_account }}"
       description: |
         The Databricks managed GCP service account configuration.
     - name: read_only
-      value: boolean
+      value: {{ read_only }}
       description: |
         Whether the credential is usable only for read operations. Only applicable when purpose is **STORAGE**.
     - name: skip_validation
-      value: boolean
+      value: {{ skip_validation }}
       description: |
         Supplying true to this argument skips validation of the created credential.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

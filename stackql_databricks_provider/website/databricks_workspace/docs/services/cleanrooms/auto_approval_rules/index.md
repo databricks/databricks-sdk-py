@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -304,48 +305,28 @@ runner_collaborator_alias
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: auto_approval_rules
   props:
     - name: clean_room_name
-      value: string
+      value: "{{ clean_room_name }}"
       description: Required parameter for the auto_approval_rules resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the auto_approval_rules resource.
     - name: auto_approval_rule
-      value: object
       description: |
-        :returns: :class:`CleanRoomAutoApprovalRule`
-      props:
-      - name: author_collaborator_alias
-        value: string
-      - name: author_scope
-        value: string
-        description: |
-          Scope of authors covered by the rule. Only one of `author_collaborator_alias` and `author_scope` can be set.
-      - name: clean_room_name
-        value: string
-        description: |
-          The name of the clean room this auto-approval rule belongs to.
-      - name: created_at
-        value: integer
-        description: |
-          Timestamp of when the rule was created, in epoch milliseconds.
-      - name: rule_id
-        value: string
-        description: |
-          A generated UUID identifying the rule.
-      - name: rule_owner_collaborator_alias
-        value: string
-        description: |
-          The owner of the rule to whom the rule applies.
-      - name: runner_collaborator_alias
-        value: string
-        description: |
-          Collaborator alias of the runner covered by the rule.
-```
+        :returns: :class:\`CleanRoomAutoApprovalRule\`
+      value:
+        author_collaborator_alias: "{{ author_collaborator_alias }}"
+        author_scope: "{{ author_scope }}"
+        clean_room_name: "{{ clean_room_name }}"
+        created_at: {{ created_at }}
+        rule_id: "{{ rule_id }}"
+        rule_owner_collaborator_alias: "{{ rule_owner_collaborator_alias }}"
+        runner_collaborator_alias: "{{ runner_collaborator_alias }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

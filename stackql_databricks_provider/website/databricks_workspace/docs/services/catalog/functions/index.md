@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -1008,243 +1009,74 @@ updated_by
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: functions
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the functions resource.
     - name: function_info
-      value: object
       description: |
         Partial __FunctionInfo__ specifying the function to be created.
-      props:
-      - name: name
-        value: string
-      - name: catalog_name
-        value: string
-        description: |
-          Name of parent Catalog.
-      - name: schema_name
-        value: string
-        description: |
-          Name of parent Schema relative to its parent Catalog.
-      - name: input_params
-        value: object
-        description: |
-          Function input parameters.
-        props:
-        - name: parameters
-          value: array
-          props:
-          - name: name
-            value: string
-          - name: type_text
-            value: string
-            description: |
-              Full data type spec, SQL/catalogString text.
-          - name: type_name
-            value: string
-            description: |
-              Name of type (INT, STRUCT, MAP, etc.)
-          - name: position
-            value: integer
-            description: |
-              Ordinal position of column (starting at position 0).
-          - name: comment
-            value: string
-            description: |
-              User-provided free-form text description.
-          - name: parameter_default
-            value: string
-            description: |
-              Default value of the parameter.
-          - name: parameter_mode
-            value: string
-            description: |
-              Function parameter mode.
-          - name: parameter_type
-            value: string
-            description: |
-              Function parameter type.
-          - name: type_interval_type
-            value: string
-            description: |
-              Format of IntervalType.
-          - name: type_json
-            value: string
-            description: |
-              Full data type spec, JSON-serialized.
-          - name: type_precision
-            value: integer
-            description: |
-              Digits of precision; required on Create for DecimalTypes.
-          - name: type_scale
-            value: integer
-            description: |
-              Digits to right of decimal; Required on Create for DecimalTypes.
-      - name: data_type
-        value: string
-        description: |
-          Scalar function return data type.
-      - name: full_data_type
-        value: string
-        description: |
-          Pretty printed function data type.
-      - name: routine_body
-        value: string
-        description: |
-          Function language. When **EXTERNAL** is used, the language of the routine function should be specified in the **external_language** field, and the **return_params** of the function cannot be used (as **TABLE** return type is not supported), and the **sql_data_access** field must be **NO_SQL**.
-      - name: routine_definition
-        value: string
-        description: |
-          Function body.
-      - name: parameter_style
-        value: string
-        description: |
-          Function parameter style. **S** is the value for SQL.
-      - name: is_deterministic
-        value: boolean
-        description: |
-          Whether the function is deterministic.
-      - name: sql_data_access
-        value: string
-        description: |
-          Function SQL data access.
-      - name: is_null_call
-        value: boolean
-        description: |
-          Function null call.
-      - name: security_type
-        value: string
-        description: |
-          Function security type.
-      - name: specific_name
-        value: string
-        description: |
-          Specific name of the function; Reserved for future use.
-      - name: comment
-        value: string
-        description: |
-          User-provided free-form text description.
-      - name: external_language
-        value: string
-        description: |
-          External function language.
-      - name: external_name
-        value: string
-        description: |
-          External function name.
-      - name: properties
-        value: string
-        description: |
-          JSON-serialized key-value pair map, encoded (escaped) as a string.
-      - name: return_params
-        value: object
-        description: |
-          Table function return parameters.
-        props:
-        - name: parameters
-          value: array
-          props:
-          - name: name
-            value: string
-          - name: type_text
-            value: string
-            description: |
-              Full data type spec, SQL/catalogString text.
-          - name: type_name
-            value: string
-            description: |
-              Name of type (INT, STRUCT, MAP, etc.)
-          - name: position
-            value: integer
-            description: |
-              Ordinal position of column (starting at position 0).
-          - name: comment
-            value: string
-            description: |
-              User-provided free-form text description.
-          - name: parameter_default
-            value: string
-            description: |
-              Default value of the parameter.
-          - name: parameter_mode
-            value: string
-            description: |
-              Function parameter mode.
-          - name: parameter_type
-            value: string
-            description: |
-              Function parameter type.
-          - name: type_interval_type
-            value: string
-            description: |
-              Format of IntervalType.
-          - name: type_json
-            value: string
-            description: |
-              Full data type spec, JSON-serialized.
-          - name: type_precision
-            value: integer
-            description: |
-              Digits of precision; required on Create for DecimalTypes.
-          - name: type_scale
-            value: integer
-            description: |
-              Digits to right of decimal; Required on Create for DecimalTypes.
-      - name: routine_dependencies
-        value: object
-        description: |
-          function dependencies.
-        props:
-        - name: dependencies
-          value: array
-          description: |
-            Array of dependencies.
-          props:
-          - name: connection
-            value: object
-            description: |
-              A connection that is dependent on a SQL object.
-            props:
-            - name: connection_name
-              value: string
-              description: |
-                Full name of the dependent connection, in the form of __connection_name__.
-          - name: credential
-            value: object
-            description: |
-              A credential that is dependent on a SQL object.
-            props:
-            - name: credential_name
-              value: string
-              description: |
-                Full name of the dependent credential, in the form of __credential_name__.
-          - name: function
-            value: object
-            description: |
-              A function that is dependent on a SQL object.
-            props:
-            - name: function_full_name
-              value: string
-              description: |
-                Full name of the dependent function, in the form of __catalog_name__.__schema_name__.__function_name__.
-          - name: table
-            value: object
-            description: |
-              A table that is dependent on a SQL object.
-            props:
-            - name: table_full_name
-              value: string
-              description: |
-                Full name of the dependent table, in the form of __catalog_name__.__schema_name__.__table_name__.
-      - name: sql_path
-        value: string
-        description: |
-          List of schemes whose objects can be referenced without qualification.
-```
+      value:
+        name: "{{ name }}"
+        catalog_name: "{{ catalog_name }}"
+        schema_name: "{{ schema_name }}"
+        input_params:
+          parameters:
+            - name: "{{ name }}"
+              type_text: "{{ type_text }}"
+              type_name: "{{ type_name }}"
+              position: {{ position }}
+              comment: "{{ comment }}"
+              parameter_default: "{{ parameter_default }}"
+              parameter_mode: "{{ parameter_mode }}"
+              parameter_type: "{{ parameter_type }}"
+              type_interval_type: "{{ type_interval_type }}"
+              type_json: "{{ type_json }}"
+              type_precision: {{ type_precision }}
+              type_scale: {{ type_scale }}
+        data_type: "{{ data_type }}"
+        full_data_type: "{{ full_data_type }}"
+        routine_body: "{{ routine_body }}"
+        routine_definition: "{{ routine_definition }}"
+        parameter_style: "{{ parameter_style }}"
+        is_deterministic: {{ is_deterministic }}
+        sql_data_access: "{{ sql_data_access }}"
+        is_null_call: {{ is_null_call }}
+        security_type: "{{ security_type }}"
+        specific_name: "{{ specific_name }}"
+        comment: "{{ comment }}"
+        external_language: "{{ external_language }}"
+        external_name: "{{ external_name }}"
+        properties: "{{ properties }}"
+        return_params:
+          parameters:
+            - name: "{{ name }}"
+              type_text: "{{ type_text }}"
+              type_name: "{{ type_name }}"
+              position: {{ position }}
+              comment: "{{ comment }}"
+              parameter_default: "{{ parameter_default }}"
+              parameter_mode: "{{ parameter_mode }}"
+              parameter_type: "{{ parameter_type }}"
+              type_interval_type: "{{ type_interval_type }}"
+              type_json: "{{ type_json }}"
+              type_precision: {{ type_precision }}
+              type_scale: {{ type_scale }}
+        routine_dependencies:
+          dependencies:
+            - connection:
+                connection_name: "{{ connection_name }}"
+              credential:
+                credential_name: "{{ credential_name }}"
+              function:
+                function_full_name: "{{ function_full_name }}"
+              table:
+                table_full_name: "{{ table_full_name }}"
+        sql_path: "{{ sql_path }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

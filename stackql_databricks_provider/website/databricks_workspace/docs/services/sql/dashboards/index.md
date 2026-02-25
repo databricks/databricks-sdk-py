@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -991,29 +992,28 @@ widgets
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: dashboards
   props:
     - name: dashboard_id
-      value: string
+      value: "{{ dashboard_id }}"
       description: Required parameter for the dashboards resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the dashboards resource.
     - name: name
-      value: string
+      value: "{{ name }}"
     - name: run_as_role
-      value: string
+      value: "{{ run_as_role }}"
       description: |
-        Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+        Sets the **Run as** role for the object. Must be set to one of \`"viewer"\` (signifying "run as viewer" behavior) or \`"owner"\` (signifying "run as owner" behavior)
     - name: tags
-      value: array
+      value:
+        - "{{ tags }}"
       description: |
-        :returns: :class:`Dashboard`
-      items:
-        type: string
-```
+        :returns: :class:\`Dashboard\`
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

@@ -1,15 +1,76 @@
 diff --git a/node_modules/@stackql/provider-utils/src/docgen/resource/examples/insert-example.js b/node_modules/@stackql/provider-utils/src/docgen/resource/examples/insert-example.js
-index da69f95..6124811 100755
+index da69f95..0461f79 100755
 --- a/node_modules/@stackql/provider-utils/src/docgen/resource/examples/insert-example.js
 +++ b/node_modules/@stackql/provider-utils/src/docgen/resource/examples/insert-example.js
-@@ -4,6 +4,63 @@ import {
+@@ -4,6 +4,144 @@ import {
      sanitizeHtml
  } from '../../helpers.js';
  
 +/**
++ * Formats a value using template syntax based on the field type.
++ * - Strings: "{{ name }}"
++ * - Booleans/numbers/integers: {{ name }}
++ */
++function formatTemplateValue(name, type) {
++    if (type === 'boolean' || type === 'number' || type === 'integer') {
++        return '{{ ' + name + ' }}';
++    }
++    return '"{{ ' + name + ' }}"';
++}
++
++/**
++ * Generates inline YAML value structure for nested object properties.
++ * Produces key: value pairs instead of - name: / props: structure.
++ * Example output:
++ *   sts_role:
++ *     role_arn: "{{ role_arn }}"
++ * @param {Object} properties - Schema properties object
++ * @param {string} indent - Current indentation string
++ * @param {number} depth - Current recursion depth
++ * @param {number} maxDepth - Maximum recursion depth
++ * @returns {string} YAML string for the inline value
++ */
++function generateInlineYamlValue(properties, indent, depth = 0, maxDepth = 4) {
++    let content = '';
++    Object.entries(properties).forEach(([name, details]) => {
++        if (!details) return;
++        const type = details.type || 'string';
++
++        if (depth < maxDepth && type === 'object' && details.properties && Object.keys(details.properties).length > 0) {
++            content += indent + name + ':\n';
++            content += generateInlineYamlValue(details.properties, indent + '  ', depth + 1, maxDepth);
++        } else if (depth < maxDepth && type === 'array' && details.items) {
++            if (details.items.properties && Object.keys(details.items.properties).length > 0) {
++                content += indent + name + ':\n';
++                const entries = Object.entries(details.items.properties);
++                entries.forEach(([itemName, itemDetails], index) => {
++                    const itemType = itemDetails?.type || 'string';
++                    const lineIndent = index === 0 ? indent + '  - ' : indent + '    ';
++                    if (itemType === 'object' && itemDetails.properties && Object.keys(itemDetails.properties).length > 0) {
++                        content += lineIndent + itemName + ':\n';
++                        content += generateInlineYamlValue(itemDetails.properties, indent + '      ', depth + 2, maxDepth);
++                    } else {
++                        content += lineIndent + itemName + ': ' + formatTemplateValue(itemName, itemType) + '\n';
++                    }
++                });
++            } else if (details.items.type && details.items.type !== 'object') {
++                content += indent + name + ':\n';
++                content += indent + '  - ' + formatTemplateValue(name, details.items.type) + '\n';
++            } else {
++                content += indent + name + ': ' + formatTemplateValue(name, type) + '\n';
++            }
++        } else {
++            content += indent + name + ': ' + formatTemplateValue(name, type) + '\n';
++        }
++    });
++    return content;
++}
++
++/**
 + * Recursively generates manifest YAML props for a set of schema properties.
-+ * - For objects with sub-properties, emits nested `props:` blocks.
-+ * - For arrays, emits the item schema's properties as a prototype of the first element.
++ * - For scalars, uses template syntax: value: "{{ name }}" or value: {{ name }}
++ * - For objects, uses inline YAML value structure instead of nested props blocks.
++ * - For arrays, shows inline YAML prototype of the first element.
 + * @param {Object} properties - Schema properties object (name -> details)
 + * @param {string} indent - Current indentation string
 + * @param {number} depth - Current recursion depth
@@ -22,16 +83,52 @@ index da69f95..6124811 100755
 +        if (!details) return;
 +        const type = details.type || 'string';
 +        const description = details.description || '';
++        const isObject = depth < maxDepth && type === 'object' && details.properties && Object.keys(details.properties).length > 0;
++        const isArrayOfObjects = depth < maxDepth && type === 'array' && details.items && details.items.properties && Object.keys(details.items.properties).length > 0;
++        const isArrayOfPrimitives = depth < maxDepth && type === 'array' && details.items && details.items.type && details.items.type !== 'object' && !(details.items.properties && Object.keys(details.items.properties).length > 0);
 +
 +        content += indent + '- name: ' + name + '\n';
-+        content += indent + '  value: ' + type + '\n';
 +
-+        if (description) {
-+            content += indent + '  description: |\n';
-+            const lines = description.split(/\n/).filter(line => line.trim() !== '');
-+            lines.forEach(line => {
-+                content += indent + '    ' + line.trim() + '\n';
-+            });
++        if (isObject || isArrayOfObjects) {
++            // For objects/arrays-of-objects: description before value
++            if (description) {
++                content += indent + '  description: |\n';
++                const lines = description.split(/\n/).filter(line => line.trim() !== '');
++                lines.forEach(line => {
++                    content += indent + '    ' + line.trim() + '\n';
++                });
++            }
++            content += indent + '  value:\n';
++            if (isObject) {
++                content += generateInlineYamlValue(details.properties, indent + '    ', 0, maxDepth - depth);
++            } else {
++                const entries = Object.entries(details.items.properties);
++                entries.forEach(([itemName, itemDetails], index) => {
++                    const itemType = itemDetails?.type || 'string';
++                    const lineIndent = index === 0 ? indent + '    - ' : indent + '      ';
++                    if (itemType === 'object' && itemDetails.properties && Object.keys(itemDetails.properties).length > 0) {
++                        content += lineIndent + itemName + ':\n';
++                        content += generateInlineYamlValue(itemDetails.properties, indent + '        ', 0, maxDepth - depth - 1);
++                    } else {
++                        content += lineIndent + itemName + ': ' + formatTemplateValue(itemName, itemType) + '\n';
++                    }
++                });
++            }
++        } else {
++            // For scalars and simple arrays: value before description
++            if (isArrayOfPrimitives) {
++                content += indent + '  value:\n';
++                content += indent + '    - ' + formatTemplateValue(name, details.items.type) + '\n';
++            } else {
++                content += indent + '  value: ' + formatTemplateValue(name, type) + '\n';
++            }
++            if (description) {
++                content += indent + '  description: |\n';
++                const lines = description.split(/\n/).filter(line => line.trim() !== '');
++                lines.forEach(line => {
++                    content += indent + '    ' + line.trim() + '\n';
++                });
++            }
 +        }
 +
 +        // Add enum values if available
@@ -43,22 +140,6 @@ index da69f95..6124811 100755
 +        if (details.default !== undefined) {
 +            content += indent + '  default: ' + details.default + '\n';
 +        }
-+
-+        // Recursively expand object sub-properties
-+        if (depth < maxDepth && type === 'object' && details.properties && Object.keys(details.properties).length > 0) {
-+            content += indent + '  props:\n';
-+            content += generateManifestPropsYaml(details.properties, indent + '  ', depth + 1, maxDepth);
-+        }
-+        // For arrays, show prototype of the first element
-+        else if (depth < maxDepth && type === 'array' && details.items) {
-+            if (details.items.properties && Object.keys(details.items.properties).length > 0) {
-+                content += indent + '  props:\n';
-+                content += generateManifestPropsYaml(details.items.properties, indent + '  ', depth + 1, maxDepth);
-+            } else if (details.items.type && details.items.type !== 'object') {
-+                content += indent + '  items:\n';
-+                content += indent + '    type: ' + details.items.type + '\n';
-+            }
-+        }
 +    });
 +    return content;
 +}
@@ -66,10 +147,31 @@ index da69f95..6124811 100755
  export function createInsertExamples(providerName, serviceName, resourceName, resourceData, dereferencedAPI, succinct = false) {
      const insertMethods = getSqlMethodsWithOrderedFields(resourceData, dereferencedAPI, 'insert');
  
-@@ -164,37 +221,8 @@ export function createInsertExamples(providerName, serviceName, resourceName, re
-             content += '      description: Required parameter for the ' + resourceName + ' resource.\n';
+@@ -124,8 +262,10 @@ export function createInsertExamples(providerName, serviceName, resourceName, re
+     });
+ 
+     // Create manifest tab
+-    content += '<TabItem value="manifest">\n\n';
+-    content += '```yaml\n# Description fields are for documentation purposes\n- name: ' + resourceName + '\n  props:\n';
++    // Build manifest YAML as a separate string first, then wrap in <CodeBlock>
++    // to preserve whitespace through MDX compilation (fenced code blocks inside
++    // JSX containers like <TabItem> can lose leading whitespace).
++    let manifestYaml = '# Description fields are for documentation purposes\n- name: ' + resourceName + '\n  props:\n';
+ 
+     // Collect all unique params and request body props across all methods
+     const allParams = {};
+@@ -159,42 +299,13 @@ export function createInsertExamples(providerName, serviceName, resourceName, re
+         .filter(([_, details]) => details.required)
+         .forEach(([name, details]) => {
+             const type = details.type || 'string';
+-            content += '    - name: ' + name + '\n';
+-            content += '      value: ' + type + '\n';
+-            content += '      description: Required parameter for the ' + resourceName + ' resource.\n';
++            manifestYaml += '    - name: ' + name + '\n';
++            manifestYaml += '      value: ' + formatTemplateValue(name, type) + '\n';
++            manifestYaml += '      description: Required parameter for the ' + resourceName + ' resource.\n';
          });
-     
+ 
 -    // Add request body props
 -    Object.entries(allRequestBodyProps).forEach(([name, details]) => {
 -        const type = details.type || 'string';
@@ -102,7 +204,52 @@ index da69f95..6124811 100755
 -        }
 -    });
 +    // Add request body props (with recursive expansion of objects and arrays)
-+    content += generateManifestPropsYaml(allRequestBodyProps, '    ');
-     
++    manifestYaml += generateManifestPropsYaml(allRequestBodyProps, '    ');
+ 
      // Add optional params last
      Object.entries(allParams)
+@@ -202,15 +313,20 @@ export function createInsertExamples(providerName, serviceName, resourceName, re
+         .forEach(([name, details]) => {
+             const type = details.type || 'string';
+             const description = details.description || '';
+-            content += '    - name: ' + name + '\n';
+-            content += '      value: ' + type + '\n';
++            manifestYaml += '    - name: ' + name + '\n';
++            manifestYaml += '      value: ' + formatTemplateValue(name, type) + '\n';
+ 
+             if (description) {
+-                content += '      description: ' + description + '\n';
++                manifestYaml += '      description: ' + description + '\n';
+             }
+         });
+ 
+-    content += '```\n</TabItem>\n';
++    // Escape backticks and ${} in the YAML to prevent template literal issues
++    const escapedYaml = manifestYaml.replace(/`/g, '\\`').replace(/\$\{/g, '\\${');
++
++    content += '<TabItem value="manifest">\n\n';
++    content += '<CodeBlock language="yaml">{`' + escapedYaml + '`}</CodeBlock>\n\n';
++    content += '</TabItem>\n';
+     
+     // Close tabs
+     content += '</Tabs>\n';
+diff --git a/node_modules/@stackql/provider-utils/src/docgen/resource/overview.js b/node_modules/@stackql/provider-utils/src/docgen/resource/overview.js
+index 1616939..cce558b 100755
+--- a/node_modules/@stackql/provider-utils/src/docgen/resource/overview.js
++++ b/node_modules/@stackql/provider-utils/src/docgen/resource/overview.js
+@@ -22,6 +22,7 @@ image: /img/stackql-${providerName}-provider-featured-image.png
+ ---
+ 
+ import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
++import CodeBlock from '@theme/CodeBlock';
+ import Tabs from '@theme/Tabs';
+ import TabItem from '@theme/TabItem';
+ 
+@@ -61,6 +62,7 @@ image: /img/stackql-${providerName}-provider-featured-image.png
+ ---
+ 
+ import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
++import CodeBlock from '@theme/CodeBlock';
+ import Tabs from '@theme/Tabs';
+ import TabItem from '@theme/TabItem';
+ import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';

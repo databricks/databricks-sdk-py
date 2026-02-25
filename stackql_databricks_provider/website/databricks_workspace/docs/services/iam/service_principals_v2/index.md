@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -536,83 +537,64 @@ schemas
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: service_principals_v2
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the service_principals_v2 resource.
     - name: active
-      value: boolean
+      value: {{ active }}
       description: |
         If this user is active
     - name: application_id
-      value: string
+      value: "{{ application_id }}"
       description: |
         UUID relating to the service principal
     - name: display_name
-      value: string
+      value: "{{ display_name }}"
       description: |
         String that represents a concatenation of given and family names.
     - name: entitlements
-      value: array
       description: |
         Entitlements assigned to the service principal. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
-      props:
-      - name: display
-        value: string
-      - name: primary
-        value: boolean
-      - name: $ref
-        value: string
-      - name: type
-        value: string
-      - name: value
-        value: string
+      value:
+        - display: "{{ display }}"
+          primary: {{ primary }}
+          $ref: "{{ $ref }}"
+          type: "{{ type }}"
+          value: "{{ value }}"
     - name: external_id
-      value: string
+      value: "{{ external_id }}"
       description: |
-        :param groups: List[:class:`ComplexValue`] (optional)
+        :param groups: List[:class:\`ComplexValue\`] (optional)
     - name: groups
-      value: array
-      props:
-      - name: display
-        value: string
-      - name: primary
-        value: boolean
-      - name: $ref
-        value: string
-      - name: type
-        value: string
-      - name: value
-        value: string
+      value:
+        - display: "{{ display }}"
+          primary: {{ primary }}
+          $ref: "{{ $ref }}"
+          type: "{{ type }}"
+          value: "{{ value }}"
     - name: id
-      value: string
+      value: "{{ id }}"
       description: |
         Databricks service principal ID.
     - name: roles
-      value: array
       description: |
         Corresponds to AWS instance profile/arn role.
-      props:
-      - name: display
-        value: string
-      - name: primary
-        value: boolean
-      - name: $ref
-        value: string
-      - name: type
-        value: string
-      - name: value
-        value: string
+      value:
+        - display: "{{ display }}"
+          primary: {{ primary }}
+          $ref: "{{ $ref }}"
+          type: "{{ type }}"
+          value: "{{ value }}"
     - name: schemas
-      value: array
+      value:
+        - "{{ schemas }}"
       description: |
         The schema of the List response.
-      items:
-        type: string
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

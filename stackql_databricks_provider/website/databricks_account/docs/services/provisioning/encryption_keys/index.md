@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -440,51 +441,32 @@ use_cases
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: encryption_keys
   props:
     - name: account_id
-      value: string
+      value: "{{ account_id }}"
       description: Required parameter for the encryption_keys resource.
     - name: use_cases
-      value: array
+      value:
+        - "{{ use_cases }}"
       description: |
         The cases that the key can be used for.
-      items:
-        type: string
     - name: aws_key_info
-      value: object
       description: |
-        :param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)
-      props:
-      - name: key_arn
-        value: string
-      - name: key_alias
-        value: string
-        description: |
-          The AWS KMS key alias.
-      - name: key_region
-        value: string
-        description: |
-          The AWS KMS key region.
-      - name: reuse_key_for_cluster_volumes
-        value: boolean
-        description: |
-          This field applies only if the `use_cases` property includes `STORAGE`. If this is set to true or omitted, the key is also used to encrypt cluster EBS volumes. If you do not want to use this key for encrypting EBS volumes, set to false.
+        :param gcp_key_info: :class:\`CreateGcpKeyInfo\` (optional)
+      value:
+        key_arn: "{{ key_arn }}"
+        key_alias: "{{ key_alias }}"
+        key_region: "{{ key_region }}"
+        reuse_key_for_cluster_volumes: {{ reuse_key_for_cluster_volumes }}
     - name: gcp_key_info
-      value: object
-      props:
-      - name: kms_key_id
-        value: string
-      - name: gcp_service_account
-        value: object
-        description: |
-          Globally unique service account email that has access to the KMS key. The service account exists within the Databricks CP project.
-        props:
-        - name: service_account_email
-          value: string
-```
+      value:
+        kms_key_id: "{{ kms_key_id }}"
+        gcp_service_account:
+          service_account_email: "{{ service_account_email }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

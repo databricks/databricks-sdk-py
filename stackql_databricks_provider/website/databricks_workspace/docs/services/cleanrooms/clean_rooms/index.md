@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -596,196 +597,51 @@ updated_at
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: clean_rooms
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the clean_rooms resource.
     - name: clean_room
-      value: object
       description: |
-        :returns: Long-running operation waiter for :class:`CleanRoom`. See :method:wait_get_clean_room_active for more details.
-      props:
-      - name: access_restricted
-        value: string
-        description: |
-          Create a collection of name/value pairs.
-          Example enumeration:
-          >>> class Color(Enum):
-          ...     RED = 1
-          ...     BLUE = 2
-          ...     GREEN = 3
-          Access them by:
-          - attribute access::
-          >>> Color.RED
-          <Color.RED: 1>
-          - value lookup:
-          >>> Color(1)
-          <Color.RED: 1>
-          - name lookup:
-          >>> Color['RED']
-          <Color.RED: 1>
-          Enumerations can be iterated over, and know how many members they have:
-          >>> len(Color)
-          3
-          >>> list(Color)
-          [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-          Methods can be added to enumerations, and members can have their own
-          attributes -- see the documentation for details.
-      - name: comment
-        value: string
-      - name: created_at
-        value: integer
-        description: |
-          When the clean room was created, in epoch milliseconds.
-      - name: local_collaborator_alias
-        value: string
-        description: |
-          The alias of the collaborator tied to the local clean room.
-      - name: name
-        value: string
-        description: |
-          The name of the clean room. It should follow [UC securable naming requirements]. [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
-      - name: output_catalog
-        value: object
-        description: |
-          Output catalog of the clean room. It is an output only field. Output catalog is manipulated using the separate CreateCleanRoomOutputCatalog API.
-        props:
-        - name: catalog_name
-          value: string
-        - name: status
-          value: string
-          description: |
-            Create a collection of name/value pairs.
-            Example enumeration:
-            >>> class Color(Enum):
-            ...     RED = 1
-            ...     BLUE = 2
-            ...     GREEN = 3
-            Access them by:
-            - attribute access::
-            >>> Color.RED
-            <Color.RED: 1>
-            - value lookup:
-            >>> Color(1)
-            <Color.RED: 1>
-            - name lookup:
-            >>> Color['RED']
-            <Color.RED: 1>
-            Enumerations can be iterated over, and know how many members they have:
-            >>> len(Color)
-            3
-            >>> list(Color)
-            [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-            Methods can be added to enumerations, and members can have their own
-            attributes -- see the documentation for details.
-      - name: owner
-        value: string
-        description: |
-          This is the Databricks username of the owner of the local clean room securable for permission management.
-      - name: remote_detailed_info
-        value: object
-        description: |
-          Central clean room details. During creation, users need to specify cloud_vendor, region, and collaborators.global_metastore_id. This field will not be filled in the ListCleanRooms call.
-        props:
-        - name: central_clean_room_id
-          value: string
-          description: |
-            Central clean room ID.
-        - name: cloud_vendor
-          value: string
-          description: |
-            Cloud vendor (aws,azure,gcp) of the central clean room.
-        - name: collaborators
-          value: array
-          description: |
-            Collaborators in the central clean room. There should one and only one collaborator in the list that satisfies the owner condition: 1. It has the creator's global_metastore_id (determined by caller of CreateCleanRoom). 2. Its invite_recipient_email is empty.
-          props:
-          - name: collaborator_alias
-            value: string
-            description: |
-              Collaborator alias specified by the clean room creator. It is unique across all collaborators of this clean room, and used to derive multiple values internally such as catalog alias and clean room name for single metastore clean rooms. It should follow [UC securable naming requirements]. [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
-          - name: display_name
-            value: string
-            description: |
-              Generated display name for the collaborator. In the case of a single metastore clean room, it is the clean room name. For x-metastore clean rooms, it is the organization name of the metastore. It is not restricted to these values and could change in the future
-          - name: global_metastore_id
-            value: string
-            description: |
-              The global Unity Catalog metastore ID of the collaborator. The identifier is of format cloud:region:metastore-uuid.
-          - name: invite_recipient_email
-            value: string
-            description: |
-              Email of the user who is receiving the clean room "invitation". It should be empty for the creator of the clean room, and non-empty for the invitees of the clean room. It is only returned in the output when clean room creator calls GET
-          - name: invite_recipient_workspace_id
-            value: integer
-            description: |
-              Workspace ID of the user who is receiving the clean room "invitation". Must be specified if invite_recipient_email is specified. It should be empty when the collaborator is the creator of the clean room.
-          - name: organization_name
-            value: string
-            description: |
-              [Organization name](:method:metastores/list#metastores-delta_sharing_organization_name) configured in the metastore
-        - name: compliance_security_profile
-          value: object
-          description: |
-            The compliance security profile used to process regulated data following compliance standards.
-          props:
-          - name: compliance_standards
-            value: string
-            description: |
-              The list of compliance standards that the compliance security profile is configured to enforce.
-          - name: is_enabled
-            value: boolean
-            description: |
-              Whether the compliance security profile is enabled.
-        - name: creator
-          value: object
-          description: |
-            Collaborator who creates the clean room.
-          props:
-          - name: collaborator_alias
-            value: string
-            description: |
-              Collaborator alias specified by the clean room creator. It is unique across all collaborators of this clean room, and used to derive multiple values internally such as catalog alias and clean room name for single metastore clean rooms. It should follow [UC securable naming requirements]. [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
-          - name: display_name
-            value: string
-            description: |
-              Generated display name for the collaborator. In the case of a single metastore clean room, it is the clean room name. For x-metastore clean rooms, it is the organization name of the metastore. It is not restricted to these values and could change in the future
-          - name: global_metastore_id
-            value: string
-            description: |
-              The global Unity Catalog metastore ID of the collaborator. The identifier is of format cloud:region:metastore-uuid.
-          - name: invite_recipient_email
-            value: string
-            description: |
-              Email of the user who is receiving the clean room "invitation". It should be empty for the creator of the clean room, and non-empty for the invitees of the clean room. It is only returned in the output when clean room creator calls GET
-          - name: invite_recipient_workspace_id
-            value: integer
-            description: |
-              Workspace ID of the user who is receiving the clean room "invitation". Must be specified if invite_recipient_email is specified. It should be empty when the collaborator is the creator of the clean room.
-          - name: organization_name
-            value: string
-            description: |
-              [Organization name](:method:metastores/list#metastores-delta_sharing_organization_name) configured in the metastore
-        - name: egress_network_policy
-          value: string
-          description: |
-            Egress network policy to apply to the central clean room workspace.
-        - name: region
-          value: string
-          description: |
-            Region of the central clean room.
-      - name: status
-        value: string
-        description: |
-          Clean room status.
-      - name: updated_at
-        value: integer
-        description: |
-          When the clean room was last updated, in epoch milliseconds.
-```
+        :returns: Long-running operation waiter for :class:\`CleanRoom\`. See :method:wait_get_clean_room_active for more details.
+      value:
+        access_restricted: "{{ access_restricted }}"
+        comment: "{{ comment }}"
+        created_at: {{ created_at }}
+        local_collaborator_alias: "{{ local_collaborator_alias }}"
+        name: "{{ name }}"
+        output_catalog:
+          catalog_name: "{{ catalog_name }}"
+          status: "{{ status }}"
+        owner: "{{ owner }}"
+        remote_detailed_info:
+          central_clean_room_id: "{{ central_clean_room_id }}"
+          cloud_vendor: "{{ cloud_vendor }}"
+          collaborators:
+            - collaborator_alias: "{{ collaborator_alias }}"
+              display_name: "{{ display_name }}"
+              global_metastore_id: "{{ global_metastore_id }}"
+              invite_recipient_email: "{{ invite_recipient_email }}"
+              invite_recipient_workspace_id: {{ invite_recipient_workspace_id }}
+              organization_name: "{{ organization_name }}"
+          compliance_security_profile:
+            compliance_standards: "{{ compliance_standards }}"
+            is_enabled: {{ is_enabled }}
+          creator:
+            collaborator_alias: "{{ collaborator_alias }}"
+            display_name: "{{ display_name }}"
+            global_metastore_id: "{{ global_metastore_id }}"
+            invite_recipient_email: "{{ invite_recipient_email }}"
+            invite_recipient_workspace_id: {{ invite_recipient_workspace_id }}
+            organization_name: "{{ organization_name }}"
+          egress_network_policy: "{{ egress_network_policy }}"
+          region: "{{ region }}"
+        status: "{{ status }}"
+        updated_at: {{ updated_at }}
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

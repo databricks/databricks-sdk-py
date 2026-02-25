@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -498,34 +499,34 @@ updated_by
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: schemas
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the schemas resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Name of schema, relative to parent catalog.
     - name: catalog_name
-      value: string
+      value: "{{ catalog_name }}"
       description: |
         Name of parent catalog.
     - name: comment
-      value: string
+      value: "{{ comment }}"
       description: |
         User-provided free-form text description.
     - name: properties
-      value: object
+      value: "{{ properties }}"
       description: |
         A map of key-value properties attached to the securable.
     - name: storage_root
-      value: string
+      value: "{{ storage_root }}"
       description: |
         Storage root URL for managed tables within schema.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

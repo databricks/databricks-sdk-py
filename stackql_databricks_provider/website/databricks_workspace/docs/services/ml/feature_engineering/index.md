@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -625,164 +626,54 @@ time_window
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: feature_engineering
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the feature_engineering resource.
     - name: feature
-      value: object
       description: |
         Feature to create.
-      props:
-      - name: full_name
-        value: string
-      - name: source
-        value: object
-        description: |
-          The data source of the feature.
-        props:
-        - name: delta_table_source
-          value: object
-          props:
-          - name: full_name
-            value: string
-          - name: entity_columns
-            value: array
-            description: |
-              The entity columns of the Delta table.
-            items:
-              type: string
-          - name: timeseries_column
-            value: string
-            description: |
-              The timeseries column of the Delta table.
-        - name: kafka_source
-          value: object
-          props:
-          - name: name
-            value: string
-          - name: entity_column_identifiers
-            value: array
-            description: |
-              The entity column identifiers of the Kafka source.
-            props:
-            - name: variant_expr_path
-              value: string
-          - name: timeseries_column_identifier
-            value: object
-            description: |
-              The timeseries column identifier of the Kafka source.
-            props:
-            - name: variant_expr_path
-              value: string
-      - name: inputs
-        value: array
-        description: |
-          The input columns from which the feature is computed.
-        items:
-          type: string
-      - name: function
-        value: object
-        description: |
-          The function by which the feature is computed.
-        props:
-        - name: function_type
-          value: string
-          description: |
-            Create a collection of name/value pairs.
-            Example enumeration:
-            >>> class Color(Enum):
-            ...     RED = 1
-            ...     BLUE = 2
-            ...     GREEN = 3
-            Access them by:
-            - attribute access::
-            >>> Color.RED
-            <Color.RED: 1>
-            - value lookup:
-            >>> Color(1)
-            <Color.RED: 1>
-            - name lookup:
-            >>> Color['RED']
-            <Color.RED: 1>
-            Enumerations can be iterated over, and know how many members they have:
-            >>> len(Color)
-            3
-            >>> list(Color)
-            [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-            Methods can be added to enumerations, and members can have their own
-            attributes -- see the documentation for details.
-        - name: extra_parameters
-          value: array
-          description: |
-            Extra parameters for parameterized functions.
-          props:
-          - name: key
-            value: string
-          - name: value
-            value: string
-            description: |
-              The value of the parameter.
-      - name: description
-        value: string
-        description: |
-          The description of the feature.
-      - name: filter_condition
-        value: string
-        description: |
-          The filter condition applied to the source data before aggregation.
-      - name: lineage_context
-        value: object
-        description: |
-          WARNING: This field is primarily intended for internal use by Databricks systems and is automatically populated when features are created through Databricks notebooks or jobs. Users should not manually set this field as incorrect values may lead to inaccurate lineage tracking or unexpected behavior. This field will be set by feature-engineering client and should be left unset by SDK and terraform users.
-        props:
-        - name: job_context
-          value: object
-          description: |
-            Job context information including job ID and run ID.
-          props:
-          - name: job_id
-            value: integer
-          - name: job_run_id
-            value: integer
-            description: |
-              The job run ID where this API was invoked.
-        - name: notebook_id
-          value: integer
-          description: |
-            The notebook ID where this API was invoked.
-      - name: time_window
-        value: object
-        description: |
-          The time window in which the feature is computed.
-        props:
-        - name: continuous
-          value: object
-          props:
-          - name: window_duration
-            value: string
-          - name: offset
-            value: string
-            description: |
-              The offset of the continuous window (must be non-positive).
-        - name: sliding
-          value: object
-          props:
-          - name: window_duration
-            value: string
-          - name: slide_duration
-            value: string
-            description: |
-              The slide duration (interval by which windows advance, must be positive and less than duration).
-        - name: tumbling
-          value: object
-          props:
-          - name: window_duration
-            value: string
-```
+      value:
+        full_name: "{{ full_name }}"
+        source:
+          delta_table_source:
+            full_name: "{{ full_name }}"
+            entity_columns:
+              - "{{ entity_columns }}"
+            timeseries_column: "{{ timeseries_column }}"
+          kafka_source:
+            name: "{{ name }}"
+            entity_column_identifiers:
+              - variant_expr_path: "{{ variant_expr_path }}"
+            timeseries_column_identifier:
+              variant_expr_path: "{{ variant_expr_path }}"
+        inputs:
+          - "{{ inputs }}"
+        function:
+          function_type: "{{ function_type }}"
+          extra_parameters:
+            - key: "{{ key }}"
+              value: "{{ value }}"
+        description: "{{ description }}"
+        filter_condition: "{{ filter_condition }}"
+        lineage_context:
+          job_context:
+            job_id: {{ job_id }}
+            job_run_id: {{ job_run_id }}
+          notebook_id: {{ notebook_id }}
+        time_window:
+          continuous:
+            window_duration: "{{ window_duration }}"
+            offset: "{{ offset }}"
+          sliding:
+            window_duration: "{{ window_duration }}"
+            slide_duration: "{{ slide_duration }}"
+          tumbling:
+            window_duration: "{{ window_duration }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

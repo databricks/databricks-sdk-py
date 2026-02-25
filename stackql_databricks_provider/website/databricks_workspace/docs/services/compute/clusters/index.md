@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -3105,433 +3106,220 @@ workload_type
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: clusters
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the clusters resource.
     - name: spark_version
-      value: string
+      value: "{{ spark_version }}"
       description: |
-        The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be retrieved by using the :method:clusters/sparkVersions API call.
+        The Spark version of the cluster, e.g. \`3.3.x-scala2.11\`. A list of available Spark versions can be retrieved by using the :method:clusters/sparkVersions API call.
     - name: apply_policy_default_values
-      value: boolean
+      value: {{ apply_policy_default_values }}
       description: |
         When set to true, fixed and default values from the policy will be used for fields that are omitted. When set to false, only fixed values from the policy will be applied.
     - name: autoscale
-      value: object
       description: |
         Parameters needed in order to automatically scale clusters up and down based on load. Note: autoscaling works best with DB runtime versions 3.0 or later.
-      props:
-      - name: max_workers
-        value: integer
-      - name: min_workers
-        value: integer
-        description: |
-          The minimum number of workers to which the cluster can scale down when underutilized. It is also the initial number of workers the cluster will have after creation.
+      value:
+        max_workers: {{ max_workers }}
+        min_workers: {{ min_workers }}
     - name: autotermination_minutes
-      value: integer
+      value: {{ autotermination_minutes }}
       description: |
         Automatically terminates the cluster after it is inactive for this time in minutes. If not set, this cluster will not be automatically terminated. If specified, the threshold must be between 10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic termination.
     - name: aws_attributes
-      value: object
       description: |
         Attributes related to clusters running on Amazon Web Services. If not specified at cluster creation, a set of default values will be used.
-      props:
-      - name: availability
-        value: string
-        description: |
-          Availability type used for all subsequent nodes past the `first_on_demand` ones.
-          Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
-      - name: ebs_volume_count
-        value: integer
-        description: |
-          The number of volumes launched for each instance. Users can choose up to 10 volumes. This feature is only enabled for supported node types. Legacy node types cannot specify custom EBS volumes. For node types with no instance store, at least one EBS volume needs to be specified; otherwise, cluster creation will fail. These EBS volumes will be mounted at `/ebs0`, `/ebs1`, and etc. Instance store volumes will be mounted at `/local_disk0`, `/local_disk1`, and etc. If EBS volumes are attached, Databricks will configure Spark to use only the EBS volumes for scratch storage because heterogenously sized scratch devices can lead to inefficient disk utilization. If no EBS volumes are attached, Databricks will configure Spark to use instance store volumes. Please note that if EBS volumes are specified, then the Spark configuration `spark.local.dir` will be overridden.
-      - name: ebs_volume_iops
-        value: integer
-        description: |
-          If using gp3 volumes, what IOPS to use for the disk. If this is not set, the maximum performance of a gp2 volume with the same volume size will be used.
-      - name: ebs_volume_size
-        value: integer
-        description: |
-          The size of each EBS volume (in GiB) launched for each instance. For general purpose SSD, this value must be within the range 100 - 4096. For throughput optimized HDD, this value must be within the range 500 - 4096.
-      - name: ebs_volume_throughput
-        value: integer
-        description: |
-          If using gp3 volumes, what throughput to use for the disk. If this is not set, the maximum performance of a gp2 volume with the same volume size will be used.
-      - name: ebs_volume_type
-        value: string
-        description: |
-          The type of EBS volumes that will be launched with this cluster.
-      - name: first_on_demand
-        value: integer
-        description: |
-          The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. If this value is greater than 0, the cluster driver node in particular will be placed on an on-demand instance. If this value is greater than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently be mutated over the lifetime of a cluster.
-      - name: instance_profile_arn
-        value: string
-        description: |
-          Nodes for this cluster will only be placed on AWS instances with this instance profile. If ommitted, nodes will be placed on instances without an IAM instance profile. The instance profile must have previously been added to the Databricks environment by an account administrator. This feature may only be available to certain customer plans.
-      - name: spot_bid_price_percent
-        value: integer
-        description: |
-          The bid price for AWS spot instances, as a percentage of the corresponding instance type's on-demand price. For example, if this field is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then the bid price is half of the price of on-demand `r3.xlarge` instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand `r3.xlarge` instances. If not specified, the default value is 100. When spot instances are requested for this cluster, only spot instances whose bid price percentage matches this field will be considered. Note that, for safety, we enforce this field to be no more than 10000.
-      - name: zone_id
-        value: string
-        description: |
-          Identifier for the availability zone/datacenter in which the cluster resides. This string will be of a form like "us-west-2a". The provided availability zone must be in the same region as the Databricks deployment. For example, "us-west-2a" is not a valid zone id if the Databricks deployment resides in the "us-east-1" region. This is an optional field at cluster creation, and if not specified, the zone "auto" will be used. If the zone specified is "auto", will try to place cluster in a zone with high availability, and will retry placement in a different AZ if there is not enough capacity. The list of available zones as well as the default value can be found by using the `List Zones` method.
+      value:
+        availability: "{{ availability }}"
+        ebs_volume_count: {{ ebs_volume_count }}
+        ebs_volume_iops: {{ ebs_volume_iops }}
+        ebs_volume_size: {{ ebs_volume_size }}
+        ebs_volume_throughput: {{ ebs_volume_throughput }}
+        ebs_volume_type: "{{ ebs_volume_type }}"
+        first_on_demand: {{ first_on_demand }}
+        instance_profile_arn: "{{ instance_profile_arn }}"
+        spot_bid_price_percent: {{ spot_bid_price_percent }}
+        zone_id: "{{ zone_id }}"
     - name: azure_attributes
-      value: object
       description: |
         Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a set of default values will be used.
-      props:
-      - name: availability
-        value: string
-        description: |
-          Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
-      - name: first_on_demand
-        value: integer
-        description: |
-          The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This value should be greater than 0, to make sure the cluster driver node is placed on an on-demand instance. If this value is greater than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently be mutated over the lifetime of a cluster.
-      - name: log_analytics_info
-        value: object
-        description: |
-          Defines values necessary to configure and run Azure Log Analytics agent
-        props:
-        - name: log_analytics_primary_key
-          value: string
-        - name: log_analytics_workspace_id
-          value: string
-      - name: spot_bid_max_price
-        value: number
-        description: |
-          The max bid price to be used for Azure spot instances. The Max price for the bid cannot be higher than the on-demand price of the instance. If not specified, the default value is -1, which specifies that the instance cannot be evicted on the basis of price, and only on the basis of availability. Further, the value should > 0 or -1.
+      value:
+        availability: "{{ availability }}"
+        first_on_demand: {{ first_on_demand }}
+        log_analytics_info:
+          log_analytics_primary_key: "{{ log_analytics_primary_key }}"
+          log_analytics_workspace_id: "{{ log_analytics_workspace_id }}"
+        spot_bid_max_price: {{ spot_bid_max_price }}
     - name: clone_from
-      value: object
       description: |
         When specified, this clones libraries from a source cluster during the creation of a new cluster.
-      props:
-      - name: source_cluster_id
-        value: string
+      value:
+        source_cluster_id: "{{ source_cluster_id }}"
     - name: cluster_log_conf
-      value: object
       description: |
-        The configuration for delivering spark logs to a long-term storage destination. Three kinds of destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be specified for one cluster. If the conf is given, the logs will be delivered to the destination every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is `$destination/$clusterId/executor`.
-      props:
-      - name: dbfs
-        value: object
-        description: |
-          destination needs to be provided. e.g. `{ "dbfs" : { "destination" : "dbfs:/home/cluster_log" } }`
-        props:
-        - name: destination
-          value: string
-          description: |
-            dbfs destination, e.g. `dbfs:/my/path`
-      - name: s3
-        value: object
-        description: |
-          destination and either the region or endpoint need to be provided. e.g. `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" : "us-west-2" } }` Cluster iam role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to write data to the s3 destination.
-        props:
-        - name: destination
-          value: string
-          description: |
-            S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster iam role, please make sure you set cluster iam role and the role has write access to the destination. Please also note that you cannot use AWS keys to deliver logs.
-        - name: canned_acl
-          value: string
-          description: |
-            (Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If `canned_cal` is set, please make sure the cluster iam role has `s3:PutObjectAcl` permission on the destination bucket and prefix. The full list of possible canned acl can be found at http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl. Please also note that by default only the object owner gets full controls. If you are using cross account role for writing data, you may want to set `bucket-owner-full-control` to make bucket owner able to read the logs.
-        - name: enable_encryption
-          value: boolean
-          description: |
-            (Optional) Flag to enable server side encryption, `false` by default.
-        - name: encryption_type
-          value: string
-          description: |
-            (Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will be used only when encryption is enabled and the default type is `sse-s3`.
-        - name: endpoint
-          value: string
-          description: |
-            S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or endpoint needs to be set. If both are set, endpoint will be used.
-        - name: kms_key
-          value: string
-          description: |
-            (Optional) Kms key which will be used if encryption is enabled and encryption type is set to `sse-kms`.
-        - name: region
-          value: string
-          description: |
-            S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If both are set, endpoint will be used.
-      - name: volumes
-        value: object
-        description: |
-          destination needs to be provided, e.g. `{ "volumes": { "destination": "/Volumes/catalog/schema/volume/cluster_log" } }`
-        props:
-        - name: destination
-          value: string
-          description: |
-            UC Volumes destination, e.g. `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`
+        The configuration for delivering spark logs to a long-term storage destination. Three kinds of destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be specified for one cluster. If the conf is given, the logs will be delivered to the destination every \`5 mins\`. The destination of driver logs is \`$destination/$clusterId/driver\`, while the destination of executor logs is \`$destination/$clusterId/executor\`.
+      value:
+        dbfs:
+          destination: "{{ destination }}"
+        s3:
+          destination: "{{ destination }}"
+          canned_acl: "{{ canned_acl }}"
+          enable_encryption: {{ enable_encryption }}
+          encryption_type: "{{ encryption_type }}"
+          endpoint: "{{ endpoint }}"
+          kms_key: "{{ kms_key }}"
+          region: "{{ region }}"
+        volumes:
+          destination: "{{ destination }}"
     - name: cluster_name
-      value: string
+      value: "{{ cluster_name }}"
       description: |
         Cluster name requested by the user. This doesn't have to be unique. If not specified at creation, the cluster name will be an empty string. For job clusters, the cluster name is automatically set based on the job and job run IDs.
     - name: custom_tags
-      value: object
+      value: "{{ custom_tags }}"
       description: |
-        Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS instances and EBS volumes) with these tags in addition to `default_tags`. Notes: - Currently, Databricks allows at most 45 custom tags - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
+        Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS instances and EBS volumes) with these tags in addition to \`default_tags\`. Notes: - Currently, Databricks allows at most 45 custom tags - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
     - name: data_security_mode
-      value: string
+      value: "{{ data_security_mode }}"
       description: |
-        :param docker_image: :class:`DockerImage` (optional) Custom docker image BYOC
+        :param docker_image: :class:\`DockerImage\` (optional) Custom docker image BYOC
     - name: docker_image
-      value: object
-      props:
-      - name: basic_auth
-        value: object
-        props:
-        - name: password
-          value: string
-        - name: username
-          value: string
-          description: |
-            Name of the user
-      - name: url
-        value: string
-        description: |
-          URL of the docker image.
+      value:
+        basic_auth:
+          password: "{{ password }}"
+          username: "{{ username }}"
+        url: "{{ url }}"
     - name: driver_instance_pool_id
-      value: string
+      value: "{{ driver_instance_pool_id }}"
       description: |
         The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses the instance pool with id (instance_pool_id) if the driver pool is not assigned.
     - name: driver_node_type_flexibility
-      value: object
       description: |
         Flexible node type configuration for the driver node.
-      props:
-      - name: alternate_node_type_ids
-        value: array
-        description: |
-          A list of node type IDs to use as fallbacks when the primary node type is unavailable.
-        items:
-          type: string
+      value:
+        alternate_node_type_ids:
+          - "{{ alternate_node_type_ids }}"
     - name: driver_node_type_id
-      value: string
+      value: "{{ driver_node_type_id }}"
       description: |
-        The node type of the Spark driver. Note that this field is optional; if unset, the driver node type will be set as the same value as `node_type_id` defined above. This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and node_type_id take precedence.
+        The node type of the Spark driver. Note that this field is optional; if unset, the driver node type will be set as the same value as \`node_type_id\` defined above. This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and node_type_id take precedence.
     - name: enable_elastic_disk
-      value: boolean
+      value: {{ enable_elastic_disk }}
       description: |
         Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space when its Spark workers are running low on disk space.
     - name: enable_local_disk_encryption
-      value: boolean
+      value: {{ enable_local_disk_encryption }}
       description: |
         Whether to enable LUKS on cluster VMs' local disks
     - name: gcp_attributes
-      value: object
       description: |
         Attributes related to clusters running on Google Cloud Platform. If not specified at cluster creation, a set of default values will be used.
-      props:
-      - name: availability
-        value: string
-        description: |
-          This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable.
-      - name: boot_disk_size
-        value: integer
-        description: |
-          Boot disk size in GB
-      - name: first_on_demand
-        value: integer
-        description: |
-          The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This value should be greater than 0, to make sure the cluster driver node is placed on an on-demand instance. If this value is greater than or equal to the current cluster size, all nodes will be placed on on-demand instances. If this value is less than the current cluster size, `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed on `availability` instances. Note that this value does not affect cluster size and cannot currently be mutated over the lifetime of a cluster.
-      - name: google_service_account
-        value: string
-        description: |
-          If provided, the cluster will impersonate the google service account when accessing gcloud services (like GCS). The google service account must have previously been added to the Databricks environment by an account administrator.
-      - name: local_ssd_count
-        value: integer
-        description: |
-          If provided, each node (workers and driver) in the cluster will have this number of local SSDs attached. Each local SSD is 375GB in size. Refer to [GCP documentation] for the supported number of local SSDs for each instance type. [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
-      - name: use_preemptible_executors
-        value: boolean
-        description: |
-          This field determines whether the spark executors will be scheduled to run on preemptible VMs (when set to true) versus standard compute engine VMs (when set to false; default). Note: Soon to be deprecated, use the 'availability' field instead.
-      - name: zone_id
-        value: string
-        description: |
-          Identifier for the availability zone in which the cluster resides. This can be one of the following: - "HA" => High availability, spread nodes across availability zones for a Databricks deployment region [default]. - "AUTO" => Databricks picks an availability zone to schedule the cluster on. - A GCP availability zone => Pick One of the available zones for (machine type + region) from https://cloud.google.com/compute/docs/regions-zones.
+      value:
+        availability: "{{ availability }}"
+        boot_disk_size: {{ boot_disk_size }}
+        first_on_demand: {{ first_on_demand }}
+        google_service_account: "{{ google_service_account }}"
+        local_ssd_count: {{ local_ssd_count }}
+        use_preemptible_executors: {{ use_preemptible_executors }}
+        zone_id: "{{ zone_id }}"
     - name: init_scripts
-      value: array
       description: |
-        The configuration for storing init scripts. Any number of destinations can be specified. The scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script logs are sent to `<destination>/<cluster-ID>/init_scripts`.
-      props:
-      - name: abfss
-        value: object
-        description: |
-          destination needs to be provided, e.g. `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`
-        props:
-        - name: destination
-          value: string
-          description: |
-            abfss destination, e.g. `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`.
-      - name: dbfs
-        value: object
-        description: |
-          destination needs to be provided. e.g. `{ "dbfs": { "destination" : "dbfs:/home/cluster_log" } }`
-        props:
-        - name: destination
-          value: string
-          description: |
-            dbfs destination, e.g. `dbfs:/my/path`
-      - name: file
-        value: object
-        description: |
-          destination needs to be provided, e.g. `{ "file": { "destination": "file:/my/local/file.sh" } }`
-        props:
-        - name: destination
-          value: string
-      - name: gcs
-        value: object
-        description: |
-          destination needs to be provided, e.g. `{ "gcs": { "destination": "gs://my-bucket/file.sh" } }`
-        props:
-        - name: destination
-          value: string
-          description: |
-            GCS destination/URI, e.g. `gs://my-bucket/some-prefix`
-      - name: s3
-        value: object
-        description: |
-          destination and either the region or endpoint need to be provided. e.g. `{ \"s3\": { \"destination\": \"s3://cluster_log_bucket/prefix\", \"region\": \"us-west-2\" } }` Cluster iam role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to write data to the s3 destination.
-        props:
-        - name: destination
-          value: string
-          description: |
-            S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster iam role, please make sure you set cluster iam role and the role has write access to the destination. Please also note that you cannot use AWS keys to deliver logs.
-        - name: canned_acl
-          value: string
-          description: |
-            (Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If `canned_cal` is set, please make sure the cluster iam role has `s3:PutObjectAcl` permission on the destination bucket and prefix. The full list of possible canned acl can be found at http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl. Please also note that by default only the object owner gets full controls. If you are using cross account role for writing data, you may want to set `bucket-owner-full-control` to make bucket owner able to read the logs.
-        - name: enable_encryption
-          value: boolean
-          description: |
-            (Optional) Flag to enable server side encryption, `false` by default.
-        - name: encryption_type
-          value: string
-          description: |
-            (Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will be used only when encryption is enabled and the default type is `sse-s3`.
-        - name: endpoint
-          value: string
-          description: |
-            S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or endpoint needs to be set. If both are set, endpoint will be used.
-        - name: kms_key
-          value: string
-          description: |
-            (Optional) Kms key which will be used if encryption is enabled and encryption type is set to `sse-kms`.
-        - name: region
-          value: string
-          description: |
-            S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If both are set, endpoint will be used.
-      - name: volumes
-        value: object
-        description: |
-          destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\" : \"/Volumes/my-init.sh\" } }`
-        props:
-        - name: destination
-          value: string
-          description: |
-            UC Volumes destination, e.g. `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`
-      - name: workspace
-        value: object
-        description: |
-          destination needs to be provided, e.g. `{ "workspace": { "destination": "/cluster-init-scripts/setup-datadog.sh" } }`
-        props:
-        - name: destination
-          value: string
-          description: |
-            wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`
+        The configuration for storing init scripts. Any number of destinations can be specified. The scripts are executed sequentially in the order provided. If \`cluster_log_conf\` is specified, init script logs are sent to \`<destination>/<cluster-ID>/init_scripts\`.
+      value:
+        - abfss:
+            destination: "{{ destination }}"
+          dbfs:
+            destination: "{{ destination }}"
+          file:
+            destination: "{{ destination }}"
+          gcs:
+            destination: "{{ destination }}"
+          s3:
+            destination: "{{ destination }}"
+            canned_acl: "{{ canned_acl }}"
+            enable_encryption: {{ enable_encryption }}
+            encryption_type: "{{ encryption_type }}"
+            endpoint: "{{ endpoint }}"
+            kms_key: "{{ kms_key }}"
+            region: "{{ region }}"
+          volumes:
+            destination: "{{ destination }}"
+          workspace:
+            destination: "{{ destination }}"
     - name: instance_pool_id
-      value: string
+      value: "{{ instance_pool_id }}"
       description: |
         The optional ID of the instance pool to which the cluster belongs.
     - name: is_single_node
-      value: boolean
+      value: {{ is_single_node }}
       description: |
-        This field can only be used when `kind = CLASSIC_PREVIEW`. When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`, and `num_workers`
+        This field can only be used when \`kind = CLASSIC_PREVIEW\`. When set to true, Databricks will automatically set single node related \`custom_tags\`, \`spark_conf\`, and \`num_workers\`
     - name: kind
-      value: string
+      value: "{{ kind }}"
       description: |
         :param node_type_id: str (optional) This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute intensive workloads. A list of available node types can be retrieved by using the :method:clusters/listNodeTypes API call.
     - name: node_type_id
-      value: string
+      value: "{{ node_type_id }}"
     - name: num_workers
-      value: integer
+      value: {{ num_workers }}
       description: |
-        Number of worker nodes that this cluster should have. A cluster has one Spark Driver and `num_workers` Executors for a total of `num_workers` + 1 Spark nodes. Note: When reading the properties of a cluster, this field reflects the desired number of workers rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10 workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are provisioned.
+        Number of worker nodes that this cluster should have. A cluster has one Spark Driver and \`num_workers\` Executors for a total of \`num_workers\` + 1 Spark nodes. Note: When reading the properties of a cluster, this field reflects the desired number of workers rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10 workers, whereas the workers listed in \`spark_info\` will gradually increase from 5 to 10 as the new nodes are provisioned.
     - name: policy_id
-      value: string
+      value: "{{ policy_id }}"
       description: |
         The ID of the cluster policy used to create the cluster if applicable.
     - name: remote_disk_throughput
-      value: integer
+      value: {{ remote_disk_throughput }}
       description: |
         If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported for GCP HYPERDISK_BALANCED disks.
     - name: runtime_engine
-      value: string
+      value: "{{ runtime_engine }}"
       description: |
-        Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used.
+        Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy \`spark_version\` values that contain \`-photon-\`. Remove \`-photon-\` from the \`spark_version\` and set \`runtime_engine\` to \`PHOTON\`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used.
     - name: single_user_name
-      value: string
+      value: "{{ single_user_name }}"
       description: |
-        Single user name if data_security_mode is `SINGLE_USER`
+        Single user name if data_security_mode is \`SINGLE_USER\`
     - name: spark_conf
-      value: object
+      value: "{{ spark_conf }}"
       description: |
-        An object containing a set of optional, user-specified Spark configuration key-value pairs. Users can also pass in a string of extra JVM options to the driver and the executors via `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively.
+        An object containing a set of optional, user-specified Spark configuration key-value pairs. Users can also pass in a string of extra JVM options to the driver and the executors via \`spark.driver.extraJavaOptions\` and \`spark.executor.extraJavaOptions\` respectively.
     - name: spark_env_vars
-      value: object
+      value: "{{ spark_env_vars }}"
       description: |
-        An object containing a set of optional, user-specified environment variable key-value pairs. Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the driver and workers. In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks managed environmental variables are included as well. Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+        An object containing a set of optional, user-specified environment variable key-value pairs. Please note that key-value pair of the form (X,Y) will be exported as is (i.e., \`export X='Y'\`) while launching the driver and workers. In order to specify an additional set of \`SPARK_DAEMON_JAVA_OPTS\`, we recommend appending them to \`$SPARK_DAEMON_JAVA_OPTS\` as shown in the example below. This ensures that all default databricks managed environmental variables are included as well. Example Spark environment variables: \`{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS": "/local_disk0"}\` or \`{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}\`
     - name: ssh_public_keys
-      value: array
+      value:
+        - "{{ ssh_public_keys }}"
       description: |
-        SSH public key contents that will be added to each Spark node in this cluster. The corresponding private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
-      items:
-        type: string
+        SSH public key contents that will be added to each Spark node in this cluster. The corresponding private keys can be used to login with the user name \`ubuntu\` on port \`2200\`. Up to 10 keys can be specified.
     - name: total_initial_remote_disk_size
-      value: integer
+      value: {{ total_initial_remote_disk_size }}
       description: |
         If set, what the total initial volume size (in GB) of the remote disks should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
     - name: use_ml_runtime
-      value: boolean
+      value: {{ use_ml_runtime }}
       description: |
-        This field can only be used when `kind = CLASSIC_PREVIEW`. `effective_spark_version` is determined by `spark_version` (DBR release), this field `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
+        This field can only be used when \`kind = CLASSIC_PREVIEW\`. \`effective_spark_version\` is determined by \`spark_version\` (DBR release), this field \`use_ml_runtime\`, and whether \`node_type_id\` is gpu node or not.
     - name: worker_node_type_flexibility
-      value: object
       description: |
         Flexible node type configuration for worker nodes.
-      props:
-      - name: alternate_node_type_ids
-        value: array
-        description: |
-          A list of node type IDs to use as fallbacks when the primary node type is unavailable.
-        items:
-          type: string
+      value:
+        alternate_node_type_ids:
+          - "{{ alternate_node_type_ids }}"
     - name: workload_type
-      value: object
       description: |
-        :returns: Long-running operation waiter for :class:`ClusterDetails`. See :method:wait_get_cluster_running for more details.
-      props:
-      - name: clients
-        value: object
-        description: |
-          defined what type of clients can use the cluster. E.g. Notebooks, Jobs
-        props:
-        - name: jobs
-          value: boolean
-        - name: notebooks
-          value: boolean
-          description: |
-            With notebooks set, this cluster can be used for notebooks
-```
+        :returns: Long-running operation waiter for :class:\`ClusterDetails\`. See :method:wait_get_cluster_running for more details.
+      value:
+        clients:
+          jobs: {{ jobs }}
+          notebooks: {{ notebooks }}
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

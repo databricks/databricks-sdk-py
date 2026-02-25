@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -1420,122 +1421,61 @@ view_dependencies
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: tables
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the tables resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Name of table, relative to parent schema.
     - name: catalog_name
-      value: string
+      value: "{{ catalog_name }}"
       description: |
         Name of parent catalog.
     - name: schema_name
-      value: string
+      value: "{{ schema_name }}"
       description: |
         Name of parent schema relative to its parent catalog.
     - name: table_type
-      value: string
+      value: "{{ table_type }}"
       description: |
-        :param data_source_format: :class:`DataSourceFormat`
+        :param data_source_format: :class:\`DataSourceFormat\`
     - name: data_source_format
-      value: string
+      value: "{{ data_source_format }}"
       description: |
         Data source format
     - name: storage_location
-      value: string
+      value: "{{ storage_location }}"
       description: |
         Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
     - name: columns
-      value: array
       description: |
         The array of __ColumnInfo__ definitions of the table's columns.
-      props:
-      - name: comment
-        value: string
-      - name: mask
-        value: object
-        props:
-        - name: function_name
-          value: string
-        - name: using_column_names
-          value: array
-          description: |
-            The list of additional table columns to be passed as input to the column mask function. The first arg of the mask function should be of the type of the column being masked and the types of the rest of the args should match the types of columns in 'using_column_names'.
-          items:
-            type: string
-      - name: name
-        value: string
-        description: |
-          Name of Column.
-      - name: nullable
-        value: boolean
-        description: |
-          Whether field may be Null (default: true).
-      - name: partition_index
-        value: integer
-        description: |
-          Partition index for column.
-      - name: position
-        value: integer
-        description: |
-          Ordinal position of column (starting at position 0).
-      - name: type_interval_type
-        value: string
-        description: |
-          Format of IntervalType.
-      - name: type_json
-        value: string
-        description: |
-          Full data type specification, JSON-serialized.
-      - name: type_name
-        value: string
-        description: |
-          Create a collection of name/value pairs.
-          Example enumeration:
-          >>> class Color(Enum):
-          ...     RED = 1
-          ...     BLUE = 2
-          ...     GREEN = 3
-          Access them by:
-          - attribute access::
-          >>> Color.RED
-          <Color.RED: 1>
-          - value lookup:
-          >>> Color(1)
-          <Color.RED: 1>
-          - name lookup:
-          >>> Color['RED']
-          <Color.RED: 1>
-          Enumerations can be iterated over, and know how many members they have:
-          >>> len(Color)
-          3
-          >>> list(Color)
-          [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-          Methods can be added to enumerations, and members can have their own
-          attributes -- see the documentation for details.
-      - name: type_precision
-        value: integer
-        description: |
-          Digits of precision; required for DecimalTypes.
-      - name: type_scale
-        value: integer
-        description: |
-          Digits to right of decimal; Required for DecimalTypes.
-      - name: type_text
-        value: string
-        description: |
-          Full data type specification as SQL/catalogString text.
+      value:
+        - comment: "{{ comment }}"
+          mask:
+            function_name: "{{ function_name }}"
+            using_column_names:
+              - "{{ using_column_names }}"
+          name: "{{ name }}"
+          nullable: {{ nullable }}
+          partition_index: {{ partition_index }}
+          position: {{ position }}
+          type_interval_type: "{{ type_interval_type }}"
+          type_json: "{{ type_json }}"
+          type_name: "{{ type_name }}"
+          type_precision: {{ type_precision }}
+          type_scale: {{ type_scale }}
+          type_text: "{{ type_text }}"
     - name: properties
-      value: object
+      value: "{{ properties }}"
       description: |
         A map of key-value properties attached to the securable.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

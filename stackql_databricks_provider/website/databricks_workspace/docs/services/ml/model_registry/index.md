@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -684,35 +685,28 @@ registered_model
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: model_registry
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the model_registry resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Register models under this name
     - name: description
-      value: string
+      value: "{{ description }}"
       description: |
         Optional description for registered model.
     - name: tags
-      value: array
       description: |
         Additional metadata for registered model.
-      props:
-      - name: key
-        value: string
-        description: |
-          The tag key.
-      - name: value
-        value: string
-        description: |
-          The tag value.
-```
+      value:
+        - key: "{{ key }}"
+          value: "{{ value }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

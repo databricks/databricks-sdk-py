@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -239,61 +240,27 @@ filter_id
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: provider_exchange_filters
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the provider_exchange_filters resource.
     - name: filter
-      value: object
       description: |
-        :returns: :class:`CreateExchangeFilterResponse`
-      props:
-      - name: exchange_id
-        value: string
-      - name: filter_value
-        value: string
-      - name: filter_type
-        value: string
-        description: |
-          Create a collection of name/value pairs.
-          Example enumeration:
-          >>> class Color(Enum):
-          ...     RED = 1
-          ...     BLUE = 2
-          ...     GREEN = 3
-          Access them by:
-          - attribute access::
-          >>> Color.RED
-          <Color.RED: 1>
-          - value lookup:
-          >>> Color(1)
-          <Color.RED: 1>
-          - name lookup:
-          >>> Color['RED']
-          <Color.RED: 1>
-          Enumerations can be iterated over, and know how many members they have:
-          >>> len(Color)
-          3
-          >>> list(Color)
-          [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-          Methods can be added to enumerations, and members can have their own
-          attributes -- see the documentation for details.
-      - name: created_at
-        value: integer
-      - name: created_by
-        value: string
-      - name: id
-        value: string
-      - name: name
-        value: string
-      - name: updated_at
-        value: integer
-      - name: updated_by
-        value: string
-```
+        :returns: :class:\`CreateExchangeFilterResponse\`
+      value:
+        exchange_id: "{{ exchange_id }}"
+        filter_value: "{{ filter_value }}"
+        filter_type: "{{ filter_type }}"
+        created_at: {{ created_at }}
+        created_by: "{{ created_by }}"
+        id: "{{ id }}"
+        name: "{{ name }}"
+        updated_at: {{ updated_at }}
+        updated_by: "{{ updated_by }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

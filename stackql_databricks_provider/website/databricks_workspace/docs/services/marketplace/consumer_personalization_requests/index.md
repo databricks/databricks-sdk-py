@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -483,43 +484,41 @@ id
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: consumer_personalization_requests
   props:
     - name: listing_id
-      value: string
+      value: "{{ listing_id }}"
       description: Required parameter for the consumer_personalization_requests resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the consumer_personalization_requests resource.
     - name: intended_use
-      value: string
+      value: "{{ intended_use }}"
     - name: accepted_consumer_terms
-      value: object
       description: |
         :param comment: str (optional)
-      props:
-      - name: version
-        value: string
+      value:
+        version: "{{ version }}"
     - name: comment
-      value: string
+      value: "{{ comment }}"
     - name: company
-      value: string
+      value: "{{ company }}"
       description: |
         :param first_name: str (optional)
     - name: first_name
-      value: string
+      value: "{{ first_name }}"
     - name: is_from_lighthouse
-      value: boolean
+      value: {{ is_from_lighthouse }}
       description: |
         :param last_name: str (optional)
     - name: last_name
-      value: string
+      value: "{{ last_name }}"
     - name: recipient_type
-      value: string
+      value: "{{ recipient_type }}"
       description: |
-        :returns: :class:`CreatePersonalizationRequestResponse`
-```
+        :returns: :class:\`CreatePersonalizationRequestResponse\`
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>

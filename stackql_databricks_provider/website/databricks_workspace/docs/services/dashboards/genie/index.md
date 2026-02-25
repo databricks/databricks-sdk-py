@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -292,34 +293,34 @@ title
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: genie
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the genie resource.
     - name: warehouse_id
-      value: string
+      value: "{{ warehouse_id }}"
       description: |
         Warehouse to associate with the new space
     - name: serialized_space
-      value: string
+      value: "{{ serialized_space }}"
       description: |
-        The contents of the Genie Space in serialized string form. Use the [Get Genie Space](:method:genie/getspace) API to retrieve an example response, which includes the `serialized_space` field. This field provides the structure of the JSON string that represents the space's layout and components.
+        The contents of the Genie Space in serialized string form. Use the [Get Genie Space](:method:genie/getspace) API to retrieve an example response, which includes the \`serialized_space\` field. This field provides the structure of the JSON string that represents the space's layout and components.
     - name: description
-      value: string
+      value: "{{ description }}"
       description: |
         Optional description
     - name: parent_path
-      value: string
+      value: "{{ parent_path }}"
       description: |
         Parent folder path where the space will be registered
     - name: title
-      value: string
+      value: "{{ title }}"
       description: |
         Optional title override
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

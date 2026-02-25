@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -369,56 +370,42 @@ model
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: logged_models
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the logged_models resource.
     - name: experiment_id
-      value: string
+      value: "{{ experiment_id }}"
       description: |
         The ID of the experiment that owns the model.
     - name: model_type
-      value: string
+      value: "{{ model_type }}"
       description: |
-        The type of the model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``.
+        The type of the model, such as \`\`"Agent"\`\`, \`\`"Classifier"\`\`, \`\`"LLM"\`\`.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         The name of the model (optional). If not specified one will be generated.
     - name: params
-      value: array
       description: |
         Parameters attached to the model.
-      props:
-      - name: key
-        value: string
-        description: |
-          The key identifying this param.
-      - name: value
-        value: string
-        description: |
-          The value of this param.
+      value:
+        - key: "{{ key }}"
+          value: "{{ value }}"
     - name: source_run_id
-      value: string
+      value: "{{ source_run_id }}"
       description: |
         The ID of the run that created the model.
     - name: tags
-      value: array
       description: |
         Tags attached to the model.
-      props:
-      - name: key
-        value: string
-        description: |
-          The tag key.
-      - name: value
-        value: string
-        description: |
-          The tag value.
-```
+      value:
+        - key: "{{ key }}"
+          value: "{{ value }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

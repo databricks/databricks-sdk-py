@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -414,130 +415,53 @@ destination_type
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: notification_destinations
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the notification_destinations resource.
     - name: config
-      value: object
       description: |
         The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
-      props:
-      - name: email
-        value: object
-        props:
-        - name: addresses
-          value: array
-          items:
-            type: string
-      - name: generic_webhook
-        value: object
-        props:
-        - name: password
-          value: string
-        - name: password_set
-          value: boolean
-          description: |
-            [Output-Only] Whether password is set.
-        - name: url
-          value: string
-          description: |
-            [Input-Only] URL for webhook.
-        - name: url_set
-          value: boolean
-          description: |
-            [Output-Only] Whether URL is set.
-        - name: username
-          value: string
-          description: |
-            [Input-Only][Optional] Username for webhook.
-        - name: username_set
-          value: boolean
-          description: |
-            [Output-Only] Whether username is set.
-      - name: microsoft_teams
-        value: object
-        props:
-        - name: app_id
-          value: string
-        - name: app_id_set
-          value: boolean
-          description: |
-            [Output-Only] Whether App ID is set.
-        - name: auth_secret
-          value: string
-          description: |
-            [Input-Only] Secret for Microsoft Teams App authentication.
-        - name: auth_secret_set
-          value: boolean
-          description: |
-            [Output-Only] Whether secret is set.
-        - name: channel_url
-          value: string
-          description: |
-            [Input-Only] Channel URL for Microsoft Teams App.
-        - name: channel_url_set
-          value: boolean
-          description: |
-            [Output-Only] Whether Channel URL is set.
-        - name: tenant_id
-          value: string
-          description: |
-            [Input-Only] Tenant ID for Microsoft Teams App.
-        - name: tenant_id_set
-          value: boolean
-          description: |
-            [Output-Only] Whether Tenant ID is set.
-        - name: url
-          value: string
-          description: |
-            [Input-Only] URL for Microsoft Teams webhook.
-        - name: url_set
-          value: boolean
-          description: |
-            [Output-Only] Whether URL is set.
-      - name: pagerduty
-        value: object
-        props:
-        - name: integration_key
-          value: string
-        - name: integration_key_set
-          value: boolean
-          description: |
-            [Output-Only] Whether integration key is set.
-      - name: slack
-        value: object
-        props:
-        - name: channel_id
-          value: string
-        - name: channel_id_set
-          value: boolean
-          description: |
-            [Output-Only] Whether channel ID is set.
-        - name: oauth_token
-          value: string
-          description: |
-            [Input-Only] OAuth token for Slack authentication.
-        - name: oauth_token_set
-          value: boolean
-          description: |
-            [Output-Only] Whether OAuth token is set.
-        - name: url
-          value: string
-          description: |
-            [Input-Only] URL for Slack destination.
-        - name: url_set
-          value: boolean
-          description: |
-            [Output-Only] Whether URL is set.
+      value:
+        email:
+          addresses:
+            - "{{ addresses }}"
+        generic_webhook:
+          password: "{{ password }}"
+          password_set: {{ password_set }}
+          url: "{{ url }}"
+          url_set: {{ url_set }}
+          username: "{{ username }}"
+          username_set: {{ username_set }}
+        microsoft_teams:
+          app_id: "{{ app_id }}"
+          app_id_set: {{ app_id_set }}
+          auth_secret: "{{ auth_secret }}"
+          auth_secret_set: {{ auth_secret_set }}
+          channel_url: "{{ channel_url }}"
+          channel_url_set: {{ channel_url_set }}
+          tenant_id: "{{ tenant_id }}"
+          tenant_id_set: {{ tenant_id_set }}
+          url: "{{ url }}"
+          url_set: {{ url_set }}
+        pagerduty:
+          integration_key: "{{ integration_key }}"
+          integration_key_set: {{ integration_key_set }}
+        slack:
+          channel_id: "{{ channel_id }}"
+          channel_id_set: {{ channel_id_set }}
+          oauth_token: "{{ oauth_token }}"
+          oauth_token_set: {{ oauth_token_set }}
+          url: "{{ url }}"
+          url_set: {{ url_set }}
     - name: display_name
-      value: string
+      value: "{{ display_name }}"
       description: |
         The display name for the notification destination.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

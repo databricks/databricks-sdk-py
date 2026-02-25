@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -431,35 +432,28 @@ experiment_id
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: experiments
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the experiments resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Experiment name.
     - name: artifact_location
-      value: string
+      value: "{{ artifact_location }}"
       description: |
         Location where all artifacts for the experiment are stored. If not provided, the remote server will select an appropriate default.
     - name: tags
-      value: array
       description: |
         A collection of tags to set on the experiment. Maximum tag size and number of tags per request depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250 bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to support up to 20 tags per request.
-      props:
-      - name: key
-        value: string
-        description: |
-          The tag key.
-      - name: value
-        value: string
-        description: |
-          The tag value.
-```
+      value:
+        - key: "{{ key }}"
+          value: "{{ value }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

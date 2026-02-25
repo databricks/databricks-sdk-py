@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -583,46 +584,46 @@ updated_by
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: catalogs
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the catalogs resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Name of catalog.
     - name: comment
-      value: string
+      value: "{{ comment }}"
       description: |
         User-provided free-form text description.
     - name: connection_name
-      value: string
+      value: "{{ connection_name }}"
       description: |
         The name of the connection to an external data source.
     - name: options
-      value: object
+      value: "{{ options }}"
       description: |
         A map of key-value properties attached to the securable.
     - name: properties
-      value: object
+      value: "{{ properties }}"
       description: |
         A map of key-value properties attached to the securable.
     - name: provider_name
-      value: string
+      value: "{{ provider_name }}"
       description: |
         The name of delta sharing provider. A Delta Sharing catalog is a catalog that is based on a Delta share on a remote sharing server.
     - name: share_name
-      value: string
+      value: "{{ share_name }}"
       description: |
         The name of the share under the share provider.
     - name: storage_root
-      value: string
+      value: "{{ storage_root }}"
       description: |
         Storage root URL for managed tables within catalog.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

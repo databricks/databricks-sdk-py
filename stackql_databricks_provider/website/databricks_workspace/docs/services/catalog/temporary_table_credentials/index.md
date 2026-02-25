@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -117,21 +118,21 @@ url
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: temporary_table_credentials
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the temporary_table_credentials resource.
     - name: operation
-      value: string
+      value: "{{ operation }}"
       description: |
         The operation performed against the table data, either READ or READ_WRITE. If READ_WRITE is specified, the credentials returned will have write permissions, otherwise, it will be read only.
     - name: table_id
-      value: string
+      value: "{{ table_id }}"
       description: |
         UUID of the table to read or write.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>

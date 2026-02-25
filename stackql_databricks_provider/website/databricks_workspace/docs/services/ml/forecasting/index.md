@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -206,89 +207,85 @@ state
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: forecasting
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the forecasting resource.
     - name: train_data_path
-      value: string
+      value: "{{ train_data_path }}"
       description: |
         The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name, used as training data for the forecasting model.
     - name: target_column
-      value: string
+      value: "{{ target_column }}"
       description: |
         The column in the input training table used as the prediction target for model training. The values in this column are used as the ground truth for model training.
     - name: time_column
-      value: string
+      value: "{{ time_column }}"
       description: |
         The column in the input training table that represents each row's timestamp.
     - name: forecast_granularity
-      value: string
+      value: "{{ forecast_granularity }}"
       description: |
         The time interval between consecutive rows in the time series data. Possible values include: '1 second', '1 minute', '5 minutes', '10 minutes', '15 minutes', '30 minutes', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'.
     - name: forecast_horizon
-      value: integer
+      value: {{ forecast_horizon }}
       description: |
         The number of time steps into the future to make predictions, calculated as a multiple of forecast_granularity. This value represents how far ahead the model should forecast.
     - name: custom_weights_column
-      value: string
+      value: "{{ custom_weights_column }}"
       description: |
         The column in the training table used to customize weights for each time series.
     - name: experiment_path
-      value: string
+      value: "{{ experiment_path }}"
       description: |
         The path in the workspace to store the created experiment.
     - name: future_feature_data_path
-      value: string
+      value: "{{ future_feature_data_path }}"
       description: |
         The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name, used to store future feature data for predictions.
     - name: holiday_regions
-      value: array
+      value:
+        - "{{ holiday_regions }}"
       description: |
         The region code(s) to automatically add holiday features. Currently supports only one region.
-      items:
-        type: string
     - name: include_features
-      value: array
+      value:
+        - "{{ include_features }}"
       description: |
         Specifies the list of feature columns to include in model training. These columns must exist in the training data and be of type string, numerical, or boolean. If not specified, no additional features will be included. Note: Certain columns are automatically handled: - Automatically excluded: split_column, target_column, custom_weights_column. - Automatically included: time_column.
-      items:
-        type: string
     - name: max_runtime
-      value: integer
+      value: {{ max_runtime }}
       description: |
         The maximum duration for the experiment in minutes. The experiment stops automatically if it exceeds this limit.
     - name: prediction_data_path
-      value: string
+      value: "{{ prediction_data_path }}"
       description: |
         The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name, used to store predictions.
     - name: primary_metric
-      value: string
+      value: "{{ primary_metric }}"
       description: |
         The evaluation metric used to optimize the forecasting model.
     - name: register_to
-      value: string
+      value: "{{ register_to }}"
       description: |
         The fully qualified path of a Unity Catalog model, formatted as catalog_name.schema_name.model_name, used to store the best model.
     - name: split_column
-      value: string
+      value: "{{ split_column }}"
       description: |
         // The column in the training table used for custom data splits. Values must be 'train', 'validate', or 'test'.
     - name: timeseries_identifier_columns
-      value: array
+      value:
+        - "{{ timeseries_identifier_columns }}"
       description: |
         The column in the training table used to group the dataset for predicting individual time series.
-      items:
-        type: string
     - name: training_frameworks
-      value: array
+      value:
+        - "{{ training_frameworks }}"
       description: |
         List of frameworks to include for model tuning. Possible values are 'Prophet', 'ARIMA', 'DeepAR'. An empty list includes all supported frameworks.
-      items:
-        type: string
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>

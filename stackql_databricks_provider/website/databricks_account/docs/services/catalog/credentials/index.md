@@ -15,6 +15,7 @@ image: /img/stackql-databricks_account-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -666,131 +667,81 @@ results
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: credentials
   props:
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         The credential name. The name must be unique among storage and service credentials within the metastore.
     - name: aws_iam_role
-      value: object
       description: |
-        :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
-      props:
-      - name: external_id
-        value: string
-        description: |
-          The external ID used in role assumption to prevent the confused deputy problem.
-      - name: role_arn
-        value: string
-        description: |
-          The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials.
-      - name: unity_catalog_iam_arn
-        value: string
-        description: |
-          The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks. This is the identity that is going to assume the AWS IAM role.
+        :param azure_managed_identity: :class:\`AzureManagedIdentity\` (optional)
+      value:
+        external_id: "{{ external_id }}"
+        role_arn: "{{ role_arn }}"
+        unity_catalog_iam_arn: "{{ unity_catalog_iam_arn }}"
     - name: azure_managed_identity
-      value: object
       description: |
         The Azure managed identity configuration.
-      props:
-      - name: access_connector_id
-        value: string
-        description: |
-          The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
-      - name: credential_id
-        value: string
-        description: |
-          The Databricks internal ID that represents this managed identity.
-      - name: managed_identity_id
-        value: string
-        description: |
-          The Azure resource ID of the managed identity. Use the format, `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}` This is only available for user-assgined identities. For system-assigned identities, the access_connector_id is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity is using the system-assigned identity.
+      value:
+        access_connector_id: "{{ access_connector_id }}"
+        credential_id: "{{ credential_id }}"
+        managed_identity_id: "{{ managed_identity_id }}"
     - name: azure_service_principal
-      value: object
       description: |
         The Azure service principal configuration.
-      props:
-      - name: directory_id
-        value: string
-        description: |
-          The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application.
-      - name: application_id
-        value: string
-        description: |
-          The application ID of the application registration within the referenced AAD tenant.
-      - name: client_secret
-        value: string
-        description: |
-          The client secret generated for the above app ID in AAD.
+      value:
+        directory_id: "{{ directory_id }}"
+        application_id: "{{ application_id }}"
+        client_secret: "{{ client_secret }}"
     - name: comment
-      value: string
+      value: "{{ comment }}"
       description: |
         Comment associated with the credential.
     - name: databricks_gcp_service_account
-      value: object
       description: |
         :param external_location_name: str (optional) The name of an existing external location to validate. Only applicable for storage credentials (purpose is **STORAGE**.)
-      props:
-      - name: credential_id
-        value: string
-        description: |
-          The Databricks internal ID that represents this managed identity.
-      - name: email
-        value: string
-        description: |
-          The email of the service account.
-      - name: private_key_id
-        value: string
-        description: |
-          The ID that represents the private key for this Service Account
+      value:
+        credential_id: "{{ credential_id }}"
+        email: "{{ email }}"
+        private_key_id: "{{ private_key_id }}"
     - name: purpose
-      value: string
+      value: "{{ purpose }}"
       description: |
         The purpose of the credential. This should only be used when the credential is specified.
     - name: read_only
-      value: boolean
+      value: {{ read_only }}
       description: |
         Whether the credential is only usable for read operations. Only applicable for storage credentials (purpose is **STORAGE**.)
     - name: skip_validation
-      value: boolean
+      value: {{ skip_validation }}
       description: |
         Optional. Supplying true to this argument skips validation of the created set of credentials.
     - name: credential_name
-      value: string
+      value: "{{ credential_name }}"
       description: |
         Required. The name of an existing credential or long-lived cloud credential to validate.
     - name: azure_options
-      value: object
       description: |
-        :param gcp_options: :class:`GenerateTemporaryServiceCredentialGcpOptions` (optional)
-      props:
-      - name: resources
-        value: array
-        description: |
-          The resources to which the temporary Azure credential should apply. These resources are the scopes that are passed to the token provider (see https://learn.microsoft.com/python/api/azure-core/azure.core.credentials.tokencredential?view=azure-python)
-        items:
-          type: string
+        :param gcp_options: :class:\`GenerateTemporaryServiceCredentialGcpOptions\` (optional)
+      value:
+        resources:
+          - "{{ resources }}"
     - name: gcp_options
-      value: object
       description: |
         The GCP cloud options to customize the requested temporary credential
-      props:
-      - name: scopes
-        value: array
-        description: |
-          The scopes to which the temporary GCP credential should apply. These resources are the scopes that are passed to the token provider (see https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials)
-        items:
-          type: string
+      value:
+        scopes:
+          - "{{ scopes }}"
     - name: external_location_name
-      value: string
+      value: "{{ external_location_name }}"
     - name: url
-      value: string
+      value: "{{ url }}"
       description: |
         The external location url to validate. Only applicable when purpose is **STORAGE**.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

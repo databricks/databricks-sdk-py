@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -412,80 +413,39 @@ validity_check_configurations
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: quality_monitor_v2
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the quality_monitor_v2 resource.
     - name: quality_monitor
-      value: object
       description: |
-        :returns: :class:`QualityMonitor`
-      props:
-      - name: object_type
-        value: string
-      - name: object_id
-        value: string
-        description: |
-          The uuid of the request object. For example, schema id.
-      - name: anomaly_detection_config
-        value: object
-        props:
-        - name: excluded_table_full_names
-          value: array
-          items:
-            type: string
-        - name: last_run_id
-          value: string
-          description: |
-            Run id of the last run of the workflow
-        - name: latest_run_status
-          value: string
-          description: |
-            The status of the last run of the workflow.
-      - name: validity_check_configurations
-        value: array
-        description: |
-          Validity check configurations for anomaly detection.
-        props:
-        - name: name
-          value: string
-        - name: percent_null_validity_check
-          value: object
-          props:
-          - name: column_names
-            value: array
-            items:
-              type: string
-          - name: upper_bound
-            value: number
-            description: |
-              Optional upper bound; we should use auto determined bounds for now
-        - name: range_validity_check
-          value: object
-          props:
-          - name: column_names
-            value: array
-            items:
-              type: string
-          - name: lower_bound
-            value: number
-            description: |
-              Lower bound for the range
-          - name: upper_bound
-            value: number
-            description: |
-              Upper bound for the range
-        - name: uniqueness_validity_check
-          value: object
-          props:
-          - name: column_names
-            value: array
-            items:
-              type: string
-```
+        :returns: :class:\`QualityMonitor\`
+      value:
+        object_type: "{{ object_type }}"
+        object_id: "{{ object_id }}"
+        anomaly_detection_config:
+          excluded_table_full_names:
+            - "{{ excluded_table_full_names }}"
+          last_run_id: "{{ last_run_id }}"
+          latest_run_status: "{{ latest_run_status }}"
+        validity_check_configurations:
+          - name: "{{ name }}"
+            percent_null_validity_check:
+              column_names:
+                - "{{ column_names }}"
+              upper_bound: {{ upper_bound }}
+            range_validity_check:
+              column_names:
+                - "{{ column_names }}"
+              lower_bound: {{ lower_bound }}
+              upper_bound: {{ upper_bound }}
+            uniqueness_validity_check:
+              column_names:
+                - "{{ column_names }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

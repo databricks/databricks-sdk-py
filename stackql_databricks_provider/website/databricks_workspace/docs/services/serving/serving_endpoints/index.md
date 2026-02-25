@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -1676,627 +1677,185 @@ task
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: serving_endpoints
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the serving_endpoints resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         The name of the serving endpoint. This field is required and must be unique across a Databricks workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
     - name: ai_gateway
-      value: object
       description: |
         The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned throughput, and pay-per-token endpoints are fully supported; agent endpoints currently only support inference tables.
-      props:
-      - name: fallback_config
-        value: object
-        props:
-        - name: enabled
-          value: boolean
-      - name: guardrails
-        value: object
-        description: |
-          Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses.
-        props:
-        - name: input
-          value: object
-          props:
-          - name: invalid_keywords
-            value: array
-            items:
-              type: string
-          - name: pii
-            value: object
-            description: |
-              Configuration for guardrail PII filter.
-            props:
-            - name: behavior
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-          - name: safety
-            value: boolean
-            description: |
-              Indicates whether the safety filter is enabled.
-          - name: valid_topics
-            value: array
-            description: |
-              The list of allowed topics. Given a chat request, this guardrail flags the request if its topic is not in the allowed topics.
-            items:
-              type: string
-        - name: output
-          value: object
-          description: |
-            Configuration for output guardrail filters.
-          props:
-          - name: invalid_keywords
-            value: array
-            items:
-              type: string
-          - name: pii
-            value: object
-            description: |
-              Configuration for guardrail PII filter.
-            props:
-            - name: behavior
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-          - name: safety
-            value: boolean
-            description: |
-              Indicates whether the safety filter is enabled.
-          - name: valid_topics
-            value: array
-            description: |
-              The list of allowed topics. Given a chat request, this guardrail flags the request if its topic is not in the allowed topics.
-            items:
-              type: string
-      - name: inference_table_config
-        value: object
-        description: |
-          Configuration for payload logging using inference tables. Use these tables to monitor and audit data being sent to and received from model APIs and to improve model quality.
-        props:
-        - name: catalog_name
-          value: string
-        - name: enabled
-          value: boolean
-          description: |
-            Indicates whether the inference table is enabled.
-        - name: schema_name
-          value: string
-          description: |
-            The name of the schema in Unity Catalog. Required when enabling inference tables. NOTE: On update, you have to disable inference table first in order to change the schema name.
-        - name: table_name_prefix
-          value: string
-          description: |
-            The prefix of the table in Unity Catalog. NOTE: On update, you have to disable inference table first in order to change the prefix name.
-      - name: rate_limits
-        value: array
-        description: |
-          Configuration for rate limits which can be set to limit endpoint traffic.
-        props:
-        - name: renewal_period
-          value: string
-          description: |
-            Create a collection of name/value pairs.
-            Example enumeration:
-            >>> class Color(Enum):
-            ...     RED = 1
-            ...     BLUE = 2
-            ...     GREEN = 3
-            Access them by:
-            - attribute access::
-            >>> Color.RED
-            <Color.RED: 1>
-            - value lookup:
-            >>> Color(1)
-            <Color.RED: 1>
-            - name lookup:
-            >>> Color['RED']
-            <Color.RED: 1>
-            Enumerations can be iterated over, and know how many members they have:
-            >>> len(Color)
-            3
-            >>> list(Color)
-            [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-            Methods can be added to enumerations, and members can have their own
-            attributes -- see the documentation for details.
-        - name: calls
-          value: integer
-          description: |
-            Used to specify how many calls are allowed for a key within the renewal_period.
-        - name: key
-          value: string
-          description: |
-            Key field for a rate limit. Currently, 'user', 'user_group, 'service_principal', and 'endpoint' are supported, with 'endpoint' being the default if not specified.
-        - name: principal
-          value: string
-          description: |
-            Principal field for a user, user group, or service principal to apply rate limiting to. Accepts a user email, group name, or service principal application ID.
-        - name: tokens
-          value: integer
-          description: |
-            Used to specify how many tokens are allowed for a key within the renewal_period.
-      - name: usage_tracking_config
-        value: object
-        description: |
-          Configuration to enable usage tracking using system tables. These tables allow you to monitor operational usage on endpoints and their associated costs.
-        props:
-        - name: enabled
-          value: boolean
+      value:
+        fallback_config:
+          enabled: {{ enabled }}
+        guardrails:
+          input:
+            invalid_keywords:
+              - "{{ invalid_keywords }}"
+            pii:
+              behavior: "{{ behavior }}"
+            safety: {{ safety }}
+            valid_topics:
+              - "{{ valid_topics }}"
+          output:
+            invalid_keywords:
+              - "{{ invalid_keywords }}"
+            pii:
+              behavior: "{{ behavior }}"
+            safety: {{ safety }}
+            valid_topics:
+              - "{{ valid_topics }}"
+        inference_table_config:
+          catalog_name: "{{ catalog_name }}"
+          enabled: {{ enabled }}
+          schema_name: "{{ schema_name }}"
+          table_name_prefix: "{{ table_name_prefix }}"
+        rate_limits:
+          - renewal_period: "{{ renewal_period }}"
+            calls: {{ calls }}
+            key: "{{ key }}"
+            principal: "{{ principal }}"
+            tokens: {{ tokens }}
+        usage_tracking_config:
+          enabled: {{ enabled }}
     - name: budget_policy_id
-      value: string
+      value: "{{ budget_policy_id }}"
       description: |
         The budget policy to be applied to the serving endpoint.
     - name: config
-      value: object
       description: |
         The core config of the serving endpoint.
-      props:
-      - name: name
-        value: string
-      - name: auto_capture_config
-        value: object
-        description: |
-          Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or updating existing provisioned throughput endpoints that never have inference table configured; in these cases please use AI Gateway to manage inference tables.
-        props:
-        - name: catalog_name
-          value: string
-        - name: enabled
-          value: boolean
-          description: |
-            Indicates whether the inference table is enabled.
-        - name: schema_name
-          value: string
-          description: |
-            The name of the schema in Unity Catalog. NOTE: On update, you cannot change the schema name if the inference table is already enabled.
-        - name: table_name_prefix
-          value: string
-          description: |
-            The prefix of the table in Unity Catalog. NOTE: On update, you cannot change the prefix name if the inference table is already enabled.
-      - name: served_entities
-        value: array
-        description: |
-          The list of served entities under the serving endpoint config.
-        props:
-        - name: burst_scaling_enabled
-          value: boolean
-        - name: entity_name
-          value: string
-          description: |
-            The name of the entity to be served. The entity may be a model in the Databricks Model Registry, a model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC object, the full name of the object should be given in the form of **catalog_name.schema_name.model_name**.
-        - name: entity_version
-          value: string
-        - name: environment_vars
-          value: object
-          description: |
-            An object containing a set of optional, user-specified environment variable key-value pairs used for serving this entity. Note: this is an experimental feature and subject to change. Example entity environment variables that refer to Databricks secrets: `{"OPENAI_API_KEY": "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}`
-        - name: external_model
-          value: object
-          description: |
-            The external model to be served. NOTE: Only one of external_model and (entity_name, entity_version, workload_size, workload_type, and scale_to_zero_enabled) can be specified with the latter set being used for custom model serving for a Databricks registered model. For an existing endpoint with external_model, it cannot be updated to an endpoint without external_model. If the endpoint is created without external_model, users cannot update it to add external_model later. The task type of all external models within an endpoint must be the same.
-          props:
-          - name: provider
-            value: string
-            description: |
-              Create a collection of name/value pairs.
-              Example enumeration:
-              >>> class Color(Enum):
-              ...     RED = 1
-              ...     BLUE = 2
-              ...     GREEN = 3
-              Access them by:
-              - attribute access::
-              >>> Color.RED
-              <Color.RED: 1>
-              - value lookup:
-              >>> Color(1)
-              <Color.RED: 1>
-              - name lookup:
-              >>> Color['RED']
-              <Color.RED: 1>
-              Enumerations can be iterated over, and know how many members they have:
-              >>> len(Color)
-              3
-              >>> list(Color)
-              [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-              Methods can be added to enumerations, and members can have their own
-              attributes -- see the documentation for details.
-          - name: name
-            value: string
-            description: |
-              The name of the external model.
-          - name: task
-            value: string
-            description: |
-              The task type of the external model.
-          - name: ai21labs_config
-            value: object
-            description: |
-              AI21Labs Config. Only required if the provider is 'ai21labs'.
-            props:
-            - name: ai21labs_api_key
-              value: string
-            - name: ai21labs_api_key_plaintext
-              value: string
-              description: |
-                An AI21 Labs API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `ai21labs_api_key`. You must provide an API key using one of the following fields: `ai21labs_api_key` or `ai21labs_api_key_plaintext`.
-          - name: amazon_bedrock_config
-            value: object
-            description: |
-              Amazon Bedrock Config. Only required if the provider is 'amazon-bedrock'.
-            props:
-            - name: aws_region
-              value: string
-            - name: bedrock_provider
-              value: string
-              description: |
-                The underlying provider in Amazon Bedrock. Supported values (case insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
-            - name: aws_access_key_id
-              value: string
-              description: |
-                The Databricks secret key reference for an AWS access key ID with permissions to interact with Bedrock services. If you prefer to paste your API key directly, see `aws_access_key_id_plaintext`. You must provide an API key using one of the following fields: `aws_access_key_id` or `aws_access_key_id_plaintext`.
-            - name: aws_access_key_id_plaintext
-              value: string
-              description: |
-                An AWS access key ID with permissions to interact with Bedrock services provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `aws_access_key_id`. You must provide an API key using one of the following fields: `aws_access_key_id` or `aws_access_key_id_plaintext`.
-            - name: aws_secret_access_key
-              value: string
-              description: |
-                The Databricks secret key reference for an AWS secret access key paired with the access key ID, with permissions to interact with Bedrock services. If you prefer to paste your API key directly, see `aws_secret_access_key_plaintext`. You must provide an API key using one of the following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`.
-            - name: aws_secret_access_key_plaintext
-              value: string
-              description: |
-                An AWS secret access key paired with the access key ID, with permissions to interact with Bedrock services provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `aws_secret_access_key`. You must provide an API key using one of the following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`.
-            - name: instance_profile_arn
-              value: string
-              description: |
-                ARN of the instance profile that the external model will use to access AWS resources. You must authenticate using an instance profile or access keys. If you prefer to authenticate using access keys, see `aws_access_key_id`, `aws_access_key_id_plaintext`, `aws_secret_access_key` and `aws_secret_access_key_plaintext`.
-          - name: anthropic_config
-            value: object
-            description: |
-              Anthropic Config. Only required if the provider is 'anthropic'.
-            props:
-            - name: anthropic_api_key
-              value: string
-            - name: anthropic_api_key_plaintext
-              value: string
-              description: |
-                The Anthropic API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `anthropic_api_key`. You must provide an API key using one of the following fields: `anthropic_api_key` or `anthropic_api_key_plaintext`.
-          - name: cohere_config
-            value: object
-            description: |
-              Cohere Config. Only required if the provider is 'cohere'.
-            props:
-            - name: cohere_api_base
-              value: string
-            - name: cohere_api_key
-              value: string
-              description: |
-                The Databricks secret key reference for a Cohere API key. If you prefer to paste your API key directly, see `cohere_api_key_plaintext`. You must provide an API key using one of the following fields: `cohere_api_key` or `cohere_api_key_plaintext`.
-            - name: cohere_api_key_plaintext
-              value: string
-              description: |
-                The Cohere API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `cohere_api_key`. You must provide an API key using one of the following fields: `cohere_api_key` or `cohere_api_key_plaintext`.
-          - name: custom_provider_config
-            value: object
-            description: |
-              Custom Provider Config. Only required if the provider is 'custom'.
-            props:
-            - name: custom_provider_url
-              value: string
-              description: |
-                This is a field to provide the URL of the custom provider API.
-            - name: api_key_auth
-              value: object
-              description: |
-                This is a field to provide API key authentication for the custom provider API. You can only specify one authentication method.
-            - name: bearer_token_auth
-              value: object
-              description: |
-                This is a field to provide bearer token authentication for the custom provider API. You can only specify one authentication method.
-          - name: databricks_model_serving_config
-            value: object
-            description: |
-              Databricks Model Serving Config. Only required if the provider is 'databricks-model-serving'.
-            props:
-            - name: databricks_workspace_url
-              value: string
-            - name: databricks_api_token
-              value: string
-              description: |
-                The Databricks secret key reference for a Databricks API token that corresponds to a user or service principal with Can Query access to the model serving endpoint pointed to by this external model. If you prefer to paste your API key directly, see `databricks_api_token_plaintext`. You must provide an API key using one of the following fields: `databricks_api_token` or `databricks_api_token_plaintext`.
-            - name: databricks_api_token_plaintext
-              value: string
-              description: |
-                The Databricks API token that corresponds to a user or service principal with Can Query access to the model serving endpoint pointed to by this external model provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `databricks_api_token`. You must provide an API key using one of the following fields: `databricks_api_token` or `databricks_api_token_plaintext`.
-          - name: google_cloud_vertex_ai_config
-            value: object
-            description: |
-              Google Cloud Vertex AI Config. Only required if the provider is 'google-cloud-vertex-ai'.
-            props:
-            - name: project_id
-              value: string
-            - name: region
-              value: string
-              description: |
-                This is the region for the Google Cloud Vertex AI Service. See [supported regions] for more details. Some models are only available in specific regions. [supported regions]: https://cloud.google.com/vertex-ai/docs/general/locations
-            - name: private_key
-              value: string
-              description: |
-                The Databricks secret key reference for a private key for the service account which has access to the Google Cloud Vertex AI Service. See [Best practices for managing service account keys]. If you prefer to paste your API key directly, see `private_key_plaintext`. You must provide an API key using one of the following fields: `private_key` or `private_key_plaintext` [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys
-            - name: private_key_plaintext
-              value: string
-              description: |
-                The private key for the service account which has access to the Google Cloud Vertex AI Service provided as a plaintext secret. See [Best practices for managing service account keys]. If you prefer to reference your key using Databricks Secrets, see `private_key`. You must provide an API key using one of the following fields: `private_key` or `private_key_plaintext`. [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys
-          - name: openai_config
-            value: object
-            description: |
-              OpenAI Config. Only required if the provider is 'openai'.
-            props:
-            - name: microsoft_entra_client_id
-              value: string
-              description: |
-                This field is only required for Azure AD OpenAI and is the Microsoft Entra Client ID.
-            - name: microsoft_entra_client_secret
-              value: string
-              description: |
-                The Databricks secret key reference for a client secret used for Microsoft Entra ID authentication. If you prefer to paste your client secret directly, see `microsoft_entra_client_secret_plaintext`. You must provide an API key using one of the following fields: `microsoft_entra_client_secret` or `microsoft_entra_client_secret_plaintext`.
-            - name: microsoft_entra_client_secret_plaintext
-              value: string
-              description: |
-                The client secret used for Microsoft Entra ID authentication provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `microsoft_entra_client_secret`. You must provide an API key using one of the following fields: `microsoft_entra_client_secret` or `microsoft_entra_client_secret_plaintext`.
-            - name: microsoft_entra_tenant_id
-              value: string
-              description: |
-                This field is only required for Azure AD OpenAI and is the Microsoft Entra Tenant ID.
-            - name: openai_api_base
-              value: string
-              description: |
-                This is a field to provide a customized base URl for the OpenAI API. For Azure OpenAI, this field is required, and is the base URL for the Azure OpenAI API service provided by Azure. For other OpenAI API types, this field is optional, and if left unspecified, the standard OpenAI base URL is used.
-            - name: openai_api_key
-              value: string
-              description: |
-                The Databricks secret key reference for an OpenAI API key using the OpenAI or Azure service. If you prefer to paste your API key directly, see `openai_api_key_plaintext`. You must provide an API key using one of the following fields: `openai_api_key` or `openai_api_key_plaintext`.
-            - name: openai_api_key_plaintext
-              value: string
-              description: |
-                The OpenAI API key using the OpenAI or Azure service provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `openai_api_key`. You must provide an API key using one of the following fields: `openai_api_key` or `openai_api_key_plaintext`.
-            - name: openai_api_type
-              value: string
-              description: |
-                This is an optional field to specify the type of OpenAI API to use. For Azure OpenAI, this field is required, and adjust this parameter to represent the preferred security access validation protocol. For access token validation, use azure. For authentication using Azure Active Directory (Azure AD) use, azuread.
-            - name: openai_api_version
-              value: string
-              description: |
-                This is an optional field to specify the OpenAI API version. For Azure OpenAI, this field is required, and is the version of the Azure OpenAI service to utilize, specified by a date.
-            - name: openai_deployment_name
-              value: string
-              description: |
-                This field is only required for Azure OpenAI and is the name of the deployment resource for the Azure OpenAI service.
-            - name: openai_organization
-              value: string
-              description: |
-                This is an optional field to specify the organization in OpenAI or Azure OpenAI.
-          - name: palm_config
-            value: object
-            description: |
-              PaLM Config. Only required if the provider is 'palm'.
-            props:
-            - name: palm_api_key
-              value: string
-            - name: palm_api_key_plaintext
-              value: string
-              description: |
-                The PaLM API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `palm_api_key`. You must provide an API key using one of the following fields: `palm_api_key` or `palm_api_key_plaintext`.
-        - name: instance_profile_arn
-          value: string
-          description: |
-            ARN of the instance profile that the served entity uses to access AWS resources.
-        - name: max_provisioned_concurrency
-          value: integer
-          description: |
-            The maximum provisioned concurrency that the endpoint can scale up to. Do not use if workload_size is specified.
-        - name: max_provisioned_throughput
-          value: integer
-          description: |
-            The maximum tokens per second that the endpoint can scale up to.
-        - name: min_provisioned_concurrency
-          value: integer
-          description: |
-            The minimum provisioned concurrency that the endpoint can scale down to. Do not use if workload_size is specified.
-        - name: min_provisioned_throughput
-          value: integer
-          description: |
-            The minimum tokens per second that the endpoint can scale down to.
-        - name: name
-          value: string
-          description: |
-            The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version.
-        - name: provisioned_model_units
-          value: integer
-          description: |
-            The number of model units provisioned.
-        - name: scale_to_zero_enabled
-          value: boolean
-          description: |
-            Whether the compute resources for the served entity should scale down to zero.
-        - name: workload_size
-          value: string
-          description: |
-            The workload size of the served entity. The workload size corresponds to a range of provisioned concurrency that the compute autoscales between. A single unit of provisioned concurrency can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency). Additional custom workload sizes can also be used when available in the workspace. If scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified.
-        - name: workload_type
-          value: string
-          description: |
-            The workload type of the served entity. The workload type selects which type of compute to use in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU acceleration is available by selecting workload types like GPU_SMALL and others. See the available [GPU types]. [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
-      - name: served_models
-        value: array
-        description: |
-          (Deprecated, use served_entities instead) The list of served models under the serving endpoint config.
-        props:
-        - name: scale_to_zero_enabled
-          value: boolean
-        - name: model_name
-          value: string
-        - name: model_version
-          value: string
-        - name: burst_scaling_enabled
-          value: boolean
-          description: |
-            Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains fixed capacity at provisioned_model_units.
-        - name: environment_vars
-          value: object
-          description: |
-            An object containing a set of optional, user-specified environment variable key-value pairs used for serving this entity. Note: this is an experimental feature and subject to change. Example entity environment variables that refer to Databricks secrets: `{"OPENAI_API_KEY": "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}`
-        - name: instance_profile_arn
-          value: string
-          description: |
-            ARN of the instance profile that the served entity uses to access AWS resources.
-        - name: max_provisioned_concurrency
-          value: integer
-          description: |
-            The maximum provisioned concurrency that the endpoint can scale up to. Do not use if workload_size is specified.
-        - name: max_provisioned_throughput
-          value: integer
-          description: |
-            The maximum tokens per second that the endpoint can scale up to.
-        - name: min_provisioned_concurrency
-          value: integer
-          description: |
-            The minimum provisioned concurrency that the endpoint can scale down to. Do not use if workload_size is specified.
-        - name: min_provisioned_throughput
-          value: integer
-          description: |
-            The minimum tokens per second that the endpoint can scale down to.
-        - name: name
-          value: string
-          description: |
-            The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version.
-        - name: provisioned_model_units
-          value: integer
-          description: |
-            The number of model units provisioned.
-        - name: workload_size
-          value: string
-          description: |
-            The workload size of the served entity. The workload size corresponds to a range of provisioned concurrency that the compute autoscales between. A single unit of provisioned concurrency can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency). Additional custom workload sizes can also be used when available in the workspace. If scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified.
-        - name: workload_type
-          value: string
-          description: |
-            The workload type of the served entity. The workload type selects which type of compute to use in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU acceleration is available by selecting workload types like GPU_SMALL and others. See the available [GPU types]. [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
-      - name: traffic_config
-        value: object
-        description: |
-          The traffic configuration associated with the serving endpoint config.
-        props:
-        - name: routes
-          value: array
-          props:
-          - name: traffic_percentage
-            value: integer
-          - name: served_entity_name
-            value: string
-          - name: served_model_name
-            value: string
-            description: |
-              The name of the served model this route configures traffic for.
+      value:
+        name: "{{ name }}"
+        auto_capture_config:
+          catalog_name: "{{ catalog_name }}"
+          enabled: {{ enabled }}
+          schema_name: "{{ schema_name }}"
+          table_name_prefix: "{{ table_name_prefix }}"
+        served_entities:
+          - burst_scaling_enabled: {{ burst_scaling_enabled }}
+            entity_name: "{{ entity_name }}"
+            entity_version: "{{ entity_version }}"
+            environment_vars: "{{ environment_vars }}"
+            external_model:
+              provider: "{{ provider }}"
+              name: "{{ name }}"
+              task: "{{ task }}"
+              ai21labs_config:
+                ai21labs_api_key: "{{ ai21labs_api_key }}"
+                ai21labs_api_key_plaintext: "{{ ai21labs_api_key_plaintext }}"
+              amazon_bedrock_config:
+                aws_region: "{{ aws_region }}"
+                bedrock_provider: "{{ bedrock_provider }}"
+                aws_access_key_id: "{{ aws_access_key_id }}"
+                aws_access_key_id_plaintext: "{{ aws_access_key_id_plaintext }}"
+                aws_secret_access_key: "{{ aws_secret_access_key }}"
+                aws_secret_access_key_plaintext: "{{ aws_secret_access_key_plaintext }}"
+                instance_profile_arn: "{{ instance_profile_arn }}"
+              anthropic_config:
+                anthropic_api_key: "{{ anthropic_api_key }}"
+                anthropic_api_key_plaintext: "{{ anthropic_api_key_plaintext }}"
+              cohere_config:
+                cohere_api_base: "{{ cohere_api_base }}"
+                cohere_api_key: "{{ cohere_api_key }}"
+                cohere_api_key_plaintext: "{{ cohere_api_key_plaintext }}"
+              custom_provider_config:
+                custom_provider_url: "{{ custom_provider_url }}"
+                api_key_auth:
+                  key: "{{ key }}"
+                  value: "{{ value }}"
+                  value_plaintext: "{{ value_plaintext }}"
+                bearer_token_auth:
+                  token: "{{ token }}"
+                  token_plaintext: "{{ token_plaintext }}"
+              databricks_model_serving_config:
+                databricks_workspace_url: "{{ databricks_workspace_url }}"
+                databricks_api_token: "{{ databricks_api_token }}"
+                databricks_api_token_plaintext: "{{ databricks_api_token_plaintext }}"
+              google_cloud_vertex_ai_config:
+                project_id: "{{ project_id }}"
+                region: "{{ region }}"
+                private_key: "{{ private_key }}"
+                private_key_plaintext: "{{ private_key_plaintext }}"
+              openai_config:
+                microsoft_entra_client_id: "{{ microsoft_entra_client_id }}"
+                microsoft_entra_client_secret: "{{ microsoft_entra_client_secret }}"
+                microsoft_entra_client_secret_plaintext: "{{ microsoft_entra_client_secret_plaintext }}"
+                microsoft_entra_tenant_id: "{{ microsoft_entra_tenant_id }}"
+                openai_api_base: "{{ openai_api_base }}"
+                openai_api_key: "{{ openai_api_key }}"
+                openai_api_key_plaintext: "{{ openai_api_key_plaintext }}"
+                openai_api_type: "{{ openai_api_type }}"
+                openai_api_version: "{{ openai_api_version }}"
+                openai_deployment_name: "{{ openai_deployment_name }}"
+                openai_organization: "{{ openai_organization }}"
+              palm_config:
+                palm_api_key: "{{ palm_api_key }}"
+                palm_api_key_plaintext: "{{ palm_api_key_plaintext }}"
+            instance_profile_arn: "{{ instance_profile_arn }}"
+            max_provisioned_concurrency: {{ max_provisioned_concurrency }}
+            max_provisioned_throughput: {{ max_provisioned_throughput }}
+            min_provisioned_concurrency: {{ min_provisioned_concurrency }}
+            min_provisioned_throughput: {{ min_provisioned_throughput }}
+            name: "{{ name }}"
+            provisioned_model_units: {{ provisioned_model_units }}
+            scale_to_zero_enabled: {{ scale_to_zero_enabled }}
+            workload_size: "{{ workload_size }}"
+            workload_type: "{{ workload_type }}"
+        served_models:
+          - scale_to_zero_enabled: {{ scale_to_zero_enabled }}
+            model_name: "{{ model_name }}"
+            model_version: "{{ model_version }}"
+            burst_scaling_enabled: {{ burst_scaling_enabled }}
+            environment_vars: "{{ environment_vars }}"
+            instance_profile_arn: "{{ instance_profile_arn }}"
+            max_provisioned_concurrency: {{ max_provisioned_concurrency }}
+            max_provisioned_throughput: {{ max_provisioned_throughput }}
+            min_provisioned_concurrency: {{ min_provisioned_concurrency }}
+            min_provisioned_throughput: {{ min_provisioned_throughput }}
+            name: "{{ name }}"
+            provisioned_model_units: {{ provisioned_model_units }}
+            workload_size: "{{ workload_size }}"
+            workload_type: "{{ workload_type }}"
+        traffic_config:
+          routes:
+            - traffic_percentage: {{ traffic_percentage }}
+              served_entity_name: "{{ served_entity_name }}"
+              served_model_name: "{{ served_model_name }}"
     - name: description
-      value: string
+      value: "{{ description }}"
       description: |
-        :param email_notifications: :class:`EmailNotifications` (optional) Email notification settings.
+        :param email_notifications: :class:\`EmailNotifications\` (optional) Email notification settings.
     - name: email_notifications
-      value: object
-      props:
-      - name: on_update_failure
-        value: array
-        items:
-          type: string
-      - name: on_update_success
-        value: array
-        description: |
-          A list of email addresses to be notified when an endpoint successfully updates its configuration or state.
-        items:
-          type: string
+      value:
+        on_update_failure:
+          - "{{ on_update_failure }}"
+        on_update_success:
+          - "{{ on_update_success }}"
     - name: rate_limits
-      value: array
       description: |
         Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI Gateway to manage rate limits.
-      props:
-      - name: calls
-        value: integer
-      - name: renewal_period
-        value: string
-        description: |
-          Renewal period field for a serving endpoint rate limit. Currently, only 'minute' is supported.
-      - name: key
-        value: string
-        description: |
-          Key field for a serving endpoint rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint' being the default if not specified.
+      value:
+        - calls: {{ calls }}
+          renewal_period: "{{ renewal_period }}"
+          key: "{{ key }}"
     - name: route_optimized
-      value: boolean
+      value: {{ route_optimized }}
       description: |
         Enable route optimization for the serving endpoint.
     - name: tags
-      value: array
       description: |
         Tags to be attached to the serving endpoint and automatically propagated to billing logs.
-      props:
-      - name: key
-        value: string
-      - name: value
-        value: string
-        description: |
-          Optional value field for a serving endpoint tag.
-```
+      value:
+        - key: "{{ key }}"
+          value: "{{ value }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -391,75 +392,33 @@ url
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: external_metadata
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the external_metadata resource.
     - name: external_metadata
-      value: object
       description: |
-        :returns: :class:`ExternalMetadata`
-      props:
-      - name: name
-        value: string
-      - name: system_type
-        value: string
-        description: |
-          Type of external system.
-      - name: entity_type
-        value: string
-        description: |
-          Type of entity within the external system.
-      - name: columns
-        value: array
-        description: |
-          List of columns associated with the external metadata object.
-        items:
-          type: string
-      - name: create_time
-        value: string
-        description: |
-          Time at which this external metadata object was created.
-      - name: created_by
-        value: string
-        description: |
-          Username of external metadata object creator.
-      - name: description
-        value: string
-        description: |
-          User-provided free-form text description.
-      - name: id
-        value: string
-        description: |
-          Unique identifier of the external metadata object.
-      - name: metastore_id
-        value: string
-        description: |
-          Unique identifier of parent metastore.
-      - name: owner
-        value: string
-        description: |
-          Owner of the external metadata object.
-      - name: properties
-        value: object
-        description: |
-          A map of key-value properties attached to the external metadata object.
-      - name: update_time
-        value: string
-        description: |
-          Time at which this external metadata object was last modified.
-      - name: updated_by
-        value: string
-        description: |
-          Username of user who last modified external metadata object.
-      - name: url
-        value: string
-        description: |
-          URL associated with the external metadata object.
-```
+        :returns: :class:\`ExternalMetadata\`
+      value:
+        name: "{{ name }}"
+        system_type: "{{ system_type }}"
+        entity_type: "{{ entity_type }}"
+        columns:
+          - "{{ columns }}"
+        create_time: "{{ create_time }}"
+        created_by: "{{ created_by }}"
+        description: "{{ description }}"
+        id: "{{ id }}"
+        metastore_id: "{{ metastore_id }}"
+        owner: "{{ owner }}"
+        properties: "{{ properties }}"
+        update_time: "{{ update_time }}"
+        updated_by: "{{ updated_by }}"
+        url: "{{ url }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

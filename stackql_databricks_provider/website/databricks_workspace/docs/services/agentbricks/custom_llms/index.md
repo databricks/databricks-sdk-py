@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -283,50 +284,39 @@ optimization_state
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: custom_llms
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the custom_llms resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Name of the custom LLM. Only alphanumeric characters and dashes allowed.
     - name: instructions
-      value: string
+      value: "{{ instructions }}"
       description: |
         Instructions for the custom LLM to follow
     - name: agent_artifact_path
-      value: string
+      value: "{{ agent_artifact_path }}"
       description: |
         This will soon be deprecated!! Optional: UC path for agent artifacts. If you are using a dataset that you only have read permissions, please provide a destination path where you have write permissions. Please provide this in catalog.schema format.
     - name: datasets
-      value: array
       description: |
         Datasets used for training and evaluating the model, not for inference. Currently, only 1 dataset is accepted.
-      props:
-      - name: table
-        value: object
-        props:
-        - name: table_path
-          value: string
-        - name: request_col
-          value: string
-          description: |
-            Name of the request column
-        - name: response_col
-          value: string
-          description: |
-            Optional: Name of the response column if the data is labeled
+      value:
+        - table:
+            table_path: "{{ table_path }}"
+            request_col: "{{ request_col }}"
+            response_col: "{{ response_col }}"
     - name: guidelines
-      value: array
+      value:
+        - "{{ guidelines }}"
       description: |
         Guidelines for the custom LLM to adhere to
-      items:
-        type: string
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

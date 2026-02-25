@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -760,137 +761,77 @@ url
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: external_locations
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the external_locations resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Name of the external location.
     - name: url
-      value: string
+      value: "{{ url }}"
       description: |
         Path URL of the external location.
     - name: credential_name
-      value: string
+      value: "{{ credential_name }}"
       description: |
         Name of the storage credential used with this location.
     - name: comment
-      value: string
+      value: "{{ comment }}"
       description: |
         User-provided free-form text description.
     - name: enable_file_events
-      value: boolean
+      value: {{ enable_file_events }}
       description: |
-        Whether to enable file events on this external location. Default to `true`. Set to `false` to disable file events.
+        Whether to enable file events on this external location. Default to \`true\`. Set to \`false\` to disable file events.
     - name: encryption_details
-      value: object
       description: |
         :param fallback: bool (optional) Indicates whether fallback mode is enabled for this external location. When fallback mode is enabled, the access to the location falls back to cluster credentials if UC credentials are not sufficient.
-      props:
-      - name: sse_encryption_details
-        value: object
-        description: |
-          Server-Side Encryption properties for clients communicating with AWS s3.
-        props:
-        - name: algorithm
-          value: string
-          description: |
-            Sets the value of the 'x-amz-server-side-encryption' header in S3 request.
-        - name: aws_kms_key_arn
-          value: string
-          description: |
-            Optional. The ARN of the SSE-KMS key used with the S3 location, when algorithm = "SSE-KMS". Sets the value of the 'x-amz-server-side-encryption-aws-kms-key-id' header.
+      value:
+        sse_encryption_details:
+          algorithm: "{{ algorithm }}"
+          aws_kms_key_arn: "{{ aws_kms_key_arn }}"
     - name: fallback
-      value: boolean
+      value: {{ fallback }}
     - name: file_event_queue
-      value: object
       description: |
-        File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly one of the documented properties.
-      props:
-      - name: managed_aqs
-        value: object
-        props:
-        - name: managed_resource_id
-          value: string
-        - name: queue_url
-          value: string
-          description: |
-            The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name} Only required for provided_aqs.
-        - name: resource_group
-          value: string
-          description: |
-            Optional resource group for the queue, event grid subscription, and external location storage account. Only required for locations with a service principal storage credential
-        - name: subscription_id
-          value: string
-          description: |
-            Optional subscription id for the queue, event grid subscription, and external location storage account. Required for locations with a service principal storage credential
-      - name: managed_pubsub
-        value: object
-        props:
-        - name: managed_resource_id
-          value: string
-        - name: subscription_name
-          value: string
-          description: |
-            The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}. Only required for provided_pubsub.
-      - name: managed_sqs
-        value: object
-        props:
-        - name: managed_resource_id
-          value: string
-        - name: queue_url
-          value: string
-          description: |
-            The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}. Only required for provided_sqs.
-      - name: provided_aqs
-        value: object
-        props:
-        - name: managed_resource_id
-          value: string
-        - name: queue_url
-          value: string
-          description: |
-            The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name} Only required for provided_aqs.
-        - name: resource_group
-          value: string
-          description: |
-            Optional resource group for the queue, event grid subscription, and external location storage account. Only required for locations with a service principal storage credential
-        - name: subscription_id
-          value: string
-          description: |
-            Optional subscription id for the queue, event grid subscription, and external location storage account. Required for locations with a service principal storage credential
-      - name: provided_pubsub
-        value: object
-        props:
-        - name: managed_resource_id
-          value: string
-        - name: subscription_name
-          value: string
-          description: |
-            The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}. Only required for provided_pubsub.
-      - name: provided_sqs
-        value: object
-        props:
-        - name: managed_resource_id
-          value: string
-        - name: queue_url
-          value: string
-          description: |
-            The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}. Only required for provided_sqs.
+        File event queue settings. If \`enable_file_events\` is not \`false\`, must be defined and have exactly one of the documented properties.
+      value:
+        managed_aqs:
+          managed_resource_id: "{{ managed_resource_id }}"
+          queue_url: "{{ queue_url }}"
+          resource_group: "{{ resource_group }}"
+          subscription_id: "{{ subscription_id }}"
+        managed_pubsub:
+          managed_resource_id: "{{ managed_resource_id }}"
+          subscription_name: "{{ subscription_name }}"
+        managed_sqs:
+          managed_resource_id: "{{ managed_resource_id }}"
+          queue_url: "{{ queue_url }}"
+        provided_aqs:
+          managed_resource_id: "{{ managed_resource_id }}"
+          queue_url: "{{ queue_url }}"
+          resource_group: "{{ resource_group }}"
+          subscription_id: "{{ subscription_id }}"
+        provided_pubsub:
+          managed_resource_id: "{{ managed_resource_id }}"
+          subscription_name: "{{ subscription_name }}"
+        provided_sqs:
+          managed_resource_id: "{{ managed_resource_id }}"
+          queue_url: "{{ queue_url }}"
     - name: read_only
-      value: boolean
+      value: {{ read_only }}
       description: |
         Indicates whether the external location is read-only.
     - name: skip_validation
-      value: boolean
+      value: {{ skip_validation }}
       description: |
         Skips validation of the storage credential associated with the external location.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

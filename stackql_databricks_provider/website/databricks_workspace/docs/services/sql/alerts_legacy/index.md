@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -703,63 +704,41 @@ user
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: alerts_legacy
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the alerts_legacy resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         Name of the alert.
     - name: options
-      value: object
       description: |
         Alert configuration options.
-      props:
-      - name: column
-        value: string
-        description: |
-          Name of column in the query result to compare in alert evaluation.
-      - name: op
-        value: string
-        description: |
-          Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`, `!=`
-      - name: value
-        value: object
-        description: |
-          Value used to compare in alert evaluation. Supported types include strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true).
-      - name: custom_body
-        value: string
-        description: |
-          Custom body of alert notification, if it exists. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html
-      - name: custom_subject
-        value: string
-        description: |
-          Custom subject of alert notification, if it exists. This includes email subject, Slack notification header, etc. See [here] for custom templating instructions. [here]: https://docs.databricks.com/sql/user/alerts/index.html
-      - name: empty_result_state
-        value: string
-        description: |
-          State that alert evaluates to when query result is empty.
-      - name: muted
-        value: boolean
-        description: |
-          Whether or not the alert is muted. If an alert is muted, it will not notify users and notification destinations when triggered.
+      value:
+        column: "{{ column }}"
+        op: "{{ op }}"
+        value: "{{ value }}"
+        custom_body: "{{ custom_body }}"
+        custom_subject: "{{ custom_subject }}"
+        empty_result_state: "{{ empty_result_state }}"
+        muted: {{ muted }}
     - name: query_id
-      value: string
+      value: "{{ query_id }}"
       description: |
         Query ID.
     - name: parent
-      value: string
+      value: "{{ parent }}"
       description: |
         The identifier of the workspace folder containing the object.
     - name: rearm
-      value: integer
+      value: {{ rearm }}
       description: |
-        Number of seconds after being triggered before the alert rearms itself and can be triggered again. If `null`, alert will never be triggered again.
-```
+        Number of seconds after being triggered before the alert rearms itself and can be triggered again. If \`null\`, alert will never be triggered again.
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

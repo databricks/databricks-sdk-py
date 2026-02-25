@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -301,30 +302,30 @@ script_id
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: global_init_scripts
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the global_init_scripts resource.
     - name: name
-      value: string
+      value: "{{ name }}"
       description: |
         The name of the script
     - name: script
-      value: string
+      value: "{{ script }}"
       description: |
         The Base64-encoded content of the script.
     - name: enabled
-      value: boolean
+      value: {{ enabled }}
       description: |
         Specifies whether the script is enabled. The script runs only if enabled.
     - name: position
-      value: integer
+      value: {{ position }}
       description: |
         The position of a global init script, where 0 represents the first script to run, 1 is the second script to run, in ascending order. If you omit the numeric position for a new global init script, it defaults to last position. It will run after all current scripts. Setting any value greater than the position of the last script is equivalent to the last position. Example: Take three existing scripts with positions 0, 1, and 2. Any position of (3) or greater puts the script in the last position. If an explicit position value conflicts with an existing script value, your request succeeds, but the original script at that position and all later scripts have their positions incremented by 1.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

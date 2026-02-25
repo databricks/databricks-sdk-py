@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -119,25 +120,25 @@ url
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: temporary_path_credentials
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the temporary_path_credentials resource.
     - name: url
-      value: string
+      value: "{{ url }}"
       description: |
         URL for path-based access.
     - name: operation
-      value: string
+      value: "{{ operation }}"
       description: |
         The operation being performed on the path.
     - name: dry_run
-      value: boolean
+      value: {{ dry_run }}
       description: |
         Optional. When set to true, the service will not validate that the generated credentials can perform write operations, therefore no new paths will be created and the response will not contain valid credentials. Defaults to false.
-```
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>

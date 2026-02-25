@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -517,245 +518,44 @@ path
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: apps_settings
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the apps_settings resource.
     - name: template
-      value: object
       description: |
-        :returns: :class:`CustomTemplate`
-      props:
-      - name: name
-        value: string
-      - name: git_repo
-        value: string
-        description: |
-          The Git repository URL that the template resides in.
-      - name: path
-        value: string
-        description: |
-          The path to the template within the Git repository.
-      - name: manifest
-        value: object
-        description: |
-          The manifest of the template. It defines fields and default values when installing the template.
-        props:
-        - name: version
-          value: integer
-          description: |
-            The manifest schema version, for now only 1 is allowed
-        - name: name
-          value: string
-          description: |
-            Name of the app defined by manifest author / publisher
-        - name: description
-          value: string
-          description: |
-            Description of the app defined by manifest author / publisher
-        - name: resource_specs
-          value: array
-          props:
-          - name: name
-            value: string
-            description: |
-              Name of the App Resource.
-          - name: description
-            value: string
-            description: |
-              Description of the App Resource.
-          - name: experiment_spec
-            value: object
-            props:
-            - name: permission
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-          - name: job_spec
-            value: object
-            props:
-            - name: permission
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-          - name: secret_spec
-            value: object
-            props:
-            - name: permission
-              value: string
-              description: |
-                Permission to grant on the secret scope. Supported permissions are: "READ", "WRITE", "MANAGE".
-          - name: serving_endpoint_spec
-            value: object
-            props:
-            - name: permission
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-          - name: sql_warehouse_spec
-            value: object
-            props:
-            - name: permission
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-          - name: uc_securable_spec
-            value: object
-            props:
-            - name: securable_type
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-            - name: permission
-              value: string
-              description: |
-                Create a collection of name/value pairs.
-                Example enumeration:
-                >>> class Color(Enum):
-                ...     RED = 1
-                ...     BLUE = 2
-                ...     GREEN = 3
-                Access them by:
-                - attribute access::
-                >>> Color.RED
-                <Color.RED: 1>
-                - value lookup:
-                >>> Color(1)
-                <Color.RED: 1>
-                - name lookup:
-                >>> Color['RED']
-                <Color.RED: 1>
-                Enumerations can be iterated over, and know how many members they have:
-                >>> len(Color)
-                3
-                >>> list(Color)
-                [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-                Methods can be added to enumerations, and members can have their own
-                attributes -- see the documentation for details.
-      - name: git_provider
-        value: string
-        description: |
-          The Git provider of the template.
-      - name: creator
-        value: string
-      - name: description
-        value: string
-        description: |
-          The description of the template.
-```
+        :returns: :class:\`CustomTemplate\`
+      value:
+        name: "{{ name }}"
+        git_repo: "{{ git_repo }}"
+        path: "{{ path }}"
+        manifest:
+          version: {{ version }}
+          name: "{{ name }}"
+          description: "{{ description }}"
+          resource_specs:
+            - name: "{{ name }}"
+              description: "{{ description }}"
+              experiment_spec:
+                permission: "{{ permission }}"
+              job_spec:
+                permission: "{{ permission }}"
+              secret_spec:
+                permission: "{{ permission }}"
+              serving_endpoint_spec:
+                permission: "{{ permission }}"
+              sql_warehouse_spec:
+                permission: "{{ permission }}"
+              uc_securable_spec:
+                securable_type: "{{ securable_type }}"
+                permission: "{{ permission }}"
+        git_provider: "{{ git_provider }}"
+        creator: "{{ creator }}"
+        description: "{{ description }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

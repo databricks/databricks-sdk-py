@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -689,209 +690,66 @@ object_type
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: data_quality
   props:
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the data_quality resource.
     - name: monitor
-      value: object
       description: |
         The monitor to create.
-      props:
-      - name: object_type
-        value: string
-        description: |
-          The type of the monitored object. Can be one of the following: `schema` or `table`.
-      - name: object_id
-        value: string
-        description: |
-          The UUID of the request object. It is `schema_id` for `schema`, and `table_id` for `table`. Find the `schema_id` from either: 1. The [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab > the `Schema ID` field. Find the `table_id` from either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog Explorer] > select the `table` > go to the `Details` tab > the `Table ID` field. [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
-      - name: anomaly_detection_config
-        value: object
-        description: |
-          Anomaly Detection Configuration, applicable to `schema` object types.
-        props:
-        - name: excluded_table_full_names
-          value: array
-          description: |
-            List of fully qualified table names to exclude from anomaly detection.
-          items:
-            type: string
-      - name: data_profiling_config
-        value: object
-        description: |
-          Data Profiling Configuration, applicable to `table` object types. Exactly one `Analysis Configuration` must be present.
-        props:
-        - name: output_schema_id
-          value: string
-          description: |
-            ID of the schema where output tables are created.
-        - name: assets_dir
-          value: string
-          description: |
-            Field for specifying the absolute path to a custom directory to store data-monitoring assets. Normally prepopulated to a default user location via UI and Python APIs.
-        - name: baseline_table_name
-          value: string
-          description: |
-            Baseline table name. Baseline data is used to compute drift from the data in the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
-        - name: custom_metrics
-          value: array
-          description: |
-            Custom metrics.
-          props:
-          - name: name
-            value: string
-            description: |
-              Name of the metric in the output tables.
-          - name: definition
-            value: string
-            description: |
-              Jinja template for a SQL expression that specifies how to compute the metric. See [create metric definition]. [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition
-          - name: input_columns
-            value: array
-            description: |
-              A list of column names in the input table the metric should be computed for. Can use ``":table"`` to indicate that the metric needs information from multiple columns.
-            items:
-              type: string
-          - name: output_data_type
-            value: string
-            description: |
-              The output type of the custom metric.
-          - name: type
-            value: string
-            description: |
-              The type of the custom metric.
-        - name: dashboard_id
-          value: string
-          description: |
-            Id of dashboard that visualizes the computed metrics. This can be empty if the monitor is in PENDING state.
-        - name: drift_metrics_table_name
-          value: string
-          description: |
-            Table that stores drift metrics data. Format: `catalog.schema.table_name`.
-        - name: effective_warehouse_id
-          value: string
-          description: |
-            The warehouse for dashboard creation
-        - name: inference_log
-          value: object
-          description: |
-            `Analysis Configuration` for monitoring inference log tables.
-          props:
-          - name: problem_type
-            value: string
-            description: |
-              Problem type the model aims to solve.
-          - name: timestamp_column
-            value: string
-            description: |
-              Column for the timestamp.
-          - name: granularities
-            value: array
-            description: |
-              List of granularities to use when aggregating data into time windows based on their timestamp.
-            items:
-              type: string
-          - name: prediction_column
-            value: string
-            description: |
-              Column for the prediction.
-          - name: model_id_column
-            value: string
-            description: |
-              Column for the model identifier.
-          - name: label_column
-            value: string
-            description: |
-              Column for the label.
-        - name: latest_monitor_failure_message
-          value: string
-          description: |
-            The latest error message for a monitor failure.
-        - name: monitor_version
-          value: integer
-          description: |
-            Represents the current monitor configuration version in use. The version will be represented in a numeric fashion (1,2,3...). The field has flexibility to take on negative values, which can indicate corrupted monitor_version numbers.
-        - name: monitored_table_name
-          value: string
-          description: |
-            Unity Catalog table to monitor. Format: `catalog.schema.table_name`
-        - name: notification_settings
-          value: object
-          description: |
-            Field for specifying notification settings.
-          props:
-          - name: on_failure
-            value: object
-            description: |
-              Destinations to send notifications on failure/timeout.
-            props:
-            - name: email_addresses
-              value: array
-              description: |
-                The list of email addresses to send the notification to. A maximum of 5 email addresses is supported.
-        - name: profile_metrics_table_name
-          value: string
-          description: |
-            Table that stores profile metrics data. Format: `catalog.schema.table_name`.
-        - name: schedule
-          value: object
-          description: |
-            The cron schedule.
-          props:
-          - name: quartz_cron_expression
-            value: string
-            description: |
-              The expression that determines when to run the monitor. See [examples]. [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
-          - name: timezone_id
-            value: string
-            description: |
-              A Java timezone id. The schedule for a job will be resolved with respect to this timezone. See `Java TimeZone <http://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html>`_ for details. The timezone id (e.g., ``America/Los_Angeles``) in which to evaluate the quartz expression.
-          - name: pause_status
-            value: string
-            description: |
-              Read only field that indicates whether the schedule is paused or not.
-        - name: skip_builtin_dashboard
-          value: boolean
-          description: |
-            Whether to skip creating a default dashboard summarizing data quality metrics.
-        - name: slicing_exprs
-          value: array
-          description: |
-            List of column expressions to slice data with for targeted analysis. The data is grouped by each expression independently, resulting in a separate slice for each predicate and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate slices.
-          items:
-            type: string
-        - name: snapshot
-          value: object
-          description: |
-            `Analysis Configuration` for monitoring snapshot tables.
-        - name: status
-          value: string
-          description: |
-            The data profiling monitor status.
-        - name: time_series
-          value: object
-          description: |
-            `Analysis Configuration` for monitoring time series tables.
-          props:
-          - name: timestamp_column
-            value: string
-            description: |
-              Column for the timestamp.
-          - name: granularities
-            value: array
-            description: |
-              List of granularities to use when aggregating data into time windows based on their timestamp.
-            items:
-              type: string
-        - name: warehouse_id
-          value: string
-          description: |
-            Optional argument to specify the warehouse for dashboard creation. If not specified, the first running warehouse will be used.
-```
+      value:
+        object_type: "{{ object_type }}"
+        object_id: "{{ object_id }}"
+        anomaly_detection_config:
+          excluded_table_full_names:
+            - "{{ excluded_table_full_names }}"
+        data_profiling_config:
+          output_schema_id: "{{ output_schema_id }}"
+          assets_dir: "{{ assets_dir }}"
+          baseline_table_name: "{{ baseline_table_name }}"
+          custom_metrics:
+            - name: "{{ name }}"
+              definition: "{{ definition }}"
+              input_columns: "{{ input_columns }}"
+              output_data_type: "{{ output_data_type }}"
+              type: "{{ type }}"
+          dashboard_id: "{{ dashboard_id }}"
+          drift_metrics_table_name: "{{ drift_metrics_table_name }}"
+          effective_warehouse_id: "{{ effective_warehouse_id }}"
+          inference_log:
+            problem_type: "{{ problem_type }}"
+            timestamp_column: "{{ timestamp_column }}"
+            granularities:
+              - "{{ granularities }}"
+            prediction_column: "{{ prediction_column }}"
+            model_id_column: "{{ model_id_column }}"
+            label_column: "{{ label_column }}"
+          latest_monitor_failure_message: "{{ latest_monitor_failure_message }}"
+          monitor_version: {{ monitor_version }}
+          monitored_table_name: "{{ monitored_table_name }}"
+          notification_settings:
+            on_failure:
+              email_addresses:
+                - "{{ email_addresses }}"
+          profile_metrics_table_name: "{{ profile_metrics_table_name }}"
+          schedule:
+            quartz_cron_expression: "{{ quartz_cron_expression }}"
+            timezone_id: "{{ timezone_id }}"
+            pause_status: "{{ pause_status }}"
+          skip_builtin_dashboard: {{ skip_builtin_dashboard }}
+          slicing_exprs:
+            - "{{ slicing_exprs }}"
+          snapshot: "{{ snapshot }}"
+          status: "{{ status }}"
+          time_series:
+            timestamp_column: "{{ timestamp_column }}"
+            granularities:
+              - "{{ granularities }}"
+          warehouse_id: "{{ warehouse_id }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 

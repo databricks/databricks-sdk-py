@@ -15,6 +15,7 @@ image: /img/stackql-databricks_workspace-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
@@ -376,68 +377,36 @@ update_time
 </TabItem>
 <TabItem value="manifest">
 
-```yaml
-# Description fields are for documentation purposes
+<CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: lakeview_subscriptions
   props:
     - name: dashboard_id
-      value: string
+      value: "{{ dashboard_id }}"
       description: Required parameter for the lakeview_subscriptions resource.
     - name: schedule_id
-      value: string
+      value: "{{ schedule_id }}"
       description: Required parameter for the lakeview_subscriptions resource.
     - name: workspace
-      value: string
+      value: "{{ workspace }}"
       description: Required parameter for the lakeview_subscriptions resource.
     - name: subscription
-      value: object
       description: |
         The subscription to create. A schedule is limited to 100 subscriptions.
-      props:
-      - name: subscriber
-        value: object
-        props:
-        - name: destination_subscriber
-          value: object
-          props:
-          - name: destination_id
-            value: string
-        - name: user_subscriber
-          value: object
-          description: |
-            The user to receive the subscription email. This parameter is mutually exclusive with `destination_subscriber`.
-          props:
-          - name: user_id
-            value: integer
-      - name: create_time
-        value: string
-        description: |
-          A timestamp indicating when the subscription was created.
-      - name: created_by_user_id
-        value: integer
-        description: |
-          UserId of the user who adds subscribers (users or notification destinations) to the dashboard's schedule.
-      - name: dashboard_id
-        value: string
-        description: |
-          UUID identifying the dashboard to which the subscription belongs.
-      - name: etag
-        value: string
-        description: |
-          The etag for the subscription. Must be left empty on create, can be optionally provided on delete to ensure that the subscription has not been deleted since the last read.
-      - name: schedule_id
-        value: string
-        description: |
-          UUID identifying the schedule to which the subscription belongs.
-      - name: subscription_id
-        value: string
-        description: |
-          UUID identifying the subscription.
-      - name: update_time
-        value: string
-        description: |
-          A timestamp indicating when the subscription was last updated.
-```
+      value:
+        subscriber:
+          destination_subscriber:
+            destination_id: "{{ destination_id }}"
+          user_subscriber:
+            user_id: {{ user_id }}
+        create_time: "{{ create_time }}"
+        created_by_user_id: {{ created_by_user_id }}
+        dashboard_id: "{{ dashboard_id }}"
+        etag: "{{ etag }}"
+        schedule_id: "{{ schedule_id }}"
+        subscription_id: "{{ subscription_id }}"
+        update_time: "{{ update_time }}"
+`}</CodeBlock>
+
 </TabItem>
 </Tabs>
 
