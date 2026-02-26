@@ -648,9 +648,15 @@ class CliTokenSource(oauth.Refreshable):
         access_token_field: str,
         expiry_field: str,
         disable_async: bool = True,
+        fallback_cmd: Optional[List[str]] = None,
     ):
         super().__init__(disable_async=disable_async)
         self._cmd = cmd
+        # fallback_cmd is tried when the primary command fails with "unknown flag: --profile",
+        # indicating the CLI is too old to support --profile. Can be removed once support
+        # for CLI versions predating --profile is dropped.
+        # See: https://github.com/databricks/databricks-sdk-go/pull/1497
+        self._fallback_cmd = fallback_cmd
         self._token_type_field = token_type_field
         self._access_token_field = access_token_field
         self._expiry_field = expiry_field
@@ -666,9 +672,9 @@ class CliTokenSource(oauth.Refreshable):
         if last_e:
             raise last_e
 
-    def refresh(self) -> oauth.Token:
+    def _exec_cli_command(self, cmd: List[str]) -> oauth.Token:
         try:
-            out = _run_subprocess(self._cmd, capture_output=True, check=True)
+            out = _run_subprocess(cmd, capture_output=True, check=True)
             it = json.loads(out.stdout.decode())
             expires_on = self._parse_expiry(it[self._expiry_field])
             return oauth.Token(
@@ -681,8 +687,20 @@ class CliTokenSource(oauth.Refreshable):
         except subprocess.CalledProcessError as e:
             stdout = e.stdout.decode().strip()
             stderr = e.stderr.decode().strip()
-            message = stdout or stderr
+            message = "\n".join(filter(None, [stdout, stderr]))
             raise IOError(f"cannot get access token: {message}") from e
+
+    def refresh(self) -> oauth.Token:
+        try:
+            return self._exec_cli_command(self._cmd)
+        except IOError as e:
+            if self._fallback_cmd is not None and "unknown flag: --profile" in str(e):
+                logger.warning(
+                    "Databricks CLI does not support --profile flag. Falling back to --host. "
+                    "Please upgrade your CLI to the latest version."
+                )
+                return self._exec_cli_command(self._fallback_cmd)
+            raise
 
 
 def _run_subprocess(
@@ -853,17 +871,6 @@ class DatabricksCliTokenSource(CliTokenSource):
     """Obtain the token granted by `databricks auth login` CLI command"""
 
     def __init__(self, cfg: "Config"):
-        args = ["auth", "token", "--host", cfg.host]
-        if cfg.experimental_is_unified_host:
-            # For unified hosts, pass account_id, workspace_id, and experimental flag
-            args += ["--experimental-is-unified-host"]
-            if cfg.account_id:
-                args += ["--account-id", cfg.account_id]
-            if cfg.workspace_id:
-                args += ["--workspace-id", str(cfg.workspace_id)]
-        elif cfg.client_type == ClientType.ACCOUNT:
-            args += ["--account-id", cfg.account_id]
-
         cli_path = cfg.databricks_cli_path
 
         # If the path is not specified look for "databricks" / "databricks.exe" in PATH.
@@ -882,13 +889,40 @@ class DatabricksCliTokenSource(CliTokenSource):
         elif cli_path.count("/") == 0:
             cli_path = self.__class__._find_executable(cli_path)
 
+        fallback_cmd = None
+        if cfg.profile:
+            # When profile is set, use --profile as the primary command.
+            # The profile contains the full config (host, account_id, etc.).
+            args = ["auth", "token", "--profile", cfg.profile]
+            # Build a --host fallback for older CLIs that don't support --profile.
+            if cfg.host:
+                fallback_cmd = [cli_path, *self.__class__._build_host_args(cfg)]
+        else:
+            args = self.__class__._build_host_args(cfg)
+
         super().__init__(
             cmd=[cli_path, *args],
             token_type_field="token_type",
             access_token_field="access_token",
             expiry_field="expiry",
             disable_async=cfg.disable_async_token_refresh,
+            fallback_cmd=fallback_cmd,
         )
+
+    @staticmethod
+    def _build_host_args(cfg: "Config") -> List[str]:
+        """Build CLI arguments using --host (legacy path)."""
+        args = ["auth", "token", "--host", cfg.host]
+        if cfg.experimental_is_unified_host:
+            # For unified hosts, pass account_id, workspace_id, and experimental flag
+            args += ["--experimental-is-unified-host"]
+            if cfg.account_id:
+                args += ["--account-id", cfg.account_id]
+            if cfg.workspace_id:
+                args += ["--workspace-id", str(cfg.workspace_id)]
+        elif cfg.client_type == ClientType.ACCOUNT:
+            args += ["--account-id", cfg.account_id]
+        return args
 
     @staticmethod
     def _find_executable(name) -> str:
