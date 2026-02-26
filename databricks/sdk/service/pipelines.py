@@ -2522,11 +2522,25 @@ class PipelinesEnvironment:
     <requirement specifier>, <archive url/path>, <local project path>(WSFS or Volumes in
     Databricks), <vcs project url>"""
 
+    environment_version: Optional[str] = None
+    """The environment version of the serverless Python environment used to execute customer Python
+    code. Each environment version includes a specific Python version and a curated set of
+    pre-installed libraries with defined versions, providing a stable and reproducible execution
+    environment.
+    
+    Databricks supports a three-year lifecycle for each environment version. For available versions
+    and their included packages, see
+    https://docs.databricks.com/aws/en/release-notes/serverless/environment-version/
+    
+    The value should be a string representing the environment version number, for example: `"4"`."""
+
     def as_dict(self) -> dict:
         """Serializes the PipelinesEnvironment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dependencies:
             body["dependencies"] = [v for v in self.dependencies]
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2534,12 +2548,14 @@ class PipelinesEnvironment:
         body = {}
         if self.dependencies:
             body["dependencies"] = self.dependencies
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelinesEnvironment:
         """Deserializes the PipelinesEnvironment from a dictionary."""
-        return cls(dependencies=d.get("dependencies", None))
+        return cls(dependencies=d.get("dependencies", None), environment_version=d.get("environment_version", None))
 
 
 @dataclass
@@ -4381,6 +4397,7 @@ class PipelinesAPI:
         parameters: Optional[Dict[str, str]] = None,
         refresh_selection: Optional[List[str]] = None,
         replace_where_overrides: Optional[List[ReplaceWhereOverride]] = None,
+        reset_checkpoint_selection: Optional[List[str]] = None,
         rewind_spec: Optional[RewindSpec] = None,
         validate_only: Optional[bool] = None,
     ) -> StartUpdateResponse:
@@ -4404,6 +4421,10 @@ class PipelinesAPI:
         :param replace_where_overrides: List[:class:`ReplaceWhereOverride`] (optional)
           A list of predicate overrides for replace_where flows in this update. Only replace_where flows may
           be specified. Flows not listed use their original predicate.
+        :param reset_checkpoint_selection: List[str] (optional)
+          A list of flows for which this update should reset the streaming checkpoint. This selection will not
+          clear the data in the flow's target table. Flows in this list may also appear in refresh_selection
+          and full_refresh_selection.
         :param rewind_spec: :class:`RewindSpec` (optional)
           The information about the requested rewind operation. If specified this is a rewind mode update.
         :param validate_only: bool (optional)
@@ -4426,6 +4447,8 @@ class PipelinesAPI:
             body["refresh_selection"] = [v for v in refresh_selection]
         if replace_where_overrides is not None:
             body["replace_where_overrides"] = [v.as_dict() for v in replace_where_overrides]
+        if reset_checkpoint_selection is not None:
+            body["reset_checkpoint_selection"] = [v for v in reset_checkpoint_selection]
         if rewind_spec is not None:
             body["rewind_spec"] = rewind_spec.as_dict()
         if validate_only is not None:

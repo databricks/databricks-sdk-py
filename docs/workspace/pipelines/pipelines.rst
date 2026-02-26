@@ -430,7 +430,7 @@
         :returns: :class:`PipelinePermissions`
         
 
-    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], parameters: Optional[Dict[str, str]], refresh_selection: Optional[List[str]], replace_where_overrides: Optional[List[ReplaceWhereOverride]], rewind_spec: Optional[RewindSpec], validate_only: Optional[bool]]) -> StartUpdateResponse
+    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], parameters: Optional[Dict[str, str]], refresh_selection: Optional[List[str]], replace_where_overrides: Optional[List[ReplaceWhereOverride]], reset_checkpoint_selection: Optional[List[str]], rewind_spec: Optional[RewindSpec], validate_only: Optional[bool]]) -> StartUpdateResponse
 
         Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
@@ -452,6 +452,10 @@
         :param replace_where_overrides: List[:class:`ReplaceWhereOverride`] (optional)
           A list of predicate overrides for replace_where flows in this update. Only replace_where flows may
           be specified. Flows not listed use their original predicate.
+        :param reset_checkpoint_selection: List[str] (optional)
+          A list of flows for which this update should reset the streaming checkpoint. This selection will not
+          clear the data in the flow's target table. Flows in this list may also appear in refresh_selection
+          and full_refresh_selection.
         :param rewind_spec: :class:`RewindSpec` (optional)
           The information about the requested rewind operation. If specified this is a rewind mode update.
         :param validate_only: bool (optional)
