@@ -2335,12 +2335,6 @@ class Space:
     id: Optional[str] = None
     """The unique identifier of the app space."""
 
-    oauth2_app_client_id: Optional[str] = None
-    """The OAuth2 app client ID for the app space."""
-
-    oauth2_app_integration_id: Optional[str] = None
-    """The OAuth2 app integration ID for the app space."""
-
     resources: Optional[List[AppResource]] = None
     """Resources for the app space. Resources configured at the space level are available to all apps
     in the space."""
@@ -2386,10 +2380,6 @@ class Space:
             body["id"] = self.id
         if self.name is not None:
             body["name"] = self.name
-        if self.oauth2_app_client_id is not None:
-            body["oauth2_app_client_id"] = self.oauth2_app_client_id
-        if self.oauth2_app_integration_id is not None:
-            body["oauth2_app_integration_id"] = self.oauth2_app_integration_id
         if self.resources:
             body["resources"] = [v.as_dict() for v in self.resources]
         if self.service_principal_client_id is not None:
@@ -2427,10 +2417,6 @@ class Space:
             body["id"] = self.id
         if self.name is not None:
             body["name"] = self.name
-        if self.oauth2_app_client_id is not None:
-            body["oauth2_app_client_id"] = self.oauth2_app_client_id
-        if self.oauth2_app_integration_id is not None:
-            body["oauth2_app_integration_id"] = self.oauth2_app_integration_id
         if self.resources:
             body["resources"] = self.resources
         if self.service_principal_client_id is not None:
@@ -2462,8 +2448,6 @@ class Space:
             effective_user_api_scopes=d.get("effective_user_api_scopes", None),
             id=d.get("id", None),
             name=d.get("name", None),
-            oauth2_app_client_id=d.get("oauth2_app_client_id", None),
-            oauth2_app_integration_id=d.get("oauth2_app_integration_id", None),
             resources=_repeated_dict(d, "resources", AppResource),
             service_principal_client_id=d.get("service_principal_client_id", None),
             service_principal_id=d.get("service_principal_id", None),

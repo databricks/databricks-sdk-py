@@ -8871,7 +8871,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_JDBC_OAUTH_M2M = 298; Next id: 299"""
+    """Latest kind: EXTERNAL_LOCATION_ONELAKE_MANAGED = 299; Next id: 300"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
