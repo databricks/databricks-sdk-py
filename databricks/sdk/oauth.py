@@ -908,15 +908,15 @@ class TokenCache:
     @property
     def filename(self) -> str:
         # Include host, client_id, scopes, and profile in the cache filename to make it unique.
-        hash = hashlib.sha256()
-        for chunk in [
-            self._host,
-            self._client_id,
-            ",".join(self._scopes),
-            self._profile or "",
-        ]:
-            hash.update(chunk.encode("utf-8"))
-        return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, hash.hexdigest() + ".json"))
+        # JSON serialization ensures values are properly escaped and separated.
+        key = {
+            "host": self._host,
+            "client_id": self._client_id,
+            "scopes": self._scopes,
+            "profile": self._profile or "",
+        }
+        h = hashlib.sha256(json.dumps(key, sort_keys=True).encode("utf-8"))
+        return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, h.hexdigest() + ".json"))
 
     def load(self) -> Optional[SessionCredentials]:
         """

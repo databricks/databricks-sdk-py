@@ -228,6 +228,34 @@ def test_external_browser_scopes(mocker, scopes, disable_refresh, expected_scope
     assert mock_oauth_client_class.call_args.kwargs["scopes"] == expected_scopes
 
 
+def test_external_browser_passes_profile_to_token_cache(mocker):
+    """Tests that external_browser passes cfg.profile to TokenCache."""
+    mock_cfg = Mock()
+    mock_cfg.auth_type = "external-browser"
+    mock_cfg.host = "https://test.databricks.com"
+    mock_cfg.profile = "myprofile"
+    mock_cfg.client_id = "test-client-id"
+    mock_cfg.client_secret = None
+    mock_cfg.azure_client_id = None
+    mock_cfg.get_scopes.return_value = ["all-apis"]
+    mock_cfg.disable_oauth_refresh_token = False
+
+    mock_token_cache_class = mocker.patch("databricks.sdk.credentials_provider.oauth.TokenCache")
+    mock_token_cache = Mock()
+    mock_token_cache.load.return_value = None
+    mock_token_cache_class.return_value = mock_token_cache
+
+    mock_oauth_client = Mock()
+    mock_consent = Mock()
+    mock_consent.launch_external_browser.return_value = Mock()
+    mock_oauth_client.initiate_consent.return_value = mock_consent
+    mocker.patch("databricks.sdk.credentials_provider.oauth.OAuthClient", return_value=mock_oauth_client)
+
+    credentials_provider.external_browser(mock_cfg)
+
+    assert mock_token_cache_class.call_args.kwargs["profile"] == "myprofile"
+
+
 def test_oidc_credentials_provider_invalid_id_token_source():
     # Use a mock config object to avoid initializing the auth initialization.
     mock_cfg = Mock()
