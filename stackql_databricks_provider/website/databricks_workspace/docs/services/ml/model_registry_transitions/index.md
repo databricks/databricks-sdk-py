@@ -109,42 +109,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets a list of all open stage transition requests for the model version.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a></td>
     <td></td>
     <td>Creates a model version stage transition request.</td>
 </tr>
 <tr>
     <td><a href="#approve"><CopyableCode code="approve" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a>, <a href="#parameter-archive_existing_versions"><code>archive_existing_versions</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a>, <a href="#parameter-archive_existing_versions"><code>archive_existing_versions</code></a></td>
     <td></td>
     <td>Approves a model version stage transition request.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a>, <a href="#parameter-creator"><code>creator</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a>, <a href="#parameter-creator"><code>creator</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-comment"><code>comment</code></a></td>
     <td>Cancels a model version stage transition request.</td>
 </tr>
 <tr>
     <td><a href="#reject"><CopyableCode code="reject" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a></td>
     <td></td>
     <td>Rejects a model version stage transition request.</td>
 </tr>
 <tr>
     <td><a href="#transition"><CopyableCode code="transition" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a>, <a href="#parameter-archive_existing_versions"><code>archive_existing_versions</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a>, <a href="#parameter-archive_existing_versions"><code>archive_existing_versions</code></a></td>
     <td></td>
     <td>Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]</td>
 </tr>
@@ -169,6 +169,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Username of the user who created this request. Of the transition requests matching the specified details, only the one transition created by this user will be deleted.</td>
 </tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
@@ -183,11 +188,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="version" /></td>
     <td><code>string</code></td>
     <td>Version of the model.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-comment">
     <td><CopyableCode code="comment" /></td>
@@ -223,7 +223,7 @@ to_stage
 FROM databricks_workspace.ml.model_registry_transitions
 WHERE name = '{{ name }}' -- required
 AND version = '{{ version }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -249,14 +249,14 @@ name,
 version,
 stage,
 comment,
-workspace
+deployment_name
 )
 SELECT 
 '{{ name }}' /* required */,
 '{{ version }}' /* required */,
 '{{ stage }}' /* required */,
 '{{ comment }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 request
 ;
@@ -267,8 +267,8 @@ request
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: model_registry_transitions
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the model_registry_transitions resource.
     - name: name
       value: "{{ name }}"
@@ -309,7 +309,7 @@ Approves a model version stage transition request.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry_transitions.approve 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "name": "{{ name }}", 
@@ -331,7 +331,7 @@ EXEC databricks_workspace.ml.model_registry_transitions.delete
 @version='{{ version }}' --required, 
 @stage='{{ stage }}' --required, 
 @creator='{{ creator }}' --required, 
-@workspace='{{ workspace }}' --required, 
+@deployment_name='{{ deployment_name }}' --required, 
 @comment='{{ comment }}'
 ;
 ```
@@ -342,7 +342,7 @@ Rejects a model version stage transition request.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry_transitions.reject 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "name": "{{ name }}", 
@@ -359,7 +359,7 @@ Transition a model version's stage. This is a Databricks workspace version of th
 
 ```sql
 EXEC databricks_workspace.ml.model_registry_transitions.transition 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "name": "{{ name }}", 

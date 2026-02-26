@@ -96,14 +96,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-artifact_type.value"><code>artifact_type.value</code></a>, <a href="#parameter-artifact_type"><code>artifact_type</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-artifact_type.value"><code>artifact_type.value</code></a>, <a href="#parameter-artifact_type"><code>artifact_type</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin or have</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-artifact_type.value"><code>artifact_type.value</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-artifact_type"><code>artifact_type</code></a>, <a href="#parameter-artifact_matchers"><code>artifact_matchers</code></a></td>
+    <td><a href="#parameter-artifact_type.value"><code>artifact_type.value</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-artifact_type"><code>artifact_type</code></a>, <a href="#parameter-artifact_matchers"><code>artifact_matchers</code></a></td>
     <td></td>
     <td>Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with</td>
 </tr>
@@ -133,10 +133,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td></td>
 </tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -162,7 +162,7 @@ created_by
 FROM databricks_workspace.catalog.artifact_allowlists
 WHERE artifact_type.value = '{{ artifact_type.value }}' -- required
 AND artifact_type = '{{ artifact_type }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -191,7 +191,7 @@ created_by = '{{ created_by }}',
 metastore_id = '{{ metastore_id }}'
 WHERE 
 artifact_type.value = '{{ artifact_type.value }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND artifact_type = '{{ artifact_type }}' --required
 AND artifact_matchers = '{{ artifact_matchers }}' --required
 RETURNING

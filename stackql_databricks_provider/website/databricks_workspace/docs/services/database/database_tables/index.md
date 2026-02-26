@@ -79,21 +79,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get a Database Table.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-table"><code>table</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-table"><code>table</code></a></td>
     <td></td>
     <td>Create a Database Table. Useful for registering pre-existing PG tables in UC. See</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Delete a Database Table.</td>
 </tr>
@@ -113,15 +113,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>str</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -145,7 +145,7 @@ database_instance_name,
 logical_database_name
 FROM databricks_workspace.database.database_tables
 WHERE name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -168,11 +168,11 @@ Create a Database Table. Useful for registering pre-existing PG tables in UC. Se
 ```sql
 INSERT INTO databricks_workspace.database.database_tables (
 table,
-workspace
+deployment_name
 )
 SELECT 
 '{{ table }}' /* required */,
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 name,
 database_instance_name,
@@ -185,8 +185,8 @@ logical_database_name
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: database_tables
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the database_tables resource.
     - name: table
       description: |
@@ -216,7 +216,7 @@ Delete a Database Table.
 ```sql
 DELETE FROM databricks_workspace.database.database_tables
 WHERE name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

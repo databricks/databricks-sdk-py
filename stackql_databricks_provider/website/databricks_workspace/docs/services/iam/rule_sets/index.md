@@ -91,14 +91,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-etag"><code>etag</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-etag"><code>etag</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get a rule set by its name. A rule set is always attached to a resource and contains a list of access</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-rule_set"><code>rule_set</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-rule_set"><code>rule_set</code></a></td>
     <td></td>
     <td>Replace the rules of a rule set. First, use get to read the current version of the rule set before</td>
 </tr>
@@ -118,6 +118,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-etag">
     <td><CopyableCode code="etag" /></td>
     <td><code>string</code></td>
@@ -127,11 +132,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>The ruleset name associated with the request. Examples | Summary :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a rule set on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default` | A name for a rule set on the group. `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default` | A name for a rule set on the service principal. `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default` | A name for a rule set on the tag policy.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -156,7 +156,7 @@ grant_rules
 FROM databricks_workspace.iam.rule_sets
 WHERE name = '{{ name }}' -- required
 AND etag = '{{ etag }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -181,7 +181,7 @@ SET
 name = '{{ name }}',
 rule_set = '{{ rule_set }}'
 WHERE 
-workspace = '{{ workspace }}' --required
+deployment_name = '{{ deployment_name }}' --required
 AND name = '{{ name }}' --required
 AND rule_set = '{{ rule_set }}' --required
 RETURNING

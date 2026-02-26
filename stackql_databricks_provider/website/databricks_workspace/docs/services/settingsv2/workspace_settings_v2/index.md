@@ -409,21 +409,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for list</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List valid setting keys and metadata. These settings are available to be referenced via GET</td>
 </tr>
 <tr>
     <td><a href="#patch"><CopyableCode code="patch" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-setting"><code>setting</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-setting"><code>setting</code></a></td>
     <td></td>
     <td>Patch a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for</td>
 </tr>
@@ -443,15 +443,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Name of the setting</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -500,7 +500,7 @@ restrict_workspace_admins,
 string_val
 FROM databricks_workspace.settingsv2.workspace_settings_v2
 WHERE name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -515,7 +515,7 @@ description,
 docs_link,
 type
 FROM databricks_workspace.settingsv2.workspace_settings_v2
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -542,7 +542,7 @@ SET
 setting = '{{ setting }}'
 WHERE 
 name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND setting = '{{ setting }}' --required
 RETURNING
 name,

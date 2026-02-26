@@ -54,7 +54,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#generate"><CopyableCode code="generate" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-operation"><code>operation</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-operation"><code>operation</code></a></td>
     <td></td>
     <td>Get a short-lived credential for directly accessing cloud storage locations registered in Databricks.</td>
 </tr>
@@ -74,10 +74,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -100,13 +100,13 @@ INSERT INTO databricks_workspace.catalog.temporary_path_credentials (
 url,
 operation,
 dry_run,
-workspace
+deployment_name
 )
 SELECT 
 '{{ url }}' /* required */,
 '{{ operation }}' /* required */,
 {{ dry_run }},
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 aws_temp_credentials,
 azure_aad,
@@ -123,8 +123,8 @@ url
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: temporary_path_credentials
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the temporary_path_credentials resource.
     - name: url
       value: "{{ url }}"

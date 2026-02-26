@@ -759,28 +759,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get a published listing in the Databricks Marketplace that the consumer has access to.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-assets"><code>assets</code></a>, <a href="#parameter-categories"><code>categories</code></a>, <a href="#parameter-is_free"><code>is_free</code></a>, <a href="#parameter-is_private_exchange"><code>is_private_exchange</code></a>, <a href="#parameter-is_staff_pick"><code>is_staff_pick</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-provider_ids"><code>provider_ids</code></a>, <a href="#parameter-tags"><code>tags</code></a></td>
     <td>List all published listings in the Databricks Marketplace that the consumer has access to.</td>
 </tr>
 <tr>
     <td><a href="#batch_get"><CopyableCode code="batch_get" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-ids"><code>ids</code></a></td>
     <td>Batch get a published listing in the Databricks Marketplace that the consumer has access to.</td>
 </tr>
 <tr>
     <td><a href="#search"><CopyableCode code="search" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-query"><code>query</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-query"><code>query</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-assets"><code>assets</code></a>, <a href="#parameter-categories"><code>categories</code></a>, <a href="#parameter-is_free"><code>is_free</code></a>, <a href="#parameter-is_private_exchange"><code>is_private_exchange</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-provider_ids"><code>provider_ids</code></a></td>
     <td>Search published listings in the Databricks Marketplace that the consumer has access to. This query</td>
 </tr>
@@ -800,6 +800,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
@@ -809,11 +814,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="query" /></td>
     <td><code>string</code></td>
     <td>Fuzzy matches query</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-assets">
     <td><CopyableCode code="assets" /></td>
@@ -886,7 +886,7 @@ SELECT
 listing
 FROM databricks_workspace.marketplace.consumer_listings
 WHERE id = '{{ id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -900,7 +900,7 @@ id,
 detail,
 summary
 FROM databricks_workspace.marketplace.consumer_listings
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND assets = '{{ assets }}'
 AND categories = '{{ categories }}'
 AND is_free = '{{ is_free }}'
@@ -931,7 +931,7 @@ Batch get a published listing in the Databricks Marketplace that the consumer ha
 
 ```sql
 EXEC databricks_workspace.marketplace.consumer_listings.batch_get 
-@workspace='{{ workspace }}' --required, 
+@deployment_name='{{ deployment_name }}' --required, 
 @ids='{{ ids }}'
 ;
 ```
@@ -943,7 +943,7 @@ Search published listings in the Databricks Marketplace that the consumer has ac
 ```sql
 EXEC databricks_workspace.marketplace.consumer_listings.search 
 @query='{{ query }}' --required, 
-@workspace='{{ workspace }}' --required, 
+@deployment_name='{{ deployment_name }}' --required, 
 @assets='{{ assets }}', 
 @categories='{{ categories }}', 
 @is_free={{ is_free }}, 

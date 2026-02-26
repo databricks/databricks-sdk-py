@@ -1,0 +1,916 @@
+openapi: 3.0.0
+info:
+  title: Databricks Tags API (workspace)
+  description: >-
+    OpenAPI specification for the Databricks tags service (workspace-level
+    APIs), generated from the Databricks Python SDK.
+  version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-19'
+  x-stackql-sdk-namespace: databricks.sdk.service.tags
+servers:
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
+paths:
+  /api/2.1/tag-policies:
+    post:
+      operationId: tag_policies_create_tag_policy
+      summary: >-
+        Creates a new tag policy, making the associated tag key governed. For
+        Terraform usage, see the [Tag
+      tags:
+        - tags
+        - tag_policies
+      description: >-
+        Creates a new tag policy, making the associated tag key governed. For
+        Terraform usage, see the [Tag
+
+        Policy Terraform documentation]. To manage permissions for tag policies,
+        use the [Account Access
+
+        Control Proxy API].
+
+
+        [Account Access Control Proxy API]:
+        https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
+
+        [Tag Policy Terraform documentation]:
+        https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
+
+
+        :param tag_policy: :class:`TagPolicy`
+
+
+        :returns: :class:`TagPolicy`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tag_policy:
+                  type: string
+                  description: ':returns: :class:`TagPolicy`'
+              required:
+                - tag_policy
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagPolicy'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+      x-stackql-sdk-source: TagPoliciesAPI
+    get:
+      operationId: tag_policies_list_tag_policies
+      summary: >-
+        Lists the tag policies for all governed tags in the account. For
+        Terraform usage, see the [Tag Policy
+      tags:
+        - tags
+        - tag_policies
+      description: >-
+        Lists the tag policies for all governed tags in the account. For
+        Terraform usage, see the [Tag Policy
+
+        Terraform documentation]. To list granted permissions for tag policies,
+        use the [Account Access
+
+        Control Proxy API].
+
+
+        [Account Access Control Proxy API]:
+        https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
+
+        [Tag Policy Terraform documentation]:
+        https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policies
+
+
+        :param page_size: int (optional)
+          The maximum number of results to return in this request. Fewer results may be returned than
+          requested. If unspecified or set to 0, this defaults to 1000. The maximum value is 1000; values
+          above 1000 will be coerced down to 1000.
+        :param page_token: str (optional)
+          An optional page token received from a previous list tag policies call.
+
+        :returns: Iterator over :class:`TagPolicy`
+      parameters:
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            The maximum number of results to return in this request. Fewer
+            results may be returned than requested. If unspecified or set to 0,
+            this defaults to 1000. The maximum value is 1000; values above 1000
+            will be coerced down to 1000.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            An optional page token received from a previous list tag policies
+            call.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTagPoliciesResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+      x-stackql-sdk-source: TagPoliciesAPI
+  /api/2.1/tag-policies/{tag_key}:
+    delete:
+      operationId: tag_policies_delete_tag_policy
+      summary: >-
+        Deletes a tag policy by its associated governed tag's key, leaving that
+        tag key ungoverned. For
+      tags:
+        - tags
+        - tag_policies
+      description: >-
+        Deletes a tag policy by its associated governed tag's key, leaving that
+        tag key ungoverned. For
+
+        Terraform usage, see the [Tag Policy Terraform documentation].
+
+
+        [Tag Policy Terraform documentation]:
+        https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
+
+
+        :param tag_key: str
+      parameters:
+        - name: tag_key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: str
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+      x-stackql-sdk-source: TagPoliciesAPI
+    get:
+      operationId: tag_policies_get_tag_policy
+      summary: >-
+        Gets a single tag policy by its associated governed tag's key. For
+        Terraform usage, see the [Tag
+      tags:
+        - tags
+        - tag_policies
+      description: >-
+        Gets a single tag policy by its associated governed tag's key. For
+        Terraform usage, see the [Tag
+
+        Policy Terraform documentation]. To list granted permissions for tag
+        policies, use the [Account Access
+
+        Control Proxy API].
+
+
+        [Account Access Control Proxy API]:
+        https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
+
+        [Tag Policy Terraform documentation]:
+        https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policy
+
+
+        :param tag_key: str
+
+
+        :returns: :class:`TagPolicy`
+      parameters:
+        - name: tag_key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ':returns: :class:`TagPolicy`'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagPolicy'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+      x-stackql-sdk-source: TagPoliciesAPI
+    patch:
+      operationId: tag_policies_update_tag_policy
+      summary: >-
+        Updates an existing tag policy for a single governed tag. For Terraform
+        usage, see the [Tag Policy
+      tags:
+        - tags
+        - tag_policies
+      description: >-
+        Updates an existing tag policy for a single governed tag. For Terraform
+        usage, see the [Tag Policy
+
+        Terraform documentation]. To manage permissions for tag policies, use
+        the [Account Access Control
+
+        Proxy API].
+
+
+        [Account Access Control Proxy API]:
+        https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
+
+        [Tag Policy Terraform documentation]:
+        https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
+
+
+        :param tag_key: str
+
+        :param tag_policy: :class:`TagPolicy`
+
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`TagPolicy`
+      parameters:
+        - name: tag_key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ':param tag_policy: :class:`TagPolicy`'
+        - name: update_mask
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >-
+            The field mask must be a single string, with multiple fields
+            separated by commas (no spaces). The field path is relative to the
+            resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+            `author.given_name`). Specification of elements in sequence or map
+            fields is not allowed, as only the entire collection field can be
+            specified. Field names must exactly match the resource field names.
+            A field mask of `*` indicates full replacement. It’s recommended to
+            always explicitly list the fields being updated and avoid using `*`
+            wildcards, as it can lead to unintended results if the API changes
+            in the future.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tag_policy:
+                  type: string
+              required:
+                - tag_policy
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagPolicy'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+      x-stackql-sdk-source: TagPoliciesAPI
+  /api/2.0/entity-tag-assignments:
+    post:
+      operationId: workspace_entity_tag_assignments_create_tag_assignment
+      summary: Create a tag assignment
+      tags:
+        - tags
+        - workspace_entity_tag_assignments
+      description: |-
+        Create a tag assignment
+
+        :param tag_assignment: :class:`TagAssignment`
+
+        :returns: :class:`TagAssignment`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tag_assignment:
+                  type: string
+                  description: ':returns: :class:`TagAssignment`'
+              required:
+                - tag_assignment
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagAssignment'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+      x-stackql-sdk-source: WorkspaceEntityTagAssignmentsAPI
+  /api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags/{tag_key}:
+    delete:
+      operationId: workspace_entity_tag_assignments_delete_tag_assignment
+      summary: Delete a tag assignment
+      tags:
+        - tags
+        - workspace_entity_tag_assignments
+      description: |-
+        Delete a tag assignment
+
+        :param entity_type: str
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
+        :param entity_id: str
+          The identifier of the entity to which the tag is assigned
+        :param tag_key: str
+          The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed
+      parameters:
+        - name: entity_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of entity to which the tag is assigned. Allowed values are
+            apps, dashboards, geniespaces
+        - name: entity_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The identifier of the entity to which the tag is assigned
+        - name: tag_key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The key of the tag. The characters , . : / - = and leading/trailing
+            spaces are not allowed
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+      x-stackql-sdk-source: WorkspaceEntityTagAssignmentsAPI
+    get:
+      operationId: workspace_entity_tag_assignments_get_tag_assignment
+      summary: Get a tag assignment
+      tags:
+        - tags
+        - workspace_entity_tag_assignments
+      description: |-
+        Get a tag assignment
+
+        :param entity_type: str
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
+        :param entity_id: str
+          The identifier of the entity to which the tag is assigned
+        :param tag_key: str
+          The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed
+
+        :returns: :class:`TagAssignment`
+      parameters:
+        - name: entity_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of entity to which the tag is assigned. Allowed values are
+            apps, dashboards, geniespaces
+        - name: entity_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The identifier of the entity to which the tag is assigned
+        - name: tag_key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The key of the tag. The characters , . : / - = and leading/trailing
+            spaces are not allowed
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagAssignment'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+      x-stackql-sdk-source: WorkspaceEntityTagAssignmentsAPI
+    patch:
+      operationId: workspace_entity_tag_assignments_update_tag_assignment
+      summary: Update a tag assignment
+      tags:
+        - tags
+        - workspace_entity_tag_assignments
+      description: |-
+        Update a tag assignment
+
+        :param entity_type: str
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
+        :param entity_id: str
+          The identifier of the entity to which the tag is assigned
+        :param tag_key: str
+          The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed
+        :param tag_assignment: :class:`TagAssignment`
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`TagAssignment`
+      parameters:
+        - name: entity_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of entity to which the tag is assigned. Allowed values are
+            apps, dashboards, geniespaces
+        - name: entity_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The identifier of the entity to which the tag is assigned
+        - name: tag_key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The key of the tag. The characters , . : / - = and leading/trailing
+            spaces are not allowed
+        - name: update_mask
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tag_assignment:
+                  type: string
+                  description: >-
+                    :param update_mask: str The field mask must be a single
+                    string, with multiple fields separated by commas (no
+                    spaces). The field path is relative to the resource object,
+                    using a dot (`.`) to navigate sub-fields (e.g.,
+                    `author.given_name`). Specification of elements in sequence
+                    or map fields is not allowed, as only the entire collection
+                    field can be specified. Field names must exactly match the
+                    resource field names. A field mask of `*` indicates full
+                    replacement. It’s recommended to always explicitly list the
+                    fields being updated and avoid using `*` wildcards, as it
+                    can lead to unintended results if the API changes in the
+                    future.
+              required:
+                - tag_assignment
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagAssignment'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+      x-stackql-sdk-source: WorkspaceEntityTagAssignmentsAPI
+  /api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags:
+    get:
+      operationId: workspace_entity_tag_assignments_list_tag_assignments
+      summary: List the tag assignments for an entity
+      tags:
+        - tags
+        - workspace_entity_tag_assignments
+      description: |-
+        List the tag assignments for an entity
+
+        :param entity_type: str
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
+        :param entity_id: str
+          The identifier of the entity to which the tag is assigned
+        :param page_size: int (optional)
+          Optional. Maximum number of tag assignments to return in a single page
+        :param page_token: str (optional)
+          Pagination token to go to the next page of tag assignments. Requests first page if absent.
+
+        :returns: Iterator over :class:`TagAssignment`
+      parameters:
+        - name: entity_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of entity to which the tag is assigned. Allowed values are
+            apps, dashboards, geniespaces
+        - name: entity_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The identifier of the entity to which the tag is assigned
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Optional. Maximum number of tag assignments to return in a single
+            page
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Pagination token to go to the next page of tag assignments. Requests
+            first page if absent.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTagAssignmentsResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+      x-stackql-sdk-source: WorkspaceEntityTagAssignmentsAPI
+components:
+  schemas:
+    ListTagAssignmentsResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        tag_assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagAssignment'
+    ListTagPoliciesResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        tag_policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagPolicy'
+    TagAssignment:
+      type: object
+      properties:
+        entity_type:
+          type: string
+        entity_id:
+          type: string
+          description: The identifier of the entity to which the tag is assigned
+        tag_key:
+          type: string
+          description: >-
+            The key of the tag. The characters , . : / - = and leading/trailing
+            spaces are not allowed
+        tag_value:
+          type: string
+          description: The value of the tag
+      required:
+        - entity_type
+        - entity_id
+        - tag_key
+    TagPolicy:
+      type: object
+      properties:
+        tag_key:
+          type: string
+        create_time:
+          type: string
+          description: Timestamp when the tag policy was created
+        description:
+          type: string
+        id:
+          type: string
+        update_time:
+          type: string
+          description: Timestamp when the tag policy was last updated
+        values:
+          type: string
+      required:
+        - tag_key
+    TagPolicyRewrite:
+      type: object
+      properties:
+        tag_policies:
+          type: array
+          items:
+            type: object
+            properties:
+              tag_key:
+                type: string
+              create_time:
+                type: string
+                description: Timestamp when the tag policy was created
+              description:
+                type: string
+              id:
+                type: string
+              update_time:
+                type: string
+                description: Timestamp when the tag policy was last updated
+              value_items:
+                type: string
+    Value:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+  x-stackQL-resources:
+    tag_policies:
+      id: databricks_workspace.tags.tag_policies
+      name: tag_policies
+      title: Tag Policies
+      methods:
+        create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
+          operation:
+            $ref: '#/paths/~1api~12.1~1tag-policies/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.1~1tag-policies/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+            objectKey: $.tag_policies
+            overrideMediaType: application/json
+            schema_override:
+              $ref: '#/components/schemas/TagPolicyRewrite'
+            transform:
+              body: |
+                {
+                  {{- $resp := . -}}
+
+                  {{- /* unwrap only if top-level is an envelope like {"-meta":..., "result": {...}} */ -}}
+                  {{- range $k, $v := . -}}
+                    {{- if and (ne (printf "%.1s" $k) "-") (eq (printf "%T" $v) "map[string]interface {}") -}}
+                      {{- $resp = $v -}}
+                      {{- break -}}
+                    {{- end -}}
+                  {{- end -}}
+
+                  "tag_policies": [
+                    {{- $items := index $resp "tag_policies" -}}
+                    {{- if $items -}}
+                      {{- if eq (printf "%T" $items) "map[string]interface {}" -}}
+                        {{ template "item" $items }}
+                      {{- else -}}
+                        {{- range $i, $v := $items -}}
+                          {{- if $i}},{{ end -}}
+                          {{ template "item" $v }}
+                        {{- end -}}
+                      {{- end -}}
+                    {{- end -}}
+                  ]
+                }
+
+                {{define "item"}}
+                {
+                  "id": {{ with index . "id" }}{{ toJson . }}{{ else }}null{{ end }},
+                  "create_time": {{ with index . "create_time" }}{{ toJson . }}{{ else }}null{{ end }},
+                  "description": {{ with index . "description" }}{{ toJson . }}{{ else }}null{{ end }},
+                  "vpc_id": {{ with index . "vpcId" }}{{ toJson . }}{{ else }}null{{ end }},
+                  "value_items": {{ with index . "values" }}{{ toJson . }}{{ else }}null{{ end }}
+                }
+                {{end}}
+              type: golang_template_json_v0.3.0
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.1~1tag-policies~1{tag_key}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.1~1tag-policies~1{tag_key}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
+          operation:
+            $ref: '#/paths/~1api~12.1~1tag-policies~1{tag_key}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/tag_policies/methods/get'
+          - $ref: '#/components/x-stackQL-resources/tag_policies/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/tag_policies/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/tag_policies/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/tag_policies/methods/delete'
+        replace: []
+    workspace_entity_tag_assignments:
+      id: databricks_workspace.tags.workspace_entity_tag_assignments
+      name: workspace_entity_tag_assignments
+      title: Workspace Entity Tag Assignments
+      methods:
+        create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
+          operation:
+            $ref: '#/paths/~1api~12.0~1entity-tag-assignments/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1entity-tag-assignments~1{entity_type}~1{entity_id}~1tags~1{tag_key}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1entity-tag-assignments~1{entity_type}~1{entity_id}~1tags~1{tag_key}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1entity-tag-assignments~1{entity_type}~1{entity_id}~1tags~1{tag_key}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1entity-tag-assignments~1{entity_type}~1{entity_id}~1tags/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+            objectKey: $.tag_assignments
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/workspace_entity_tag_assignments/methods/get
+          - $ref: >-
+              #/components/x-stackQL-resources/workspace_entity_tag_assignments/methods/list
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/workspace_entity_tag_assignments/methods/create
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/workspace_entity_tag_assignments/methods/update
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/workspace_entity_tag_assignments/methods/delete
+        replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

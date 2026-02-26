@@ -81,7 +81,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace_object_type"><code>workspace_object_type</code></a>, <a href="#parameter-workspace_object_id"><code>workspace_object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-workspace_object_type"><code>workspace_object_type</code></a>, <a href="#parameter-workspace_object_id"><code>workspace_object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets the permission levels that a user can have on an object.</td>
 </tr>
@@ -101,10 +101,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 <tr id="parameter-workspace_object_id">
     <td><CopyableCode code="workspace_object_id" /></td>
@@ -137,7 +137,7 @@ permission_levels
 FROM databricks_workspace.workspace.object_permission_levels
 WHERE workspace_object_type = '{{ workspace_object_type }}' -- required
 AND workspace_object_id = '{{ workspace_object_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>

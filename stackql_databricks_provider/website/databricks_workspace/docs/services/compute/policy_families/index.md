@@ -110,14 +110,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-policy_family_id"><code>policy_family_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-policy_family_id"><code>policy_family_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-version"><code>version</code></a></td>
     <td>Retrieve the information for an policy family based on its identifier and version</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Returns the list of policy definition types available to use at their latest version. This API is</td>
 </tr>
@@ -137,15 +137,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-policy_family_id">
     <td><CopyableCode code="policy_family_id" /></td>
     <td><code>string</code></td>
     <td>The family ID about which to retrieve information.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
@@ -186,7 +186,7 @@ definition,
 description
 FROM databricks_workspace.compute.policy_families
 WHERE policy_family_id = '{{ policy_family_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND version = '{{ version }}'
 ;
 ```
@@ -202,7 +202,7 @@ policy_family_id,
 definition,
 description
 FROM databricks_workspace.compute.policy_families
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 ;

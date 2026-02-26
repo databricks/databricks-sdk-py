@@ -178,7 +178,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_manifest_capabilities"><code>include_manifest_capabilities</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-schema_name_pattern"><code>schema_name_pattern</code></a>, <a href="#parameter-table_name_pattern"><code>table_name_pattern</code></a></td>
     <td>Gets an array of summaries for tables for a schema and catalog within the metastore. The table</td>
 </tr>
@@ -203,10 +203,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Name of parent catalog for tables of interest.</td>
 </tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 <tr id="parameter-include_manifest_capabilities">
     <td><CopyableCode code="include_manifest_capabilities" /></td>
@@ -255,7 +255,7 @@ securable_kind_manifest,
 table_type
 FROM databricks_workspace.catalog.table_summaries
 WHERE catalog_name = '{{ catalog_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND include_manifest_capabilities = '{{ include_manifest_capabilities }}'
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'

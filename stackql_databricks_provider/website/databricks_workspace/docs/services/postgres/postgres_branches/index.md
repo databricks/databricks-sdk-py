@@ -188,14 +188,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Returns a paginated list of database branches in the project.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-branch_id"><code>branch_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-branch"><code>branch</code></a></td>
+    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-branch_id"><code>branch_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-branch"><code>branch</code></a></td>
     <td></td>
     <td>Creates a new database branch in the project.</td>
 </tr>
@@ -220,15 +220,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The ID to use for the Branch. This becomes the final component of the branch's resource name. The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only lowercase letters, numbers, and hyphens. For example, `development` becomes `projects/my-app/branches/development`.</td>
 </tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-parent">
     <td><CopyableCode code="parent" /></td>
     <td><code>string</code></td>
     <td>The Project where this Branch will be created. Format: projects/&#123;project_id&#125;</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -266,7 +266,7 @@ uid,
 update_time
 FROM databricks_workspace.postgres.postgres_branches
 WHERE parent = '{{ parent }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -293,13 +293,13 @@ INSERT INTO databricks_workspace.postgres.postgres_branches (
 branch,
 parent,
 branch_id,
-workspace
+deployment_name
 )
 SELECT 
 '{{ branch }}' /* required */,
 '{{ parent }}',
 '{{ branch_id }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 ;
 ```
 </TabItem>
@@ -314,8 +314,8 @@ SELECT
     - name: branch_id
       value: "{{ branch_id }}"
       description: Required parameter for the postgres_branches resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the postgres_branches resource.
     - name: branch
       description: |

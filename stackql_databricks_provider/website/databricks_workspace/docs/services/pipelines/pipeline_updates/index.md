@@ -1082,21 +1082,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-update_id"><code>update_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-update_id"><code>update_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets an update from an active pipeline.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-until_update_id"><code>until_update_id</code></a></td>
     <td>List updates for an active pipeline.</td>
 </tr>
 <tr>
     <td><a href="#start"><CopyableCode code="start" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Starts a new update for the pipeline. If there is already an active update for the pipeline, the</td>
 </tr>
@@ -1116,6 +1116,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-pipeline_id">
     <td><CopyableCode code="pipeline_id" /></td>
     <td><code>string</code></td>
@@ -1125,11 +1130,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="update_id" /></td>
     <td><code>string</code></td>
     <td>The ID of the update.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
@@ -1168,7 +1168,7 @@ update
 FROM databricks_workspace.pipelines.pipeline_updates
 WHERE pipeline_id = '{{ pipeline_id }}' -- required
 AND update_id = '{{ update_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -1183,7 +1183,7 @@ prev_page_token,
 updates
 FROM databricks_workspace.pipelines.pipeline_updates
 WHERE pipeline_id = '{{ pipeline_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 AND until_update_id = '{{ until_update_id }}'
@@ -1208,7 +1208,7 @@ Starts a new update for the pipeline. If there is already an active update for t
 ```sql
 EXEC databricks_workspace.pipelines.pipeline_updates.start 
 @pipeline_id='{{ pipeline_id }}' --required, 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cause": "{{ cause }}", 

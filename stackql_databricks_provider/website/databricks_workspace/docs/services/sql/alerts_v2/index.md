@@ -570,35 +570,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets an alert.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets a list of alerts accessible to the user, ordered by creation time.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-alert"><code>alert</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-alert"><code>alert</code></a></td>
     <td></td>
     <td>Create Alert</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-alert"><code>alert</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-alert"><code>alert</code></a></td>
     <td></td>
     <td>Update alert</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-purge"><code>purge</code></a></td>
     <td>Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer</td>
 </tr>
@@ -618,6 +618,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
@@ -627,11 +632,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="update_mask" /></td>
     <td><code>string</code></td>
     <td></td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -684,7 +684,7 @@ schedule,
 update_time
 FROM databricks_workspace.sql.alerts_v2
 WHERE id = '{{ id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -711,7 +711,7 @@ run_as,
 schedule,
 update_time
 FROM databricks_workspace.sql.alerts_v2
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -736,11 +736,11 @@ Create Alert
 ```sql
 INSERT INTO databricks_workspace.sql.alerts_v2 (
 alert,
-workspace
+deployment_name
 )
 SELECT 
 '{{ alert }}' /* required */,
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 id,
 warehouse_id,
@@ -766,8 +766,8 @@ update_time
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: alerts_v2
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the alerts_v2 resource.
     - name: alert
       description: |
@@ -844,7 +844,7 @@ alert = '{{ alert }}'
 WHERE 
 id = '{{ id }}' --required
 AND update_mask = '{{ update_mask }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND alert = '{{ alert }}' --required
 RETURNING
 id,
@@ -883,7 +883,7 @@ Moves an alert to the trash. Trashed alerts immediately disappear from list view
 ```sql
 DELETE FROM databricks_workspace.sql.alerts_v2
 WHERE id = '{{ id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND purge = '{{ purge }}'
 ;
 ```

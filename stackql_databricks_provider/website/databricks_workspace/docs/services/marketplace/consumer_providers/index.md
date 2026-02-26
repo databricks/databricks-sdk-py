@@ -217,21 +217,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get a provider in the Databricks Marketplace with at least one visible listing.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-is_featured"><code>is_featured</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List all providers in the Databricks Marketplace with at least one visible listing.</td>
 </tr>
 <tr>
     <td><a href="#batch_get"><CopyableCode code="batch_get" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-ids"><code>ids</code></a></td>
     <td>Batch get a provider in the Databricks Marketplace with at least one visible listing.</td>
 </tr>
@@ -251,15 +251,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>:returns: :class:`GetProviderResponse`</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-ids">
     <td><CopyableCode code="ids" /></td>
@@ -302,7 +302,7 @@ SELECT
 provider
 FROM databricks_workspace.marketplace.consumer_providers
 WHERE id = '{{ id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -327,7 +327,7 @@ published_by,
 support_contact_email,
 term_of_service_link
 FROM databricks_workspace.marketplace.consumer_providers
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND is_featured = '{{ is_featured }}'
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
@@ -351,7 +351,7 @@ Batch get a provider in the Databricks Marketplace with at least one visible lis
 
 ```sql
 EXEC databricks_workspace.marketplace.consumer_providers.batch_get 
-@workspace='{{ workspace }}' --required, 
+@deployment_name='{{ deployment_name }}' --required, 
 @ids='{{ ids }}'
 ;
 ```

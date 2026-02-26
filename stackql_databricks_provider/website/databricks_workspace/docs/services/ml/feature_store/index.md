@@ -140,49 +140,49 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get an Online Feature Store.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List Online Feature Stores.</td>
 </tr>
 <tr>
     <td><a href="#publish_table"><CopyableCode code="publish_table" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-source_table_name"><code>source_table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-publish_spec"><code>publish_spec</code></a></td>
+    <td><a href="#parameter-source_table_name"><code>source_table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-publish_spec"><code>publish_spec</code></a></td>
     <td></td>
     <td>Publish features.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-online_store"><code>online_store</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-online_store"><code>online_store</code></a></td>
     <td></td>
     <td>Create an Online Feature Store.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-online_store"><code>online_store</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-online_store"><code>online_store</code></a></td>
     <td></td>
     <td>Update an Online Feature Store.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Delete an Online Feature Store.</td>
 </tr>
 <tr>
     <td><a href="#delete_table"><CopyableCode code="delete_table" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-online_table_name"><code>online_table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-online_table_name"><code>online_table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Delete online table.</td>
 </tr>
@@ -202,6 +202,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
@@ -221,11 +226,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="update_mask" /></td>
     <td><code>string</code></td>
     <td>The list of fields to update.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -264,7 +264,7 @@ read_replica_count,
 state
 FROM databricks_workspace.ml.feature_store
 WHERE name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -282,7 +282,7 @@ creator,
 read_replica_count,
 state
 FROM databricks_workspace.ml.feature_store
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -309,12 +309,12 @@ Publish features.
 INSERT INTO databricks_workspace.ml.feature_store (
 publish_spec,
 source_table_name,
-workspace
+deployment_name
 )
 SELECT 
 '{{ publish_spec }}' /* required */,
 '{{ source_table_name }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 pipeline_id,
 online_table_name
@@ -328,11 +328,11 @@ Create an Online Feature Store.
 ```sql
 INSERT INTO databricks_workspace.ml.feature_store (
 online_store,
-workspace
+deployment_name
 )
 SELECT 
 '{{ online_store }}' /* required */,
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 name,
 usage_policy_id,
@@ -352,8 +352,8 @@ state
     - name: source_table_name
       value: "{{ source_table_name }}"
       description: Required parameter for the feature_store resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the feature_store resource.
     - name: publish_spec
       description: |
@@ -398,7 +398,7 @@ online_store = '{{ online_store }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND online_store = '{{ online_store }}' --required
 RETURNING
 name,
@@ -429,7 +429,7 @@ Delete an Online Feature Store.
 ```sql
 DELETE FROM databricks_workspace.ml.feature_store
 WHERE name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -440,7 +440,7 @@ Delete online table.
 ```sql
 DELETE FROM databricks_workspace.ml.feature_store
 WHERE online_table_name = '{{ online_table_name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

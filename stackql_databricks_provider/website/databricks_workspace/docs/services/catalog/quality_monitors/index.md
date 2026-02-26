@@ -280,42 +280,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>[DEPRECATED] Gets a monitor for the specified table. Use Data Quality Monitors API instead</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-output_schema_name"><code>output_schema_name</code></a>, <a href="#parameter-assets_dir"><code>assets_dir</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-output_schema_name"><code>output_schema_name</code></a>, <a href="#parameter-assets_dir"><code>assets_dir</code></a></td>
     <td></td>
     <td>[DEPRECATED] Creates a new monitor for the specified table. Use Data Quality Monitors API instead</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-output_schema_name"><code>output_schema_name</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-output_schema_name"><code>output_schema_name</code></a></td>
     <td></td>
     <td>[DEPRECATED] Updates a monitor for the specified table. Use Data Quality Monitors API instead</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>[DEPRECATED] Deletes a monitor for the specified table. Use Data Quality Monitors API instead</td>
 </tr>
 <tr>
     <td><a href="#cancel_refresh"><CopyableCode code="cancel_refresh" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>[DEPRECATED] Cancels an already-initiated refresh job. Use Data Quality Monitors API instead</td>
 </tr>
 <tr>
     <td><a href="#regenerate_dashboard"><CopyableCode code="regenerate_dashboard" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>[DEPRECATED] Regenerates the monitoring dashboard for the specified table. Use Data Quality Monitors</td>
 </tr>
@@ -335,6 +335,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-refresh_id">
     <td><CopyableCode code="refresh_id" /></td>
     <td><code>integer</code></td>
@@ -344,11 +349,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="table_name" /></td>
     <td><code>string</code></td>
     <td>UC table name in format `catalog.schema.table_name`. This field corresponds to the &#123;full_table_name_arg&#125; arg in the endpoint path.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -387,7 +387,7 @@ status,
 time_series
 FROM databricks_workspace.catalog.quality_monitors
 WHERE table_name = '{{ table_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -424,7 +424,7 @@ snapshot,
 time_series,
 warehouse_id,
 table_name,
-workspace
+deployment_name
 )
 SELECT 
 '{{ output_schema_name }}' /* required */,
@@ -442,7 +442,7 @@ SELECT
 '{{ time_series }}',
 '{{ warehouse_id }}',
 '{{ table_name }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 dashboard_id,
 baseline_table_name,
@@ -473,8 +473,8 @@ time_series
     - name: table_name
       value: "{{ table_name }}"
       description: Required parameter for the quality_monitors resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the quality_monitors resource.
     - name: output_schema_name
       value: "{{ output_schema_name }}"
@@ -592,7 +592,7 @@ snapshot = '{{ snapshot }}',
 time_series = '{{ time_series }}'
 WHERE 
 table_name = '{{ table_name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND output_schema_name = '{{ output_schema_name }}' --required
 RETURNING
 dashboard_id,
@@ -633,7 +633,7 @@ time_series;
 ```sql
 DELETE FROM databricks_workspace.catalog.quality_monitors
 WHERE table_name = '{{ table_name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -657,7 +657,7 @@ AND workspace = '{{ workspace }}' --required
 EXEC databricks_workspace.catalog.quality_monitors.cancel_refresh 
 @table_name='{{ table_name }}' --required, 
 @refresh_id='{{ refresh_id }}' --required, 
-@workspace='{{ workspace }}' --required
+@deployment_name='{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -668,7 +668,7 @@ EXEC databricks_workspace.catalog.quality_monitors.cancel_refresh
 ```sql
 EXEC databricks_workspace.catalog.quality_monitors.regenerate_dashboard 
 @table_name='{{ table_name }}' --required, 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "warehouse_id": "{{ warehouse_id }}"

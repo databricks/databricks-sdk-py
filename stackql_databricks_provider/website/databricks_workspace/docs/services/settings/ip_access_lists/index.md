@@ -177,42 +177,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets an IP access list, specified by its list ID.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets all IP access lists for the specified workspace.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-label"><code>label</code></a>, <a href="#parameter-list_type"><code>list_type</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-label"><code>label</code></a>, <a href="#parameter-list_type"><code>list_type</code></a></td>
     <td></td>
     <td>Creates an IP access list for this workspace.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Updates an existing IP access list, specified by its ID.</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-label"><code>label</code></a>, <a href="#parameter-list_type"><code>list_type</code></a>, <a href="#parameter-enabled"><code>enabled</code></a></td>
+    <td><a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-label"><code>label</code></a>, <a href="#parameter-list_type"><code>list_type</code></a>, <a href="#parameter-enabled"><code>enabled</code></a></td>
     <td></td>
     <td>Replaces an IP access list, specified by its ID.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes an IP access list, specified by its list ID.</td>
 </tr>
@@ -232,15 +232,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-ip_access_list_id">
     <td><CopyableCode code="ip_access_list_id" /></td>
     <td><code>string</code></td>
     <td>The ID for the corresponding IP access list</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -263,7 +263,7 @@ SELECT
 ip_access_list
 FROM databricks_workspace.settings.ip_access_lists
 WHERE ip_access_list_id = '{{ ip_access_list_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -284,7 +284,7 @@ list_type,
 updated_at,
 updated_by
 FROM databricks_workspace.settings.ip_access_lists
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -309,13 +309,13 @@ INSERT INTO databricks_workspace.settings.ip_access_lists (
 label,
 list_type,
 ip_addresses,
-workspace
+deployment_name
 )
 SELECT 
 '{{ label }}' /* required */,
 '{{ list_type }}' /* required */,
 '{{ ip_addresses }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 ip_access_list
 ;
@@ -326,8 +326,8 @@ ip_access_list
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: ip_access_lists
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the ip_access_lists resource.
     - name: label
       value: "{{ label }}"
@@ -367,7 +367,7 @@ label = '{{ label }}',
 list_type = '{{ list_type }}'
 WHERE 
 ip_access_list_id = '{{ ip_access_list_id }}' --required
-AND workspace = '{{ workspace }}' --required;
+AND deployment_name = '{{ deployment_name }}' --required;
 ```
 </TabItem>
 </Tabs>
@@ -394,7 +394,7 @@ enabled = {{ enabled }},
 ip_addresses = '{{ ip_addresses }}'
 WHERE 
 ip_access_list_id = '{{ ip_access_list_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND label = '{{ label }}' --required
 AND list_type = '{{ list_type }}' --required
 AND enabled = {{ enabled }} --required;
@@ -418,7 +418,7 @@ Deletes an IP access list, specified by its list ID.
 ```sql
 DELETE FROM databricks_workspace.settings.ip_access_lists
 WHERE ip_access_list_id = '{{ ip_access_list_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

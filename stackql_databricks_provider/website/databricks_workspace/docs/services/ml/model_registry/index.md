@@ -471,63 +471,63 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Lists all available registered models, up to the limit specified in __max_results__.</td>
 </tr>
 <tr>
     <td><a href="#search"><CopyableCode code="search" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-order_by"><code>order_by</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Search for registered models based on the specified __filter__.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates a new registered model with the name specified in the request body. Throws</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Updates a registered model.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a registered model.</td>
 </tr>
 <tr>
     <td><a href="#delete_tag"><CopyableCode code="delete_tag" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes the tag for a registered model.</td>
 </tr>
 <tr>
     <td><a href="#rename"><CopyableCode code="rename" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Renames a registered model.</td>
 </tr>
 <tr>
     <td><a href="#set_tag"><CopyableCode code="set_tag" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-value"><code>value</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-value"><code>value</code></a></td>
     <td></td>
     <td>Sets a tag on a registered model.</td>
 </tr>
@@ -547,6 +547,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-filter">
     <td><CopyableCode code="filter" /></td>
     <td><code>string</code></td>
@@ -561,11 +566,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Name of the registered model that the tag was logged under.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
@@ -604,7 +604,7 @@ SELECT
 registered_model_databricks
 FROM databricks_workspace.ml.model_registry
 WHERE name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -622,7 +622,7 @@ last_updated_timestamp,
 latest_versions,
 tags
 FROM databricks_workspace.ml.model_registry
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -643,7 +643,7 @@ latest_versions,
 tags
 FROM databricks_workspace.ml.model_registry
 WHERE filter = '{{ filter }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND max_results = '{{ max_results }}'
 AND order_by = '{{ order_by }}'
 AND page_token = '{{ page_token }}'
@@ -671,13 +671,13 @@ INSERT INTO databricks_workspace.ml.model_registry (
 name,
 description,
 tags,
-workspace
+deployment_name
 )
 SELECT 
 '{{ name }}' /* required */,
 '{{ description }}',
 '{{ tags }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 registered_model
 ;
@@ -688,8 +688,8 @@ registered_model
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: model_registry
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the model_registry resource.
     - name: name
       value: "{{ name }}"
@@ -729,7 +729,7 @@ SET
 name = '{{ name }}',
 description = '{{ description }}'
 WHERE 
-workspace = '{{ workspace }}' --required
+deployment_name = '{{ deployment_name }}' --required
 AND name = '{{ name }}' --required
 RETURNING
 registered_model;
@@ -753,7 +753,7 @@ Deletes a registered model.
 ```sql
 DELETE FROM databricks_workspace.ml.model_registry
 WHERE name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -778,7 +778,7 @@ Deletes the tag for a registered model.
 EXEC databricks_workspace.ml.model_registry.delete_tag 
 @name='{{ name }}' --required, 
 @key='{{ key }}' --required, 
-@workspace='{{ workspace }}' --required
+@deployment_name='{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -788,7 +788,7 @@ Renames a registered model.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry.rename 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "name": "{{ name }}", 
@@ -803,7 +803,7 @@ Sets a tag on a registered model.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry.set_tag 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "name": "{{ name }}", 

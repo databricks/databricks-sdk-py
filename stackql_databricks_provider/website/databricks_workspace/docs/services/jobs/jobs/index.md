@@ -2660,49 +2660,49 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-job_id"><code>job_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-job_id"><code>job_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Retrieves the details for a single job.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-expand_tasks"><code>expand_tasks</code></a>, <a href="#parameter-limit"><code>limit</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-offset"><code>offset</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Retrieves a list of jobs.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Create a new job.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-job_id"><code>job_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-job_id"><code>job_id</code></a></td>
     <td></td>
     <td>Add, update, or remove specific settings of an existing job. Use the [_Reset_</td>
 </tr>
 <tr>
     <td><a href="#reset"><CopyableCode code="reset" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-job_id"><code>job_id</code></a>, <a href="#parameter-new_settings"><code>new_settings</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-job_id"><code>job_id</code></a>, <a href="#parameter-new_settings"><code>new_settings</code></a></td>
     <td></td>
     <td>Overwrite all settings for the given job. Use the [_Update_ endpoint](:method:jobs/update) to update</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a job.</td>
 </tr>
 <tr>
     <td><a href="#run_now"><CopyableCode code="run_now" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-job_id"><code>job_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-job_id"><code>job_id</code></a></td>
     <td></td>
     <td>Run a job and return the `run_id` of the triggered run.</td>
 </tr>
@@ -2722,15 +2722,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-job_id">
     <td><CopyableCode code="job_id" /></td>
     <td><code>integer</code></td>
     <td>The canonical identifier of the job to retrieve information about. This field is required.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-expand_tasks">
     <td><CopyableCode code="expand_tasks" /></td>
@@ -2787,7 +2787,7 @@ settings,
 trigger_state
 FROM databricks_workspace.jobs.jobs
 WHERE job_id = '{{ job_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND page_token = '{{ page_token }}'
 ;
 ```
@@ -2807,7 +2807,7 @@ has_more,
 settings,
 trigger_state
 FROM databricks_workspace.jobs.jobs
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND expand_tasks = '{{ expand_tasks }}'
 AND limit = '{{ limit }}'
 AND name = '{{ name }}'
@@ -2860,7 +2860,7 @@ timeout_seconds,
 trigger,
 usage_policy_id,
 webhook_notifications,
-workspace
+deployment_name
 )
 SELECT 
 '{{ access_control_list }}',
@@ -2889,7 +2889,7 @@ SELECT
 '{{ trigger }}',
 '{{ usage_policy_id }}',
 '{{ webhook_notifications }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 job_id
 ;
@@ -2900,8 +2900,8 @@ job_id
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: jobs
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the jobs resource.
     - name: access_control_list
       description: |
@@ -3501,7 +3501,7 @@ job_id = {{ job_id }},
 fields_to_remove = '{{ fields_to_remove }}',
 new_settings = '{{ new_settings }}'
 WHERE 
-workspace = '{{ workspace }}' --required
+deployment_name = '{{ deployment_name }}' --required
 AND job_id = '{{ job_id }}' --required;
 ```
 </TabItem>
@@ -3526,7 +3526,7 @@ SET
 job_id = {{ job_id }},
 new_settings = '{{ new_settings }}'
 WHERE 
-workspace = '{{ workspace }}' --required
+deployment_name = '{{ deployment_name }}' --required
 AND job_id = '{{ job_id }}' --required
 AND new_settings = '{{ new_settings }}' --required;
 ```
@@ -3548,7 +3548,7 @@ Deletes a job.
 
 ```sql
 DELETE FROM databricks_workspace.jobs.jobs
-WHERE workspace = '{{ workspace }}' --required
+WHERE deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -3569,7 +3569,7 @@ Run a job and return the `run_id` of the triggered run.
 
 ```sql
 EXEC databricks_workspace.jobs.jobs.run_now 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "job_id": {{ job_id }}, 

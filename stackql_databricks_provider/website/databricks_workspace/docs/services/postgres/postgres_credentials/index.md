@@ -54,7 +54,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#generate"><CopyableCode code="generate" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-endpoint"><code>endpoint</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-endpoint"><code>endpoint</code></a></td>
     <td></td>
     <td>Generate OAuth credentials for a Postgres database.</td>
 </tr>
@@ -74,10 +74,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -96,7 +96,7 @@ Generate OAuth credentials for a Postgres database.
 
 ```sql
 EXEC databricks_workspace.postgres.postgres_credentials.generate 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "endpoint": "{{ endpoint }}", 

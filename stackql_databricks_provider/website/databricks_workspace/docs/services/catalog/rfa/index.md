@@ -145,21 +145,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get_destinations"><CopyableCode code="get_destinations" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets an array of access request destinations for the specified securable. Any caller can see URL</td>
 </tr>
 <tr>
     <td><a href="#batch_create"><CopyableCode code="batch_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Creates access requests for Unity Catalog permissions for a specified principal on a securable object.</td>
 </tr>
 <tr>
     <td><a href="#update_destinations"><CopyableCode code="update_destinations" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-access_request_destinations"><code>access_request_destinations</code></a></td>
+    <td><a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-access_request_destinations"><code>access_request_destinations</code></a></td>
     <td></td>
     <td>Updates the access request destinations for the given securable. The caller must be a metastore admin,</td>
 </tr>
@@ -179,6 +179,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-full_name">
     <td><CopyableCode code="full_name" /></td>
     <td><code>string</code></td>
@@ -193,11 +198,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="update_mask" /></td>
     <td><code>string</code></td>
     <td>The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -225,7 +225,7 @@ securable_type
 FROM databricks_workspace.catalog.rfa
 WHERE securable_type = '{{ securable_type }}' -- required
 AND full_name = '{{ full_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -248,11 +248,11 @@ Creates access requests for Unity Catalog permissions for a specified principal 
 ```sql
 INSERT INTO databricks_workspace.catalog.rfa (
 requests,
-workspace
+deployment_name
 )
 SELECT 
 '{{ requests }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 responses
 ;
@@ -263,8 +263,8 @@ responses
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: rfa
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the rfa resource.
     - name: requests
       description: |
@@ -299,7 +299,7 @@ SET
 access_request_destinations = '{{ access_request_destinations }}'
 WHERE 
 update_mask = '{{ update_mask }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND access_request_destinations = '{{ access_request_destinations }}' --required
 RETURNING
 full_name,

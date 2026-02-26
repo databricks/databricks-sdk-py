@@ -163,7 +163,8 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 <Tabs
     defaultValue="workspace_assignment_list"
     values={[
-        { label: 'workspace_assignment_list', value: 'workspace_assignment_list' }
+        { label: 'workspace_assignment_list', value: 'workspace_assignment_list' },
+        { label: 'Workspaces with assignments', value: 'workspaces_with_assignments' }
     ]}
 >
 <TabItem value="workspace_assignment_list">
@@ -180,6 +181,28 @@ WHERE account_id = '{{ account_id }}' -- required
 AND workspace_id = '{{ workspace_id }}' -- required
 ;
 ```
+</TabItem>
+
+<TabItem value="workspaces_with_assignments">
+
+Join workspaces with their principal assignments:
+
+```sql
+SELECT
+  w.workspace_id,
+  w.workspace_name,
+  w.workspace_status,
+  JSON_EXTRACT(wa.principal, '$.display_name') as display_name,
+  JSON_EXTRACT(wa.principal, '$.principal_id') as principal_id,
+  JSON_EXTRACT(wa.principal, '$.service_principal_name') as service_principal_name,
+  wa.permissions,
+  wa.error
+FROM databricks_account.provisioning.workspaces w
+LEFT JOIN databricks_account.iam.workspace_assignment wa
+ON w.workspace_id = wa.workspace_id
+WHERE account_id = '{{ account_id }}';
+```
+
 </TabItem>
 </Tabs>
 

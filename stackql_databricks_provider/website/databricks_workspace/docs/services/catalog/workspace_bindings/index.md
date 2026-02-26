@@ -85,28 +85,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get_bindings"><CopyableCode code="get_bindings" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-securable_name"><code>securable_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-securable_name"><code>securable_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the</td>
 </tr>
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the</td>
 </tr>
 <tr>
     <td><a href="#update_bindings"><CopyableCode code="update_bindings" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-securable_name"><code>securable_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-securable_name"><code>securable_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the</td>
 </tr>
@@ -126,6 +126,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
@@ -140,11 +145,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="securable_type" /></td>
     <td><code>string</code></td>
     <td>The type of the securable to bind to a workspace (catalog, storage_credential, credential, or external_location).</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
@@ -179,7 +179,7 @@ binding_type
 FROM databricks_workspace.catalog.workspace_bindings
 WHERE securable_type = '{{ securable_type }}' -- required
 AND securable_name = '{{ securable_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -194,7 +194,7 @@ SELECT
 workspaces
 FROM databricks_workspace.catalog.workspace_bindings
 WHERE name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -222,7 +222,7 @@ remove = '{{ remove }}'
 WHERE 
 securable_type = '{{ securable_type }}' --required
 AND securable_name = '{{ securable_name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 RETURNING
 bindings;
 ```
@@ -238,7 +238,7 @@ assign_workspaces = '{{ assign_workspaces }}',
 unassign_workspaces = '{{ unassign_workspaces }}'
 WHERE 
 name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 RETURNING
 workspaces;
 ```

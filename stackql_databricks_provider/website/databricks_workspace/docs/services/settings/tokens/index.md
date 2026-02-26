@@ -84,21 +84,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Lists all the valid tokens for a user-workspace pair.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Creates and returns a token for a user. If this call is made through token authentication, it creates</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-token_id"><code>token_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-token_id"><code>token_id</code></a></td>
     <td></td>
     <td>Revokes an access token.</td>
 </tr>
@@ -118,10 +118,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -145,7 +145,7 @@ comment,
 creation_time,
 expiry_time
 FROM databricks_workspace.settings.tokens
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -169,12 +169,12 @@ Creates and returns a token for a user. If this call is made through token authe
 INSERT INTO databricks_workspace.settings.tokens (
 comment,
 lifetime_seconds,
-workspace
+deployment_name
 )
 SELECT 
 '{{ comment }}',
 {{ lifetime_seconds }},
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 token_info,
 token_value
@@ -186,8 +186,8 @@ token_value
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: tokens
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the tokens resource.
     - name: comment
       value: "{{ comment }}"
@@ -217,7 +217,7 @@ Revokes an access token.
 
 ```sql
 EXEC databricks_workspace.settings.tokens.delete 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "token_id": "{{ token_id }}"

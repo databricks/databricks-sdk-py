@@ -260,35 +260,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>[DEPRECATED] Read a quality monitor on UC object. Use Data Quality Monitoring API instead.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>[DEPRECATED] (Unimplemented) List quality monitors. Use Data Quality Monitoring API instead.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-quality_monitor"><code>quality_monitor</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-quality_monitor"><code>quality_monitor</code></a></td>
     <td></td>
     <td>[DEPRECATED] Create a quality monitor on UC object. Use Data Quality Monitoring API instead.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-quality_monitor"><code>quality_monitor</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-quality_monitor"><code>quality_monitor</code></a></td>
     <td></td>
     <td>[DEPRECATED] (Unimplemented) Update a quality monitor on UC object. Use Data Quality Monitoring API</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>[DEPRECATED] Delete a quality monitor on UC object. Use Data Quality Monitoring API instead.</td>
 </tr>
@@ -308,6 +308,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-object_id">
     <td><CopyableCode code="object_id" /></td>
     <td><code>string</code></td>
@@ -317,11 +322,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="object_type" /></td>
     <td><code>string</code></td>
     <td>The type of the monitored object. Can be one of the following: schema.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -358,7 +358,7 @@ validity_check_configurations
 FROM databricks_workspace.qualitymonitorv2.quality_monitor_v2
 WHERE object_type = '{{ object_type }}' -- required
 AND object_id = '{{ object_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -373,7 +373,7 @@ anomaly_detection_config,
 object_type,
 validity_check_configurations
 FROM databricks_workspace.qualitymonitorv2.quality_monitor_v2
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -398,11 +398,11 @@ AND page_token = '{{ page_token }}'
 ```sql
 INSERT INTO databricks_workspace.qualitymonitorv2.quality_monitor_v2 (
 quality_monitor,
-workspace
+deployment_name
 )
 SELECT 
 '{{ quality_monitor }}' /* required */,
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 object_id,
 anomaly_detection_config,
@@ -416,8 +416,8 @@ validity_check_configurations
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: quality_monitor_v2
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the quality_monitor_v2 resource.
     - name: quality_monitor
       description: |
@@ -469,7 +469,7 @@ quality_monitor = '{{ quality_monitor }}'
 WHERE 
 object_type = '{{ object_type }}' --required
 AND object_id = '{{ object_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND quality_monitor = '{{ quality_monitor }}' --required
 RETURNING
 object_id,
@@ -497,7 +497,7 @@ validity_check_configurations;
 DELETE FROM databricks_workspace.qualitymonitorv2.quality_monitor_v2
 WHERE object_type = '{{ object_type }}' --required
 AND object_id = '{{ object_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

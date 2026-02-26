@@ -370,35 +370,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get the policy definition on a securable</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_inherited"><code>include_inherited</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List all policies defined on a securable. Optionally, the list can include inherited policies defined</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-policy_info"><code>policy_info</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-policy_info"><code>policy_info</code></a></td>
     <td></td>
     <td>Creates a new policy on a securable. The new policy applies to the securable and all its descendants.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-policy_info"><code>policy_info</code></a></td>
+    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-policy_info"><code>policy_info</code></a></td>
     <td><a href="#parameter-update_mask"><code>update_mask</code></a></td>
     <td>Update an ABAC policy on a securable.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Delete an ABAC policy defined on a securable.</td>
 </tr>
@@ -418,6 +418,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
@@ -432,11 +437,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="on_securable_type" /></td>
     <td><code>string</code></td>
     <td>Required. The type of the securable to delete the policy from.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-include_inherited">
     <td><CopyableCode code="include_inherited" /></td>
@@ -497,7 +497,7 @@ FROM databricks_workspace.catalog.policies
 WHERE on_securable_type = '{{ on_securable_type }}' -- required
 AND on_securable_fullname = '{{ on_securable_fullname }}' -- required
 AND name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -527,7 +527,7 @@ when_condition
 FROM databricks_workspace.catalog.policies
 WHERE on_securable_type = '{{ on_securable_type }}' -- required
 AND on_securable_fullname = '{{ on_securable_fullname }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND include_inherited = '{{ include_inherited }}'
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
@@ -553,11 +553,11 @@ Creates a new policy on a securable. The new policy applies to the securable and
 ```sql
 INSERT INTO databricks_workspace.catalog.policies (
 policy_info,
-workspace
+deployment_name
 )
 SELECT 
 '{{ policy_info }}' /* required */,
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 id,
 name,
@@ -584,8 +584,8 @@ when_condition
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: policies
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the policies resource.
     - name: policy_info
       description: |
@@ -647,7 +647,7 @@ WHERE
 on_securable_type = '{{ on_securable_type }}' --required
 AND on_securable_fullname = '{{ on_securable_fullname }}' --required
 AND name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND policy_info = '{{ policy_info }}' --required
 AND update_mask = '{{ update_mask}}'
 RETURNING
@@ -690,7 +690,7 @@ DELETE FROM databricks_workspace.catalog.policies
 WHERE on_securable_type = '{{ on_securable_type }}' --required
 AND on_securable_fullname = '{{ on_securable_fullname }}' --required
 AND name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

@@ -221,56 +221,56 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get a logged model.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a></td>
     <td></td>
     <td>Create a logged model.</td>
 </tr>
 <tr>
     <td><a href="#delete_tag"><CopyableCode code="delete_tag" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Delete a tag on a logged model.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Delete a logged model.</td>
 </tr>
 <tr>
     <td><a href="#finalize"><CopyableCode code="finalize" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-status"><code>status</code></a></td>
+    <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-status"><code>status</code></a></td>
     <td></td>
     <td>Finalize a logged model.</td>
 </tr>
 <tr>
     <td><a href="#log_params"><CopyableCode code="log_params" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Logs params for a logged model. A param is a key-value pair (string key, string value). Examples</td>
 </tr>
 <tr>
     <td><a href="#search"><CopyableCode code="search" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Search for Logged Models that satisfy specified search criteria.</td>
 </tr>
 <tr>
     <td><a href="#set_tags"><CopyableCode code="set_tags" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Set tags for a logged model.</td>
 </tr>
@@ -290,6 +290,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-model_id">
     <td><CopyableCode code="model_id" /></td>
     <td><code>string</code></td>
@@ -299,11 +304,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="tag_key" /></td>
     <td><code>string</code></td>
     <td>The tag key.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -325,7 +325,7 @@ SELECT
 model
 FROM databricks_workspace.ml.logged_models
 WHERE model_id = '{{ model_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -353,7 +353,7 @@ name,
 params,
 source_run_id,
 tags,
-workspace
+deployment_name
 )
 SELECT 
 '{{ experiment_id }}' /* required */,
@@ -362,7 +362,7 @@ SELECT
 '{{ params }}',
 '{{ source_run_id }}',
 '{{ tags }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 model
 ;
@@ -373,8 +373,8 @@ model
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: logged_models
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the logged_models resource.
     - name: experiment_id
       value: "{{ experiment_id }}"
@@ -427,7 +427,7 @@ Delete a tag on a logged model.
 DELETE FROM databricks_workspace.ml.logged_models
 WHERE model_id = '{{ model_id }}' --required
 AND tag_key = '{{ tag_key }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -438,7 +438,7 @@ Delete a logged model.
 ```sql
 DELETE FROM databricks_workspace.ml.logged_models
 WHERE model_id = '{{ model_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -463,7 +463,7 @@ Finalize a logged model.
 ```sql
 EXEC databricks_workspace.ml.logged_models.finalize 
 @model_id='{{ model_id }}' --required, 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "status": "{{ status }}"
@@ -478,7 +478,7 @@ Logs params for a logged model. A param is a key-value pair (string key, string 
 ```sql
 EXEC databricks_workspace.ml.logged_models.log_params 
 @model_id='{{ model_id }}' --required, 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "params": "{{ params }}"
@@ -492,7 +492,7 @@ Search for Logged Models that satisfy specified search criteria.
 
 ```sql
 EXEC databricks_workspace.ml.logged_models.search 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "datasets": "{{ datasets }}", 
@@ -512,7 +512,7 @@ Set tags for a logged model.
 ```sql
 EXEC databricks_workspace.ml.logged_models.set_tags 
 @model_id='{{ model_id }}' --required, 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "tags": "{{ tags }}"

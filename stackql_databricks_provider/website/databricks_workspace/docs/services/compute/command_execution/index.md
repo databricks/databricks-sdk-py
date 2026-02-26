@@ -131,35 +131,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#command_status"><CopyableCode code="command_status" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-context_id"><code>context_id</code></a>, <a href="#parameter-command_id"><code>command_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-context_id"><code>context_id</code></a>, <a href="#parameter-command_id"><code>command_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets the status of and, if available, the results from a currently executing command.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Creates an execution context for running cluster commands.</td>
 </tr>
 <tr>
     <td><a href="#cancel"><CopyableCode code="cancel" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Cancels a currently running command within an execution context.</td>
 </tr>
 <tr>
     <td><a href="#destroy"><CopyableCode code="destroy" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-context_id"><code>context_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-context_id"><code>context_id</code></a></td>
     <td></td>
     <td>Deletes an execution context.</td>
 </tr>
 <tr>
     <td><a href="#execute"><CopyableCode code="execute" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Runs a cluster command in the given execution context, using the provided language.</td>
 </tr>
@@ -194,10 +194,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td></td>
 </tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -223,7 +223,7 @@ FROM databricks_workspace.compute.command_execution
 WHERE cluster_id = '{{ cluster_id }}' -- required
 AND context_id = '{{ context_id }}' -- required
 AND command_id = '{{ command_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -247,12 +247,12 @@ Creates an execution context for running cluster commands.
 INSERT INTO databricks_workspace.compute.command_execution (
 cluster_id,
 language,
-workspace
+deployment_name
 )
 SELECT 
 '{{ cluster_id }}',
 '{{ language }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 id,
 status
@@ -264,8 +264,8 @@ status
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: command_execution
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the command_execution resource.
     - name: cluster_id
       value: "{{ cluster_id }}"
@@ -297,7 +297,7 @@ Cancels a currently running command within an execution context.
 
 ```sql
 EXEC databricks_workspace.compute.command_execution.cancel 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}", 
@@ -313,7 +313,7 @@ Deletes an execution context.
 
 ```sql
 EXEC databricks_workspace.compute.command_execution.destroy 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}", 
@@ -328,7 +328,7 @@ Runs a cluster command in the given execution context, using the provided langua
 
 ```sql
 EXEC databricks_workspace.compute.command_execution.execute 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}", 

@@ -420,42 +420,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-attributes"><code>attributes</code></a>, <a href="#parameter-count"><code>count</code></a>, <a href="#parameter-excluded_attributes"><code>excluded_attributes</code></a>, <a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-sort_by"><code>sort_by</code></a>, <a href="#parameter-sort_order"><code>sort_order</code></a>, <a href="#parameter-start_index"><code>start_index</code></a></td>
     <td>Gets information for a specific user in Databricks workspace.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-attributes"><code>attributes</code></a>, <a href="#parameter-count"><code>count</code></a>, <a href="#parameter-excluded_attributes"><code>excluded_attributes</code></a>, <a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-sort_by"><code>sort_by</code></a>, <a href="#parameter-sort_order"><code>sort_order</code></a>, <a href="#parameter-start_index"><code>start_index</code></a></td>
     <td>Gets details for all the users associated with a Databricks workspace.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Creates a new user in the Databricks workspace. This new user will also be added to the Databricks</td>
 </tr>
 <tr>
     <td><a href="#patch"><CopyableCode code="patch" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Partially updates a user resource by applying the supplied operations on specific user attributes.</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Replaces a user's information with the data supplied in request.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the</td>
 </tr>
@@ -475,15 +475,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>Unique ID for a user in the Databricks workspace.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-attributes">
     <td><CopyableCode code="attributes" /></td>
@@ -551,7 +551,7 @@ schemas,
 userName
 FROM databricks_workspace.iam.users_v2
 WHERE id = '{{ id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND attributes = '{{ attributes }}'
 AND count = '{{ count }}'
 AND excluded_attributes = '{{ excluded_attributes }}'
@@ -580,7 +580,7 @@ roles,
 schemas,
 userName
 FROM databricks_workspace.iam.users_v2
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND attributes = '{{ attributes }}'
 AND count = '{{ count }}'
 AND excluded_attributes = '{{ excluded_attributes }}'
@@ -620,7 +620,7 @@ name,
 roles,
 schemas,
 user_name,
-workspace
+deployment_name
 )
 SELECT 
 {{ active }},
@@ -634,7 +634,7 @@ SELECT
 '{{ roles }}',
 '{{ schemas }}',
 '{{ user_name }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 id,
 name,
@@ -655,8 +655,8 @@ userName
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: users_v2
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the users_v2 resource.
     - name: active
       value: {{ active }}
@@ -746,7 +746,7 @@ operations = '{{ operations }}',
 schemas = '{{ schemas }}'
 WHERE 
 id = '{{ id }}' --required
-AND workspace = '{{ workspace }}' --required;
+AND deployment_name = '{{ deployment_name }}' --required;
 ```
 </TabItem>
 </Tabs>
@@ -779,7 +779,7 @@ schemas = '{{ schemas }}',
 user_name = '{{ user_name }}'
 WHERE 
 id = '{{ id }}' --required
-AND workspace = '{{ workspace }}' --required;
+AND deployment_name = '{{ deployment_name }}' --required;
 ```
 </TabItem>
 </Tabs>
@@ -800,7 +800,7 @@ Deletes a user. Deleting a user from a Databricks workspace also removes objects
 ```sql
 DELETE FROM databricks_workspace.iam.users_v2
 WHERE id = '{{ id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

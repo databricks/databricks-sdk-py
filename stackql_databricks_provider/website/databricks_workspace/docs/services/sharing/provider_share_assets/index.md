@@ -458,7 +458,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-provider_name"><code>provider_name</code></a>, <a href="#parameter-share_name"><code>share_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-provider_name"><code>provider_name</code></a>, <a href="#parameter-share_name"><code>share_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-function_max_results"><code>function_max_results</code></a>, <a href="#parameter-notebook_max_results"><code>notebook_max_results</code></a>, <a href="#parameter-table_max_results"><code>table_max_results</code></a>, <a href="#parameter-volume_max_results"><code>volume_max_results</code></a></td>
     <td>Get arrays of assets associated with a specified provider's share. The caller is the recipient of the</td>
 </tr>
@@ -478,6 +478,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-provider_name">
     <td><CopyableCode code="provider_name" /></td>
     <td><code>string</code></td>
@@ -487,11 +492,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="share_name" /></td>
     <td><code>string</code></td>
     <td>The name of the share.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-function_max_results">
     <td><CopyableCode code="function_max_results" /></td>
@@ -538,7 +538,7 @@ volumes
 FROM databricks_workspace.sharing.provider_share_assets
 WHERE provider_name = '{{ provider_name }}' -- required
 AND share_name = '{{ share_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND function_max_results = '{{ function_max_results }}'
 AND notebook_max_results = '{{ notebook_max_results }}'
 AND table_max_results = '{{ table_max_results }}'

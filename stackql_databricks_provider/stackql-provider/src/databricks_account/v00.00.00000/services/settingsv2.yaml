@@ -10,7 +10,6 @@ info:
   x-stackql-sdk-namespace: databricks.sdk.service.settingsv2
 servers:
   - url: https://accounts.cloud.databricks.com
-    description: Databricks account
 paths:
   /api/2.1/accounts/{account_id}/settings/{name}:
     get:

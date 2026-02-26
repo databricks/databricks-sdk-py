@@ -362,35 +362,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_shared_data"><code>include_shared_data</code></a></td>
     <td>Gets a data object share from the metastore. The caller must have the USE_SHARE privilege on the</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets an array of data object shares from the metastore. If the caller has the USE_SHARE privilege on</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates a new share for data objects. Data objects can be added after creation with **update**. The</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Updates the share with the changes and data objects in the request. The caller must be the owner of</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a data object share from the metastore. The caller must be an owner of the share.</td>
 </tr>
@@ -410,15 +410,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>The name of the share.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-include_shared_data">
     <td><CopyableCode code="include_shared_data" /></td>
@@ -465,7 +465,7 @@ updated_at,
 updated_by
 FROM databricks_workspace.sharing.shares
 WHERE name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND include_shared_data = '{{ include_shared_data }}'
 ;
 ```
@@ -487,7 +487,7 @@ storage_root,
 updated_at,
 updated_by
 FROM databricks_workspace.sharing.shares
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -514,13 +514,13 @@ INSERT INTO databricks_workspace.sharing.shares (
 name,
 comment,
 storage_root,
-workspace
+deployment_name
 )
 SELECT 
 '{{ name }}' /* required */,
 '{{ comment }}',
 '{{ storage_root }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 name,
 comment,
@@ -540,8 +540,8 @@ updated_by
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: shares
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the shares resource.
     - name: name
       value: "{{ name }}"
@@ -583,7 +583,7 @@ storage_root = '{{ storage_root }}',
 updates = '{{ updates }}'
 WHERE 
 name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 RETURNING
 name,
 comment,
@@ -615,7 +615,7 @@ Deletes a data object share from the metastore. The caller must be an owner of t
 ```sql
 DELETE FROM databricks_workspace.sharing.shares
 WHERE name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

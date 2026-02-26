@@ -810,49 +810,49 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get a pipeline.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-order_by"><code>order_by</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Lists pipelines defined in the Spark Declarative Pipelines system.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Creates a new data processing pipeline based on the requested configuration. If successful, this</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Updates a pipeline with the supplied configuration.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
     <td>Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletion will cascade to all</td>
 </tr>
 <tr>
     <td><a href="#clone"><CopyableCode code="clone" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Creates a new pipeline using Unity Catalog from a pipeline using Hive Metastore. This method returns</td>
 </tr>
 <tr>
     <td><a href="#stop"><CopyableCode code="stop" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this</td>
 </tr>
@@ -872,15 +872,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-pipeline_id">
     <td><CopyableCode code="pipeline_id" /></td>
     <td><code>string</code></td>
     <td>:returns: Long-running operation waiter for :class:`GetPipelineResponse`. See :method:wait_get_pipeline_idle for more details.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-filter">
     <td><CopyableCode code="filter" /></td>
@@ -940,7 +940,7 @@ spec,
 state
 FROM databricks_workspace.pipelines.pipelines
 WHERE pipeline_id = '{{ pipeline_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -959,7 +959,7 @@ health,
 latest_updates,
 state
 FROM databricks_workspace.pipelines.pipelines
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND filter = '{{ filter }}'
 AND max_results = '{{ max_results }}'
 AND order_by = '{{ order_by }}'
@@ -1016,7 +1016,7 @@ tags,
 target,
 trigger,
 usage_policy_id,
-workspace
+deployment_name
 )
 SELECT 
 {{ allow_duplicate_names }},
@@ -1050,7 +1050,7 @@ SELECT
 '{{ target }}',
 '{{ trigger }}',
 '{{ usage_policy_id }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 pipeline_id,
 effective_settings
@@ -1062,8 +1062,8 @@ effective_settings
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: pipelines
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the pipelines resource.
     - name: allow_duplicate_names
       value: {{ allow_duplicate_names }}
@@ -1430,7 +1430,7 @@ trigger = '{{ trigger }}',
 usage_policy_id = '{{ usage_policy_id }}'
 WHERE 
 pipeline_id = '{{ pipeline_id }}' --required
-AND workspace = '{{ workspace }}' --required;
+AND deployment_name = '{{ deployment_name }}' --required;
 ```
 </TabItem>
 </Tabs>
@@ -1451,7 +1451,7 @@ Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletio
 ```sql
 DELETE FROM databricks_workspace.pipelines.pipelines
 WHERE pipeline_id = '{{ pipeline_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND force = '{{ force }}'
 ;
 ```
@@ -1475,7 +1475,7 @@ Creates a new pipeline using Unity Catalog from a pipeline using Hive Metastore.
 ```sql
 EXEC databricks_workspace.pipelines.pipelines.clone 
 @pipeline_id='{{ pipeline_id }}' --required, 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "allow_duplicate_names": {{ allow_duplicate_names }}, 
@@ -1520,7 +1520,7 @@ Stops the pipeline by canceling the active update. If there is no active update 
 ```sql
 EXEC databricks_workspace.pipelines.pipelines.stop 
 @pipeline_id='{{ pipeline_id }}' --required, 
-@workspace='{{ workspace }}' --required
+@deployment_name='{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

@@ -137,21 +137,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>[DEPRECATED] Gets info about a specific monitor refresh using the given refresh ID. Use Data Quality</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>[DEPRECATED] Gets an array containing the history of the most recent refreshes (up to 25) for this</td>
 </tr>
 <tr>
     <td><a href="#run"><CopyableCode code="run" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>[DEPRECATED] Queues a metric refresh on the monitor for the specified table. Use Data Quality Monitors</td>
 </tr>
@@ -171,6 +171,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-refresh_id">
     <td><CopyableCode code="refresh_id" /></td>
     <td><code>integer</code></td>
@@ -180,11 +185,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="table_name" /></td>
     <td><code>string</code></td>
     <td>UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are disallowed.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -213,7 +213,7 @@ trigger
 FROM databricks_workspace.catalog.quality_monitor_refreshes
 WHERE table_name = '{{ table_name }}' -- required
 AND refresh_id = '{{ refresh_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -226,7 +226,7 @@ SELECT
 refreshes
 FROM databricks_workspace.catalog.quality_monitor_refreshes
 WHERE table_name = '{{ table_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -248,7 +248,7 @@ AND workspace = '{{ workspace }}' -- required
 ```sql
 EXEC databricks_workspace.catalog.quality_monitor_refreshes.run 
 @table_name='{{ table_name }}' --required, 
-@workspace='{{ workspace }}' --required
+@deployment_name='{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

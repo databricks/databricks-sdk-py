@@ -340,21 +340,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_id"><code>deployment_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_id"><code>deployment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Retrieves information for the app deployment with the supplied name and deployment id.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Lists all app deployments for the app with the supplied name.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-app_deployment"><code>app_deployment</code></a></td>
+    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-app_deployment"><code>app_deployment</code></a></td>
     <td></td>
     <td>Creates an app deployment for the app with the supplied name.</td>
 </tr>
@@ -384,10 +384,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The unique id of the deployment.</td>
 </tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -431,7 +431,7 @@ update_time
 FROM databricks_workspace.apps.app_deployments
 WHERE app_name = '{{ app_name }}' -- required
 AND deployment_id = '{{ deployment_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -454,7 +454,7 @@ status,
 update_time
 FROM databricks_workspace.apps.app_deployments
 WHERE app_name = '{{ app_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -480,12 +480,12 @@ Creates an app deployment for the app with the supplied name.
 INSERT INTO databricks_workspace.apps.app_deployments (
 app_deployment,
 app_name,
-workspace
+deployment_name
 )
 SELECT 
 '{{ app_deployment }}' /* required */,
 '{{ app_name }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 deployment_id,
 command,
@@ -509,8 +509,8 @@ update_time
     - name: app_name
       value: "{{ app_name }}"
       description: Required parameter for the app_deployments resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the app_deployments resource.
     - name: app_deployment
       description: |

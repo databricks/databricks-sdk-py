@@ -91,21 +91,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Lists all secret scopes available in the workspace.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-scope"><code>scope</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-scope"><code>scope</code></a></td>
     <td></td>
     <td>Creates a new secret scope.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-scope"><code>scope</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-scope"><code>scope</code></a></td>
     <td></td>
     <td>Deletes a secret scope.</td>
 </tr>
@@ -125,10 +125,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -151,7 +151,7 @@ name,
 backend_type,
 keyvault_metadata
 FROM databricks_workspace.workspace.secret_scopes
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -177,14 +177,14 @@ scope,
 backend_azure_keyvault,
 initial_manage_principal,
 scope_backend_type,
-workspace
+deployment_name
 )
 SELECT 
 '{{ scope }}' /* required */,
 '{{ backend_azure_keyvault }}',
 '{{ initial_manage_principal }}',
 '{{ scope_backend_type }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 ;
 ```
 </TabItem>
@@ -193,8 +193,8 @@ SELECT
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: secret_scopes
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the secret_scopes resource.
     - name: scope
       value: "{{ scope }}"
@@ -234,7 +234,7 @@ Deletes a secret scope.
 
 ```sql
 EXEC databricks_workspace.workspace.secret_scopes.delete 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "scope": "{{ scope }}"

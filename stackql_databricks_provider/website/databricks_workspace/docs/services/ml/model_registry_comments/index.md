@@ -54,21 +54,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-comment"><code>comment</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-comment"><code>comment</code></a></td>
     <td></td>
     <td>Posts a comment on a model version. A comment can be submitted either by a user or programmatically to</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-id"><code>id</code></a>, <a href="#parameter-comment"><code>comment</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-id"><code>id</code></a>, <a href="#parameter-comment"><code>comment</code></a></td>
     <td></td>
     <td>Post an edit to a comment on a model version.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a comment on a model version.</td>
 </tr>
@@ -88,15 +88,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>Unique identifier of an activity</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -119,13 +119,13 @@ INSERT INTO databricks_workspace.ml.model_registry_comments (
 name,
 version,
 comment,
-workspace
+deployment_name
 )
 SELECT 
 '{{ name }}' /* required */,
 '{{ version }}' /* required */,
 '{{ comment }}' /* required */,
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 comment
 ;
@@ -136,8 +136,8 @@ comment
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: model_registry_comments
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the model_registry_comments resource.
     - name: name
       value: "{{ name }}"
@@ -175,7 +175,7 @@ SET
 id = '{{ id }}',
 comment = '{{ comment }}'
 WHERE 
-workspace = '{{ workspace }}' --required
+deployment_name = '{{ deployment_name }}' --required
 AND id = '{{ id }}' --required
 AND comment = '{{ comment }}' --required
 RETURNING
@@ -200,7 +200,7 @@ Deletes a comment on a model version.
 ```sql
 EXEC databricks_workspace.ml.model_registry_comments.delete 
 @id='{{ id }}' --required, 
-@workspace='{{ workspace }}' --required
+@deployment_name='{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

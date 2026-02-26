@@ -510,56 +510,56 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get_query_result_by_attachment"><CopyableCode code="get_query_result_by_attachment" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-attachment_id"><code>attachment_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-attachment_id"><code>attachment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)</td>
 </tr>
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get message from conversation.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List messages in a conversation</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-content"><code>content</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-content"><code>content</code></a></td>
     <td></td>
     <td>Create new message in a [conversation](:method:genie/startconversation). The AI response uses all</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Delete a conversation message.</td>
 </tr>
 <tr>
     <td><a href="#execute_query"><CopyableCode code="execute_query" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>DEPRECATED: Use [Execute Message Attachment Query](:method:genie/executemessageattachmentquery)</td>
 </tr>
 <tr>
     <td><a href="#get_query_result_deprecated"><CopyableCode code="get_query_result_deprecated" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)</td>
 </tr>
 <tr>
     <td><a href="#send_feedback"><CopyableCode code="send_feedback" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-rating"><code>rating</code></a></td>
+    <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-rating"><code>rating</code></a></td>
     <td></td>
     <td>Send feedback for a message.</td>
 </tr>
@@ -589,6 +589,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The ID associated with the conversation.</td>
 </tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-message_id">
     <td><CopyableCode code="message_id" /></td>
     <td><code>string</code></td>
@@ -598,11 +603,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="space_id" /></td>
     <td><code>string</code></td>
     <td>The ID associated with the Genie space where the message is located.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -639,7 +639,7 @@ WHERE space_id = '{{ space_id }}' -- required
 AND conversation_id = '{{ conversation_id }}' -- required
 AND message_id = '{{ message_id }}' -- required
 AND attachment_id = '{{ attachment_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -666,7 +666,7 @@ FROM databricks_workspace.dashboards.genie_messages
 WHERE space_id = '{{ space_id }}' -- required
 AND conversation_id = '{{ conversation_id }}' -- required
 AND message_id = '{{ message_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -681,7 +681,7 @@ next_page_token
 FROM databricks_workspace.dashboards.genie_messages
 WHERE space_id = '{{ space_id }}' -- required
 AND conversation_id = '{{ conversation_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -708,13 +708,13 @@ INSERT INTO databricks_workspace.dashboards.genie_messages (
 content,
 space_id,
 conversation_id,
-workspace
+deployment_name
 )
 SELECT 
 '{{ content }}' /* required */,
 '{{ space_id }}',
 '{{ conversation_id }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 id,
 conversation_id,
@@ -743,8 +743,8 @@ status
     - name: conversation_id
       value: "{{ conversation_id }}"
       description: Required parameter for the genie_messages resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the genie_messages resource.
     - name: content
       value: "{{ content }}"
@@ -773,7 +773,7 @@ DELETE FROM databricks_workspace.dashboards.genie_messages
 WHERE space_id = '{{ space_id }}' --required
 AND conversation_id = '{{ conversation_id }}' --required
 AND message_id = '{{ message_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -799,7 +799,7 @@ EXEC databricks_workspace.dashboards.genie_messages.execute_query
 @space_id='{{ space_id }}' --required, 
 @conversation_id='{{ conversation_id }}' --required, 
 @message_id='{{ message_id }}' --required, 
-@workspace='{{ workspace }}' --required
+@deployment_name='{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -812,7 +812,7 @@ EXEC databricks_workspace.dashboards.genie_messages.get_query_result_deprecated
 @space_id='{{ space_id }}' --required, 
 @conversation_id='{{ conversation_id }}' --required, 
 @message_id='{{ message_id }}' --required, 
-@workspace='{{ workspace }}' --required
+@deployment_name='{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -825,7 +825,7 @@ EXEC databricks_workspace.dashboards.genie_messages.send_feedback
 @space_id='{{ space_id }}' --required, 
 @conversation_id='{{ conversation_id }}' --required, 
 @message_id='{{ message_id }}' --required, 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "rating": "{{ rating }}"

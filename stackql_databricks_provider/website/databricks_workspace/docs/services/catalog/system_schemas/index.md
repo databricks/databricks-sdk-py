@@ -74,21 +74,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore</td>
 </tr>
 <tr>
     <td><a href="#enable"><CopyableCode code="enable" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Enables the system schema and adds it to the system catalog. The caller must be an account admin or a</td>
 </tr>
 <tr>
     <td><a href="#disable"><CopyableCode code="disable" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Disables the system schema and removes it from the system catalog. The caller must be an account admin</td>
 </tr>
@@ -108,6 +108,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-metastore_id">
     <td><CopyableCode code="metastore_id" /></td>
     <td><code>string</code></td>
@@ -117,11 +122,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="schema_name" /></td>
     <td><code>string</code></td>
     <td>Full name of the system schema.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
@@ -154,7 +154,7 @@ schema,
 state
 FROM databricks_workspace.catalog.system_schemas
 WHERE metastore_id = '{{ metastore_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -182,7 +182,7 @@ catalog_name = '{{ catalog_name }}'
 WHERE 
 metastore_id = '{{ metastore_id }}' --required
 AND schema_name = '{{ schema_name }}' --required
-AND workspace = '{{ workspace }}' --required;
+AND deployment_name = '{{ deployment_name }}' --required;
 ```
 </TabItem>
 </Tabs>
@@ -204,7 +204,7 @@ Disables the system schema and removes it from the system catalog. The caller mu
 DELETE FROM databricks_workspace.catalog.system_schemas
 WHERE metastore_id = '{{ metastore_id }}' --required
 AND schema_name = '{{ schema_name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

@@ -54,7 +54,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#exchange_token"><CopyableCode code="exchange_token" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-partition_id"><code>partition_id</code></a>, <a href="#parameter-token_type"><code>token_type</code></a>, <a href="#parameter-scopes"><code>scopes</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-partition_id"><code>partition_id</code></a>, <a href="#parameter-token_type"><code>token_type</code></a>, <a href="#parameter-scopes"><code>scopes</code></a></td>
     <td></td>
     <td>Exchange tokens with an Identity Provider to get a new access token. It allows specifying scopes to</td>
 </tr>
@@ -74,10 +74,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -100,13 +100,13 @@ INSERT INTO databricks_workspace.settings.credentials_manager (
 partition_id,
 token_type,
 scopes,
-workspace
+deployment_name
 )
 SELECT 
 '{{ partition_id }}' /* required */,
 '{{ token_type }}' /* required */,
 '{{ scopes }}' /* required */,
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 values
 ;
@@ -117,8 +117,8 @@ values
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: credentials_manager
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the credentials_manager resource.
     - name: partition_id
       description: |

@@ -258,14 +258,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.</td>
 </tr>
 <tr>
     <td><a href="#set"><CopyableCode code="set" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.</td>
 </tr>
@@ -285,10 +285,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -318,7 +318,7 @@ instance_profile_arn,
 security_policy,
 sql_configuration_parameters
 FROM databricks_workspace.sql.workspace_warehouse_config
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -351,7 +351,7 @@ instance_profile_arn = '{{ instance_profile_arn }}',
 security_policy = '{{ security_policy }}',
 sql_configuration_parameters = '{{ sql_configuration_parameters }}'
 WHERE 
-workspace = '{{ workspace }}' --required;
+deployment_name = '{{ deployment_name }}' --required;
 ```
 </TabItem>
 </Tabs>

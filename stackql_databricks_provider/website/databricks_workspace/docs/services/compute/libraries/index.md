@@ -162,21 +162,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get the status of libraries on a cluster. A status is returned for all libraries installed on this</td>
 </tr>
 <tr>
     <td><a href="#install"><CopyableCode code="install" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-libraries"><code>libraries</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-libraries"><code>libraries</code></a></td>
     <td></td>
     <td>Add libraries to install on a cluster. The installation is asynchronous; it happens in the background</td>
 </tr>
 <tr>
     <td><a href="#uninstall"><CopyableCode code="uninstall" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-libraries"><code>libraries</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-libraries"><code>libraries</code></a></td>
     <td></td>
     <td>Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is</td>
 </tr>
@@ -201,10 +201,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Unique identifier of the cluster whose status should be retrieved.</td>
 </tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -229,7 +229,7 @@ messages,
 status
 FROM databricks_workspace.compute.libraries
 WHERE cluster_id = '{{ cluster_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -253,12 +253,12 @@ Add libraries to install on a cluster. The installation is asynchronous; it happ
 INSERT INTO databricks_workspace.compute.libraries (
 cluster_id,
 libraries,
-workspace
+deployment_name
 )
 SELECT 
 '{{ cluster_id }}' /* required */,
 '{{ libraries }}' /* required */,
-'{{ workspace }}'
+'{{ deployment_name }}'
 ;
 ```
 </TabItem>
@@ -267,8 +267,8 @@ SELECT
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: libraries
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the libraries resource.
     - name: cluster_id
       value: "{{ cluster_id }}"
@@ -313,7 +313,7 @@ Set libraries to uninstall from a cluster. The libraries won't be uninstalled un
 
 ```sql
 EXEC databricks_workspace.compute.libraries.uninstall 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}", 

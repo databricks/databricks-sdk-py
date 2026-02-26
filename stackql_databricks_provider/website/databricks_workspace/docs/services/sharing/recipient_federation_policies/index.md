@@ -174,28 +174,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Reads an existing federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Lists federation policies for an OIDC_FEDERATION recipient for sharing data from Databricks to</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-policy"><code>policy</code></a></td>
+    <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-policy"><code>policy</code></a></td>
     <td></td>
     <td>Create a federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks to</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes an existing federation policy for an OIDC_FEDERATION recipient. The caller must be the owner</td>
 </tr>
@@ -215,6 +215,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
@@ -224,11 +229,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="recipient_name" /></td>
     <td><code>string</code></td>
     <td>Name of the recipient. This is the name of the recipient for which the policy is being deleted.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-max_results">
     <td><CopyableCode code="max_results" /></td>
@@ -267,7 +267,7 @@ update_time
 FROM databricks_workspace.sharing.recipient_federation_policies
 WHERE recipient_name = '{{ recipient_name }}' -- required
 AND name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -285,7 +285,7 @@ oidc_policy,
 update_time
 FROM databricks_workspace.sharing.recipient_federation_policies
 WHERE recipient_name = '{{ recipient_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -311,12 +311,12 @@ Create a federation policy for an OIDC_FEDERATION recipient for sharing data fro
 INSERT INTO databricks_workspace.sharing.recipient_federation_policies (
 policy,
 recipient_name,
-workspace
+deployment_name
 )
 SELECT 
 '{{ policy }}' /* required */,
 '{{ recipient_name }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 id,
 name,
@@ -335,8 +335,8 @@ update_time
     - name: recipient_name
       value: "{{ recipient_name }}"
       description: Required parameter for the recipient_federation_policies resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the recipient_federation_policies resource.
     - name: policy
       description: |
@@ -375,7 +375,7 @@ Deletes an existing federation policy for an OIDC_FEDERATION recipient. The call
 DELETE FROM databricks_workspace.sharing.recipient_federation_policies
 WHERE recipient_name = '{{ recipient_name }}' --required
 AND name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

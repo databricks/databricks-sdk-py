@@ -81,7 +81,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#check"><CopyableCode code="check" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-actor"><code>actor</code></a>, <a href="#parameter-permission"><code>permission</code></a>, <a href="#parameter-resource"><code>resource</code></a>, <a href="#parameter-consistency_token"><code>consistency_token</code></a>, <a href="#parameter-authz_identity"><code>authz_identity</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-actor"><code>actor</code></a>, <a href="#parameter-permission"><code>permission</code></a>, <a href="#parameter-resource"><code>resource</code></a>, <a href="#parameter-consistency_token"><code>consistency_token</code></a>, <a href="#parameter-authz_identity"><code>authz_identity</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-resource_info"><code>resource_info</code></a></td>
     <td>Check access policy to a resource.</td>
 </tr>
@@ -116,6 +116,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>object</code></td>
     <td>:param authz_identity: :class:`RequestAuthzIdentity`</td>
 </tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-permission">
     <td><CopyableCode code="permission" /></td>
     <td><code>string</code></td>
@@ -125,11 +130,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="resource" /></td>
     <td><code>string</code></td>
     <td>Ex: (servicePrincipal/use, accounts/&lt;account-id&gt;/servicePrincipals/&lt;sp-id&gt;) Ex: (servicePrincipal.ruleSet/update, accounts/&lt;account-id&gt;/servicePrincipals/&lt;sp-id&gt;/ruleSets/default)</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-resource_info">
     <td><CopyableCode code="resource_info" /></td>
@@ -161,7 +161,7 @@ AND permission = '{{ permission }}' -- required
 AND resource = '{{ resource }}' -- required
 AND consistency_token = '{{ consistency_token }}' -- required
 AND authz_identity = '{{ authz_identity }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND resource_info = '{{ resource_info }}'
 ;
 ```

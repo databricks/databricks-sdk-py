@@ -133,35 +133,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-events"><code>events</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-model_name"><code>model_name</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>**NOTE:** This endpoint is in Public Preview. Lists all registry webhooks.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-events"><code>events</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-events"><code>events</code></a></td>
     <td></td>
     <td>**NOTE:** This endpoint is in Public Preview. Creates a registry webhook.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-id"><code>id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
     <td>**NOTE:** This endpoint is in Public Preview. Updates a registry webhook.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>**NOTE:** This endpoint is in Public Preview. Deletes a registry webhook.</td>
 </tr>
 <tr>
     <td><a href="#test"><CopyableCode code="test" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-id"><code>id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
     <td>**NOTE:** This endpoint is in Public Preview. Tests a registry webhook.</td>
 </tr>
@@ -181,15 +181,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>Webhook ID required to delete a registry webhook.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-events">
     <td><CopyableCode code="events" /></td>
@@ -238,7 +238,7 @@ job_spec,
 last_updated_timestamp,
 status
 FROM databricks_workspace.ml.model_registry_webhooks
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND events = '{{ events }}'
 AND max_results = '{{ max_results }}'
 AND model_name = '{{ model_name }}'
@@ -270,7 +270,7 @@ http_url_spec,
 job_spec,
 model_name,
 status,
-workspace
+deployment_name
 )
 SELECT 
 '{{ events }}' /* required */,
@@ -279,7 +279,7 @@ SELECT
 '{{ job_spec }}',
 '{{ model_name }}',
 '{{ status }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 webhook
 ;
@@ -290,8 +290,8 @@ webhook
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: model_registry_webhooks
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the model_registry_webhooks resource.
     - name: events
       value:
@@ -353,7 +353,7 @@ http_url_spec = '{{ http_url_spec }}',
 job_spec = '{{ job_spec }}',
 status = '{{ status }}'
 WHERE 
-workspace = '{{ workspace }}' --required
+deployment_name = '{{ deployment_name }}' --required
 AND id = '{{ id }}' --required
 RETURNING
 webhook;
@@ -378,7 +378,7 @@ webhook;
 ```sql
 EXEC databricks_workspace.ml.model_registry_webhooks.delete 
 @id='{{ id }}' --required, 
-@workspace='{{ workspace }}' --required
+@deployment_name='{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -388,7 +388,7 @@ EXEC databricks_workspace.ml.model_registry_webhooks.delete
 
 ```sql
 EXEC databricks_workspace.ml.model_registry_webhooks.test 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "id": "{{ id }}", 

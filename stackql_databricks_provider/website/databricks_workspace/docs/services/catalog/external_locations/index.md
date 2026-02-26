@@ -536,35 +536,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a></td>
     <td>Gets an external location from the metastore. The caller must be either a metastore admin, the owner</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-include_unbound"><code>include_unbound</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-credential_name"><code>credential_name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-credential_name"><code>credential_name</code></a></td>
     <td></td>
     <td>Creates a new external location entry in the metastore. The caller must be a metastore admin or have</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Updates an external location in the metastore. The caller must be the owner of the external location,</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
     <td>Deletes the specified external location from the metastore. The caller must be the owner of the</td>
 </tr>
@@ -584,15 +584,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Name of the external location.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-force">
     <td><CopyableCode code="force" /></td>
@@ -657,7 +657,7 @@ updated_by,
 url
 FROM databricks_workspace.catalog.external_locations
 WHERE name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND include_browse = '{{ include_browse }}'
 ;
 ```
@@ -687,7 +687,7 @@ updated_at,
 updated_by,
 url
 FROM databricks_workspace.catalog.external_locations
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND include_browse = '{{ include_browse }}'
 AND include_unbound = '{{ include_unbound }}'
 AND max_results = '{{ max_results }}'
@@ -723,7 +723,7 @@ fallback,
 file_event_queue,
 read_only,
 skip_validation,
-workspace
+deployment_name
 )
 SELECT 
 '{{ name }}' /* required */,
@@ -736,7 +736,7 @@ SELECT
 '{{ file_event_queue }}',
 {{ read_only }},
 {{ skip_validation }},
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 name,
 credential_id,
@@ -764,8 +764,8 @@ url
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: external_locations
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the external_locations resource.
     - name: name
       value: "{{ name }}"
@@ -866,7 +866,7 @@ skip_validation = {{ skip_validation }},
 url = '{{ url }}'
 WHERE 
 name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 RETURNING
 name,
 credential_id,
@@ -906,7 +906,7 @@ Deletes the specified external location from the metastore. The caller must be t
 ```sql
 DELETE FROM databricks_workspace.catalog.external_locations
 WHERE name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND force = '{{ force }}'
 ;
 ```

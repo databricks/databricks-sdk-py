@@ -138,42 +138,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get a Custom LLM.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-instructions"><code>instructions</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-instructions"><code>instructions</code></a></td>
     <td></td>
     <td>Create a Custom LLM.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-custom_llm"><code>custom_llm</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-custom_llm"><code>custom_llm</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a></td>
     <td></td>
     <td>Update a Custom LLM.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Delete a Custom LLM.</td>
 </tr>
 <tr>
     <td><a href="#cancel_optimize"><CopyableCode code="cancel_optimize" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Cancel a Custom LLM Optimization Run.</td>
 </tr>
 <tr>
     <td><a href="#start_optimize"><CopyableCode code="start_optimize" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Start a Custom LLM Optimization Run.</td>
 </tr>
@@ -193,15 +193,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>The Id of the tile.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -232,7 +232,7 @@ instructions,
 optimization_state
 FROM databricks_workspace.agentbricks.custom_llms
 WHERE id = '{{ id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -259,7 +259,7 @@ instructions,
 agent_artifact_path,
 datasets,
 guidelines,
-workspace
+deployment_name
 )
 SELECT 
 '{{ name }}' /* required */,
@@ -267,7 +267,7 @@ SELECT
 '{{ agent_artifact_path }}',
 '{{ datasets }}',
 '{{ guidelines }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 id,
 name,
@@ -287,8 +287,8 @@ optimization_state
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: custom_llms
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the custom_llms resource.
     - name: name
       value: "{{ name }}"
@@ -340,7 +340,7 @@ custom_llm = '{{ custom_llm }}',
 update_mask = '{{ update_mask }}'
 WHERE 
 id = '{{ id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND custom_llm = '{{ custom_llm }}' --required
 AND update_mask = '{{ update_mask }}' --required
 RETURNING
@@ -374,7 +374,7 @@ Delete a Custom LLM.
 ```sql
 DELETE FROM databricks_workspace.agentbricks.custom_llms
 WHERE id = '{{ id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -397,7 +397,7 @@ Cancel a Custom LLM Optimization Run.
 ```sql
 EXEC databricks_workspace.agentbricks.custom_llms.cancel_optimize 
 @id='{{ id }}' --required, 
-@workspace='{{ workspace }}' --required
+@deployment_name='{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -408,7 +408,7 @@ Start a Custom LLM Optimization Run.
 ```sql
 EXEC databricks_workspace.agentbricks.custom_llms.start_optimize 
 @id='{{ id }}' --required, 
-@workspace='{{ workspace }}' --required
+@deployment_name='{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

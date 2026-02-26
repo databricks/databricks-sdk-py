@@ -2672,98 +2672,98 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Retrieves the information for a cluster given its identifier. Clusters can be described while they are</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-filter_by"><code>filter_by</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-sort_by"><code>sort_by</code></a></td>
     <td>Return information about all pinned and active clusters, and all clusters terminated within the last</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-spark_version"><code>spark_version</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-spark_version"><code>spark_version</code></a></td>
     <td></td>
     <td>Creates a new Spark cluster. This method will acquire new instances from the cloud provider if</td>
 </tr>
 <tr>
     <td><a href="#change_owner"><CopyableCode code="change_owner" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-owner_username"><code>owner_username</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-owner_username"><code>owner_username</code></a></td>
     <td></td>
     <td>Change the owner of the cluster. You must be an admin and the cluster must be terminated to perform</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
     <td></td>
     <td>Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the</td>
 </tr>
 <tr>
     <td><a href="#edit"><CopyableCode code="edit" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-spark_version"><code>spark_version</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-spark_version"><code>spark_version</code></a></td>
     <td></td>
     <td>Updates the configuration of a cluster to match the provided attributes and size. A cluster can be</td>
 </tr>
 <tr>
     <td><a href="#events"><CopyableCode code="events" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
     <td></td>
     <td>Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more</td>
 </tr>
 <tr>
     <td><a href="#permanent_delete"><CopyableCode code="permanent_delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
     <td></td>
     <td>Permanently deletes a Spark cluster. This cluster is terminated and resources are asynchronously</td>
 </tr>
 <tr>
     <td><a href="#pin"><CopyableCode code="pin" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
     <td></td>
     <td>Pinning a cluster ensures that the cluster will always be returned by the ListClusters API. Pinning a</td>
 </tr>
 <tr>
     <td><a href="#resize"><CopyableCode code="resize" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
     <td></td>
     <td>Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a</td>
 </tr>
 <tr>
     <td><a href="#restart"><CopyableCode code="restart" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
     <td></td>
     <td>Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,</td>
 </tr>
 <tr>
     <td><a href="#start"><CopyableCode code="start" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
     <td></td>
     <td>Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:</td>
 </tr>
 <tr>
     <td><a href="#unpin"><CopyableCode code="unpin" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
     <td></td>
     <td>Unpinning a cluster will allow the cluster to eventually be removed from the ListClusters API.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a></td>
     <td></td>
     <td>Updates the configuration of a cluster to match the partial set of attributes and size. Denote which</td>
 </tr>
@@ -2788,10 +2788,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The cluster about which to retrieve information.</td>
 </tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 <tr id="parameter-filter_by">
     <td><CopyableCode code="filter_by" /></td>
@@ -2885,7 +2885,7 @@ worker_node_type_flexibility,
 workload_type
 FROM databricks_workspace.compute.clusters
 WHERE cluster_id = '{{ cluster_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -2948,7 +2948,7 @@ use_ml_runtime,
 worker_node_type_flexibility,
 workload_type
 FROM databricks_workspace.compute.clusters
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND filter_by = '{{ filter_by }}'
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
@@ -3009,7 +3009,7 @@ total_initial_remote_disk_size,
 use_ml_runtime,
 worker_node_type_flexibility,
 workload_type,
-workspace
+deployment_name
 )
 SELECT 
 '{{ spark_version }}' /* required */,
@@ -3047,7 +3047,7 @@ SELECT
 {{ use_ml_runtime }},
 '{{ worker_node_type_flexibility }}',
 '{{ workload_type }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 cluster_id,
 driver_instance_pool_id,
@@ -3109,8 +3109,8 @@ workload_type
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: clusters
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the clusters resource.
     - name: spark_version
       value: "{{ spark_version }}"
@@ -3348,7 +3348,7 @@ Change the owner of the cluster. You must be an admin and the cluster must be te
 
 ```sql
 EXEC databricks_workspace.compute.clusters.change_owner 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}", 
@@ -3363,7 +3363,7 @@ Terminates the Spark cluster with the specified ID. The cluster is removed async
 
 ```sql
 EXEC databricks_workspace.compute.clusters.delete 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}"
@@ -3377,7 +3377,7 @@ Updates the configuration of a cluster to match the provided attributes and size
 
 ```sql
 EXEC databricks_workspace.compute.clusters.edit 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}", 
@@ -3425,7 +3425,7 @@ Retrieves a list of events about the activity of a cluster. This API is paginate
 
 ```sql
 EXEC databricks_workspace.compute.clusters.events 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}", 
@@ -3447,7 +3447,7 @@ Permanently deletes a Spark cluster. This cluster is terminated and resources ar
 
 ```sql
 EXEC databricks_workspace.compute.clusters.permanent_delete 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}"
@@ -3461,7 +3461,7 @@ Pinning a cluster ensures that the cluster will always be returned by the ListCl
 
 ```sql
 EXEC databricks_workspace.compute.clusters.pin 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}"
@@ -3475,7 +3475,7 @@ Resizes a cluster to have a desired number of workers. This will fail unless the
 
 ```sql
 EXEC databricks_workspace.compute.clusters.resize 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}", 
@@ -3491,7 +3491,7 @@ Restarts a Spark cluster with the supplied ID. If the cluster is not currently i
 
 ```sql
 EXEC databricks_workspace.compute.clusters.restart 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}", 
@@ -3506,7 +3506,7 @@ Starts a terminated Spark cluster with the supplied ID. This works similar to `c
 
 ```sql
 EXEC databricks_workspace.compute.clusters.start 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}"
@@ -3520,7 +3520,7 @@ Unpinning a cluster will allow the cluster to eventually be removed from the Lis
 
 ```sql
 EXEC databricks_workspace.compute.clusters.unpin 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}"
@@ -3534,7 +3534,7 @@ Updates the configuration of a cluster to match the partial set of attributes an
 
 ```sql
 EXEC databricks_workspace.compute.clusters.update 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "cluster_id": "{{ cluster_id }}", 

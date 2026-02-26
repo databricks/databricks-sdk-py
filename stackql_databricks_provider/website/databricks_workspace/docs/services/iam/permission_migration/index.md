@@ -54,7 +54,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#migrate"><CopyableCode code="migrate" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-from_workspace_group_name"><code>from_workspace_group_name</code></a>, <a href="#parameter-to_account_group_name"><code>to_account_group_name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-from_workspace_group_name"><code>from_workspace_group_name</code></a>, <a href="#parameter-to_account_group_name"><code>to_account_group_name</code></a></td>
     <td></td>
     <td>Migrate Permissions.</td>
 </tr>
@@ -74,10 +74,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -101,14 +101,14 @@ workspace_id,
 from_workspace_group_name,
 to_account_group_name,
 size,
-workspace
+deployment_name
 )
 SELECT 
 {{ workspace_id }} /* required */,
 '{{ from_workspace_group_name }}' /* required */,
 '{{ to_account_group_name }}' /* required */,
 {{ size }},
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 permissions_migrated
 ;
@@ -119,8 +119,8 @@ permissions_migrated
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: permission_migration
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the permission_migration resource.
     - name: workspace_id
       value: {{ workspace_id }}

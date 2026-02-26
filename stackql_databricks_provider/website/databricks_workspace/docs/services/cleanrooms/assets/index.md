@@ -247,42 +247,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get the details of a clean room asset by its type and full name.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List assets.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-asset"><code>asset</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-asset"><code>asset</code></a></td>
     <td></td>
     <td>Create a clean room asset —share an asset like a notebook or table into the clean room. For each UC</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-asset"><code>asset</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-asset"><code>asset</code></a></td>
     <td></td>
     <td>Update a clean room asset. For example, updating the content of a notebook; changing the shared</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Delete a clean room asset - unshare/remove the asset from the clean room</td>
 </tr>
 <tr>
     <td><a href="#review"><CopyableCode code="review" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a></td>
     <td></td>
     <td>Submit an asset review</td>
 </tr>
@@ -317,15 +317,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Name of the clean room</td>
 </tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Name of the asset</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_token">
     <td><CopyableCode code="page_token" /></td>
@@ -369,7 +369,7 @@ WHERE clean_room_name = '{{ clean_room_name }}' -- required
 AND asset_type.value = '{{ asset_type.value }}' -- required
 AND name = '{{ name }}' -- required
 AND asset_type = '{{ asset_type }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -382,7 +382,7 @@ SELECT
 *
 FROM databricks_workspace.cleanrooms.assets
 WHERE clean_room_name = '{{ clean_room_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND page_token = '{{ page_token }}'
 ;
 ```
@@ -407,12 +407,12 @@ Create a clean room asset —share an asset like a notebook or table into the cl
 INSERT INTO databricks_workspace.cleanrooms.assets (
 asset,
 clean_room_name,
-workspace
+deployment_name
 )
 SELECT 
 '{{ asset }}' /* required */,
 '{{ clean_room_name }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 name,
 clean_room_name,
@@ -439,8 +439,8 @@ volume_local_details
     - name: clean_room_name
       value: "{{ clean_room_name }}"
       description: Required parameter for the assets resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the assets resource.
     - name: asset
       description: |
@@ -506,7 +506,7 @@ WHERE
 clean_room_name = '{{ clean_room_name }}' --required
 AND asset_type.value = '{{ asset_type.value }}' --required
 AND name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND asset_type = '{{ asset_type }}' --required
 AND asset = '{{ asset }}' --required
 RETURNING
@@ -547,7 +547,7 @@ WHERE clean_room_name = '{{ clean_room_name }}' --required
 AND asset_type.value = '{{ asset_type.value }}' --required
 AND name = '{{ name }}' --required
 AND asset_type = '{{ asset_type }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -571,7 +571,7 @@ EXEC databricks_workspace.cleanrooms.assets.review
 @clean_room_name='{{ clean_room_name }}' --required, 
 @asset_type.value='{{ asset_type.value }}' --required, 
 @name='{{ name }}' --required, 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "asset_type": "{{ asset_type }}", 

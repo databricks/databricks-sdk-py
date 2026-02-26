@@ -94,42 +94,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list_directory_contents"><CopyableCode code="list_directory_contents" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-directory_path"><code>directory_path</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-directory_path"><code>directory_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Returns the contents of a directory. If there is no directory at the specified path, the API returns a</td>
 </tr>
 <tr>
     <td><a href="#download"><CopyableCode code="download" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-file_path"><code>file_path</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-file_path"><code>file_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Downloads a file. The file contents are the response body. This is a standard HTTP file download, not</td>
 </tr>
 <tr>
     <td><a href="#create_directory"><CopyableCode code="create_directory" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-directory_path"><code>directory_path</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-directory_path"><code>directory_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Creates an empty directory. If necessary, also creates any parent directories of the new, empty</td>
 </tr>
 <tr>
     <td><a href="#upload"><CopyableCode code="upload" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-file_path"><code>file_path</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-contents"><code>contents</code></a></td>
+    <td><a href="#parameter-file_path"><code>file_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-contents"><code>contents</code></a></td>
     <td><a href="#parameter-overwrite"><code>overwrite</code></a></td>
     <td>Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an</td>
 </tr>
 <tr>
     <td><a href="#delete_directory"><CopyableCode code="delete_directory" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-directory_path"><code>directory_path</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-directory_path"><code>directory_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes an empty directory.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-file_path"><code>file_path</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-file_path"><code>file_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a file. If the request is successful, there is no response body.</td>
 </tr>
@@ -149,6 +149,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-directory_path">
     <td><CopyableCode code="directory_path" /></td>
     <td><code>string</code></td>
@@ -158,11 +163,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="file_path" /></td>
     <td><code>string</code></td>
     <td>The absolute path of the file.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-overwrite">
     <td><CopyableCode code="overwrite" /></td>
@@ -204,7 +204,7 @@ last_modified,
 path
 FROM databricks_workspace.files.files
 WHERE directory_path = '{{ directory_path }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -219,7 +219,7 @@ SELECT
 *
 FROM databricks_workspace.files.files
 WHERE file_path = '{{ file_path }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -245,7 +245,7 @@ SET
 -- No updatable properties
 WHERE 
 directory_path = '{{ directory_path }}' --required
-AND workspace = '{{ workspace }}' --required;
+AND deployment_name = '{{ deployment_name }}' --required;
 ```
 </TabItem>
 <TabItem value="upload">
@@ -258,7 +258,7 @@ SET
 contents = '{{ contents }}'
 WHERE 
 file_path = '{{ file_path }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND contents = '{{ contents }}' --required
 AND overwrite = {{ overwrite}};
 ```
@@ -282,7 +282,7 @@ Deletes an empty directory.
 ```sql
 DELETE FROM databricks_workspace.files.files
 WHERE directory_path = '{{ directory_path }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -293,7 +293,7 @@ Deletes a file. If the request is successful, there is no response body.
 ```sql
 DELETE FROM databricks_workspace.files.files
 WHERE file_path = '{{ file_path }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

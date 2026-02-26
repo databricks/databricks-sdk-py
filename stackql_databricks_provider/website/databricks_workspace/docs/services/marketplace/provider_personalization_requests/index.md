@@ -190,14 +190,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List personalization requests to this provider. This will return all personalization requests,</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-request_id"><code>request_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-status"><code>status</code></a></td>
+    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-request_id"><code>request_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-status"><code>status</code></a></td>
     <td></td>
     <td>Update personalization request. This method only permits updating the status of the request.</td>
 </tr>
@@ -217,6 +217,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-listing_id">
     <td><CopyableCode code="listing_id" /></td>
     <td><code>string</code></td>
@@ -226,11 +231,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="request_id" /></td>
     <td><code>string</code></td>
     <td></td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -276,7 +276,7 @@ status,
 status_message,
 updated_at
 FROM databricks_workspace.marketplace.provider_personalization_requests
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -306,7 +306,7 @@ share = '{{ share }}'
 WHERE 
 listing_id = '{{ listing_id }}' --required
 AND request_id = '{{ request_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND status = '{{ status }}' --required
 RETURNING
 request;

@@ -4,7 +4,6 @@
   "description": "StackQL Provider for Databricks",
   "type": "module",
   "scripts": {
-    "postinstall": "npx patch-package",
     "generate-docs": "./bin/generate-docs.sh",
     "generate-provider": "./bin/generate-provider.sh",
     "start-server": "bash ./bin/start-server.sh",
@@ -14,7 +13,7 @@
   },
   "dependencies": {
     "@stackql/pgwire-lite": "^1.0.1",
-    "@stackql/provider-utils": "^0.5.93"
+    "@stackql/provider-utils": "^0.5.94"
   },
   "keywords": [
     "stackql",

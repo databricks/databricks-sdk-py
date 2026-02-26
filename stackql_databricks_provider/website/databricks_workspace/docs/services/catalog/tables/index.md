@@ -1116,42 +1116,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-include_delta_metadata"><code>include_delta_metadata</code></a>, <a href="#parameter-include_manifest_capabilities"><code>include_manifest_capabilities</code></a></td>
     <td>Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-include_manifest_capabilities"><code>include_manifest_capabilities</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-omit_columns"><code>omit_columns</code></a>, <a href="#parameter-omit_properties"><code>omit_properties</code></a>, <a href="#parameter-omit_username"><code>omit_username</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets an array of all tables for the current metastore under the parent catalog and schema. The caller</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-table_type"><code>table_type</code></a>, <a href="#parameter-data_source_format"><code>data_source_format</code></a>, <a href="#parameter-storage_location"><code>storage_location</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-table_type"><code>table_type</code></a>, <a href="#parameter-data_source_format"><code>data_source_format</code></a>, <a href="#parameter-storage_location"><code>storage_location</code></a></td>
     <td></td>
     <td>Creates a new table in the specified catalog and schema.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Change the owner of the table. The caller must be the owner of the parent catalog, have the</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a table from the specified parent catalog and schema. The caller must be the owner of the</td>
 </tr>
 <tr>
     <td><a href="#exists"><CopyableCode code="exists" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one</td>
 </tr>
@@ -1176,6 +1176,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Name of parent catalog for tables of interest.</td>
 </tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-full_name">
     <td><CopyableCode code="full_name" /></td>
     <td><code>string</code></td>
@@ -1185,11 +1190,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="schema_name" /></td>
     <td><code>string</code></td>
     <td>Parent schema of tables.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-include_browse">
     <td><CopyableCode code="include_browse" /></td>
@@ -1284,7 +1284,7 @@ view_definition,
 view_dependencies
 FROM databricks_workspace.catalog.tables
 WHERE full_name = '{{ full_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND include_browse = '{{ include_browse }}'
 AND include_delta_metadata = '{{ include_delta_metadata }}'
 AND include_manifest_capabilities = '{{ include_manifest_capabilities }}'
@@ -1333,7 +1333,7 @@ view_dependencies
 FROM databricks_workspace.catalog.tables
 WHERE catalog_name = '{{ catalog_name }}' -- required
 AND schema_name = '{{ schema_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND include_browse = '{{ include_browse }}'
 AND include_manifest_capabilities = '{{ include_manifest_capabilities }}'
 AND max_results = '{{ max_results }}'
@@ -1370,7 +1370,7 @@ data_source_format,
 storage_location,
 columns,
 properties,
-workspace
+deployment_name
 )
 SELECT 
 '{{ name }}' /* required */,
@@ -1381,7 +1381,7 @@ SELECT
 '{{ storage_location }}' /* required */,
 '{{ columns }}',
 '{{ properties }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 name,
 data_access_configuration_id,
@@ -1424,8 +1424,8 @@ view_dependencies
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: tables
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the tables resource.
     - name: name
       value: "{{ name }}"
@@ -1498,7 +1498,7 @@ SET
 owner = '{{ owner }}'
 WHERE 
 full_name = '{{ full_name }}' --required
-AND workspace = '{{ workspace }}' --required;
+AND deployment_name = '{{ deployment_name }}' --required;
 ```
 </TabItem>
 </Tabs>
@@ -1519,7 +1519,7 @@ Deletes a table from the specified parent catalog and schema. The caller must be
 ```sql
 DELETE FROM databricks_workspace.catalog.tables
 WHERE full_name = '{{ full_name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -1541,7 +1541,7 @@ Gets if a table exists in the metastore for a specific catalog and schema. The c
 ```sql
 EXEC databricks_workspace.catalog.tables.exists 
 @full_name='{{ full_name }}' --required, 
-@workspace='{{ workspace }}' --required
+@deployment_name='{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

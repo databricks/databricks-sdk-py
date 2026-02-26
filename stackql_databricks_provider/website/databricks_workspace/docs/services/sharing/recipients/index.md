@@ -372,42 +372,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-data_recipient_global_metastore_id"><code>data_recipient_global_metastore_id</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets an array of all share recipients within the current metastore where:</td>
 </tr>
 <tr>
     <td><a href="#rotate_token"><CopyableCode code="rotate_token" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-existing_token_expire_in_seconds"><code>existing_token_expire_in_seconds</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-existing_token_expire_in_seconds"><code>existing_token_expire_in_seconds</code></a></td>
     <td></td>
     <td>Refreshes the specified recipient's delta sharing authentication token with the provided token info.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-authentication_type"><code>authentication_type</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-authentication_type"><code>authentication_type</code></a></td>
     <td></td>
     <td>Creates a new recipient with the delta sharing authentication type in the metastore. The caller must</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.</td>
 </tr>
@@ -427,15 +427,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Name of the recipient.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-data_recipient_global_metastore_id">
     <td><CopyableCode code="data_recipient_global_metastore_id" /></td>
@@ -492,7 +492,7 @@ updated_at,
 updated_by
 FROM databricks_workspace.sharing.recipients
 WHERE name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -523,7 +523,7 @@ tokens,
 updated_at,
 updated_by
 FROM databricks_workspace.sharing.recipients
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND data_recipient_global_metastore_id = '{{ data_recipient_global_metastore_id }}'
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
@@ -551,12 +551,12 @@ Refreshes the specified recipient's delta sharing authentication token with the 
 INSERT INTO databricks_workspace.sharing.recipients (
 existing_token_expire_in_seconds,
 name,
-workspace
+deployment_name
 )
 SELECT 
 {{ existing_token_expire_in_seconds }} /* required */,
 '{{ name }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 id,
 name,
@@ -597,7 +597,7 @@ ip_access_list,
 owner,
 properties_kvpairs,
 sharing_code,
-workspace
+deployment_name
 )
 SELECT 
 '{{ name }}' /* required */,
@@ -610,7 +610,7 @@ SELECT
 '{{ owner }}',
 '{{ properties_kvpairs }}',
 '{{ sharing_code }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 id,
 name,
@@ -643,8 +643,8 @@ updated_by
     - name: name
       value: "{{ name }}"
       description: Required parameter for the recipients resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the recipients resource.
     - name: existing_token_expire_in_seconds
       value: {{ existing_token_expire_in_seconds }}
@@ -721,7 +721,7 @@ owner = '{{ owner }}',
 properties_kvpairs = '{{ properties_kvpairs }}'
 WHERE 
 name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 RETURNING
 id,
 name,
@@ -763,7 +763,7 @@ Deletes the specified recipient from the metastore. The caller must be the owner
 ```sql
 DELETE FROM databricks_workspace.sharing.recipients
 WHERE name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

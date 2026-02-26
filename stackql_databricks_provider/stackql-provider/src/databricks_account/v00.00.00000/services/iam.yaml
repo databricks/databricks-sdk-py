@@ -9,7 +9,6 @@ info:
   x-stackql-sdk-namespace: databricks.sdk.service.iam
 servers:
 - url: https://accounts.cloud.databricks.com
-  description: Databricks account
 paths:
   /api/2.0/preview/accounts/{account_id}/access-control/assignable-roles:
     get:

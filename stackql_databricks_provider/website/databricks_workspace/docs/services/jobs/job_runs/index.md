@@ -5393,56 +5393,56 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-run_id"><code>run_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-run_id"><code>run_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_history"><code>include_history</code></a>, <a href="#parameter-include_resolved_values"><code>include_resolved_values</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Retrieves the metadata of a run.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-active_only"><code>active_only</code></a>, <a href="#parameter-completed_only"><code>completed_only</code></a>, <a href="#parameter-expand_tasks"><code>expand_tasks</code></a>, <a href="#parameter-job_id"><code>job_id</code></a>, <a href="#parameter-limit"><code>limit</code></a>, <a href="#parameter-offset"><code>offset</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-run_type"><code>run_type</code></a>, <a href="#parameter-start_time_from"><code>start_time_from</code></a>, <a href="#parameter-start_time_to"><code>start_time_to</code></a></td>
     <td>List runs in descending order by start time.</td>
 </tr>
 <tr>
     <td><a href="#submit"><CopyableCode code="submit" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a non-active run. Returns an error if the run is active.</td>
 </tr>
 <tr>
     <td><a href="#cancel_all"><CopyableCode code="cancel_all" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Cancels all active runs of a job. The runs are canceled asynchronously, so it doesn't prevent new runs</td>
 </tr>
 <tr>
     <td><a href="#cancel"><CopyableCode code="cancel" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-run_id"><code>run_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-run_id"><code>run_id</code></a></td>
     <td></td>
     <td>Cancels a job run or a task run. The run is canceled asynchronously, so it may still be running when</td>
 </tr>
 <tr>
     <td><a href="#export"><CopyableCode code="export" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-run_id"><code>run_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-run_id"><code>run_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-views_to_export"><code>views_to_export</code></a></td>
     <td>Export and retrieve the job run task.</td>
 </tr>
 <tr>
     <td><a href="#repair"><CopyableCode code="repair" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-run_id"><code>run_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-run_id"><code>run_id</code></a></td>
     <td></td>
     <td>Re-run one or more tasks. Tasks are re-run as part of the original job run. They use the current job</td>
 </tr>
@@ -5462,15 +5462,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-run_id">
     <td><CopyableCode code="run_id" /></td>
     <td><code>integer</code></td>
     <td>The canonical identifier for the run. This field is required.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-active_only">
     <td><CopyableCode code="active_only" /></td>
@@ -5593,7 +5593,7 @@ trigger,
 trigger_info
 FROM databricks_workspace.jobs.job_runs
 WHERE run_id = '{{ run_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND include_history = '{{ include_history }}'
 AND include_resolved_values = '{{ include_resolved_values }}'
 AND page_token = '{{ page_token }}'
@@ -5641,7 +5641,7 @@ tasks,
 trigger,
 trigger_info
 FROM databricks_workspace.jobs.job_runs
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND active_only = '{{ active_only }}'
 AND completed_only = '{{ completed_only }}'
 AND expand_tasks = '{{ expand_tasks }}'
@@ -5688,7 +5688,7 @@ tasks,
 timeout_seconds,
 usage_policy_id,
 webhook_notifications,
-workspace
+deployment_name
 )
 SELECT 
 '{{ access_control_list }}',
@@ -5706,7 +5706,7 @@ SELECT
 {{ timeout_seconds }},
 '{{ usage_policy_id }}',
 '{{ webhook_notifications }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 effective_usage_policy_id,
 job_id,
@@ -5752,8 +5752,8 @@ trigger_info
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: job_runs
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the job_runs resource.
     - name: access_control_list
       description: |
@@ -6264,7 +6264,7 @@ Deletes a non-active run. Returns an error if the run is active.
 
 ```sql
 DELETE FROM databricks_workspace.jobs.job_runs
-WHERE workspace = '{{ workspace }}' --required
+WHERE deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -6288,7 +6288,7 @@ Cancels all active runs of a job. The runs are canceled asynchronously, so it do
 
 ```sql
 EXEC databricks_workspace.jobs.job_runs.cancel_all 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "all_queued_runs": {{ all_queued_runs }}, 
@@ -6303,7 +6303,7 @@ Cancels a job run or a task run. The run is canceled asynchronously, so it may s
 
 ```sql
 EXEC databricks_workspace.jobs.job_runs.cancel 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "run_id": {{ run_id }}
@@ -6318,7 +6318,7 @@ Export and retrieve the job run task.
 ```sql
 EXEC databricks_workspace.jobs.job_runs.export 
 @run_id='{{ run_id }}' --required, 
-@workspace='{{ workspace }}' --required, 
+@deployment_name='{{ deployment_name }}' --required, 
 @views_to_export='{{ views_to_export }}'
 ;
 ```
@@ -6329,7 +6329,7 @@ Re-run one or more tasks. Tasks are re-run as part of the original job run. They
 
 ```sql
 EXEC databricks_workspace.jobs.job_runs.repair 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "run_id": {{ run_id }}, 

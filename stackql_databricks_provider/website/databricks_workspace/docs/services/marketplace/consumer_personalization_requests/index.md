@@ -329,21 +329,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get the personalization request for a listing. Each consumer can make at *most* one personalization</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List personalization requests for a consumer across all listings.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-intended_use"><code>intended_use</code></a>, <a href="#parameter-accepted_consumer_terms"><code>accepted_consumer_terms</code></a></td>
+    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-intended_use"><code>intended_use</code></a>, <a href="#parameter-accepted_consumer_terms"><code>accepted_consumer_terms</code></a></td>
     <td></td>
     <td>Create a personalization request for a listing.</td>
 </tr>
@@ -363,15 +363,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-listing_id">
     <td><CopyableCode code="listing_id" /></td>
     <td><code>string</code></td>
     <td>:param intended_use: str</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -404,7 +404,7 @@ SELECT
 personalization_requests
 FROM databricks_workspace.marketplace.consumer_personalization_requests
 WHERE listing_id = '{{ listing_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -431,7 +431,7 @@ status,
 status_message,
 updated_at
 FROM databricks_workspace.marketplace.consumer_personalization_requests
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -464,7 +464,7 @@ is_from_lighthouse,
 last_name,
 recipient_type,
 listing_id,
-workspace
+deployment_name
 )
 SELECT 
 '{{ intended_use }}' /* required */,
@@ -476,7 +476,7 @@ SELECT
 '{{ last_name }}',
 '{{ recipient_type }}',
 '{{ listing_id }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 id
 ;
@@ -490,8 +490,8 @@ id
     - name: listing_id
       value: "{{ listing_id }}"
       description: Required parameter for the consumer_personalization_requests resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the consumer_personalization_requests resource.
     - name: intended_use
       value: "{{ intended_use }}"

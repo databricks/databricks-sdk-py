@@ -150,42 +150,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get data quality monitor refresh. The call must be made in the same workspace as where the monitor was</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List data quality monitor refreshes. The call must be made in the same workspace as where the monitor</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-refresh"><code>refresh</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-refresh"><code>refresh</code></a></td>
     <td></td>
     <td>Creates a refresh. Currently only supported for the `table` `object_type`. The call must be made in</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-refresh"><code>refresh</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-refresh"><code>refresh</code></a></td>
     <td></td>
     <td>(Unimplemented) Update a refresh</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>(Unimplemented) Delete a refresh</td>
 </tr>
 <tr>
     <td><a href="#cancel"><CopyableCode code="cancel" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Cancels a data quality monitor refresh. Currently only supported for the `table` `object_type`. The</td>
 </tr>
@@ -205,6 +205,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-object_id">
     <td><CopyableCode code="object_id" /></td>
     <td><code>string</code></td>
@@ -224,11 +229,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="update_mask" /></td>
     <td><code>string</code></td>
     <td>The field mask to specify which fields to update.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -270,7 +270,7 @@ FROM databricks_workspace.dataquality.data_quality_refreshes
 WHERE object_type = '{{ object_type }}' -- required
 AND object_id = '{{ object_id }}' -- required
 AND refresh_id = '{{ refresh_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -291,7 +291,7 @@ trigger
 FROM databricks_workspace.dataquality.data_quality_refreshes
 WHERE object_type = '{{ object_type }}' -- required
 AND object_id = '{{ object_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -318,13 +318,13 @@ INSERT INTO databricks_workspace.dataquality.data_quality_refreshes (
 refresh,
 object_type,
 object_id,
-workspace
+deployment_name
 )
 SELECT 
 '{{ refresh }}' /* required */,
 '{{ object_type }}',
 '{{ object_id }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 object_id,
 refresh_id,
@@ -348,8 +348,8 @@ trigger
     - name: object_id
       value: "{{ object_id }}"
       description: Required parameter for the data_quality_refreshes resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the data_quality_refreshes resource.
     - name: refresh
       description: |
@@ -390,7 +390,7 @@ object_type = '{{ object_type }}' --required
 AND object_id = '{{ object_id }}' --required
 AND refresh_id = '{{ refresh_id }}' --required
 AND update_mask = '{{ update_mask }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND refresh = '{{ refresh }}' --required
 RETURNING
 object_id,
@@ -423,7 +423,7 @@ DELETE FROM databricks_workspace.dataquality.data_quality_refreshes
 WHERE object_type = '{{ object_type }}' --required
 AND object_id = '{{ object_id }}' --required
 AND refresh_id = '{{ refresh_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -447,7 +447,7 @@ EXEC databricks_workspace.dataquality.data_quality_refreshes.cancel
 @object_type='{{ object_type }}' --required, 
 @object_id='{{ object_id }}' --required, 
 @refresh_id='{{ refresh_id }}' --required, 
-@workspace='{{ workspace }}' --required
+@deployment_name='{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

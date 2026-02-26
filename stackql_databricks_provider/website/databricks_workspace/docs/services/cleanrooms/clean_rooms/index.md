@@ -420,42 +420,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get the details of a clean room given its name.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-clean_room"><code>clean_room</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-clean_room"><code>clean_room</code></a></td>
     <td></td>
     <td>Create a new clean room with the specified collaborators. This method is asynchronous; the returned</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Delete a clean room. After deletion, the clean room will be removed from the metastore. If the other</td>
 </tr>
 <tr>
     <td><a href="#create_output_catalog"><CopyableCode code="create_output_catalog" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-output_catalog"><code>output_catalog</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-output_catalog"><code>output_catalog</code></a></td>
     <td></td>
     <td>Create the output catalog of the clean room.</td>
 </tr>
@@ -480,15 +480,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Name of the clean room.</td>
 </tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
     <td>Name of the clean room.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -530,7 +530,7 @@ status,
 updated_at
 FROM databricks_workspace.cleanrooms.clean_rooms
 WHERE name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -551,7 +551,7 @@ remote_detailed_info,
 status,
 updated_at
 FROM databricks_workspace.cleanrooms.clean_rooms
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -576,11 +576,11 @@ Create a new clean room with the specified collaborators. This method is asynchr
 ```sql
 INSERT INTO databricks_workspace.cleanrooms.clean_rooms (
 clean_room,
-workspace
+deployment_name
 )
 SELECT 
 '{{ clean_room }}' /* required */,
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 name,
 access_restricted,
@@ -600,8 +600,8 @@ updated_at
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: clean_rooms
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the clean_rooms resource.
     - name: clean_room
       description: |
@@ -664,7 +664,7 @@ SET
 clean_room = '{{ clean_room }}'
 WHERE 
 name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 RETURNING
 name,
 access_restricted,
@@ -696,7 +696,7 @@ Delete a clean room. After deletion, the clean room will be removed from the met
 ```sql
 DELETE FROM databricks_workspace.cleanrooms.clean_rooms
 WHERE name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -718,7 +718,7 @@ Create the output catalog of the clean room.
 ```sql
 EXEC databricks_workspace.cleanrooms.clean_rooms.create_output_catalog 
 @clean_room_name='{{ clean_room_name }}' --required, 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "output_catalog": "{{ output_catalog }}"

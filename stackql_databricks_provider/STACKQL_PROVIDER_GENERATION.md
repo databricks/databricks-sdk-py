@@ -234,7 +234,7 @@ SELECT
   workspace_name
 FROM databricks_account.provisioning.workspaces
 WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce'
-AND workspace_name LIKE '%stackql-test%';
+AND workspace_name LIKE '%snowflake%';
 
 -- Query account users and roles
 SELECT

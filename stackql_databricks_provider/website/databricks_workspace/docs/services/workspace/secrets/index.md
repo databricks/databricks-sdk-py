@@ -90,28 +90,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets a secret for a given key and scope. This API can only be called from the DBUtils interface. Users</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data</td>
 </tr>
 <tr>
     <td><a href="#put"><CopyableCode code="put" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-key"><code>key</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-key"><code>key</code></a></td>
     <td></td>
     <td>Inserts a secret under the provided scope with the given name. If a secret already exists with the</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-key"><code>key</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-key"><code>key</code></a></td>
     <td></td>
     <td>Deletes the secret stored in this secret scope. You must have ``WRITE`` or ``MANAGE`` permission on</td>
 </tr>
@@ -131,6 +131,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-key">
     <td><CopyableCode code="key" /></td>
     <td><code>string</code></td>
@@ -140,11 +145,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="scope" /></td>
     <td><code>string</code></td>
     <td>The name of the scope to list secrets within.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -169,7 +169,7 @@ value
 FROM databricks_workspace.workspace.secrets
 WHERE scope = '{{ scope }}' -- required
 AND key = '{{ key }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -183,7 +183,7 @@ key,
 last_updated_timestamp
 FROM databricks_workspace.workspace.secrets
 WHERE scope = '{{ scope }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -209,14 +209,14 @@ scope,
 key,
 bytes_value,
 string_value,
-workspace
+deployment_name
 )
 SELECT 
 '{{ scope }}' /* required */,
 '{{ key }}' /* required */,
 '{{ bytes_value }}',
 '{{ string_value }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 ;
 ```
 </TabItem>
@@ -225,8 +225,8 @@ SELECT
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: secrets
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the secrets resource.
     - name: scope
       value: "{{ scope }}"
@@ -264,7 +264,7 @@ Deletes the secret stored in this secret scope. You must have ``WRITE`` or ``MAN
 
 ```sql
 EXEC databricks_workspace.workspace.secrets.delete 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "scope": "{{ scope }}", 

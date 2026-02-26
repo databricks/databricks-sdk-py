@@ -453,7 +453,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-filter_by"><code>filter_by</code></a>, <a href="#parameter-include_metrics"><code>include_metrics</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List the history of queries through SQL warehouses, and serverless compute.</td>
 </tr>
@@ -473,10 +473,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 <tr id="parameter-filter_by">
     <td><CopyableCode code="filter_by" /></td>
@@ -519,7 +519,7 @@ has_next_page,
 next_page_token,
 res
 FROM databricks_workspace.sql.query_history
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND filter_by = '{{ filter_by }}'
 AND include_metrics = '{{ include_metrics }}'
 AND max_results = '{{ max_results }}'

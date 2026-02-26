@@ -278,35 +278,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#read"><CopyableCode code="read" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a></td>
     <td>Gets a volume from the metastore for a specific catalog and schema.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets an array of volumes for the current metastore under the parent catalog and schema.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-volume_type"><code>volume_type</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-volume_type"><code>volume_type</code></a></td>
     <td></td>
     <td>Creates a new volume.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Updates the specified volume under the specified parent catalog and schema.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a volume from the specified parent catalog and schema.</td>
 </tr>
@@ -331,6 +331,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The identifier of the catalog</td>
 </tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-name">
     <td><CopyableCode code="name" /></td>
     <td><code>string</code></td>
@@ -340,11 +345,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="schema_name" /></td>
     <td><code>string</code></td>
     <td>The identifier of the schema</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-include_browse">
     <td><CopyableCode code="include_browse" /></td>
@@ -398,7 +398,7 @@ updated_by,
 volume_type
 FROM databricks_workspace.catalog.volumes
 WHERE name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND include_browse = '{{ include_browse }}'
 ;
 ```
@@ -429,7 +429,7 @@ volume_type
 FROM databricks_workspace.catalog.volumes
 WHERE catalog_name = '{{ catalog_name }}' -- required
 AND schema_name = '{{ schema_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND include_browse = '{{ include_browse }}'
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
@@ -460,7 +460,7 @@ name,
 volume_type,
 comment,
 storage_location,
-workspace
+deployment_name
 )
 SELECT 
 '{{ catalog_name }}' /* required */,
@@ -469,7 +469,7 @@ SELECT
 '{{ volume_type }}' /* required */,
 '{{ comment }}',
 '{{ storage_location }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 name,
 metastore_id,
@@ -496,8 +496,8 @@ volume_type
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: volumes
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the volumes resource.
     - name: catalog_name
       value: "{{ catalog_name }}"
@@ -549,7 +549,7 @@ new_name = '{{ new_name }}',
 owner = '{{ owner }}'
 WHERE 
 name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 RETURNING
 name,
 metastore_id,
@@ -588,7 +588,7 @@ Deletes a volume from the specified parent catalog and schema.
 ```sql
 DELETE FROM databricks_workspace.catalog.volumes
 WHERE name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

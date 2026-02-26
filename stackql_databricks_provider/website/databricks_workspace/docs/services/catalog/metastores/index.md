@@ -260,56 +260,56 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates a new metastore based on a provided name and optional storage root path. By default (if the</td>
 </tr>
 <tr>
     <td><a href="#update_assignment"><CopyableCode code="update_assignment" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Updates a metastore assignment. This operation can be used to update __metastore_id__ or</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__</td>
 </tr>
 <tr>
     <td><a href="#assign"><CopyableCode code="assign" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-default_catalog_name"><code>default_catalog_name</code></a></td>
+    <td><a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-default_catalog_name"><code>default_catalog_name</code></a></td>
     <td></td>
     <td>Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be</td>
 </tr>
 <tr>
     <td><a href="#unassign"><CopyableCode code="unassign" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a metastore assignment. The caller must be an account administrator.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
     <td>Deletes a metastore. The caller must be a metastore admin.</td>
 </tr>
@@ -329,6 +329,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
@@ -338,11 +343,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="metastore_id" /></td>
     <td><code>string</code></td>
     <td>Query for the ID of the metastore to delete.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-workspace_id">
     <td><CopyableCode code="workspace_id" /></td>
@@ -403,7 +403,7 @@ updated_at,
 updated_by
 FROM databricks_workspace.catalog.metastores
 WHERE id = '{{ id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -433,7 +433,7 @@ storage_root,
 updated_at,
 updated_by
 FROM databricks_workspace.catalog.metastores
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -461,14 +461,14 @@ name,
 external_access_enabled,
 region,
 storage_root,
-workspace
+deployment_name
 )
 SELECT 
 '{{ name }}' /* required */,
 {{ external_access_enabled }},
 '{{ region }}',
 '{{ storage_root }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 name,
 default_data_access_config_id,
@@ -497,8 +497,8 @@ updated_by
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: metastores
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the metastores resource.
     - name: name
       value: "{{ name }}"
@@ -542,7 +542,7 @@ default_catalog_name = '{{ default_catalog_name }}',
 metastore_id = '{{ metastore_id }}'
 WHERE 
 workspace_id = '{{ workspace_id }}' --required
-AND workspace = '{{ workspace }}' --required;
+AND deployment_name = '{{ deployment_name }}' --required;
 ```
 </TabItem>
 <TabItem value="update">
@@ -562,7 +562,7 @@ privilege_model_version = '{{ privilege_model_version }}',
 storage_root_credential_id = '{{ storage_root_credential_id }}'
 WHERE 
 id = '{{ id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 RETURNING
 name,
 default_data_access_config_id,
@@ -607,7 +607,7 @@ metastore_id = '{{ metastore_id }}',
 default_catalog_name = '{{ default_catalog_name }}'
 WHERE 
 workspace_id = '{{ workspace_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND metastore_id = '{{ metastore_id }}' --required
 AND default_catalog_name = '{{ default_catalog_name }}' --required;
 ```
@@ -632,7 +632,7 @@ Deletes a metastore assignment. The caller must be an account administrator.
 DELETE FROM databricks_workspace.catalog.metastores
 WHERE workspace_id = '{{ workspace_id }}' --required
 AND metastore_id = '{{ metastore_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -643,7 +643,7 @@ Deletes a metastore. The caller must be a metastore admin.
 ```sql
 DELETE FROM databricks_workspace.catalog.metastores
 WHERE id = '{{ id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND force = '{{ force }}'
 ;
 ```

@@ -202,28 +202,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-subscription_id"><code>subscription_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-subscription_id"><code>subscription_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get schedule subscription.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List schedule subscriptions.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-subscription"><code>subscription</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-subscription"><code>subscription</code></a></td>
     <td></td>
     <td>Create schedule subscription.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-subscription_id"><code>subscription_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-subscription_id"><code>subscription_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-etag"><code>etag</code></a></td>
     <td>Delete schedule subscription.</td>
 </tr>
@@ -248,6 +248,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>UUID identifying the dashboard which the subscription belongs.</td>
 </tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-schedule_id">
     <td><CopyableCode code="schedule_id" /></td>
     <td><code>string</code></td>
@@ -257,11 +262,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="subscription_id" /></td>
     <td><code>string</code></td>
     <td>UUID identifying the subscription.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-etag">
     <td><CopyableCode code="etag" /></td>
@@ -308,7 +308,7 @@ FROM databricks_workspace.dashboards.lakeview_subscriptions
 WHERE dashboard_id = '{{ dashboard_id }}' -- required
 AND schedule_id = '{{ schedule_id }}' -- required
 AND subscription_id = '{{ subscription_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -329,7 +329,7 @@ update_time
 FROM databricks_workspace.dashboards.lakeview_subscriptions
 WHERE dashboard_id = '{{ dashboard_id }}' -- required
 AND schedule_id = '{{ schedule_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -356,13 +356,13 @@ INSERT INTO databricks_workspace.dashboards.lakeview_subscriptions (
 subscription,
 dashboard_id,
 schedule_id,
-workspace
+deployment_name
 )
 SELECT 
 '{{ subscription }}' /* required */,
 '{{ dashboard_id }}',
 '{{ schedule_id }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 created_by_user_id,
 dashboard_id,
@@ -386,8 +386,8 @@ update_time
     - name: schedule_id
       value: "{{ schedule_id }}"
       description: Required parameter for the lakeview_subscriptions resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the lakeview_subscriptions resource.
     - name: subscription
       description: |
@@ -428,7 +428,7 @@ DELETE FROM databricks_workspace.dashboards.lakeview_subscriptions
 WHERE dashboard_id = '{{ dashboard_id }}' --required
 AND schedule_id = '{{ schedule_id }}' --required
 AND subscription_id = '{{ subscription_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND etag = '{{ etag }}'
 ;
 ```

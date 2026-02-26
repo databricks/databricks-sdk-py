@@ -604,35 +604,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-instance_pool_id"><code>instance_pool_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-instance_pool_id"><code>instance_pool_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Retrieve the information for an instance pool based on its identifier.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets a list of instance pools with their statistics.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-instance_pool_name"><code>instance_pool_name</code></a>, <a href="#parameter-node_type_id"><code>node_type_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-instance_pool_name"><code>instance_pool_name</code></a>, <a href="#parameter-node_type_id"><code>node_type_id</code></a></td>
     <td></td>
     <td>Creates a new instance pool using idle and ready-to-use cloud instances.</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-instance_pool_id"><code>instance_pool_id</code></a>, <a href="#parameter-instance_pool_name"><code>instance_pool_name</code></a>, <a href="#parameter-node_type_id"><code>node_type_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-instance_pool_id"><code>instance_pool_id</code></a>, <a href="#parameter-instance_pool_name"><code>instance_pool_name</code></a>, <a href="#parameter-node_type_id"><code>node_type_id</code></a></td>
     <td></td>
     <td>Modifies the configuration of an existing instance pool.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes the instance pool permanently. The idle instances in the pool are terminated asynchronously.</td>
 </tr>
@@ -652,15 +652,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-instance_pool_id">
     <td><CopyableCode code="instance_pool_id" /></td>
     <td><code>string</code></td>
     <td>The canonical unique identifier for the instance pool.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -703,7 +703,7 @@ status,
 total_initial_remote_disk_size
 FROM databricks_workspace.compute.instance_pools
 WHERE instance_pool_id = '{{ instance_pool_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -735,7 +735,7 @@ stats,
 status,
 total_initial_remote_disk_size
 FROM databricks_workspace.compute.instance_pools
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -773,7 +773,7 @@ preloaded_docker_images,
 preloaded_spark_versions,
 remote_disk_throughput,
 total_initial_remote_disk_size,
-workspace
+deployment_name
 )
 SELECT 
 '{{ instance_pool_name }}' /* required */,
@@ -792,7 +792,7 @@ SELECT
 '{{ preloaded_spark_versions }}',
 {{ remote_disk_throughput }},
 {{ total_initial_remote_disk_size }},
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 instance_pool_id
 ;
@@ -803,8 +803,8 @@ instance_pool_id
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: instance_pools
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the instance_pools resource.
     - name: instance_pool_name
       value: "{{ instance_pool_name }}"
@@ -925,7 +925,7 @@ node_type_flexibility = '{{ node_type_flexibility }}',
 remote_disk_throughput = {{ remote_disk_throughput }},
 total_initial_remote_disk_size = {{ total_initial_remote_disk_size }}
 WHERE 
-workspace = '{{ workspace }}' --required
+deployment_name = '{{ deployment_name }}' --required
 AND instance_pool_id = '{{ instance_pool_id }}' --required
 AND instance_pool_name = '{{ instance_pool_name }}' --required
 AND node_type_id = '{{ node_type_id }}' --required;
@@ -948,7 +948,7 @@ Deletes the instance pool permanently. The idle instances in the pool are termin
 
 ```sql
 DELETE FROM databricks_workspace.compute.instance_pools
-WHERE workspace = '{{ workspace }}' --required
+WHERE deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

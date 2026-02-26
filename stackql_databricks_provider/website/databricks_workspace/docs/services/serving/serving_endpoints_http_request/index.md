@@ -69,7 +69,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#serving_endpoints_http_request"><CopyableCode code="serving_endpoints_http_request" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Make external services call using the credentials stored in UC Connection.</td>
 </tr>
@@ -89,10 +89,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -113,7 +113,7 @@ Make external services call using the credentials stored in UC Connection.
 SELECT
 contents
 FROM databricks_workspace.serving.serving_endpoints_http_request
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>

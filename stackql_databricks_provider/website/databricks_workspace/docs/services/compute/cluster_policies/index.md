@@ -336,35 +336,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-policy_id"><code>policy_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-policy_id"><code>policy_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get a cluster policy entity. Creation and editing is available to admins only.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-sort_column"><code>sort_column</code></a>, <a href="#parameter-sort_order"><code>sort_order</code></a></td>
     <td>Returns a list of policies accessible by the requesting user.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Creates a new policy with prescribed settings.</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-policy_id"><code>policy_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-policy_id"><code>policy_id</code></a></td>
     <td></td>
     <td>Update an existing policy for cluster. This operation may make some clusters governed by the previous</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited.</td>
 </tr>
@@ -384,15 +384,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-policy_id">
     <td><CopyableCode code="policy_id" /></td>
     <td><code>string</code></td>
     <td>Canonical unique identifier for the Cluster Policy.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-sort_column">
     <td><CopyableCode code="sort_column" /></td>
@@ -435,7 +435,7 @@ max_clusters_per_user,
 policy_family_definition_overrides
 FROM databricks_workspace.compute.cluster_policies
 WHERE policy_id = '{{ policy_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -457,7 +457,7 @@ libraries,
 max_clusters_per_user,
 policy_family_definition_overrides
 FROM databricks_workspace.compute.cluster_policies
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND sort_column = '{{ sort_column }}'
 AND sort_order = '{{ sort_order }}'
 ;
@@ -488,7 +488,7 @@ max_clusters_per_user,
 name,
 policy_family_definition_overrides,
 policy_family_id,
-workspace
+deployment_name
 )
 SELECT 
 '{{ definition }}',
@@ -498,7 +498,7 @@ SELECT
 '{{ name }}',
 '{{ policy_family_definition_overrides }}',
 '{{ policy_family_id }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 policy_id
 ;
@@ -509,8 +509,8 @@ policy_id
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: cluster_policies
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the cluster_policies resource.
     - name: definition
       value: "{{ definition }}"
@@ -585,7 +585,7 @@ name = '{{ name }}',
 policy_family_definition_overrides = '{{ policy_family_definition_overrides }}',
 policy_family_id = '{{ policy_family_id }}'
 WHERE 
-workspace = '{{ workspace }}' --required
+deployment_name = '{{ deployment_name }}' --required
 AND policy_id = '{{ policy_id }}' --required;
 ```
 </TabItem>
@@ -606,7 +606,7 @@ Delete a policy for a cluster. Clusters governed by this policy can still run, b
 
 ```sql
 DELETE FROM databricks_workspace.compute.cluster_policies
-WHERE workspace = '{{ workspace }}' --required
+WHERE deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

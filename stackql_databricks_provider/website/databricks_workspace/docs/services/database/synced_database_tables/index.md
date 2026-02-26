@@ -698,35 +698,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get a Synced Database Table.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>This API is currently unimplemented, but exposed for Terraform support.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-synced_table"><code>synced_table</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-synced_table"><code>synced_table</code></a></td>
     <td></td>
     <td>Create a Synced Database Table.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-synced_table"><code>synced_table</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-synced_table"><code>synced_table</code></a></td>
     <td></td>
     <td>This API is currently unimplemented, but exposed for Terraform support.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-purge_data"><code>purge_data</code></a></td>
     <td>Delete a Synced Database Table.</td>
 </tr>
@@ -746,6 +746,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-instance_name">
     <td><CopyableCode code="instance_name" /></td>
     <td><code>string</code></td>
@@ -760,11 +765,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="update_mask" /></td>
     <td><code>string</code></td>
     <td>The list of fields to update. Setting this field is not yet supported.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -809,7 +809,7 @@ spec,
 unity_catalog_provisioning_state
 FROM databricks_workspace.database.synced_database_tables
 WHERE name = '{{ name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -829,7 +829,7 @@ spec,
 unity_catalog_provisioning_state
 FROM databricks_workspace.database.synced_database_tables
 WHERE instance_name = '{{ instance_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -854,11 +854,11 @@ Create a Synced Database Table.
 ```sql
 INSERT INTO databricks_workspace.database.synced_database_tables (
 synced_table,
-workspace
+deployment_name
 )
 SELECT 
 '{{ synced_table }}' /* required */,
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 name,
 database_instance_name,
@@ -876,8 +876,8 @@ unity_catalog_provisioning_state
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: synced_database_tables
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the synced_database_tables resource.
     - name: synced_table
       description: |
@@ -967,7 +967,7 @@ synced_table = '{{ synced_table }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND synced_table = '{{ synced_table }}' --required
 RETURNING
 name,
@@ -998,7 +998,7 @@ Delete a Synced Database Table.
 ```sql
 DELETE FROM databricks_workspace.database.synced_database_tables
 WHERE name = '{{ name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND purge_data = '{{ purge_data }}'
 ;
 ```

@@ -284,35 +284,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a></td>
     <td>Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-catalog_name"><code>catalog_name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-catalog_name"><code>catalog_name</code></a></td>
     <td></td>
     <td>Creates a new schema for catalog in the Metastore. The caller must be a metastore admin, or have the</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
     <td>Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an</td>
 </tr>
@@ -337,15 +337,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>Parent catalog for schemas of interest.</td>
 </tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-full_name">
     <td><CopyableCode code="full_name" /></td>
     <td><code>string</code></td>
     <td>Full name of the schema.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-force">
     <td><CopyableCode code="force" /></td>
@@ -405,7 +405,7 @@ updated_at,
 updated_by
 FROM databricks_workspace.catalog.schemas
 WHERE full_name = '{{ full_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND include_browse = '{{ include_browse }}'
 ;
 ```
@@ -436,7 +436,7 @@ updated_at,
 updated_by
 FROM databricks_workspace.catalog.schemas
 WHERE catalog_name = '{{ catalog_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND include_browse = '{{ include_browse }}'
 AND max_results = '{{ max_results }}'
 AND page_token = '{{ page_token }}'
@@ -466,7 +466,7 @@ catalog_name,
 comment,
 properties,
 storage_root,
-workspace
+deployment_name
 )
 SELECT 
 '{{ name }}' /* required */,
@@ -474,7 +474,7 @@ SELECT
 '{{ comment }}',
 '{{ properties }}',
 '{{ storage_root }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 name,
 metastore_id,
@@ -502,8 +502,8 @@ updated_by
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: schemas
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the schemas resource.
     - name: name
       value: "{{ name }}"
@@ -553,7 +553,7 @@ owner = '{{ owner }}',
 properties = '{{ properties }}'
 WHERE 
 full_name = '{{ full_name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 RETURNING
 name,
 metastore_id,
@@ -593,7 +593,7 @@ Deletes the specified schema from the parent catalog. The caller must be the own
 ```sql
 DELETE FROM databricks_workspace.catalog.schemas
 WHERE full_name = '{{ full_name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND force = '{{ force }}'
 ;
 ```

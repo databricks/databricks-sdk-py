@@ -398,28 +398,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get_result_chunk"><CopyableCode code="get_result_chunk" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-statement_id"><code>statement_id</code></a>, <a href="#parameter-chunk_index"><code>chunk_index</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-statement_id"><code>statement_id</code></a>, <a href="#parameter-chunk_index"><code>chunk_index</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>After the statement execution has `SUCCEEDED`, this request can be used to fetch any chunk by index.</td>
 </tr>
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-statement_id"><code>statement_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-statement_id"><code>statement_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>This request can be used to poll for the statement's status. StatementResponse contains `statement_id`</td>
 </tr>
 <tr>
     <td><a href="#cancel"><CopyableCode code="cancel" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-statement_id"><code>statement_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-statement_id"><code>statement_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Requests that an executing statement be canceled. Callers must poll for status to see the terminal</td>
 </tr>
 <tr>
     <td><a href="#execute"><CopyableCode code="execute" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-statement"><code>statement</code></a>, <a href="#parameter-warehouse_id"><code>warehouse_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-statement"><code>statement</code></a>, <a href="#parameter-warehouse_id"><code>warehouse_id</code></a></td>
     <td></td>
     <td>Execute a SQL statement and optionally await its results for a specified time.</td>
 </tr>
@@ -444,15 +444,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>integer</code></td>
     <td>:returns: :class:`ResultData`</td>
 </tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-statement_id">
     <td><CopyableCode code="statement_id" /></td>
     <td><code>string</code></td>
     <td>The statement ID is returned upon successfully submitting a SQL statement, and is a required reference for all subsequent calls.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -483,7 +483,7 @@ row_offset
 FROM databricks_workspace.sql.statement_execution
 WHERE statement_id = '{{ statement_id }}' -- required
 AND chunk_index = '{{ chunk_index }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -499,7 +499,7 @@ result,
 status
 FROM databricks_workspace.sql.statement_execution
 WHERE statement_id = '{{ statement_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -523,11 +523,11 @@ Requests that an executing statement be canceled. Callers must poll for status t
 ```sql
 INSERT INTO databricks_workspace.sql.statement_execution (
 statement_id,
-workspace
+deployment_name
 )
 SELECT 
 '{{ statement_id }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 ;
 ```
 </TabItem>
@@ -549,7 +549,7 @@ query_tags,
 row_limit,
 schema,
 wait_timeout,
-workspace
+deployment_name
 )
 SELECT 
 '{{ statement }}' /* required */,
@@ -564,7 +564,7 @@ SELECT
 {{ row_limit }},
 '{{ schema }}',
 '{{ wait_timeout }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 statement_id,
 manifest,
@@ -581,8 +581,8 @@ status
     - name: statement_id
       value: "{{ statement_id }}"
       description: Required parameter for the statement_execution resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the statement_execution resource.
     - name: statement
       value: "{{ statement }}"

@@ -9,12 +9,11 @@ info:
   x-stackql-date-generated: '2026-02-24'
   x-stackql-sdk-namespace: databricks.sdk.service.dataquality
 servers:
-  - url: https://{workspace}.cloud.databricks.com
-    description: Databricks workspace
+  - url: https://{deployment_name}.cloud.databricks.com
     variables:
-      workspace:
-        default: your-workspace
-        description: Your Databricks workspace name
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}/cancel:
     post:

@@ -318,35 +318,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list_for_listing"><CopyableCode code="list_for_listing" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List all installations for a particular listing.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List all installations across all listings.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Install payload associated with a Databricks Marketplace listing.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-installation_id"><code>installation_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-installation"><code>installation</code></a></td>
+    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-installation_id"><code>installation_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-installation"><code>installation</code></a></td>
     <td></td>
     <td>This is a update API that will update the part of the fields defined in the installation table as well</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-installation_id"><code>installation_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-installation_id"><code>installation_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Uninstall an installation associated with a Databricks Marketplace listing.</td>
 </tr>
@@ -366,6 +366,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-installation_id">
     <td><CopyableCode code="installation_id" /></td>
     <td><code>string</code></td>
@@ -375,11 +380,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="listing_id" /></td>
     <td><code>string</code></td>
     <td>:param installation_id: str</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-page_size">
     <td><CopyableCode code="page_size" /></td>
@@ -424,7 +424,7 @@ token_detail,
 tokens
 FROM databricks_workspace.marketplace.consumer_installations
 WHERE listing_id = '{{ listing_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -450,7 +450,7 @@ status,
 token_detail,
 tokens
 FROM databricks_workspace.marketplace.consumer_installations
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
 ;
@@ -480,7 +480,7 @@ recipient_type,
 repo_detail,
 share_name,
 listing_id,
-workspace
+deployment_name
 )
 SELECT 
 '{{ accepted_consumer_terms }}',
@@ -489,7 +489,7 @@ SELECT
 '{{ repo_detail }}',
 '{{ share_name }}',
 '{{ listing_id }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 installation
 ;
@@ -503,8 +503,8 @@ installation
     - name: listing_id
       value: "{{ listing_id }}"
       description: Required parameter for the consumer_installations resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the consumer_installations resource.
     - name: accepted_consumer_terms
       value:
@@ -575,7 +575,7 @@ rotate_token = {{ rotate_token }}
 WHERE 
 listing_id = '{{ listing_id }}' --required
 AND installation_id = '{{ installation_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND installation = '{{ installation }}' --required
 RETURNING
 installation;
@@ -600,7 +600,7 @@ Uninstall an installation associated with a Databricks Marketplace listing.
 DELETE FROM databricks_workspace.marketplace.consumer_installations
 WHERE listing_id = '{{ listing_id }}' --required
 AND installation_id = '{{ installation_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

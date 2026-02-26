@@ -296,14 +296,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets the status of an app update.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a></td>
+    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a></td>
     <td></td>
     <td>Creates an app update and starts the update process. The update process is asynchronous and the status</td>
 </tr>
@@ -328,10 +328,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>:param update_mask: str The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future.</td>
 </tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -360,7 +360,7 @@ status,
 user_api_scopes
 FROM databricks_workspace.apps.app_updates
 WHERE app_name = '{{ app_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -385,13 +385,13 @@ INSERT INTO databricks_workspace.apps.app_updates (
 update_mask,
 app,
 app_name,
-workspace
+deployment_name
 )
 SELECT 
 '{{ update_mask }}' /* required */,
 '{{ app }}',
 '{{ app_name }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 budget_policy_id,
 usage_policy_id,
@@ -412,8 +412,8 @@ user_api_scopes
     - name: app_name
       value: "{{ app_name }}"
       description: Required parameter for the app_updates resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the app_updates resource.
     - name: update_mask
       value: "{{ update_mask }}"

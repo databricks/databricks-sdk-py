@@ -274,49 +274,49 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_aliases"><code>include_aliases</code></a>, <a href="#parameter-include_browse"><code>include_browse</code></a></td>
     <td>Get a registered model.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a></td>
     <td>List registered models. You can list registered models under a particular schema, or list all</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Creates a new registered model in Unity Catalog.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Updates the specified registered model.</td>
 </tr>
 <tr>
     <td><a href="#set_alias"><CopyableCode code="set_alias" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-alias"><code>alias</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-version_num"><code>version_num</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-alias"><code>alias</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-version_num"><code>version_num</code></a></td>
     <td></td>
     <td>Set an alias on the specified registered model.</td>
 </tr>
 <tr>
     <td><a href="#delete_alias"><CopyableCode code="delete_alias" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-alias"><code>alias</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-alias"><code>alias</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a registered model alias.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a registered model and all its model versions from the specified parent catalog and schema.</td>
 </tr>
@@ -341,15 +341,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The name of the alias</td>
 </tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-full_name">
     <td><CopyableCode code="full_name" /></td>
     <td><code>string</code></td>
     <td>The three-level (fully qualified) name of the registered model</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-catalog_name">
     <td><CopyableCode code="catalog_name" /></td>
@@ -415,7 +415,7 @@ updated_at,
 updated_by
 FROM databricks_workspace.catalog.registered_models
 WHERE full_name = '{{ full_name }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND include_aliases = '{{ include_aliases }}'
 AND include_browse = '{{ include_browse }}'
 ;
@@ -442,7 +442,7 @@ storage_location,
 updated_at,
 updated_by
 FROM databricks_workspace.catalog.registered_models
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND catalog_name = '{{ catalog_name }}'
 AND include_browse = '{{ include_browse }}'
 AND max_results = '{{ max_results }}'
@@ -483,7 +483,7 @@ schema_name,
 storage_location,
 updated_at,
 updated_by,
-workspace
+deployment_name
 )
 SELECT 
 '{{ aliases }}',
@@ -500,7 +500,7 @@ SELECT
 '{{ storage_location }}',
 {{ updated_at }},
 '{{ updated_by }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 name,
 metastore_id,
@@ -524,8 +524,8 @@ updated_by
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: registered_models
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the registered_models resource.
     - name: aliases
       description: |
@@ -626,7 +626,7 @@ updated_at = {{ updated_at }},
 updated_by = '{{ updated_by }}'
 WHERE 
 full_name = '{{ full_name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 RETURNING
 name,
 metastore_id,
@@ -666,7 +666,7 @@ version_num = {{ version_num }}
 WHERE 
 full_name = '{{ full_name }}' --required
 AND alias = '{{ alias }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND version_num = '{{ version_num }}' --required
 RETURNING
 id,
@@ -697,7 +697,7 @@ Deletes a registered model alias.
 DELETE FROM databricks_workspace.catalog.registered_models
 WHERE full_name = '{{ full_name }}' --required
 AND alias = '{{ alias }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -708,7 +708,7 @@ Deletes a registered model and all its model versions from the specified parent 
 ```sql
 DELETE FROM databricks_workspace.catalog.registered_models
 WHERE full_name = '{{ full_name }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

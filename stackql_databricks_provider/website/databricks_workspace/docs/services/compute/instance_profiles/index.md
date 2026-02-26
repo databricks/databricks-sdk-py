@@ -79,28 +79,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>List the instance profiles that the calling user can use to launch a cluster.</td>
 </tr>
 <tr>
     <td><a href="#add"><CopyableCode code="add" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-instance_profile_arn"><code>instance_profile_arn</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-instance_profile_arn"><code>instance_profile_arn</code></a></td>
     <td></td>
     <td>Registers an instance profile in Databricks. In the UI, you can then give users the permission to use</td>
 </tr>
 <tr>
     <td><a href="#edit"><CopyableCode code="edit" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-instance_profile_arn"><code>instance_profile_arn</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-instance_profile_arn"><code>instance_profile_arn</code></a></td>
     <td></td>
     <td>The only supported field to change is the optional IAM role ARN associated with the instance profile.</td>
 </tr>
 <tr>
     <td><a href="#remove"><CopyableCode code="remove" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Remove the instance profile with the provided ARN. Existing clusters with this instance profile will</td>
 </tr>
@@ -120,10 +120,10 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
 </tr>
 </tbody>
 </table>
@@ -146,7 +146,7 @@ iam_role_arn,
 instance_profile_arn,
 is_meta_instance_profile
 FROM databricks_workspace.compute.instance_profiles
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -172,14 +172,14 @@ instance_profile_arn,
 iam_role_arn,
 is_meta_instance_profile,
 skip_validation,
-workspace
+deployment_name
 )
 SELECT 
 '{{ instance_profile_arn }}' /* required */,
 '{{ iam_role_arn }}',
 {{ is_meta_instance_profile }},
 {{ skip_validation }},
-'{{ workspace }}'
+'{{ deployment_name }}'
 ;
 ```
 </TabItem>
@@ -188,8 +188,8 @@ SELECT
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: instance_profiles
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the instance_profiles resource.
     - name: instance_profile_arn
       value: "{{ instance_profile_arn }}"
@@ -232,7 +232,7 @@ instance_profile_arn = '{{ instance_profile_arn }}',
 iam_role_arn = '{{ iam_role_arn }}',
 is_meta_instance_profile = {{ is_meta_instance_profile }}
 WHERE 
-workspace = '{{ workspace }}' --required
+deployment_name = '{{ deployment_name }}' --required
 AND instance_profile_arn = '{{ instance_profile_arn }}' --required;
 ```
 </TabItem>
@@ -253,7 +253,7 @@ Remove the instance profile with the provided ARN. Existing clusters with this i
 
 ```sql
 DELETE FROM databricks_workspace.compute.instance_profiles
-WHERE workspace = '{{ workspace }}' --required
+WHERE deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

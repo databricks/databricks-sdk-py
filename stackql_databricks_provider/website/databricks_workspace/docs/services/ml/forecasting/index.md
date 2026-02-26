@@ -79,14 +79,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-experiment_id"><code>experiment_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-experiment_id"><code>experiment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Public RPC to get forecasting experiment</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-train_data_path"><code>train_data_path</code></a>, <a href="#parameter-target_column"><code>target_column</code></a>, <a href="#parameter-time_column"><code>time_column</code></a>, <a href="#parameter-forecast_granularity"><code>forecast_granularity</code></a>, <a href="#parameter-forecast_horizon"><code>forecast_horizon</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-train_data_path"><code>train_data_path</code></a>, <a href="#parameter-target_column"><code>target_column</code></a>, <a href="#parameter-time_column"><code>time_column</code></a>, <a href="#parameter-forecast_granularity"><code>forecast_granularity</code></a>, <a href="#parameter-forecast_horizon"><code>forecast_horizon</code></a></td>
     <td></td>
     <td>Creates a serverless forecasting experiment. Returns the experiment ID.</td>
 </tr>
@@ -106,15 +106,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-experiment_id">
     <td><CopyableCode code="experiment_id" /></td>
     <td><code>string</code></td>
     <td>The unique ID of a forecasting experiment</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -138,7 +138,7 @@ experiment_page_url,
 state
 FROM databricks_workspace.ml.forecasting
 WHERE experiment_id = '{{ experiment_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -177,7 +177,7 @@ register_to,
 split_column,
 timeseries_identifier_columns,
 training_frameworks,
-workspace
+deployment_name
 )
 SELECT 
 '{{ train_data_path }}' /* required */,
@@ -197,7 +197,7 @@ SELECT
 '{{ split_column }}',
 '{{ timeseries_identifier_columns }}',
 '{{ training_frameworks }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 experiment_id,
 experiment_page_url,
@@ -210,8 +210,8 @@ state
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: forecasting
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the forecasting resource.
     - name: train_data_path
       value: "{{ train_data_path }}"

@@ -228,42 +228,42 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-materialized_feature_id"><code>materialized_feature_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-materialized_feature_id"><code>materialized_feature_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get a materialized feature.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-feature_name"><code>feature_name</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
     <td>List materialized features.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-materialized_feature"><code>materialized_feature</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-materialized_feature"><code>materialized_feature</code></a></td>
     <td></td>
     <td>Create a materialized feature.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-materialized_feature_id"><code>materialized_feature_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-materialized_feature"><code>materialized_feature</code></a></td>
+    <td><a href="#parameter-materialized_feature_id"><code>materialized_feature_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-materialized_feature"><code>materialized_feature</code></a></td>
     <td></td>
     <td>Update a materialized feature (pause/resume).</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-materialized_feature_id"><code>materialized_feature_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-materialized_feature_id"><code>materialized_feature_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Delete a materialized feature.</td>
 </tr>
 <tr>
     <td><a href="#batch_create"><CopyableCode code="batch_create" /></a></td>
     <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-requests"><code>requests</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-requests"><code>requests</code></a></td>
     <td></td>
     <td>Batch create materialized features.</td>
 </tr>
@@ -283,6 +283,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-materialized_feature_id">
     <td><CopyableCode code="materialized_feature_id" /></td>
     <td><code>string</code></td>
@@ -292,11 +297,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="update_mask" /></td>
     <td><code>string</code></td>
     <td>Provide the materialization feature fields which should be updated. Currently, only the pipeline_state field can be updated.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-feature_name">
     <td><CopyableCode code="feature_name" /></td>
@@ -341,7 +341,7 @@ online_store_config,
 pipeline_schedule_state
 FROM databricks_workspace.ml.feature_materialized
 WHERE materialized_feature_id = '{{ materialized_feature_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -360,7 +360,7 @@ offline_store_config,
 online_store_config,
 pipeline_schedule_state
 FROM databricks_workspace.ml.feature_materialized
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND feature_name = '{{ feature_name }}'
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
@@ -386,11 +386,11 @@ Create a materialized feature.
 ```sql
 INSERT INTO databricks_workspace.ml.feature_materialized (
 materialized_feature,
-workspace
+deployment_name
 )
 SELECT 
 '{{ materialized_feature }}' /* required */,
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 materialized_feature_id,
 feature_name,
@@ -408,8 +408,8 @@ pipeline_schedule_state
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: feature_materialized
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the feature_materialized resource.
     - name: materialized_feature
       description: |
@@ -455,7 +455,7 @@ materialized_feature = '{{ materialized_feature }}'
 WHERE 
 materialized_feature_id = '{{ materialized_feature_id }}' --required
 AND update_mask = '{{ update_mask }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND materialized_feature = '{{ materialized_feature }}' --required
 RETURNING
 materialized_feature_id,
@@ -486,7 +486,7 @@ Delete a materialized feature.
 ```sql
 DELETE FROM databricks_workspace.ml.feature_materialized
 WHERE materialized_feature_id = '{{ materialized_feature_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
@@ -507,7 +507,7 @@ Batch create materialized features.
 
 ```sql
 EXEC databricks_workspace.ml.feature_materialized.batch_create 
-@workspace='{{ workspace }}' --required 
+@deployment_name='{{ deployment_name }}' --required 
 @@json=
 '{
 "requests": "{{ requests }}"

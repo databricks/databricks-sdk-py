@@ -54,21 +54,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-width"><code>width</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-width"><code>width</code></a></td>
     <td></td>
     <td>Updates an existing widget</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-width"><code>width</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-width"><code>width</code></a></td>
     <td></td>
     <td>Adds a widget to a dashboard</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Removes a widget from a dashboard</td>
 </tr>
@@ -88,15 +88,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-id">
     <td><CopyableCode code="id" /></td>
     <td><code>string</code></td>
     <td>Widget ID returned by :method:dashboardwidgets/create</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -123,7 +123,7 @@ width,
 text,
 visualization_id,
 id,
-workspace
+deployment_name
 )
 SELECT 
 '{{ dashboard_id }}' /* required */,
@@ -132,7 +132,7 @@ SELECT
 '{{ text }}',
 '{{ visualization_id }}',
 '{{ id }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 id,
 options,
@@ -152,7 +152,7 @@ options,
 width,
 text,
 visualization_id,
-workspace
+deployment_name
 )
 SELECT 
 '{{ dashboard_id }}' /* required */,
@@ -160,7 +160,7 @@ SELECT
 {{ width }} /* required */,
 '{{ text }}',
 '{{ visualization_id }}',
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 id,
 options,
@@ -177,8 +177,8 @@ width
     - name: id
       value: "{{ id }}"
       description: Required parameter for the dashboard_widgets resource.
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the dashboard_widgets resource.
     - name: dashboard_id
       value: "{{ dashboard_id }}"
@@ -231,7 +231,7 @@ Removes a widget from a dashboard
 ```sql
 DELETE FROM databricks_workspace.sql.dashboard_widgets
 WHERE id = '{{ id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

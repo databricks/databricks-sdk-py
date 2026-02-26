@@ -167,28 +167,28 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-token_id"><code>token_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-token_id"><code>token_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets information about a token, specified by its ID.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-created_by_id"><code>created_by_id</code></a>, <a href="#parameter-created_by_username"><code>created_by_username</code></a></td>
     <td>Lists all tokens associated with the specified workspace or user.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-application_id"><code>application_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-application_id"><code>application_id</code></a></td>
     <td></td>
     <td>Creates a token on behalf of a service principal.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-token_id"><code>token_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-token_id"><code>token_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a token, specified by its ID.</td>
 </tr>
@@ -208,15 +208,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-token_id">
     <td><CopyableCode code="token_id" /></td>
     <td><code>string</code></td>
     <td>The ID of the token to revoke.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 <tr id="parameter-created_by_id">
     <td><CopyableCode code="created_by_id" /></td>
@@ -249,7 +249,7 @@ SELECT
 token_info
 FROM databricks_workspace.settings.token_management
 WHERE token_id = '{{ token_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -269,7 +269,7 @@ creation_time,
 expiry_time,
 last_used_day
 FROM databricks_workspace.settings.token_management
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 AND created_by_id = '{{ created_by_id }}'
 AND created_by_username = '{{ created_by_username }}'
 ;
@@ -296,13 +296,13 @@ INSERT INTO databricks_workspace.settings.token_management (
 application_id,
 comment,
 lifetime_seconds,
-workspace
+deployment_name
 )
 SELECT 
 '{{ application_id }}' /* required */,
 '{{ comment }}',
 {{ lifetime_seconds }},
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 token_info,
 token_value
@@ -314,8 +314,8 @@ token_value
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: token_management
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the token_management resource.
     - name: application_id
       value: "{{ application_id }}"
@@ -350,7 +350,7 @@ Deletes a token, specified by its ID.
 ```sql
 DELETE FROM databricks_workspace.settings.token_management
 WHERE token_id = '{{ token_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>

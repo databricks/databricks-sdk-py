@@ -10,7 +10,6 @@ info:
   x-stackql-sdk-namespace: databricks.sdk.service.iamv2
 servers:
   - url: https://accounts.cloud.databricks.com
-    description: Databricks account
 paths:
   /api/2.0/identity/accounts/{account_id}/workspaces/{workspace_id}/workspaceAccessDetails/{principal_id}:
     get:

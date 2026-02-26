@@ -9,7 +9,6 @@ info:
   x-stackql-sdk-namespace: databricks.sdk.service.settings
 servers:
 - url: https://accounts.cloud.databricks.com
-  description: Databricks account
 paths:
   /api/2.0/accounts/{account_id}/ip-access-lists:
     post:

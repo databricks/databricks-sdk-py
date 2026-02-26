@@ -155,35 +155,35 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-script_id"><code>script_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-script_id"><code>script_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Gets all the details of a script, including its Base64-encoded contents.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Get a list of all global init scripts for this workspace. This returns all properties for each script</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-script"><code>script</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-script"><code>script</code></a></td>
     <td></td>
     <td>Creates a new global init script in this workspace.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-script_id"><code>script_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-script"><code>script</code></a></td>
+    <td><a href="#parameter-script_id"><code>script_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-script"><code>script</code></a></td>
     <td></td>
     <td>Updates a global init script, specifying only the fields to change. All fields are optional.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-script_id"><code>script_id</code></a>, <a href="#parameter-workspace"><code>workspace</code></a></td>
+    <td><a href="#parameter-script_id"><code>script_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
     <td>Deletes a global init script.</td>
 </tr>
@@ -203,15 +203,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
 <tr id="parameter-script_id">
     <td><CopyableCode code="script_id" /></td>
     <td><code>string</code></td>
     <td>The ID of the global init script.</td>
-</tr>
-<tr id="parameter-workspace">
-    <td><CopyableCode code="workspace" /></td>
-    <td><code>string</code></td>
-    <td>Your Databricks workspace name (default: your-workspace)</td>
 </tr>
 </tbody>
 </table>
@@ -242,7 +242,7 @@ updated_at,
 updated_by
 FROM databricks_workspace.compute.global_init_scripts
 WHERE script_id = '{{ script_id }}' -- required
-AND workspace = '{{ workspace }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -261,7 +261,7 @@ position,
 updated_at,
 updated_by
 FROM databricks_workspace.compute.global_init_scripts
-WHERE workspace = '{{ workspace }}' -- required
+WHERE deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>
@@ -287,14 +287,14 @@ name,
 script,
 enabled,
 position,
-workspace
+deployment_name
 )
 SELECT 
 '{{ name }}' /* required */,
 '{{ script }}' /* required */,
 {{ enabled }},
 {{ position }},
-'{{ workspace }}'
+'{{ deployment_name }}'
 RETURNING
 script_id
 ;
@@ -305,8 +305,8 @@ script_id
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: global_init_scripts
   props:
-    - name: workspace
-      value: "{{ workspace }}"
+    - name: deployment_name
+      value: "{{ deployment_name }}"
       description: Required parameter for the global_init_scripts resource.
     - name: name
       value: "{{ name }}"
@@ -351,7 +351,7 @@ enabled = {{ enabled }},
 position = {{ position }}
 WHERE 
 script_id = '{{ script_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND name = '{{ name }}' --required
 AND script = '{{ script }}' --required;
 ```
@@ -374,7 +374,7 @@ Deletes a global init script.
 ```sql
 DELETE FROM databricks_workspace.compute.global_init_scripts
 WHERE script_id = '{{ script_id }}' --required
-AND workspace = '{{ workspace }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 ;
 ```
 </TabItem>
