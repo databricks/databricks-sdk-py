@@ -203,8 +203,10 @@ def _make_jwt(claims: dict) -> str:
         ({"scope": "all-apis offline_access"}, ["all-apis"], None, "credentials"),
         # offline_access in config only — still equivalent
         ({"scope": "all-apis"}, ["all-apis", "offline_access"], None, "credentials"),
-        # No scopes configured — skip validation
+        # No scopes configured — defaults to ["all-apis"], token matches
         ({"scope": "all-apis"}, None, None, "credentials"),
+        # No scopes configured — defaults to ["all-apis"], token has different scopes
+        ({"scope": "sql"}, None, None, "fallthrough"),
         # scope claim as list instead of string
         ({"scope": ["sql", "offline_access"]}, ["sql"], None, "credentials"),
     ],
@@ -214,7 +216,8 @@ def _make_jwt(claims: dict) -> str:
         "mismatch_default_chain_fallthrough",
         "offline_access_on_token_only",
         "offline_access_in_config_only",
-        "no_scopes_configured",
+        "no_scopes_configured_match",
+        "no_scopes_configured_mismatch",
         "scope_as_list",
     ],
 )
@@ -255,7 +258,7 @@ def test_databricks_cli_scope_validation_error_message(config, monkeypatch, tmp_
     config.scopes = sorted(["sql", "offline_access"])
     config.auth_type = "databricks-cli"
 
-    with pytest.raises(ValueError, match=r"databricks auth login --host .* --scopes sql"):
+    with pytest.raises(ValueError, match=r"databricks auth login.*--scopes"):
         databricks_cli(config)
 
 

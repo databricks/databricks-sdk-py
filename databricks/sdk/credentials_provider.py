@@ -882,11 +882,7 @@ class DatabricksCliTokenSource(CliTokenSource):
         elif cli_path.count("/") == 0:
             cli_path = self.__class__._find_executable(cli_path)
 
-        # get_scopes() defaults to ["all-apis"] when nothing is configured, which would
-        # cause false-positive mismatches against every token that wasn't issued with
-        # exactly ["all-apis"]. Only validate when scopes are explicitly set (either
-        # directly in code or loaded from a CLI profile).
-        self._requested_scopes = cfg.get_scopes() if cfg.scopes else None
+        self._requested_scopes = cfg.get_scopes()
         self._host = cfg.host
 
         super().__init__(
@@ -949,8 +945,7 @@ class DatabricksCliTokenSource(CliTokenSource):
             raise ValueError(
                 f"Token issued by Databricks CLI has scopes {sorted(token_scopes)} which do not match "
                 f"the configured scopes {sorted(requested_scopes)}. Please re-authenticate "
-                f"with the correct scopes by running: "
-                f"databricks auth login --host {self._host} --scopes {scopes_csv}"
+                f"with the correct scopes by running `databricks auth login` with the --scopes flag."
             )
 
     @staticmethod
