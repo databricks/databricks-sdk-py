@@ -945,7 +945,8 @@ class DatabricksCliTokenSource(CliTokenSource):
             raise ValueError(
                 f"Token issued by Databricks CLI has scopes {sorted(token_scopes)} which do not match "
                 f"the configured scopes {sorted(requested_scopes)}. Please re-authenticate "
-                f"with the correct scopes by running `databricks auth login` with the --scopes flag."
+                f"with the desired scopes by running `databricks auth login` with the --scopes flag."
+                f"Scopes default to all-apis."
             )
 
     @staticmethod
