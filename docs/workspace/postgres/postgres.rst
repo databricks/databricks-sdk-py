@@ -34,6 +34,28 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: create_database(parent: str, database: Database [, database_id: Optional[str]]) -> CreateDatabaseOperation
+
+        Create a Database.
+
+        Creates a database in the specified branch. A branch can have multiple databases.
+
+        :param parent: str
+          The Branch where this Database will be created. Format: projects/{project_id}/branches/{branch_id}
+        :param database: :class:`Database`
+          The desired specification of a Database.
+        :param database_id: str (optional)
+          The ID to use for the Database, which will become the final component of the database's resource
+          name. This ID becomes the database name in postgres.
+
+          This value should be 4-63 characters, and only use characters available in DNS names, as defined by
+          RFC-1123
+
+          If database_id is not specified in the request, it is generated automatically.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: create_endpoint(parent: str, endpoint: Endpoint, endpoint_id: str) -> CreateEndpointOperation
 
         Creates a new compute endpoint in the branch.
@@ -92,6 +114,17 @@
 
         :param name: str
           The full resource path of the branch to delete. Format: projects/{project_id}/branches/{branch_id}
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: delete_database(name: str) -> DeleteDatabaseOperation
+
+        Delete a Database.
+
+        :param name: str
+          The resource name of the postgres database. Format:
+          projects/{project_id}/branches/{branch_id}/databases/{database_id}
 
         :returns: :class:`Operation`
         
@@ -159,6 +192,17 @@
         :returns: :class:`Branch`
         
 
+    .. py:method:: get_database(name: str) -> Database
+
+        Get a Database.
+
+        :param name: str
+          The name of the Database to retrieve. Format:
+          projects/{project_id}/branches/{branch_id}/databases/{database_id}
+
+        :returns: :class:`Database`
+        
+
     .. py:method:: get_endpoint(name: str) -> Endpoint
 
         Retrieves information about the specified compute endpoint, including its connection details and
@@ -217,6 +261,21 @@
         :returns: Iterator over :class:`Branch`
         
 
+    .. py:method:: list_databases(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Database]
+
+        List Databases.
+
+        :param parent: str
+          The Branch that owns this collection of databases. Format:
+          projects/{project_id}/branches/{branch_id}
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of Databases. Requests first page if absent.
+
+        :returns: Iterator over :class:`Database`
+        
+
     .. py:method:: list_endpoints(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Endpoint]
 
         Returns a paginated list of compute endpoints in the branch.
@@ -271,6 +330,24 @@
 
           The branch's `name` field is used to identify the branch to update. Format:
           projects/{project_id}/branches/{branch_id}
+        :param update_mask: FieldMask
+          The list of fields to update. If unspecified, all fields will be updated when possible.
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: update_database(name: str, database: Database, update_mask: FieldMask) -> UpdateDatabaseOperation
+
+        Update a Database.
+
+        :param name: str
+          The resource name of the database. Format:
+          projects/{project_id}/branches/{branch_id}/databases/{database_id}
+        :param database: :class:`Database`
+          The Database to update.
+
+          The database's `name` field is used to identify the database to update. Format:
+          projects/{project_id}/branches/{branch_id}/databases/{database_id}
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
 

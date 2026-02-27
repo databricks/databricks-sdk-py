@@ -39,7 +39,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: RESETTING
       :value: "RESETTING"
 
+.. autoclass:: Database
+   :members:
+   :undoc-members:
+
 .. autoclass:: DatabaseCredential
+   :members:
+   :undoc-members:
+
+.. autoclass:: DatabaseDatabaseSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: DatabaseDatabaseStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: DatabaseOperationMetadata
    :members:
    :undoc-members:
 
@@ -370,6 +386,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListBranchesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListDatabasesResponse
    :members:
    :undoc-members:
 

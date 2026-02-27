@@ -1042,6 +1042,8 @@ class AppResource:
 
     job: Optional[AppResourceJob] = None
 
+    postgres: Optional[AppResourcePostgres] = None
+
     secret: Optional[AppResourceSecret] = None
 
     serving_endpoint: Optional[AppResourceServingEndpoint] = None
@@ -1067,6 +1069,8 @@ class AppResource:
             body["job"] = self.job.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.postgres:
+            body["postgres"] = self.postgres.as_dict()
         if self.secret:
             body["secret"] = self.secret.as_dict()
         if self.serving_endpoint:
@@ -1094,6 +1098,8 @@ class AppResource:
             body["job"] = self.job
         if self.name is not None:
             body["name"] = self.name
+        if self.postgres:
+            body["postgres"] = self.postgres
         if self.secret:
             body["secret"] = self.secret
         if self.serving_endpoint:
@@ -1115,6 +1121,7 @@ class AppResource:
             genie_space=_from_dict(d, "genie_space", AppResourceGenieSpace),
             job=_from_dict(d, "job", AppResourceJob),
             name=d.get("name", None),
+            postgres=_from_dict(d, "postgres", AppResourcePostgres),
             secret=_from_dict(d, "secret", AppResourceSecret),
             serving_endpoint=_from_dict(d, "serving_endpoint", AppResourceServingEndpoint),
             sql_warehouse=_from_dict(d, "sql_warehouse", AppResourceSqlWarehouse),
@@ -1312,6 +1319,51 @@ class AppResourceJobJobPermission(Enum):
     CAN_MANAGE_RUN = "CAN_MANAGE_RUN"
     CAN_VIEW = "CAN_VIEW"
     IS_OWNER = "IS_OWNER"
+
+
+@dataclass
+class AppResourcePostgres:
+    branch: Optional[str] = None
+
+    database: Optional[str] = None
+
+    permission: Optional[AppResourcePostgresPostgresPermission] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourcePostgres into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.database is not None:
+            body["database"] = self.database
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourcePostgres into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.database is not None:
+            body["database"] = self.database
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourcePostgres:
+        """Deserializes the AppResourcePostgres from a dictionary."""
+        return cls(
+            branch=d.get("branch", None),
+            database=d.get("database", None),
+            permission=_enum(d, "permission", AppResourcePostgresPostgresPermission),
+        )
+
+
+class AppResourcePostgresPostgresPermission(Enum):
+
+    CAN_CONNECT_AND_CREATE = "CAN_CONNECT_AND_CREATE"
 
 
 @dataclass
