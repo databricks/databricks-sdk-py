@@ -40,6 +40,40 @@ def test_token_cache_unique_filename_by_scopes():
     assert TokenCache(scopes=["foo"], **common_args).filename != TokenCache(scopes=["bar"], **common_args).filename
 
 
+def test_token_cache_unique_filename_by_profile():
+    common_args = dict(
+        host="http://localhost:",
+        client_id="abc",
+        redirect_url="http://localhost:8020",
+        oidc_endpoints=OidcEndpoints("http://localhost:1234", "http://localhost:1234"),
+    )
+    assert TokenCache(profile="dev", **common_args).filename != TokenCache(profile="prod", **common_args).filename
+
+
+def test_token_cache_filename_no_profile_matches_empty_profile():
+    common_args = dict(
+        host="http://localhost:",
+        client_id="abc",
+        redirect_url="http://localhost:8020",
+        oidc_endpoints=OidcEndpoints("http://localhost:1234", "http://localhost:1234"),
+    )
+    assert TokenCache(**common_args).filename == TokenCache(profile=None, **common_args).filename
+
+
+def test_token_cache_filename_no_delimiter_collision():
+    """Scopes and profile with shared comma content must not collide."""
+    common_args = dict(
+        host="http://localhost:",
+        client_id="abc",
+        redirect_url="http://localhost:8020",
+        oidc_endpoints=OidcEndpoints("http://localhost:1234", "http://localhost:1234"),
+    )
+    assert (
+        TokenCache(scopes=["a,b"], profile="c", **common_args).filename
+        != TokenCache(scopes=["a"], profile=",bc", **common_args).filename
+    )
+
+
 def test_account_oidc_endpoints(requests_mock):
     requests_mock.get(
         "https://accounts.cloud.databricks.com/oidc/accounts/abc-123/.well-known/oauth-authorization-server",
