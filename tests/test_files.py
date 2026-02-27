@@ -2624,6 +2624,15 @@ class ResumableUploadTestCase(UploadTestCase):
             expected_multipart_upload_aborted=False,  # upload didn't start
         ),
         ResumableUploadTestCase(
+            "Create resumable URL: node exists but URL is empty",
+            stream_size=1024 * 1024,
+            custom_response_on_create_resumable_url=CustomResponse(
+                body='{"resumable_upload_url":{"headers":[]}}', only_invocation=1
+            ),
+            expected_exception_type=ValueError,
+            expected_multipart_upload_aborted=False,  # upload didn't start
+        ),
+        ResumableUploadTestCase(
             "Create resumable URL: permanent retryable status code",
             stream_size=1024 * 1024,
             custom_response_on_create_resumable_url=CustomResponse(code=429),
