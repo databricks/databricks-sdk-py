@@ -1561,6 +1561,9 @@ class ProjectSpec:
     display_name: Optional[str] = None
     """Human-readable project name. Length should be between 1 and 256 characters."""
 
+    enable_pg_native_login: Optional[bool] = None
+    """Whether to enable PG native password login on all endpoints in this project. Defaults to true."""
+
     history_retention_duration: Optional[Duration] = None
     """The number of seconds to retain the shared history for point in time recovery for all branches
     in this project. Value should be between 0s and 2592000s (up to 30 days)."""
@@ -1579,6 +1582,8 @@ class ProjectSpec:
             body["default_endpoint_settings"] = self.default_endpoint_settings.as_dict()
         if self.display_name is not None:
             body["display_name"] = self.display_name
+        if self.enable_pg_native_login is not None:
+            body["enable_pg_native_login"] = self.enable_pg_native_login
         if self.history_retention_duration is not None:
             body["history_retention_duration"] = self.history_retention_duration.ToJsonString()
         if self.pg_version is not None:
@@ -1596,6 +1601,8 @@ class ProjectSpec:
             body["default_endpoint_settings"] = self.default_endpoint_settings
         if self.display_name is not None:
             body["display_name"] = self.display_name
+        if self.enable_pg_native_login is not None:
+            body["enable_pg_native_login"] = self.enable_pg_native_login
         if self.history_retention_duration is not None:
             body["history_retention_duration"] = self.history_retention_duration
         if self.pg_version is not None:
@@ -1610,6 +1617,7 @@ class ProjectSpec:
             custom_tags=_repeated_dict(d, "custom_tags", ProjectCustomTag),
             default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
             display_name=d.get("display_name", None),
+            enable_pg_native_login=d.get("enable_pg_native_login", None),
             history_retention_duration=_duration(d, "history_retention_duration"),
             pg_version=d.get("pg_version", None),
         )
@@ -1631,6 +1639,9 @@ class ProjectStatus:
 
     display_name: Optional[str] = None
     """The effective human-readable project name."""
+
+    enable_pg_native_login: Optional[bool] = None
+    """Whether to enable PG native password login on all endpoints in this project."""
 
     history_retention_duration: Optional[Duration] = None
     """The effective number of seconds to retain the shared history for point in time recovery."""
@@ -1657,6 +1668,8 @@ class ProjectStatus:
             body["default_endpoint_settings"] = self.default_endpoint_settings.as_dict()
         if self.display_name is not None:
             body["display_name"] = self.display_name
+        if self.enable_pg_native_login is not None:
+            body["enable_pg_native_login"] = self.enable_pg_native_login
         if self.history_retention_duration is not None:
             body["history_retention_duration"] = self.history_retention_duration.ToJsonString()
         if self.owner is not None:
@@ -1680,6 +1693,8 @@ class ProjectStatus:
             body["default_endpoint_settings"] = self.default_endpoint_settings
         if self.display_name is not None:
             body["display_name"] = self.display_name
+        if self.enable_pg_native_login is not None:
+            body["enable_pg_native_login"] = self.enable_pg_native_login
         if self.history_retention_duration is not None:
             body["history_retention_duration"] = self.history_retention_duration
         if self.owner is not None:
@@ -1699,6 +1714,7 @@ class ProjectStatus:
             custom_tags=_repeated_dict(d, "custom_tags", ProjectCustomTag),
             default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
             display_name=d.get("display_name", None),
+            enable_pg_native_login=d.get("enable_pg_native_login", None),
             history_retention_duration=_duration(d, "history_retention_duration"),
             owner=d.get("owner", None),
             pg_version=d.get("pg_version", None),
