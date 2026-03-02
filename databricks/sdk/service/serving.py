@@ -1715,6 +1715,16 @@ class FoundationModel:
 
     name: Optional[str] = None
 
+    price: Optional[str] = None
+
+    input_price: Optional[str] = None
+
+    price_unit: Optional[str] = None
+
+    pricing_model: Optional[str] = None
+
+    model_class: Optional[str] = None
+
     def as_dict(self) -> dict:
         """Serializes the FoundationModel into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1726,6 +1736,16 @@ class FoundationModel:
             body["docs"] = self.docs
         if self.name is not None:
             body["name"] = self.name
+        if self.price is not None:
+            body["price"] = self.price
+        if self.input_price is not None:
+            body["input_price"] = self.input_price
+        if self.price_unit is not None:
+            body["price_unit"] = self.price_unit
+        if self.pricing_model is not None:
+            body["pricing_model"] = self.pricing_model
+        if self.model_class is not None:
+            body["model_class"] = self.model_class
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1739,6 +1759,16 @@ class FoundationModel:
             body["docs"] = self.docs
         if self.name is not None:
             body["name"] = self.name
+        if self.price is not None:
+            body["price"] = self.price
+        if self.input_price is not None:
+            body["input_price"] = self.input_price
+        if self.price_unit is not None:
+            body["price_unit"] = self.price_unit
+        if self.pricing_model is not None:
+            body["pricing_model"] = self.pricing_model
+        if self.model_class is not None:
+            body["model_class"] = self.model_class
         return body
 
     @classmethod
@@ -1749,6 +1779,11 @@ class FoundationModel:
             display_name=d.get("display_name", None),
             docs=d.get("docs", None),
             name=d.get("name", None),
+            price=d.get("price", None),
+            input_price=d.get("input_price", None),
+            price_unit=d.get("price_unit", None),
+            pricing_model=d.get("pricing_model", None),
+            model_class=d.get("model_class", None),
         )
 
 

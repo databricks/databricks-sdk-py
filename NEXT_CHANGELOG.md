@@ -13,3 +13,5 @@
 ### Internal Changes
 
 ### API Changes
+
+ - extra fields in the FoundationModel class
