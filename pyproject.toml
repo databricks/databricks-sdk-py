@@ -41,7 +41,7 @@ dev = [
     "pytest-cov",
     "pytest-xdist>=3.6.1,<4.0",
     "pytest-mock",
-    "black==24.8.0",
+    "black==25.11.0",
     "pycodestyle",
     "autoflake==2.3.1",
     "isort==5.13.2",
