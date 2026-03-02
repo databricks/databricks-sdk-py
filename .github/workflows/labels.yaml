@@ -1,0 +1,26 @@
+# Requires GitHub secrets
+# - GH_TOKEN
+
+name: Update GitHub Labels
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/labels.yaml"
+      - ".github/workflows/labels.yaml"
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Update labels
+        uses: crazy-max/ghaction-github-labeler@v6
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          yaml-file: .github/labels.yaml
