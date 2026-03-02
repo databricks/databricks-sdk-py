@@ -1,0 +1,55 @@
+- name: "type: dependencies"
+  description: Pull requests that update a dependency file
+  color: 0366d6
+
+- name: "priority: critical"
+  description: Indicates a critical bug or work that is holding up a lot of other important features or fixes
+  color: B60205
+
+- name: "priority: high"
+  description: Indicates user-visible bugs or important features
+  color: D93F0B
+
+- name: "priority: medium"
+  description: Indicates default priority, 'should be done' but isn't prioritised ahead of others
+  color: FBCA04
+
+- name: "priority: low"
+  description: Indicates low priority, unlikely to be done unless it becomes important to more people
+  color: 0E8A16
+
+- name: "status: blocked"
+  description: Indicates an issue that is blocked by another issue or external requirement
+  color: E99695
+
+- name: "status: duplicate"
+  description: Indicates similar issues, pull requests, or discussions
+  color: BFDADC
+
+- name: "status: good first issue"
+  description: Indicates a good issue for first-time contributors
+  color: D4C5F9
+
+- name: "status: help wanted"
+  description: Indicates that a maintainer wants help on an issue or pull request
+  color: C5DEF5
+
+- name: "type: breaking"
+  description: Indicates a BREAKING CHANGE
+  color: B60205
+
+- name: "type: bug"
+  description: Indicates an unexpected problem or unintended behavior
+  color: D93F0B
+
+- name: "type: documentation"
+  description: Indicates a need for improvement or addition to documentation
+  color: 006B75
+
+- name: "type: enhancement"
+  description: Indicates a new feature request
+  color: 0E8A16
+
+- name: "type: maintenance"
+  description: Indicates changes to the CI, etc.; a code change that does not fix a bug or add a feature
+  color: FBCA04
