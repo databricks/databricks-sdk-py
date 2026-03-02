@@ -269,8 +269,7 @@ class GenieAttachment:
     """Follow-up questions suggested by Genie"""
 
     text: Optional[TextAttachment] = None
-    """Text Attachment if Genie responds with text. This also contains the final summary when
-    available."""
+    """Text Attachment if Genie responds with text This also contains the final summary when available."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieAttachment into a dictionary suitable for use as a JSON request body."""
@@ -311,14 +310,8 @@ class GenieAttachment:
 
 @dataclass
 class GenieConversation:
-    id: str
-    """Conversation ID. Legacy identifier, use conversation_id instead"""
-
     space_id: str
     """Genie space ID"""
-
-    user_id: int
-    """ID of the user who created the conversation"""
 
     title: str
     """Conversation title"""
@@ -329,8 +322,14 @@ class GenieConversation:
     created_timestamp: Optional[int] = None
     """Timestamp when the message was created"""
 
+    id: Optional[str] = None
+    """Conversation ID. Legacy identifier, use conversation_id instead"""
+
     last_updated_timestamp: Optional[int] = None
     """Timestamp when the message was last updated"""
+
+    user_id: Optional[int] = None
+    """ID of the user who created the conversation"""
 
     def as_dict(self) -> dict:
         """Serializes the GenieConversation into a dictionary suitable for use as a JSON request body."""
@@ -388,9 +387,9 @@ class GenieConversation:
 class GenieConversationSummary:
     conversation_id: str
 
-    title: str
+    created_timestamp: Optional[int] = None
 
-    created_timestamp: int
+    title: Optional[str] = None
 
     def as_dict(self) -> dict:
         """Serializes the GenieConversationSummary into a dictionary suitable for use as a JSON request body."""
@@ -644,9 +643,6 @@ class GenieListSpacesResponse:
 
 @dataclass
 class GenieMessage:
-    id: str
-    """Message ID. Legacy identifier, use message_id instead"""
-
     space_id: str
     """Genie space ID"""
 
@@ -670,6 +666,9 @@ class GenieMessage:
 
     feedback: Optional[GenieFeedback] = None
     """User feedback for the message if provided"""
+
+    id: Optional[str] = None
+    """Message ID. Legacy identifier, use message_id instead"""
 
     last_updated_timestamp: Optional[int] = None
     """Timestamp when the message was last updated"""
@@ -2107,8 +2106,7 @@ class GenieAPI:
         message_id: str,
         attachment_id: str,
         download_id: str,
-        *,
-        download_id_signature: Optional[str] = None,
+        download_id_signature: str,
     ) -> GenieGetDownloadFullQueryResultResponse:
         """After [Generating a Full Query Result Download](:method:genie/generatedownloadfullqueryresult) and
         successfully receiving a `download_id` and `download_id_signature`, use this API to poll the download
@@ -2143,7 +2141,7 @@ class GenieAPI:
         :param download_id: str
           Download ID. This ID is provided by the [Generate Download
           endpoint](:method:genie/generateDownloadFullQueryResult)
-        :param download_id_signature: str (optional)
+        :param download_id_signature: str
           JWT signature for the download_id to ensure secure access to query results
 
         :returns: :class:`GenieGetDownloadFullQueryResultResponse`

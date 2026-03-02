@@ -1042,6 +1042,8 @@ class AppResource:
 
     job: Optional[AppResourceJob] = None
 
+    postgres: Optional[AppResourcePostgres] = None
+
     secret: Optional[AppResourceSecret] = None
 
     serving_endpoint: Optional[AppResourceServingEndpoint] = None
@@ -1067,6 +1069,8 @@ class AppResource:
             body["job"] = self.job.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.postgres:
+            body["postgres"] = self.postgres.as_dict()
         if self.secret:
             body["secret"] = self.secret.as_dict()
         if self.serving_endpoint:
@@ -1094,6 +1098,8 @@ class AppResource:
             body["job"] = self.job
         if self.name is not None:
             body["name"] = self.name
+        if self.postgres:
+            body["postgres"] = self.postgres
         if self.secret:
             body["secret"] = self.secret
         if self.serving_endpoint:
@@ -1115,6 +1121,7 @@ class AppResource:
             genie_space=_from_dict(d, "genie_space", AppResourceGenieSpace),
             job=_from_dict(d, "job", AppResourceJob),
             name=d.get("name", None),
+            postgres=_from_dict(d, "postgres", AppResourcePostgres),
             secret=_from_dict(d, "secret", AppResourceSecret),
             serving_endpoint=_from_dict(d, "serving_endpoint", AppResourceServingEndpoint),
             sql_warehouse=_from_dict(d, "sql_warehouse", AppResourceSqlWarehouse),
@@ -1312,6 +1319,51 @@ class AppResourceJobJobPermission(Enum):
     CAN_MANAGE_RUN = "CAN_MANAGE_RUN"
     CAN_VIEW = "CAN_VIEW"
     IS_OWNER = "IS_OWNER"
+
+
+@dataclass
+class AppResourcePostgres:
+    branch: Optional[str] = None
+
+    database: Optional[str] = None
+
+    permission: Optional[AppResourcePostgresPostgresPermission] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourcePostgres into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.database is not None:
+            body["database"] = self.database
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourcePostgres into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.database is not None:
+            body["database"] = self.database
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourcePostgres:
+        """Deserializes the AppResourcePostgres from a dictionary."""
+        return cls(
+            branch=d.get("branch", None),
+            database=d.get("database", None),
+            permission=_enum(d, "permission", AppResourcePostgresPostgresPermission),
+        )
+
+
+class AppResourcePostgresPostgresPermission(Enum):
+
+    CAN_CONNECT_AND_CREATE = "CAN_CONNECT_AND_CREATE"
 
 
 @dataclass
@@ -2313,6 +2365,10 @@ class Operation:
 
 @dataclass
 class Space:
+    name: str
+    """The name of the app space. The name must contain only lowercase alphanumeric characters and
+    hyphens. It must be unique within the workspace."""
+
     create_time: Optional[Timestamp] = None
     """The creation time of the app space. Formatted timestamp in ISO 6801."""
 
@@ -2330,16 +2386,6 @@ class Space:
 
     id: Optional[str] = None
     """The unique identifier of the app space."""
-
-    name: Optional[str] = None
-    """The name of the app space. The name must contain only lowercase alphanumeric characters and
-    hyphens. It must be unique within the workspace."""
-
-    oauth2_app_client_id: Optional[str] = None
-    """The OAuth2 app client ID for the app space."""
-
-    oauth2_app_integration_id: Optional[str] = None
-    """The OAuth2 app integration ID for the app space."""
 
     resources: Optional[List[AppResource]] = None
     """Resources for the app space. Resources configured at the space level are available to all apps
@@ -2386,10 +2432,6 @@ class Space:
             body["id"] = self.id
         if self.name is not None:
             body["name"] = self.name
-        if self.oauth2_app_client_id is not None:
-            body["oauth2_app_client_id"] = self.oauth2_app_client_id
-        if self.oauth2_app_integration_id is not None:
-            body["oauth2_app_integration_id"] = self.oauth2_app_integration_id
         if self.resources:
             body["resources"] = [v.as_dict() for v in self.resources]
         if self.service_principal_client_id is not None:
@@ -2427,10 +2469,6 @@ class Space:
             body["id"] = self.id
         if self.name is not None:
             body["name"] = self.name
-        if self.oauth2_app_client_id is not None:
-            body["oauth2_app_client_id"] = self.oauth2_app_client_id
-        if self.oauth2_app_integration_id is not None:
-            body["oauth2_app_integration_id"] = self.oauth2_app_integration_id
         if self.resources:
             body["resources"] = self.resources
         if self.service_principal_client_id is not None:
@@ -2462,8 +2500,6 @@ class Space:
             effective_user_api_scopes=d.get("effective_user_api_scopes", None),
             id=d.get("id", None),
             name=d.get("name", None),
-            oauth2_app_client_id=d.get("oauth2_app_client_id", None),
-            oauth2_app_integration_id=d.get("oauth2_app_integration_id", None),
             resources=_repeated_dict(d, "resources", AppResource),
             service_principal_client_id=d.get("service_principal_client_id", None),
             service_principal_id=d.get("service_principal_id", None),

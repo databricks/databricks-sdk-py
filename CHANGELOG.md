@@ -1,5 +1,76 @@
 # Version changelog
 
+## Release v0.95.0 (2026-03-02)
+
+### New Features and Improvements
+* Added `Config.discovery_url` config field (`DATABRICKS_DISCOVERY_URL` env var). When set, OIDC endpoints are fetched directly from this URL instead of the default host-type-based logic. Mirrors `discoveryUrl` in the Java SDK.
+* The OAuth token cache filename now includes the config profile name (if set) and uses a serialized map to prevent hash collisions. All users will need to reauthenticate once after upgrading.
+
+### API Changes
+* Add `dataframe_schema`, `filter_condition` and `transformation_sql` fields for `databricks.sdk.service.ml.DeltaTableSource`.
+* Add `environment_version` field for `databricks.sdk.service.pipelines.PipelinesEnvironment`.
+* Add `reset_checkpoint_selection` field for `databricks.sdk.service.pipelines.StartUpdate`.
+* [Breaking] Remove `oauth2_app_client_id` and `oauth2_app_integration_id` fields for `databricks.sdk.service.apps.Space`.
+* Add `create_database()`, `delete_database()`, `get_database()`, `list_databases()` and `update_database()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `postgres` field for `databricks.sdk.service.apps.AppResource`.
+* Add `enable_pg_native_login` field for `databricks.sdk.service.postgres.ProjectSpec`.
+* Add `enable_pg_native_login` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* [Breaking] Remove `node_type_flexibility` field for `databricks.sdk.service.compute.EditInstancePool`.
+
+
+## Release v0.94.0 (2026-02-26)
+
+### New Features and Improvements
+* Added `Config.discovery_url` config field (`DATABRICKS_DISCOVERY_URL` env var). When set, OIDC endpoints are fetched directly from this URL instead of the default host-type-based logic. Mirrors `discoveryUrl` in the Java SDK.
+
+### Bug Fixes
+* Pass `--profile` to CLI token source when profile is set, and add read-fallback to migrate legacy host-keyed tokens to profile keys.
+
+### API Changes
+* Add `effective_publishing_mode` field for `databricks.sdk.service.pipelines.GetPipelineResponse`.
+* Add `dbr_autoscale` enum value for `databricks.sdk.service.compute.EventDetailsCause`.
+* Change `output_catalog` field for `databricks.sdk.service.cleanrooms.CreateCleanRoomOutputCatalogResponse` to be required.
+* [Breaking] Remove `internal_attributes` field for `databricks.sdk.service.sharing.Table`.
+* [Breaking] Remove `internal_attributes` field for `databricks.sdk.service.sharing.Volume`.
+
+
+## Release v0.93.0 (2026-02-25)
+
+### API Changes
+* Add `parameters` field for `databricks.sdk.service.pipelines.StartUpdate`.
+* Add `parameters` field for `databricks.sdk.service.pipelines.UpdateInfo`.
+* [Breaking] Change `get_download_full_query_result()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service with new required argument order.
+* [Breaking] Change `name` field for `databricks.sdk.service.apps.Space` to be required.
+* Change `name` field for `databricks.sdk.service.apps.Space` to be required.
+* [Breaking] Change `id` and `user_id` fields for `databricks.sdk.service.dashboards.GenieConversation` to no longer be required.
+* [Breaking] Change `created_timestamp` and `title` fields for `databricks.sdk.service.dashboards.GenieConversationSummary` to no longer be required.
+* [Breaking] Change `download_id_signature` field for `databricks.sdk.service.dashboards.GenieGetDownloadFullQueryResultRequest` to be required.
+* [Breaking] Change `id` field for `databricks.sdk.service.dashboards.GenieMessage` to no longer be required.
+
+
+## Release v0.92.0 (2026-02-24)
+
+### Documentation
+* Added "Retries" section to README.
+
+### API Changes
+* Add `read_only_host` field for `databricks.sdk.service.postgres.EndpointHosts`.
+* Add `group` field for `databricks.sdk.service.postgres.EndpointSpec`.
+* Add `group` field for `databricks.sdk.service.postgres.EndpointStatus`.
+* Add `initial_endpoint_spec` field for `databricks.sdk.service.postgres.Project`.
+* Add `degraded` enum value for `databricks.sdk.service.postgres.EndpointStatusState`.
+* Add `patch_endpoint()` method for [w.vector_search_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vectorsearch/vector_search_endpoints.html) workspace-level service.
+* Add `app` field for `databricks.sdk.service.apps.AppResource`.
+* Add `securable_kind` field for `databricks.sdk.service.apps.AppResourceUcSecurable`.
+* Add `min_qps` field for `databricks.sdk.service.vectorsearch.CreateEndpoint`.
+* Add `scaling_info` field for `databricks.sdk.service.vectorsearch.EndpointInfo`.
+* Add `modify` enum value for `databricks.sdk.service.apps.AppResourceUcSecurableUcSecurablePermission`.
+* Add `could_not_get_dashboard_schema_exception` enum value for `databricks.sdk.service.dashboards.MessageErrorType`.
+* Add `replace_where_overrides` field for `databricks.sdk.service.pipelines.StartUpdate`.
+* Add `hivemetastore_connectivity_failure` enum value for `databricks.sdk.service.compute.TerminationReasonCode`.
+* Add `hivemetastore_connectivity_failure` enum value for `databricks.sdk.service.sql.TerminationReasonCode`.
+
+
 ## Release v0.91.0 (2026-02-19)
 
 ### Bug Fixes

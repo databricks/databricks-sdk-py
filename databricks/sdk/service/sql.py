@@ -1222,6 +1222,7 @@ class ChannelName(Enum):
 @dataclass
 class ClientConfig:
     allow_custom_js_visualizations: Optional[bool] = None
+    """allow_custom_js_visualizations is not supported/implemneted."""
 
     allow_downloads: Optional[bool] = None
 

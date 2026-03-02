@@ -266,6 +266,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: IS_OWNER
       :value: "IS_OWNER"
 
+.. autoclass:: AppResourcePostgres
+   :members:
+   :undoc-members:
+
+.. py:class:: AppResourcePostgresPostgresPermission
+
+   .. py:attribute:: CAN_CONNECT_AND_CREATE
+      :value: "CAN_CONNECT_AND_CREATE"
+
 .. autoclass:: AppResourceSecret
    :members:
    :undoc-members:

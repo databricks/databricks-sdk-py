@@ -1520,7 +1520,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_JDBC_OAUTH_M2M = 298; Next id: 299
+   Latest kind: EXTERNAL_LOCATION_ONELAKE_MANAGED = 299; Next id: 300
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
