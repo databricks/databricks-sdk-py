@@ -133,10 +133,13 @@
         Generates a credential that can be used to access database instances.
 
         :param claims: List[:class:`RequestedClaims`] (optional)
-          The returned token will be scoped to the union of instance_names and instances containing the
-          specified UC tables, so instance_names is allowed to be empty.
+          A set of UC permissions to add to the credential. We verify that the caller has the necessary
+          permissions in UC and include a reference in the token. Postgres uses that token to give the
+          connecting user additional grants to the Postgres resources that correspond to the UC resources. The
+          UC resources need to be something that have a Postgres counterpart. For example, a synced table or a
+          table in a UC database catalog.
         :param instance_names: List[str] (optional)
-          Instances to which the token will be scoped.
+          Instances to request a credential for. At least one of instance_names or claims must be specified.
         :param request_id: str (optional)
 
         :returns: :class:`DatabaseCredential`
