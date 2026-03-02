@@ -289,7 +289,7 @@ def test_async_failure_disables_async():
     assert not r._refresh_err
 
 
-def test_dynamic_stale_period():
+def test_dynamic_stale_period_blocking_refresh():
     """
     For each token type, verifies:
     - Stale tokens trigger async refresh (returns old token immediately)
@@ -300,18 +300,80 @@ def test_dynamic_stale_period():
             "name": "standard OAuth token with 60-min TTL",
             "token_ttl": timedelta(minutes=60),
             "want_stale_duration": timedelta(minutes=20),  # min(30min, 20min) = 20min (capped)
-            "advance_time_for_stale": timedelta(minutes=41),  # 19min remaining < 20min stale period
         },
         {
             "name": "FastPath token with 10-min TTL",
             "token_ttl": timedelta(minutes=10),
             "want_stale_duration": timedelta(minutes=5),  # min(5min, 20min) = 5min (not capped)
-            "advance_time_for_stale": timedelta(minutes=6),  # 4min remaining < 5min stale period
         },
         {
             "name": "very short token with 90-seconds TTL",
             "token_ttl": timedelta(seconds=90),
             "want_stale_duration": timedelta(seconds=45),  # min(90s, 20min) = 45s (not capped)
+        },
+    ]
+
+    for tc in test_cases:
+        now = datetime(2024, 1, 1, 12, 0, 0)
+
+        with patch("databricks.sdk.oauth.datetime") as mock_dt:
+            mock_dt.now.return_value = now
+
+            initial_token = Token(access_token="initial", expiry=now + tc["token_ttl"])
+            r = _MockRefreshable(token=initial_token, disable_async=False)
+
+            assert r._stale_duration == tc["want_stale_duration"]
+            assert (
+                r._token_state() == _TokenState.FRESH
+            ), f'{tc["name"]}: initial state should be FRESH, is {r._token_state()}'
+
+            expired_time = now + tc["token_ttl"] + timedelta(seconds=5)
+            mock_dt.now.return_value = expired_time
+            assert (
+                r._token_state() == _TokenState.EXPIRED
+            ), f'{tc["name"]}: state should be EXPIRED, is {r._token_state()}'
+
+            fresh_after_expired = Token(
+                access_token="after_expired_refresh",
+                expiry=expired_time + tc["token_ttl"],
+            )
+            r._refresh_effect = static_token(fresh_after_expired)
+
+            result = r.token()
+            assert (
+                result.access_token == "after_expired_refresh"
+            ), f'{tc["name"]}: expired refresh should return new token (blocking)'
+            assert (
+                r._refresh_count == 1
+            ), f'{tc["name"]}: one blocking refresh for expired token, got {r._refresh_count}'
+            assert (
+                r._token_state() == _TokenState.FRESH
+            ), f'{tc["name"]}: state should be FRESH after expired refresh, is {r._token_state()}'
+            assert (
+                r._stale_duration == tc["want_stale_duration"]
+            ), f'{tc["name"]}: stale duration should be {tc["want_stale_duration"]}, is {r._stale_duration}'
+
+
+def test_dynamic_stale_period_async_refresh():
+    """
+    For each token type, verifies:
+    - Stale tokens trigger async refresh (returns old token immediately)
+    - Expired tokens trigger blocking refresh (blocks and returns new token)
+    """
+    test_cases = [
+        {
+            "name": "standard OAuth token with 60-min TTL",
+            "token_ttl": timedelta(minutes=60),
+            "advance_time_for_stale": timedelta(minutes=41),  # 19min remaining < 20min stale period
+        },
+        {
+            "name": "FastPath token with 10-min TTL",
+            "token_ttl": timedelta(minutes=10),
+            "advance_time_for_stale": timedelta(minutes=6),  # 4min remaining < 5min stale period
+        },
+        {
+            "name": "very short token with 90-seconds TTL",
+            "token_ttl": timedelta(seconds=90),
             "advance_time_for_stale": timedelta(seconds=46),  # 44s remaining < 45s stale period
         },
     ]
@@ -331,7 +393,6 @@ def test_dynamic_stale_period():
             refresh_fn, unblock = blocking_refresh(stale_refresh_token)
             r = _MockRefreshable(token=initial_token, disable_async=False, refresh_effect=refresh_fn)
 
-            assert r._stale_duration == tc["want_stale_duration"]
             assert (
                 r._token_state() == _TokenState.FRESH
             ), f'{tc["name"]}: initial state should be FRESH, is {r._token_state()}'
@@ -344,34 +405,10 @@ def test_dynamic_stale_period():
             assert result.access_token == "initial", f'{tc["name"]}: stale refresh should return old token (async)'
 
             unblock()
-            time.sleep(1)
+            time.sleep(0.1)
 
             result = r.token()
             assert (
                 result.access_token == "after_stale_refresh"
             ), f'{tc["name"]}: after async refresh should return new token'
             assert r._refresh_count == 1, f'{tc["name"]}: one refresh after stale, got {r._refresh_count}'
-
-            # --- EXPIRED: blocking refresh returns new token ---
-            expired_time = now + tc["token_ttl"] + tc["token_ttl"] + timedelta(seconds=5)
-            mock_dt.now.return_value = expired_time
-            assert (
-                r._token_state() == _TokenState.EXPIRED
-            ), f'{tc["name"]}: state should be EXPIRED, is {r._token_state()}'
-
-            fresh_after_expired = Token(
-                access_token="after_expired_refresh",
-                expiry=expired_time + tc["token_ttl"],
-            )
-            r._refresh_effect = static_token(fresh_after_expired, wait=1)
-
-            result = r.token()
-            assert (
-                result.access_token == "after_expired_refresh"
-            ), f'{tc["name"]}: expired refresh should return new token (blocking)'
-            assert (
-                r._refresh_count == 2
-            ), f'{tc["name"]}: two refreshes total (one stale + one expired), got {r._refresh_count}'
-            assert (
-                r._token_state() == _TokenState.FRESH
-            ), f'{tc["name"]}: state should be FRESH after expired refresh, is {r._token_state()}'
