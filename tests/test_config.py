@@ -95,6 +95,62 @@ def test_extra_and_upstream_user_agent(monkeypatch):
     assert not config3.user_agent.startswith("some-product/0.32.1")
 
 
+def test_databricks_product_env_var(monkeypatch):
+    """Test that DATABRICKS_PRODUCT env var is picked up when no product specified."""
+    monkeypatch.setenv("DATABRICKS_PRODUCT", "my-tool")
+    config = Config(host="http://localhost", token="...")
+    assert config.user_agent.startswith("my-tool/")
+
+
+def test_databricks_product_env_var_explicit_override(monkeypatch):
+    """Test that explicit product argument takes precedence over env var."""
+    monkeypatch.setenv("DATABRICKS_PRODUCT", "env-tool")
+    config = Config(host="http://localhost", token="...", product="explicit-tool")
+    assert config.user_agent.startswith("explicit-tool/")
+    assert "env-tool" not in config.user_agent
+
+
+def test_databricks_product_env_var_sanitization_whitespace(monkeypatch):
+    """Test that whitespace is trimmed from DATABRICKS_PRODUCT env var."""
+    monkeypatch.setenv("DATABRICKS_PRODUCT", "  my-tool  ")
+    config = Config(host="http://localhost", token="...")
+    assert config.user_agent.startswith("my-tool/")
+
+
+def test_databricks_product_env_var_sanitization_length(monkeypatch):
+    """Test that DATABRICKS_PRODUCT is capped at 64 characters."""
+    long_name = "a" * 100
+    monkeypatch.setenv("DATABRICKS_PRODUCT", long_name)
+    config = Config(host="http://localhost", token="...")
+    # Should be capped at 64 chars
+    assert config.user_agent.startswith("a" * 64 + "/")
+    assert ("a" * 65) not in config.user_agent
+
+
+def test_databricks_product_env_var_sanitization_invalid_chars(monkeypatch):
+    """Test that invalid characters are replaced with '-' in DATABRICKS_PRODUCT."""
+    monkeypatch.setenv("DATABRICKS_PRODUCT", "my tool@v1.0")
+    config = Config(host="http://localhost", token="...")
+    # Spaces and @ should be replaced with '-'
+    assert config.user_agent.startswith("my-tool-v1.0/")
+
+
+def test_databricks_product_env_var_empty_treated_as_unset(monkeypatch):
+    """Test that empty DATABRICKS_PRODUCT is treated as unset."""
+    monkeypatch.setenv("DATABRICKS_PRODUCT", "")
+    config = Config(host="http://localhost", token="...")
+    # Should fall back to global useragent product
+    assert config._product_info is None or config.user_agent.startswith("unknown/")
+
+
+def test_databricks_product_env_var_whitespace_only_treated_as_unset(monkeypatch):
+    """Test that whitespace-only DATABRICKS_PRODUCT is treated as unset."""
+    monkeypatch.setenv("DATABRICKS_PRODUCT", "   ")
+    config = Config(host="http://localhost", token="...")
+    # Should fall back to global useragent product
+    assert config._product_info is None or config.user_agent.startswith("unknown/")
+
+
 def test_config_copy_deep_copies_user_agent_other_info(config):
     config_copy = config.copy()
 
