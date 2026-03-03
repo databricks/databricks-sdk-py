@@ -267,6 +267,11 @@ class Generator:
             "Create and manage Agent Bricks resources."
         ),
         Package(
+            "knowledgeassistants",
+            "Knowledge Assistants",
+            "Manage Knowledge Assistants and related resources."
+        ),
+        Package(
             "iamv2",
             "Identity and Access Management",
             "Manage identities and workspace access."
