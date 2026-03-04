@@ -108,12 +108,13 @@
         :returns: Iterator over :class:`NetworkConnectivityConfiguration`
         
 
-    .. py:method:: list_private_endpoint_rules(network_connectivity_config_id: str [, page_token: Optional[str]]) -> Iterator[NccPrivateEndpointRule]
+    .. py:method:: list_private_endpoint_rules(network_connectivity_config_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[NccPrivateEndpointRule]
 
         Gets an array of private endpoint rules.
 
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
+        :param page_size: int (optional)
         :param page_token: str (optional)
           Pagination token to go to next page based on previous query.
 

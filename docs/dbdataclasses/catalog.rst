@@ -257,6 +257,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TABLE_TYPE
       :value: "TABLE_TYPE"
 
+   .. py:attribute:: TIME
+      :value: "TIME"
+
    .. py:attribute:: TIMESTAMP
       :value: "TIMESTAMP"
 
@@ -268,6 +271,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: VARIANT
       :value: "VARIANT"
+
+.. autoclass:: ConditionalDisplay
+   :members:
+   :undoc-members:
 
 .. autoclass:: ConnectionDependency
    :members:
@@ -304,6 +311,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: ORACLE
       :value: "ORACLE"
+
+   .. py:attribute:: PALANTIR
+      :value: "PALANTIR"
 
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
@@ -344,6 +354,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ContinuousUpdateStatus
    :members:
    :undoc-members:
+
+.. autoclass:: ConversionInfo
+   :members:
+   :undoc-members:
+
+.. py:class:: ConversionInfoState
+
+   .. py:attribute:: COMPLETED
+      :value: "COMPLETED"
+
+   .. py:attribute:: IN_PROGRESS
+      :value: "IN_PROGRESS"
 
 .. autoclass:: CreateAccessRequest
    :members:
@@ -616,6 +638,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INTERNAL_AND_EXTERNAL
       :value: "INTERNAL_AND_EXTERNAL"
 
+.. autoclass:: DenyOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: Dependency
    :members:
    :undoc-members:
@@ -644,6 +670,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: DisableResponse
    :members:
    :undoc-members:
+
+.. autoclass:: DrReplicationInfo
+   :members:
+   :undoc-members:
+
+.. py:class:: DrReplicationStatus
+
+   .. py:attribute:: DR_REPLICATION_STATUS_PRIMARY
+      :value: "DR_REPLICATION_STATUS_PRIMARY"
+
+   .. py:attribute:: DR_REPLICATION_STATUS_SECONDARY
+      :value: "DR_REPLICATION_STATUS_SECONDARY"
 
 .. autoclass:: EffectivePermissionsList
    :members:
@@ -689,6 +727,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: EntityTagAssignment
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnvironmentSettings
    :members:
    :undoc-members:
 
@@ -944,6 +986,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListPoliciesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListPrivilegeAssignmentsResponse
    :members:
    :undoc-members:
 
@@ -1245,6 +1291,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: OPTION_SERVICE_CREDENTIAL
       :value: "OPTION_SERVICE_CREDENTIAL"
 
+   .. py:attribute:: OPTION_STORAGE_CREDENTIAL
+      :value: "OPTION_STORAGE_CREDENTIAL"
+
    .. py:attribute:: OPTION_STRING
       :value: "OPTION_STRING"
 
@@ -1279,6 +1328,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: POLICY_TYPE_COLUMN_MASK
       :value: "POLICY_TYPE_COLUMN_MASK"
+
+   .. py:attribute:: POLICY_TYPE_DENY
+      :value: "POLICY_TYPE_DENY"
 
    .. py:attribute:: POLICY_TYPE_ROW_FILTER
       :value: "POLICY_TYPE_ROW_FILTER"
@@ -1382,6 +1434,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CREATE_VOLUME
       :value: "CREATE_VOLUME"
 
+   .. py:attribute:: DELETE
+      :value: "DELETE"
+
    .. py:attribute:: EXECUTE
       :value: "EXECUTE"
 
@@ -1391,11 +1446,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: EXTERNAL_USE_SCHEMA
       :value: "EXTERNAL_USE_SCHEMA"
 
+   .. py:attribute:: INSERT
+      :value: "INSERT"
+
    .. py:attribute:: MANAGE
       :value: "MANAGE"
 
    .. py:attribute:: MANAGE_ALLOWLIST
       :value: "MANAGE_ALLOWLIST"
+
+   .. py:attribute:: MANAGE_GRANTS
+      :value: "MANAGE_GRANTS"
 
    .. py:attribute:: MODIFY
       :value: "MODIFY"
@@ -1421,6 +1482,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SET_SHARE_PERMISSION
       :value: "SET_SHARE_PERMISSION"
 
+   .. py:attribute:: UPDATE
+      :value: "UPDATE"
+
    .. py:attribute:: USAGE
       :value: "USAGE"
 
@@ -1444,6 +1508,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: USE_SHARE
       :value: "USE_SHARE"
+
+   .. py:attribute:: USE_VOLUME
+      :value: "USE_VOLUME"
+
+   .. py:attribute:: VIEW_ADMIN_METADATA
+      :value: "VIEW_ADMIN_METADATA"
+
+   .. py:attribute:: VIEW_METADATA
+      :value: "VIEW_METADATA"
+
+   .. py:attribute:: VIEW_OBJECT
+      :value: "VIEW_OBJECT"
 
    .. py:attribute:: WRITE_FILES
       :value: "WRITE_FILES"
@@ -1626,6 +1702,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_FOREIGN_ORACLE
       :value: "TABLE_FOREIGN_ORACLE"
+
+   .. py:attribute:: TABLE_FOREIGN_PALANTIR
+      :value: "TABLE_FOREIGN_PALANTIR"
 
    .. py:attribute:: TABLE_FOREIGN_POSTGRESQL
       :value: "TABLE_FOREIGN_POSTGRESQL"
@@ -1959,6 +2038,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TriggeredUpdateStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: UcEncryptedToken
    :members:
    :undoc-members:
 

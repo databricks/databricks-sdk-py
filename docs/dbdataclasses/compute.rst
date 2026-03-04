@@ -51,6 +51,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SPOT_WITH_FALLBACK_AZURE
       :value: "SPOT_WITH_FALLBACK_AZURE"
 
+.. py:class:: BaseEnvironmentType
+
+   If changed, also update estore/namespaces/defaultbaseenvironments/latest.proto
+
+   .. py:attribute:: CPU
+      :value: "CPU"
+
+   .. py:attribute:: GPU
+      :value: "GPU"
+
 .. autoclass:: CancelResponse
    :members:
    :undoc-members:
@@ -224,6 +234,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: ConfidentialComputeType
+
+   Confidential computing technology for GCP instances. Aligns with gcloud's --confidential-compute-type flag and the REST API's confidentialInstanceConfig.confidentialInstanceType field. See: https://cloud.google.com/confidential-computing/confidential-vm/docs/create-a-confidential-vm-instance
+
+   .. py:attribute:: SEV_SNP
+      :value: "SEV_SNP"
+
 .. py:class:: ContextStatus
 
    .. py:attribute:: ERROR
@@ -316,6 +333,34 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: DbfsStorageInfo
    :members:
    :undoc-members:
+
+.. autoclass:: DefaultBaseEnvironment
+   :members:
+   :undoc-members:
+
+.. autoclass:: DefaultBaseEnvironmentCache
+   :members:
+   :undoc-members:
+
+.. py:class:: DefaultBaseEnvironmentCacheStatus
+
+   .. py:attribute:: CREATED
+      :value: "CREATED"
+
+   .. py:attribute:: EXPIRED
+      :value: "EXPIRED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: INVALID
+      :value: "INVALID"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: REFRESHING
+      :value: "REFRESHING"
 
 .. autoclass:: DeleteClusterResponse
    :members:
@@ -464,6 +509,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DECOMMISSION_STARTED
       :value: "DECOMMISSION_STARTED"
+
+   .. py:attribute:: DEFERRED_POLICY_ENFORCEMENT_FAILED
+      :value: "DEFERRED_POLICY_ENFORCEMENT_FAILED"
+
+   .. py:attribute:: DEFERRED_POLICY_ENFORCEMENT_SCHEDULED
+      :value: "DEFERRED_POLICY_ENFORCEMENT_SCHEDULED"
 
    .. py:attribute:: DID_NOT_EXPAND_DISK
       :value: "DID_NOT_EXPAND_DISK"
@@ -860,6 +911,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DEFAULT
       :value: "DEFAULT"
 
+.. autoclass:: ListDefaultBaseEnvironmentsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListGlobalInitScriptsResponse
    :members:
    :undoc-members:
@@ -912,6 +967,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MaterializedEnvironment
+   :members:
+   :undoc-members:
+
 .. autoclass:: MavenLibrary
    :members:
    :undoc-members:
@@ -953,6 +1012,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RCranLibrary
+   :members:
+   :undoc-members:
+
+.. autoclass:: RefreshDefaultBaseEnvironmentsResponse
    :members:
    :undoc-members:
 
@@ -1255,6 +1318,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DOCKER_INVALID_OS_EXCEPTION
       :value: "DOCKER_INVALID_OS_EXCEPTION"
 
+   .. py:attribute:: DRIVER_DNS_RESOLUTION_FAILURE
+      :value: "DRIVER_DNS_RESOLUTION_FAILURE"
+
    .. py:attribute:: DRIVER_EVICTION
       :value: "DRIVER_EVICTION"
 
@@ -1483,6 +1549,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NFS_MOUNT_FAILURE
       :value: "NFS_MOUNT_FAILURE"
 
+   .. py:attribute:: NO_ACTIVATED_K8S
+      :value: "NO_ACTIVATED_K8S"
+
+   .. py:attribute:: NO_ACTIVATED_K8S_TESTING_TAG
+      :value: "NO_ACTIVATED_K8S_TESTING_TAG"
+
    .. py:attribute:: NO_MATCHED_K8S
       :value: "NO_MATCHED_K8S"
 
@@ -1521,6 +1593,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SECRET_RESOLUTION_ERROR
       :value: "SECRET_RESOLUTION_ERROR"
+
+   .. py:attribute:: SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION
+      :value: "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
 
    .. py:attribute:: SECURITY_DAEMON_REGISTRATION_EXCEPTION
       :value: "SECURITY_DAEMON_REGISTRATION_EXCEPTION"

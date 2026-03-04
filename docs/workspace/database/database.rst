@@ -118,6 +118,17 @@
 
         
 
+    .. py:method:: failover_database_instance(name: str [, failover_target_database_instance_name: Optional[str]]) -> DatabaseInstance
+
+        Failover the primary node of a Database Instance to a secondary.
+
+        :param name: str
+          Name of the instance to failover.
+        :param failover_target_database_instance_name: str (optional)
+
+        :returns: :class:`DatabaseInstance`
+        
+
     .. py:method:: find_database_instance_by_uid( [, uid: Optional[str]]) -> DatabaseInstance
 
         Find a Database Instance by uid.
@@ -273,6 +284,19 @@
           custom_tags, specify custom_tags in the update_mask with an empty custom_tags map.
 
         :returns: :class:`DatabaseInstance`
+        
+
+    .. py:method:: update_database_instance_role(instance_name: str, name: str, database_instance_role: DatabaseInstanceRole [, database_instance_name: Optional[str]]) -> DatabaseInstanceRole
+
+        Update a role for a Database Instance.
+
+        :param instance_name: str
+        :param name: str
+          The name of the role. This is the unique identifier for the role in an instance.
+        :param database_instance_role: :class:`DatabaseInstanceRole`
+        :param database_instance_name: str (optional)
+
+        :returns: :class:`DatabaseInstanceRole`
         
 
     .. py:method:: update_synced_database_table(name: str, synced_table: SyncedDatabaseTable, update_mask: str) -> SyncedDatabaseTable

@@ -1074,11 +1074,17 @@ class CatalogInfo:
     connection_name: Optional[str] = None
     """The name of the connection to an external data source."""
 
+    conversion_info: Optional[ConversionInfo] = None
+    """Status of conversion of FOREIGN catalog to UC Native catalog."""
+
     created_at: Optional[int] = None
     """Time at which this catalog was created, in epoch milliseconds."""
 
     created_by: Optional[str] = None
     """Username of catalog creator."""
+
+    dr_replication_info: Optional[DrReplicationInfo] = None
+    """Disaster Recovery replication state snapshot."""
 
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
 
@@ -1141,10 +1147,14 @@ class CatalogInfo:
             body["comment"] = self.comment
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.conversion_info:
+            body["conversion_info"] = self.conversion_info.as_dict()
         if self.created_at is not None:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.dr_replication_info:
+            body["dr_replication_info"] = self.dr_replication_info.as_dict()
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag.as_dict()
         if self.enable_predictive_optimization is not None:
@@ -1192,10 +1202,14 @@ class CatalogInfo:
             body["comment"] = self.comment
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.conversion_info:
+            body["conversion_info"] = self.conversion_info
         if self.created_at is not None:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.dr_replication_info:
+            body["dr_replication_info"] = self.dr_replication_info
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag
         if self.enable_predictive_optimization is not None:
@@ -1240,8 +1254,10 @@ class CatalogInfo:
             catalog_type=_enum(d, "catalog_type", CatalogType),
             comment=d.get("comment", None),
             connection_name=d.get("connection_name", None),
+            conversion_info=_from_dict(d, "conversion_info", ConversionInfo),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
+            dr_replication_info=_from_dict(d, "dr_replication_info", DrReplicationInfo),
             effective_predictive_optimization_flag=_from_dict(
                 d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
             ),
@@ -1588,10 +1604,54 @@ class ColumnTypeName(Enum):
     STRING = "STRING"
     STRUCT = "STRUCT"
     TABLE_TYPE = "TABLE_TYPE"
+    TIME = "TIME"
     TIMESTAMP = "TIMESTAMP"
     TIMESTAMP_NTZ = "TIMESTAMP_NTZ"
     USER_DEFINED_TYPE = "USER_DEFINED_TYPE"
     VARIANT = "VARIANT"
+
+
+@dataclass
+class ConditionalDisplay:
+    """Defines when an option should be hidden based on another option's value. For example, for
+    pre-created OAuth connections, some options are conditionally hidden. This field works in
+    conjunction with OptionSpec.is_hidden: - If OptionSpec.is_hidden is true, the option is always
+    hidden regardless of ConditionalDisplay. - If OptionSpec.is_hidden is false (or unset),
+    ConditionalDisplay determines visibility: - If depends_on_option matches any value in
+    hidden_when_values, hide this option. - Otherwise, show this option."""
+
+    depends_on_option: Optional[str] = None
+    """The name of the option whose value determines visibility of this option."""
+
+    hidden_when_values: Optional[List[str]] = None
+    """The values of the depends_on_option that will hide this option. If empty or not set, this option
+    follows default visibility (shown unless is_hidden is true). If depends_on_option has any of
+    these values, this option is hidden."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConditionalDisplay into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.depends_on_option is not None:
+            body["depends_on_option"] = self.depends_on_option
+        if self.hidden_when_values:
+            body["hidden_when_values"] = [v for v in self.hidden_when_values]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConditionalDisplay into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.depends_on_option is not None:
+            body["depends_on_option"] = self.depends_on_option
+        if self.hidden_when_values:
+            body["hidden_when_values"] = self.hidden_when_values
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConditionalDisplay:
+        """Deserializes the ConditionalDisplay from a dictionary."""
+        return cls(
+            depends_on_option=d.get("depends_on_option", None), hidden_when_values=d.get("hidden_when_values", None)
+        )
 
 
 @dataclass
@@ -1643,6 +1703,9 @@ class ConnectionInfo:
     credential_type: Optional[CredentialType] = None
     """The type of credential."""
 
+    environment_settings: Optional[EnvironmentSettings] = None
+    """[Create,Update:OPT] Connection environment settings as EnvironmentSettings object."""
+
     full_name: Optional[str] = None
     """Full name of connection."""
 
@@ -1692,6 +1755,8 @@ class ConnectionInfo:
             body["created_by"] = self.created_by
         if self.credential_type is not None:
             body["credential_type"] = self.credential_type.value
+        if self.environment_settings:
+            body["environment_settings"] = self.environment_settings.as_dict()
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -1733,6 +1798,8 @@ class ConnectionInfo:
             body["created_by"] = self.created_by
         if self.credential_type is not None:
             body["credential_type"] = self.credential_type
+        if self.environment_settings:
+            body["environment_settings"] = self.environment_settings
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -1769,6 +1836,7 @@ class ConnectionInfo:
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             credential_type=_enum(d, "credential_type", CredentialType),
+            environment_settings=_from_dict(d, "environment_settings", EnvironmentSettings),
             full_name=d.get("full_name", None),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -1795,6 +1863,7 @@ class ConnectionType(Enum):
     HTTP = "HTTP"
     MYSQL = "MYSQL"
     ORACLE = "ORACLE"
+    PALANTIR = "PALANTIR"
     POSTGRESQL = "POSTGRESQL"
     POWER_BI = "POWER_BI"
     REDSHIFT = "REDSHIFT"
@@ -1855,6 +1924,39 @@ class ContinuousUpdateStatus:
             last_processed_commit_version=d.get("last_processed_commit_version", None),
             timestamp=d.get("timestamp", None),
         )
+
+
+@dataclass
+class ConversionInfo:
+    """Status of conversion of FOREIGN entity into UC Native entity."""
+
+    state: Optional[ConversionInfoState] = None
+    """The conversion state of the resource."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConversionInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConversionInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConversionInfo:
+        """Deserializes the ConversionInfo from a dictionary."""
+        return cls(state=_enum(d, "state", ConversionInfoState))
+
+
+class ConversionInfoState(Enum):
+
+    COMPLETED = "COMPLETED"
+    IN_PROGRESS = "IN_PROGRESS"
 
 
 @dataclass
@@ -2952,6 +3054,32 @@ class DeltaSharingScopeEnum(Enum):
 
 
 @dataclass
+class DenyOptions:
+    privileges: List[str]
+    """List of privileges to deny. When any of these privileges are requested, the policy will deny
+    access if the principal and condition match. Required on create and update."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DenyOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.privileges:
+            body["privileges"] = [v for v in self.privileges]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DenyOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.privileges:
+            body["privileges"] = self.privileges
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DenyOptions:
+        """Deserializes the DenyOptions from a dictionary."""
+        return cls(privileges=d.get("privileges", None))
+
+
+@dataclass
 class Dependency:
     """A dependency of a SQL object. One of the following fields must be defined: __table__,
     __function__, __connection__, or __credential__."""
@@ -3053,6 +3181,47 @@ class DisableResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DisableResponse:
         """Deserializes the DisableResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class DrReplicationInfo:
+    """Metadata related to Disaster Recovery."""
+
+    replicated_entities: Optional[str] = None
+    """See https://docs.google.com/document/d/1X0A_3hMhzuS2V1E3zB0x5wxPsFx70bVYK5rHep2AjW8."""
+
+    status: Optional[DrReplicationStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DrReplicationInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.replicated_entities is not None:
+            body["replicated_entities"] = self.replicated_entities
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DrReplicationInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.replicated_entities is not None:
+            body["replicated_entities"] = self.replicated_entities
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DrReplicationInfo:
+        """Deserializes the DrReplicationInfo from a dictionary."""
+        return cls(
+            replicated_entities=d.get("replicated_entities", None), status=_enum(d, "status", DrReplicationStatus)
+        )
+
+
+class DrReplicationStatus(Enum):
+
+    DR_REPLICATION_STATUS_PRIMARY = "DR_REPLICATION_STATUS_PRIMARY"
+    DR_REPLICATION_STATUS_SECONDARY = "DR_REPLICATION_STATUS_SECONDARY"
 
 
 @dataclass
@@ -3285,6 +3454,9 @@ class EntityTagAssignment:
     """The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas,
     tables, columns, volumes."""
 
+    inherited: Optional[bool] = None
+    """Boolean which indicates whether this tag is inherited."""
+
     source_type: Optional[TagAssignmentSourceType] = None
     """The source type of the tag assignment, e.g., user-assigned or system-assigned"""
 
@@ -3304,6 +3476,8 @@ class EntityTagAssignment:
             body["entity_name"] = self.entity_name
         if self.entity_type is not None:
             body["entity_type"] = self.entity_type
+        if self.inherited is not None:
+            body["inherited"] = self.inherited
         if self.source_type is not None:
             body["source_type"] = self.source_type.value
         if self.tag_key is not None:
@@ -3323,6 +3497,8 @@ class EntityTagAssignment:
             body["entity_name"] = self.entity_name
         if self.entity_type is not None:
             body["entity_type"] = self.entity_type
+        if self.inherited is not None:
+            body["inherited"] = self.inherited
         if self.source_type is not None:
             body["source_type"] = self.source_type
         if self.tag_key is not None:
@@ -3341,11 +3517,44 @@ class EntityTagAssignment:
         return cls(
             entity_name=d.get("entity_name", None),
             entity_type=d.get("entity_type", None),
+            inherited=d.get("inherited", None),
             source_type=_enum(d, "source_type", TagAssignmentSourceType),
             tag_key=d.get("tag_key", None),
             tag_value=d.get("tag_value", None),
             update_time=_timestamp(d, "update_time"),
             updated_by=d.get("updated_by", None),
+        )
+
+
+@dataclass
+class EnvironmentSettings:
+    environment_version: Optional[str] = None
+
+    java_dependencies: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EnvironmentSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
+        if self.java_dependencies:
+            body["java_dependencies"] = [v for v in self.java_dependencies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnvironmentSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
+        if self.java_dependencies:
+            body["java_dependencies"] = self.java_dependencies
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnvironmentSettings:
+        """Deserializes the EnvironmentSettings from a dictionary."""
+        return cls(
+            environment_version=d.get("environment_version", None), java_dependencies=d.get("java_dependencies", None)
         )
 
 
@@ -4928,6 +5137,8 @@ class GenerateTemporaryPathCredentialResponse:
 
     r2_temp_credentials: Optional[R2Credentials] = None
 
+    uc_encrypted_token: Optional[UcEncryptedToken] = None
+
     url: Optional[str] = None
     """The URL of the storage path accessible by the temporary credential."""
 
@@ -4946,6 +5157,8 @@ class GenerateTemporaryPathCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
+        if self.uc_encrypted_token:
+            body["uc_encrypted_token"] = self.uc_encrypted_token.as_dict()
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -4965,6 +5178,8 @@ class GenerateTemporaryPathCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials
+        if self.uc_encrypted_token:
+            body["uc_encrypted_token"] = self.uc_encrypted_token
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -4979,6 +5194,7 @@ class GenerateTemporaryPathCredentialResponse:
             expiration_time=d.get("expiration_time", None),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
             r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
+            uc_encrypted_token=_from_dict(d, "uc_encrypted_token", UcEncryptedToken),
             url=d.get("url", None),
         )
 
@@ -5057,6 +5273,8 @@ class GenerateTemporaryTableCredentialResponse:
 
     r2_temp_credentials: Optional[R2Credentials] = None
 
+    uc_encrypted_token: Optional[UcEncryptedToken] = None
+
     url: Optional[str] = None
     """The URL of the storage path accessible by the temporary credential."""
 
@@ -5075,6 +5293,8 @@ class GenerateTemporaryTableCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
+        if self.uc_encrypted_token:
+            body["uc_encrypted_token"] = self.uc_encrypted_token.as_dict()
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -5094,6 +5314,8 @@ class GenerateTemporaryTableCredentialResponse:
             body["gcp_oauth_token"] = self.gcp_oauth_token
         if self.r2_temp_credentials:
             body["r2_temp_credentials"] = self.r2_temp_credentials
+        if self.uc_encrypted_token:
+            body["uc_encrypted_token"] = self.uc_encrypted_token
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -5108,6 +5330,7 @@ class GenerateTemporaryTableCredentialResponse:
             expiration_time=d.get("expiration_time", None),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
             r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
+            uc_encrypted_token=_from_dict(d, "uc_encrypted_token", UcEncryptedToken),
             url=d.get("url", None),
         )
 
@@ -5851,6 +6074,41 @@ class ListPoliciesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListPoliciesResponse:
         """Deserializes the ListPoliciesResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), policies=_repeated_dict(d, "policies", PolicyInfo))
+
+
+@dataclass
+class ListPrivilegeAssignmentsResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
+    privilege_assignments: Optional[List[PrivilegeAssignment]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListPrivilegeAssignmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.privilege_assignments:
+            body["privilege_assignments"] = [v.as_dict() for v in self.privilege_assignments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListPrivilegeAssignmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.privilege_assignments:
+            body["privilege_assignments"] = self.privilege_assignments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListPrivilegeAssignmentsResponse:
+        """Deserializes the ListPrivilegeAssignmentsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment),
+        )
 
 
 @dataclass
@@ -7563,6 +7821,10 @@ class OptionSpec:
     """For drop down / radio button selections, UI will want to know the possible input values, it can
     also be used by other option types to limit input selections."""
 
+    conditional_display: Optional[ConditionalDisplay] = None
+    """Conditional display configuration. Specifies when this option should be hidden based on another
+    option's value."""
+
     default_value: Optional[str] = None
     """The default value of the option, for example, value '443' for 'port' option."""
 
@@ -7609,6 +7871,8 @@ class OptionSpec:
         body = {}
         if self.allowed_values:
             body["allowed_values"] = [v for v in self.allowed_values]
+        if self.conditional_display:
+            body["conditional_display"] = self.conditional_display.as_dict()
         if self.default_value is not None:
             body["default_value"] = self.default_value
         if self.description is not None:
@@ -7642,6 +7906,8 @@ class OptionSpec:
         body = {}
         if self.allowed_values:
             body["allowed_values"] = self.allowed_values
+        if self.conditional_display:
+            body["conditional_display"] = self.conditional_display
         if self.default_value is not None:
             body["default_value"] = self.default_value
         if self.description is not None:
@@ -7675,6 +7941,7 @@ class OptionSpec:
         """Deserializes the OptionSpec from a dictionary."""
         return cls(
             allowed_values=d.get("allowed_values", None),
+            conditional_display=_from_dict(d, "conditional_display", ConditionalDisplay),
             default_value=d.get("default_value", None),
             description=d.get("description", None),
             hint=d.get("hint", None),
@@ -7713,6 +7980,7 @@ class OptionSpecOptionType(Enum):
     OPTION_MULTILINE_STRING = "OPTION_MULTILINE_STRING"
     OPTION_NUMBER = "OPTION_NUMBER"
     OPTION_SERVICE_CREDENTIAL = "OPTION_SERVICE_CREDENTIAL"
+    OPTION_STORAGE_CREDENTIAL = "OPTION_STORAGE_CREDENTIAL"
     OPTION_STRING = "OPTION_STRING"
 
 
@@ -7732,6 +8000,15 @@ class PermissionsChange:
     """The principal whose privileges we are changing. Only one of principal or principal_id should be
     specified, never both at the same time."""
 
+    principal_id: Optional[int] = None
+    """An opaque internal ID that identifies the principal whose privileges should be removed.
+    
+    This field is intended for removing privileges associated with a deleted user. When set, only
+    the entries specified in the remove field are processed; any entries in the add field will be
+    rejected.
+    
+    Only one of principal or principal_id should be specified, never both at the same time."""
+
     remove: Optional[List[Privilege]] = None
     """The set of privileges to remove."""
 
@@ -7742,6 +8019,8 @@ class PermissionsChange:
             body["add"] = [v.value for v in self.add]
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = [v.value for v in self.remove]
         return body
@@ -7753,6 +8032,8 @@ class PermissionsChange:
             body["add"] = self.add
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = self.remove
         return body
@@ -7763,6 +8044,7 @@ class PermissionsChange:
         return cls(
             add=_repeated_enum(d, "add", Privilege),
             principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
             remove=_repeated_enum(d, "remove", Privilege),
         )
 
@@ -7891,6 +8173,11 @@ class PolicyInfo:
     created_by: Optional[str] = None
     """Username of the user who created the policy. Output only."""
 
+    deny: Optional[DenyOptions] = None
+    """Options for deny policies. Valid only if `policy_type` is `POLICY_TYPE_DENY`. Required on create
+    and optional on update. When specified on update, the new options will replace the existing
+    options as a whole."""
+
     except_principals: Optional[List[str]] = None
     """Optional list of user or group names that should be excluded from the policy."""
 
@@ -7924,6 +8211,13 @@ class PolicyInfo:
     updated_by: Optional[str] = None
     """Username of the user who last modified the policy. Output only."""
 
+    use_session_identity: Optional[bool] = None
+    """Temporary for migrating customers to session identity. Customers not currently using ABAC will
+    not be able to set this field to false and all new policies will have this field default to
+    true. Existing customers will have this field default to false, but can set it to true to opt in
+    to session identity. after a grace period, this field will be removed and all policies will use
+    session identity. Only for row filter and column mask policies. Not applicable to deny policies."""
+
     when_condition: Optional[str] = None
     """Optional condition when the policy should take effect."""
 
@@ -7938,6 +8232,8 @@ class PolicyInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.deny:
+            body["deny"] = self.deny.as_dict()
         if self.except_principals:
             body["except_principals"] = [v for v in self.except_principals]
         if self.for_securable_type is not None:
@@ -7962,6 +8258,8 @@ class PolicyInfo:
             body["updated_at"] = self.updated_at
         if self.updated_by is not None:
             body["updated_by"] = self.updated_by
+        if self.use_session_identity is not None:
+            body["use_session_identity"] = self.use_session_identity
         if self.when_condition is not None:
             body["when_condition"] = self.when_condition
         return body
@@ -7977,6 +8275,8 @@ class PolicyInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.deny:
+            body["deny"] = self.deny
         if self.except_principals:
             body["except_principals"] = self.except_principals
         if self.for_securable_type is not None:
@@ -8001,6 +8301,8 @@ class PolicyInfo:
             body["updated_at"] = self.updated_at
         if self.updated_by is not None:
             body["updated_by"] = self.updated_by
+        if self.use_session_identity is not None:
+            body["use_session_identity"] = self.use_session_identity
         if self.when_condition is not None:
             body["when_condition"] = self.when_condition
         return body
@@ -8013,6 +8315,7 @@ class PolicyInfo:
             comment=d.get("comment", None),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
+            deny=_from_dict(d, "deny", DenyOptions),
             except_principals=d.get("except_principals", None),
             for_securable_type=_enum(d, "for_securable_type", SecurableType),
             id=d.get("id", None),
@@ -8025,6 +8328,7 @@ class PolicyInfo:
             to_principals=d.get("to_principals", None),
             updated_at=d.get("updated_at", None),
             updated_by=d.get("updated_by", None),
+            use_session_identity=d.get("use_session_identity", None),
             when_condition=d.get("when_condition", None),
         )
 
@@ -8032,6 +8336,7 @@ class PolicyInfo:
 class PolicyType(Enum):
 
     POLICY_TYPE_COLUMN_MASK = "POLICY_TYPE_COLUMN_MASK"
+    POLICY_TYPE_DENY = "POLICY_TYPE_DENY"
     POLICY_TYPE_ROW_FILTER = "POLICY_TYPE_ROW_FILTER"
 
 
@@ -8152,11 +8457,14 @@ class Privilege(Enum):
     CREATE_TABLE = "CREATE_TABLE"
     CREATE_VIEW = "CREATE_VIEW"
     CREATE_VOLUME = "CREATE_VOLUME"
+    DELETE = "DELETE"
     EXECUTE = "EXECUTE"
     EXECUTE_CLEAN_ROOM_TASK = "EXECUTE_CLEAN_ROOM_TASK"
     EXTERNAL_USE_SCHEMA = "EXTERNAL_USE_SCHEMA"
+    INSERT = "INSERT"
     MANAGE = "MANAGE"
     MANAGE_ALLOWLIST = "MANAGE_ALLOWLIST"
+    MANAGE_GRANTS = "MANAGE_GRANTS"
     MODIFY = "MODIFY"
     MODIFY_CLEAN_ROOM = "MODIFY_CLEAN_ROOM"
     READ_FILES = "READ_FILES"
@@ -8165,6 +8473,7 @@ class Privilege(Enum):
     REFRESH = "REFRESH"
     SELECT = "SELECT"
     SET_SHARE_PERMISSION = "SET_SHARE_PERMISSION"
+    UPDATE = "UPDATE"
     USAGE = "USAGE"
     USE_CATALOG = "USE_CATALOG"
     USE_CONNECTION = "USE_CONNECTION"
@@ -8173,6 +8482,10 @@ class Privilege(Enum):
     USE_RECIPIENT = "USE_RECIPIENT"
     USE_SCHEMA = "USE_SCHEMA"
     USE_SHARE = "USE_SHARE"
+    USE_VOLUME = "USE_VOLUME"
+    VIEW_ADMIN_METADATA = "VIEW_ADMIN_METADATA"
+    VIEW_METADATA = "VIEW_METADATA"
+    VIEW_OBJECT = "VIEW_OBJECT"
     WRITE_FILES = "WRITE_FILES"
     WRITE_PRIVATE_FILES = "WRITE_PRIVATE_FILES"
     WRITE_VOLUME = "WRITE_VOLUME"
@@ -8184,6 +8497,10 @@ class PrivilegeAssignment:
     """The principal (user email address or group name). For deleted principals, `principal` is empty
     while `principal_id` is populated."""
 
+    principal_id: Optional[int] = None
+    """Unique identifier of the principal. For active principals, both `principal` and `principal_id`
+    are present."""
+
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
 
@@ -8192,6 +8509,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = [v.value for v in self.privileges]
         return body
@@ -8201,6 +8520,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = self.privileges
         return body
@@ -8208,7 +8529,11 @@ class PrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
-        return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
+        return cls(
+            principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
+            privileges=_repeated_enum(d, "privileges", Privilege),
+        )
 
 
 @dataclass
@@ -8914,6 +9239,7 @@ class SecurableKind(Enum):
     TABLE_FOREIGN_MYSQL = "TABLE_FOREIGN_MYSQL"
     TABLE_FOREIGN_NETSUITE = "TABLE_FOREIGN_NETSUITE"
     TABLE_FOREIGN_ORACLE = "TABLE_FOREIGN_ORACLE"
+    TABLE_FOREIGN_PALANTIR = "TABLE_FOREIGN_PALANTIR"
     TABLE_FOREIGN_POSTGRESQL = "TABLE_FOREIGN_POSTGRESQL"
     TABLE_FOREIGN_REDSHIFT = "TABLE_FOREIGN_REDSHIFT"
     TABLE_FOREIGN_SALESFORCE = "TABLE_FOREIGN_SALESFORCE"
@@ -9966,6 +10292,34 @@ class TriggeredUpdateStatus:
             timestamp=d.get("timestamp", None),
             triggered_update_progress=_from_dict(d, "triggered_update_progress", PipelineProgress),
         )
+
+
+@dataclass
+class UcEncryptedToken:
+    """Encrypted token used when we cannot downscope the cloud provider token appropriately See:
+    https://docs.google.com/document/d/1hEKDnSckuU5PIS798CtfqBElrMR6OJuR2wgz_BjhMSY"""
+
+    encrypted_payload: Optional[str] = None
+    """Stores encrypted ScopedCloudToken as a base64-encoded string"""
+
+    def as_dict(self) -> dict:
+        """Serializes the UcEncryptedToken into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.encrypted_payload is not None:
+            body["encrypted_payload"] = self.encrypted_payload
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UcEncryptedToken into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.encrypted_payload is not None:
+            body["encrypted_payload"] = self.encrypted_payload
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UcEncryptedToken:
+        """Deserializes the UcEncryptedToken from a dictionary."""
+        return cls(encrypted_payload=d.get("encrypted_payload", None))
 
 
 @dataclass
@@ -11219,6 +11573,8 @@ class CatalogsAPI:
         *,
         comment: Optional[str] = None,
         connection_name: Optional[str] = None,
+        conversion_info: Optional[ConversionInfo] = None,
+        dr_replication_info: Optional[DrReplicationInfo] = None,
         options: Optional[Dict[str, str]] = None,
         properties: Optional[Dict[str, str]] = None,
         provider_name: Optional[str] = None,
@@ -11234,6 +11590,10 @@ class CatalogsAPI:
           User-provided free-form text description.
         :param connection_name: str (optional)
           The name of the connection to an external data source.
+        :param conversion_info: :class:`ConversionInfo` (optional)
+          Status of conversion of FOREIGN catalog to UC Native catalog.
+        :param dr_replication_info: :class:`DrReplicationInfo` (optional)
+          Disaster Recovery replication state snapshot.
         :param options: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param properties: Dict[str,str] (optional)
@@ -11255,6 +11615,10 @@ class CatalogsAPI:
             body["comment"] = comment
         if connection_name is not None:
             body["connection_name"] = connection_name
+        if conversion_info is not None:
+            body["conversion_info"] = conversion_info.as_dict()
+        if dr_replication_info is not None:
+            body["dr_replication_info"] = dr_replication_info.as_dict()
         if name is not None:
             body["name"] = name
         if options is not None:
@@ -11404,6 +11768,8 @@ class CatalogsAPI:
         name: str,
         *,
         comment: Optional[str] = None,
+        conversion_info: Optional[ConversionInfo] = None,
+        dr_replication_info: Optional[DrReplicationInfo] = None,
         enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
         isolation_mode: Optional[CatalogIsolationMode] = None,
         new_name: Optional[str] = None,
@@ -11418,6 +11784,10 @@ class CatalogsAPI:
           The name of the catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param conversion_info: :class:`ConversionInfo` (optional)
+          Status of conversion of FOREIGN catalog to UC Native catalog.
+        :param dr_replication_info: :class:`DrReplicationInfo` (optional)
+          Disaster Recovery replication state snapshot.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`CatalogIsolationMode` (optional)
@@ -11437,6 +11807,10 @@ class CatalogsAPI:
         body = {}
         if comment is not None:
             body["comment"] = comment
+        if conversion_info is not None:
+            body["conversion_info"] = conversion_info.as_dict()
+        if dr_replication_info is not None:
+            body["dr_replication_info"] = dr_replication_info.as_dict()
         if enable_predictive_optimization is not None:
             body["enable_predictive_optimization"] = enable_predictive_optimization.value
         if isolation_mode is not None:
@@ -11482,6 +11856,7 @@ class ConnectionsAPI:
         options: Dict[str, str],
         *,
         comment: Optional[str] = None,
+        environment_settings: Optional[EnvironmentSettings] = None,
         properties: Optional[Dict[str, str]] = None,
         read_only: Optional[bool] = None,
     ) -> ConnectionInfo:
@@ -11498,6 +11873,8 @@ class ConnectionsAPI:
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param environment_settings: :class:`EnvironmentSettings` (optional)
+          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
@@ -11511,6 +11888,8 @@ class ConnectionsAPI:
             body["comment"] = comment
         if connection_type is not None:
             body["connection_type"] = connection_type.value
+        if environment_settings is not None:
+            body["environment_settings"] = environment_settings.as_dict()
         if name is not None:
             body["name"] = name
         if options is not None:
@@ -11616,7 +11995,13 @@ class ConnectionsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self, name: str, options: Dict[str, str], *, new_name: Optional[str] = None, owner: Optional[str] = None
+        self,
+        name: str,
+        options: Dict[str, str],
+        *,
+        environment_settings: Optional[EnvironmentSettings] = None,
+        new_name: Optional[str] = None,
+        owner: Optional[str] = None,
     ) -> ConnectionInfo:
         """Updates the connection that matches the supplied name.
 
@@ -11624,6 +12009,8 @@ class ConnectionsAPI:
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
+        :param environment_settings: :class:`EnvironmentSettings` (optional)
+          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param new_name: str (optional)
           New name for the connection.
         :param owner: str (optional)
@@ -11633,6 +12020,8 @@ class ConnectionsAPI:
         """
 
         body = {}
+        if environment_settings is not None:
+            body["environment_settings"] = environment_settings.as_dict()
         if new_name is not None:
             body["new_name"] = new_name
         if options is not None:
@@ -12119,7 +12508,9 @@ class EntityTagAssignmentsAPI:
             headers=headers,
         )
 
-    def get(self, entity_type: str, entity_name: str, tag_key: str) -> EntityTagAssignment:
+    def get(
+        self, entity_type: str, entity_name: str, tag_key: str, *, include_inherited: Optional[bool] = None
+    ) -> EntityTagAssignment:
         """Gets a tag assignment for an Unity Catalog entity by tag key.
 
         :param entity_type: str
@@ -12129,10 +12520,15 @@ class EntityTagAssignmentsAPI:
           The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str
           Required. The key of the tag
+        :param include_inherited: bool (optional)
+          Boolean which indicates whether this tag is inherited.
 
         :returns: :class:`EntityTagAssignment`
         """
 
+        query = {}
+        if include_inherited is not None:
+            query["include_inherited"] = include_inherited
         headers = {
             "Accept": "application/json",
         }
@@ -12144,12 +12540,19 @@ class EntityTagAssignmentsAPI:
         res = self._api.do(
             "GET",
             f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}",
+            query=query,
             headers=headers,
         )
         return EntityTagAssignment.from_dict(res)
 
     def list(
-        self, entity_type: str, entity_name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
+        self,
+        entity_type: str,
+        entity_name: str,
+        *,
+        include_inherited: Optional[bool] = None,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
     ) -> Iterator[EntityTagAssignment]:
         """List tag assignments for an Unity Catalog entity
 
@@ -12162,6 +12565,8 @@ class EntityTagAssignmentsAPI:
           columns, volumes.
         :param entity_name: str
           The fully qualified name of the entity to which the tag is assigned
+        :param include_inherited: bool (optional)
+          Boolean which indicates whether this tag is inherited.
         :param max_results: int (optional)
           Optional. Maximum number of tag assignments to return in a single page
         :param page_token: str (optional)
@@ -12171,6 +12576,8 @@ class EntityTagAssignmentsAPI:
         """
 
         query = {}
+        if include_inherited is not None:
+            query["include_inherited"] = include_inherited
         if max_results is not None:
             query["max_results"] = max_results
         if page_token is not None:
@@ -13099,6 +13506,7 @@ class GrantsAPI:
         securable_type: str,
         full_name: str,
         *,
+        include_deleted_principals: Optional[bool] = None,
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
         principal: Optional[str] = None,
@@ -13116,6 +13524,8 @@ class GrantsAPI:
           Type of securable.
         :param full_name: str
           Full name of securable.
+        :param include_deleted_principals: bool (optional)
+          Optional. If true, also return privilege assignments whose principals have been deleted.
         :param max_results: int (optional)
           Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment
           present in a single page response is guaranteed to contain all the privileges granted on the
@@ -13135,6 +13545,8 @@ class GrantsAPI:
         """
 
         query = {}
+        if include_deleted_principals is not None:
+            query["include_deleted_principals"] = include_deleted_principals
         if max_results is not None:
             query["max_results"] = max_results
         if page_token is not None:
@@ -13219,6 +13631,74 @@ class GrantsAPI:
             headers=headers,
         )
         return EffectivePermissionsList.from_dict(res)
+
+    def list(
+        self,
+        securable_type: str,
+        full_name: str,
+        *,
+        include_deleted_principals: Optional[bool] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        principal: Optional[str] = None,
+    ) -> Iterator[PrivilegeAssignment]:
+        """Lists the privilege assignments for a securable. Does not include inherited privileges. Paginated
+        version of Get Permissions API.
+
+        :param securable_type: str
+          Type of securable.
+        :param full_name: str
+          Full name of securable.
+        :param include_deleted_principals: bool (optional)
+          Optional. If true, also return privilege assignments whose principals have been deleted.
+        :param page_size: int (optional)
+          Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment
+          present in a single page response is guaranteed to contain all the privileges granted on the
+          requested Securable for the respective principal.
+
+          If not set, page length is the server configured value. If set to - lesser than 0: invalid parameter
+          error - 0: page length is set to a server configured value - lesser than 150 but greater than 0:
+          invalid parameter error (this is to ensure that server is able to return at least one complete
+          PrivilegeAssignment in a single page response) - greater than (or equal to) 150: page length is the
+          minimum of this value and a server configured value
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+        :param principal: str (optional)
+          If provided, only the permissions for the specified principal (user or group) are returned.
+
+        :returns: Iterator over :class:`PrivilegeAssignment`
+        """
+
+        query = {}
+        if include_deleted_principals is not None:
+            query["include_deleted_principals"] = include_deleted_principals
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if principal is not None:
+            query["principal"] = principal
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/unity-catalog/privilege-assignments/{securable_type}/{full_name}",
+                query=query,
+                headers=headers,
+            )
+            if "privilege_assignments" in json:
+                for v in json["privilege_assignments"]:
+                    yield PrivilegeAssignment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def update(
         self, securable_type: str, full_name: str, *, changes: Optional[List[PermissionsChange]] = None

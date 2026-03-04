@@ -18,8 +18,13 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class AnomalyDetectionConfig:
+    custom_check_configurations: Optional[List[CustomCheckConfiguration]] = None
+
     excluded_table_full_names: Optional[List[str]] = None
     """List of fully qualified table names to exclude from anomaly detection."""
+
+    job_type: Optional[AnomalyDetectionJobType] = None
+    """The type of the last run of the workflow."""
 
     last_run_id: Optional[str] = None
     """Run id of the last run of the workflow"""
@@ -27,36 +32,61 @@ class AnomalyDetectionConfig:
     latest_run_status: Optional[AnomalyDetectionRunStatus] = None
     """The status of the last run of the workflow."""
 
+    validity_check_configurations: Optional[List[ValidityCheckConfiguration]] = None
+
     def as_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.custom_check_configurations:
+            body["custom_check_configurations"] = [v.as_dict() for v in self.custom_check_configurations]
         if self.excluded_table_full_names:
             body["excluded_table_full_names"] = [v for v in self.excluded_table_full_names]
+        if self.job_type is not None:
+            body["job_type"] = self.job_type.value
         if self.last_run_id is not None:
             body["last_run_id"] = self.last_run_id
         if self.latest_run_status is not None:
             body["latest_run_status"] = self.latest_run_status.value
+        if self.validity_check_configurations:
+            body["validity_check_configurations"] = [v.as_dict() for v in self.validity_check_configurations]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.custom_check_configurations:
+            body["custom_check_configurations"] = self.custom_check_configurations
         if self.excluded_table_full_names:
             body["excluded_table_full_names"] = self.excluded_table_full_names
+        if self.job_type is not None:
+            body["job_type"] = self.job_type
         if self.last_run_id is not None:
             body["last_run_id"] = self.last_run_id
         if self.latest_run_status is not None:
             body["latest_run_status"] = self.latest_run_status
+        if self.validity_check_configurations:
+            body["validity_check_configurations"] = self.validity_check_configurations
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AnomalyDetectionConfig:
         """Deserializes the AnomalyDetectionConfig from a dictionary."""
         return cls(
+            custom_check_configurations=_repeated_dict(d, "custom_check_configurations", CustomCheckConfiguration),
             excluded_table_full_names=d.get("excluded_table_full_names", None),
+            job_type=_enum(d, "job_type", AnomalyDetectionJobType),
             last_run_id=d.get("last_run_id", None),
             latest_run_status=_enum(d, "latest_run_status", AnomalyDetectionRunStatus),
+            validity_check_configurations=_repeated_dict(
+                d, "validity_check_configurations", ValidityCheckConfiguration
+            ),
         )
+
+
+class AnomalyDetectionJobType(Enum):
+
+    ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN = "ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN"
+    ANOMALY_DETECTION_JOB_TYPE_NORMAL = "ANOMALY_DETECTION_JOB_TYPE_NORMAL"
 
 
 class AnomalyDetectionRunStatus(Enum):
@@ -70,6 +100,147 @@ class AnomalyDetectionRunStatus(Enum):
     ANOMALY_DETECTION_RUN_STATUS_SUCCESS = "ANOMALY_DETECTION_RUN_STATUS_SUCCESS"
     ANOMALY_DETECTION_RUN_STATUS_UNKNOWN = "ANOMALY_DETECTION_RUN_STATUS_UNKNOWN"
     ANOMALY_DETECTION_RUN_STATUS_WORKSPACE_MISMATCH_ERROR = "ANOMALY_DETECTION_RUN_STATUS_WORKSPACE_MISMATCH_ERROR"
+
+
+@dataclass
+class ColumnMatcher:
+    column_names: Optional[List[str]] = None
+    """List of column names (in target tables) to match."""
+
+    variable_name: Optional[str] = None
+    """Variable name within a custom sql query that this matcher applies to."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnMatcher into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column_names:
+            body["column_names"] = [v for v in self.column_names]
+        if self.variable_name is not None:
+            body["variable_name"] = self.variable_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnMatcher into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column_names:
+            body["column_names"] = self.column_names
+        if self.variable_name is not None:
+            body["variable_name"] = self.variable_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnMatcher:
+        """Deserializes the ColumnMatcher from a dictionary."""
+        return cls(column_names=d.get("column_names", None), variable_name=d.get("variable_name", None))
+
+
+@dataclass
+class CustomCheckConfiguration:
+    scalar_check: Optional[CustomScalarCheck] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomCheckConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.scalar_check:
+            body["scalar_check"] = self.scalar_check.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomCheckConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.scalar_check:
+            body["scalar_check"] = self.scalar_check
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomCheckConfiguration:
+        """Deserializes the CustomCheckConfiguration from a dictionary."""
+        return cls(scalar_check=_from_dict(d, "scalar_check", CustomScalarCheck))
+
+
+@dataclass
+class CustomCheckThresholds:
+    lower_bound: Optional[Threshold] = None
+    """Lower bound threshold"""
+
+    upper_bound: Optional[Threshold] = None
+    """Upper bound threshold"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomCheckThresholds into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.lower_bound:
+            body["lower_bound"] = self.lower_bound.as_dict()
+        if self.upper_bound:
+            body["upper_bound"] = self.upper_bound.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomCheckThresholds into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.lower_bound:
+            body["lower_bound"] = self.lower_bound
+        if self.upper_bound:
+            body["upper_bound"] = self.upper_bound
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomCheckThresholds:
+        """Deserializes the CustomCheckThresholds from a dictionary."""
+        return cls(
+            lower_bound=_from_dict(d, "lower_bound", Threshold), upper_bound=_from_dict(d, "upper_bound", Threshold)
+        )
+
+
+@dataclass
+class CustomScalarCheck:
+    check_name: Optional[str] = None
+    """Name of the custom check"""
+
+    column_matchers: Optional[List[ColumnMatcher]] = None
+    """Column matchers to determine which tables to apply this check to"""
+
+    sql_query: Optional[str] = None
+    """Templated SQL query for this check"""
+
+    thresholds: Optional[CustomCheckThresholds] = None
+    """Upper/lower thresholds for the output of the query"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomScalarCheck into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.check_name is not None:
+            body["check_name"] = self.check_name
+        if self.column_matchers:
+            body["column_matchers"] = [v.as_dict() for v in self.column_matchers]
+        if self.sql_query is not None:
+            body["sql_query"] = self.sql_query
+        if self.thresholds:
+            body["thresholds"] = self.thresholds.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomScalarCheck into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.check_name is not None:
+            body["check_name"] = self.check_name
+        if self.column_matchers:
+            body["column_matchers"] = self.column_matchers
+        if self.sql_query is not None:
+            body["sql_query"] = self.sql_query
+        if self.thresholds:
+            body["thresholds"] = self.thresholds
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomScalarCheck:
+        """Deserializes the CustomScalarCheck from a dictionary."""
+        return cls(
+            check_name=d.get("check_name", None),
+            column_matchers=_repeated_dict(d, "column_matchers", ColumnMatcher),
+            sql_query=d.get("sql_query", None),
+            thresholds=_from_dict(d, "thresholds", CustomCheckThresholds),
+        )
 
 
 @dataclass
@@ -230,6 +401,44 @@ class RangeValidityCheck:
             lower_bound=d.get("lower_bound", None),
             upper_bound=d.get("upper_bound", None),
         )
+
+
+@dataclass
+class Threshold:
+    bound_value: Optional[int] = None
+    """Bound value for this threshold. Meaningful only if threshold_type is MANUAL."""
+
+    threshold_type: Optional[ThresholdType] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the Threshold into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bound_value is not None:
+            body["bound_value"] = self.bound_value
+        if self.threshold_type is not None:
+            body["threshold_type"] = self.threshold_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Threshold into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.bound_value is not None:
+            body["bound_value"] = self.bound_value
+        if self.threshold_type is not None:
+            body["threshold_type"] = self.threshold_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Threshold:
+        """Deserializes the Threshold from a dictionary."""
+        return cls(bound_value=d.get("bound_value", None), threshold_type=_enum(d, "threshold_type", ThresholdType))
+
+
+class ThresholdType(Enum):
+
+    THRESHOLD_TYPE_AUTO = "THRESHOLD_TYPE_AUTO"
+    THRESHOLD_TYPE_MANUAL = "THRESHOLD_TYPE_MANUAL"
+    THRESHOLD_TYPE_UNBOUNDED = "THRESHOLD_TYPE_UNBOUNDED"
 
 
 @dataclass

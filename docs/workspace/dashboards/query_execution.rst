@@ -35,7 +35,8 @@
 
     .. py:method:: poll_published_query_status(dashboard_name: str, dashboard_revision_id: str [, tokens: Optional[List[str]]]) -> PollQueryStatusResponse
 
-        Poll the results for the a query for a published, embedded dashboard.
+        Poll the results for the a query for a published, embedded dashboard. Supports both GET and POST
+        methods. POST is recommended for polling many tokens to avoid URL length limitations.
 
         :param dashboard_name: str
         :param dashboard_revision_id: str

@@ -202,6 +202,14 @@ class BranchSpec:
 
 @dataclass
 class BranchStatus:
+    branch_id: Optional[str] = None
+    """The short identifier of the branch, suitable for showing to the users. For a branch with name
+    `projects/my-project/branches/my-branch`, the branch_id is `my-branch`.
+    
+    Use this field when building UI components that display branches to users (e.g., a drop-down
+    selector). Prefer showing `branch_id` instead of the full resource name from `Branch.name`,
+    which follows the `projects/{project_id}/branches/{branch_id}` format and is not user-friendly."""
+
     current_state: Optional[BranchStatusState] = None
     """The branch's state, indicating if it is initializing, ready for use, or archived."""
 
@@ -236,6 +244,8 @@ class BranchStatus:
     def as_dict(self) -> dict:
         """Serializes the BranchStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.branch_id is not None:
+            body["branch_id"] = self.branch_id
         if self.current_state is not None:
             body["current_state"] = self.current_state.value
         if self.default is not None:
@@ -261,6 +271,8 @@ class BranchStatus:
     def as_shallow_dict(self) -> dict:
         """Serializes the BranchStatus into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.branch_id is not None:
+            body["branch_id"] = self.branch_id
         if self.current_state is not None:
             body["current_state"] = self.current_state
         if self.default is not None:
@@ -287,6 +299,7 @@ class BranchStatus:
     def from_dict(cls, d: Dict[str, Any]) -> BranchStatus:
         """Deserializes the BranchStatus from a dictionary."""
         return cls(
+            branch_id=d.get("branch_id", None),
             current_state=_enum(d, "current_state", BranchStatusState),
             default=d.get("default", None),
             expire_time=_timestamp(d, "expire_time"),
@@ -308,6 +321,173 @@ class BranchStatusState(Enum):
     INIT = "INIT"
     READY = "READY"
     RESETTING = "RESETTING"
+
+
+@dataclass
+class Catalog:
+    name: str
+    """The name of the catalog in UC."""
+
+    database: str
+    """The project and branch scoped database associated with this catalog. Must be in the format:
+    projects/{project_id}/branches/{branch_id}/databases/{database_id} where database_name is the
+    name of the logical database in Postgres."""
+
+    branch: Optional[str] = None
+    """The resource path of the branch associated with the catalog. Format:
+    projects/{project_id}/branches/{branch_id}."""
+
+    create_database_if_not_exists: Optional[bool] = None
+
+    project: Optional[str] = None
+    """The resource path of the project associated with the catalog. Format: projects/{project_id}."""
+
+    uid: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the Catalog into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.create_database_if_not_exists is not None:
+            body["create_database_if_not_exists"] = self.create_database_if_not_exists
+        if self.database is not None:
+            body["database"] = self.database
+        if self.name is not None:
+            body["name"] = self.name
+        if self.project is not None:
+            body["project"] = self.project
+        if self.uid is not None:
+            body["uid"] = self.uid
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Catalog into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.create_database_if_not_exists is not None:
+            body["create_database_if_not_exists"] = self.create_database_if_not_exists
+        if self.database is not None:
+            body["database"] = self.database
+        if self.name is not None:
+            body["name"] = self.name
+        if self.project is not None:
+            body["project"] = self.project
+        if self.uid is not None:
+            body["uid"] = self.uid
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Catalog:
+        """Deserializes the Catalog from a dictionary."""
+        return cls(
+            branch=d.get("branch", None),
+            create_database_if_not_exists=d.get("create_database_if_not_exists", None),
+            database=d.get("database", None),
+            name=d.get("name", None),
+            project=d.get("project", None),
+            uid=d.get("uid", None),
+        )
+
+
+@dataclass
+class ComputeInstance:
+    name: str
+    """The fully qualified name for this compute instance. Format:
+    projects/*/branches/*/endpoints/*/compute-instances/*"""
+
+    compute_instance_id: str
+    """The unique ID for this compute."""
+
+    compute_host: Optional[str] = None
+    """A host scoped directly to the enclosing compute. This host is guaranteed to resolve to the
+    specific compute instance."""
+
+    current_state: Optional[ComputeInstanceComputeState] = None
+    """The current state of the compute."""
+
+    pending_state: Optional[ComputeInstanceComputeState] = None
+    """The desired pending state of the compute, if a state transition is in progress."""
+
+    role: Optional[ComputeInstanceComputeType] = None
+    """The role of this compute within the endpoint."""
+
+    start_time: Optional[Timestamp] = None
+    """A timestamp indicating when the compute was last started."""
+
+    suspend_time: Optional[Timestamp] = None
+    """A timestamp indicating when the compute was last suspended."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ComputeInstance into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.compute_host is not None:
+            body["compute_host"] = self.compute_host
+        if self.compute_instance_id is not None:
+            body["compute_instance_id"] = self.compute_instance_id
+        if self.current_state is not None:
+            body["current_state"] = self.current_state.value
+        if self.name is not None:
+            body["name"] = self.name
+        if self.pending_state is not None:
+            body["pending_state"] = self.pending_state.value
+        if self.role is not None:
+            body["role"] = self.role.value
+        if self.start_time is not None:
+            body["start_time"] = self.start_time.ToJsonString()
+        if self.suspend_time is not None:
+            body["suspend_time"] = self.suspend_time.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ComputeInstance into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.compute_host is not None:
+            body["compute_host"] = self.compute_host
+        if self.compute_instance_id is not None:
+            body["compute_instance_id"] = self.compute_instance_id
+        if self.current_state is not None:
+            body["current_state"] = self.current_state
+        if self.name is not None:
+            body["name"] = self.name
+        if self.pending_state is not None:
+            body["pending_state"] = self.pending_state
+        if self.role is not None:
+            body["role"] = self.role
+        if self.start_time is not None:
+            body["start_time"] = self.start_time
+        if self.suspend_time is not None:
+            body["suspend_time"] = self.suspend_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ComputeInstance:
+        """Deserializes the ComputeInstance from a dictionary."""
+        return cls(
+            compute_host=d.get("compute_host", None),
+            compute_instance_id=d.get("compute_instance_id", None),
+            current_state=_enum(d, "current_state", ComputeInstanceComputeState),
+            name=d.get("name", None),
+            pending_state=_enum(d, "pending_state", ComputeInstanceComputeState),
+            role=_enum(d, "role", ComputeInstanceComputeType),
+            start_time=_timestamp(d, "start_time"),
+            suspend_time=_timestamp(d, "suspend_time"),
+        )
+
+
+class ComputeInstanceComputeState(Enum):
+
+    ACTIVE = "ACTIVE"
+    IDLE = "IDLE"
+    INIT = "INIT"
+
+
+class ComputeInstanceComputeType(Enum):
+
+    HOT_STANDBY = "HOT_STANDBY"
+    READ_ONLY = "READ_ONLY"
+    READ_WRITE = "READ_WRITE"
 
 
 @dataclass
@@ -556,6 +736,71 @@ class DatabricksServiceExceptionWithDetailsProto:
 
 
 @dataclass
+class DeltaTableSyncInfo:
+    """Copied from database_table_statuses.proto to decouple SDK packages."""
+
+    delta_commit_timestamp: Optional[Timestamp] = None
+    """The timestamp when the above Delta version was committed in the source Delta table. Note: This
+    is the Delta commit time, not the time the data was written to the synced table."""
+
+    delta_commit_version: Optional[int] = None
+    """The Delta Lake commit version that was last successfully synced."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeltaTableSyncInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delta_commit_timestamp is not None:
+            body["delta_commit_timestamp"] = self.delta_commit_timestamp.ToJsonString()
+        if self.delta_commit_version is not None:
+            body["delta_commit_version"] = self.delta_commit_version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeltaTableSyncInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delta_commit_timestamp is not None:
+            body["delta_commit_timestamp"] = self.delta_commit_timestamp
+        if self.delta_commit_version is not None:
+            body["delta_commit_version"] = self.delta_commit_version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaTableSyncInfo:
+        """Deserializes the DeltaTableSyncInfo from a dictionary."""
+        return cls(
+            delta_commit_timestamp=_timestamp(d, "delta_commit_timestamp"),
+            delta_commit_version=d.get("delta_commit_version", None),
+        )
+
+
+@dataclass
+class DisableForwardEtlResponse:
+    """Response to disable Forward ETL"""
+
+    disabled: Optional[bool] = None
+    """Whether Forward ETL was successfully disabled."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DisableForwardEtlResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DisableForwardEtlResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DisableForwardEtlResponse:
+        """Deserializes the DisableForwardEtlResponse from a dictionary."""
+        return cls(disabled=d.get("disabled", None))
+
+
+@dataclass
 class Endpoint:
     create_time: Optional[Timestamp] = None
     """A timestamp indicating when the compute endpoint was created."""
@@ -742,6 +987,15 @@ class EndpointHosts:
     attribute is defined if the enclosing endpoint is a group with greater than 1 computes
     configured, and has readable secondaries enabled."""
 
+    read_only_pooled_host: Optional[str] = None
+    """The read-only hostname of the compute endpoint, with pooling. This attribute is always defined
+    for read-only endpoints, and may be defined for read-write endpoints if configured with read
+    replicas and allow read-only connections."""
+
+    read_write_pooled_host: Optional[str] = None
+    """The read-write hostname of the compute endpoint, with pooling. This attribute is only defined
+    for read-write endpoints."""
+
     def as_dict(self) -> dict:
         """Serializes the EndpointHosts into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -749,6 +1003,10 @@ class EndpointHosts:
             body["host"] = self.host
         if self.read_only_host is not None:
             body["read_only_host"] = self.read_only_host
+        if self.read_only_pooled_host is not None:
+            body["read_only_pooled_host"] = self.read_only_pooled_host
+        if self.read_write_pooled_host is not None:
+            body["read_write_pooled_host"] = self.read_write_pooled_host
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -758,12 +1016,21 @@ class EndpointHosts:
             body["host"] = self.host
         if self.read_only_host is not None:
             body["read_only_host"] = self.read_only_host
+        if self.read_only_pooled_host is not None:
+            body["read_only_pooled_host"] = self.read_only_pooled_host
+        if self.read_write_pooled_host is not None:
+            body["read_write_pooled_host"] = self.read_write_pooled_host
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointHosts:
         """Deserializes the EndpointHosts from a dictionary."""
-        return cls(host=d.get("host", None), read_only_host=d.get("read_only_host", None))
+        return cls(
+            host=d.get("host", None),
+            read_only_host=d.get("read_only_host", None),
+            read_only_pooled_host=d.get("read_only_pooled_host", None),
+            read_write_pooled_host=d.get("read_write_pooled_host", None),
+        )
 
 
 @dataclass
@@ -923,6 +1190,9 @@ class EndpointStatus:
     hosts: Optional[EndpointHosts] = None
     """Contains host information for connecting to the endpoint."""
 
+    last_active_time: Optional[Timestamp] = None
+    """A timestamp indicating when the compute endpoint was last active."""
+
     pending_state: Optional[EndpointStatusState] = None
 
     settings: Optional[EndpointSettings] = None
@@ -947,6 +1217,8 @@ class EndpointStatus:
             body["group"] = self.group.as_dict()
         if self.hosts:
             body["hosts"] = self.hosts.as_dict()
+        if self.last_active_time is not None:
+            body["last_active_time"] = self.last_active_time.ToJsonString()
         if self.pending_state is not None:
             body["pending_state"] = self.pending_state.value
         if self.settings:
@@ -972,6 +1244,8 @@ class EndpointStatus:
             body["group"] = self.group
         if self.hosts:
             body["hosts"] = self.hosts
+        if self.last_active_time is not None:
+            body["last_active_time"] = self.last_active_time
         if self.pending_state is not None:
             body["pending_state"] = self.pending_state
         if self.settings:
@@ -991,6 +1265,7 @@ class EndpointStatus:
             endpoint_type=_enum(d, "endpoint_type", EndpointType),
             group=_from_dict(d, "group", EndpointGroupStatus),
             hosts=_from_dict(d, "hosts", EndpointHosts),
+            last_active_time=_timestamp(d, "last_active_time"),
             pending_state=_enum(d, "pending_state", EndpointStatusState),
             settings=_from_dict(d, "settings", EndpointSettings),
             suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
@@ -1100,6 +1375,318 @@ class ErrorCode(Enum):
 
 
 @dataclass
+class ForwardEtlConfig:
+    """Forward ETL configuration"""
+
+    create_time_millis: Optional[int] = None
+    """Configuration creation timestamp in milliseconds since epoch."""
+
+    enabled: Optional[bool] = None
+    """Whether Forward ETL is enabled."""
+
+    pg_database_oid: Optional[int] = None
+    """PostgreSQL database OID."""
+
+    pg_schema_oid: Optional[int] = None
+    """PostgreSQL schema OID."""
+
+    tenant_id: Optional[str] = None
+    """Tenant ID (dashless UUID format)."""
+
+    timeline_id: Optional[str] = None
+    """Timeline ID (dashless UUID format)."""
+
+    uc_catalog_id: Optional[str] = None
+    """Unity Catalog catalog ID."""
+
+    uc_schema_id: Optional[str] = None
+    """Unity Catalog schema ID."""
+
+    update_time_millis: Optional[int] = None
+    """Configuration last update timestamp in milliseconds since epoch."""
+
+    workspace_id: Optional[int] = None
+    """Workspace ID."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForwardEtlConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time_millis is not None:
+            body["create_time_millis"] = self.create_time_millis
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.pg_database_oid is not None:
+            body["pg_database_oid"] = self.pg_database_oid
+        if self.pg_schema_oid is not None:
+            body["pg_schema_oid"] = self.pg_schema_oid
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.timeline_id is not None:
+            body["timeline_id"] = self.timeline_id
+        if self.uc_catalog_id is not None:
+            body["uc_catalog_id"] = self.uc_catalog_id
+        if self.uc_schema_id is not None:
+            body["uc_schema_id"] = self.uc_schema_id
+        if self.update_time_millis is not None:
+            body["update_time_millis"] = self.update_time_millis
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForwardEtlConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time_millis is not None:
+            body["create_time_millis"] = self.create_time_millis
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.pg_database_oid is not None:
+            body["pg_database_oid"] = self.pg_database_oid
+        if self.pg_schema_oid is not None:
+            body["pg_schema_oid"] = self.pg_schema_oid
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.timeline_id is not None:
+            body["timeline_id"] = self.timeline_id
+        if self.uc_catalog_id is not None:
+            body["uc_catalog_id"] = self.uc_catalog_id
+        if self.uc_schema_id is not None:
+            body["uc_schema_id"] = self.uc_schema_id
+        if self.update_time_millis is not None:
+            body["update_time_millis"] = self.update_time_millis
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlConfig:
+        """Deserializes the ForwardEtlConfig from a dictionary."""
+        return cls(
+            create_time_millis=d.get("create_time_millis", None),
+            enabled=d.get("enabled", None),
+            pg_database_oid=d.get("pg_database_oid", None),
+            pg_schema_oid=d.get("pg_schema_oid", None),
+            tenant_id=d.get("tenant_id", None),
+            timeline_id=d.get("timeline_id", None),
+            uc_catalog_id=d.get("uc_catalog_id", None),
+            uc_schema_id=d.get("uc_schema_id", None),
+            update_time_millis=d.get("update_time_millis", None),
+            workspace_id=d.get("workspace_id", None),
+        )
+
+
+@dataclass
+class ForwardEtlDatabase:
+    """Database metadata"""
+
+    name: Optional[str] = None
+    """Database name."""
+
+    oid: Optional[int] = None
+    """PostgreSQL database OID."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForwardEtlDatabase into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oid is not None:
+            body["oid"] = self.oid
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForwardEtlDatabase into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oid is not None:
+            body["oid"] = self.oid
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlDatabase:
+        """Deserializes the ForwardEtlDatabase from a dictionary."""
+        return cls(name=d.get("name", None), oid=d.get("oid", None))
+
+
+@dataclass
+class ForwardEtlMetadata:
+    """Forward ETL metadata response"""
+
+    databases: Optional[List[ForwardEtlDatabase]] = None
+    """List of databases with their PostgreSQL OIDs."""
+
+    schemas: Optional[List[ForwardEtlSchema]] = None
+    """List of schemas with their PostgreSQL OIDs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForwardEtlMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.databases:
+            body["databases"] = [v.as_dict() for v in self.databases]
+        if self.schemas:
+            body["schemas"] = [v.as_dict() for v in self.schemas]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForwardEtlMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.databases:
+            body["databases"] = self.databases
+        if self.schemas:
+            body["schemas"] = self.schemas
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlMetadata:
+        """Deserializes the ForwardEtlMetadata from a dictionary."""
+        return cls(
+            databases=_repeated_dict(d, "databases", ForwardEtlDatabase),
+            schemas=_repeated_dict(d, "schemas", ForwardEtlSchema),
+        )
+
+
+@dataclass
+class ForwardEtlSchema:
+    """Schema metadata"""
+
+    name: Optional[str] = None
+    """Schema name."""
+
+    oid: Optional[int] = None
+    """PostgreSQL schema OID."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForwardEtlSchema into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oid is not None:
+            body["oid"] = self.oid
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForwardEtlSchema into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oid is not None:
+            body["oid"] = self.oid
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlSchema:
+        """Deserializes the ForwardEtlSchema from a dictionary."""
+        return cls(name=d.get("name", None), oid=d.get("oid", None))
+
+
+@dataclass
+class ForwardEtlStatus:
+    """Forward ETL status response"""
+
+    configurations: Optional[List[ForwardEtlConfig]] = None
+    """List of Forward ETL configurations."""
+
+    table_mappings: Optional[List[ForwardEtlTableMapping]] = None
+    """Per-table replication mappings."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForwardEtlStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.configurations:
+            body["configurations"] = [v.as_dict() for v in self.configurations]
+        if self.table_mappings:
+            body["table_mappings"] = [v.as_dict() for v in self.table_mappings]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForwardEtlStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.configurations:
+            body["configurations"] = self.configurations
+        if self.table_mappings:
+            body["table_mappings"] = self.table_mappings
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlStatus:
+        """Deserializes the ForwardEtlStatus from a dictionary."""
+        return cls(
+            configurations=_repeated_dict(d, "configurations", ForwardEtlConfig),
+            table_mappings=_repeated_dict(d, "table_mappings", ForwardEtlTableMapping),
+        )
+
+
+@dataclass
+class ForwardEtlTableMapping:
+    """Per-table replication mapping"""
+
+    enabled: Optional[bool] = None
+    """Whether replication is enabled for this table."""
+
+    last_synced_lsn: Optional[str] = None
+    """Last synced LSN (Log Sequence Number) for this table."""
+
+    pg_table_name: Optional[str] = None
+    """PostgreSQL table name."""
+
+    pg_table_oid: Optional[int] = None
+    """PostgreSQL table OID."""
+
+    uc_table_id: Optional[str] = None
+    """Unity Catalog table ID."""
+
+    uc_table_name: Optional[str] = None
+    """Unity Catalog table name."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForwardEtlTableMapping into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.last_synced_lsn is not None:
+            body["last_synced_lsn"] = self.last_synced_lsn
+        if self.pg_table_name is not None:
+            body["pg_table_name"] = self.pg_table_name
+        if self.pg_table_oid is not None:
+            body["pg_table_oid"] = self.pg_table_oid
+        if self.uc_table_id is not None:
+            body["uc_table_id"] = self.uc_table_id
+        if self.uc_table_name is not None:
+            body["uc_table_name"] = self.uc_table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForwardEtlTableMapping into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.last_synced_lsn is not None:
+            body["last_synced_lsn"] = self.last_synced_lsn
+        if self.pg_table_name is not None:
+            body["pg_table_name"] = self.pg_table_name
+        if self.pg_table_oid is not None:
+            body["pg_table_oid"] = self.pg_table_oid
+        if self.uc_table_id is not None:
+            body["uc_table_id"] = self.uc_table_id
+        if self.uc_table_name is not None:
+            body["uc_table_name"] = self.uc_table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForwardEtlTableMapping:
+        """Deserializes the ForwardEtlTableMapping from a dictionary."""
+        return cls(
+            enabled=d.get("enabled", None),
+            last_synced_lsn=d.get("last_synced_lsn", None),
+            pg_table_name=d.get("pg_table_name", None),
+            pg_table_oid=d.get("pg_table_oid", None),
+            uc_table_id=d.get("uc_table_id", None),
+            uc_table_name=d.get("uc_table_name", None),
+        )
+
+
+@dataclass
 class InitialEndpointSpec:
     group: Optional[EndpointGroupSpec] = None
     """Settings for HA configuration of the endpoint"""
@@ -1154,6 +1741,42 @@ class ListBranchesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListBranchesResponse:
         """Deserializes the ListBranchesResponse from a dictionary."""
         return cls(branches=_repeated_dict(d, "branches", Branch), next_page_token=d.get("next_page_token", None))
+
+
+@dataclass
+class ListComputeInstancesResponse:
+    compute_instances: Optional[List[ComputeInstance]] = None
+    """The compute instances from the specified endpoint."""
+
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListComputeInstancesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.compute_instances:
+            body["compute_instances"] = [v.as_dict() for v in self.compute_instances]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListComputeInstancesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.compute_instances:
+            body["compute_instances"] = self.compute_instances
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListComputeInstancesResponse:
+        """Deserializes the ListComputeInstancesResponse from a dictionary."""
+        return cls(
+            compute_instances=_repeated_dict(d, "compute_instances", ComputeInstance),
+            next_page_token=d.get("next_page_token", None),
+        )
 
 
 @dataclass
@@ -1282,6 +1905,51 @@ class ListRolesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListRolesResponse:
         """Deserializes the ListRolesResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), roles=_repeated_dict(d, "roles", Role))
+
+
+@dataclass
+class NewPipelineSpec:
+    budget_policy_id: Optional[str] = None
+    """Budget policy to set on the newly created pipeline."""
+
+    storage_catalog: Optional[str] = None
+    """UC catalog for the pipeline to store intermediate files (checkpoints, event logs etc). This
+    needs to be a standard catalog where the user has permissions to create Delta tables."""
+
+    storage_schema: Optional[str] = None
+    """UC schema for the pipeline to store intermediate files (checkpoints, event logs etc). This needs
+    to be in the standard catalog where the user has permissions to create Delta tables."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NewPipelineSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.storage_catalog is not None:
+            body["storage_catalog"] = self.storage_catalog
+        if self.storage_schema is not None:
+            body["storage_schema"] = self.storage_schema
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NewPipelineSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.storage_catalog is not None:
+            body["storage_catalog"] = self.storage_catalog
+        if self.storage_schema is not None:
+            body["storage_schema"] = self.storage_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NewPipelineSpec:
+        """Deserializes the NewPipelineSpec from a dictionary."""
+        return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
+            storage_catalog=d.get("storage_catalog", None),
+            storage_schema=d.get("storage_schema", None),
+        )
 
 
 @dataclass
@@ -1556,6 +2224,10 @@ class ProjectSpec:
     preserve existing tags, omit this field from the update_mask (or use wildcard "*" which
     auto-excludes empty tags)."""
 
+    default_branch: Optional[str] = None
+    """The full resource path for the default branch of the project Format:
+    projects/{project_id}/branches/{branch_id}"""
+
     default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
 
     display_name: Optional[str] = None
@@ -1571,6 +2243,13 @@ class ProjectSpec:
     pg_version: Optional[int] = None
     """The major Postgres version number. Supported versions are 16 and 17."""
 
+    workspace_key_encrypted: Optional[bool] = None
+    """Indicates if this project should be created with workspace-scoped customer managed key (CMK)
+    encryption enabled. Since we need to do an end to end perf bench using BSS API to A/B test the
+    performance impact of CMK encryption, we need to be able to control this flag in the API. This
+    flag will be removed once we find a better way to separate the tenants or enforce
+    workspace-level CMK encryption or migrate everyone to CMK."""
+
     def as_dict(self) -> dict:
         """Serializes the ProjectSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1578,6 +2257,8 @@ class ProjectSpec:
             body["budget_policy_id"] = self.budget_policy_id
         if self.custom_tags:
             body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
+        if self.default_branch is not None:
+            body["default_branch"] = self.default_branch
         if self.default_endpoint_settings:
             body["default_endpoint_settings"] = self.default_endpoint_settings.as_dict()
         if self.display_name is not None:
@@ -1588,6 +2269,8 @@ class ProjectSpec:
             body["history_retention_duration"] = self.history_retention_duration.ToJsonString()
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
+        if self.workspace_key_encrypted is not None:
+            body["workspace_key_encrypted"] = self.workspace_key_encrypted
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1597,6 +2280,8 @@ class ProjectSpec:
             body["budget_policy_id"] = self.budget_policy_id
         if self.custom_tags:
             body["custom_tags"] = self.custom_tags
+        if self.default_branch is not None:
+            body["default_branch"] = self.default_branch
         if self.default_endpoint_settings:
             body["default_endpoint_settings"] = self.default_endpoint_settings
         if self.display_name is not None:
@@ -1607,6 +2292,8 @@ class ProjectSpec:
             body["history_retention_duration"] = self.history_retention_duration
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
+        if self.workspace_key_encrypted is not None:
+            body["workspace_key_encrypted"] = self.workspace_key_encrypted
         return body
 
     @classmethod
@@ -1615,11 +2302,13 @@ class ProjectSpec:
         return cls(
             budget_policy_id=d.get("budget_policy_id", None),
             custom_tags=_repeated_dict(d, "custom_tags", ProjectCustomTag),
+            default_branch=d.get("default_branch", None),
             default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
             display_name=d.get("display_name", None),
             enable_pg_native_login=d.get("enable_pg_native_login", None),
             history_retention_duration=_duration(d, "history_retention_duration"),
             pg_version=d.get("pg_version", None),
+            workspace_key_encrypted=d.get("workspace_key_encrypted", None),
         )
 
 
@@ -1631,8 +2320,14 @@ class ProjectStatus:
     budget_policy_id: Optional[str] = None
     """The budget policy that is applied to the project."""
 
+    compute_last_active_time: Optional[Timestamp] = None
+    """The most recent time when any endpoint of this project was active."""
+
     custom_tags: Optional[List[ProjectCustomTag]] = None
     """The effective custom tags associated with the project."""
+
+    default_branch: Optional[str] = None
+    """The full resource path of the default branch of the project"""
 
     default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
     """The effective default endpoint settings."""
@@ -1662,8 +2357,12 @@ class ProjectStatus:
             body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_last_active_time is not None:
+            body["compute_last_active_time"] = self.compute_last_active_time.ToJsonString()
         if self.custom_tags:
             body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
+        if self.default_branch is not None:
+            body["default_branch"] = self.default_branch
         if self.default_endpoint_settings:
             body["default_endpoint_settings"] = self.default_endpoint_settings.as_dict()
         if self.display_name is not None:
@@ -1687,8 +2386,12 @@ class ProjectStatus:
             body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_last_active_time is not None:
+            body["compute_last_active_time"] = self.compute_last_active_time
         if self.custom_tags:
             body["custom_tags"] = self.custom_tags
+        if self.default_branch is not None:
+            body["default_branch"] = self.default_branch
         if self.default_endpoint_settings:
             body["default_endpoint_settings"] = self.default_endpoint_settings
         if self.display_name is not None:
@@ -1711,7 +2414,9 @@ class ProjectStatus:
         return cls(
             branch_logical_size_limit_bytes=d.get("branch_logical_size_limit_bytes", None),
             budget_policy_id=d.get("budget_policy_id", None),
+            compute_last_active_time=_timestamp(d, "compute_last_active_time"),
             custom_tags=_repeated_dict(d, "custom_tags", ProjectCustomTag),
+            default_branch=d.get("default_branch", None),
             default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
             display_name=d.get("display_name", None),
             enable_pg_native_login=d.get("enable_pg_native_login", None),
@@ -1720,6 +2425,24 @@ class ProjectStatus:
             pg_version=d.get("pg_version", None),
             synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),
         )
+
+
+class ProvisioningInfoState(Enum):
+
+    ACTIVE = "ACTIVE"
+    DEGRADED = "DEGRADED"
+    DELETING = "DELETING"
+    FAILED = "FAILED"
+    PROVISIONING = "PROVISIONING"
+    UPDATING = "UPDATING"
+
+
+class ProvisioningPhase(Enum):
+    """Copied from database_table_statuses.proto to decouple SDK packages."""
+
+    PROVISIONING_PHASE_INDEX_SCAN = "PROVISIONING_PHASE_INDEX_SCAN"
+    PROVISIONING_PHASE_INDEX_SORT = "PROVISIONING_PHASE_INDEX_SORT"
+    PROVISIONING_PHASE_MAIN = "PROVISIONING_PHASE_MAIN"
 
 
 @dataclass
@@ -2025,6 +2748,9 @@ class RoleRoleSpec:
 
 @dataclass
 class RoleRoleStatus:
+    attributes: Optional[RoleAttributes] = None
+    """The PG role attributes associated with the role."""
+
     auth_method: Optional[RoleAuthMethod] = None
 
     identity_type: Optional[RoleIdentityType] = None
@@ -2039,6 +2765,8 @@ class RoleRoleStatus:
     def as_dict(self) -> dict:
         """Serializes the RoleRoleStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.attributes:
+            body["attributes"] = self.attributes.as_dict()
         if self.auth_method is not None:
             body["auth_method"] = self.auth_method.value
         if self.identity_type is not None:
@@ -2052,6 +2780,8 @@ class RoleRoleStatus:
     def as_shallow_dict(self) -> dict:
         """Serializes the RoleRoleStatus into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.attributes:
+            body["attributes"] = self.attributes
         if self.auth_method is not None:
             body["auth_method"] = self.auth_method
         if self.identity_type is not None:
@@ -2066,10 +2796,643 @@ class RoleRoleStatus:
     def from_dict(cls, d: Dict[str, Any]) -> RoleRoleStatus:
         """Deserializes the RoleRoleStatus from a dictionary."""
         return cls(
+            attributes=_from_dict(d, "attributes", RoleAttributes),
             auth_method=_enum(d, "auth_method", RoleAuthMethod),
             identity_type=_enum(d, "identity_type", RoleIdentityType),
             membership_roles=_repeated_enum(d, "membership_roles", RoleMembershipRole),
             postgres_role=d.get("postgres_role", None),
+        )
+
+
+@dataclass
+class SyncedTable:
+    name: str
+    """Full three-part (catalog, schema, table) name of the table."""
+
+    branch: Optional[str] = None
+    """The resource path of the branch associated with the table. Format:
+    projects/{project_id}/branches/{branch_id}."""
+
+    data_synchronization_status: Optional[SyncedTableStatus] = None
+    """Synced Table data synchronization status"""
+
+    database: Optional[str] = None
+    """The project and branch scoped database to which this table lives in. Of the format:
+    projects/{project_id}/branches/{branch_id}/databases/{database_id} where database_id is the name
+    of the logical database in Postgres. When creating a synced table in a database catalog this
+    field is optional, and if specified must match the database, project, and branch of the catalog.
+    When creating a synced table in a standard catalog, this field is required."""
+
+    project: Optional[str] = None
+    """The resource path of the project associated with the table. Format: projects/{project_id}."""
+
+    spec: Optional[SyncedTableSpec] = None
+
+    table_serving_url: Optional[str] = None
+    """REST API URL for serving data from this table."""
+
+    unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
+    """The provisioning state of the synced table entity in Unity Catalog."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.data_synchronization_status:
+            body["data_synchronization_status"] = self.data_synchronization_status.as_dict()
+        if self.database is not None:
+            body["database"] = self.database
+        if self.name is not None:
+            body["name"] = self.name
+        if self.project is not None:
+            body["project"] = self.project
+        if self.spec:
+            body["spec"] = self.spec.as_dict()
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
+        if self.unity_catalog_provisioning_state is not None:
+            body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTable into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.data_synchronization_status:
+            body["data_synchronization_status"] = self.data_synchronization_status
+        if self.database is not None:
+            body["database"] = self.database
+        if self.name is not None:
+            body["name"] = self.name
+        if self.project is not None:
+            body["project"] = self.project
+        if self.spec:
+            body["spec"] = self.spec
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
+        if self.unity_catalog_provisioning_state is not None:
+            body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTable:
+        """Deserializes the SyncedTable from a dictionary."""
+        return cls(
+            branch=d.get("branch", None),
+            data_synchronization_status=_from_dict(d, "data_synchronization_status", SyncedTableStatus),
+            database=d.get("database", None),
+            name=d.get("name", None),
+            project=d.get("project", None),
+            spec=_from_dict(d, "spec", SyncedTableSpec),
+            table_serving_url=d.get("table_serving_url", None),
+            unity_catalog_provisioning_state=_enum(d, "unity_catalog_provisioning_state", ProvisioningInfoState),
+        )
+
+
+@dataclass
+class SyncedTableContinuousUpdateStatus:
+    """Detailed status of a synced table. Shown if the synced table is in the SYNCED_CONTINUOUS_UPDATE
+    or the SYNCED_UPDATING_PIPELINE_RESOURCES state. Copied from database_table_statuses.proto to
+    decouple SDK packages."""
+
+    initial_pipeline_sync_progress: Optional[SyncedTablePipelineProgress] = None
+    """Progress of the initial data synchronization."""
+
+    last_processed_commit_version: Optional[int] = None
+    """The last source table Delta version that was successfully synced to the synced table."""
+
+    timestamp: Optional[Timestamp] = None
+    """The end timestamp of the last time any data was synchronized from the source table to the synced
+    table. This is when the data is available in the synced table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTableContinuousUpdateStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.initial_pipeline_sync_progress:
+            body["initial_pipeline_sync_progress"] = self.initial_pipeline_sync_progress.as_dict()
+        if self.last_processed_commit_version is not None:
+            body["last_processed_commit_version"] = self.last_processed_commit_version
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTableContinuousUpdateStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.initial_pipeline_sync_progress:
+            body["initial_pipeline_sync_progress"] = self.initial_pipeline_sync_progress
+        if self.last_processed_commit_version is not None:
+            body["last_processed_commit_version"] = self.last_processed_commit_version
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTableContinuousUpdateStatus:
+        """Deserializes the SyncedTableContinuousUpdateStatus from a dictionary."""
+        return cls(
+            initial_pipeline_sync_progress=_from_dict(d, "initial_pipeline_sync_progress", SyncedTablePipelineProgress),
+            last_processed_commit_version=d.get("last_processed_commit_version", None),
+            timestamp=_timestamp(d, "timestamp"),
+        )
+
+
+@dataclass
+class SyncedTableFailedStatus:
+    """Detailed status of a synced table. Shown if the synced table is in the OFFLINE_FAILED or the
+    SYNCED_PIPELINE_FAILED state. Copied from database_table_statuses.proto to decouple SDK
+    packages."""
+
+    last_processed_commit_version: Optional[int] = None
+    """The last source table Delta version that was successfully synced to the synced table. The last
+    source table Delta version that was synced to the synced table. Only populated if the table is
+    still synced and available for serving."""
+
+    timestamp: Optional[Timestamp] = None
+    """The end timestamp of the last time any data was synchronized from the source table to the synced
+    table. Only populated if the table is still synced and available for serving."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTableFailedStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_processed_commit_version is not None:
+            body["last_processed_commit_version"] = self.last_processed_commit_version
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTableFailedStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.last_processed_commit_version is not None:
+            body["last_processed_commit_version"] = self.last_processed_commit_version
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTableFailedStatus:
+        """Deserializes the SyncedTableFailedStatus from a dictionary."""
+        return cls(
+            last_processed_commit_version=d.get("last_processed_commit_version", None),
+            timestamp=_timestamp(d, "timestamp"),
+        )
+
+
+@dataclass
+class SyncedTablePipelineProgress:
+    """Progress information of the Synced Table data synchronization pipeline. Copied from
+    database_table_statuses.proto to decouple SDK packages."""
+
+    estimated_completion_time_seconds: Optional[float] = None
+    """The estimated time remaining to complete this update in seconds."""
+
+    latest_version_currently_processing: Optional[int] = None
+    """The source table Delta version that was last processed by the pipeline. The pipeline may not
+    have completely processed this version yet."""
+
+    provisioning_phase: Optional[ProvisioningPhase] = None
+    """The current phase of the data synchronization pipeline."""
+
+    sync_progress_completion: Optional[float] = None
+    """The completion ratio of this update. This is a number between 0 and 1."""
+
+    synced_row_count: Optional[int] = None
+    """The number of rows that have been synced in this update."""
+
+    total_row_count: Optional[int] = None
+    """The total number of rows that need to be synced in this update. This number may be an estimate."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTablePipelineProgress into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.estimated_completion_time_seconds is not None:
+            body["estimated_completion_time_seconds"] = self.estimated_completion_time_seconds
+        if self.latest_version_currently_processing is not None:
+            body["latest_version_currently_processing"] = self.latest_version_currently_processing
+        if self.provisioning_phase is not None:
+            body["provisioning_phase"] = self.provisioning_phase.value
+        if self.sync_progress_completion is not None:
+            body["sync_progress_completion"] = self.sync_progress_completion
+        if self.synced_row_count is not None:
+            body["synced_row_count"] = self.synced_row_count
+        if self.total_row_count is not None:
+            body["total_row_count"] = self.total_row_count
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTablePipelineProgress into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.estimated_completion_time_seconds is not None:
+            body["estimated_completion_time_seconds"] = self.estimated_completion_time_seconds
+        if self.latest_version_currently_processing is not None:
+            body["latest_version_currently_processing"] = self.latest_version_currently_processing
+        if self.provisioning_phase is not None:
+            body["provisioning_phase"] = self.provisioning_phase
+        if self.sync_progress_completion is not None:
+            body["sync_progress_completion"] = self.sync_progress_completion
+        if self.synced_row_count is not None:
+            body["synced_row_count"] = self.synced_row_count
+        if self.total_row_count is not None:
+            body["total_row_count"] = self.total_row_count
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTablePipelineProgress:
+        """Deserializes the SyncedTablePipelineProgress from a dictionary."""
+        return cls(
+            estimated_completion_time_seconds=d.get("estimated_completion_time_seconds", None),
+            latest_version_currently_processing=d.get("latest_version_currently_processing", None),
+            provisioning_phase=_enum(d, "provisioning_phase", ProvisioningPhase),
+            sync_progress_completion=d.get("sync_progress_completion", None),
+            synced_row_count=d.get("synced_row_count", None),
+            total_row_count=d.get("total_row_count", None),
+        )
+
+
+@dataclass
+class SyncedTablePosition:
+    """Copied from database_table_statuses.proto to decouple SDK packages."""
+
+    delta_table_sync_info: Optional[DeltaTableSyncInfo] = None
+
+    sync_end_timestamp: Optional[Timestamp] = None
+    """The end timestamp of the most recent successful synchronization. This is the time when the data
+    is available in the synced table."""
+
+    sync_start_timestamp: Optional[Timestamp] = None
+    """The starting timestamp of the most recent successful synchronization from the source table to
+    the destination (synced) table. Note this is the starting timestamp of the sync operation, not
+    the end time. E.g., for a batch, this is the time when the sync operation started."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTablePosition into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delta_table_sync_info:
+            body["delta_table_sync_info"] = self.delta_table_sync_info.as_dict()
+        if self.sync_end_timestamp is not None:
+            body["sync_end_timestamp"] = self.sync_end_timestamp.ToJsonString()
+        if self.sync_start_timestamp is not None:
+            body["sync_start_timestamp"] = self.sync_start_timestamp.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTablePosition into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delta_table_sync_info:
+            body["delta_table_sync_info"] = self.delta_table_sync_info
+        if self.sync_end_timestamp is not None:
+            body["sync_end_timestamp"] = self.sync_end_timestamp
+        if self.sync_start_timestamp is not None:
+            body["sync_start_timestamp"] = self.sync_start_timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTablePosition:
+        """Deserializes the SyncedTablePosition from a dictionary."""
+        return cls(
+            delta_table_sync_info=_from_dict(d, "delta_table_sync_info", DeltaTableSyncInfo),
+            sync_end_timestamp=_timestamp(d, "sync_end_timestamp"),
+            sync_start_timestamp=_timestamp(d, "sync_start_timestamp"),
+        )
+
+
+@dataclass
+class SyncedTableProvisioningStatus:
+    """Detailed status of a synced table. Shown if the synced table is in the
+    PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state. Copied from
+    database_table_statuses.proto to decouple SDK packages."""
+
+    initial_pipeline_sync_progress: Optional[SyncedTablePipelineProgress] = None
+    """Details about initial data synchronization. Only populated when in the
+    PROVISIONING_INITIAL_SNAPSHOT state."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTableProvisioningStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.initial_pipeline_sync_progress:
+            body["initial_pipeline_sync_progress"] = self.initial_pipeline_sync_progress.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTableProvisioningStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.initial_pipeline_sync_progress:
+            body["initial_pipeline_sync_progress"] = self.initial_pipeline_sync_progress
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTableProvisioningStatus:
+        """Deserializes the SyncedTableProvisioningStatus from a dictionary."""
+        return cls(
+            initial_pipeline_sync_progress=_from_dict(d, "initial_pipeline_sync_progress", SyncedTablePipelineProgress)
+        )
+
+
+@dataclass
+class SyncedTableSpec:
+    accelerated_sync: Optional[bool] = None
+    """When true, enables accelerated sync mode for the initial data load. This significantly improves
+    performance for large tables. Requires workspace-level enablement through Lakebase Accelerated
+    Sync preview."""
+
+    create_database_objects_if_missing: Optional[bool] = None
+    """If true, the synced table's logical database and schema resources in PG will be created if they
+    do not already exist."""
+
+    existing_pipeline_id: Optional[str] = None
+    """ID of an existing pipeline to bin-pack this synced table into. At most one of
+    existing_pipeline_id and new_pipeline_spec should be defined."""
+
+    new_pipeline_spec: Optional[NewPipelineSpec] = None
+    """Specification for creating a new pipeline. At most one of existing_pipeline_id and
+    new_pipeline_spec should be defined."""
+
+    primary_key_columns: Optional[List[str]] = None
+    """Primary Key columns to be used for data insert/update in the destination."""
+
+    scheduling_policy: Optional[SyncedTableSpecSyncedTableSchedulingPolicy] = None
+    """Scheduling policy of the underlying pipeline."""
+
+    source_table_full_name: Optional[str] = None
+    """Three-part (catalog, schema, table) name of the source Delta table."""
+
+    timeseries_key: Optional[str] = None
+    """Time series key to deduplicate (tie-break) rows with the same primary key."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTableSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.accelerated_sync is not None:
+            body["accelerated_sync"] = self.accelerated_sync
+        if self.create_database_objects_if_missing is not None:
+            body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
+        if self.existing_pipeline_id is not None:
+            body["existing_pipeline_id"] = self.existing_pipeline_id
+        if self.new_pipeline_spec:
+            body["new_pipeline_spec"] = self.new_pipeline_spec.as_dict()
+        if self.primary_key_columns:
+            body["primary_key_columns"] = [v for v in self.primary_key_columns]
+        if self.scheduling_policy is not None:
+            body["scheduling_policy"] = self.scheduling_policy.value
+        if self.source_table_full_name is not None:
+            body["source_table_full_name"] = self.source_table_full_name
+        if self.timeseries_key is not None:
+            body["timeseries_key"] = self.timeseries_key
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTableSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.accelerated_sync is not None:
+            body["accelerated_sync"] = self.accelerated_sync
+        if self.create_database_objects_if_missing is not None:
+            body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
+        if self.existing_pipeline_id is not None:
+            body["existing_pipeline_id"] = self.existing_pipeline_id
+        if self.new_pipeline_spec:
+            body["new_pipeline_spec"] = self.new_pipeline_spec
+        if self.primary_key_columns:
+            body["primary_key_columns"] = self.primary_key_columns
+        if self.scheduling_policy is not None:
+            body["scheduling_policy"] = self.scheduling_policy
+        if self.source_table_full_name is not None:
+            body["source_table_full_name"] = self.source_table_full_name
+        if self.timeseries_key is not None:
+            body["timeseries_key"] = self.timeseries_key
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTableSpec:
+        """Deserializes the SyncedTableSpec from a dictionary."""
+        return cls(
+            accelerated_sync=d.get("accelerated_sync", None),
+            create_database_objects_if_missing=d.get("create_database_objects_if_missing", None),
+            existing_pipeline_id=d.get("existing_pipeline_id", None),
+            new_pipeline_spec=_from_dict(d, "new_pipeline_spec", NewPipelineSpec),
+            primary_key_columns=d.get("primary_key_columns", None),
+            scheduling_policy=_enum(d, "scheduling_policy", SyncedTableSpecSyncedTableSchedulingPolicy),
+            source_table_full_name=d.get("source_table_full_name", None),
+            timeseries_key=d.get("timeseries_key", None),
+        )
+
+
+class SyncedTableSpecSyncedTableSchedulingPolicy(Enum):
+    """Scheduling policy of the synced table's underlying pipeline. These should be kept in sync with
+    the scheudling policy enums for SyncedDatabaseTables with DatabaseInstances"""
+
+    CONTINUOUS = "CONTINUOUS"
+    SNAPSHOT = "SNAPSHOT"
+    TRIGGERED = "TRIGGERED"
+
+
+class SyncedTableState(Enum):
+    """The state of a synced table. Copied from database_table_statuses.proto to decouple SDK packages."""
+
+    SYNCED_TABLED_OFFLINE = "SYNCED_TABLED_OFFLINE"
+    SYNCED_TABLE_OFFLINE_FAILED = "SYNCED_TABLE_OFFLINE_FAILED"
+    SYNCED_TABLE_ONLINE = "SYNCED_TABLE_ONLINE"
+    SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE = "SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE"
+    SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE = "SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE"
+    SYNCED_TABLE_ONLINE_PIPELINE_FAILED = "SYNCED_TABLE_ONLINE_PIPELINE_FAILED"
+    SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE = "SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE"
+    SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES = "SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES"
+    SYNCED_TABLE_PROVISIONING = "SYNCED_TABLE_PROVISIONING"
+    SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT = "SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT"
+    SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES = "SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES"
+
+
+@dataclass
+class SyncedTableStatus:
+    continuous_update_status: Optional[SyncedTableContinuousUpdateStatus] = None
+
+    detailed_state: Optional[SyncedTableState] = None
+    """The state of the synced table."""
+
+    failed_status: Optional[SyncedTableFailedStatus] = None
+
+    last_sync: Optional[SyncedTablePosition] = None
+    """Summary of the last successful synchronization from source to destination."""
+
+    message: Optional[str] = None
+    """A text description of the current state of the synced table."""
+
+    pipeline_id: Optional[str] = None
+    """ID of the associated pipeline."""
+
+    provisioning_status: Optional[SyncedTableProvisioningStatus] = None
+
+    triggered_update_status: Optional[SyncedTableTriggeredUpdateStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTableStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.continuous_update_status:
+            body["continuous_update_status"] = self.continuous_update_status.as_dict()
+        if self.detailed_state is not None:
+            body["detailed_state"] = self.detailed_state.value
+        if self.failed_status:
+            body["failed_status"] = self.failed_status.as_dict()
+        if self.last_sync:
+            body["last_sync"] = self.last_sync.as_dict()
+        if self.message is not None:
+            body["message"] = self.message
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        if self.provisioning_status:
+            body["provisioning_status"] = self.provisioning_status.as_dict()
+        if self.triggered_update_status:
+            body["triggered_update_status"] = self.triggered_update_status.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTableStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.continuous_update_status:
+            body["continuous_update_status"] = self.continuous_update_status
+        if self.detailed_state is not None:
+            body["detailed_state"] = self.detailed_state
+        if self.failed_status:
+            body["failed_status"] = self.failed_status
+        if self.last_sync:
+            body["last_sync"] = self.last_sync
+        if self.message is not None:
+            body["message"] = self.message
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        if self.provisioning_status:
+            body["provisioning_status"] = self.provisioning_status
+        if self.triggered_update_status:
+            body["triggered_update_status"] = self.triggered_update_status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTableStatus:
+        """Deserializes the SyncedTableStatus from a dictionary."""
+        return cls(
+            continuous_update_status=_from_dict(d, "continuous_update_status", SyncedTableContinuousUpdateStatus),
+            detailed_state=_enum(d, "detailed_state", SyncedTableState),
+            failed_status=_from_dict(d, "failed_status", SyncedTableFailedStatus),
+            last_sync=_from_dict(d, "last_sync", SyncedTablePosition),
+            message=d.get("message", None),
+            pipeline_id=d.get("pipeline_id", None),
+            provisioning_status=_from_dict(d, "provisioning_status", SyncedTableProvisioningStatus),
+            triggered_update_status=_from_dict(d, "triggered_update_status", SyncedTableTriggeredUpdateStatus),
+        )
+
+
+@dataclass
+class SyncedTableTriggeredUpdateStatus:
+    """Detailed status of a synced table. Shown if the synced table is in the SYNCED_TRIGGERED_UPDATE
+    or the SYNCED_NO_PENDING_UPDATE state. Copied from database_table_statuses.proto to decouple SDK
+    packages."""
+
+    last_processed_commit_version: Optional[int] = None
+    """The last source table Delta version that was successfully synced to the synced table."""
+
+    timestamp: Optional[Timestamp] = None
+    """The end timestamp of the last time any data was synchronized from the source table to the synced
+    table. This is when the data is available in the synced table."""
+
+    triggered_update_progress: Optional[SyncedTablePipelineProgress] = None
+    """Progress of the active data synchronization pipeline."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTableTriggeredUpdateStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_processed_commit_version is not None:
+            body["last_processed_commit_version"] = self.last_processed_commit_version
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp.ToJsonString()
+        if self.triggered_update_progress:
+            body["triggered_update_progress"] = self.triggered_update_progress.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTableTriggeredUpdateStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.last_processed_commit_version is not None:
+            body["last_processed_commit_version"] = self.last_processed_commit_version
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp
+        if self.triggered_update_progress:
+            body["triggered_update_progress"] = self.triggered_update_progress
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTableTriggeredUpdateStatus:
+        """Deserializes the SyncedTableTriggeredUpdateStatus from a dictionary."""
+        return cls(
+            last_processed_commit_version=d.get("last_processed_commit_version", None),
+            timestamp=_timestamp(d, "timestamp"),
+            triggered_update_progress=_from_dict(d, "triggered_update_progress", SyncedTablePipelineProgress),
+        )
+
+
+@dataclass
+class Table:
+    """Table represents a non-synced database table in a Lakebase project. Unlike SyncedTable, this
+    does not have a data synchronization pipeline."""
+
+    name: str
+    """Full three-part (catalog, schema, table) name of the table."""
+
+    database: str
+    """The project and branch scoped database to which this table belongs. Of the format:
+    projects/{project_id}/branches/{branch_id}/databases/{database_id} where database_id is the name
+    of the logical database in Postgres."""
+
+    branch: Optional[str] = None
+    """The id of the database branch associated with the table. Of the format
+    projects/{project_id}/branches/{branch_id}."""
+
+    project: Optional[str] = None
+    """The id of the database project associated with the table. Of the format projects/{project_id}."""
+
+    table_serving_url: Optional[str] = None
+    """REST API URL for serving data from this table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Table into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.database is not None:
+            body["database"] = self.database
+        if self.name is not None:
+            body["name"] = self.name
+        if self.project is not None:
+            body["project"] = self.project
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Table into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.database is not None:
+            body["database"] = self.database
+        if self.name is not None:
+            body["name"] = self.name
+        if self.project is not None:
+            body["project"] = self.project
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Table:
+        """Deserializes the Table from a dictionary."""
+        return cls(
+            branch=d.get("branch", None),
+            database=d.get("database", None),
+            name=d.get("name", None),
+            project=d.get("project", None),
+            table_serving_url=d.get("table_serving_url", None),
         )
 
 
@@ -2122,6 +3485,27 @@ class PostgresAPI:
         res = self._api.do("POST", f"/api/2.0/postgres/{parent}/branches", query=query, body=body, headers=headers)
         operation = Operation.from_dict(res)
         return CreateBranchOperation(self, operation)
+
+    def create_catalog(self, catalog: Catalog) -> Catalog:
+        """Register a Database in UC.
+
+        :param catalog: :class:`Catalog`
+
+        :returns: :class:`Catalog`
+        """
+
+        body = catalog.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/postgres/catalogs", body=body, headers=headers)
+        return Catalog.from_dict(res)
 
     def create_database(
         self, parent: str, database: Database, *, database_id: Optional[str] = None
@@ -2263,6 +3647,48 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateRoleOperation(self, operation)
 
+    def create_synced_table(self, synced_table: SyncedTable) -> SyncedTable:
+        """Create a Synced Table.
+
+        :param synced_table: :class:`SyncedTable`
+
+        :returns: :class:`SyncedTable`
+        """
+
+        body = synced_table.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/postgres/synced_tables", body=body, headers=headers)
+        return SyncedTable.from_dict(res)
+
+    def create_table(self, table: Table) -> Table:
+        """Create a Table (non-synced database table for Autoscaling v2 Lakebase projects).
+
+        :param table: :class:`Table`
+
+        :returns: :class:`Table`
+        """
+
+        body = table.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/postgres/tables", body=body, headers=headers)
+        return Table.from_dict(res)
+
     def delete_branch(self, name: str) -> DeleteBranchOperation:
         """Deletes the specified database branch.
 
@@ -2283,6 +3709,24 @@ class PostgresAPI:
         res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
         operation = Operation.from_dict(res)
         return DeleteBranchOperation(self, operation)
+
+    def delete_catalog(self, name: str):
+        """Delete a Database Catalog.
+
+        :param name: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
 
     def delete_database(self, name: str) -> DeleteDatabaseOperation:
         """Delete a Database.
@@ -2382,8 +3826,97 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return DeleteRoleOperation(self, operation)
 
+    def delete_synced_table(self, name: str):
+        """Delete a Synced Table.
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the synced table.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/postgres/synced_tables/{name}", headers=headers)
+
+    def delete_table(self, name: str):
+        """Delete a Table (non-synced database table for Autoscaling v2 Lakebase projects).
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the table.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/postgres/tables/{name}", headers=headers)
+
+    def disable_forward_etl(
+        self,
+        parent: str,
+        *,
+        pg_database_oid: Optional[int] = None,
+        pg_schema_oid: Optional[int] = None,
+        tenant_id: Optional[str] = None,
+        timeline_id: Optional[str] = None,
+    ) -> DisableForwardEtlResponse:
+        """Disable Forward ETL for a branch.
+
+        :param parent: str
+          The Branch to disable Forward ETL for. Format: projects/{project_id}/branches/{branch_id}
+        :param pg_database_oid: int (optional)
+          PostgreSQL database OID to disable.
+        :param pg_schema_oid: int (optional)
+          PostgreSQL schema OID to disable.
+        :param tenant_id: str (optional)
+          Tenant ID (dashless UUID format).
+        :param timeline_id: str (optional)
+          Timeline ID (dashless UUID format).
+
+        :returns: :class:`DisableForwardEtlResponse`
+        """
+
+        query = {}
+        if pg_database_oid is not None:
+            query["pg_database_oid"] = pg_database_oid
+        if pg_schema_oid is not None:
+            query["pg_schema_oid"] = pg_schema_oid
+        if tenant_id is not None:
+            query["tenant_id"] = tenant_id
+        if timeline_id is not None:
+            query["timeline_id"] = timeline_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{parent}/forward-etl", query=query, headers=headers)
+        return DisableForwardEtlResponse.from_dict(res)
+
     def generate_database_credential(
-        self, endpoint: str, *, claims: Optional[List[RequestedClaims]] = None
+        self,
+        endpoint: str,
+        *,
+        claims: Optional[List[RequestedClaims]] = None,
+        expire_time: Optional[Timestamp] = None,
+        group_name: Optional[str] = None,
+        ttl: Optional[Duration] = None,
     ) -> DatabaseCredential:
         """Generate OAuth credentials for a Postgres database.
 
@@ -2392,6 +3925,14 @@ class PostgresAPI:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param claims: List[:class:`RequestedClaims`] (optional)
           The returned token will be scoped to UC tables with the specified permissions.
+        :param expire_time: Timestamp (optional)
+          Timestamp in UTC of when this credential should expire. Expire time should be within 1 hour of the
+          current time.
+        :param group_name: str (optional)
+          Databricks workspace group name. When provided, credentials are generated with permissions scoped to
+          this group.
+        :param ttl: Duration (optional)
+          The requested time-to-live for the generated credential token. Maximum allowed duration is 1 hour.
 
         :returns: :class:`DatabaseCredential`
         """
@@ -2401,6 +3942,12 @@ class PostgresAPI:
             body["claims"] = [v.as_dict() for v in claims]
         if endpoint is not None:
             body["endpoint"] = endpoint
+        if expire_time is not None:
+            body["expire_time"] = expire_time.ToJsonString()
+        if group_name is not None:
+            body["group_name"] = group_name
+        if ttl is not None:
+            body["ttl"] = ttl.ToJsonString()
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -2432,6 +3979,47 @@ class PostgresAPI:
 
         res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
         return Branch.from_dict(res)
+
+    def get_catalog(self, name: str) -> Catalog:
+        """Get a Database Catalog.
+
+        :param name: str
+
+        :returns: :class:`Catalog`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return Catalog.from_dict(res)
+
+    def get_compute_instance(self, name: str) -> ComputeInstance:
+        """Lists the specific compute instance under an endpoint. Note: ComputeInstances are managed via the
+        parent Endpoint resource, and cannot be created, updated, or deleted directly.
+
+        :param name: str
+          The full resource path of the compute instance to retrieve. Format:
+          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}/compute-instances/{compute_instance_id}
+
+        :returns: :class:`ComputeInstance`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return ComputeInstance.from_dict(res)
 
     def get_database(self, name: str) -> Database:
         """Get a Database.
@@ -2475,6 +4063,68 @@ class PostgresAPI:
 
         res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
         return Endpoint.from_dict(res)
+
+    def get_forward_etl_metadata(
+        self, parent: str, *, tenant_id: Optional[str] = None, timeline_id: Optional[str] = None
+    ) -> ForwardEtlMetadata:
+        """Get Forward ETL metadata (database and schema OIDs).
+
+        :param parent: str
+          The Branch to get metadata for. Format: projects/{project_id}/branches/{branch_id}
+        :param tenant_id: str (optional)
+          Tenant ID (dashless UUID format).
+        :param timeline_id: str (optional)
+          Timeline ID (dashless UUID format).
+
+        :returns: :class:`ForwardEtlMetadata`
+        """
+
+        query = {}
+        if tenant_id is not None:
+            query["tenant_id"] = tenant_id
+        if timeline_id is not None:
+            query["timeline_id"] = timeline_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{parent}/forward-etl/metadata", query=query, headers=headers)
+        return ForwardEtlMetadata.from_dict(res)
+
+    def get_forward_etl_status(
+        self, parent: str, *, tenant_id: Optional[str] = None, timeline_id: Optional[str] = None
+    ) -> ForwardEtlStatus:
+        """Get Forward ETL configuration and status for a branch.
+
+        :param parent: str
+          The Branch to get Forward ETL status for. Format: projects/{project_id}/branches/{branch_id}
+        :param tenant_id: str (optional)
+          Tenant ID (dashless UUID format).
+        :param timeline_id: str (optional)
+          Timeline ID (dashless UUID format).
+
+        :returns: :class:`ForwardEtlStatus`
+        """
+
+        query = {}
+        if tenant_id is not None:
+            query["tenant_id"] = tenant_id
+        if timeline_id is not None:
+            query["timeline_id"] = timeline_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{parent}/forward-etl", query=query, headers=headers)
+        return ForwardEtlStatus.from_dict(res)
 
     def get_operation(self, name: str) -> Operation:
         """Retrieves the status of a long-running operation.
@@ -2538,6 +4188,46 @@ class PostgresAPI:
         res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
         return Role.from_dict(res)
 
+    def get_synced_table(self, name: str) -> SyncedTable:
+        """Get a Synced Table.
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the synced table.
+
+        :returns: :class:`SyncedTable`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/synced_tables/{name}", headers=headers)
+        return SyncedTable.from_dict(res)
+
+    def get_table(self, name: str) -> Table:
+        """Get a Table (non-synced database table for Autoscaling v2 Lakebase projects).
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the table.
+
+        :returns: :class:`Table`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/tables/{name}", headers=headers)
+        return Table.from_dict(res)
+
     def list_branches(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Branch]:
@@ -2571,6 +4261,52 @@ class PostgresAPI:
             if "branches" in json:
                 for v in json["branches"]:
                     yield Branch.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_compute_instances(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[ComputeInstance]:
+        """Lists all compute instances that have been created under the specified endpoint. Note:
+        ComputeInstances are managed via the parent Endpoint resource, and cannot be created, updated, or
+        deleted directly.
+
+        :param parent: str
+          The parent, which owns the compute instances.
+        :param page_size: int (optional)
+          The maximum number of compute instances to return. The service may return fewer than this value.
+
+          If unspecified, at most 50 compute instances will be returned. The maximum value is 1000; values
+          above 1000 will be coerced to 1000.
+        :param page_token: str (optional)
+          A page token, received from a previous `ListInstances` call. Provide this to retrieve the subsequent
+          page.
+
+          When paginating, all other parameters provided to `ListInstances` must match the call that provided
+          the page token.
+
+        :returns: Iterator over :class:`ComputeInstance`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/postgres/{parent}/compute-instances", query=query, headers=headers)
+            if "compute_instances" in json:
+                for v in json["compute_instances"]:
+                    yield ComputeInstance.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -2856,6 +4592,41 @@ class PostgresAPI:
         res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
         operation = Operation.from_dict(res)
         return UpdateProjectOperation(self, operation)
+
+    def update_role(self, name: str, role: Role, update_mask: FieldMask) -> UpdateRoleOperation:
+        """Update a role for a branch.
+
+        :param name: str
+          Output only. The full resource path of the role. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
+        :param role: :class:`Role`
+          The Postgres Role to update.
+
+          The role's `name` field is used to identify the role to update. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
+        :param update_mask: FieldMask
+          The list of fields to update in Postgres Role. If unspecified, all fields will be updated when
+          possible.
+
+        :returns: :class:`Operation`
+        """
+
+        body = role.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return UpdateRoleOperation(self, operation)
 
 
 class CreateBranchOperation:
@@ -3911,6 +5682,83 @@ class UpdateProjectOperation:
             return None
 
         return ProjectOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class UpdateRoleOperation:
+    """Long-running operation for update_role"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> Role:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Role`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            role = Role.from_dict(operation.response)
+
+            return role, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> RoleOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`RoleOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return RoleOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

@@ -39,6 +39,36 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: RESETTING
       :value: "RESETTING"
 
+.. autoclass:: Catalog
+   :members:
+   :undoc-members:
+
+.. autoclass:: ComputeInstance
+   :members:
+   :undoc-members:
+
+.. py:class:: ComputeInstanceComputeState
+
+   .. py:attribute:: ACTIVE
+      :value: "ACTIVE"
+
+   .. py:attribute:: IDLE
+      :value: "IDLE"
+
+   .. py:attribute:: INIT
+      :value: "INIT"
+
+.. py:class:: ComputeInstanceComputeType
+
+   .. py:attribute:: HOT_STANDBY
+      :value: "HOT_STANDBY"
+
+   .. py:attribute:: READ_ONLY
+      :value: "READ_ONLY"
+
+   .. py:attribute:: READ_WRITE
+      :value: "READ_WRITE"
+
 .. autoclass:: Database
    :members:
    :undoc-members:
@@ -60,6 +90,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DatabricksServiceExceptionWithDetailsProto
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeltaTableSyncInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: DisableForwardEtlResponse
    :members:
    :undoc-members:
 
@@ -368,6 +406,30 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKSPACE_TEMPORARILY_UNAVAILABLE
       :value: "WORKSPACE_TEMPORARILY_UNAVAILABLE"
 
+.. autoclass:: ForwardEtlConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: ForwardEtlDatabase
+   :members:
+   :undoc-members:
+
+.. autoclass:: ForwardEtlMetadata
+   :members:
+   :undoc-members:
+
+.. autoclass:: ForwardEtlSchema
+   :members:
+   :undoc-members:
+
+.. autoclass:: ForwardEtlStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: ForwardEtlTableMapping
+   :members:
+   :undoc-members:
+
 .. py:class:: HostType
 
    Enum representing the type of Databricks host.
@@ -389,6 +451,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListComputeInstancesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListDatabasesResponse
    :members:
    :undoc-members:
@@ -402,6 +468,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListRolesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: NewPipelineSpec
    :members:
    :undoc-members:
 
@@ -432,6 +502,39 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ProjectStatus
    :members:
    :undoc-members:
+
+.. py:class:: ProvisioningInfoState
+
+   .. py:attribute:: ACTIVE
+      :value: "ACTIVE"
+
+   .. py:attribute:: DEGRADED
+      :value: "DEGRADED"
+
+   .. py:attribute:: DELETING
+      :value: "DELETING"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: PROVISIONING
+      :value: "PROVISIONING"
+
+   .. py:attribute:: UPDATING
+      :value: "UPDATING"
+
+.. py:class:: ProvisioningPhase
+
+   Copied from database_table_statuses.proto to decouple SDK packages.
+
+   .. py:attribute:: PROVISIONING_PHASE_INDEX_SCAN
+      :value: "PROVISIONING_PHASE_INDEX_SCAN"
+
+   .. py:attribute:: PROVISIONING_PHASE_INDEX_SORT
+      :value: "PROVISIONING_PHASE_INDEX_SORT"
+
+   .. py:attribute:: PROVISIONING_PHASE_MAIN
+      :value: "PROVISIONING_PHASE_MAIN"
 
 .. autoclass:: RequestedClaims
    :members:
@@ -496,5 +599,95 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RoleRoleStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTable
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTableContinuousUpdateStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTableFailedStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTablePipelineProgress
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTablePosition
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTableProvisioningStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTableSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: SyncedTableSpecSyncedTableSchedulingPolicy
+
+   Scheduling policy of the synced table's underlying pipeline. These should be kept in sync with the scheudling policy enums for SyncedDatabaseTables with DatabaseInstances
+
+   .. py:attribute:: CONTINUOUS
+      :value: "CONTINUOUS"
+
+   .. py:attribute:: SNAPSHOT
+      :value: "SNAPSHOT"
+
+   .. py:attribute:: TRIGGERED
+      :value: "TRIGGERED"
+
+.. py:class:: SyncedTableState
+
+   The state of a synced table. Copied from database_table_statuses.proto to decouple SDK packages.
+
+   .. py:attribute:: SYNCED_TABLED_OFFLINE
+      :value: "SYNCED_TABLED_OFFLINE"
+
+   .. py:attribute:: SYNCED_TABLE_OFFLINE_FAILED
+      :value: "SYNCED_TABLE_OFFLINE_FAILED"
+
+   .. py:attribute:: SYNCED_TABLE_ONLINE
+      :value: "SYNCED_TABLE_ONLINE"
+
+   .. py:attribute:: SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE
+      :value: "SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE"
+
+   .. py:attribute:: SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE
+      :value: "SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE"
+
+   .. py:attribute:: SYNCED_TABLE_ONLINE_PIPELINE_FAILED
+      :value: "SYNCED_TABLE_ONLINE_PIPELINE_FAILED"
+
+   .. py:attribute:: SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE
+      :value: "SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE"
+
+   .. py:attribute:: SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES
+      :value: "SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES"
+
+   .. py:attribute:: SYNCED_TABLE_PROVISIONING
+      :value: "SYNCED_TABLE_PROVISIONING"
+
+   .. py:attribute:: SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT
+      :value: "SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT"
+
+   .. py:attribute:: SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES
+      :value: "SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES"
+
+.. autoclass:: SyncedTableStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTableTriggeredUpdateStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: Table
    :members:
    :undoc-members:

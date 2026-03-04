@@ -1,0 +1,68 @@
+Data Classify
+=============
+
+These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.knowledgeassistants`` module.
+
+.. py:currentmodule:: databricks.sdk.service.knowledgeassistants
+.. autoclass:: FileTableSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: FilesSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: HostType
+
+   Enum representing the type of Databricks host.
+
+   .. py:attribute:: ACCOUNTS
+      :value: "ACCOUNTS"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
+
+   .. py:attribute:: UNIFIED
+      :value: "UNIFIED"
+
+.. autoclass:: IndexSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: KnowledgeAssistant
+   :members:
+   :undoc-members:
+
+.. py:class:: KnowledgeAssistantState
+
+   .. py:attribute:: ACTIVE
+      :value: "ACTIVE"
+
+   .. py:attribute:: CREATING
+      :value: "CREATING"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+.. autoclass:: KnowledgeSource
+   :members:
+   :undoc-members:
+
+.. py:class:: KnowledgeSourceState
+
+   .. py:attribute:: FAILED_UPDATE
+      :value: "FAILED_UPDATE"
+
+   .. py:attribute:: UPDATED
+      :value: "UPDATED"
+
+   .. py:attribute:: UPDATING
+      :value: "UPDATING"
+
+.. autoclass:: ListKnowledgeAssistantsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListKnowledgeSourcesResponse
+   :members:
+   :undoc-members:

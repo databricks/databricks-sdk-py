@@ -10,3 +10,4 @@ Manage Lakeview dashboards
    genie
    lakeview
    lakeview_embedded
+   query_execution

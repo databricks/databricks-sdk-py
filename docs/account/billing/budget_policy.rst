@@ -62,7 +62,7 @@
         :returns: Iterator over :class:`BudgetPolicy`
         
 
-    .. py:method:: update(policy_id: str, policy: BudgetPolicy [, limit_config: Optional[LimitConfig]]) -> BudgetPolicy
+    .. py:method:: update(policy_id: str, policy: BudgetPolicy [, limit_config: Optional[LimitConfig], update_mask: Optional[str]]) -> BudgetPolicy
 
         Updates a policy
 
@@ -73,6 +73,8 @@
           specified even if not changed. The `policy_id` is used to identify the policy to update.
         :param limit_config: :class:`LimitConfig` (optional)
           DEPRECATED. This is redundant field as LimitConfig is part of the BudgetPolicy
+        :param update_mask: str (optional)
+          Field mask specifying which fields to update. When not provided, all fields are updated.
 
         :returns: :class:`BudgetPolicy`
         

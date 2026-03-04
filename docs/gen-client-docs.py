@@ -286,6 +286,26 @@ class Generator:
             "Networking",
             "Manage network connectivity configurations for Databricks workspaces."
         ),
+        Package(
+            "dataclassification",
+            "Data Classify",
+            "Manage network connectivity configurations for Databricks workspaces."
+        ),
+        Package(
+            "environments",
+            "Data Classify",
+            "Manage network connectivity configurations for Databricks workspaces."
+        ),
+        Package(
+            "knowledgeassistants",
+            "Data Classify",
+            "Manage network connectivity configurations for Databricks workspaces."
+        ),
+        Package(
+            "supervisoragents",
+            "Data Classify",
+            "Manage network connectivity configurations for Databricks workspaces."
+        ),
     ]
 
     def __init__(self):

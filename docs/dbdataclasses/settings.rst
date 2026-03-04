@@ -125,6 +125,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    Compliance standard for SHIELD customers. See README.md for how instructions of how to add new standards.
 
+   .. py:attribute:: ARC_AMPE
+      :value: "ARC_AMPE"
+
    .. py:attribute:: CANADA_PROTECTED_B
       :value: "CANADA_PROTECTED_B"
 
@@ -514,6 +517,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GcpEndpoint
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenericWebhookConfig
    :members:
    :undoc-members:
@@ -687,6 +694,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: REJECTED
       :value: "REJECTED"
 
+.. autoclass:: NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule
+   :members:
+   :undoc-members:
+
 .. autoclass:: NetworkConnectivityConfiguration
    :members:
    :undoc-members:
@@ -812,6 +823,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "AZURE_ACTIVE_DIRECTORY_TOKEN"
 
 .. autoclass:: UpdatePrivateEndpointRule
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateTokenResponse
    :members:
    :undoc-members:
 

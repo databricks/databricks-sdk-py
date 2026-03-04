@@ -398,6 +398,12 @@ class ExportFormat(Enum):
     SOURCE = "SOURCE"
 
 
+class ExportOutputs(Enum):
+
+    ALL = "ALL"
+    NONE = "NONE"
+
+
 @dataclass
 class ExportResponse:
     """The request field `direct_download` determines whether a JSON response or binary contents are
@@ -2748,7 +2754,9 @@ class WorkspaceAPI:
 
         self._api.do("POST", "/api/2.0/workspace/delete", body=body, headers=headers)
 
-    def export(self, path: str, *, format: Optional[ExportFormat] = None) -> ExportResponse:
+    def export(
+        self, path: str, *, format: Optional[ExportFormat] = None, outputs: Optional[ExportOutputs] = None
+    ) -> ExportResponse:
         """Exports an object or the contents of an entire directory.
 
         If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
@@ -2770,6 +2778,11 @@ class WorkspaceAPI:
           Directory exports will not include non-notebook entries. - `R_MARKDOWN`: The notebook is exported to
           R Markdown format. - `AUTO`: The object or directory is exported depending on the objects type.
           Directory exports will include notebooks and workspace files.
+        :param outputs: :class:`ExportOutputs` (optional)
+          This specifies which cell outputs should be included in the export (if the export format allows it).
+          If not specified, the behavior is determined by the format. For JUPYTER format, the default is to
+          include all outputs. This is a public endpoint, but only ALL or NONE is documented publically,
+          DATABRICKS is internal only
 
         :returns: :class:`ExportResponse`
         """
@@ -2777,6 +2790,8 @@ class WorkspaceAPI:
         query = {}
         if format is not None:
             query["format"] = format.value
+        if outputs is not None:
+            query["outputs"] = outputs.value
         if path is not None:
             query["path"] = path
         headers = {

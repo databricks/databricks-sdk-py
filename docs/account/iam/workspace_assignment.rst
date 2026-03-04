@@ -30,7 +30,7 @@
         :returns: :class:`WorkspacePermissions`
         
 
-    .. py:method:: list(workspace_id: int) -> Iterator[PermissionAssignment]
+    .. py:method:: list(workspace_id: int [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[PermissionAssignment]
 
 
         Usage:
@@ -43,14 +43,18 @@
             
             a = AccountClient()
             
-            workspace_id = os.environ["TEST_WORKSPACE_ID"]
+            workspace_id = os.environ["DUMMY_WORKSPACE_ID"]
             
-            all = a.workspace_assignment.list(list=workspace_id)
+            all = a.workspace_assignment.list(workspace_id=workspace_id)
 
         Get the permission assignments for the specified Databricks account and Databricks workspace.
 
         :param workspace_id: int
           The workspace ID for the account.
+        :param max_results: int (optional)
+          Maximum number of permission assignments to return.
+        :param page_token: str (optional)
+          Page token returned by previous call to retrieve the next page of results.
 
         :returns: Iterator over :class:`PermissionAssignment`
         

@@ -1541,27 +1541,45 @@ class PermissionAssignment:
 
 @dataclass
 class PermissionAssignments:
+    next_page_token: Optional[str] = None
+    """Token to retrieve the next page of results."""
+
     permission_assignments: Optional[List[PermissionAssignment]] = None
     """Array of permissions assignments defined for a workspace."""
+
+    prev_page_token: Optional[str] = None
+    """Token to retrieve the previous page of results."""
 
     def as_dict(self) -> dict:
         """Serializes the PermissionAssignments into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
         if self.permission_assignments:
             body["permission_assignments"] = [v.as_dict() for v in self.permission_assignments]
+        if self.prev_page_token is not None:
+            body["prev_page_token"] = self.prev_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PermissionAssignments into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
         if self.permission_assignments:
             body["permission_assignments"] = self.permission_assignments
+        if self.prev_page_token is not None:
+            body["prev_page_token"] = self.prev_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionAssignments:
         """Deserializes the PermissionAssignments from a dictionary."""
-        return cls(permission_assignments=_repeated_dict(d, "permission_assignments", PermissionAssignment))
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            permission_assignments=_repeated_dict(d, "permission_assignments", PermissionAssignment),
+            prev_page_token=d.get("prev_page_token", None),
+        )
 
 
 class PermissionLevel(Enum):
@@ -3613,9 +3631,9 @@ class PermissionsAPI:
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
-          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
-          warehouses.
+          clusters, cluster-policies, dashboards, database-projects, dbsql-dashboards, directories,
+          experiments, files, genie, instance-pools, jobs, notebooks, pipelines, queries, registered-models,
+          repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
 
@@ -3638,9 +3656,9 @@ class PermissionsAPI:
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
-          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
-          warehouses.
+          clusters, cluster-policies, dashboards, database-projects, dbsql-dashboards, directories,
+          experiments, files, genie, instance-pools, jobs, notebooks, pipelines, queries, registered-models,
+          repos, serving-endpoints, or warehouses.
         :param request_object_id: str
 
         :returns: :class:`GetPermissionLevelsResponse`
@@ -3672,9 +3690,9 @@ class PermissionsAPI:
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
-          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
-          warehouses.
+          clusters, cluster-policies, dashboards, database-projects, dbsql-dashboards, directories,
+          experiments, files, genie, instance-pools, jobs, notebooks, pipelines, queries, registered-models,
+          repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -3711,9 +3729,9 @@ class PermissionsAPI:
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
-          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
-          warehouses.
+          clusters, cluster-policies, dashboards, database-projects, dbsql-dashboards, directories,
+          experiments, files, genie, instance-pools, jobs, notebooks, pipelines, queries, registered-models,
+          repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -4520,15 +4538,26 @@ class WorkspaceAssignmentAPI:
         )
         return WorkspacePermissions.from_dict(res)
 
-    def list(self, workspace_id: int) -> Iterator[PermissionAssignment]:
+    def list(
+        self, workspace_id: int, *, max_results: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[PermissionAssignment]:
         """Get the permission assignments for the specified Databricks account and Databricks workspace.
 
         :param workspace_id: int
           The workspace ID for the account.
+        :param max_results: int (optional)
+          Maximum number of permission assignments to return.
+        :param page_token: str (optional)
+          Page token returned by previous call to retrieve the next page of results.
 
         :returns: Iterator over :class:`PermissionAssignment`
         """
 
+        query = {}
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
         headers = {
             "Accept": "application/json",
         }
@@ -4536,6 +4565,7 @@ class WorkspaceAssignmentAPI:
         json = self._api.do(
             "GET",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments",
+            query=query,
             headers=headers,
         )
         parsed = PermissionAssignments.from_dict(json).permission_assignments

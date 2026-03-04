@@ -13,11 +13,14 @@ Dataclasses
    compute
    dashboards
    database
+   dataclassification
    dataquality
+   environments
    files
    iam
    iamv2
    jobs
+   knowledgeassistants
    marketplace
    ml
    networking
@@ -31,6 +34,7 @@ Dataclasses
    settingsv2
    sharing
    sql
+   supervisoragents
    tags
    vectorsearch
    workspace

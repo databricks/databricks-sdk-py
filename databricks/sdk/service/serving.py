@@ -439,6 +439,8 @@ class AmazonBedrockConfig:
     access keys, see `aws_access_key_id`, `aws_access_key_id_plaintext`, `aws_secret_access_key` and
     `aws_secret_access_key_plaintext`."""
 
+    uc_service_credential_name: Optional[str] = None
+
     def as_dict(self) -> dict:
         """Serializes the AmazonBedrockConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -456,6 +458,8 @@ class AmazonBedrockConfig:
             body["bedrock_provider"] = self.bedrock_provider.value
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.uc_service_credential_name is not None:
+            body["uc_service_credential_name"] = self.uc_service_credential_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -475,6 +479,8 @@ class AmazonBedrockConfig:
             body["bedrock_provider"] = self.bedrock_provider
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.uc_service_credential_name is not None:
+            body["uc_service_credential_name"] = self.uc_service_credential_name
         return body
 
     @classmethod
@@ -488,6 +494,7 @@ class AmazonBedrockConfig:
             aws_secret_access_key_plaintext=d.get("aws_secret_access_key_plaintext", None),
             bedrock_provider=_enum(d, "bedrock_provider", AmazonBedrockConfigBedrockProvider),
             instance_profile_arn=d.get("instance_profile_arn", None),
+            uc_service_credential_name=d.get("uc_service_credential_name", None),
         )
 
 
@@ -4426,6 +4433,7 @@ class ServingEndpointsAPI:
         headers: Optional[str] = None,
         json: Optional[str] = None,
         params: Optional[str] = None,
+        sub_domain: Optional[str] = None,
     ) -> HttpRequestResponse:
         """Make external services call using the credentials stored in UC Connection.
 
@@ -4442,6 +4450,11 @@ class ServingEndpointsAPI:
           The JSON payload to send in the request body.
         :param params: str (optional)
           Query parameters for the request.
+        :param sub_domain: str (optional)
+          Optional subdomain to prepend to the connection URL's host. If provided, this will be added as a
+          prefix to the connection URL's host. For example, if the connection URL is
+          `https://api.example.com/v1` and `sub_domain` is `"custom"`, the resulting URL will be
+          `https://custom.api.example.com/v1`.
 
         :returns: :class:`HttpRequestResponse`
         """
@@ -4459,6 +4472,8 @@ class ServingEndpointsAPI:
             body["params"] = params
         if path is not None:
             body["path"] = path
+        if sub_domain is not None:
+            body["sub_domain"] = sub_domain
         headers = {
             "Accept": "text/plain",
             "Content-Type": "application/json",

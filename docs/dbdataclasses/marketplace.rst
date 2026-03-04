@@ -86,6 +86,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MEDIA
       :value: "MEDIA"
 
+   .. py:attribute:: OPEN_SOURCE
+      :value: "OPEN_SOURCE"
+
    .. py:attribute:: OTHER
       :value: "OTHER"
 

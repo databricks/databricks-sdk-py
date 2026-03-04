@@ -7,12 +7,68 @@ from dataclasses import dataclass
 from typing import Any, Dict, Iterator, List, Optional
 
 from databricks.sdk.client_types import HostType
-from databricks.sdk.service._internal import _repeated_dict
+from databricks.sdk.service._internal import _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
 
 # all definitions in this file are in alphabetical order
+
+
+@dataclass
+class ConflictResolutionPolicy:
+    """Policy that determines how to resolve conflicts when multiple upstream sources have different
+    tag values."""
+
+    default_value_override: Optional[DefaultValueOverridePolicy] = None
+    """Uses a specified default value to override when conflicts happen."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConflictResolutionPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_value_override:
+            body["default_value_override"] = self.default_value_override.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConflictResolutionPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_value_override:
+            body["default_value_override"] = self.default_value_override
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConflictResolutionPolicy:
+        """Deserializes the ConflictResolutionPolicy from a dictionary."""
+        return cls(default_value_override=_from_dict(d, "default_value_override", DefaultValueOverridePolicy))
+
+
+@dataclass
+class DefaultValueOverridePolicy:
+    """Policy that specifies a default value to use when resolving tag conflicts during propagation."""
+
+    default_value: Optional[str] = None
+    """The tag value to apply when conflicts are detected. This value must be one of the allowed values
+    defined in the tag policy."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DefaultValueOverridePolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_value is not None:
+            body["default_value"] = self.default_value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DefaultValueOverridePolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_value is not None:
+            body["default_value"] = self.default_value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DefaultValueOverridePolicy:
+        """Deserializes the DefaultValueOverridePolicy from a dictionary."""
+        return cls(default_value=d.get("default_value", None))
 
 
 @dataclass
@@ -82,10 +138,48 @@ class ListTagPoliciesResponse:
 
 
 @dataclass
+class PropagationConfig:
+    """Configuration that controls how tags are automatically propagated through data lineage."""
+
+    conflict_resolution: Optional[ConflictResolutionPolicy] = None
+    """Policy that determines how to resolve conflicts when multiple upstream sources have different
+    tag values."""
+
+    enabled: Optional[bool] = None
+    """Determines whether this tag should automatically propagate through lineage."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PropagationConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.conflict_resolution:
+            body["conflict_resolution"] = self.conflict_resolution.as_dict()
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PropagationConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.conflict_resolution:
+            body["conflict_resolution"] = self.conflict_resolution
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PropagationConfig:
+        """Deserializes the PropagationConfig from a dictionary."""
+        return cls(
+            conflict_resolution=_from_dict(d, "conflict_resolution", ConflictResolutionPolicy),
+            enabled=d.get("enabled", None),
+        )
+
+
+@dataclass
 class TagAssignment:
     entity_type: str
     """The type of entity to which the tag is assigned. Allowed values are apps, dashboards,
-    geniespaces"""
+    geniespaces, notebooks"""
 
     entity_id: str
     """The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app
@@ -145,6 +239,9 @@ class TagPolicy:
 
     id: Optional[str] = None
 
+    propagation_config: Optional[PropagationConfig] = None
+    """Configuration that controls how tags are automatically propagated through data lineage."""
+
     update_time: Optional[str] = None
     """Timestamp when the tag policy was last updated"""
 
@@ -159,6 +256,8 @@ class TagPolicy:
             body["description"] = self.description
         if self.id is not None:
             body["id"] = self.id
+        if self.propagation_config:
+            body["propagation_config"] = self.propagation_config.as_dict()
         if self.tag_key is not None:
             body["tag_key"] = self.tag_key
         if self.update_time is not None:
@@ -176,6 +275,8 @@ class TagPolicy:
             body["description"] = self.description
         if self.id is not None:
             body["id"] = self.id
+        if self.propagation_config:
+            body["propagation_config"] = self.propagation_config
         if self.tag_key is not None:
             body["tag_key"] = self.tag_key
         if self.update_time is not None:
@@ -191,6 +292,7 @@ class TagPolicy:
             create_time=d.get("create_time", None),
             description=d.get("description", None),
             id=d.get("id", None),
+            propagation_config=_from_dict(d, "propagation_config", PropagationConfig),
             tag_key=d.get("tag_key", None),
             update_time=d.get("update_time", None),
             values=_repeated_dict(d, "values", Value),
@@ -418,7 +520,8 @@ class WorkspaceEntityTagAssignmentsAPI:
         """Delete a tag assignment
 
         :param entity_type: str
-          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces,
+          notebooks
         :param entity_id: str
           The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app name
         :param tag_key: str
@@ -443,7 +546,8 @@ class WorkspaceEntityTagAssignmentsAPI:
         """Get a tag assignment
 
         :param entity_type: str
-          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces,
+          notebooks
         :param entity_id: str
           The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app name
         :param tag_key: str
@@ -471,7 +575,8 @@ class WorkspaceEntityTagAssignmentsAPI:
         """List the tag assignments for an entity
 
         :param entity_type: str
-          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces,
+          notebooks
         :param entity_id: str
           The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app name
         :param page_size: int (optional)
@@ -512,7 +617,8 @@ class WorkspaceEntityTagAssignmentsAPI:
         """Update a tag assignment
 
         :param entity_type: str
-          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces,
+          notebooks
         :param entity_id: str
           The identifier of the entity to which the tag is assigned. For apps, the entity_id is the app name
         :param tag_key: str

@@ -2531,6 +2531,7 @@ class WorkspacesAPI:
         self,
         *,
         aws_region: Optional[str] = None,
+        azure_workspace_info: Optional[AzureWorkspaceInfo] = None,
         cloud: Optional[str] = None,
         cloud_resource_container: Optional[CloudResourceContainer] = None,
         compute_mode: Optional[CustomerFacingComputeMode] = None,
@@ -2580,6 +2581,7 @@ class WorkspacesAPI:
         [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 
         :param aws_region: str (optional)
+        :param azure_workspace_info: :class:`AzureWorkspaceInfo` (optional)
         :param cloud: str (optional)
           DEPRECATED: This field is being ignored by the server and will be removed in the future. The cloud
           name. This field always has the value `gcp`.
@@ -2654,6 +2656,8 @@ class WorkspacesAPI:
         body = {}
         if aws_region is not None:
             body["aws_region"] = aws_region
+        if azure_workspace_info is not None:
+            body["azure_workspace_info"] = azure_workspace_info.as_dict()
         if cloud is not None:
             body["cloud"] = cloud
         if cloud_resource_container is not None:
@@ -2706,6 +2710,7 @@ class WorkspacesAPI:
         self,
         *,
         aws_region: Optional[str] = None,
+        azure_workspace_info: Optional[AzureWorkspaceInfo] = None,
         cloud: Optional[str] = None,
         cloud_resource_container: Optional[CloudResourceContainer] = None,
         compute_mode: Optional[CustomerFacingComputeMode] = None,
@@ -2727,6 +2732,7 @@ class WorkspacesAPI:
     ) -> Workspace:
         return self.create(
             aws_region=aws_region,
+            azure_workspace_info=azure_workspace_info,
             cloud=cloud,
             cloud_resource_container=cloud_resource_container,
             compute_mode=compute_mode,

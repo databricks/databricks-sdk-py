@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import random
 import time
+import uuid
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
@@ -326,6 +327,13 @@ class AzureAvailability(Enum):
     ON_DEMAND_AZURE = "ON_DEMAND_AZURE"
     SPOT_AZURE = "SPOT_AZURE"
     SPOT_WITH_FALLBACK_AZURE = "SPOT_WITH_FALLBACK_AZURE"
+
+
+class BaseEnvironmentType(Enum):
+    """If changed, also update estore/namespaces/defaultbaseenvironments/latest.proto"""
+
+    CPU = "CPU"
+    GPU = "GPU"
 
 
 @dataclass
@@ -2454,6 +2462,15 @@ class CommandStatusResponse:
         )
 
 
+class ConfidentialComputeType(Enum):
+    """Confidential computing technology for GCP instances. Aligns with gcloud's
+    --confidential-compute-type flag and the REST API's
+    confidentialInstanceConfig.confidentialInstanceType field. See:
+    https://cloud.google.com/confidential-computing/confidential-vm/docs/create-a-confidential-vm-instance"""
+
+    SEV_SNP = "SEV_SNP"
+
+
 class ContextStatus(Enum):
 
     ERROR = "Error"
@@ -2764,6 +2781,184 @@ class DbfsStorageInfo:
     def from_dict(cls, d: Dict[str, Any]) -> DbfsStorageInfo:
         """Deserializes the DbfsStorageInfo from a dictionary."""
         return cls(destination=d.get("destination", None))
+
+
+@dataclass
+class DefaultBaseEnvironment:
+    base_environment_cache: Optional[List[DefaultBaseEnvironmentCache]] = None
+
+    base_environment_type: Optional[BaseEnvironmentType] = None
+
+    created_timestamp: Optional[int] = None
+
+    creator_user_id: Optional[int] = None
+
+    environment: Optional[Environment] = None
+    """Note: we made `environment` non-internal because we need to expose its `client` field. All other
+    fields should be treated as internal."""
+
+    filepath: Optional[str] = None
+
+    id: Optional[str] = None
+
+    is_default: Optional[bool] = None
+
+    last_updated_timestamp: Optional[int] = None
+
+    last_updated_user_id: Optional[int] = None
+
+    message: Optional[str] = None
+
+    name: Optional[str] = None
+
+    principal_ids: Optional[List[int]] = None
+
+    status: Optional[DefaultBaseEnvironmentCacheStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DefaultBaseEnvironment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.base_environment_cache:
+            body["base_environment_cache"] = [v.as_dict() for v in self.base_environment_cache]
+        if self.base_environment_type is not None:
+            body["base_environment_type"] = self.base_environment_type.value
+        if self.created_timestamp is not None:
+            body["created_timestamp"] = self.created_timestamp
+        if self.creator_user_id is not None:
+            body["creator_user_id"] = self.creator_user_id
+        if self.environment:
+            body["environment"] = self.environment.as_dict()
+        if self.filepath is not None:
+            body["filepath"] = self.filepath
+        if self.id is not None:
+            body["id"] = self.id
+        if self.is_default is not None:
+            body["is_default"] = self.is_default
+        if self.last_updated_timestamp is not None:
+            body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.last_updated_user_id is not None:
+            body["last_updated_user_id"] = self.last_updated_user_id
+        if self.message is not None:
+            body["message"] = self.message
+        if self.name is not None:
+            body["name"] = self.name
+        if self.principal_ids:
+            body["principal_ids"] = [v for v in self.principal_ids]
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DefaultBaseEnvironment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.base_environment_cache:
+            body["base_environment_cache"] = self.base_environment_cache
+        if self.base_environment_type is not None:
+            body["base_environment_type"] = self.base_environment_type
+        if self.created_timestamp is not None:
+            body["created_timestamp"] = self.created_timestamp
+        if self.creator_user_id is not None:
+            body["creator_user_id"] = self.creator_user_id
+        if self.environment:
+            body["environment"] = self.environment
+        if self.filepath is not None:
+            body["filepath"] = self.filepath
+        if self.id is not None:
+            body["id"] = self.id
+        if self.is_default is not None:
+            body["is_default"] = self.is_default
+        if self.last_updated_timestamp is not None:
+            body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.last_updated_user_id is not None:
+            body["last_updated_user_id"] = self.last_updated_user_id
+        if self.message is not None:
+            body["message"] = self.message
+        if self.name is not None:
+            body["name"] = self.name
+        if self.principal_ids:
+            body["principal_ids"] = self.principal_ids
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DefaultBaseEnvironment:
+        """Deserializes the DefaultBaseEnvironment from a dictionary."""
+        return cls(
+            base_environment_cache=_repeated_dict(d, "base_environment_cache", DefaultBaseEnvironmentCache),
+            base_environment_type=_enum(d, "base_environment_type", BaseEnvironmentType),
+            created_timestamp=d.get("created_timestamp", None),
+            creator_user_id=d.get("creator_user_id", None),
+            environment=_from_dict(d, "environment", Environment),
+            filepath=d.get("filepath", None),
+            id=d.get("id", None),
+            is_default=d.get("is_default", None),
+            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_user_id=d.get("last_updated_user_id", None),
+            message=d.get("message", None),
+            name=d.get("name", None),
+            principal_ids=d.get("principal_ids", None),
+            status=_enum(d, "status", DefaultBaseEnvironmentCacheStatus),
+        )
+
+
+@dataclass
+class DefaultBaseEnvironmentCache:
+    indefinite_materialized_environment: Optional[MaterializedEnvironment] = None
+
+    materialized_environment: Optional[MaterializedEnvironment] = None
+
+    message: Optional[str] = None
+
+    status: Optional[DefaultBaseEnvironmentCacheStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DefaultBaseEnvironmentCache into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.indefinite_materialized_environment:
+            body["indefinite_materialized_environment"] = self.indefinite_materialized_environment.as_dict()
+        if self.materialized_environment:
+            body["materialized_environment"] = self.materialized_environment.as_dict()
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DefaultBaseEnvironmentCache into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.indefinite_materialized_environment:
+            body["indefinite_materialized_environment"] = self.indefinite_materialized_environment
+        if self.materialized_environment:
+            body["materialized_environment"] = self.materialized_environment
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DefaultBaseEnvironmentCache:
+        """Deserializes the DefaultBaseEnvironmentCache from a dictionary."""
+        return cls(
+            indefinite_materialized_environment=_from_dict(
+                d, "indefinite_materialized_environment", MaterializedEnvironment
+            ),
+            materialized_environment=_from_dict(d, "materialized_environment", MaterializedEnvironment),
+            message=d.get("message", None),
+            status=_enum(d, "status", DefaultBaseEnvironmentCacheStatus),
+        )
+
+
+class DefaultBaseEnvironmentCacheStatus(Enum):
+
+    CREATED = "CREATED"
+    EXPIRED = "EXPIRED"
+    FAILED = "FAILED"
+    INVALID = "INVALID"
+    PENDING = "PENDING"
+    REFRESHING = "REFRESHING"
 
 
 @dataclass
@@ -3440,6 +3635,8 @@ class EventType(Enum):
     DBFS_DOWN = "DBFS_DOWN"
     DECOMMISSION_ENDED = "DECOMMISSION_ENDED"
     DECOMMISSION_STARTED = "DECOMMISSION_STARTED"
+    DEFERRED_POLICY_ENFORCEMENT_FAILED = "DEFERRED_POLICY_ENFORCEMENT_FAILED"
+    DEFERRED_POLICY_ENFORCEMENT_SCHEDULED = "DEFERRED_POLICY_ENFORCEMENT_SCHEDULED"
     DID_NOT_EXPAND_DISK = "DID_NOT_EXPAND_DISK"
     DRIVER_HEALTHY = "DRIVER_HEALTHY"
     DRIVER_NOT_RESPONDING = "DRIVER_NOT_RESPONDING"
@@ -3475,6 +3672,10 @@ class GcpAttributes:
 
     boot_disk_size: Optional[int] = None
     """Boot disk size in GB"""
+
+    confidential_compute_type: Optional[ConfidentialComputeType] = None
+    """The confidential computing technology for this cluster's instances. Currently only SEV_SNP is
+    supported, and only on N2D instance types. When not set, no confidential computing is applied."""
 
     first_on_demand: Optional[int] = None
     """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This
@@ -3516,6 +3717,8 @@ class GcpAttributes:
             body["availability"] = self.availability.value
         if self.boot_disk_size is not None:
             body["boot_disk_size"] = self.boot_disk_size
+        if self.confidential_compute_type is not None:
+            body["confidential_compute_type"] = self.confidential_compute_type.value
         if self.first_on_demand is not None:
             body["first_on_demand"] = self.first_on_demand
         if self.google_service_account is not None:
@@ -3535,6 +3738,8 @@ class GcpAttributes:
             body["availability"] = self.availability
         if self.boot_disk_size is not None:
             body["boot_disk_size"] = self.boot_disk_size
+        if self.confidential_compute_type is not None:
+            body["confidential_compute_type"] = self.confidential_compute_type
         if self.first_on_demand is not None:
             body["first_on_demand"] = self.first_on_demand
         if self.google_service_account is not None:
@@ -3553,6 +3758,7 @@ class GcpAttributes:
         return cls(
             availability=_enum(d, "availability", GcpAvailability),
             boot_disk_size=d.get("boot_disk_size", None),
+            confidential_compute_type=_enum(d, "confidential_compute_type", ConfidentialComputeType),
             first_on_demand=d.get("first_on_demand", None),
             google_service_account=d.get("google_service_account", None),
             local_ssd_count=d.get("local_ssd_count", None),
@@ -3889,6 +4095,12 @@ class GetInstancePool:
     disk_spec: Optional[DiskSpec] = None
     """Defines the specification of the disks that will be attached to all spark containers."""
 
+    enable_auto_alternate_node_types: Optional[bool] = None
+    """For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids
+    are enabled. This field should not be true if node_type_flexibility is set. DEPRECATED: This
+    field was deprecated before entering PuPr and should no longer be used. TODO(CJ-71514): Remove
+    this field after sufficient time has passed for all clients to migrate."""
+
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
     additional disk space when its Spark workers are running low on disk space. In AWS, this feature
@@ -3965,6 +4177,8 @@ class GetInstancePool:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec.as_dict()
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -4012,6 +4226,8 @@ class GetInstancePool:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -4055,6 +4271,7 @@ class GetInstancePool:
             custom_tags=d.get("custom_tags", None),
             default_tags=d.get("default_tags", None),
             disk_spec=_from_dict(d, "disk_spec", DiskSpec),
+            enable_auto_alternate_node_types=d.get("enable_auto_alternate_node_types", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             gcp_attributes=_from_dict(d, "gcp_attributes", InstancePoolGcpAttributes),
             idle_instance_autotermination_minutes=d.get("idle_instance_autotermination_minutes", None),
@@ -4726,6 +4943,12 @@ class InstancePoolAndStats:
     disk_spec: Optional[DiskSpec] = None
     """Defines the specification of the disks that will be attached to all spark containers."""
 
+    enable_auto_alternate_node_types: Optional[bool] = None
+    """For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids
+    are enabled. This field should not be true if node_type_flexibility is set. DEPRECATED: This
+    field was deprecated before entering PuPr and should no longer be used. TODO(CJ-71514): Remove
+    this field after sufficient time has passed for all clients to migrate."""
+
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
     additional disk space when its Spark workers are running low on disk space. In AWS, this feature
@@ -4805,6 +5028,8 @@ class InstancePoolAndStats:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec.as_dict()
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -4852,6 +5077,8 @@ class InstancePoolAndStats:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -4895,6 +5122,7 @@ class InstancePoolAndStats:
             custom_tags=d.get("custom_tags", None),
             default_tags=d.get("default_tags", None),
             disk_spec=_from_dict(d, "disk_spec", DiskSpec),
+            enable_auto_alternate_node_types=d.get("enable_auto_alternate_node_types", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             gcp_attributes=_from_dict(d, "gcp_attributes", InstancePoolGcpAttributes),
             idle_instance_autotermination_minutes=d.get("idle_instance_autotermination_minutes", None),
@@ -5784,6 +6012,39 @@ class ListClustersSortByField(Enum):
 
 
 @dataclass
+class ListDefaultBaseEnvironmentsResponse:
+    default_base_environments: Optional[List[DefaultBaseEnvironment]] = None
+
+    next_page_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDefaultBaseEnvironmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_base_environments:
+            body["default_base_environments"] = [v.as_dict() for v in self.default_base_environments]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDefaultBaseEnvironmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_base_environments:
+            body["default_base_environments"] = self.default_base_environments
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListDefaultBaseEnvironmentsResponse:
+        """Deserializes the ListDefaultBaseEnvironmentsResponse from a dictionary."""
+        return cls(
+            default_base_environments=_repeated_dict(d, "default_base_environments", DefaultBaseEnvironment),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListGlobalInitScriptsResponse:
     scripts: Optional[List[GlobalInitScriptDetails]] = None
 
@@ -6049,6 +6310,44 @@ class LogSyncStatus:
 
 
 MapAny = Dict[str, Any]
+
+
+@dataclass
+class MaterializedEnvironment:
+    """Materialized Environment information enables environment sharing and reuse via Environment
+    Caching during library installations. Currently this feature is only supported for Python
+    libraries.
+
+    - If the env cache entry in LMv2 DB doesn't exist or invalid, library installations and
+    environment materialization will occur. A new Materialized Environment metadata will be sent
+    from DP upon successful library installations and env materialization, and is persisted into
+    database by LMv2. - If the env cache entry in LMv2 DB is valid, the Materialized Environment
+    will be sent to DP by LMv2, and DP will restore the cached environment from a store instead of
+    reinstalling libraries from scratch.
+
+    If changed, also update estore/namespaces/defaultbaseenvironments/latest.proto with new version"""
+
+    last_updated_timestamp: Optional[int] = None
+    """The timestamp (in epoch milliseconds) when the materialized env is updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializedEnvironment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_updated_timestamp is not None:
+            body["last_updated_timestamp"] = self.last_updated_timestamp
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializedEnvironment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.last_updated_timestamp is not None:
+            body["last_updated_timestamp"] = self.last_updated_timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializedEnvironment:
+        """Deserializes the MaterializedEnvironment from a dictionary."""
+        return cls(last_updated_timestamp=d.get("last_updated_timestamp", None))
 
 
 @dataclass
@@ -6686,6 +6985,24 @@ class RCranLibrary:
 
 
 @dataclass
+class RefreshDefaultBaseEnvironmentsResponse:
+    def as_dict(self) -> dict:
+        """Serializes the RefreshDefaultBaseEnvironmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RefreshDefaultBaseEnvironmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RefreshDefaultBaseEnvironmentsResponse:
+        """Deserializes the RefreshDefaultBaseEnvironmentsResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class RemoveResponse:
     def as_dict(self) -> dict:
         """Serializes the RemoveResponse into a dictionary suitable for use as a JSON request body."""
@@ -7237,6 +7554,7 @@ class TerminationReasonCode(Enum):
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
     DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
     DOCKER_INVALID_OS_EXCEPTION = "DOCKER_INVALID_OS_EXCEPTION"
+    DRIVER_DNS_RESOLUTION_FAILURE = "DRIVER_DNS_RESOLUTION_FAILURE"
     DRIVER_EVICTION = "DRIVER_EVICTION"
     DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
     DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
@@ -7317,6 +7635,8 @@ class TerminationReasonCode(Enum):
     NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
+    NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
+    NO_ACTIVATED_K8S_TESTING_TAG = "NO_ACTIVATED_K8S_TESTING_TAG"
     NO_MATCHED_K8S = "NO_MATCHED_K8S"
     NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
@@ -7330,6 +7650,7 @@ class TerminationReasonCode(Enum):
     SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
     SECRET_PERMISSION_DENIED = "SECRET_PERMISSION_DENIED"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
+    SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION = "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
     SERVERLESS_LONG_RUNNING_TERMINATED = "SERVERLESS_LONG_RUNNING_TERMINATED"
@@ -10211,6 +10532,7 @@ class InstancePoolsAPI:
         azure_attributes: Optional[InstancePoolAzureAttributes] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         disk_spec: Optional[DiskSpec] = None,
+        enable_auto_alternate_node_types: Optional[bool] = None,
         enable_elastic_disk: Optional[bool] = None,
         gcp_attributes: Optional[InstancePoolGcpAttributes] = None,
         idle_instance_autotermination_minutes: Optional[int] = None,
@@ -10245,6 +10567,11 @@ class InstancePoolsAPI:
           - Currently, Databricks allows at most 45 custom tags
         :param disk_spec: :class:`DiskSpec` (optional)
           Defines the specification of the disks that will be attached to all spark containers.
+        :param enable_auto_alternate_node_types: bool (optional)
+          For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids are
+          enabled. This field should not be true if node_type_flexibility is set. DEPRECATED: This field was
+          deprecated before entering PuPr and should no longer be used. TODO(CJ-71514): Remove this field
+          after sufficient time has passed for all clients to migrate.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
           additional disk space when its Spark workers are running low on disk space. In AWS, this feature
@@ -10291,6 +10618,8 @@ class InstancePoolsAPI:
             body["custom_tags"] = custom_tags
         if disk_spec is not None:
             body["disk_spec"] = disk_spec.as_dict()
+        if enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = enable_auto_alternate_node_types
         if enable_elastic_disk is not None:
             body["enable_elastic_disk"] = enable_elastic_disk
         if gcp_attributes is not None:
@@ -10357,6 +10686,7 @@ class InstancePoolsAPI:
         node_type_id: str,
         *,
         custom_tags: Optional[Dict[str, str]] = None,
+        enable_auto_alternate_node_types: Optional[bool] = None,
         idle_instance_autotermination_minutes: Optional[int] = None,
         max_capacity: Optional[int] = None,
         min_idle_instances: Optional[int] = None,
@@ -10380,6 +10710,11 @@ class InstancePoolsAPI:
           EBS volumes) with these tags in addition to `default_tags`. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
+        :param enable_auto_alternate_node_types: bool (optional)
+          For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids are
+          enabled. This field should not be true if node_type_flexibility is set. DEPRECATED: This field was
+          deprecated before entering PuPr and should no longer be used. TODO(CJ-71514): Remove this field
+          after sufficient time has passed for all clients to migrate.
         :param idle_instance_autotermination_minutes: int (optional)
           Automatically terminates the extra instances in the pool cache after they are inactive for this time
           in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances
@@ -10405,6 +10740,8 @@ class InstancePoolsAPI:
         body = {}
         if custom_tags is not None:
             body["custom_tags"] = custom_tags
+        if enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = enable_auto_alternate_node_types
         if idle_instance_autotermination_minutes is not None:
             body["idle_instance_autotermination_minutes"] = idle_instance_autotermination_minutes
         if instance_pool_id is not None:
@@ -10816,6 +11153,94 @@ class LibrariesAPI:
         parsed = ClusterLibraryStatuses.from_dict(json).library_statuses
         return parsed if parsed is not None else []
 
+    def create_default_base_environment(
+        self,
+        default_base_environment: DefaultBaseEnvironment,
+        *,
+        request_id: Optional[str] = None,
+        workspace_base_environment_id: Optional[str] = None,
+    ) -> DefaultBaseEnvironment:
+        """Create a default base environment within workspaces to define the environment version and a list of
+        dependencies to be used in serverless notebooks and jobs. This process will asynchronously generate a
+        cache to optimize dependency resolution.
+
+        :param default_base_environment: :class:`DefaultBaseEnvironment`
+        :param request_id: str (optional)
+          A unique identifier for this request. A random UUID is recommended. This request is only idempotent
+          if a `request_id` is provided.
+        :param workspace_base_environment_id: str (optional)
+
+        :returns: :class:`DefaultBaseEnvironment`
+        """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
+        body = {}
+        if default_base_environment is not None:
+            body["default_base_environment"] = default_base_environment.as_dict()
+        if request_id is not None:
+            body["request_id"] = request_id
+        if workspace_base_environment_id is not None:
+            body["workspace_base_environment_id"] = workspace_base_environment_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/default-base-environments", body=body, headers=headers)
+        return DefaultBaseEnvironment.from_dict(res)
+
+    def delete_default_base_environment(self, id: str):
+        """Delete the default base environment given an ID. The default base environment may be used by
+        downstream workloads. Please ensure that the deletion is intentional.
+
+        :param id: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/default-base-environments/{id}", headers=headers)
+
+    def get_default_base_environment(self, id: str, *, trace_id: Optional[str] = None) -> DefaultBaseEnvironment:
+        """Return the default base environment details for a given ID.
+
+        :param id: str
+        :param trace_id: str (optional)
+          Deprecated: use ctx.requestId instead
+
+        :returns: :class:`DefaultBaseEnvironment`
+        """
+
+        query = {}
+        if id is not None:
+            query["id"] = id
+        if trace_id is not None:
+            query["trace_id"] = trace_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "GET", "/api/2.0/default-base-environments:getDefaultBaseEnvironment", query=query, headers=headers
+        )
+        return DefaultBaseEnvironment.from_dict(res)
+
     def install(self, cluster_id: str, libraries: List[Library]):
         """Add libraries to install on a cluster. The installation is asynchronous; it happens in the background
         after the completion of this request.
@@ -10844,6 +11269,62 @@ class LibrariesAPI:
 
         self._api.do("POST", "/api/2.0/libraries/install", body=body, headers=headers)
 
+    def list_default_base_environments(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[DefaultBaseEnvironment]:
+        """List default base environments defined in the workspaces for the requested user.
+
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+
+        :returns: Iterator over :class:`DefaultBaseEnvironment`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/default-base-environments", query=query, headers=headers)
+            if "default_base_environments" in json:
+                for v in json["default_base_environments"]:
+                    yield DefaultBaseEnvironment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def refresh_default_base_environments(self, ids: List[str]):
+        """Refresh the cached default base environments for the given IDs. This process will asynchronously
+        regenerate the caches. The existing caches remains available until it expires.
+
+        :param ids: List[str]
+
+
+        """
+
+        body = {}
+        if ids is not None:
+            body["ids"] = [v for v in ids]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        self._api.do("POST", "/api/2.0/default-base-environments/refresh", body=body, headers=headers)
+
     def uninstall(self, cluster_id: str, libraries: List[Library]):
         """Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is
         restarted. A request to uninstall a library that is not currently installed is ignored.
@@ -10871,6 +11352,62 @@ class LibrariesAPI:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/libraries/uninstall", body=body, headers=headers)
+
+    def update_default_base_environment(
+        self, id: str, default_base_environment: DefaultBaseEnvironment
+    ) -> DefaultBaseEnvironment:
+        """Update the default base environment for the given ID. This process will asynchronously regenerate the
+        cache. The existing cache remains available until it expires.
+
+        :param id: str
+        :param default_base_environment: :class:`DefaultBaseEnvironment`
+
+        :returns: :class:`DefaultBaseEnvironment`
+        """
+
+        body = {}
+        if default_base_environment is not None:
+            body["default_base_environment"] = default_base_environment.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/default-base-environments/{id}", body=body, headers=headers)
+        return DefaultBaseEnvironment.from_dict(res)
+
+    def update_default_default_base_environment(
+        self, *, base_environment_type: Optional[BaseEnvironmentType] = None, id: Optional[str] = None
+    ) -> DefaultBaseEnvironment:
+        """Set the default base environment for the workspace. This marks the specified DBE as the workspace
+        default.
+
+        :param base_environment_type: :class:`BaseEnvironmentType` (optional)
+        :param id: str (optional)
+
+        :returns: :class:`DefaultBaseEnvironment`
+        """
+
+        body = {}
+        if base_environment_type is not None:
+            body["base_environment_type"] = base_environment_type.value
+        if id is not None:
+            body["id"] = id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/default-base-environments:setDefault", body=body, headers=headers)
+        return DefaultBaseEnvironment.from_dict(res)
 
 
 class PolicyComplianceForClustersAPI:

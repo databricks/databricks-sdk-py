@@ -16,6 +16,16 @@
     step. You can also enforce data quality with Spark Declarative Pipelines expectations. Expectations allow
     you to define expected data quality and specify how to handle records that fail those expectations.
 
+    .. py:method:: apply_environment(pipeline_id: str) -> ApplyEnvironmentRequestResponse
+
+        * Applies the current pipeline environment onto the pipeline compute. The environment applied can be
+        used by subsequent dev-mode updates.
+
+        :param pipeline_id: str
+
+        :returns: :class:`ApplyEnvironmentRequestResponse`
+        
+
     .. py:method:: clone(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clone_mode: Optional[CloneMode], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]]) -> ClonePipelineResponse
 
         Creates a new pipeline using Unity Catalog from a pipeline using Hive Metastore. This method returns
@@ -210,12 +220,17 @@
         :returns: :class:`CreatePipelineResponse`
         
 
-    .. py:method:: delete(pipeline_id: str [, force: Optional[bool]])
+    .. py:method:: delete(pipeline_id: str [, cascade: Optional[bool], delete_datasets: Optional[bool], force: Optional[bool]])
 
         Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletion will cascade to all
         pipeline tables. Please reach out to Databricks support for assistance to undo this action.
 
         :param pipeline_id: str
+        :param cascade: bool (optional)
+          If false, pipeline deletion will not cascade to its datasets (MVs, STs, Views). By default, this
+          parameter will be true and all tables will be deleted with the pipeline.
+        :param delete_datasets: bool (optional)
+          Deprecated: Use `cascade` instead.
         :param force: bool (optional)
           If true, deletion will proceed even if resource cleanup fails. By default, deletion will fail if
           resources cleanup is required but fails.
@@ -416,6 +431,17 @@
           If present, returns updates until and including this update_id.
 
         :returns: :class:`ListUpdatesResponse`
+        
+
+    .. py:method:: restore_pipeline(pipeline_id: str) -> RestorePipelineRequestResponse
+
+        * Restores a pipeline that was previously deleted, if within the restoration window. All tables
+        deleted at pipeline deletion will be undropped as well.
+
+        :param pipeline_id: str
+          The ID of the pipeline to restore
+
+        :returns: :class:`RestorePipelineRequestResponse`
         
 
     .. py:method:: set_permissions(pipeline_id: str [, access_control_list: Optional[List[PipelineAccessControlRequest]]]) -> PipelinePermissions

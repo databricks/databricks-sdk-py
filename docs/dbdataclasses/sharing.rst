@@ -387,6 +387,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ReplicationConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: RetrieveTokenResponse
    :members:
    :undoc-members:

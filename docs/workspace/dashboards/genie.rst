@@ -29,6 +29,22 @@
     .. py:method:: create_message_and_wait(space_id: str, conversation_id: str, content: str, timeout: datetime.timedelta = 0:20:00) -> GenieMessage
 
 
+    .. py:method:: create_message_comment(space_id: str, conversation_id: str, message_id: str, content: str) -> GenieMessageComment
+
+        Create a comment on a conversation message.
+
+        :param space_id: str
+          The ID associated with the Genie space.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message.
+        :param content: str
+          Comment text content.
+
+        :returns: :class:`GenieMessageComment`
+        
+
     .. py:method:: create_space(warehouse_id: str, serialized_space: str [, description: Optional[str], parent_path: Optional[str], title: Optional[str]]) -> GenieSpace
 
         Creates a Genie space from a serialized payload.
@@ -141,6 +157,70 @@
           Attachment ID
 
         :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
+        
+
+    .. py:method:: genie_create_eval_run(space_id: str [, benchmark_question_ids: Optional[List[str]]]) -> GenieEvalRunResponse
+
+        Create and run evaluations for multiple benchmark questions in a Genie space.
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluations will be executed.
+        :param benchmark_question_ids: List[str] (optional)
+          List of benchmark question IDs to evaluate. These questions must exist in the specified Genie space.
+          If none are specified, then all benchmark questions are evaluated.
+
+        :returns: :class:`GenieEvalRunResponse`
+        
+
+    .. py:method:: genie_get_eval_result_details(space_id: str, eval_run_id: str, result_id: str) -> GenieEvalResultDetails
+
+        Get details for evaluation results
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluation run is located.
+        :param eval_run_id: str
+          The unique identifier for the evaluation run.
+        :param result_id: str
+          The unique identifier for the evaluation result.
+
+        :returns: :class:`GenieEvalResultDetails`
+        
+
+    .. py:method:: genie_get_eval_run(space_id: str, eval_run_id: str) -> GenieEvalRunResponse
+
+        Get evaluation run details
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluation run is located.
+        :param eval_run_id: str
+
+        :returns: :class:`GenieEvalRunResponse`
+        
+
+    .. py:method:: genie_list_eval_results(space_id: str, eval_run_id: str) -> GenieListEvalResultsResponse
+
+        List evaluation results for a specific evaluation run
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluation run is located.
+        :param eval_run_id: str
+          The unique identifier for the evaluation run.
+
+        :returns: :class:`GenieListEvalResultsResponse`
+        
+
+    .. py:method:: genie_list_eval_runs(space_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListEvalRunsResponse
+
+        Lists all evaluation runs in a space
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluation run is located.
+        :param page_size: int (optional)
+          Maximum number of messages to return per page
+        :param page_token: str (optional)
+          Token to get the next page of results
+
+        :returns: :class:`GenieListEvalRunsResponse`
         
 
     .. py:method:: get_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str, download_id_signature: str) -> GenieGetDownloadFullQueryResultResponse
@@ -260,6 +340,22 @@
         :returns: :class:`GenieSpace`
         
 
+    .. py:method:: list_conversation_comments(space_id: str, conversation_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListConversationCommentsResponse
+
+        List all comments across all messages in a conversation.
+
+        :param space_id: str
+          The ID associated with the Genie space.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param page_size: int (optional)
+          Maximum number of comments to return per page.
+        :param page_token: str (optional)
+          Pagination token for getting the next page of results.
+
+        :returns: :class:`GenieListConversationCommentsResponse`
+        
+
     .. py:method:: list_conversation_messages(space_id: str, conversation_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListConversationMessagesResponse
 
         List messages in a conversation
@@ -293,6 +389,24 @@
         :returns: :class:`GenieListConversationsResponse`
         
 
+    .. py:method:: list_message_comments(space_id: str, conversation_id: str, message_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListMessageCommentsResponse
+
+        List comments on a specific conversation message.
+
+        :param space_id: str
+          The ID associated with the Genie space.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message.
+        :param page_size: int (optional)
+          Maximum number of comments to return per page.
+        :param page_token: str (optional)
+          Pagination token for getting the next page of results.
+
+        :returns: :class:`GenieListMessageCommentsResponse`
+        
+
     .. py:method:: list_spaces( [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListSpacesResponse
 
         Get list of Genie Spaces.
@@ -305,7 +419,7 @@
         :returns: :class:`GenieListSpacesResponse`
         
 
-    .. py:method:: send_message_feedback(space_id: str, conversation_id: str, message_id: str, rating: GenieFeedbackRating)
+    .. py:method:: send_message_feedback(space_id: str, conversation_id: str, message_id: str, rating: GenieFeedbackRating [, comment: Optional[str]])
 
         Send feedback for a message.
 
@@ -317,6 +431,8 @@
           The ID associated with the message to provide feedback for.
         :param rating: :class:`GenieFeedbackRating`
           The rating (POSITIVE, NEGATIVE, or NONE).
+        :param comment: str (optional)
+          Optional text feedback that will be stored as a comment.
 
 
         

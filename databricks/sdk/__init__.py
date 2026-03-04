@@ -23,11 +23,15 @@ from databricks.sdk.service import cleanrooms as pkg_cleanrooms
 from databricks.sdk.service import compute as pkg_compute
 from databricks.sdk.service import dashboards as pkg_dashboards
 from databricks.sdk.service import database as pkg_database
+from databricks.sdk.service import dataclassification as pkg_dataclassification
 from databricks.sdk.service import dataquality as pkg_dataquality
+from databricks.sdk.service import environments as pkg_environments
 from databricks.sdk.service import files as pkg_files
 from databricks.sdk.service import iam as pkg_iam
 from databricks.sdk.service import iamv2 as pkg_iamv2
 from databricks.sdk.service import jobs as pkg_jobs
+from databricks.sdk.service import \
+    knowledgeassistants as pkg_knowledgeassistants
 from databricks.sdk.service import marketplace as pkg_marketplace
 from databricks.sdk.service import ml as pkg_ml
 from databricks.sdk.service import networking as pkg_networking
@@ -41,6 +45,7 @@ from databricks.sdk.service import settings as pkg_settings
 from databricks.sdk.service import settingsv2 as pkg_settingsv2
 from databricks.sdk.service import sharing as pkg_sharing
 from databricks.sdk.service import sql as pkg_sql
+from databricks.sdk.service import supervisoragents as pkg_supervisoragents
 from databricks.sdk.service import tags as pkg_tags
 from databricks.sdk.service import vectorsearch as pkg_vectorsearch
 from databricks.sdk.service import workspace as pkg_workspace
@@ -48,7 +53,7 @@ from databricks.sdk.service.agentbricks import AgentBricksAPI
 from databricks.sdk.service.apps import AppsAPI, AppsSettingsAPI
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetPolicyAPI,
                                             BudgetsAPI, LogDeliveryAPI,
-                                            UsageDashboardsAPI)
+                                            UsageDashboardsAPI, UsagePolicyAPI)
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
@@ -82,9 +87,12 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             PolicyComplianceForClustersAPI,
                                             PolicyFamiliesAPI)
 from databricks.sdk.service.dashboards import (GenieAPI, LakeviewAPI,
-                                               LakeviewEmbeddedAPI)
+                                               LakeviewEmbeddedAPI,
+                                               QueryExecutionAPI)
 from databricks.sdk.service.database import DatabaseAPI
+from databricks.sdk.service.dataclassification import DataClassificationAPI
 from databricks.sdk.service.dataquality import DataQualityAPI
+from databricks.sdk.service.environments import EnvironmentsAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccessControlAPI,
                                         AccountAccessControlAPI,
@@ -100,6 +108,7 @@ from databricks.sdk.service.iam import (AccessControlAPI,
                                         UsersV2API, WorkspaceAssignmentAPI)
 from databricks.sdk.service.iamv2 import AccountIamV2API, WorkspaceIamV2API
 from databricks.sdk.service.jobs import JobsAPI, PolicyComplianceForJobsAPI
+from databricks.sdk.service.knowledgeassistants import KnowledgeAssistantsAPI
 from databricks.sdk.service.marketplace import (
     ConsumerFulfillmentsAPI, ConsumerInstallationsAPI, ConsumerListingsAPI,
     ConsumerPersonalizationRequestsAPI, ConsumerProvidersAPI,
@@ -160,6 +169,7 @@ from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
                                         QueryVisualizationsLegacyAPI,
                                         RedashConfigAPI, StatementExecutionAPI,
                                         WarehousesAPI)
+from databricks.sdk.service.supervisoragents import SupervisorAgentsAPI
 from databricks.sdk.service.tags import (TagPoliciesAPI,
                                          WorkspaceEntityTagAssignmentsAPI)
 from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
@@ -297,12 +307,14 @@ class WorkspaceClient:
         self._current_user = pkg_iam.CurrentUserAPI(self._api_client)
         self._dashboard_widgets = pkg_sql.DashboardWidgetsAPI(self._api_client)
         self._dashboards = pkg_sql.DashboardsAPI(self._api_client)
+        self._data_classification = pkg_dataclassification.DataClassificationAPI(self._api_client)
         self._data_quality = pkg_dataquality.DataQualityAPI(self._api_client)
         self._data_sources = pkg_sql.DataSourcesAPI(self._api_client)
         self._database = pkg_database.DatabaseAPI(self._api_client)
         self._dbfs = DbfsExt(self._api_client)
         self._dbsql_permissions = pkg_sql.DbsqlPermissionsAPI(self._api_client)
         self._entity_tag_assignments = pkg_catalog.EntityTagAssignmentsAPI(self._api_client)
+        self._environments = pkg_environments.EnvironmentsAPI(self._api_client)
         self._experiments = pkg_ml.ExperimentsAPI(self._api_client)
         self._external_lineage = pkg_catalog.ExternalLineageAPI(self._api_client)
         self._external_locations = pkg_catalog.ExternalLocationsAPI(self._api_client)
@@ -321,6 +333,7 @@ class WorkspaceClient:
         self._instance_profiles = pkg_compute.InstanceProfilesAPI(self._api_client)
         self._ip_access_lists = pkg_settings.IpAccessListsAPI(self._api_client)
         self._jobs = JobsExt(self._api_client)
+        self._knowledge_assistants = pkg_knowledgeassistants.KnowledgeAssistantsAPI(self._api_client)
         self._lakeview = pkg_dashboards.LakeviewAPI(self._api_client)
         self._lakeview_embedded = pkg_dashboards.LakeviewEmbeddedAPI(self._api_client)
         self._libraries = pkg_compute.LibrariesAPI(self._api_client)
@@ -352,6 +365,7 @@ class WorkspaceClient:
         self._quality_monitors = pkg_catalog.QualityMonitorsAPI(self._api_client)
         self._queries = pkg_sql.QueriesAPI(self._api_client)
         self._queries_legacy = pkg_sql.QueriesLegacyAPI(self._api_client)
+        self._query_execution = pkg_dashboards.QueryExecutionAPI(self._api_client)
         self._query_history = pkg_sql.QueryHistoryAPI(self._api_client)
         self._query_visualizations = pkg_sql.QueryVisualizationsAPI(self._api_client)
         self._query_visualizations_legacy = pkg_sql.QueryVisualizationsLegacyAPI(self._api_client)
@@ -378,6 +392,7 @@ class WorkspaceClient:
         self._shares = pkg_sharing.SharesAPI(self._api_client)
         self._statement_execution = pkg_sql.StatementExecutionAPI(self._api_client)
         self._storage_credentials = pkg_catalog.StorageCredentialsAPI(self._api_client)
+        self._supervisor_agents = pkg_supervisoragents.SupervisorAgentsAPI(self._api_client)
         self._system_schemas = pkg_catalog.SystemSchemasAPI(self._api_client)
         self._table_constraints = pkg_catalog.TableConstraintsAPI(self._api_client)
         self._tables = pkg_catalog.TablesAPI(self._api_client)
@@ -559,6 +574,11 @@ class WorkspaceClient:
         return self._dashboards
 
     @property
+    def data_classification(self) -> pkg_dataclassification.DataClassificationAPI:
+        """Manage data classification for Unity Catalog catalogs."""
+        return self._data_classification
+
+    @property
     def data_quality(self) -> pkg_dataquality.DataQualityAPI:
         """Manage the data quality of Unity Catalog objects (currently support `schema` and `table`)."""
         return self._data_quality
@@ -587,6 +607,11 @@ class WorkspaceClient:
     def entity_tag_assignments(self) -> pkg_catalog.EntityTagAssignmentsAPI:
         """Tags are attributes that include keys and optional values that you can use to organize and categorize entities in Unity Catalog."""
         return self._entity_tag_assignments
+
+    @property
+    def environments(self) -> pkg_environments.EnvironmentsAPI:
+        """APIs to manage environment resources."""
+        return self._environments
 
     @property
     def experiments(self) -> pkg_ml.ExperimentsAPI:
@@ -672,6 +697,11 @@ class WorkspaceClient:
     def jobs(self) -> JobsExt:
         """The Jobs API allows you to create, edit, and delete jobs."""
         return self._jobs
+
+    @property
+    def knowledge_assistants(self) -> pkg_knowledgeassistants.KnowledgeAssistantsAPI:
+        """Manage Knowledge Assistants and related resources."""
+        return self._knowledge_assistants
 
     @property
     def lakeview(self) -> pkg_dashboards.LakeviewAPI:
@@ -819,6 +849,11 @@ class WorkspaceClient:
         return self._queries_legacy
 
     @property
+    def query_execution(self) -> pkg_dashboards.QueryExecutionAPI:
+        """Query execution APIs for AI / BI Dashboards."""
+        return self._query_execution
+
+    @property
     def query_history(self) -> pkg_sql.QueryHistoryAPI:
         """A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute."""
         return self._query_history
@@ -922,6 +957,11 @@ class WorkspaceClient:
     def storage_credentials(self) -> pkg_catalog.StorageCredentialsAPI:
         """A storage credential represents an authentication and authorization mechanism for accessing data stored on your cloud tenant."""
         return self._storage_credentials
+
+    @property
+    def supervisor_agents(self) -> pkg_supervisoragents.SupervisorAgentsAPI:
+        """Manage Supervisor Agents and related resources."""
+        return self._supervisor_agents
 
     @property
     def system_schemas(self) -> pkg_catalog.SystemSchemasAPI:
@@ -1143,6 +1183,7 @@ class AccountClient:
         self._storage = pkg_provisioning.StorageAPI(self._api_client)
         self._storage_credentials = pkg_catalog.AccountStorageCredentialsAPI(self._api_client)
         self._usage_dashboards = pkg_billing.UsageDashboardsAPI(self._api_client)
+        self._usage_policy = pkg_billing.UsagePolicyAPI(self._api_client)
         self._users_v2 = pkg_iam.AccountUsersV2API(self._api_client)
         self._vpc_endpoints = pkg_provisioning.VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = pkg_iam.WorkspaceAssignmentAPI(self._api_client)
@@ -1304,6 +1345,11 @@ class AccountClient:
     def usage_dashboards(self) -> pkg_billing.UsageDashboardsAPI:
         """These APIs manage usage dashboards for this account."""
         return self._usage_dashboards
+
+    @property
+    def usage_policy(self) -> pkg_billing.UsagePolicyAPI:
+        """A service serves REST API about Usage policies."""
+        return self._usage_policy
 
     @property
     def users_v2(self) -> pkg_iam.AccountUsersV2API:

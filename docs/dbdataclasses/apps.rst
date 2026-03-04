@@ -54,6 +54,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AppManifestAppResourceAppSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: AppManifestAppResourceAppSpecAppPermission
+
+   .. py:attribute:: CAN_USE
+      :value: "CAN_USE"
+
 .. autoclass:: AppManifestAppResourceExperimentSpec
    :members:
    :undoc-members:
@@ -86,6 +95,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: IS_OWNER
       :value: "IS_OWNER"
+
+.. autoclass:: AppManifestAppResourcePostgresSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: AppManifestAppResourcePostgresSpecPostgresPermission
+
+   .. py:attribute:: CAN_CONNECT_AND_CREATE
+      :value: "CAN_CONNECT_AND_CREATE"
 
 .. autoclass:: AppManifestAppResourceSecretSpec
    :members:
@@ -150,6 +168,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MANAGE
       :value: "MANAGE"
 
+   .. py:attribute:: MODIFY
+      :value: "MODIFY"
+
    .. py:attribute:: READ_VOLUME
       :value: "READ_VOLUME"
 
@@ -205,6 +226,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: AppResourceApp
    :members:
    :undoc-members:
+
+.. py:class:: AppResourceAppAppPermission
+
+   .. py:attribute:: CAN_USE
+      :value: "CAN_USE"
 
 .. autoclass:: AppResourceDatabase
    :members:
@@ -404,6 +430,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: LARGE
       :value: "LARGE"
+
+   .. py:attribute:: LIQUID
+      :value: "LIQUID"
 
    .. py:attribute:: MEDIUM
       :value: "MEDIUM"

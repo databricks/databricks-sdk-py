@@ -51,6 +51,8 @@ class App:
     creator: Optional[str] = None
     """The email of the user that created the app."""
 
+    default_git_source: Optional[GitSource] = None
+
     default_source_code_path: Optional[str] = None
     """The default workspace file system path of the source code from which app deployment are created.
     This field tracks the workspace source code path of the last active deployment."""
@@ -72,6 +74,9 @@ class App:
     id: Optional[str] = None
     """The unique identifier of the app."""
 
+    last_deployment_id: Optional[str] = None
+    """The ID of the last deployment created for this app."""
+
     oauth2_app_client_id: Optional[str] = None
 
     oauth2_app_integration_id: Optional[str] = None
@@ -91,6 +96,9 @@ class App:
 
     space: Optional[str] = None
     """Name of the space this app belongs to."""
+
+    thumbnail_url: Optional[str] = None
+    """The URL of the thumbnail image for the app."""
 
     update_time: Optional[str] = None
     """The update time of the app. Formatted timestamp in ISO 6801."""
@@ -122,6 +130,8 @@ class App:
             body["create_time"] = self.create_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.default_git_source:
+            body["default_git_source"] = self.default_git_source.as_dict()
         if self.default_source_code_path is not None:
             body["default_source_code_path"] = self.default_source_code_path
         if self.description is not None:
@@ -136,6 +146,8 @@ class App:
             body["git_repository"] = self.git_repository.as_dict()
         if self.id is not None:
             body["id"] = self.id
+        if self.last_deployment_id is not None:
+            body["last_deployment_id"] = self.last_deployment_id
         if self.name is not None:
             body["name"] = self.name
         if self.oauth2_app_client_id is not None:
@@ -154,6 +166,8 @@ class App:
             body["service_principal_name"] = self.service_principal_name
         if self.space is not None:
             body["space"] = self.space
+        if self.thumbnail_url is not None:
+            body["thumbnail_url"] = self.thumbnail_url
         if self.update_time is not None:
             body["update_time"] = self.update_time
         if self.updater is not None:
@@ -183,6 +197,8 @@ class App:
             body["create_time"] = self.create_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.default_git_source:
+            body["default_git_source"] = self.default_git_source
         if self.default_source_code_path is not None:
             body["default_source_code_path"] = self.default_source_code_path
         if self.description is not None:
@@ -197,6 +213,8 @@ class App:
             body["git_repository"] = self.git_repository
         if self.id is not None:
             body["id"] = self.id
+        if self.last_deployment_id is not None:
+            body["last_deployment_id"] = self.last_deployment_id
         if self.name is not None:
             body["name"] = self.name
         if self.oauth2_app_client_id is not None:
@@ -215,6 +233,8 @@ class App:
             body["service_principal_name"] = self.service_principal_name
         if self.space is not None:
             body["space"] = self.space
+        if self.thumbnail_url is not None:
+            body["thumbnail_url"] = self.thumbnail_url
         if self.update_time is not None:
             body["update_time"] = self.update_time
         if self.updater is not None:
@@ -238,6 +258,7 @@ class App:
             compute_status=_from_dict(d, "compute_status", ComputeStatus),
             create_time=d.get("create_time", None),
             creator=d.get("creator", None),
+            default_git_source=_from_dict(d, "default_git_source", GitSource),
             default_source_code_path=d.get("default_source_code_path", None),
             description=d.get("description", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
@@ -245,6 +266,7 @@ class App:
             effective_user_api_scopes=d.get("effective_user_api_scopes", None),
             git_repository=_from_dict(d, "git_repository", GitRepository),
             id=d.get("id", None),
+            last_deployment_id=d.get("last_deployment_id", None),
             name=d.get("name", None),
             oauth2_app_client_id=d.get("oauth2_app_client_id", None),
             oauth2_app_integration_id=d.get("oauth2_app_integration_id", None),
@@ -254,6 +276,7 @@ class App:
             service_principal_id=d.get("service_principal_id", None),
             service_principal_name=d.get("service_principal_name", None),
             space=d.get("space", None),
+            thumbnail_url=d.get("thumbnail_url", None),
             update_time=d.get("update_time", None),
             updater=d.get("updater", None),
             url=d.get("url", None),
@@ -608,6 +631,45 @@ class AppManifest:
 
 
 @dataclass
+class AppManifestAppResourceAppSpec:
+    name: Optional[str] = None
+    """Name of the target app to grant access to."""
+
+    permission: Optional[AppManifestAppResourceAppSpecAppPermission] = None
+    """Permission to grant on the app. Supported permission: "CAN_USE"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceAppSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceAppSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourceAppSpec:
+        """Deserializes the AppManifestAppResourceAppSpec from a dictionary."""
+        return cls(
+            name=d.get("name", None), permission=_enum(d, "permission", AppManifestAppResourceAppSpecAppPermission)
+        )
+
+
+class AppManifestAppResourceAppSpecAppPermission(Enum):
+
+    CAN_USE = "CAN_USE"
+
+
+@dataclass
 class AppManifestAppResourceExperimentSpec:
     permission: AppManifestAppResourceExperimentSpecExperimentPermission
 
@@ -670,6 +732,51 @@ class AppManifestAppResourceJobSpecJobPermission(Enum):
     CAN_MANAGE_RUN = "CAN_MANAGE_RUN"
     CAN_VIEW = "CAN_VIEW"
     IS_OWNER = "IS_OWNER"
+
+
+@dataclass
+class AppManifestAppResourcePostgresSpec:
+    branch: Optional[str] = None
+
+    database: Optional[str] = None
+
+    permission: Optional[AppManifestAppResourcePostgresSpecPostgresPermission] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AppManifestAppResourcePostgresSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.database is not None:
+            body["database"] = self.database
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppManifestAppResourcePostgresSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.database is not None:
+            body["database"] = self.database
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourcePostgresSpec:
+        """Deserializes the AppManifestAppResourcePostgresSpec from a dictionary."""
+        return cls(
+            branch=d.get("branch", None),
+            database=d.get("database", None),
+            permission=_enum(d, "permission", AppManifestAppResourcePostgresSpecPostgresPermission),
+        )
+
+
+class AppManifestAppResourcePostgresSpecPostgresPermission(Enum):
+
+    CAN_CONNECT_AND_CREATE = "CAN_CONNECT_AND_CREATE"
 
 
 @dataclass
@@ -749,12 +856,16 @@ class AppManifestAppResourceSpec:
     name: str
     """Name of the App Resource."""
 
+    app_spec: Optional[AppManifestAppResourceAppSpec] = None
+
     description: Optional[str] = None
     """Description of the App Resource."""
 
     experiment_spec: Optional[AppManifestAppResourceExperimentSpec] = None
 
     job_spec: Optional[AppManifestAppResourceJobSpec] = None
+
+    postgres_spec: Optional[AppManifestAppResourcePostgresSpec] = None
 
     secret_spec: Optional[AppManifestAppResourceSecretSpec] = None
 
@@ -767,6 +878,8 @@ class AppManifestAppResourceSpec:
     def as_dict(self) -> dict:
         """Serializes the AppManifestAppResourceSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.app_spec:
+            body["app_spec"] = self.app_spec.as_dict()
         if self.description is not None:
             body["description"] = self.description
         if self.experiment_spec:
@@ -775,6 +888,8 @@ class AppManifestAppResourceSpec:
             body["job_spec"] = self.job_spec.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.postgres_spec:
+            body["postgres_spec"] = self.postgres_spec.as_dict()
         if self.secret_spec:
             body["secret_spec"] = self.secret_spec.as_dict()
         if self.serving_endpoint_spec:
@@ -788,6 +903,8 @@ class AppManifestAppResourceSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the AppManifestAppResourceSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.app_spec:
+            body["app_spec"] = self.app_spec
         if self.description is not None:
             body["description"] = self.description
         if self.experiment_spec:
@@ -796,6 +913,8 @@ class AppManifestAppResourceSpec:
             body["job_spec"] = self.job_spec
         if self.name is not None:
             body["name"] = self.name
+        if self.postgres_spec:
+            body["postgres_spec"] = self.postgres_spec
         if self.secret_spec:
             body["secret_spec"] = self.secret_spec
         if self.serving_endpoint_spec:
@@ -810,10 +929,12 @@ class AppManifestAppResourceSpec:
     def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourceSpec:
         """Deserializes the AppManifestAppResourceSpec from a dictionary."""
         return cls(
+            app_spec=_from_dict(d, "app_spec", AppManifestAppResourceAppSpec),
             description=d.get("description", None),
             experiment_spec=_from_dict(d, "experiment_spec", AppManifestAppResourceExperimentSpec),
             job_spec=_from_dict(d, "job_spec", AppManifestAppResourceJobSpec),
             name=d.get("name", None),
+            postgres_spec=_from_dict(d, "postgres_spec", AppManifestAppResourcePostgresSpec),
             secret_spec=_from_dict(d, "secret_spec", AppManifestAppResourceSecretSpec),
             serving_endpoint_spec=_from_dict(d, "serving_endpoint_spec", AppManifestAppResourceServingEndpointSpec),
             sql_warehouse_spec=_from_dict(d, "sql_warehouse_spec", AppManifestAppResourceSqlWarehouseSpec),
@@ -891,6 +1012,7 @@ class AppManifestAppResourceUcSecurableSpecUcSecurablePermission(Enum):
 
     EXECUTE = "EXECUTE"
     MANAGE = "MANAGE"
+    MODIFY = "MODIFY"
     READ_VOLUME = "READ_VOLUME"
     SELECT = "SELECT"
     USE_CONNECTION = "USE_CONNECTION"
@@ -1131,20 +1253,37 @@ class AppResource:
 
 @dataclass
 class AppResourceApp:
+    name: Optional[str] = None
+
+    permission: Optional[AppResourceAppAppPermission] = None
+
     def as_dict(self) -> dict:
         """Serializes the AppResourceApp into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.permission is not None:
+            body["permission"] = self.permission.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppResourceApp into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.permission is not None:
+            body["permission"] = self.permission
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppResourceApp:
         """Deserializes the AppResourceApp from a dictionary."""
-        return cls()
+        return cls(name=d.get("name", None), permission=_enum(d, "permission", AppResourceAppAppPermission))
+
+
+class AppResourceAppAppPermission(Enum):
+
+    CAN_USE = "CAN_USE"
 
 
 @dataclass
@@ -1696,6 +1835,9 @@ class ApplicationStatus:
     message: Optional[str] = None
     """Application status message"""
 
+    running_instances: Optional[int] = None
+    """The number of running instances of this application."""
+
     state: Optional[ApplicationState] = None
     """State of the application."""
 
@@ -1704,6 +1846,8 @@ class ApplicationStatus:
         body = {}
         if self.message is not None:
             body["message"] = self.message
+        if self.running_instances is not None:
+            body["running_instances"] = self.running_instances
         if self.state is not None:
             body["state"] = self.state.value
         return body
@@ -1713,6 +1857,8 @@ class ApplicationStatus:
         body = {}
         if self.message is not None:
             body["message"] = self.message
+        if self.running_instances is not None:
+            body["running_instances"] = self.running_instances
         if self.state is not None:
             body["state"] = self.state
         return body
@@ -1720,12 +1866,17 @@ class ApplicationStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ApplicationStatus:
         """Deserializes the ApplicationStatus from a dictionary."""
-        return cls(message=d.get("message", None), state=_enum(d, "state", ApplicationState))
+        return cls(
+            message=d.get("message", None),
+            running_instances=d.get("running_instances", None),
+            state=_enum(d, "state", ApplicationState),
+        )
 
 
 class ComputeSize(Enum):
 
     LARGE = "LARGE"
+    LIQUID = "LIQUID"
     MEDIUM = "MEDIUM"
 
 

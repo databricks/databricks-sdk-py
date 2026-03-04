@@ -6,6 +6,16 @@
 
     Token-based Lakeview APIs for embedding dashboards in external applications.
 
+    .. py:method:: get_published_dashboard_embedded(dashboard_id: str)
+
+        Get the current published dashboard within an embedded context.
+
+        :param dashboard_id: str
+          UUID identifying the published dashboard.
+
+
+        
+
     .. py:method:: get_published_dashboard_token_info(dashboard_id: str [, external_value: Optional[str], external_viewer_id: Optional[str]]) -> GetPublishedDashboardTokenInfoResponse
 
         Get a required authorization details and scopes of a published dashboard to mint an OAuth token.

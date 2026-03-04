@@ -23,6 +23,39 @@ _LOG = logging.getLogger("databricks.sdk")
 # all definitions in this file are in alphabetical order
 
 
+class AlertEvaluationState(Enum):
+    """Same alert evaluation state as in redash-v2/api/proto/alertsv2/alerts.proto"""
+
+    ERROR = "ERROR"
+    OK = "OK"
+    TRIGGERED = "TRIGGERED"
+    UNKNOWN = "UNKNOWN"
+
+
+@dataclass
+class AlertTaskOutput:
+    alert_state: Optional[AlertEvaluationState] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertTaskOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alert_state is not None:
+            body["alert_state"] = self.alert_state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertTaskOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alert_state is not None:
+            body["alert_state"] = self.alert_state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertTaskOutput:
+        """Deserializes the AlertTaskOutput from a dictionary."""
+        return cls(alert_state=_enum(d, "alert_state", AlertEvaluationState))
+
+
 class AuthenticationMethod(Enum):
 
     OAUTH = "OAUTH"
@@ -55,6 +88,10 @@ class BaseJob:
     job_id: Optional[int] = None
     """The canonical identifier for this job."""
 
+    path: Optional[str] = None
+    """Path of the job object in workspace file tree, including file extension. If absent, the job
+    doesn't have a workspace object. Example: /Workspace/user@example.com/my_project/my_job.job.json"""
+
     settings: Optional[JobSettings] = None
     """Settings for this job and all of its runs. These settings can be updated using the `resetJob`
     method."""
@@ -77,6 +114,8 @@ class BaseJob:
             body["has_more"] = self.has_more
         if self.job_id is not None:
             body["job_id"] = self.job_id
+        if self.path is not None:
+            body["path"] = self.path
         if self.settings:
             body["settings"] = self.settings.as_dict()
         if self.trigger_state:
@@ -98,6 +137,8 @@ class BaseJob:
             body["has_more"] = self.has_more
         if self.job_id is not None:
             body["job_id"] = self.job_id
+        if self.path is not None:
+            body["path"] = self.path
         if self.settings:
             body["settings"] = self.settings
         if self.trigger_state:
@@ -114,6 +155,7 @@ class BaseJob:
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             has_more=d.get("has_more", None),
             job_id=d.get("job_id", None),
+            path=d.get("path", None),
             settings=_from_dict(d, "settings", JobSettings),
             trigger_state=_from_dict(d, "trigger_state", TriggerStateProto),
         )
@@ -590,6 +632,9 @@ class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
     output_schema_info: Optional[OutputSchemaInfo] = None
     """Information on how to access the output schema for the clean room run"""
 
+    shared_output_schema_info: Optional[OutputSchemaInfo] = None
+    """Information on how to access the shared output schema for the clean room run"""
+
     def as_dict(self) -> dict:
         """Serializes the CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -599,6 +644,8 @@ class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
             body["notebook_output"] = self.notebook_output.as_dict()
         if self.output_schema_info:
             body["output_schema_info"] = self.output_schema_info.as_dict()
+        if self.shared_output_schema_info:
+            body["shared_output_schema_info"] = self.shared_output_schema_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -610,6 +657,8 @@ class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
             body["notebook_output"] = self.notebook_output
         if self.output_schema_info:
             body["output_schema_info"] = self.output_schema_info
+        if self.shared_output_schema_info:
+            body["shared_output_schema_info"] = self.shared_output_schema_info
         return body
 
     @classmethod
@@ -619,6 +668,7 @@ class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
             clean_room_job_run_state=_from_dict(d, "clean_room_job_run_state", CleanRoomTaskRunState),
             notebook_output=_from_dict(d, "notebook_output", NotebookOutput),
             output_schema_info=_from_dict(d, "output_schema_info", OutputSchemaInfo),
+            shared_output_schema_info=_from_dict(d, "shared_output_schema_info", OutputSchemaInfo),
         )
 
 
@@ -941,6 +991,11 @@ class CronSchedule:
     pause_status: Optional[PauseStatus] = None
     """Indicate whether this schedule is paused or not."""
 
+    sql_condition: Optional[SqlConditionConfiguration] = None
+    """SQL condition that must be satisfied before a scheduled run is triggered. The condition is
+    evaluated after the cron expression fires and must return a truthy result for the run to
+    proceed."""
+
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -948,6 +1003,8 @@ class CronSchedule:
             body["pause_status"] = self.pause_status.value
         if self.quartz_cron_expression is not None:
             body["quartz_cron_expression"] = self.quartz_cron_expression
+        if self.sql_condition:
+            body["sql_condition"] = self.sql_condition.as_dict()
         if self.timezone_id is not None:
             body["timezone_id"] = self.timezone_id
         return body
@@ -959,6 +1016,8 @@ class CronSchedule:
             body["pause_status"] = self.pause_status
         if self.quartz_cron_expression is not None:
             body["quartz_cron_expression"] = self.quartz_cron_expression
+        if self.sql_condition:
+            body["sql_condition"] = self.sql_condition
         if self.timezone_id is not None:
             body["timezone_id"] = self.timezone_id
         return body
@@ -969,6 +1028,7 @@ class CronSchedule:
         return cls(
             pause_status=_enum(d, "pause_status", PauseStatus),
             quartz_cron_expression=d.get("quartz_cron_expression", None),
+            sql_condition=_from_dict(d, "sql_condition", SqlConditionConfiguration),
             timezone_id=d.get("timezone_id", None),
         )
 
@@ -1921,6 +1981,10 @@ class GenAiComputeTask:
 
     compute: Optional[ComputeConfig] = None
 
+    docker_image_url: Optional[str] = None
+    """Optional custom Docker container image URL for running the training script. Format:
+    organization/repository:tag (e.g., "pytorch/pytorch:2.0.1")"""
+
     mlflow_experiment_name: Optional[str] = None
     """Optional string containing the name of the MLflow experiment to log the run to. If name is not
     found, backend will create the mlflow experiment using the name."""
@@ -1954,6 +2018,8 @@ class GenAiComputeTask:
             body["compute"] = self.compute.as_dict()
         if self.dl_runtime_image is not None:
             body["dl_runtime_image"] = self.dl_runtime_image
+        if self.docker_image_url is not None:
+            body["docker_image_url"] = self.docker_image_url
         if self.mlflow_experiment_name is not None:
             body["mlflow_experiment_name"] = self.mlflow_experiment_name
         if self.source is not None:
@@ -1975,6 +2041,8 @@ class GenAiComputeTask:
             body["compute"] = self.compute
         if self.dl_runtime_image is not None:
             body["dl_runtime_image"] = self.dl_runtime_image
+        if self.docker_image_url is not None:
+            body["docker_image_url"] = self.docker_image_url
         if self.mlflow_experiment_name is not None:
             body["mlflow_experiment_name"] = self.mlflow_experiment_name
         if self.source is not None:
@@ -1994,6 +2062,7 @@ class GenAiComputeTask:
             command=d.get("command", None),
             compute=_from_dict(d, "compute", ComputeConfig),
             dl_runtime_image=d.get("dl_runtime_image", None),
+            docker_image_url=d.get("docker_image_url", None),
             mlflow_experiment_name=d.get("mlflow_experiment_name", None),
             source=_enum(d, "source", Source),
             training_script_path=d.get("training_script_path", None),
@@ -2230,6 +2299,10 @@ class Job:
     next_page_token: Optional[str] = None
     """A token that can be used to list the next page of array properties."""
 
+    path: Optional[str] = None
+    """Path of the job object in workspace file tree, including file extension. If absent, the job
+    doesn't have a workspace object. Example: /Workspace/user@example.com/my_project/my_job.job.json"""
+
     run_as_user_name: Optional[str] = None
     """The email of an active workspace user or the application ID of a service principal that the job
     runs as. This value can be changed by setting the `run_as` field when creating or updating a
@@ -2263,6 +2336,8 @@ class Job:
             body["job_id"] = self.job_id
         if self.next_page_token is not None:
             body["next_page_token"] = self.next_page_token
+        if self.path is not None:
+            body["path"] = self.path
         if self.run_as_user_name is not None:
             body["run_as_user_name"] = self.run_as_user_name
         if self.settings:
@@ -2288,6 +2363,8 @@ class Job:
             body["job_id"] = self.job_id
         if self.next_page_token is not None:
             body["next_page_token"] = self.next_page_token
+        if self.path is not None:
+            body["path"] = self.path
         if self.run_as_user_name is not None:
             body["run_as_user_name"] = self.run_as_user_name
         if self.settings:
@@ -2307,6 +2384,7 @@ class Job:
             has_more=d.get("has_more", None),
             job_id=d.get("job_id", None),
             next_page_token=d.get("next_page_token", None),
+            path=d.get("path", None),
             run_as_user_name=d.get("run_as_user_name", None),
             settings=_from_dict(d, "settings", JobSettings),
             trigger_state=_from_dict(d, "trigger_state", TriggerStateProto),
@@ -3024,6 +3102,10 @@ class JobSettings:
     parameters: Optional[List[JobParameterDefinition]] = None
     """Job-level parameter definitions"""
 
+    parent_path: Optional[str] = None
+    """Path of the job parent folder in workspace file tree. If absent, the job doesn't have a
+    workspace object."""
+
     performance_target: Optional[PerformanceTarget] = None
     """The performance mode on a serverless job. This field determines the level of compute performance
     or cost-efficiency for the run. The performance target does not apply to tasks that run on
@@ -3106,6 +3188,8 @@ class JobSettings:
             body["notification_settings"] = self.notification_settings.as_dict()
         if self.parameters:
             body["parameters"] = [v.as_dict() for v in self.parameters]
+        if self.parent_path is not None:
+            body["parent_path"] = self.parent_path
         if self.performance_target is not None:
             body["performance_target"] = self.performance_target.value
         if self.queue:
@@ -3161,6 +3245,8 @@ class JobSettings:
             body["notification_settings"] = self.notification_settings
         if self.parameters:
             body["parameters"] = self.parameters
+        if self.parent_path is not None:
+            body["parent_path"] = self.parent_path
         if self.performance_target is not None:
             body["performance_target"] = self.performance_target
         if self.queue:
@@ -3202,6 +3288,7 @@ class JobSettings:
             name=d.get("name", None),
             notification_settings=_from_dict(d, "notification_settings", JobNotificationSettings),
             parameters=_repeated_dict(d, "parameters", JobParameterDefinition),
+            parent_path=d.get("parent_path", None),
             performance_target=_enum(d, "performance_target", PerformanceTarget),
             queue=_from_dict(d, "queue", QueueSettings),
             run_as=_from_dict(d, "run_as", JobRunAs),
@@ -5289,6 +5376,9 @@ class RunNowResponse:
 class RunOutput:
     """Run output was retrieved successfully."""
 
+    alert_output: Optional[AlertTaskOutput] = None
+    """The output of an alert task, if available"""
+
     clean_rooms_notebook_output: Optional[CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput] = None
     """The output of a clean rooms notebook task, if available"""
 
@@ -5344,6 +5434,8 @@ class RunOutput:
     def as_dict(self) -> dict:
         """Serializes the RunOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.alert_output:
+            body["alert_output"] = self.alert_output.as_dict()
         if self.clean_rooms_notebook_output:
             body["clean_rooms_notebook_output"] = self.clean_rooms_notebook_output.as_dict()
         if self.dashboard_output:
@@ -5377,6 +5469,8 @@ class RunOutput:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunOutput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.alert_output:
+            body["alert_output"] = self.alert_output
         if self.clean_rooms_notebook_output:
             body["clean_rooms_notebook_output"] = self.clean_rooms_notebook_output
         if self.dashboard_output:
@@ -5411,6 +5505,7 @@ class RunOutput:
     def from_dict(cls, d: Dict[str, Any]) -> RunOutput:
         """Deserializes the RunOutput from a dictionary."""
         return cls(
+            alert_output=_from_dict(d, "alert_output", AlertTaskOutput),
             clean_rooms_notebook_output=_from_dict(
                 d, "clean_rooms_notebook_output", CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput
             ),
@@ -5766,6 +5861,10 @@ class RunTask:
     disable_auto_optimization: Optional[bool] = None
     """An option to disable auto optimization in serverless"""
 
+    disabled: Optional[bool] = None
+    """An optional flag to disable the task. If set to true, the task will not run even if it is part
+    of a job."""
+
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
@@ -5946,6 +6045,8 @@ class RunTask:
             body["description"] = self.description
         if self.disable_auto_optimization is not None:
             body["disable_auto_optimization"] = self.disable_auto_optimization
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
         if self.email_notifications:
@@ -6053,6 +6154,8 @@ class RunTask:
             body["description"] = self.description
         if self.disable_auto_optimization is not None:
             body["disable_auto_optimization"] = self.disable_auto_optimization
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
         if self.email_notifications:
@@ -6148,6 +6251,7 @@ class RunTask:
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
             disable_auto_optimization=d.get("disable_auto_optimization", None),
+            disabled=d.get("disabled", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             end_time=d.get("end_time", None),
@@ -6455,6 +6559,126 @@ class SqlAlertState(Enum):
     OK = "OK"
     TRIGGERED = "TRIGGERED"
     UNKNOWN = "UNKNOWN"
+
+
+@dataclass
+class SqlConditionConfiguration:
+    sql_query_id: str
+    """The ID of the SQL query to evaluate as the trigger condition."""
+
+    warehouse_id: str
+    """The canonical identifier of the SQL warehouse to run the condition query against."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SqlConditionConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.sql_query_id is not None:
+            body["sql_query_id"] = self.sql_query_id
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlConditionConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.sql_query_id is not None:
+            body["sql_query_id"] = self.sql_query_id
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SqlConditionConfiguration:
+        """Deserializes the SqlConditionConfiguration from a dictionary."""
+        return cls(sql_query_id=d.get("sql_query_id", None), warehouse_id=d.get("warehouse_id", None))
+
+
+@dataclass
+class SqlConditionRunInfoDetails:
+    """SQL condition evaluation details captured at the time the run was triggered"""
+
+    condition_evaluation_satisfied: Optional[bool] = None
+    """Whether the last condition evaluation was satisfied (query returned truthy result)."""
+
+    condition_evaluation_sql_session_id: Optional[str] = None
+    """The ID of the SQL session, used by UI to track session context."""
+
+    condition_evaluation_sql_statement_id: Optional[str] = None
+    """The ID of the SQL statement execution, used by UI to track query execution and warehouse info."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SqlConditionRunInfoDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.condition_evaluation_satisfied is not None:
+            body["condition_evaluation_satisfied"] = self.condition_evaluation_satisfied
+        if self.condition_evaluation_sql_session_id is not None:
+            body["condition_evaluation_sql_session_id"] = self.condition_evaluation_sql_session_id
+        if self.condition_evaluation_sql_statement_id is not None:
+            body["condition_evaluation_sql_statement_id"] = self.condition_evaluation_sql_statement_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlConditionRunInfoDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.condition_evaluation_satisfied is not None:
+            body["condition_evaluation_satisfied"] = self.condition_evaluation_satisfied
+        if self.condition_evaluation_sql_session_id is not None:
+            body["condition_evaluation_sql_session_id"] = self.condition_evaluation_sql_session_id
+        if self.condition_evaluation_sql_statement_id is not None:
+            body["condition_evaluation_sql_statement_id"] = self.condition_evaluation_sql_statement_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SqlConditionRunInfoDetails:
+        """Deserializes the SqlConditionRunInfoDetails from a dictionary."""
+        return cls(
+            condition_evaluation_satisfied=d.get("condition_evaluation_satisfied", None),
+            condition_evaluation_sql_session_id=d.get("condition_evaluation_sql_session_id", None),
+            condition_evaluation_sql_statement_id=d.get("condition_evaluation_sql_statement_id", None),
+        )
+
+
+@dataclass
+class SqlConditionState:
+    latest_condition_evaluation_satisfied: Optional[bool] = None
+    """Whether the last condition evaluation was satisfied (query returned truthy result)."""
+
+    latest_condition_evaluation_sql_session_id: Optional[str] = None
+    """The ID of the SQL session, used by UI to track session context."""
+
+    latest_condition_evaluation_sql_statement_id: Optional[str] = None
+    """The ID of the SQL statement execution, used by UI to track query execution and warehouse info."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SqlConditionState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.latest_condition_evaluation_satisfied is not None:
+            body["latest_condition_evaluation_satisfied"] = self.latest_condition_evaluation_satisfied
+        if self.latest_condition_evaluation_sql_session_id is not None:
+            body["latest_condition_evaluation_sql_session_id"] = self.latest_condition_evaluation_sql_session_id
+        if self.latest_condition_evaluation_sql_statement_id is not None:
+            body["latest_condition_evaluation_sql_statement_id"] = self.latest_condition_evaluation_sql_statement_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlConditionState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.latest_condition_evaluation_satisfied is not None:
+            body["latest_condition_evaluation_satisfied"] = self.latest_condition_evaluation_satisfied
+        if self.latest_condition_evaluation_sql_session_id is not None:
+            body["latest_condition_evaluation_sql_session_id"] = self.latest_condition_evaluation_sql_session_id
+        if self.latest_condition_evaluation_sql_statement_id is not None:
+            body["latest_condition_evaluation_sql_statement_id"] = self.latest_condition_evaluation_sql_statement_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SqlConditionState:
+        """Deserializes the SqlConditionState from a dictionary."""
+        return cls(
+            latest_condition_evaluation_satisfied=d.get("latest_condition_evaluation_satisfied", None),
+            latest_condition_evaluation_sql_session_id=d.get("latest_condition_evaluation_sql_session_id", None),
+            latest_condition_evaluation_sql_statement_id=d.get("latest_condition_evaluation_sql_statement_id", None),
+        )
 
 
 @dataclass
@@ -7066,6 +7290,10 @@ class SubmitTask:
     disable_auto_optimization: Optional[bool] = None
     """An option to disable auto optimization in serverless"""
 
+    disabled: Optional[bool] = None
+    """An optional flag to disable the task. If set to true, the task will not run even if it is part
+    of a job."""
+
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
     behavior is to not send any emails."""
@@ -7179,6 +7407,8 @@ class SubmitTask:
             body["description"] = self.description
         if self.disable_auto_optimization is not None:
             body["disable_auto_optimization"] = self.disable_auto_optimization
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.environment_key is not None:
@@ -7254,6 +7484,8 @@ class SubmitTask:
             body["description"] = self.description
         if self.disable_auto_optimization is not None:
             body["disable_auto_optimization"] = self.disable_auto_optimization
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications
         if self.environment_key is not None:
@@ -7320,6 +7552,7 @@ class SubmitTask:
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
             disable_auto_optimization=d.get("disable_auto_optimization", None),
+            disabled=d.get("disabled", None),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             environment_key=d.get("environment_key", None),
             existing_cluster_id=d.get("existing_cluster_id", None),
@@ -8197,11 +8430,16 @@ class TriggerInfo:
     run_id: Optional[int] = None
     """The run id of the Run Job task run"""
 
+    sql_condition: Optional[SqlConditionRunInfoDetails] = None
+    """SQL condition evaluation details for this run"""
+
     def as_dict(self) -> dict:
         """Serializes the TriggerInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None:
             body["run_id"] = self.run_id
+        if self.sql_condition:
+            body["sql_condition"] = self.sql_condition.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8209,12 +8447,16 @@ class TriggerInfo:
         body = {}
         if self.run_id is not None:
             body["run_id"] = self.run_id
+        if self.sql_condition:
+            body["sql_condition"] = self.sql_condition
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TriggerInfo:
         """Deserializes the TriggerInfo from a dictionary."""
-        return cls(run_id=d.get("run_id", None))
+        return cls(
+            run_id=d.get("run_id", None), sql_condition=_from_dict(d, "sql_condition", SqlConditionRunInfoDetails)
+        )
 
 
 @dataclass
@@ -8230,6 +8472,10 @@ class TriggerSettings:
     periodic: Optional[PeriodicTriggerConfiguration] = None
     """Periodic trigger settings."""
 
+    sql_condition: Optional[SqlConditionConfiguration] = None
+    """SQL condition that must be satisfied for the trigger to fire. Can be used in combination with
+    other trigger types and runs *after* other trigger types conditions are evaluated."""
+
     table_update: Optional[TableUpdateTriggerConfiguration] = None
 
     def as_dict(self) -> dict:
@@ -8243,6 +8489,8 @@ class TriggerSettings:
             body["pause_status"] = self.pause_status.value
         if self.periodic:
             body["periodic"] = self.periodic.as_dict()
+        if self.sql_condition:
+            body["sql_condition"] = self.sql_condition.as_dict()
         if self.table_update:
             body["table_update"] = self.table_update.as_dict()
         return body
@@ -8258,6 +8506,8 @@ class TriggerSettings:
             body["pause_status"] = self.pause_status
         if self.periodic:
             body["periodic"] = self.periodic
+        if self.sql_condition:
+            body["sql_condition"] = self.sql_condition
         if self.table_update:
             body["table_update"] = self.table_update
         return body
@@ -8270,6 +8520,7 @@ class TriggerSettings:
             model=_from_dict(d, "model", ModelTriggerConfiguration),
             pause_status=_enum(d, "pause_status", PauseStatus),
             periodic=_from_dict(d, "periodic", PeriodicTriggerConfiguration),
+            sql_condition=_from_dict(d, "sql_condition", SqlConditionConfiguration),
             table_update=_from_dict(d, "table_update", TableUpdateTriggerConfiguration),
         )
 
@@ -8278,6 +8529,9 @@ class TriggerSettings:
 class TriggerStateProto:
     file_arrival: Optional[FileArrivalTriggerState] = None
 
+    sql_condition: Optional[SqlConditionState] = None
+    """State for SQL condition evaluation, can coexist with other trigger states."""
+
     table: Optional[TableTriggerState] = None
 
     def as_dict(self) -> dict:
@@ -8285,6 +8539,8 @@ class TriggerStateProto:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival.as_dict()
+        if self.sql_condition:
+            body["sql_condition"] = self.sql_condition.as_dict()
         if self.table:
             body["table"] = self.table.as_dict()
         return body
@@ -8294,6 +8550,8 @@ class TriggerStateProto:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival
+        if self.sql_condition:
+            body["sql_condition"] = self.sql_condition
         if self.table:
             body["table"] = self.table
         return body
@@ -8303,6 +8561,7 @@ class TriggerStateProto:
         """Deserializes the TriggerStateProto from a dictionary."""
         return cls(
             file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerState),
+            sql_condition=_from_dict(d, "sql_condition", SqlConditionState),
             table=_from_dict(d, "table", TableTriggerState),
         )
 
@@ -8635,6 +8894,7 @@ class JobsAPI:
         name: Optional[str] = None,
         notification_settings: Optional[JobNotificationSettings] = None,
         parameters: Optional[List[JobParameterDefinition]] = None,
+        parent_path: Optional[str] = None,
         performance_target: Optional[PerformanceTarget] = None,
         queue: Optional[QueueSettings] = None,
         run_as: Optional[JobRunAs] = None,
@@ -8707,6 +8967,9 @@ class JobsAPI:
           `email_notifications` and `webhook_notifications` for this job.
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
+        :param parent_path: str (optional)
+          Path of the job parent folder in workspace file tree. If absent, the job doesn't have a workspace
+          object.
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. This field determines the level of compute performance or
           cost-efficiency for the run. The performance target does not apply to tasks that run on Serverless
@@ -8783,6 +9046,8 @@ class JobsAPI:
             body["notification_settings"] = notification_settings.as_dict()
         if parameters is not None:
             body["parameters"] = [v.as_dict() for v in parameters]
+        if parent_path is not None:
+            body["parent_path"] = parent_path
         if performance_target is not None:
             body["performance_target"] = performance_target.value
         if queue is not None:

@@ -34,6 +34,15 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: create_catalog(catalog: Catalog) -> Catalog
+
+        Register a Database in UC.
+
+        :param catalog: :class:`Catalog`
+
+        :returns: :class:`Catalog`
+        
+
     .. py:method:: create_database(parent: str, database: Database [, database_id: Optional[str]]) -> CreateDatabaseOperation
 
         Create a Database.
@@ -108,6 +117,24 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: create_synced_table(synced_table: SyncedTable) -> SyncedTable
+
+        Create a Synced Table.
+
+        :param synced_table: :class:`SyncedTable`
+
+        :returns: :class:`SyncedTable`
+        
+
+    .. py:method:: create_table(table: Table) -> Table
+
+        Create a Table (non-synced database table for Autoscaling v2 Lakebase projects).
+
+        :param table: :class:`Table`
+
+        :returns: :class:`Table`
+        
+
     .. py:method:: delete_branch(name: str) -> DeleteBranchOperation
 
         Deletes the specified database branch.
@@ -116,6 +143,15 @@
           The full resource path of the branch to delete. Format: projects/{project_id}/branches/{branch_id}
 
         :returns: :class:`Operation`
+        
+
+    .. py:method:: delete_catalog(name: str)
+
+        Delete a Database Catalog.
+
+        :param name: str
+
+
         
 
     .. py:method:: delete_database(name: str) -> DeleteDatabaseOperation
@@ -169,7 +205,45 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: generate_database_credential(endpoint: str [, claims: Optional[List[RequestedClaims]]]) -> DatabaseCredential
+    .. py:method:: delete_synced_table(name: str)
+
+        Delete a Synced Table.
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the synced table.
+
+
+        
+
+    .. py:method:: delete_table(name: str)
+
+        Delete a Table (non-synced database table for Autoscaling v2 Lakebase projects).
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the table.
+
+
+        
+
+    .. py:method:: disable_forward_etl(parent: str [, pg_database_oid: Optional[int], pg_schema_oid: Optional[int], tenant_id: Optional[str], timeline_id: Optional[str]]) -> DisableForwardEtlResponse
+
+        Disable Forward ETL for a branch.
+
+        :param parent: str
+          The Branch to disable Forward ETL for. Format: projects/{project_id}/branches/{branch_id}
+        :param pg_database_oid: int (optional)
+          PostgreSQL database OID to disable.
+        :param pg_schema_oid: int (optional)
+          PostgreSQL schema OID to disable.
+        :param tenant_id: str (optional)
+          Tenant ID (dashless UUID format).
+        :param timeline_id: str (optional)
+          Timeline ID (dashless UUID format).
+
+        :returns: :class:`DisableForwardEtlResponse`
+        
+
+    .. py:method:: generate_database_credential(endpoint: str [, claims: Optional[List[RequestedClaims]], expire_time: Optional[Timestamp], group_name: Optional[str], ttl: Optional[Duration]]) -> DatabaseCredential
 
         Generate OAuth credentials for a Postgres database.
 
@@ -178,6 +252,14 @@
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param claims: List[:class:`RequestedClaims`] (optional)
           The returned token will be scoped to UC tables with the specified permissions.
+        :param expire_time: Timestamp (optional)
+          Timestamp in UTC of when this credential should expire. Expire time should be within 1 hour of the
+          current time.
+        :param group_name: str (optional)
+          Databricks workspace group name. When provided, credentials are generated with permissions scoped to
+          this group.
+        :param ttl: Duration (optional)
+          The requested time-to-live for the generated credential token. Maximum allowed duration is 1 hour.
 
         :returns: :class:`DatabaseCredential`
         
@@ -190,6 +272,27 @@
           The full resource path of the branch to retrieve. Format: projects/{project_id}/branches/{branch_id}
 
         :returns: :class:`Branch`
+        
+
+    .. py:method:: get_catalog(name: str) -> Catalog
+
+        Get a Database Catalog.
+
+        :param name: str
+
+        :returns: :class:`Catalog`
+        
+
+    .. py:method:: get_compute_instance(name: str) -> ComputeInstance
+
+        Lists the specific compute instance under an endpoint. Note: ComputeInstances are managed via the
+        parent Endpoint resource, and cannot be created, updated, or deleted directly.
+
+        :param name: str
+          The full resource path of the compute instance to retrieve. Format:
+          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}/compute-instances/{compute_instance_id}
+
+        :returns: :class:`ComputeInstance`
         
 
     .. py:method:: get_database(name: str) -> Database
@@ -213,6 +316,34 @@
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 
         :returns: :class:`Endpoint`
+        
+
+    .. py:method:: get_forward_etl_metadata(parent: str [, tenant_id: Optional[str], timeline_id: Optional[str]]) -> ForwardEtlMetadata
+
+        Get Forward ETL metadata (database and schema OIDs).
+
+        :param parent: str
+          The Branch to get metadata for. Format: projects/{project_id}/branches/{branch_id}
+        :param tenant_id: str (optional)
+          Tenant ID (dashless UUID format).
+        :param timeline_id: str (optional)
+          Timeline ID (dashless UUID format).
+
+        :returns: :class:`ForwardEtlMetadata`
+        
+
+    .. py:method:: get_forward_etl_status(parent: str [, tenant_id: Optional[str], timeline_id: Optional[str]]) -> ForwardEtlStatus
+
+        Get Forward ETL configuration and status for a branch.
+
+        :param parent: str
+          The Branch to get Forward ETL status for. Format: projects/{project_id}/branches/{branch_id}
+        :param tenant_id: str (optional)
+          Tenant ID (dashless UUID format).
+        :param timeline_id: str (optional)
+          Timeline ID (dashless UUID format).
+
+        :returns: :class:`ForwardEtlStatus`
         
 
     .. py:method:: get_operation(name: str) -> Operation
@@ -247,6 +378,26 @@
         :returns: :class:`Role`
         
 
+    .. py:method:: get_synced_table(name: str) -> SyncedTable
+
+        Get a Synced Table.
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the synced table.
+
+        :returns: :class:`SyncedTable`
+        
+
+    .. py:method:: get_table(name: str) -> Table
+
+        Get a Table (non-synced database table for Autoscaling v2 Lakebase projects).
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the table.
+
+        :returns: :class:`Table`
+        
+
     .. py:method:: list_branches(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Branch]
 
         Returns a paginated list of database branches in the project.
@@ -259,6 +410,29 @@
           Page token from a previous response. If not provided, returns the first page.
 
         :returns: Iterator over :class:`Branch`
+        
+
+    .. py:method:: list_compute_instances(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ComputeInstance]
+
+        Lists all compute instances that have been created under the specified endpoint. Note:
+        ComputeInstances are managed via the parent Endpoint resource, and cannot be created, updated, or
+        deleted directly.
+
+        :param parent: str
+          The parent, which owns the compute instances.
+        :param page_size: int (optional)
+          The maximum number of compute instances to return. The service may return fewer than this value.
+
+          If unspecified, at most 50 compute instances will be returned. The maximum value is 1000; values
+          above 1000 will be coerced to 1000.
+        :param page_token: str (optional)
+          A page token, received from a previous `ListInstances` call. Provide this to retrieve the subsequent
+          page.
+
+          When paginating, all other parameters provided to `ListInstances` must match the call that provided
+          the page token.
+
+        :returns: Iterator over :class:`ComputeInstance`
         
 
     .. py:method:: list_databases(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Database]
@@ -385,6 +559,25 @@
           The project's `name` field is used to identify the project to update. Format: projects/{project_id}
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: update_role(name: str, role: Role, update_mask: FieldMask) -> UpdateRoleOperation
+
+        Update a role for a branch.
+
+        :param name: str
+          Output only. The full resource path of the role. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
+        :param role: :class:`Role`
+          The Postgres Role to update.
+
+          The role's `name` field is used to identify the role to update. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
+        :param update_mask: FieldMask
+          The list of fields to update in Postgres Role. If unspecified, all fields will be updated when
+          possible.
 
         :returns: :class:`Operation`
         

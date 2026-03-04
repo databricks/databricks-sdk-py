@@ -24,6 +24,24 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
+class ApplyEnvironmentRequestResponse:
+    def as_dict(self) -> dict:
+        """Serializes the ApplyEnvironmentRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ApplyEnvironmentRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ApplyEnvironmentRequestResponse:
+        """Deserializes the ApplyEnvironmentRequestResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class AutoFullRefreshPolicy:
     """Policy for auto full refresh."""
 
@@ -115,6 +133,71 @@ class ConnectionParameters:
     def from_dict(cls, d: Dict[str, Any]) -> ConnectionParameters:
         """Deserializes the ConnectionParameters from a dictionary."""
         return cls(source_catalog=d.get("source_catalog", None))
+
+
+@dataclass
+class ConnectorOptions:
+    """Wrapper message for source-specific options to support multiple connector types"""
+
+    gdrive_options: Optional[GoogleDriveOptions] = None
+
+    google_ads_options: Optional[GoogleAdsOptions] = None
+
+    outlook_options: Optional[OutlookOptions] = None
+
+    sharepoint_options: Optional[SharepointOptions] = None
+
+    tiktok_ads_options: Optional[TikTokAdsOptions] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ConnectorOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.gdrive_options:
+            body["gdrive_options"] = self.gdrive_options.as_dict()
+        if self.google_ads_options:
+            body["google_ads_options"] = self.google_ads_options.as_dict()
+        if self.outlook_options:
+            body["outlook_options"] = self.outlook_options.as_dict()
+        if self.sharepoint_options:
+            body["sharepoint_options"] = self.sharepoint_options.as_dict()
+        if self.tiktok_ads_options:
+            body["tiktok_ads_options"] = self.tiktok_ads_options.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConnectorOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.gdrive_options:
+            body["gdrive_options"] = self.gdrive_options
+        if self.google_ads_options:
+            body["google_ads_options"] = self.google_ads_options
+        if self.outlook_options:
+            body["outlook_options"] = self.outlook_options
+        if self.sharepoint_options:
+            body["sharepoint_options"] = self.sharepoint_options
+        if self.tiktok_ads_options:
+            body["tiktok_ads_options"] = self.tiktok_ads_options
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConnectorOptions:
+        """Deserializes the ConnectorOptions from a dictionary."""
+        return cls(
+            gdrive_options=_from_dict(d, "gdrive_options", GoogleDriveOptions),
+            google_ads_options=_from_dict(d, "google_ads_options", GoogleAdsOptions),
+            outlook_options=_from_dict(d, "outlook_options", OutlookOptions),
+            sharepoint_options=_from_dict(d, "sharepoint_options", SharepointOptions),
+            tiktok_ads_options=_from_dict(d, "tiktok_ads_options", TikTokAdsOptions),
+        )
+
+
+class ConnectorType(Enum):
+    """For certain database sources LakeFlow Connect offers both query based and cdc ingestion,
+    ConnectorType can bse used to convey the type of ingestion. If connection_name is provided for
+    database sources, we default to Query Based ingestion"""
+
+    CDC = "CDC"
+    QUERY_BASED = "QUERY_BASED"
 
 
 @dataclass
@@ -211,6 +294,55 @@ class DataPlaneId:
     def from_dict(cls, d: Dict[str, Any]) -> DataPlaneId:
         """Deserializes the DataPlaneId from a dictionary."""
         return cls(instance=d.get("instance", None), seq_no=d.get("seq_no", None))
+
+
+@dataclass
+class DataStagingOptions:
+    """Location of staged data storage"""
+
+    catalog_name: str
+    """(Required, Immutable) The name of the catalog for the connector's staging storage location."""
+
+    schema_name: str
+    """(Required, Immutable) The name of the schema for the connector's staging storage location."""
+
+    volume_name: Optional[str] = None
+    """(Optional) The Unity Catalog-compatible name for the storage location. This is the volume to use
+    for the data that is extracted by the connector. Spark Declarative Pipelines system will
+    automatically create the volume under the catalog and schema. For Combined Cdc Managed Ingestion
+    pipelines default name for the volume would be :
+    __databricks_ingestion_gateway_staging_data-$pipelineId"""
+
+    def as_dict(self) -> dict:
+        """Serializes the DataStagingOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.volume_name is not None:
+            body["volume_name"] = self.volume_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DataStagingOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.volume_name is not None:
+            body["volume_name"] = self.volume_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DataStagingOptions:
+        """Deserializes the DataStagingOptions from a dictionary."""
+        return cls(
+            catalog_name=d.get("catalog_name", None),
+            schema_name=d.get("schema_name", None),
+            volume_name=d.get("volume_name", None),
+        )
 
 
 class DayOfWeek(Enum):
@@ -352,6 +484,182 @@ class EventLogSpec:
 
 
 @dataclass
+class FileFilter:
+    modified_after: Optional[str] = None
+    """Include files with modification times occurring after the specified time. Timestamp format:
+    YYYY-MM-DDTHH:mm:ss (e.g. 2020-06-01T13:00:00) Based on
+    https://spark.apache.org/docs/latest/sql-data-sources-generic-options.html#modification-time-path-filters"""
+
+    modified_before: Optional[str] = None
+    """Include files with modification times occurring before the specified time. Timestamp format:
+    YYYY-MM-DDTHH:mm:ss (e.g. 2020-06-01T13:00:00) Based on
+    https://spark.apache.org/docs/latest/sql-data-sources-generic-options.html#modification-time-path-filters"""
+
+    path_filter: Optional[str] = None
+    """Include files with file names matching the pattern Based on
+    https://spark.apache.org/docs/latest/sql-data-sources-generic-options.html#path-glob-filter"""
+
+    def as_dict(self) -> dict:
+        """Serializes the FileFilter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.modified_after is not None:
+            body["modified_after"] = self.modified_after
+        if self.modified_before is not None:
+            body["modified_before"] = self.modified_before
+        if self.path_filter is not None:
+            body["path_filter"] = self.path_filter
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FileFilter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.modified_after is not None:
+            body["modified_after"] = self.modified_after
+        if self.modified_before is not None:
+            body["modified_before"] = self.modified_before
+        if self.path_filter is not None:
+            body["path_filter"] = self.path_filter
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FileFilter:
+        """Deserializes the FileFilter from a dictionary."""
+        return cls(
+            modified_after=d.get("modified_after", None),
+            modified_before=d.get("modified_before", None),
+            path_filter=d.get("path_filter", None),
+        )
+
+
+@dataclass
+class FileIngestionOptions:
+    corrupt_record_column: Optional[str] = None
+
+    file_filters: Optional[List[FileFilter]] = None
+    """Generic options"""
+
+    format: Optional[FileIngestionOptionsFileFormat] = None
+    """required for TableSpec"""
+
+    format_options: Optional[Dict[str, str]] = None
+    """Format-specific options Based on
+    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/options#file-format-options"""
+
+    ignore_corrupt_files: Optional[bool] = None
+
+    infer_column_types: Optional[bool] = None
+
+    reader_case_sensitive: Optional[bool] = None
+    """Column name case sensitivity
+    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#change-case-sensitive-behavior"""
+
+    rescued_data_column: Optional[str] = None
+
+    schema_evolution_mode: Optional[FileIngestionOptionsSchemaEvolutionMode] = None
+
+    schema_hints: Optional[str] = None
+    """Override inferred schema of specific columns Based on
+    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#override-schema-inference-with-schema-hints"""
+
+    single_variant_column: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the FileIngestionOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.corrupt_record_column is not None:
+            body["corrupt_record_column"] = self.corrupt_record_column
+        if self.file_filters:
+            body["file_filters"] = [v.as_dict() for v in self.file_filters]
+        if self.format is not None:
+            body["format"] = self.format.value
+        if self.format_options:
+            body["format_options"] = self.format_options
+        if self.ignore_corrupt_files is not None:
+            body["ignore_corrupt_files"] = self.ignore_corrupt_files
+        if self.infer_column_types is not None:
+            body["infer_column_types"] = self.infer_column_types
+        if self.reader_case_sensitive is not None:
+            body["reader_case_sensitive"] = self.reader_case_sensitive
+        if self.rescued_data_column is not None:
+            body["rescued_data_column"] = self.rescued_data_column
+        if self.schema_evolution_mode is not None:
+            body["schema_evolution_mode"] = self.schema_evolution_mode.value
+        if self.schema_hints is not None:
+            body["schema_hints"] = self.schema_hints
+        if self.single_variant_column is not None:
+            body["single_variant_column"] = self.single_variant_column
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FileIngestionOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.corrupt_record_column is not None:
+            body["corrupt_record_column"] = self.corrupt_record_column
+        if self.file_filters:
+            body["file_filters"] = self.file_filters
+        if self.format is not None:
+            body["format"] = self.format
+        if self.format_options:
+            body["format_options"] = self.format_options
+        if self.ignore_corrupt_files is not None:
+            body["ignore_corrupt_files"] = self.ignore_corrupt_files
+        if self.infer_column_types is not None:
+            body["infer_column_types"] = self.infer_column_types
+        if self.reader_case_sensitive is not None:
+            body["reader_case_sensitive"] = self.reader_case_sensitive
+        if self.rescued_data_column is not None:
+            body["rescued_data_column"] = self.rescued_data_column
+        if self.schema_evolution_mode is not None:
+            body["schema_evolution_mode"] = self.schema_evolution_mode
+        if self.schema_hints is not None:
+            body["schema_hints"] = self.schema_hints
+        if self.single_variant_column is not None:
+            body["single_variant_column"] = self.single_variant_column
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FileIngestionOptions:
+        """Deserializes the FileIngestionOptions from a dictionary."""
+        return cls(
+            corrupt_record_column=d.get("corrupt_record_column", None),
+            file_filters=_repeated_dict(d, "file_filters", FileFilter),
+            format=_enum(d, "format", FileIngestionOptionsFileFormat),
+            format_options=d.get("format_options", None),
+            ignore_corrupt_files=d.get("ignore_corrupt_files", None),
+            infer_column_types=d.get("infer_column_types", None),
+            reader_case_sensitive=d.get("reader_case_sensitive", None),
+            rescued_data_column=d.get("rescued_data_column", None),
+            schema_evolution_mode=_enum(d, "schema_evolution_mode", FileIngestionOptionsSchemaEvolutionMode),
+            schema_hints=d.get("schema_hints", None),
+            single_variant_column=d.get("single_variant_column", None),
+        )
+
+
+class FileIngestionOptionsFileFormat(Enum):
+
+    AVRO = "AVRO"
+    BINARYFILE = "BINARYFILE"
+    CSV = "CSV"
+    EXCEL = "EXCEL"
+    JSON = "JSON"
+    ORC = "ORC"
+    PARQUET = "PARQUET"
+    XML = "XML"
+
+
+class FileIngestionOptionsSchemaEvolutionMode(Enum):
+    """Based on
+    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#how-does-auto-loader-schema-evolution-work
+    """
+
+    ADD_NEW_COLUMNS = "ADD_NEW_COLUMNS"
+    ADD_NEW_COLUMNS_WITH_TYPE_WIDENING = "ADD_NEW_COLUMNS_WITH_TYPE_WIDENING"
+    FAIL_ON_NEW_COLUMNS = "FAIL_ON_NEW_COLUMNS"
+    NONE = "NONE"
+    RESCUE = "RESCUE"
+
+
+@dataclass
 class FileLibrary:
     path: Optional[str] = None
     """The absolute path of the source code."""
@@ -450,6 +758,9 @@ class GetPipelineResponse:
     effective_publishing_mode: Optional[PublishingMode] = None
     """Publishing mode of the pipeline"""
 
+    effective_usage_policy_id: Optional[str] = None
+    """Serverless usage policy ID of the pipeline."""
+
     health: Optional[GetPipelineResponseHealth] = None
     """The health of a pipeline."""
 
@@ -492,6 +803,8 @@ class GetPipelineResponse:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.effective_publishing_mode is not None:
             body["effective_publishing_mode"] = self.effective_publishing_mode.value
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.health is not None:
             body["health"] = self.health.value
         if self.last_modified is not None:
@@ -525,6 +838,8 @@ class GetPipelineResponse:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.effective_publishing_mode is not None:
             body["effective_publishing_mode"] = self.effective_publishing_mode
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.health is not None:
             body["health"] = self.health
         if self.last_modified is not None:
@@ -554,6 +869,7 @@ class GetPipelineResponse:
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             effective_publishing_mode=_enum(d, "effective_publishing_mode", PublishingMode),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             health=_enum(d, "health", GetPipelineResponseHealth),
             last_modified=d.get("last_modified", None),
             latest_updates=_repeated_dict(d, "latest_updates", UpdateStateInfo),
@@ -596,6 +912,104 @@ class GetUpdateResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetUpdateResponse:
         """Deserializes the GetUpdateResponse from a dictionary."""
         return cls(update=_from_dict(d, "update", UpdateInfo))
+
+
+@dataclass
+class GoogleAdsOptions:
+    """Google Ads specific options for ingestion"""
+
+    manager_account_id: str
+    """(Required) Manager Account ID (also called MCC Account ID) used to list and access customer
+    accounts under this manager account. This is required for fetching the list of customer accounts
+    during source selection."""
+
+    lookback_window_days: Optional[int] = None
+    """(Optional) Number of days to look back for report tables to capture late-arriving data. If not
+    specified, defaults to 30 days."""
+
+    sync_start_date: Optional[str] = None
+    """(Optional) Start date for the initial sync of report tables in YYYY-MM-DD format. This
+    determines the earliest date from which to sync historical data. If not specified, defaults to 2
+    years of historical data."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GoogleAdsOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.lookback_window_days is not None:
+            body["lookback_window_days"] = self.lookback_window_days
+        if self.manager_account_id is not None:
+            body["manager_account_id"] = self.manager_account_id
+        if self.sync_start_date is not None:
+            body["sync_start_date"] = self.sync_start_date
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GoogleAdsOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.lookback_window_days is not None:
+            body["lookback_window_days"] = self.lookback_window_days
+        if self.manager_account_id is not None:
+            body["manager_account_id"] = self.manager_account_id
+        if self.sync_start_date is not None:
+            body["sync_start_date"] = self.sync_start_date
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GoogleAdsOptions:
+        """Deserializes the GoogleAdsOptions from a dictionary."""
+        return cls(
+            lookback_window_days=d.get("lookback_window_days", None),
+            manager_account_id=d.get("manager_account_id", None),
+            sync_start_date=d.get("sync_start_date", None),
+        )
+
+
+@dataclass
+class GoogleDriveOptions:
+    entity_type: Optional[GoogleDriveOptionsGoogleDriveEntityType] = None
+
+    file_ingestion_options: Optional[FileIngestionOptions] = None
+
+    url: Optional[str] = None
+    """Required. Google Drive URL."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GoogleDriveOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type.value
+        if self.file_ingestion_options:
+            body["file_ingestion_options"] = self.file_ingestion_options.as_dict()
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GoogleDriveOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
+        if self.file_ingestion_options:
+            body["file_ingestion_options"] = self.file_ingestion_options
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GoogleDriveOptions:
+        """Deserializes the GoogleDriveOptions from a dictionary."""
+        return cls(
+            entity_type=_enum(d, "entity_type", GoogleDriveOptionsGoogleDriveEntityType),
+            file_ingestion_options=_from_dict(d, "file_ingestion_options", FileIngestionOptions),
+            url=d.get("url", None),
+        )
+
+
+class GoogleDriveOptionsGoogleDriveEntityType(Enum):
+
+    FILE = "FILE"
+    FILE_METADATA = "FILE_METADATA"
+    PERMISSION = "PERMISSION"
 
 
 @dataclass
@@ -724,6 +1138,15 @@ class IngestionPipelineDefinition:
     ingestion_gateway_id to change the connector to Cdc Managed Ingestion Pipeline with Gateway
     pipeline."""
 
+    connector_type: Optional[ConnectorType] = None
+    """(Optional) Connector Type for sources. Ex: CDC, Query Based."""
+
+    data_staging_options: Optional[DataStagingOptions] = None
+    """(Optional) Location of staged data storage. This is required for migration from Cdc Managed
+    Ingestion Pipeline with Gateway pipeline to Combined Cdc Managed Ingestion Pipeline. If not
+    specified, the volume for staged data will be created in catalog and schema/target specified in
+    the top level pipeline definition."""
+
     full_refresh_window: Optional[OperationTimeWindow] = None
     """(Optional) A window that specifies a set of time ranges for snapshot queries in CDC."""
 
@@ -761,6 +1184,10 @@ class IngestionPipelineDefinition:
         body = {}
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.connector_type is not None:
+            body["connector_type"] = self.connector_type.value
+        if self.data_staging_options:
+            body["data_staging_options"] = self.data_staging_options.as_dict()
         if self.full_refresh_window:
             body["full_refresh_window"] = self.full_refresh_window.as_dict()
         if self.ingest_from_uc_foreign_catalog is not None:
@@ -784,6 +1211,10 @@ class IngestionPipelineDefinition:
         body = {}
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.connector_type is not None:
+            body["connector_type"] = self.connector_type
+        if self.data_staging_options:
+            body["data_staging_options"] = self.data_staging_options
         if self.full_refresh_window:
             body["full_refresh_window"] = self.full_refresh_window
         if self.ingest_from_uc_foreign_catalog is not None:
@@ -807,6 +1238,8 @@ class IngestionPipelineDefinition:
         """Deserializes the IngestionPipelineDefinition from a dictionary."""
         return cls(
             connection_name=d.get("connection_name", None),
+            connector_type=_enum(d, "connector_type", ConnectorType),
+            data_staging_options=_from_dict(d, "data_staging_options", DataStagingOptions),
             full_refresh_window=_from_dict(d, "full_refresh_window", OperationTimeWindow),
             ingest_from_uc_foreign_catalog=d.get("ingest_from_uc_foreign_catalog", None),
             ingestion_gateway_id=d.get("ingestion_gateway_id", None),
@@ -816,6 +1249,56 @@ class IngestionPipelineDefinition:
             source_type=_enum(d, "source_type", IngestionSourceType),
             table_configuration=_from_dict(d, "table_configuration", TableSpecificConfig),
         )
+
+
+@dataclass
+class IngestionPipelineDefinitionConfluenceOptions:
+    include_confluence_spaces: Optional[List[str]] = None
+    """(Optional) Spaces to filter confluence data on"""
+
+    def as_dict(self) -> dict:
+        """Serializes the IngestionPipelineDefinitionConfluenceOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.include_confluence_spaces:
+            body["include_confluence_spaces"] = [v for v in self.include_confluence_spaces]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IngestionPipelineDefinitionConfluenceOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.include_confluence_spaces:
+            body["include_confluence_spaces"] = self.include_confluence_spaces
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> IngestionPipelineDefinitionConfluenceOptions:
+        """Deserializes the IngestionPipelineDefinitionConfluenceOptions from a dictionary."""
+        return cls(include_confluence_spaces=d.get("include_confluence_spaces", None))
+
+
+@dataclass
+class IngestionPipelineDefinitionJiraOptions:
+    include_jira_spaces: Optional[List[str]] = None
+    """(Optional) Projects/spaces to filter jira data on"""
+
+    def as_dict(self) -> dict:
+        """Serializes the IngestionPipelineDefinitionJiraOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.include_jira_spaces:
+            body["include_jira_spaces"] = [v for v in self.include_jira_spaces]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IngestionPipelineDefinitionJiraOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.include_jira_spaces:
+            body["include_jira_spaces"] = self.include_jira_spaces
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> IngestionPipelineDefinitionJiraOptions:
+        """Deserializes the IngestionPipelineDefinitionJiraOptions from a dictionary."""
+        return cls(include_jira_spaces=d.get("include_jira_spaces", None))
 
 
 @dataclass
@@ -964,21 +1447,54 @@ class IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
 
 class IngestionSourceType(Enum):
 
+    ADOBE_CAMPAIGNS = "ADOBE_CAMPAIGNS"
+    AKAMAI_WAF = "AKAMAI_WAF"
     BIGQUERY = "BIGQUERY"
+    BING_ADS = "BING_ADS"
+    CONFLUENCE = "CONFLUENCE"
+    CROWDSTRIKE_EVENT_STREAM = "CROWDSTRIKE_EVENT_STREAM"
     DYNAMICS365 = "DYNAMICS365"
     FOREIGN_CATALOG = "FOREIGN_CATALOG"
     GA4_RAW_DATA = "GA4_RAW_DATA"
+    GITHUB = "GITHUB"
+    GOOGLE_ADS = "GOOGLE_ADS"
+    GOOGLE_SEARCH_CONSOLE = "GOOGLE_SEARCH_CONSOLE"
+    GUIDEWIRE = "GUIDEWIRE"
+    HUBSPOT = "HUBSPOT"
+    LINKEDIN_ADS = "LINKEDIN_ADS"
+    M365_AUDIT_LOGS = "M365_AUDIT_LOGS"
     MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
+    META_MARKETING = "META_MARKETING"
+    MICROSOFT_TEAMS = "MICROSOFT_TEAMS"
     MYSQL = "MYSQL"
     NETSUITE = "NETSUITE"
+    OKTA_SYSTEM_LOGS = "OKTA_SYSTEM_LOGS"
+    ONE_PASSWORD_EVENT_LOGS = "ONE_PASSWORD_EVENT_LOGS"
     ORACLE = "ORACLE"
+    OUTLOOK = "OUTLOOK"
+    PINTEREST_ADS = "PINTEREST_ADS"
     POSTGRESQL = "POSTGRESQL"
+    PROOFPOINT_SIEM = "PROOFPOINT_SIEM"
+    REDDIT_ADS = "REDDIT_ADS"
+    REDSHIFT = "REDSHIFT"
     SALESFORCE = "SALESFORCE"
+    SALESFORCE_MARKETING_CLOUD = "SALESFORCE_MARKETING_CLOUD"
     SERVICENOW = "SERVICENOW"
     SHAREPOINT = "SHAREPOINT"
+    SLACK_AUDIT_LOGS = "SLACK_AUDIT_LOGS"
+    SMARTSHEET = "SMARTSHEET"
+    SQLDW = "SQLDW"
     SQLSERVER = "SQLSERVER"
     TERADATA = "TERADATA"
+    TIKTOK_ADS = "TIKTOK_ADS"
+    VEEVA = "VEEVA"
+    VEEVA_VAULT = "VEEVA_VAULT"
+    WIZ_AUDIT_LOGS = "WIZ_AUDIT_LOGS"
+    WORKDAY_ACTIVITY_LOGGING = "WORKDAY_ACTIVITY_LOGGING"
+    WORKDAY_HCM = "WORKDAY_HCM"
     WORKDAY_RAAS = "WORKDAY_RAAS"
+    X_ADS = "X_ADS"
+    ZENDESK = "ZENDESK"
 
 
 @dataclass
@@ -1258,8 +1774,30 @@ class Origin:
     flow_name: Optional[str] = None
     """The name of the flow. Not unique."""
 
+    graph_id: Optional[str] = None
+    """The UUID of the graph associated with this event, corresponding to a GRAPH_UPDATED event."""
+
     host: Optional[str] = None
     """The optional host name where the event was triggered"""
+
+    ingestion_source_catalog_name: Optional[str] = None
+    """The name of the source catalog name (if known) from whose data ingestion is described by this
+    event."""
+
+    ingestion_source_connection_name: Optional[str] = None
+    """The name of the source UC connection (if known) from whose data ingestion is described by this
+    event."""
+
+    ingestion_source_schema_name: Optional[str] = None
+    """The name of the source schema name (if known) from whose data ingestion is described by this
+    event."""
+
+    ingestion_source_table_name: Optional[str] = None
+    """The name of the source table name (if known) from whose data ingestion is described by this
+    event."""
+
+    ingestion_source_table_version: Optional[str] = None
+    """An optional implementation-defined source table version of a dataset being (re)ingested."""
 
     maintenance_id: Optional[str] = None
     """The id of a maintenance run. Globally unique."""
@@ -1306,8 +1844,20 @@ class Origin:
             body["flow_id"] = self.flow_id
         if self.flow_name is not None:
             body["flow_name"] = self.flow_name
+        if self.graph_id is not None:
+            body["graph_id"] = self.graph_id
         if self.host is not None:
             body["host"] = self.host
+        if self.ingestion_source_catalog_name is not None:
+            body["ingestion_source_catalog_name"] = self.ingestion_source_catalog_name
+        if self.ingestion_source_connection_name is not None:
+            body["ingestion_source_connection_name"] = self.ingestion_source_connection_name
+        if self.ingestion_source_schema_name is not None:
+            body["ingestion_source_schema_name"] = self.ingestion_source_schema_name
+        if self.ingestion_source_table_name is not None:
+            body["ingestion_source_table_name"] = self.ingestion_source_table_name
+        if self.ingestion_source_table_version is not None:
+            body["ingestion_source_table_version"] = self.ingestion_source_table_version
         if self.maintenance_id is not None:
             body["maintenance_id"] = self.maintenance_id
         if self.materialization_name is not None:
@@ -1345,8 +1895,20 @@ class Origin:
             body["flow_id"] = self.flow_id
         if self.flow_name is not None:
             body["flow_name"] = self.flow_name
+        if self.graph_id is not None:
+            body["graph_id"] = self.graph_id
         if self.host is not None:
             body["host"] = self.host
+        if self.ingestion_source_catalog_name is not None:
+            body["ingestion_source_catalog_name"] = self.ingestion_source_catalog_name
+        if self.ingestion_source_connection_name is not None:
+            body["ingestion_source_connection_name"] = self.ingestion_source_connection_name
+        if self.ingestion_source_schema_name is not None:
+            body["ingestion_source_schema_name"] = self.ingestion_source_schema_name
+        if self.ingestion_source_table_name is not None:
+            body["ingestion_source_table_name"] = self.ingestion_source_table_name
+        if self.ingestion_source_table_version is not None:
+            body["ingestion_source_table_version"] = self.ingestion_source_table_version
         if self.maintenance_id is not None:
             body["maintenance_id"] = self.maintenance_id
         if self.materialization_name is not None:
@@ -1379,7 +1941,13 @@ class Origin:
             dataset_name=d.get("dataset_name", None),
             flow_id=d.get("flow_id", None),
             flow_name=d.get("flow_name", None),
+            graph_id=d.get("graph_id", None),
             host=d.get("host", None),
+            ingestion_source_catalog_name=d.get("ingestion_source_catalog_name", None),
+            ingestion_source_connection_name=d.get("ingestion_source_connection_name", None),
+            ingestion_source_schema_name=d.get("ingestion_source_schema_name", None),
+            ingestion_source_table_name=d.get("ingestion_source_table_name", None),
+            ingestion_source_table_version=d.get("ingestion_source_table_version", None),
             maintenance_id=d.get("maintenance_id", None),
             materialization_name=d.get("materialization_name", None),
             org_id=d.get("org_id", None),
@@ -1390,6 +1958,66 @@ class Origin:
             table_id=d.get("table_id", None),
             uc_resource_id=d.get("uc_resource_id", None),
             update_id=d.get("update_id", None),
+        )
+
+
+@dataclass
+class OutlookOptions:
+    """Outlook specific options for ingestion"""
+
+    folder_filter: Optional[List[str]] = None
+    """(Optional) Filter mail folders to include in the sync. If not specified, all folders will be
+    synced. Examples: Inbox, Sent Items, Custom_Folder"""
+
+    sender_filter: Optional[List[str]] = None
+    """(Optional) Filter emails by sender address. Uses contains matching (substring). Wildcards are
+    not supported. Examples: vendor.com, alerts@system.io, noreply@ If not specified, emails from
+    all senders will be synced."""
+
+    start_date: Optional[str] = None
+    """(Optional) Start date for the initial sync in ISO 8601 format. Format: YYYY-MM-DDTHH:MM:SSZ
+    (e.g., 2024-01-01T00:00:00Z) This determines the earliest date from which to sync historical
+    data. If not specified, complete history is ingested."""
+
+    subject_filter: Optional[List[str]] = None
+    """(Optional) Filter emails by subject line. Uses contains matching (substring). Wildcards are not
+    supported. Examples: Support Ticket, Invoice, URGENT If not specified, emails with all subjects
+    will be synced."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OutlookOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.folder_filter:
+            body["folder_filter"] = [v for v in self.folder_filter]
+        if self.sender_filter:
+            body["sender_filter"] = [v for v in self.sender_filter]
+        if self.start_date is not None:
+            body["start_date"] = self.start_date
+        if self.subject_filter:
+            body["subject_filter"] = [v for v in self.subject_filter]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OutlookOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.folder_filter:
+            body["folder_filter"] = self.folder_filter
+        if self.sender_filter:
+            body["sender_filter"] = self.sender_filter
+        if self.start_date is not None:
+            body["start_date"] = self.start_date
+        if self.subject_filter:
+            body["subject_filter"] = self.subject_filter
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OutlookOptions:
+        """Deserializes the OutlookOptions from a dictionary."""
+        return cls(
+            folder_filter=d.get("folder_filter", None),
+            sender_filter=d.get("sender_filter", None),
+            start_date=d.get("start_date", None),
+            subject_filter=d.get("subject_filter", None),
         )
 
 
@@ -2769,6 +3397,24 @@ class RestartWindow:
 
 
 @dataclass
+class RestorePipelineRequestResponse:
+    def as_dict(self) -> dict:
+        """Serializes the RestorePipelineRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestorePipelineRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RestorePipelineRequestResponse:
+        """Deserializes the RestorePipelineRequestResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class RewindDatasetSpec:
     """Configuration for rewinding a specific dataset."""
 
@@ -2912,6 +3558,13 @@ class SchemaSpec:
     are created in this destination schema. The pipeline fails If a table with the same name already
     exists."""
 
+    confluence_options: Optional[IngestionPipelineDefinitionConfluenceOptions] = None
+
+    connector_options: Optional[ConnectorOptions] = None
+    """(Optional) Source Specific Connector Options"""
+
+    jira_options: Optional[IngestionPipelineDefinitionJiraOptions] = None
+
     source_catalog: Optional[str] = None
     """The source catalog name. Might be optional depending on the type of source."""
 
@@ -2923,10 +3576,16 @@ class SchemaSpec:
     def as_dict(self) -> dict:
         """Serializes the SchemaSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.confluence_options:
+            body["confluence_options"] = self.confluence_options.as_dict()
+        if self.connector_options:
+            body["connector_options"] = self.connector_options.as_dict()
         if self.destination_catalog is not None:
             body["destination_catalog"] = self.destination_catalog
         if self.destination_schema is not None:
             body["destination_schema"] = self.destination_schema
+        if self.jira_options:
+            body["jira_options"] = self.jira_options.as_dict()
         if self.source_catalog is not None:
             body["source_catalog"] = self.source_catalog
         if self.source_schema is not None:
@@ -2938,10 +3597,16 @@ class SchemaSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the SchemaSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.confluence_options:
+            body["confluence_options"] = self.confluence_options
+        if self.connector_options:
+            body["connector_options"] = self.connector_options
         if self.destination_catalog is not None:
             body["destination_catalog"] = self.destination_catalog
         if self.destination_schema is not None:
             body["destination_schema"] = self.destination_schema
+        if self.jira_options:
+            body["jira_options"] = self.jira_options
         if self.source_catalog is not None:
             body["source_catalog"] = self.source_catalog
         if self.source_schema is not None:
@@ -2954,8 +3619,11 @@ class SchemaSpec:
     def from_dict(cls, d: Dict[str, Any]) -> SchemaSpec:
         """Deserializes the SchemaSpec from a dictionary."""
         return cls(
+            confluence_options=_from_dict(d, "confluence_options", IngestionPipelineDefinitionConfluenceOptions),
+            connector_options=_from_dict(d, "connector_options", ConnectorOptions),
             destination_catalog=d.get("destination_catalog", None),
             destination_schema=d.get("destination_schema", None),
+            jira_options=_from_dict(d, "jira_options", IngestionPipelineDefinitionJiraOptions),
             source_catalog=d.get("source_catalog", None),
             source_schema=d.get("source_schema", None),
             table_configuration=_from_dict(d, "table_configuration", TableSpecificConfig),
@@ -3038,6 +3706,57 @@ class SerializedException:
             message=d.get("message", None),
             stack=_repeated_dict(d, "stack", StackFrame),
         )
+
+
+@dataclass
+class SharepointOptions:
+    entity_type: Optional[SharepointOptionsSharepointEntityType] = None
+    """(Optional) The type of SharePoint entity to ingest. If not specified, defaults to FILE."""
+
+    file_ingestion_options: Optional[FileIngestionOptions] = None
+    """(Optional) File ingestion options for processing files."""
+
+    url: Optional[str] = None
+    """Required. The SharePoint URL."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SharepointOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type.value
+        if self.file_ingestion_options:
+            body["file_ingestion_options"] = self.file_ingestion_options.as_dict()
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SharepointOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
+        if self.file_ingestion_options:
+            body["file_ingestion_options"] = self.file_ingestion_options
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SharepointOptions:
+        """Deserializes the SharepointOptions from a dictionary."""
+        return cls(
+            entity_type=_enum(d, "entity_type", SharepointOptionsSharepointEntityType),
+            file_ingestion_options=_from_dict(d, "file_ingestion_options", FileIngestionOptions),
+            url=d.get("url", None),
+        )
+
+
+class SharepointOptionsSharepointEntityType(Enum):
+
+    FILE = "FILE"
+    FILE_METADATA = "FILE_METADATA"
+    LIST = "LIST"
+    PERMISSION = "PERMISSION"
 
 
 @dataclass
@@ -3217,9 +3936,16 @@ class TableSpec:
     destination_schema: str
     """Required. Destination schema to store table."""
 
+    confluence_options: Optional[IngestionPipelineDefinitionConfluenceOptions] = None
+
+    connector_options: Optional[ConnectorOptions] = None
+    """(Optional) Source Specific Connector Options"""
+
     destination_table: Optional[str] = None
     """Optional. Destination table name. The pipeline fails if a table with that name already exists.
     If not set, the source table name is used."""
+
+    jira_options: Optional[IngestionPipelineDefinitionJiraOptions] = None
 
     source_catalog: Optional[str] = None
     """Source catalog name. Might be optional depending on the type of source."""
@@ -3234,12 +3960,18 @@ class TableSpec:
     def as_dict(self) -> dict:
         """Serializes the TableSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.confluence_options:
+            body["confluence_options"] = self.confluence_options.as_dict()
+        if self.connector_options:
+            body["connector_options"] = self.connector_options.as_dict()
         if self.destination_catalog is not None:
             body["destination_catalog"] = self.destination_catalog
         if self.destination_schema is not None:
             body["destination_schema"] = self.destination_schema
         if self.destination_table is not None:
             body["destination_table"] = self.destination_table
+        if self.jira_options:
+            body["jira_options"] = self.jira_options.as_dict()
         if self.source_catalog is not None:
             body["source_catalog"] = self.source_catalog
         if self.source_schema is not None:
@@ -3253,12 +3985,18 @@ class TableSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the TableSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.confluence_options:
+            body["confluence_options"] = self.confluence_options
+        if self.connector_options:
+            body["connector_options"] = self.connector_options
         if self.destination_catalog is not None:
             body["destination_catalog"] = self.destination_catalog
         if self.destination_schema is not None:
             body["destination_schema"] = self.destination_schema
         if self.destination_table is not None:
             body["destination_table"] = self.destination_table
+        if self.jira_options:
+            body["jira_options"] = self.jira_options
         if self.source_catalog is not None:
             body["source_catalog"] = self.source_catalog
         if self.source_schema is not None:
@@ -3273,9 +4011,12 @@ class TableSpec:
     def from_dict(cls, d: Dict[str, Any]) -> TableSpec:
         """Deserializes the TableSpec from a dictionary."""
         return cls(
+            confluence_options=_from_dict(d, "confluence_options", IngestionPipelineDefinitionConfluenceOptions),
+            connector_options=_from_dict(d, "connector_options", ConnectorOptions),
             destination_catalog=d.get("destination_catalog", None),
             destination_schema=d.get("destination_schema", None),
             destination_table=d.get("destination_table", None),
+            jira_options=_from_dict(d, "jira_options", IngestionPipelineDefinitionJiraOptions),
             source_catalog=d.get("source_catalog", None),
             source_schema=d.get("source_schema", None),
             source_table=d.get("source_table", None),
@@ -3291,6 +4032,20 @@ class TableSpecificConfig:
     table configuration will override the above level auto_full_refresh_policy. For example, {
     "auto_full_refresh_policy": { "enabled": true, "min_interval_hours": 23, } } If unspecified,
     auto full refresh is disabled."""
+
+    clustering_columns: Optional[List[str]] = None
+    """List of column names to use for clustering the destination table. When specified, the
+    destination Delta table will be clustered by these columns. This can improve query performance
+    when filtering on these columns. Note: clustering_columns in table specific configuration will
+    override the pipeline definition. Note: we can only provide enable_auto_clustering or
+    clustering_columns, added as separate fields as we cannot have repeated field in oneof."""
+
+    enable_auto_clustering: Optional[bool] = None
+    """Whether to enable auto clustering on the destination table. When enabled, Delta will
+    automatically optimize the data layout based on the clustering columns for improved query
+    performance. Note: enable_auto_clustering in table specific configuration will override the
+    pipeline definition. Note: we can only provide enable_auto_clustering or clustering_columns,
+    added as separate fields as we cannot have repeated field in oneof."""
 
     exclude_columns: Optional[List[str]] = None
     """A list of column names to be excluded for the ingestion. When not specified, include_columns
@@ -3326,6 +4081,13 @@ class TableSpecificConfig:
     """The column names specifying the logical order of events in the source data. Spark Declarative
     Pipelines uses this sequencing to handle change events that arrive out of order."""
 
+    table_properties: Optional[Dict[str, str]] = None
+    """Table properties to set on the destination table. These are key-value pairs that configure
+    various Delta table behaviors or any user defined properties. Example:
+    {"delta.feature.variantType": "supported", "delta.enableTypeWidening": "true"} Note:
+    table_properties in table specific configuration will override the table_properties of the
+    pipeline definition."""
+
     workday_report_parameters: Optional[IngestionPipelineDefinitionWorkdayReportParameters] = None
     """(Optional) Additional custom parameters for Workday Report"""
 
@@ -3334,6 +4096,10 @@ class TableSpecificConfig:
         body = {}
         if self.auto_full_refresh_policy:
             body["auto_full_refresh_policy"] = self.auto_full_refresh_policy.as_dict()
+        if self.clustering_columns:
+            body["clustering_columns"] = [v for v in self.clustering_columns]
+        if self.enable_auto_clustering is not None:
+            body["enable_auto_clustering"] = self.enable_auto_clustering
         if self.exclude_columns:
             body["exclude_columns"] = [v for v in self.exclude_columns]
         if self.include_columns:
@@ -3350,6 +4116,8 @@ class TableSpecificConfig:
             body["scd_type"] = self.scd_type.value
         if self.sequence_by:
             body["sequence_by"] = [v for v in self.sequence_by]
+        if self.table_properties:
+            body["table_properties"] = self.table_properties
         if self.workday_report_parameters:
             body["workday_report_parameters"] = self.workday_report_parameters.as_dict()
         return body
@@ -3359,6 +4127,10 @@ class TableSpecificConfig:
         body = {}
         if self.auto_full_refresh_policy:
             body["auto_full_refresh_policy"] = self.auto_full_refresh_policy
+        if self.clustering_columns:
+            body["clustering_columns"] = self.clustering_columns
+        if self.enable_auto_clustering is not None:
+            body["enable_auto_clustering"] = self.enable_auto_clustering
         if self.exclude_columns:
             body["exclude_columns"] = self.exclude_columns
         if self.include_columns:
@@ -3375,6 +4147,8 @@ class TableSpecificConfig:
             body["scd_type"] = self.scd_type
         if self.sequence_by:
             body["sequence_by"] = self.sequence_by
+        if self.table_properties:
+            body["table_properties"] = self.table_properties
         if self.workday_report_parameters:
             body["workday_report_parameters"] = self.workday_report_parameters
         return body
@@ -3384,6 +4158,8 @@ class TableSpecificConfig:
         """Deserializes the TableSpecificConfig from a dictionary."""
         return cls(
             auto_full_refresh_policy=_from_dict(d, "auto_full_refresh_policy", AutoFullRefreshPolicy),
+            clustering_columns=d.get("clustering_columns", None),
+            enable_auto_clustering=d.get("enable_auto_clustering", None),
             exclude_columns=d.get("exclude_columns", None),
             include_columns=d.get("include_columns", None),
             primary_keys=d.get("primary_keys", None),
@@ -3396,6 +4172,7 @@ class TableSpecificConfig:
             salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
             scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
             sequence_by=d.get("sequence_by", None),
+            table_properties=d.get("table_properties", None),
             workday_report_parameters=_from_dict(
                 d, "workday_report_parameters", IngestionPipelineDefinitionWorkdayReportParameters
             ),
@@ -3408,6 +4185,110 @@ class TableSpecificConfigScdType(Enum):
     APPEND_ONLY = "APPEND_ONLY"
     SCD_TYPE_1 = "SCD_TYPE_1"
     SCD_TYPE_2 = "SCD_TYPE_2"
+
+
+@dataclass
+class TikTokAdsOptions:
+    """TikTok Ads specific options for ingestion"""
+
+    data_level: Optional[TikTokAdsOptionsTikTokDataLevel] = None
+    """(Optional) Data level for the report. If not specified, defaults to AUCTION_CAMPAIGN."""
+
+    dimensions: Optional[List[str]] = None
+    """(Optional) Dimensions to include in the report. Examples: "campaign_id", "adgroup_id", "ad_id",
+    "stat_time_day", "stat_time_hour" If not specified, defaults to campaign_id."""
+
+    lookback_window_days: Optional[int] = None
+    """(Optional) Number of days to look back for report tables during incremental sync to capture
+    late-arriving conversions and attribution data. If not specified, defaults to 7 days."""
+
+    metrics: Optional[List[str]] = None
+    """(Optional) Metrics to include in the report. Examples: "spend", "impressions", "clicks",
+    "conversion", "cpc" If not specified, defaults to basic metrics (spend, impressions, clicks,
+    etc.)"""
+
+    query_lifetime: Optional[bool] = None
+    """(Optional) Whether to request lifetime metrics (all-time aggregated data). When true, the report
+    returns all-time data. If not specified, defaults to false."""
+
+    report_type: Optional[TikTokAdsOptionsTikTokReportType] = None
+    """(Optional) Report type for the TikTok Ads API. If not specified, defaults to BASIC."""
+
+    sync_start_date: Optional[str] = None
+    """(Optional) Start date for the initial sync of report tables in YYYY-MM-DD format. This
+    determines the earliest date from which to sync historical data. If not specified, defaults to 1
+    year of historical data for daily reports and 30 days for hourly reports."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TikTokAdsOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_level is not None:
+            body["data_level"] = self.data_level.value
+        if self.dimensions:
+            body["dimensions"] = [v for v in self.dimensions]
+        if self.lookback_window_days is not None:
+            body["lookback_window_days"] = self.lookback_window_days
+        if self.metrics:
+            body["metrics"] = [v for v in self.metrics]
+        if self.query_lifetime is not None:
+            body["query_lifetime"] = self.query_lifetime
+        if self.report_type is not None:
+            body["report_type"] = self.report_type.value
+        if self.sync_start_date is not None:
+            body["sync_start_date"] = self.sync_start_date
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TikTokAdsOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_level is not None:
+            body["data_level"] = self.data_level
+        if self.dimensions:
+            body["dimensions"] = self.dimensions
+        if self.lookback_window_days is not None:
+            body["lookback_window_days"] = self.lookback_window_days
+        if self.metrics:
+            body["metrics"] = self.metrics
+        if self.query_lifetime is not None:
+            body["query_lifetime"] = self.query_lifetime
+        if self.report_type is not None:
+            body["report_type"] = self.report_type
+        if self.sync_start_date is not None:
+            body["sync_start_date"] = self.sync_start_date
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TikTokAdsOptions:
+        """Deserializes the TikTokAdsOptions from a dictionary."""
+        return cls(
+            data_level=_enum(d, "data_level", TikTokAdsOptionsTikTokDataLevel),
+            dimensions=d.get("dimensions", None),
+            lookback_window_days=d.get("lookback_window_days", None),
+            metrics=d.get("metrics", None),
+            query_lifetime=d.get("query_lifetime", None),
+            report_type=_enum(d, "report_type", TikTokAdsOptionsTikTokReportType),
+            sync_start_date=d.get("sync_start_date", None),
+        )
+
+
+class TikTokAdsOptionsTikTokDataLevel(Enum):
+    """Data level for TikTok Ads report aggregation."""
+
+    AUCTION_AD = "AUCTION_AD"
+    AUCTION_ADGROUP = "AUCTION_ADGROUP"
+    AUCTION_ADVERTISER = "AUCTION_ADVERTISER"
+    AUCTION_CAMPAIGN = "AUCTION_CAMPAIGN"
+
+
+class TikTokAdsOptionsTikTokReportType(Enum):
+    """Report type for TikTok Ads API."""
+
+    AUDIENCE = "AUDIENCE"
+    BASIC = "BASIC"
+    BUSINESS_CENTER = "BUSINESS_CENTER"
+    DSA = "DSA"
+    GMV_MAX = "GMV_MAX"
+    PLAYABLE_AD = "PLAYABLE_AD"
 
 
 @dataclass
@@ -3487,6 +4368,10 @@ class UpdateInfo:
     full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
     that the states of the table will be reset before the refresh."""
 
+    mode: Optional[UpdateMode] = None
+    """Indicates whether the update is either part of a continuous job run, or running in legacy
+    continuous pipeline mode."""
+
     parameters: Optional[Dict[str, str]] = None
     """Key/value map of parameters used to initiate the update"""
 
@@ -3523,6 +4408,8 @@ class UpdateInfo:
             body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
             body["full_refresh_selection"] = [v for v in self.full_refresh_selection]
+        if self.mode is not None:
+            body["mode"] = self.mode.value
         if self.parameters:
             body["parameters"] = self.parameters
         if self.pipeline_id is not None:
@@ -3552,6 +4439,8 @@ class UpdateInfo:
             body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
             body["full_refresh_selection"] = self.full_refresh_selection
+        if self.mode is not None:
+            body["mode"] = self.mode
         if self.parameters:
             body["parameters"] = self.parameters
         if self.pipeline_id is not None:
@@ -3576,6 +4465,7 @@ class UpdateInfo:
             creation_time=d.get("creation_time", None),
             full_refresh=d.get("full_refresh", None),
             full_refresh_selection=d.get("full_refresh_selection", None),
+            mode=_enum(d, "mode", UpdateMode),
             parameters=d.get("parameters", None),
             pipeline_id=d.get("pipeline_id", None),
             refresh_selection=d.get("refresh_selection", None),
@@ -3611,6 +4501,12 @@ class UpdateInfoState(Enum):
     SETTING_UP_TABLES = "SETTING_UP_TABLES"
     STOPPING = "STOPPING"
     WAITING_FOR_RESOURCES = "WAITING_FOR_RESOURCES"
+
+
+class UpdateMode(Enum):
+
+    CONTINUOUS = "CONTINUOUS"
+    DEFAULT = "DEFAULT"
 
 
 @dataclass
@@ -3716,6 +4612,26 @@ class PipelinesAPI:
             time.sleep(sleep + random.random())
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
+
+    def apply_environment(self, pipeline_id: str) -> ApplyEnvironmentRequestResponse:
+        """* Applies the current pipeline environment onto the pipeline compute. The environment applied can be
+        used by subsequent dev-mode updates.
+
+        :param pipeline_id: str
+
+        :returns: :class:`ApplyEnvironmentRequestResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/environment/apply", headers=headers)
+        return ApplyEnvironmentRequestResponse.from_dict(res)
 
     def clone(
         self,
@@ -4094,11 +5010,23 @@ class PipelinesAPI:
         res = self._api.do("POST", "/api/2.0/pipelines", body=body, headers=headers)
         return CreatePipelineResponse.from_dict(res)
 
-    def delete(self, pipeline_id: str, *, force: Optional[bool] = None):
+    def delete(
+        self,
+        pipeline_id: str,
+        *,
+        cascade: Optional[bool] = None,
+        delete_datasets: Optional[bool] = None,
+        force: Optional[bool] = None,
+    ):
         """Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletion will cascade to all
         pipeline tables. Please reach out to Databricks support for assistance to undo this action.
 
         :param pipeline_id: str
+        :param cascade: bool (optional)
+          If false, pipeline deletion will not cascade to its datasets (MVs, STs, Views). By default, this
+          parameter will be true and all tables will be deleted with the pipeline.
+        :param delete_datasets: bool (optional)
+          Deprecated: Use `cascade` instead.
         :param force: bool (optional)
           If true, deletion will proceed even if resource cleanup fails. By default, deletion will fail if
           resources cleanup is required but fails.
@@ -4107,6 +5035,10 @@ class PipelinesAPI:
         """
 
         query = {}
+        if cascade is not None:
+            query["cascade"] = cascade
+        if delete_datasets is not None:
+            query["delete_datasets"] = delete_datasets
         if force is not None:
             query["force"] = force
         headers = {
@@ -4358,6 +5290,27 @@ class PipelinesAPI:
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, headers=headers)
         return ListUpdatesResponse.from_dict(res)
+
+    def restore_pipeline(self, pipeline_id: str) -> RestorePipelineRequestResponse:
+        """* Restores a pipeline that was previously deleted, if within the restoration window. All tables
+        deleted at pipeline deletion will be undropped as well.
+
+        :param pipeline_id: str
+          The ID of the pipeline to restore
+
+        :returns: :class:`RestorePipelineRequestResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/restore", headers=headers)
+        return RestorePipelineRequestResponse.from_dict(res)
 
     def set_permissions(
         self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None
