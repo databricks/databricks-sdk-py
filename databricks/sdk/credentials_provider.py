@@ -965,12 +965,11 @@ class DatabricksCliTokenSource(CliTokenSource):
         requested_scopes = set(self._requested_scopes) - self._SCOPES_IGNORED_FOR_COMPARISON
 
         if token_scopes != requested_scopes:
-            scopes_csv = ",".join(sorted(requested_scopes))
             raise ValueError(
                 f"Token issued by Databricks CLI has scopes {sorted(token_scopes)} which do not match "
                 f"the configured scopes {sorted(requested_scopes)}. Please re-authenticate "
-                f"with the correct scopes by running: "
-                f"databricks auth login --host {self._host} --scopes {scopes_csv}"
+                f"with the desired scopes by running `databricks auth login` with the --scopes flag."
+                f"Scopes default to all-apis."
             )
 
     @staticmethod
