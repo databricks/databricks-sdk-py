@@ -6,6 +6,7 @@ import logging
 import random
 import time
 from dataclasses import dataclass
+from urllib.parse import quote
 from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
@@ -14260,8 +14261,9 @@ class QualityMonitorsAPI:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
-            "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel", headers=headers
-        )
+            "POST",
+            f"/api/2.1/unity-catalog/tables/{quote(table_name, safe='')}/monitor/refreshes/{refresh_id}/cancel",
+            headers=headers)
 
     def create(
         self,
@@ -14374,7 +14376,10 @@ class QualityMonitorsAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", body=body, headers=headers)
+        res = self._api.do("POST",
+                           f"/api/2.1/unity-catalog/tables/{quote(table_name, safe='')}/monitor",
+                           body=body,
+                           headers=headers)
         return MonitorInfo.from_dict(res)
 
     def delete(self, table_name: str) -> DeleteMonitorResponse:
@@ -14406,7 +14411,9 @@ class QualityMonitorsAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
+        res = self._api.do("DELETE",
+                           f"/api/2.1/unity-catalog/tables/{quote(table_name, safe='')}/monitor",
+                           headers=headers)
         return DeleteMonitorResponse.from_dict(res)
 
     def get(self, table_name: str) -> MonitorInfo:
@@ -14437,7 +14444,9 @@ class QualityMonitorsAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
+        res = self._api.do("GET",
+                           f"/api/2.1/unity-catalog/tables/{quote(table_name, safe='')}/monitor",
+                           headers=headers)
         return MonitorInfo.from_dict(res)
 
     def get_refresh(self, table_name: str, refresh_id: int) -> MonitorRefreshInfo:
@@ -14468,8 +14477,9 @@ class QualityMonitorsAPI:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}", headers=headers
-        )
+            "GET",
+            f"/api/2.1/unity-catalog/tables/{quote(table_name, safe='')}/monitor/refreshes/{refresh_id}",
+            headers=headers)
         return MonitorRefreshInfo.from_dict(res)
 
     def list_refreshes(self, table_name: str) -> MonitorRefreshListResponse:
@@ -14498,7 +14508,7 @@ class QualityMonitorsAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{quote(table_name, safe='')}/monitor/refreshes", headers=headers)
         return MonitorRefreshListResponse.from_dict(res)
 
     def regenerate_dashboard(
@@ -14538,7 +14548,7 @@ class QualityMonitorsAPI:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
-            "POST", f"/api/2.1/quality-monitoring/tables/{table_name}/monitor/dashboard", body=body, headers=headers
+            "POST", f"/api/2.1/quality-monitoring/tables/{quote(table_name, safe='')}/monitor/dashboard", body=body, headers=headers
         )
         return RegenerateDashboardResponse.from_dict(res)
 
@@ -14568,7 +14578,7 @@ class QualityMonitorsAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
+        res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{quote(table_name, safe='')}/monitor/refreshes", headers=headers)
         return MonitorRefreshInfo.from_dict(res)
 
     def update(
@@ -14673,7 +14683,7 @@ class QualityMonitorsAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("PUT", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", body=body, headers=headers)
+        res = self._api.do("PUT", f"/api/2.1/unity-catalog/tables/{quote(table_name, safe='')}/monitor", body=body, headers=headers)
         return MonitorInfo.from_dict(res)
 
 
@@ -16215,7 +16225,7 @@ class TablesAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{full_name}", headers=headers)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{quote(full_name, safe='')}", headers=headers)
 
     def exists(self, full_name: str) -> TableExistsResponse:
         """Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
@@ -16239,7 +16249,7 @@ class TablesAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}/exists", headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{quote(full_name, safe='')}/exists", headers=headers)
         return TableExistsResponse.from_dict(res)
 
     def get(
@@ -16284,7 +16294,10 @@ class TablesAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}", query=query, headers=headers)
+        res = self._api.do("GET",
+                           f"/api/2.1/unity-catalog/tables/{quote(full_name, safe='')}",
+                           query=query,
+                           headers=headers)
         return TableInfo.from_dict(res)
 
     def list(
@@ -16481,7 +16494,7 @@ class TablesAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        self._api.do("PATCH", f"/api/2.1/unity-catalog/tables/{full_name}", body=body, headers=headers)
+        self._api.do("PATCH", f"/api/2.1/unity-catalog/tables/{quote(full_name, safe='')}", body=body, headers=headers)
 
 
 class TemporaryPathCredentialsAPI:
