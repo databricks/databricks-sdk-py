@@ -1909,27 +1909,7 @@ class FilesExt(files.FilesAPI):
                 current_part_number += 1
 
         _LOG.debug(f"Completing multipart upload after uploading {len(etags)} parts of up to {ctx.part_size} bytes")
-
-        query = {"action": "complete-upload", "upload_type": "multipart", "session_token": session_token}
-        headers = {"Content-Type": "application/json"}
-        body: dict = {}
-
-        parts = []
-        for etag in sorted(etags.items()):
-            part = {"part_number": etag[0], "etag": etag[1]}
-            parts.append(part)
-
-        body["parts"] = parts
-
-        # Completing upload is an idempotent operation, safe to retry.
-        # Method _api.do() takes care of retrying and will raise an exception in case of failure.
-        self._api.do(
-            "POST",
-            f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(ctx.target_path)}",
-            query=query,
-            headers=headers,
-            body=body,
-        )
+        self._complete_multipart_upload(ctx, etags, session_token)
 
     @staticmethod
     def _fill_buffer(buffer: bytes, desired_min_size: int, input_stream: BinaryIO) -> bytes:
@@ -2051,6 +2031,9 @@ class FilesExt(files.FilesAPI):
             raise ValueError(f"Unexpected server response: {resumable_upload_url_response}")
 
         required_headers = resumable_upload_url_node.get("headers", [])
+        base_headers: dict = {}
+        for h in required_headers:
+            base_headers[h["name"]] = h["value"]
 
         try:
             # We will buffer this many bytes: one chunk + read-ahead block.
@@ -2083,9 +2066,7 @@ class FilesExt(files.FilesAPI):
                     actual_chunk_length = ctx.part_size
                     file_size = "*"
 
-                headers: dict = {"Content-Type": "application/octet-stream"}
-                for h in required_headers:
-                    headers[h["name"]] = h["value"]
+                headers: dict = {"Content-Type": "application/octet-stream", **base_headers}
 
                 chunk_last_byte_offset = chunk_offset + actual_chunk_length - 1
                 content_range_header = f"bytes {chunk_offset}-{chunk_last_byte_offset}/{file_size}"
@@ -2196,7 +2177,7 @@ class FilesExt(files.FilesAPI):
         except Exception as e:
             _LOG.info(f"Aborting resumable upload on error: {e}")
             try:
-                self._abort_resumable_upload(resumable_upload_url, required_headers, cloud_provider_session)
+                self._abort_resumable_upload(resumable_upload_url, base_headers, cloud_provider_session)
             except BaseException as ex:
                 _LOG.warning(f"Failed to abort upload: {ex}")
                 # ignore, abort is a best-effort
@@ -2276,12 +2257,9 @@ class FilesExt(files.FilesAPI):
             raise ValueError(abort_response)
 
     def _abort_resumable_upload(
-        self, resumable_upload_url: str, required_headers: list, cloud_provider_session: requests.Session
+        self, resumable_upload_url: str, headers: dict[str, str], cloud_provider_session: requests.Session
     ) -> None:
         """Aborts ongoing resumable upload session to clean up incomplete file."""
-        headers: dict = {}
-        for h in required_headers:
-            headers[h["name"]] = h["value"]
 
         def perform() -> requests.Response:
             return cloud_provider_session.request(

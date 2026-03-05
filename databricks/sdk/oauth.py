@@ -395,6 +395,56 @@ class _OAuthCallback(BaseHTTPRequestHandler):
         self.wfile.write(b"You can close this tab.")
 
 
+@dataclass
+class HostMetadata:
+    """Parsed response from the /.well-known/databricks-config discovery endpoint."""
+
+    oidc_endpoint: str
+    account_id: Optional[str] = None
+    workspace_id: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d: dict) -> "HostMetadata":
+        return HostMetadata(
+            oidc_endpoint=d.get("oidc_endpoint", ""),
+            account_id=d.get("account_id"),
+            workspace_id=d.get("workspace_id"),
+        )
+
+    def as_dict(self) -> dict:
+        return {
+            "oidc_endpoint": self.oidc_endpoint,
+            "account_id": self.account_id,
+            "workspace_id": self.workspace_id,
+        }
+
+
+def get_host_metadata(host: str, client: _BaseClient = _BaseClient()) -> HostMetadata:
+    """
+    [Experimental] Fetch the raw Databricks well-known configuration from {host}/.well-known/databricks-config.
+
+    :param host: The Databricks host (workspace or account console).
+    :return: Parsed :class:`HostMetadata` as returned by the server.
+    """
+    host = _fix_host_if_needed(host)
+    try:
+        resp = client.do("GET", f"{host}/.well-known/databricks-config")
+    except Exception as e:
+        raise ValueError(f"Failed to fetch host metadata from {host}/.well-known/databricks-config: {e}") from e
+    return HostMetadata.from_dict(resp)
+
+
+def get_endpoints_from_url(url: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
+    """
+    Fetch OIDC endpoints directly from a discovery URL.
+
+    :param url: Full URL to the OIDC discovery document (e.g. the value of discovery_url config).
+    :return: Parsed :class:`OidcEndpoints`.
+    """
+    resp = client.do("GET", url)
+    return OidcEndpoints.from_dict(resp)
+
+
 def get_account_endpoints(host: str, account_id: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
     """
     Get the OIDC endpoints for a given account.
@@ -845,6 +895,7 @@ class TokenCache:
         redirect_url: Optional[str] = None,
         client_secret: Optional[str] = None,
         scopes: Optional[List[str]] = None,
+        profile: Optional[str] = None,
     ) -> None:
         self._host = host
         self._client_id = client_id
@@ -852,18 +903,20 @@ class TokenCache:
         self._redirect_url = redirect_url
         self._client_secret = client_secret
         self._scopes = scopes or []
+        self._profile = profile
 
     @property
     def filename(self) -> str:
-        # Include host, client_id, and scopes in the cache filename to make it unique.
-        hash = hashlib.sha256()
-        for chunk in [
-            self._host,
-            self._client_id,
-            ",".join(self._scopes),
-        ]:
-            hash.update(chunk.encode("utf-8"))
-        return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, hash.hexdigest() + ".json"))
+        # Include host, client_id, scopes, and profile in the cache filename to make it unique.
+        # JSON serialization ensures values are properly escaped and separated.
+        key = {
+            "host": self._host,
+            "client_id": self._client_id,
+            "scopes": self._scopes,
+            "profile": self._profile or "",
+        }
+        h = hashlib.sha256(json.dumps(key, sort_keys=True).encode("utf-8"))
+        return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, h.hexdigest() + ".json"))
 
     def load(self) -> Optional[SessionCredentials]:
         """

@@ -447,6 +447,9 @@ class GetPipelineResponse:
     effective_budget_policy_id: Optional[str] = None
     """Serverless budget policy ID of this pipeline."""
 
+    effective_publishing_mode: Optional[PublishingMode] = None
+    """Publishing mode of the pipeline"""
+
     health: Optional[GetPipelineResponseHealth] = None
     """The health of a pipeline."""
 
@@ -487,6 +490,8 @@ class GetPipelineResponse:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_publishing_mode is not None:
+            body["effective_publishing_mode"] = self.effective_publishing_mode.value
         if self.health is not None:
             body["health"] = self.health.value
         if self.last_modified is not None:
@@ -518,6 +523,8 @@ class GetPipelineResponse:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_publishing_mode is not None:
+            body["effective_publishing_mode"] = self.effective_publishing_mode
         if self.health is not None:
             body["health"] = self.health
         if self.last_modified is not None:
@@ -546,6 +553,7 @@ class GetPipelineResponse:
             cluster_id=d.get("cluster_id", None),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_publishing_mode=_enum(d, "effective_publishing_mode", PublishingMode),
             health=_enum(d, "health", GetPipelineResponseHealth),
             last_modified=d.get("last_modified", None),
             latest_updates=_repeated_dict(d, "latest_updates", UpdateStateInfo),
@@ -2514,11 +2522,25 @@ class PipelinesEnvironment:
     <requirement specifier>, <archive url/path>, <local project path>(WSFS or Volumes in
     Databricks), <vcs project url>"""
 
+    environment_version: Optional[str] = None
+    """The environment version of the serverless Python environment used to execute customer Python
+    code. Each environment version includes a specific Python version and a curated set of
+    pre-installed libraries with defined versions, providing a stable and reproducible execution
+    environment.
+    
+    Databricks supports a three-year lifecycle for each environment version. For available versions
+    and their included packages, see
+    https://docs.databricks.com/aws/en/release-notes/serverless/environment-version/
+    
+    The value should be a string representing the environment version number, for example: `"4"`."""
+
     def as_dict(self) -> dict:
         """Serializes the PipelinesEnvironment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dependencies:
             body["dependencies"] = [v for v in self.dependencies]
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2526,12 +2548,14 @@ class PipelinesEnvironment:
         body = {}
         if self.dependencies:
             body["dependencies"] = self.dependencies
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelinesEnvironment:
         """Deserializes the PipelinesEnvironment from a dictionary."""
-        return cls(dependencies=d.get("dependencies", None))
+        return cls(dependencies=d.get("dependencies", None), environment_version=d.get("environment_version", None))
 
 
 @dataclass
@@ -2593,6 +2617,13 @@ class PostgresSlotConfig:
     def from_dict(cls, d: Dict[str, Any]) -> PostgresSlotConfig:
         """Deserializes the PostgresSlotConfig from a dictionary."""
         return cls(publication_name=d.get("publication_name", None), slot_name=d.get("slot_name", None))
+
+
+class PublishingMode(Enum):
+    """Enum representing the publishing mode of a pipeline."""
+
+    DEFAULT_PUBLISHING_MODE = "DEFAULT_PUBLISHING_MODE"
+    LEGACY_PUBLISHING_MODE = "LEGACY_PUBLISHING_MODE"
 
 
 @dataclass
@@ -3456,6 +3487,9 @@ class UpdateInfo:
     full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
     that the states of the table will be reset before the refresh."""
 
+    parameters: Optional[Dict[str, str]] = None
+    """Key/value map of parameters used to initiate the update"""
+
     pipeline_id: Optional[str] = None
     """The ID of the pipeline."""
 
@@ -3489,6 +3523,8 @@ class UpdateInfo:
             body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
             body["full_refresh_selection"] = [v for v in self.full_refresh_selection]
+        if self.parameters:
+            body["parameters"] = self.parameters
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
         if self.refresh_selection:
@@ -3516,6 +3552,8 @@ class UpdateInfo:
             body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
             body["full_refresh_selection"] = self.full_refresh_selection
+        if self.parameters:
+            body["parameters"] = self.parameters
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
         if self.refresh_selection:
@@ -3538,6 +3576,7 @@ class UpdateInfo:
             creation_time=d.get("creation_time", None),
             full_refresh=d.get("full_refresh", None),
             full_refresh_selection=d.get("full_refresh_selection", None),
+            parameters=d.get("parameters", None),
             pipeline_id=d.get("pipeline_id", None),
             refresh_selection=d.get("refresh_selection", None),
             state=_enum(d, "state", UpdateInfoState),
@@ -4355,8 +4394,10 @@ class PipelinesAPI:
         cause: Optional[StartUpdateCause] = None,
         full_refresh: Optional[bool] = None,
         full_refresh_selection: Optional[List[str]] = None,
+        parameters: Optional[Dict[str, str]] = None,
         refresh_selection: Optional[List[str]] = None,
         replace_where_overrides: Optional[List[ReplaceWhereOverride]] = None,
+        reset_checkpoint_selection: Optional[List[str]] = None,
         rewind_spec: Optional[RewindSpec] = None,
         validate_only: Optional[bool] = None,
     ) -> StartUpdateResponse:
@@ -4371,6 +4412,8 @@ class PipelinesAPI:
           A list of tables to update with fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
           will be reset before the refresh.
+        :param parameters: Dict[str,str] (optional)
+          Key/value map of parameters to pass to the pipeline execution
         :param refresh_selection: List[str] (optional)
           A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
@@ -4378,6 +4421,10 @@ class PipelinesAPI:
         :param replace_where_overrides: List[:class:`ReplaceWhereOverride`] (optional)
           A list of predicate overrides for replace_where flows in this update. Only replace_where flows may
           be specified. Flows not listed use their original predicate.
+        :param reset_checkpoint_selection: List[str] (optional)
+          A list of flows for which this update should reset the streaming checkpoint. This selection will not
+          clear the data in the flow's target table. Flows in this list may also appear in refresh_selection
+          and full_refresh_selection.
         :param rewind_spec: :class:`RewindSpec` (optional)
           The information about the requested rewind operation. If specified this is a rewind mode update.
         :param validate_only: bool (optional)
@@ -4394,10 +4441,14 @@ class PipelinesAPI:
             body["full_refresh"] = full_refresh
         if full_refresh_selection is not None:
             body["full_refresh_selection"] = [v for v in full_refresh_selection]
+        if parameters is not None:
+            body["parameters"] = parameters
         if refresh_selection is not None:
             body["refresh_selection"] = [v for v in refresh_selection]
         if replace_where_overrides is not None:
             body["replace_where_overrides"] = [v.as_dict() for v in replace_where_overrides]
+        if reset_checkpoint_selection is not None:
+            body["reset_checkpoint_selection"] = [v for v in reset_checkpoint_selection]
         if rewind_spec is not None:
             body["rewind_spec"] = rewind_spec.as_dict()
         if validate_only is not None:

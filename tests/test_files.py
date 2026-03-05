@@ -1307,6 +1307,7 @@ class UploadTestCase:
         self.expected_single_shot_upload = expected_single_shot_upload
 
         self.path = "/test.txt"
+        self.cloud_provider_header = {"name": "name1", "value": "value1"}
         self.created_temp_files = []
 
     def customize_config(self, config: Config) -> None:
@@ -1675,7 +1676,7 @@ class MultipartUploadTestCase(UploadTestCase):
                         {
                             "part_number": part_number,
                             "url": upload_part_url,
-                            "headers": [{"name": "name1", "value": "value1"}],
+                            "headers": [self.cloud_provider_header],
                         }
                     )
 
@@ -2482,7 +2483,7 @@ class ResumableUploadTestCase(UploadTestCase):
                 response_json = {
                     "resumable_upload_url": {
                         "url": resumable_upload_url,
-                        "headers": [{"name": "name1", "value": "value1"}],
+                        "headers": [self.cloud_provider_header],
                     }
                 }
                 return [200, json.dumps(response_json), {}]
@@ -2498,6 +2499,9 @@ class ResumableUploadTestCase(UploadTestCase):
 
             content_range_header = request.headers["Content-range"]
             is_status_check_request = re.match("bytes \\*/\\*", content_range_header)
+            if not is_status_check_request:
+                h = self.cloud_provider_header
+                assert request.headers.get(h["name"]) == h["value"]
             if is_status_check_request:
                 assert not request.body
                 response_customizer = self.custom_response_on_status_check
@@ -2533,6 +2537,8 @@ class ResumableUploadTestCase(UploadTestCase):
         ):
 
             assert not UploadTestCase.is_auth_header_present(request)
+            h = self.cloud_provider_header
+            assert request.headers.get(h["name"]) == h["value"]
             url_path = request.url[len(ResumableUploadServerState.resumable_upload_url_prefix) :]
             assert url_path == self.path
 
