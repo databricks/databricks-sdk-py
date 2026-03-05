@@ -900,14 +900,14 @@ class DatabricksCliTokenSource(CliTokenSource):
                 fallback_cmd = [cli_path, *self.__class__._build_host_args(cfg)]
         else:
             args = self.__class__._build_host_args(cfg)
-        
+
         # get_scopes() defaults to ["all-apis"] when nothing is configured, which would
         # cause false-positive mismatches against every token that wasn't issued with
         # exactly ["all-apis"]. Only validate when scopes are explicitly set (either
         # directly in code or loaded from a CLI profile).
         self._requested_scopes = cfg.get_scopes() if cfg.scopes else None
         self._host = cfg.host
-        
+
         super().__init__(
             cmd=[cli_path, *args],
             token_type_field="token_type",

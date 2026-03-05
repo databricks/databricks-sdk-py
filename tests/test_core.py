@@ -255,7 +255,10 @@ def test_databricks_cli_scope_validation_error_message(config, monkeypatch, tmp_
     config.scopes = sorted(["sql", "offline_access"])
     config.auth_type = "databricks-cli"
 
-    with pytest.raises(ValueError, match=r"databricks auth login --host .* --scopes sql"):
+    with pytest.raises(
+        ValueError,
+        match=r"Please re-authenticate with the desired scopes by running `databricks auth login` with the --scopes flag",
+    ):
         databricks_cli(config)
 
 
