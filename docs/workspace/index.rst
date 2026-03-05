@@ -14,11 +14,13 @@ These APIs are available from WorkspaceClient
    compute/index
    dashboards/index
    database/index
+   dataclassification/index
    dataquality/index
    files/index
    iam/index
    iamv2/index
    jobs/index
+   knowledgeassistants/index
    marketplace/index
    ml/index
    oauth2/index

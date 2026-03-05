@@ -8871,7 +8871,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: EXTERNAL_LOCATION_ONELAKE_MANAGED = 299; Next id: 300"""
+    """Latest kind: CONNECTION_OUTLOOK_OAUTH_M2M = 300; Next id: 301"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"

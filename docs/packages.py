@@ -82,4 +82,14 @@ PACKAGES = [
         "Networking",
         "Manage network connectivity configurations for Databricks workspaces."
     ),
+    Package(
+        "knowledgeassistants",
+        "Knowledge Assistants",
+        "Manage Knowledge Assistants and related resources.",
+    ),
+    Package(
+        "dataclassification",
+        "Data Classification",
+        "Manage data classification for Unity Catalog catalogs.",
+    ),
 ]

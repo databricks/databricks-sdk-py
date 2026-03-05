@@ -13,11 +13,13 @@ Dataclasses
    compute
    dashboards
    database
+   dataclassification
    dataquality
    files
    iam
    iamv2
    jobs
+   knowledgeassistants
    marketplace
    ml
    networking
