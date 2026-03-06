@@ -1073,10 +1073,12 @@ class DeltaTableSource:
     """The full three-part (catalog, schema, table) name of the Delta table."""
 
     entity_columns: List[str]
-    """The entity columns of the Delta table."""
+    """Deprecated: Use Feature.entity instead. Kept for backwards compatibility. The entity columns of
+    the Delta table."""
 
     timeseries_column: str
-    """The timeseries column of the Delta table."""
+    """Deprecated: Use Feature.timeseries_column instead. Kept for backwards compatibility. The
+    timeseries column of the Delta table."""
 
     dataframe_schema: Optional[str] = None
     """Schema of the resulting dataframe after transformations, in Spark StructType JSON format (from
@@ -1491,7 +1493,8 @@ class Feature:
     """The data source of the feature."""
 
     inputs: List[str]
-    """The input columns from which the feature is computed."""
+    """Deprecated: Use AggregationFunction.inputs instead. Kept for backwards compatibility. The input
+    columns from which the feature is computed."""
 
     function: Function
     """The function by which the feature is computed."""
@@ -1500,17 +1503,19 @@ class Feature:
     """The description of the feature."""
 
     filter_condition: Optional[str] = None
-    """The filter condition applied to the source data before aggregation."""
+    """Deprecated: Use DeltaTableSource.filter_condition or KafkaSource.filter_condition instead. Kept
+    for backwards compatibility. The filter condition applied to the source data before aggregation."""
 
     lineage_context: Optional[LineageContext] = None
-    """WARNING: This field is primarily intended for internal use by Databricks systems and is
-    automatically populated when features are created through Databricks notebooks or jobs. Users
-    should not manually set this field as incorrect values may lead to inaccurate lineage tracking
-    or unexpected behavior. This field will be set by feature-engineering client and should be left
-    unset by SDK and terraform users."""
+    """Lineage context information for this feature. WARNING: This field is primarily intended for
+    internal use by Databricks systems and is automatically populated when features are created
+    through Databricks notebooks or jobs. Users should not manually set this field as incorrect
+    values may lead to inaccurate lineage tracking or unexpected behavior. This field will be set by
+    feature-engineering client and should be left unset by SDK and terraform users."""
 
     time_window: Optional[TimeWindow] = None
-    """The time window in which the feature is computed."""
+    """Deprecated: Use Function.aggregation_function.time_window instead. Kept for backwards
+    compatibility. The time window in which the feature is computed."""
 
     def as_dict(self) -> dict:
         """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
@@ -1882,10 +1887,12 @@ class ForecastingExperimentState(Enum):
 @dataclass
 class Function:
     function_type: FunctionFunctionType
-    """The type of the function."""
+    """Deprecated: Use the function oneof with AggregationFunction instead. Kept for backwards
+    compatibility. The type of the function."""
 
     extra_parameters: Optional[List[FunctionExtraParameter]] = None
-    """Extra parameters for parameterized functions."""
+    """Deprecated: Use the function oneof with AggregationFunction instead. Kept for backwards
+    compatibility. Extra parameters for parameterized functions."""
 
     def as_dict(self) -> dict:
         """Serializes the Function into a dictionary suitable for use as a JSON request body."""
@@ -1916,6 +1923,10 @@ class Function:
 
 @dataclass
 class FunctionExtraParameter:
+    """Deprecated: Use typed fields on function-specific messages (e.g.
+    ApproxPercentileFunction.percentile) or AggregationFunction.ExtraParameter instead. Kept for
+    backwards compatibility."""
+
     key: str
     """The name of the parameter."""
 
@@ -1947,6 +1958,8 @@ class FunctionExtraParameter:
 
 
 class FunctionFunctionType(Enum):
+    """Deprecated: Use the function-specific messages in AggregationFunction.function_type oneof
+    instead. Kept for backwards compatibility."""
 
     APPROX_COUNT_DISTINCT = "APPROX_COUNT_DISTINCT"
     APPROX_PERCENTILE = "APPROX_PERCENTILE"
@@ -2582,10 +2595,12 @@ class KafkaSource:
     KafkaConfig object. Can be distinct from topic name."""
 
     entity_column_identifiers: List[ColumnIdentifier]
-    """The entity column identifiers of the Kafka source."""
+    """Deprecated: Use Feature.entity instead. Kept for backwards compatibility. The entity column
+    identifiers of the Kafka source."""
 
     timeseries_column_identifier: ColumnIdentifier
-    """The timeseries column identifier of the Kafka source."""
+    """Deprecated: Use Feature.timeseries_column instead. Kept for backwards compatibility. The
+    timeseries column identifier of the Kafka source."""
 
     def as_dict(self) -> dict:
         """Serializes the KafkaSource into a dictionary suitable for use as a JSON request body."""

@@ -330,6 +330,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: FunctionFunctionType
 
+   Deprecated: Use the function-specific messages in AggregationFunction.function_type oneof instead. Kept for backwards compatibility.
+
    .. py:attribute:: APPROX_COUNT_DISTINCT
       :value: "APPROX_COUNT_DISTINCT"
 
