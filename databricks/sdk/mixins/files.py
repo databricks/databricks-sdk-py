@@ -20,7 +20,7 @@ from datetime import timedelta
 from io import BytesIO
 from queue import Empty, Full, Queue
 from tempfile import mkstemp
-from threading import Event, Thread
+from threading import Event, Lock, Thread
 from types import TracebackType
 from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Callable, Generator,
                     Iterable, Optional, Type, Union)
@@ -778,6 +778,7 @@ class FilesExt(files.FilesAPI):
         self._config = config.copy()
         self._multipart_upload_read_ahead_bytes = 1
         self._cached_cloud_provider_session: Optional[requests.Session] = None
+        self._cloud_provider_session_lock = Lock()
 
     def _get_hostname(self) -> str:
         """Returns the hostname for file operations.
@@ -2275,9 +2276,16 @@ class FilesExt(files.FilesAPI):
     def _cloud_provider_session(self) -> requests.Session:
         """Returns a session which does not inherit auth headers from BaseClient session.
 
-        The session is created on first call and cached for reuse.
+        The session is created on first call and cached for reuse. This follows the same
+        caching pattern as _BaseClient._session, which is also created once and never
+        invalidated.
         """
-        if self._cached_cloud_provider_session is None:
+        if self._cached_cloud_provider_session is not None:
+            return self._cached_cloud_provider_session
+        with self._cloud_provider_session_lock:
+            # Double-check after acquiring the lock to avoid creating duplicate sessions.
+            if self._cached_cloud_provider_session is not None:
+                return self._cached_cloud_provider_session
             session = requests.Session()
             # Following session config in _BaseClient.
             http_adapter = requests.adapters.HTTPAdapter(
@@ -2287,7 +2295,7 @@ class FilesExt(files.FilesAPI):
             # Presigned URL for storage proxy can use plain HTTP.
             session.mount("http://", http_adapter)
             self._cached_cloud_provider_session = session
-        return self._cached_cloud_provider_session
+            return self._cached_cloud_provider_session
 
     def _retry_cloud_idempotent_operation(
         self, operation: Callable[[], requests.Response], before_retry: Optional[Callable] = None
