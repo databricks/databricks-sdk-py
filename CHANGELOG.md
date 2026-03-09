@@ -1,5 +1,16 @@
 # Version changelog
 
+## Release v0.97.0 (2026-03-09)
+
+### Bug Fixes
+* Fixed Databricks CLI authentication to detect when the cached token's scopes don't match the SDK's configured scopes. Previously, a scope mismatch was silently ignored, causing requests to use wrong permissions. The SDK now raises an error with instructions to re-authenticate.
+
+### API Changes
+* Add `databricks.sdk.service.dataclassification` and `databricks.sdk.service.knowledgeassistants` packages.
+* Add [w.data_classification](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dataclassification/data_classification.html) workspace-level service.
+* Add [w.knowledge_assistants](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/knowledgeassistants/knowledge_assistants.html) workspace-level service.
+
+
 ## Release v0.96.0 (2026-03-03)
 
 ### Internal Changes
