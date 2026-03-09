@@ -92,6 +92,8 @@ class App:
     space: Optional[str] = None
     """Name of the space this app belongs to."""
 
+    telemetry_export_destinations: Optional[List[TelemetryExportDestination]] = None
+
     update_time: Optional[str] = None
     """The update time of the app. Formatted timestamp in ISO 6801."""
 
@@ -154,6 +156,8 @@ class App:
             body["service_principal_name"] = self.service_principal_name
         if self.space is not None:
             body["space"] = self.space
+        if self.telemetry_export_destinations:
+            body["telemetry_export_destinations"] = [v.as_dict() for v in self.telemetry_export_destinations]
         if self.update_time is not None:
             body["update_time"] = self.update_time
         if self.updater is not None:
@@ -215,6 +219,8 @@ class App:
             body["service_principal_name"] = self.service_principal_name
         if self.space is not None:
             body["space"] = self.space
+        if self.telemetry_export_destinations:
+            body["telemetry_export_destinations"] = self.telemetry_export_destinations
         if self.update_time is not None:
             body["update_time"] = self.update_time
         if self.updater is not None:
@@ -254,6 +260,9 @@ class App:
             service_principal_id=d.get("service_principal_id", None),
             service_principal_name=d.get("service_principal_name", None),
             space=d.get("space", None),
+            telemetry_export_destinations=_repeated_dict(
+                d, "telemetry_export_destinations", TelemetryExportDestination
+            ),
             update_time=d.get("update_time", None),
             updater=d.get("updater", None),
             url=d.get("url", None),
@@ -2648,6 +2657,77 @@ class SpaceUpdateStatus:
     def from_dict(cls, d: Dict[str, Any]) -> SpaceUpdateStatus:
         """Deserializes the SpaceUpdateStatus from a dictionary."""
         return cls(message=d.get("message", None), state=_enum(d, "state", SpaceUpdateState))
+
+
+@dataclass
+class TelemetryExportDestination:
+    """A single telemetry export destination with its configuration and status."""
+
+    unity_catalog: Optional[UnityCatalog] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the TelemetryExportDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.unity_catalog:
+            body["unity_catalog"] = self.unity_catalog.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TelemetryExportDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.unity_catalog:
+            body["unity_catalog"] = self.unity_catalog
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TelemetryExportDestination:
+        """Deserializes the TelemetryExportDestination from a dictionary."""
+        return cls(unity_catalog=_from_dict(d, "unity_catalog", UnityCatalog))
+
+
+@dataclass
+class UnityCatalog:
+    """Unity Catalog Destinations for OTEL telemetry export."""
+
+    logs_table: str
+    """Unity Catalog table for OTEL logs."""
+
+    metrics_table: str
+    """Unity Catalog table for OTEL metrics."""
+
+    traces_table: str
+    """Unity Catalog table for OTEL traces (spans)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UnityCatalog into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.logs_table is not None:
+            body["logs_table"] = self.logs_table
+        if self.metrics_table is not None:
+            body["metrics_table"] = self.metrics_table
+        if self.traces_table is not None:
+            body["traces_table"] = self.traces_table
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UnityCatalog into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.logs_table is not None:
+            body["logs_table"] = self.logs_table
+        if self.metrics_table is not None:
+            body["metrics_table"] = self.metrics_table
+        if self.traces_table is not None:
+            body["traces_table"] = self.traces_table
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UnityCatalog:
+        """Deserializes the UnityCatalog from a dictionary."""
+        return cls(
+            logs_table=d.get("logs_table", None),
+            metrics_table=d.get("metrics_table", None),
+            traces_table=d.get("traces_table", None),
+        )
 
 
 class AppsAPI:
