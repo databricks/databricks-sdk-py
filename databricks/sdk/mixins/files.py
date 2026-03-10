@@ -904,6 +904,12 @@ class FilesExt(files.FilesAPI):
     # note that these error codes are retryable only for idempotent operations
     _RETRYABLE_STATUS_CODES: list[int] = [408, 429, 502, 503, 504]
 
+    # Storage-proxy hostname for data plane file operations.
+    _STORAGE_PROXY_HOSTNAME: str = "http://storage-proxy.databricks.com"
+
+    # Timeout in seconds for the storage-proxy health check probe.
+    _STORAGE_PROXY_PROBE_TIMEOUT: float = 3.0
+
     @dataclass(frozen=True)
     class _UploadContext:
         target_path: str
@@ -931,6 +937,7 @@ class FilesExt(files.FilesAPI):
         self._cloud_provider_session_lock = Lock()
         self._dp_hostname_available: Optional[bool] = None
         self._cached_storage_proxy_session: Optional[requests.Session] = None
+        self._storage_proxy_session_lock = Lock()
 
     def _get_hostname(self) -> str:
         """Returns the hostname for file operations.
@@ -939,7 +946,7 @@ class FilesExt(files.FilesAPI):
         result. Returns the proxy hostname if available, otherwise the workspace
         hostname.
         """
-        if self._config.files_ext_enable_storage_proxy:
+        if self._config.experimental_files_ext_enable_storage_proxy:
             if self._dp_hostname_available is None:
                 self._dp_hostname_available = self._probe_storage_proxy()
                 if self._dp_hostname_available:
@@ -947,7 +954,7 @@ class FilesExt(files.FilesAPI):
                 else:
                     _LOG.info("Storage proxy is not available, will use presigned URLs.")
             if self._dp_hostname_available:
-                return self._config.files_ext_storage_proxy_hostname
+                return self._STORAGE_PROXY_HOSTNAME
         return self._config.host
 
     def _create_request_builder(self):
@@ -957,7 +964,7 @@ class FilesExt(files.FilesAPI):
         otherwise a presigned URL builder.
         """
         hostname = self._get_hostname()
-        if self._config.files_ext_enable_storage_proxy and self._dp_hostname_available:
+        if self._config.experimental_files_ext_enable_storage_proxy and self._dp_hostname_available:
             return _StorageProxyRequestBuilder(hostname)
         return _PresignedUrlRequestBuilder(self._api, hostname)
 
@@ -967,7 +974,7 @@ class FilesExt(files.FilesAPI):
         Makes a GET request to the probe endpoint using SDK auth. The result
         is cached in self._dp_hostname_available after the first call.
         """
-        proxy_host = self._config.files_ext_storage_proxy_hostname
+        proxy_host = self._STORAGE_PROXY_HOSTNAME
         probe_url = f"{proxy_host}/api/2.0/fs/files/DatabricksInternal/Probes/ping"
         try:
             headers = self._config.authenticate()
@@ -976,7 +983,7 @@ class FilesExt(files.FilesAPI):
                 "GET",
                 probe_url,
                 headers=headers,
-                timeout=self._config.files_ext_storage_proxy_probe_timeout,
+                timeout=self._STORAGE_PROXY_PROBE_TIMEOUT,
             )
             return response.status_code == 200
         except Exception:
@@ -990,26 +997,27 @@ class FilesExt(files.FilesAPI):
         storage proxy carries valid credentials. The session is created on
         first call and cached for reuse.
         """
-        if self._cached_storage_proxy_session is not None:
-            return self._cached_storage_proxy_session
-        session = requests.Session()
-        config = self._config
+        with self._storage_proxy_session_lock:
+            if self._cached_storage_proxy_session is not None:
+                return self._cached_storage_proxy_session
+            session = requests.Session()
+            config = self._config
 
-        def authenticate(r: requests.PreparedRequest) -> requests.PreparedRequest:
-            auth_headers = config.authenticate()
-            r.headers.update(auth_headers)
-            return r
+            def authenticate(r: requests.PreparedRequest) -> requests.PreparedRequest:
+                auth_headers = config.authenticate()
+                r.headers.update(auth_headers)
+                return r
 
-        session.auth = authenticate
-        http_adapter = requests.adapters.HTTPAdapter(
-            config.max_connection_pools or 20,
-            config.max_connections_per_pool or 20,
-            pool_block=True,
-        )
-        session.mount("https://", http_adapter)
-        session.mount("http://", http_adapter)
-        self._cached_storage_proxy_session = session
-        return session
+            session.auth = authenticate
+            http_adapter = requests.adapters.HTTPAdapter(
+                config.max_connection_pools or 20,
+                config.max_connections_per_pool or 20,
+                pool_block=True,
+            )
+            session.mount("https://", http_adapter)
+            session.mount("http://", http_adapter)
+            self._cached_storage_proxy_session = session
+            return session
 
     def download(
         self,
@@ -2429,18 +2437,21 @@ class FilesExt(files.FilesAPI):
         unauthenticated session since presigned URLs already contain auth.
         The session is created on first call and cached for reuse.
         """
-        if self._config.files_ext_enable_storage_proxy and self._dp_hostname_available:
+        if self._config.experimental_files_ext_enable_storage_proxy and self._dp_hostname_available:
             return self._create_storage_proxy_session()
-        if self._cached_cloud_provider_session is None:
-            session = requests.Session()
-            # Following session config in _BaseClient.
-            http_adapter = requests.adapters.HTTPAdapter(
-                self._config.max_connection_pools or 20, self._config.max_connections_per_pool or 20, pool_block=True
-            )
-            session.mount("https://", http_adapter)
-            # Presigned URL for storage proxy can use plain HTTP.
-            session.mount("http://", http_adapter)
-            self._cached_cloud_provider_session = session
+        with self._cloud_provider_session_lock:
+            if self._cached_cloud_provider_session is None:
+                session = requests.Session()
+                # Following session config in _BaseClient.
+                http_adapter = requests.adapters.HTTPAdapter(
+                    self._config.max_connection_pools or 20,
+                    self._config.max_connections_per_pool or 20,
+                    pool_block=True,
+                )
+                session.mount("https://", http_adapter)
+                # Presigned URL for storage proxy can use plain HTTP.
+                session.mount("http://", http_adapter)
+                self._cached_cloud_provider_session = session
         return self._cached_cloud_provider_session
 
     def _retry_cloud_idempotent_operation(

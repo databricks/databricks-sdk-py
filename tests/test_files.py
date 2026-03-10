@@ -1382,8 +1382,7 @@ class UploadTestCase:
         self.customize_config(config)
 
         if self.use_storage_proxy:
-            config.files_ext_enable_storage_proxy = True
-            config.files_ext_storage_proxy_hostname = f"http://{self._expected_hostname}"
+            config.experimental_files_ext_enable_storage_proxy = True
 
         multipart_server_state = self.create_multipart_upload_server_state()
         single_shot_server_state = SingleShotUploadServerState()
@@ -1679,7 +1678,7 @@ class MultipartUploadTestCase(UploadTestCase):
             return self.custom_response_on_upload.generate_response(request, processor)
 
         # Storage proxy direct abort.
-        if (
+        elif (
             self.use_storage_proxy
             and request_url.hostname == self._expected_hostname
             and request_url.path == f"/api/2.0/fs/files{self.path}"
@@ -1694,7 +1693,7 @@ class MultipartUploadTestCase(UploadTestCase):
             return self.custom_response_on_abort.generate_response(request, processor)
 
         # Initial request.
-        if (
+        elif (
             request_url.hostname == self._expected_hostname
             and request_url.path == f"/api/2.0/fs/files{self.path}"
             and request_query.get("action") == ["initiate-upload"]
@@ -1710,13 +1709,14 @@ class MultipartUploadTestCase(UploadTestCase):
 
             return self.custom_response_on_initiate.generate_response(request, processor)
 
-        # Multipart upload, create upload part URLs.
+        # Multipart upload, create upload part URLs (presigned URL path only).
         elif (
             request_url.hostname == self._expected_hostname
             and request_url.path == "/api/2.0/fs/create-upload-part-urls"
             and request.method == "POST"
         ):
-
+            # This should never be called when using the storage proxy.
+            assert not self.use_storage_proxy, "create-upload-part-urls should not be called with storage proxy"
             assert UploadTestCase.is_auth_header_present(request)
 
             request_json = request.json()
@@ -1789,12 +1789,14 @@ class MultipartUploadTestCase(UploadTestCase):
 
             return self.custom_response_on_complete.generate_response(request, processor)
 
-        # Create abort URL.
+        # Create abort URL (presigned URL path only).
         elif (
             request_url.hostname == self._expected_hostname
             and request_url.path == "/api/2.0/fs/create-abort-upload-url"
             and request.method == "POST"
         ):
+            # This should never be called when using the storage proxy.
+            assert not self.use_storage_proxy, "create-abort-upload-url should not be called with storage proxy"
             assert UploadTestCase.is_auth_header_present(request)
             request_json = request.json()
             assert request_json["path"] == self.path
@@ -2568,7 +2570,7 @@ class ResumableUploadTestCase(UploadTestCase):
             return response_customizer.generate_response(request, processor)
 
         # Initial request.
-        if (
+        elif (
             request_url.hostname == self._expected_hostname
             and request_url.path == f"/api/2.0/fs/files{self.path}"
             and request_query.get("action") == ["initiate-upload"]
@@ -2586,12 +2588,14 @@ class ResumableUploadTestCase(UploadTestCase):
             # so we're always generating a "success" response.
             return CustomResponse(enabled=False).generate_response(request, processor)
 
+        # Create resumable upload URL (presigned URL path only).
         elif (
             request_url.hostname == self._expected_hostname
             and request_url.path == "/api/2.0/fs/create-resumable-upload-url"
             and request.method == "POST"
         ):
-
+            # This should never be called when using the storage proxy.
+            assert not self.use_storage_proxy, "create-resumable-upload-url should not be called with storage proxy"
             assert UploadTestCase.is_auth_header_present(request)
 
             request_json = request.json()
