@@ -305,7 +305,7 @@ class Refreshable(TokenSource):
 
         This ensures short-lived tokens (e.g. FastPath with 10-minute TTL) get a
         proportionally smaller stale window, while standard OAuth tokens (≥1 hour TTL)
-        use the full cap of _DEFAULT_STALE_DURATION.
+        use the full cap of _MAX_STALE_DURATION.
         """
         self._token = token
 
@@ -318,12 +318,7 @@ class Refreshable(TokenSource):
                 self._stale_after = self._token.expiry - stale_duration
 
     def _handle_failed_async_refresh(self) -> None:
-        """
-        Handles a failed asynchronous refresh by moving the timestamp after which
-        a token is considered stale by _ASYNC_REFRESH_RETRY_BACKOFF into the future.
-
-        This effectively changes the token from stale to fresh for a short period of time.
-        """
+        """Pushes _stale_after forward by the retry backoff, making the token appear fresh temporarily."""
         if self._stale_after:
             self._stale_after = self._now() + self._ASYNC_REFRESH_RETRY_BACKOFF
 
@@ -388,13 +383,16 @@ class Refreshable(TokenSource):
                 new_token = self.refresh()
             except Exception as e:
                 # This happens on a thread, so we don't want to propagate the error.
-                # Instead, if there is no new_token for any reason, we will disable async refresh below
-                # But we will do it inside the lock.
+                # Instead, if there is no new_token for any reason, we apply a retry
+                # backoff below so the token appears fresh for a short cooldown period.
                 logger.warning(f"Tried to refresh token asynchronously, but failed: {e}")
 
             with self._lock:
                 if new_token is not None:
-                    self._update_token(new_token)
+                    if self._token.expiry and new_token.expiry and new_token.expiry < self._token.expiry:
+                        pass  # A blocking refresh already cached a newer token; skip.
+                    else:
+                        self._update_token(new_token)
                 else:
                     self._handle_failed_async_refresh()
                 self._is_refreshing = False
