@@ -25,6 +25,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DASHBOARD_VIEW_BASIC
       :value: "DASHBOARD_VIEW_BASIC"
 
+.. py:class:: EvaluationStatusType
+
+   .. py:attribute:: DONE
+      :value: "DONE"
+
+   .. py:attribute:: EVALUATION_CANCELLED
+      :value: "EVALUATION_CANCELLED"
+
+   .. py:attribute:: EVALUATION_FAILED
+      :value: "EVALUATION_FAILED"
+
+   .. py:attribute:: EVALUATION_TIMEOUT
+      :value: "EVALUATION_TIMEOUT"
+
+   .. py:attribute:: NOT_STARTED
+      :value: "NOT_STARTED"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
 .. autoclass:: GenieAttachment
    :members:
    :undoc-members:
@@ -34,6 +54,41 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieConversationSummary
+   :members:
+   :undoc-members:
+
+.. py:class:: GenieEvalAssessment
+
+   .. py:attribute:: BAD
+      :value: "BAD"
+
+   .. py:attribute:: GOOD
+      :value: "GOOD"
+
+   .. py:attribute:: NEEDS_REVIEW
+      :value: "NEEDS_REVIEW"
+
+.. autoclass:: GenieEvalResponse
+   :members:
+   :undoc-members:
+
+.. py:class:: GenieEvalResponseType
+
+   .. py:attribute:: SQL
+      :value: "SQL"
+
+   .. py:attribute:: TEXT
+      :value: "TEXT"
+
+.. autoclass:: GenieEvalResult
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieEvalResultDetails
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieEvalRunResponse
    :members:
    :undoc-members:
 
@@ -71,6 +126,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieListConversationsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieListEvalResultsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieListEvalRunsResponse
    :members:
    :undoc-members:
 
@@ -385,6 +448,83 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: UNPAUSED
       :value: "UNPAUSED"
+
+.. py:class:: ScoreReason
+
+   .. py:attribute:: COLUMN_TYPE_DIFFERENCE
+      :value: "COLUMN_TYPE_DIFFERENCE"
+
+   .. py:attribute:: EMPTY_GOOD_SQL
+      :value: "EMPTY_GOOD_SQL"
+
+   .. py:attribute:: EMPTY_RESULT
+      :value: "EMPTY_RESULT"
+
+   .. py:attribute:: LLM_JUDGE_FORMATTING_ERROR
+      :value: "LLM_JUDGE_FORMATTING_ERROR"
+
+   .. py:attribute:: LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT
+      :value: "LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT"
+
+   .. py:attribute:: LLM_JUDGE_INCORRECT_FUNCTION_USAGE
+      :value: "LLM_JUDGE_INCORRECT_FUNCTION_USAGE"
+
+   .. py:attribute:: LLM_JUDGE_INCORRECT_METRIC_CALCULATION
+      :value: "LLM_JUDGE_INCORRECT_METRIC_CALCULATION"
+
+   .. py:attribute:: LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE
+      :value: "LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE"
+
+   .. py:attribute:: LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC
+      :value: "LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC"
+
+   .. py:attribute:: LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST
+      :value: "LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST"
+
+   .. py:attribute:: LLM_JUDGE_MISSING_JOIN
+      :value: "LLM_JUDGE_MISSING_JOIN"
+
+   .. py:attribute:: LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION
+      :value: "LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION"
+
+   .. py:attribute:: LLM_JUDGE_MISSING_OR_INCORRECT_FILTER
+      :value: "LLM_JUDGE_MISSING_OR_INCORRECT_FILTER"
+
+   .. py:attribute:: LLM_JUDGE_MISSING_OR_INCORRECT_JOIN
+      :value: "LLM_JUDGE_MISSING_OR_INCORRECT_JOIN"
+
+   .. py:attribute:: LLM_JUDGE_OTHER
+      :value: "LLM_JUDGE_OTHER"
+
+   .. py:attribute:: LLM_JUDGE_SEMANTIC_ERROR
+      :value: "LLM_JUDGE_SEMANTIC_ERROR"
+
+   .. py:attribute:: LLM_JUDGE_SYNTAX_ERROR
+      :value: "LLM_JUDGE_SYNTAX_ERROR"
+
+   .. py:attribute:: LLM_JUDGE_WRONG_AGGREGATION
+      :value: "LLM_JUDGE_WRONG_AGGREGATION"
+
+   .. py:attribute:: LLM_JUDGE_WRONG_COLUMNS
+      :value: "LLM_JUDGE_WRONG_COLUMNS"
+
+   .. py:attribute:: LLM_JUDGE_WRONG_FILTER
+      :value: "LLM_JUDGE_WRONG_FILTER"
+
+   .. py:attribute:: RESULT_EXTRA_COLUMNS
+      :value: "RESULT_EXTRA_COLUMNS"
+
+   .. py:attribute:: RESULT_EXTRA_ROWS
+      :value: "RESULT_EXTRA_ROWS"
+
+   .. py:attribute:: RESULT_MISSING_COLUMNS
+      :value: "RESULT_MISSING_COLUMNS"
+
+   .. py:attribute:: RESULT_MISSING_ROWS
+      :value: "RESULT_MISSING_ROWS"
+
+   .. py:attribute:: SINGLE_CELL_DIFFERENCE
+      :value: "SINGLE_CELL_DIFFERENCE"
 
 .. autoclass:: Subscriber
    :members:

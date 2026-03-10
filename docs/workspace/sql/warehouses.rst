@@ -391,7 +391,7 @@
         :param data_access_config: List[:class:`EndpointConfPair`] (optional)
           Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K
         :param enable_serverless_compute: bool (optional)
-          Enable Serverless compute for SQL warehouses
+          Deprecated: only setting this to true is allowed.
         :param enabled_warehouse_types: List[:class:`WarehouseTypePair`] (optional)
           List of Warehouse Types allowed in this workspace (limits allowed value of the type field in
           CreateWarehouse and EditWarehouse). Note: Some types cannot be disabled, they don't need to be

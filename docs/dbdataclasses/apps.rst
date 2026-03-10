@@ -788,3 +788,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: SpaceUpdateStatus
    :members:
    :undoc-members:
+
+.. autoclass:: TelemetryExportDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: UnityCatalog
+   :members:
+   :undoc-members:

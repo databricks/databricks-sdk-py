@@ -388,3 +388,22 @@
 
         :returns: :class:`Operation`
         
+
+    .. py:method:: update_role(name: str, role: Role, update_mask: FieldMask) -> UpdateRoleOperation
+
+        Update a role for a branch.
+
+        :param name: str
+          Output only. The full resource path of the role. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
+        :param role: :class:`Role`
+          The Postgres Role to update.
+
+          The role's `name` field is used to identify the role to update. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
+        :param update_mask: FieldMask
+          The list of fields to update in Postgres Role. If unspecified, all fields will be updated when
+          possible.
+
+        :returns: :class:`Operation`
+        
