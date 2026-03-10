@@ -1847,7 +1847,11 @@ class FilesExt(files.FilesAPI):
 
             try:
                 presigned_urls = builder.build_upload_part_urls(
-                    ctx.target_path, session_token, current_part_number, ctx.batch_size, self._get_upload_url_expire_time()
+                    ctx.target_path,
+                    session_token,
+                    current_part_number,
+                    ctx.batch_size,
+                    self._get_upload_url_expire_time(),
                 )
             except Exception as e:
                 if chunk_offset == 0:
