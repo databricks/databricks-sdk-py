@@ -295,6 +295,7 @@ class Config:
             self._load_from_env()
             self._known_file_config_loader()
             self._fix_host_if_needed()
+            self._resolve_host_metadata()
             self._validate()
             self.init_auth()
             self._init_product(product, product_version)
@@ -631,21 +632,24 @@ class Config:
         """
         if not self.host:
             return
-        meta = get_host_metadata(self.host)
+        try:
+            meta = get_host_metadata(self.host)
+        except Exception as e:
+            logger.warning(
+                f"Failed to automatically resolve config from host metadata: {e}. Falling back to explicit user provided configuration."
+            )
+            return
         if not self.account_id and meta.account_id:
             logger.debug(f"Resolved account_id from host metadata: {meta.account_id}")
             self.account_id = meta.account_id
-        if not self.account_id:
-            raise ValueError("account_id is not configured and could not be resolved from host metadata")
         if not self.workspace_id and meta.workspace_id:
             logger.debug(f"Resolved workspace_id from host metadata: {meta.workspace_id}")
             self.workspace_id = meta.workspace_id
-        if not self.discovery_url:
-            if meta.oidc_endpoint:
-                logger.debug(f"Resolved discovery_url from host metadata: {meta.oidc_endpoint}")
-                self.discovery_url = meta.oidc_endpoint.replace("{account_id}", self.account_id)
-            else:
-                raise ValueError("discovery_url is not configured and could not be resolved from host metadata")
+        if not self.discovery_url and meta.oidc_endpoint:
+            if "{account_id}" in meta.oidc_endpoint and not self.account_id:
+                raise ValueError("account_id is required to resolve discovery_url from host metadata")
+            logger.debug(f"Resolved discovery_url from host metadata: {meta.oidc_endpoint}")
+            self.discovery_url = meta.oidc_endpoint.replace("{account_id}", self.account_id or "")
 
     def _fix_host_if_needed(self):
         updated_host = _fix_host_if_needed(self.host)

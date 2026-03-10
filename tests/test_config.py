@@ -844,45 +844,40 @@ def test_databricks_oidc_endpoints_uses_discovery_url(requests_mock):
         ),
     ],
 )
-def test_resolve_host_metadata(requests_mock, host, response_json, config_kwargs, expected_fields):
-    requests_mock.get(f"{host}/.well-known/databricks-config", json=response_json)
+def test_resolve_host_metadata(mocker, host, response_json, config_kwargs, expected_fields):
+    mocker.patch("databricks.sdk.config.get_host_metadata", return_value=oauth.HostMetadata.from_dict(response_json))
     config = Config(host=host, token="t", **config_kwargs)
-    config._resolve_host_metadata()
     for field, expected in expected_fields.items():
         assert getattr(config, field) == expected
 
 
-@pytest.mark.parametrize(
-    "host,response_json,status_code,config_kwargs,error_match",
-    [
-        pytest.param(
-            _DUMMY_ACC_HOST,
-            {"oidc_endpoint": f"{_DUMMY_ACC_HOST}/oidc/accounts/{{account_id}}"},
-            200,
-            {},
-            "account_id is not configured",
-            id="missing-account-id",
-        ),
-        pytest.param(
-            _DUMMY_WS_HOST,
-            {"account_id": _DUMMY_ACCOUNT_ID},
-            200,
-            {},
-            "discovery_url is not configured",
-            id="missing-oidc-endpoint",
-        ),
-        pytest.param(
-            _DUMMY_WS_HOST,
-            {},
-            500,
-            {},
-            "Failed to fetch host metadata",
-            id="http-error",
-        ),
-    ],
-)
-def test_resolve_host_metadata_raises(requests_mock, host, response_json, status_code, config_kwargs, error_match):
-    requests_mock.get(f"{host}/.well-known/databricks-config", status_code=status_code, json=response_json)
-    config = Config(host=host, token="t", **config_kwargs)
-    with pytest.raises(ValueError, match=error_match):
-        config._resolve_host_metadata()
+def test_resolve_host_metadata_missing_account_id(mocker):
+    """Raises when the oidc_endpoint template requires account_id but none is configured."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=oauth.HostMetadata.from_dict({"oidc_endpoint": f"{_DUMMY_ACC_HOST}/oidc/accounts/{{account_id}}"}),
+    )
+    with pytest.raises(ValueError, match="account_id is required to resolve discovery_url"):
+        Config(host=_DUMMY_ACC_HOST, token="t")
+
+
+def test_resolve_host_metadata_no_oidc_endpoint(mocker):
+    """No raise when metadata has no oidc_endpoint; discovery_url stays unset."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=oauth.HostMetadata.from_dict({"account_id": _DUMMY_ACCOUNT_ID}),
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t")
+    assert config.account_id == _DUMMY_ACCOUNT_ID
+    assert config.discovery_url is None
+
+
+def test_resolve_host_metadata_http_error(mocker):
+    """HTTP failure is swallowed with a warning; fields remain unset."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        side_effect=ValueError(f"Failed to fetch host metadata from {_DUMMY_WS_HOST}/.well-known/databricks-config"),
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t")
+    assert config.account_id is None
+    assert config.discovery_url is None

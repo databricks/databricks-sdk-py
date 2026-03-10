@@ -12,6 +12,13 @@ from .clock import FakeClock
 from .integration.conftest import restorable_env  # type: ignore
 
 
+@pytest.fixture(autouse=True)
+def stub_host_metadata(mocker):
+    from databricks.sdk.oauth import HostMetadata
+
+    mocker.patch("databricks.sdk.config.get_host_metadata", return_value=HostMetadata(oidc_endpoint=""))
+
+
 @credentials_strategy("noop", [])
 def noop_credentials(_: any):
     return lambda: {}
