@@ -612,8 +612,6 @@ class DatabaseInstanceState(Enum):
 
 @dataclass
 class DatabaseTable:
-    """Next field marker: 13"""
-
     name: str
     """Full three-part (catalog, schema, table) name of the table."""
 
@@ -980,8 +978,6 @@ class RequestedResource:
 
 @dataclass
 class SyncedDatabaseTable:
-    """Next field marker: 18"""
-
     name: str
     """Full three-part (catalog, schema, table) name of the table."""
 

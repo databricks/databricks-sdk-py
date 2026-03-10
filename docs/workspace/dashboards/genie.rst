@@ -143,6 +143,74 @@
         :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
         
 
+    .. py:method:: genie_create_eval_run(space_id: str [, benchmark_question_ids: Optional[List[str]]]) -> GenieEvalRunResponse
+
+        Create and run evaluations for multiple benchmark questions in a Genie space.
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluations will be executed.
+        :param benchmark_question_ids: List[str] (optional)
+          List of benchmark question IDs to evaluate. These questions must exist in the specified Genie space.
+          If none are specified, then all benchmark questions are evaluated.
+
+        :returns: :class:`GenieEvalRunResponse`
+        
+
+    .. py:method:: genie_get_eval_result_details(space_id: str, eval_run_id: str, result_id: str) -> GenieEvalResultDetails
+
+        Get details for evaluation results.
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluation run is located.
+        :param eval_run_id: str
+          The unique identifier for the evaluation run.
+        :param result_id: str
+          The unique identifier for the evaluation result.
+
+        :returns: :class:`GenieEvalResultDetails`
+        
+
+    .. py:method:: genie_get_eval_run(space_id: str, eval_run_id: str) -> GenieEvalRunResponse
+
+        Get evaluation run details.
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluation run is located.
+        :param eval_run_id: str
+
+        :returns: :class:`GenieEvalRunResponse`
+        
+
+    .. py:method:: genie_list_eval_results(space_id: str, eval_run_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListEvalResultsResponse
+
+        List evaluation results for a specific evaluation run.
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluation run is located.
+        :param eval_run_id: str
+          The unique identifier for the evaluation run.
+        :param page_size: int (optional)
+          Maximum number of eval results to return per page.
+        :param page_token: str (optional)
+          Opaque token to retrieve the next page of results.
+
+        :returns: :class:`GenieListEvalResultsResponse`
+        
+
+    .. py:method:: genie_list_eval_runs(space_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListEvalRunsResponse
+
+        Lists all evaluation runs in a space.
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluation run is located.
+        :param page_size: int (optional)
+          Maximum number of evaluation runs to return per page
+        :param page_token: str (optional)
+          Token to get the next page of results
+
+        :returns: :class:`GenieListEvalRunsResponse`
+        
+
     .. py:method:: get_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str, download_id_signature: str) -> GenieGetDownloadFullQueryResultResponse
 
         After [Generating a Full Query Result Download](:method:genie/generatedownloadfullqueryresult) and

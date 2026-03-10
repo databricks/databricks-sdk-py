@@ -2025,6 +2025,9 @@ class RoleRoleSpec:
 
 @dataclass
 class RoleRoleStatus:
+    attributes: Optional[RoleAttributes] = None
+    """The PG role attributes associated with the role."""
+
     auth_method: Optional[RoleAuthMethod] = None
 
     identity_type: Optional[RoleIdentityType] = None
@@ -2039,6 +2042,8 @@ class RoleRoleStatus:
     def as_dict(self) -> dict:
         """Serializes the RoleRoleStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.attributes:
+            body["attributes"] = self.attributes.as_dict()
         if self.auth_method is not None:
             body["auth_method"] = self.auth_method.value
         if self.identity_type is not None:
@@ -2052,6 +2057,8 @@ class RoleRoleStatus:
     def as_shallow_dict(self) -> dict:
         """Serializes the RoleRoleStatus into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.attributes:
+            body["attributes"] = self.attributes
         if self.auth_method is not None:
             body["auth_method"] = self.auth_method
         if self.identity_type is not None:
@@ -2066,6 +2073,7 @@ class RoleRoleStatus:
     def from_dict(cls, d: Dict[str, Any]) -> RoleRoleStatus:
         """Deserializes the RoleRoleStatus from a dictionary."""
         return cls(
+            attributes=_from_dict(d, "attributes", RoleAttributes),
             auth_method=_enum(d, "auth_method", RoleAuthMethod),
             identity_type=_enum(d, "identity_type", RoleIdentityType),
             membership_roles=_repeated_enum(d, "membership_roles", RoleMembershipRole),
@@ -2856,6 +2864,41 @@ class PostgresAPI:
         res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
         operation = Operation.from_dict(res)
         return UpdateProjectOperation(self, operation)
+
+    def update_role(self, name: str, role: Role, update_mask: FieldMask) -> UpdateRoleOperation:
+        """Update a role for a branch.
+
+        :param name: str
+          Output only. The full resource path of the role. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
+        :param role: :class:`Role`
+          The Postgres Role to update.
+
+          The role's `name` field is used to identify the role to update. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
+        :param update_mask: FieldMask
+          The list of fields to update in Postgres Role. If unspecified, all fields will be updated when
+          possible.
+
+        :returns: :class:`Operation`
+        """
+
+        body = role.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return UpdateRoleOperation(self, operation)
 
 
 class CreateBranchOperation:
@@ -3911,6 +3954,83 @@ class UpdateProjectOperation:
             return None
 
         return ProjectOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class UpdateRoleOperation:
+    """Long-running operation for update_role"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> Role:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Role`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            role = Role.from_dict(operation.response)
+
+            return role, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> RoleOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`RoleOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return RoleOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

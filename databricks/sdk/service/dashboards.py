@@ -13,7 +13,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional
 from databricks.sdk.client_types import HostType
 from databricks.sdk.service import sql
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict)
+                                              _repeated_dict, _repeated_enum)
 
 from ..errors import OperationFailed
 
@@ -255,6 +255,16 @@ class DashboardView(Enum):
     DASHBOARD_VIEW_BASIC = "DASHBOARD_VIEW_BASIC"
 
 
+class EvaluationStatusType(Enum):
+
+    DONE = "DONE"
+    EVALUATION_CANCELLED = "EVALUATION_CANCELLED"
+    EVALUATION_FAILED = "EVALUATION_FAILED"
+    EVALUATION_TIMEOUT = "EVALUATION_TIMEOUT"
+    NOT_STARTED = "NOT_STARTED"
+    RUNNING = "RUNNING"
+
+
 @dataclass
 class GenieAttachment:
     """Genie AI Response"""
@@ -420,6 +430,325 @@ class GenieConversationSummary:
             conversation_id=d.get("conversation_id", None),
             created_timestamp=d.get("created_timestamp", None),
             title=d.get("title", None),
+        )
+
+
+class GenieEvalAssessment(Enum):
+
+    BAD = "BAD"
+    GOOD = "GOOD"
+    NEEDS_REVIEW = "NEEDS_REVIEW"
+
+
+@dataclass
+class GenieEvalResponse:
+    response: Optional[str] = None
+    """The response content (either text or SQL query)."""
+
+    response_type: Optional[GenieEvalResponseType] = None
+    """Type of response"""
+
+    sql_execution_result: Optional[sql.StatementResponse] = None
+    """SQL Statement Execution response."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieEvalResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.response is not None:
+            body["response"] = self.response
+        if self.response_type is not None:
+            body["response_type"] = self.response_type.value
+        if self.sql_execution_result:
+            body["sql_execution_result"] = self.sql_execution_result.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieEvalResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.response is not None:
+            body["response"] = self.response
+        if self.response_type is not None:
+            body["response_type"] = self.response_type
+        if self.sql_execution_result:
+            body["sql_execution_result"] = self.sql_execution_result
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieEvalResponse:
+        """Deserializes the GenieEvalResponse from a dictionary."""
+        return cls(
+            response=d.get("response", None),
+            response_type=_enum(d, "response_type", GenieEvalResponseType),
+            sql_execution_result=_from_dict(d, "sql_execution_result", sql.StatementResponse),
+        )
+
+
+class GenieEvalResponseType(Enum):
+
+    SQL = "SQL"
+    TEXT = "TEXT"
+
+
+@dataclass
+class GenieEvalResult:
+    """Shows summary information for an evaluation result. For detailed information including SQL
+    execution results, actual/expected responses, and assessment scores, use
+    GenieGetEvalResultDetails."""
+
+    result_id: str
+    """Unique identifier for this evaluation result."""
+
+    space_id: str
+    """The ID of the space the evaluation result belongs to."""
+
+    benchmark_question_id: str
+    """The ID of the benchmark question that was evaluated."""
+
+    benchmark_answer: Optional[str] = None
+    """Stored snapshot of original benchmark answer text."""
+
+    created_by_user: Optional[int] = None
+    """User ID who created evaluation result."""
+
+    question: Optional[str] = None
+    """Stored snapshot of original benchmark question text."""
+
+    status: Optional[EvaluationStatusType] = None
+    """Current status of this evaluation result."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieEvalResult into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.benchmark_answer is not None:
+            body["benchmark_answer"] = self.benchmark_answer
+        if self.benchmark_question_id is not None:
+            body["benchmark_question_id"] = self.benchmark_question_id
+        if self.created_by_user is not None:
+            body["created_by_user"] = self.created_by_user
+        if self.question is not None:
+            body["question"] = self.question
+        if self.result_id is not None:
+            body["result_id"] = self.result_id
+        if self.space_id is not None:
+            body["space_id"] = self.space_id
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieEvalResult into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.benchmark_answer is not None:
+            body["benchmark_answer"] = self.benchmark_answer
+        if self.benchmark_question_id is not None:
+            body["benchmark_question_id"] = self.benchmark_question_id
+        if self.created_by_user is not None:
+            body["created_by_user"] = self.created_by_user
+        if self.question is not None:
+            body["question"] = self.question
+        if self.result_id is not None:
+            body["result_id"] = self.result_id
+        if self.space_id is not None:
+            body["space_id"] = self.space_id
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieEvalResult:
+        """Deserializes the GenieEvalResult from a dictionary."""
+        return cls(
+            benchmark_answer=d.get("benchmark_answer", None),
+            benchmark_question_id=d.get("benchmark_question_id", None),
+            created_by_user=d.get("created_by_user", None),
+            question=d.get("question", None),
+            result_id=d.get("result_id", None),
+            space_id=d.get("space_id", None),
+            status=_enum(d, "status", EvaluationStatusType),
+        )
+
+
+@dataclass
+class GenieEvalResultDetails:
+    """Shows detailed information for an evaluation result."""
+
+    result_id: str
+    """The unique identifier for the evaluation result."""
+
+    space_id: str
+    """The ID of the space the evaluation result belongs to."""
+
+    benchmark_question_id: str
+    """The ID of the benchmark question that was evaluated."""
+
+    actual_response: Optional[List[GenieEvalResponse]] = None
+    """The actual response generated by Genie."""
+
+    assessment: Optional[GenieEvalAssessment] = None
+    """Assessment of the evaluation result: good, bad, or needs review"""
+
+    assessment_reasons: Optional[List[ScoreReason]] = None
+    """Reasons for the assessment score."""
+
+    eval_run_status: Optional[EvaluationStatusType] = None
+    """Current status of the evaluation run."""
+
+    expected_response: Optional[List[GenieEvalResponse]] = None
+    """The expected responses from the benchmark."""
+
+    manual_assessment: Optional[bool] = None
+    """Whether this evaluation was manually assessed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieEvalResultDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.actual_response:
+            body["actual_response"] = [v.as_dict() for v in self.actual_response]
+        if self.assessment is not None:
+            body["assessment"] = self.assessment.value
+        if self.assessment_reasons:
+            body["assessment_reasons"] = [v.value for v in self.assessment_reasons]
+        if self.benchmark_question_id is not None:
+            body["benchmark_question_id"] = self.benchmark_question_id
+        if self.eval_run_status is not None:
+            body["eval_run_status"] = self.eval_run_status.value
+        if self.expected_response:
+            body["expected_response"] = [v.as_dict() for v in self.expected_response]
+        if self.manual_assessment is not None:
+            body["manual_assessment"] = self.manual_assessment
+        if self.result_id is not None:
+            body["result_id"] = self.result_id
+        if self.space_id is not None:
+            body["space_id"] = self.space_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieEvalResultDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.actual_response:
+            body["actual_response"] = self.actual_response
+        if self.assessment is not None:
+            body["assessment"] = self.assessment
+        if self.assessment_reasons:
+            body["assessment_reasons"] = self.assessment_reasons
+        if self.benchmark_question_id is not None:
+            body["benchmark_question_id"] = self.benchmark_question_id
+        if self.eval_run_status is not None:
+            body["eval_run_status"] = self.eval_run_status
+        if self.expected_response:
+            body["expected_response"] = self.expected_response
+        if self.manual_assessment is not None:
+            body["manual_assessment"] = self.manual_assessment
+        if self.result_id is not None:
+            body["result_id"] = self.result_id
+        if self.space_id is not None:
+            body["space_id"] = self.space_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieEvalResultDetails:
+        """Deserializes the GenieEvalResultDetails from a dictionary."""
+        return cls(
+            actual_response=_repeated_dict(d, "actual_response", GenieEvalResponse),
+            assessment=_enum(d, "assessment", GenieEvalAssessment),
+            assessment_reasons=_repeated_enum(d, "assessment_reasons", ScoreReason),
+            benchmark_question_id=d.get("benchmark_question_id", None),
+            eval_run_status=_enum(d, "eval_run_status", EvaluationStatusType),
+            expected_response=_repeated_dict(d, "expected_response", GenieEvalResponse),
+            manual_assessment=d.get("manual_assessment", None),
+            result_id=d.get("result_id", None),
+            space_id=d.get("space_id", None),
+        )
+
+
+@dataclass
+class GenieEvalRunResponse:
+    eval_run_id: str
+    """The unique identifier for the evaluation run."""
+
+    created_timestamp: Optional[int] = None
+    """Timestamp when the evaluation run was created (milliseconds since epoch)."""
+
+    eval_run_status: Optional[EvaluationStatusType] = None
+    """Current status of the evaluation run."""
+
+    last_updated_timestamp: Optional[int] = None
+    """Timestamp when the evaluation run was last updated (milliseconds since epoch)."""
+
+    num_correct: Optional[int] = None
+    """Number of questions answered correctly."""
+
+    num_done: Optional[int] = None
+    """Number of questions that have been completed."""
+
+    num_needs_review: Optional[int] = None
+    """Number of questions that need manual review."""
+
+    num_questions: Optional[int] = None
+    """Total number of questions in the evaluation run."""
+
+    run_by_user: Optional[int] = None
+    """User ID who initiated the evaluation run."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieEvalRunResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.created_timestamp is not None:
+            body["created_timestamp"] = self.created_timestamp
+        if self.eval_run_id is not None:
+            body["eval_run_id"] = self.eval_run_id
+        if self.eval_run_status is not None:
+            body["eval_run_status"] = self.eval_run_status.value
+        if self.last_updated_timestamp is not None:
+            body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.num_correct is not None:
+            body["num_correct"] = self.num_correct
+        if self.num_done is not None:
+            body["num_done"] = self.num_done
+        if self.num_needs_review is not None:
+            body["num_needs_review"] = self.num_needs_review
+        if self.num_questions is not None:
+            body["num_questions"] = self.num_questions
+        if self.run_by_user is not None:
+            body["run_by_user"] = self.run_by_user
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieEvalRunResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.created_timestamp is not None:
+            body["created_timestamp"] = self.created_timestamp
+        if self.eval_run_id is not None:
+            body["eval_run_id"] = self.eval_run_id
+        if self.eval_run_status is not None:
+            body["eval_run_status"] = self.eval_run_status
+        if self.last_updated_timestamp is not None:
+            body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.num_correct is not None:
+            body["num_correct"] = self.num_correct
+        if self.num_done is not None:
+            body["num_done"] = self.num_done
+        if self.num_needs_review is not None:
+            body["num_needs_review"] = self.num_needs_review
+        if self.num_questions is not None:
+            body["num_questions"] = self.num_questions
+        if self.run_by_user is not None:
+            body["run_by_user"] = self.run_by_user
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieEvalRunResponse:
+        """Deserializes the GenieEvalRunResponse from a dictionary."""
+        return cls(
+            created_timestamp=d.get("created_timestamp", None),
+            eval_run_id=d.get("eval_run_id", None),
+            eval_run_status=_enum(d, "eval_run_status", EvaluationStatusType),
+            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            num_correct=d.get("num_correct", None),
+            num_done=d.get("num_done", None),
+            num_needs_review=d.get("num_needs_review", None),
+            num_questions=d.get("num_questions", None),
+            run_by_user=d.get("run_by_user", None),
         )
 
 
@@ -605,6 +934,76 @@ class GenieListConversationsResponse:
         """Deserializes the GenieListConversationsResponse from a dictionary."""
         return cls(
             conversations=_repeated_dict(d, "conversations", GenieConversationSummary),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
+class GenieListEvalResultsResponse:
+    eval_results: Optional[List[GenieEvalResult]] = None
+    """List of evaluation results for the specified run."""
+
+    next_page_token: Optional[str] = None
+    """The token to use for retrieving the next page of results."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieListEvalResultsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.eval_results:
+            body["eval_results"] = [v.as_dict() for v in self.eval_results]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieListEvalResultsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.eval_results:
+            body["eval_results"] = self.eval_results
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieListEvalResultsResponse:
+        """Deserializes the GenieListEvalResultsResponse from a dictionary."""
+        return cls(
+            eval_results=_repeated_dict(d, "eval_results", GenieEvalResult),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
+class GenieListEvalRunsResponse:
+    eval_runs: Optional[List[GenieEvalRunResponse]] = None
+    """List of evaluation runs for a space on provided page token and page size"""
+
+    next_page_token: Optional[str] = None
+    """The token to use for retrieving the next page of results."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieListEvalRunsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.eval_runs:
+            body["eval_runs"] = [v.as_dict() for v in self.eval_runs]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieListEvalRunsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.eval_runs:
+            body["eval_runs"] = self.eval_runs
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieListEvalRunsResponse:
+        """Deserializes the GenieListEvalRunsResponse from a dictionary."""
+        return cls(
+            eval_runs=_repeated_dict(d, "eval_runs", GenieEvalRunResponse),
             next_page_token=d.get("next_page_token", None),
         )
 
@@ -1530,6 +1929,37 @@ class SchedulePauseStatus(Enum):
     UNPAUSED = "UNPAUSED"
 
 
+class ScoreReason(Enum):
+
+    COLUMN_TYPE_DIFFERENCE = "COLUMN_TYPE_DIFFERENCE"
+    EMPTY_GOOD_SQL = "EMPTY_GOOD_SQL"
+    EMPTY_RESULT = "EMPTY_RESULT"
+    LLM_JUDGE_FORMATTING_ERROR = "LLM_JUDGE_FORMATTING_ERROR"
+    LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT = "LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT"
+    LLM_JUDGE_INCORRECT_FUNCTION_USAGE = "LLM_JUDGE_INCORRECT_FUNCTION_USAGE"
+    LLM_JUDGE_INCORRECT_METRIC_CALCULATION = "LLM_JUDGE_INCORRECT_METRIC_CALCULATION"
+    LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE = "LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE"
+    LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC = (
+        "LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC"
+    )
+    LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST = "LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST"
+    LLM_JUDGE_MISSING_JOIN = "LLM_JUDGE_MISSING_JOIN"
+    LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION = "LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION"
+    LLM_JUDGE_MISSING_OR_INCORRECT_FILTER = "LLM_JUDGE_MISSING_OR_INCORRECT_FILTER"
+    LLM_JUDGE_MISSING_OR_INCORRECT_JOIN = "LLM_JUDGE_MISSING_OR_INCORRECT_JOIN"
+    LLM_JUDGE_OTHER = "LLM_JUDGE_OTHER"
+    LLM_JUDGE_SEMANTIC_ERROR = "LLM_JUDGE_SEMANTIC_ERROR"
+    LLM_JUDGE_SYNTAX_ERROR = "LLM_JUDGE_SYNTAX_ERROR"
+    LLM_JUDGE_WRONG_AGGREGATION = "LLM_JUDGE_WRONG_AGGREGATION"
+    LLM_JUDGE_WRONG_COLUMNS = "LLM_JUDGE_WRONG_COLUMNS"
+    LLM_JUDGE_WRONG_FILTER = "LLM_JUDGE_WRONG_FILTER"
+    RESULT_EXTRA_COLUMNS = "RESULT_EXTRA_COLUMNS"
+    RESULT_EXTRA_ROWS = "RESULT_EXTRA_ROWS"
+    RESULT_MISSING_COLUMNS = "RESULT_MISSING_COLUMNS"
+    RESULT_MISSING_ROWS = "RESULT_MISSING_ROWS"
+    SINGLE_CELL_DIFFERENCE = "SINGLE_CELL_DIFFERENCE"
+
+
 @dataclass
 class Subscriber:
     destination_subscriber: Optional[SubscriptionSubscriberDestination] = None
@@ -2098,6 +2528,148 @@ class GenieAPI:
             headers=headers,
         )
         return GenieGenerateDownloadFullQueryResultResponse.from_dict(res)
+
+    def genie_create_eval_run(
+        self, space_id: str, *, benchmark_question_ids: Optional[List[str]] = None
+    ) -> GenieEvalRunResponse:
+        """Create and run evaluations for multiple benchmark questions in a Genie space.
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluations will be executed.
+        :param benchmark_question_ids: List[str] (optional)
+          List of benchmark question IDs to evaluate. These questions must exist in the specified Genie space.
+          If none are specified, then all benchmark questions are evaluated.
+
+        :returns: :class:`GenieEvalRunResponse`
+        """
+
+        body = {}
+        if benchmark_question_ids is not None:
+            body["benchmark_question_ids"] = [v for v in benchmark_question_ids]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/genie/spaces/{space_id}/eval-runs", body=body, headers=headers)
+        return GenieEvalRunResponse.from_dict(res)
+
+    def genie_get_eval_result_details(self, space_id: str, eval_run_id: str, result_id: str) -> GenieEvalResultDetails:
+        """Get details for evaluation results.
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluation run is located.
+        :param eval_run_id: str
+          The unique identifier for the evaluation run.
+        :param result_id: str
+          The unique identifier for the evaluation result.
+
+        :returns: :class:`GenieEvalResultDetails`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "GET", f"/api/2.0/genie/spaces/{space_id}/eval-runs/{eval_run_id}/results/{result_id}", headers=headers
+        )
+        return GenieEvalResultDetails.from_dict(res)
+
+    def genie_get_eval_run(self, space_id: str, eval_run_id: str) -> GenieEvalRunResponse:
+        """Get evaluation run details.
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluation run is located.
+        :param eval_run_id: str
+
+        :returns: :class:`GenieEvalRunResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}/eval-runs/{eval_run_id}", headers=headers)
+        return GenieEvalRunResponse.from_dict(res)
+
+    def genie_list_eval_results(
+        self, space_id: str, eval_run_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> GenieListEvalResultsResponse:
+        """List evaluation results for a specific evaluation run.
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluation run is located.
+        :param eval_run_id: str
+          The unique identifier for the evaluation run.
+        :param page_size: int (optional)
+          Maximum number of eval results to return per page.
+        :param page_token: str (optional)
+          Opaque token to retrieve the next page of results.
+
+        :returns: :class:`GenieListEvalResultsResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "GET", f"/api/2.0/genie/spaces/{space_id}/eval-runs/{eval_run_id}/results", query=query, headers=headers
+        )
+        return GenieListEvalResultsResponse.from_dict(res)
+
+    def genie_list_eval_runs(
+        self, space_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> GenieListEvalRunsResponse:
+        """Lists all evaluation runs in a space.
+
+        :param space_id: str
+          The ID associated with the Genie space where the evaluation run is located.
+        :param page_size: int (optional)
+          Maximum number of evaluation runs to return per page
+        :param page_token: str (optional)
+          Token to get the next page of results
+
+        :returns: :class:`GenieListEvalRunsResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}/eval-runs", query=query, headers=headers)
+        return GenieListEvalRunsResponse.from_dict(res)
 
     def get_download_full_query_result(
         self,

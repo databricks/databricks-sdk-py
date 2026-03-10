@@ -179,6 +179,126 @@ class ActivityType(Enum):
 
 
 @dataclass
+class AggregationFunction:
+    """An aggregation function applied over a time window."""
+
+    approx_count_distinct: Optional[ApproxCountDistinctFunction] = None
+
+    approx_percentile: Optional[ApproxPercentileFunction] = None
+
+    avg: Optional[AvgFunction] = None
+
+    count_function: Optional[CountFunction] = None
+
+    first: Optional[FirstFunction] = None
+
+    last: Optional[LastFunction] = None
+
+    max: Optional[MaxFunction] = None
+
+    min: Optional[MinFunction] = None
+
+    stddev_pop: Optional[StddevPopFunction] = None
+
+    stddev_samp: Optional[StddevSampFunction] = None
+
+    sum: Optional[SumFunction] = None
+
+    time_window: Optional[TimeWindow] = None
+    """The time window over which the aggregation is computed."""
+
+    var_pop: Optional[VarPopFunction] = None
+
+    var_samp: Optional[VarSampFunction] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AggregationFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.approx_count_distinct:
+            body["approx_count_distinct"] = self.approx_count_distinct.as_dict()
+        if self.approx_percentile:
+            body["approx_percentile"] = self.approx_percentile.as_dict()
+        if self.avg:
+            body["avg"] = self.avg.as_dict()
+        if self.count_function:
+            body["count_function"] = self.count_function.as_dict()
+        if self.first:
+            body["first"] = self.first.as_dict()
+        if self.last:
+            body["last"] = self.last.as_dict()
+        if self.max:
+            body["max"] = self.max.as_dict()
+        if self.min:
+            body["min"] = self.min.as_dict()
+        if self.stddev_pop:
+            body["stddev_pop"] = self.stddev_pop.as_dict()
+        if self.stddev_samp:
+            body["stddev_samp"] = self.stddev_samp.as_dict()
+        if self.sum:
+            body["sum"] = self.sum.as_dict()
+        if self.time_window:
+            body["time_window"] = self.time_window.as_dict()
+        if self.var_pop:
+            body["var_pop"] = self.var_pop.as_dict()
+        if self.var_samp:
+            body["var_samp"] = self.var_samp.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AggregationFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.approx_count_distinct:
+            body["approx_count_distinct"] = self.approx_count_distinct
+        if self.approx_percentile:
+            body["approx_percentile"] = self.approx_percentile
+        if self.avg:
+            body["avg"] = self.avg
+        if self.count_function:
+            body["count_function"] = self.count_function
+        if self.first:
+            body["first"] = self.first
+        if self.last:
+            body["last"] = self.last
+        if self.max:
+            body["max"] = self.max
+        if self.min:
+            body["min"] = self.min
+        if self.stddev_pop:
+            body["stddev_pop"] = self.stddev_pop
+        if self.stddev_samp:
+            body["stddev_samp"] = self.stddev_samp
+        if self.sum:
+            body["sum"] = self.sum
+        if self.time_window:
+            body["time_window"] = self.time_window
+        if self.var_pop:
+            body["var_pop"] = self.var_pop
+        if self.var_samp:
+            body["var_samp"] = self.var_samp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AggregationFunction:
+        """Deserializes the AggregationFunction from a dictionary."""
+        return cls(
+            approx_count_distinct=_from_dict(d, "approx_count_distinct", ApproxCountDistinctFunction),
+            approx_percentile=_from_dict(d, "approx_percentile", ApproxPercentileFunction),
+            avg=_from_dict(d, "avg", AvgFunction),
+            count_function=_from_dict(d, "count_function", CountFunction),
+            first=_from_dict(d, "first", FirstFunction),
+            last=_from_dict(d, "last", LastFunction),
+            max=_from_dict(d, "max", MaxFunction),
+            min=_from_dict(d, "min", MinFunction),
+            stddev_pop=_from_dict(d, "stddev_pop", StddevPopFunction),
+            stddev_samp=_from_dict(d, "stddev_samp", StddevSampFunction),
+            sum=_from_dict(d, "sum", SumFunction),
+            time_window=_from_dict(d, "time_window", TimeWindow),
+            var_pop=_from_dict(d, "var_pop", VarPopFunction),
+            var_samp=_from_dict(d, "var_samp", VarSampFunction),
+        )
+
+
+@dataclass
 class ApproveTransitionRequestResponse:
     activity: Optional[Activity] = None
     """New activity generated as a result of this operation."""
@@ -201,6 +321,81 @@ class ApproveTransitionRequestResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ApproveTransitionRequestResponse:
         """Deserializes the ApproveTransitionRequestResponse from a dictionary."""
         return cls(activity=_from_dict(d, "activity", Activity))
+
+
+@dataclass
+class ApproxCountDistinctFunction:
+    """Computes the approximate count of distinct values."""
+
+    input: str
+    """The input column from which the approximate count of distinct values is computed."""
+
+    relative_sd: Optional[float] = None
+    """The maximum relative standard deviation allowed (default defined by Spark)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ApproxCountDistinctFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        if self.relative_sd is not None:
+            body["relative_sd"] = self.relative_sd
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ApproxCountDistinctFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        if self.relative_sd is not None:
+            body["relative_sd"] = self.relative_sd
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ApproxCountDistinctFunction:
+        """Deserializes the ApproxCountDistinctFunction from a dictionary."""
+        return cls(input=d.get("input", None), relative_sd=d.get("relative_sd", None))
+
+
+@dataclass
+class ApproxPercentileFunction:
+    """Computes the approximate percentile of values."""
+
+    input: str
+    """The input column from which the approximate percentile is computed."""
+
+    percentile: float
+    """The percentile value to compute (between 0 and 1)."""
+
+    accuracy: Optional[int] = None
+    """The accuracy parameter (higher is more accurate but slower)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ApproxPercentileFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.accuracy is not None:
+            body["accuracy"] = self.accuracy
+        if self.input is not None:
+            body["input"] = self.input
+        if self.percentile is not None:
+            body["percentile"] = self.percentile
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ApproxPercentileFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.accuracy is not None:
+            body["accuracy"] = self.accuracy
+        if self.input is not None:
+            body["input"] = self.input
+        if self.percentile is not None:
+            body["percentile"] = self.percentile
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ApproxPercentileFunction:
+        """Deserializes the ApproxPercentileFunction from a dictionary."""
+        return cls(accuracy=d.get("accuracy", None), input=d.get("input", None), percentile=d.get("percentile", None))
 
 
 @dataclass
@@ -227,6 +422,33 @@ class AuthConfig:
     def from_dict(cls, d: Dict[str, Any]) -> AuthConfig:
         """Deserializes the AuthConfig from a dictionary."""
         return cls(uc_service_credential_name=d.get("uc_service_credential_name", None))
+
+
+@dataclass
+class AvgFunction:
+    """Computes the average of values."""
+
+    input: str
+    """The input column from which the average is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AvgFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AvgFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AvgFunction:
+        """Deserializes the AvgFunction from a dictionary."""
+        return cls(input=d.get("input", None))
 
 
 @dataclass
@@ -428,6 +650,33 @@ class ContinuousWindow:
     def from_dict(cls, d: Dict[str, Any]) -> ContinuousWindow:
         """Deserializes the ContinuousWindow from a dictionary."""
         return cls(offset=d.get("offset", None), window_duration=d.get("window_duration", None))
+
+
+@dataclass
+class CountFunction:
+    """Computes the count of values."""
+
+    input: str
+    """The input column from which the count is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CountFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CountFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CountFunction:
+        """Deserializes the CountFunction from a dictionary."""
+        return cls(input=d.get("input", None))
 
 
 @dataclass
@@ -1072,20 +1321,22 @@ class DeltaTableSource:
     full_name: str
     """The full three-part (catalog, schema, table) name of the Delta table."""
 
-    entity_columns: List[str]
-    """The entity columns of the Delta table."""
-
-    timeseries_column: str
-    """The timeseries column of the Delta table."""
-
     dataframe_schema: Optional[str] = None
     """Schema of the resulting dataframe after transformations, in Spark StructType JSON format (from
     df.schema.json()). Required if transformation_sql is specified. Example:
     {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}"""
 
+    entity_columns: Optional[List[str]] = None
+    """Deprecated: Use Feature.entity instead. Kept for backwards compatibility. The entity columns of
+    the Delta table."""
+
     filter_condition: Optional[str] = None
     """Single WHERE clause to filter delta table before applying transformations. Will be row-wise
     evaluated, so should only include conditionals and projections."""
+
+    timeseries_column: Optional[str] = None
+    """Deprecated: Use Feature.timeseries_column instead. Kept for backwards compatibility. The
+    timeseries column of the Delta table."""
 
     transformation_sql: Optional[str] = None
     """A single SQL SELECT expression applied after filter_condition. Should contains all the columns
@@ -1138,6 +1389,31 @@ class DeltaTableSource:
             timeseries_column=d.get("timeseries_column", None),
             transformation_sql=d.get("transformation_sql", None),
         )
+
+
+@dataclass
+class EntityColumn:
+    name: str
+    """The name of the entity column."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EntityColumn into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EntityColumn into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EntityColumn:
+        """Deserializes the EntityColumn from a dictionary."""
+        return cls(name=d.get("name", None))
 
 
 @dataclass
@@ -1490,33 +1766,44 @@ class Feature:
     source: DataSource
     """The data source of the feature."""
 
-    inputs: List[str]
-    """The input columns from which the feature is computed."""
-
     function: Function
     """The function by which the feature is computed."""
 
     description: Optional[str] = None
     """The description of the feature."""
 
+    entities: Optional[List[EntityColumn]] = None
+    """The entity columns for the feature, used as aggregation keys and for query-time lookup."""
+
     filter_condition: Optional[str] = None
-    """The filter condition applied to the source data before aggregation."""
+    """Deprecated: Use DeltaTableSource.filter_condition or KafkaSource.filter_condition instead. Kept
+    for backwards compatibility. The filter condition applied to the source data before aggregation."""
+
+    inputs: Optional[List[str]] = None
+    """Deprecated: Use AggregationFunction.inputs instead. Kept for backwards compatibility. The input
+    columns from which the feature is computed."""
 
     lineage_context: Optional[LineageContext] = None
-    """WARNING: This field is primarily intended for internal use by Databricks systems and is
-    automatically populated when features are created through Databricks notebooks or jobs. Users
-    should not manually set this field as incorrect values may lead to inaccurate lineage tracking
-    or unexpected behavior. This field will be set by feature-engineering client and should be left
-    unset by SDK and terraform users."""
+    """Lineage context information for this feature. WARNING: This field is primarily intended for
+    internal use by Databricks systems and is automatically populated when features are created
+    through Databricks notebooks or jobs. Users should not manually set this field as incorrect
+    values may lead to inaccurate lineage tracking or unexpected behavior. This field will be set by
+    feature-engineering client and should be left unset by SDK and terraform users."""
 
     time_window: Optional[TimeWindow] = None
-    """The time window in which the feature is computed."""
+    """Deprecated: Use Function.aggregation_function.time_window instead. Kept for backwards
+    compatibility. The time window in which the feature is computed."""
+
+    timeseries_column: Optional[TimeseriesColumn] = None
+    """Column recording time, used for point-in-time joins, backfills, and aggregations."""
 
     def as_dict(self) -> dict:
         """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.entities:
+            body["entities"] = [v.as_dict() for v in self.entities]
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
@@ -1531,6 +1818,8 @@ class Feature:
             body["source"] = self.source.as_dict()
         if self.time_window:
             body["time_window"] = self.time_window.as_dict()
+        if self.timeseries_column:
+            body["timeseries_column"] = self.timeseries_column.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1538,6 +1827,8 @@ class Feature:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.entities:
+            body["entities"] = self.entities
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
@@ -1552,6 +1843,8 @@ class Feature:
             body["source"] = self.source
         if self.time_window:
             body["time_window"] = self.time_window
+        if self.timeseries_column:
+            body["timeseries_column"] = self.timeseries_column
         return body
 
     @classmethod
@@ -1559,6 +1852,7 @@ class Feature:
         """Deserializes the Feature from a dictionary."""
         return cls(
             description=d.get("description", None),
+            entities=_repeated_dict(d, "entities", EntityColumn),
             filter_condition=d.get("filter_condition", None),
             full_name=d.get("full_name", None),
             function=_from_dict(d, "function", Function),
@@ -1566,6 +1860,7 @@ class Feature:
             lineage_context=_from_dict(d, "lineage_context", LineageContext),
             source=_from_dict(d, "source", DataSource),
             time_window=_from_dict(d, "time_window", TimeWindow),
+            timeseries_column=_from_dict(d, "timeseries_column", TimeseriesColumn),
         )
 
 
@@ -1826,6 +2121,33 @@ class FinalizeLoggedModelResponse:
 
 
 @dataclass
+class FirstFunction:
+    """Returns the first value."""
+
+    input: str
+    """The input column from which the first value is returned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FirstFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FirstFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FirstFunction:
+        """Deserializes the FirstFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
+@dataclass
 class ForecastingExperiment:
     """Represents a forecasting experiment with its unique identifier, URL, and state."""
 
@@ -1881,15 +2203,22 @@ class ForecastingExperimentState(Enum):
 
 @dataclass
 class Function:
-    function_type: FunctionFunctionType
-    """The type of the function."""
+    aggregation_function: Optional[AggregationFunction] = None
+    """An aggregation function applied over a time window."""
 
     extra_parameters: Optional[List[FunctionExtraParameter]] = None
-    """Extra parameters for parameterized functions."""
+    """Deprecated: Use the function oneof with AggregationFunction instead. Kept for backwards
+    compatibility. Extra parameters for parameterized functions."""
+
+    function_type: Optional[FunctionFunctionType] = None
+    """Deprecated: Use the function oneof with AggregationFunction instead. Kept for backwards
+    compatibility. The type of the function."""
 
     def as_dict(self) -> dict:
         """Serializes the Function into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.aggregation_function:
+            body["aggregation_function"] = self.aggregation_function.as_dict()
         if self.extra_parameters:
             body["extra_parameters"] = [v.as_dict() for v in self.extra_parameters]
         if self.function_type is not None:
@@ -1899,6 +2228,8 @@ class Function:
     def as_shallow_dict(self) -> dict:
         """Serializes the Function into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.aggregation_function:
+            body["aggregation_function"] = self.aggregation_function
         if self.extra_parameters:
             body["extra_parameters"] = self.extra_parameters
         if self.function_type is not None:
@@ -1909,6 +2240,7 @@ class Function:
     def from_dict(cls, d: Dict[str, Any]) -> Function:
         """Deserializes the Function from a dictionary."""
         return cls(
+            aggregation_function=_from_dict(d, "aggregation_function", AggregationFunction),
             extra_parameters=_repeated_dict(d, "extra_parameters", FunctionExtraParameter),
             function_type=_enum(d, "function_type", FunctionFunctionType),
         )
@@ -1916,6 +2248,10 @@ class Function:
 
 @dataclass
 class FunctionExtraParameter:
+    """Deprecated: Use typed fields on function-specific messages (e.g.
+    ApproxPercentileFunction.percentile) or AggregationFunction.ExtraParameter instead. Kept for
+    backwards compatibility."""
+
     key: str
     """The name of the parameter."""
 
@@ -1947,6 +2283,8 @@ class FunctionExtraParameter:
 
 
 class FunctionFunctionType(Enum):
+    """Deprecated: Use the function-specific messages in AggregationFunction.function_type oneof
+    instead. Kept for backwards compatibility."""
 
     APPROX_COUNT_DISTINCT = "APPROX_COUNT_DISTINCT"
     APPROX_PERCENTILE = "APPROX_PERCENTILE"
@@ -2581,17 +2919,24 @@ class KafkaSource:
     """Name of the Kafka source, used to identify it. This is used to look up the corresponding
     KafkaConfig object. Can be distinct from topic name."""
 
-    entity_column_identifiers: List[ColumnIdentifier]
-    """The entity column identifiers of the Kafka source."""
+    entity_column_identifiers: Optional[List[ColumnIdentifier]] = None
+    """Deprecated: Use Feature.entity instead. Kept for backwards compatibility. The entity column
+    identifiers of the Kafka source."""
 
-    timeseries_column_identifier: ColumnIdentifier
-    """The timeseries column identifier of the Kafka source."""
+    filter_condition: Optional[str] = None
+    """The filter condition applied to the source data before aggregation."""
+
+    timeseries_column_identifier: Optional[ColumnIdentifier] = None
+    """Deprecated: Use Feature.timeseries_column instead. Kept for backwards compatibility. The
+    timeseries column identifier of the Kafka source."""
 
     def as_dict(self) -> dict:
         """Serializes the KafkaSource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.entity_column_identifiers:
             body["entity_column_identifiers"] = [v.as_dict() for v in self.entity_column_identifiers]
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
         if self.name is not None:
             body["name"] = self.name
         if self.timeseries_column_identifier:
@@ -2603,6 +2948,8 @@ class KafkaSource:
         body = {}
         if self.entity_column_identifiers:
             body["entity_column_identifiers"] = self.entity_column_identifiers
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
         if self.name is not None:
             body["name"] = self.name
         if self.timeseries_column_identifier:
@@ -2614,9 +2961,37 @@ class KafkaSource:
         """Deserializes the KafkaSource from a dictionary."""
         return cls(
             entity_column_identifiers=_repeated_dict(d, "entity_column_identifiers", ColumnIdentifier),
+            filter_condition=d.get("filter_condition", None),
             name=d.get("name", None),
             timeseries_column_identifier=_from_dict(d, "timeseries_column_identifier", ColumnIdentifier),
         )
+
+
+@dataclass
+class LastFunction:
+    """Returns the last value."""
+
+    input: str
+    """The input column from which the last value is returned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LastFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LastFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LastFunction:
+        """Deserializes the LastFunction from a dictionary."""
+        return cls(input=d.get("input", None))
 
 
 @dataclass
@@ -3527,6 +3902,33 @@ class MaterializedFeaturePipelineScheduleState(Enum):
 
 
 @dataclass
+class MaxFunction:
+    """Computes the maximum value."""
+
+    input: str
+    """The input column from which the maximum is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaxFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaxFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaxFunction:
+        """Deserializes the MaxFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
+@dataclass
 class Metric:
     """Metric associated with a run, represented as a key-value pair."""
 
@@ -3612,6 +4014,33 @@ class Metric:
             timestamp=d.get("timestamp", None),
             value=d.get("value", None),
         )
+
+
+@dataclass
+class MinFunction:
+    """Computes the minimum value."""
+
+    input: str
+    """The input column from which the minimum is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MinFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MinFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MinFunction:
+        """Deserializes the MinFunction from a dictionary."""
+        return cls(input=d.get("input", None))
 
 
 @dataclass
@@ -5711,6 +6140,60 @@ class Status(Enum):
 
 
 @dataclass
+class StddevPopFunction:
+    """Computes the population standard deviation."""
+
+    input: str
+    """The input column from which the population standard deviation is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StddevPopFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StddevPopFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StddevPopFunction:
+        """Deserializes the StddevPopFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
+@dataclass
+class StddevSampFunction:
+    """Computes the sample standard deviation."""
+
+    input: str
+    """The input column from which the sample standard deviation is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StddevSampFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StddevSampFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StddevSampFunction:
+        """Deserializes the StddevSampFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
+@dataclass
 class SubscriptionMode:
     assign: Optional[str] = None
     """A JSON string that contains the specific topic-partitions to consume from. For example, for
@@ -5753,6 +6236,33 @@ class SubscriptionMode:
             subscribe=d.get("subscribe", None),
             subscribe_pattern=d.get("subscribe_pattern", None),
         )
+
+
+@dataclass
+class SumFunction:
+    """Computes the sum of values."""
+
+    input: str
+    """The input column from which the sum is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SumFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SumFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SumFunction:
+        """Deserializes the SumFunction from a dictionary."""
+        return cls(input=d.get("input", None))
 
 
 @dataclass
@@ -5825,6 +6335,31 @@ class TimeWindow:
             sliding=_from_dict(d, "sliding", SlidingWindow),
             tumbling=_from_dict(d, "tumbling", TumblingWindow),
         )
+
+
+@dataclass
+class TimeseriesColumn:
+    name: str
+    """The name of the timeseries column."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TimeseriesColumn into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TimeseriesColumn into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TimeseriesColumn:
+        """Deserializes the TimeseriesColumn from a dictionary."""
+        return cls(name=d.get("name", None))
 
 
 @dataclass
@@ -6096,6 +6631,60 @@ class UpdateWebhookResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateWebhookResponse:
         """Deserializes the UpdateWebhookResponse from a dictionary."""
         return cls(webhook=_from_dict(d, "webhook", RegistryWebhook))
+
+
+@dataclass
+class VarPopFunction:
+    """Computes the population variance."""
+
+    input: str
+    """The input column from which the population variance is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the VarPopFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VarPopFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VarPopFunction:
+        """Deserializes the VarPopFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
+@dataclass
+class VarSampFunction:
+    """Computes the sample variance."""
+
+    input: str
+    """The input column from which the sample variance is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the VarSampFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VarSampFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VarSampFunction:
+        """Deserializes the VarSampFunction from a dictionary."""
+        return cls(input=d.get("input", None))
 
 
 class ViewType(Enum):
