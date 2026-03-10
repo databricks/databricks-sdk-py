@@ -319,7 +319,7 @@ class Refreshable(TokenSource):
 
     def _handle_failed_async_refresh(self) -> None:
         """
-        Handles a failed asynchronous refresh by moving the timestamp after which 
+        Handles a failed asynchronous refresh by moving the timestamp after which
         a token is considered stale by _ASYNC_REFRESH_RETRY_BACKOFF into the future.
 
         This effectively changes the token from stale to fresh for a short period of time.
