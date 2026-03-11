@@ -579,8 +579,11 @@ class TestCloudAgnosticHosts:
         mock_cfg = Mock()
         mock_cfg.host = "https://api.databricks.com"  # Cloud-agnostic host
         mock_cfg.google_credentials = '{"type": "service_account", "project_id": "test"}'
-        mock_cfg.client_type = ClientType.WORKSPACE
         mock_cfg.disable_async_token_refresh = True
+        mocker.patch(
+            "databricks.sdk.credentials_provider.oauth.get_host_metadata",
+            return_value=oauth.HostMetadata(oidc_endpoint="", workspace_id="some-workspace"),
+        )
 
         # Mock service account credentials
         mock_credentials = Mock()
@@ -610,7 +613,10 @@ class TestCloudAgnosticHosts:
         mock_cfg = Mock()
         mock_cfg.host = "https://api.databricks.com"  # Cloud-agnostic host
         mock_cfg.google_service_account = "test-sa@project.iam.gserviceaccount.com"
-        mock_cfg.client_type = ClientType.WORKSPACE
+        mocker.patch(
+            "databricks.sdk.credentials_provider.oauth.get_host_metadata",
+            return_value=oauth.HostMetadata(oidc_endpoint="", workspace_id="some-workspace"),
+        )
 
         # Mock google.auth.default
         mock_source_credentials = Mock()
@@ -737,3 +743,125 @@ class TestCloudAgnosticHosts:
         # Should return None due to missing requirement
         provider = credentials_provider.azure_cli(mock_cfg)
         assert provider is None
+
+
+class TestRequiresGcpSaAccessToken:
+    """Tests for _requires_gcp_sa_access_token host-metadata-based determination."""
+
+    def test_account_host_no_workspace_id_in_metadata(self, mocker):
+        """Metadata with no workspace_id → account-level → requires SA token."""
+        mock_cfg = Mock()
+        mock_cfg.host = "https://accounts.gcp.databricks.com"
+        mocker.patch(
+            "databricks.sdk.credentials_provider.oauth.get_host_metadata",
+            return_value=oauth.HostMetadata(oidc_endpoint="", account_id="acc-1"),
+        )
+        assert credentials_provider._requires_gcp_sa_access_token(mock_cfg) is True
+
+    def test_workspace_host_has_workspace_id_in_metadata(self, mocker):
+        """Metadata with workspace_id → workspace-level → no SA token needed."""
+        mock_cfg = Mock()
+        mock_cfg.host = "https://myworkspace.gcp.databricks.com"
+        mocker.patch(
+            "databricks.sdk.credentials_provider.oauth.get_host_metadata",
+            return_value=oauth.HostMetadata(oidc_endpoint="", workspace_id="ws-123"),
+        )
+        assert credentials_provider._requires_gcp_sa_access_token(mock_cfg) is False
+
+    def test_spog_host_workspace_id_in_config_but_not_in_metadata(self, mocker):
+        """SPOG host: workspace_id set in user config but absent in server metadata.
+        The server response is authoritative — SA token must be included."""
+        mock_cfg = Mock()
+        mock_cfg.host = "https://spog.gcp.databricks.com"
+        mock_cfg.account_id = "acc-1"
+        mocker.patch(
+            "databricks.sdk.credentials_provider.oauth.get_host_metadata",
+            return_value=oauth.HostMetadata(oidc_endpoint="", account_id="acc-1"),
+        )
+        assert credentials_provider._requires_gcp_sa_access_token(mock_cfg) is True
+
+    def test_metadata_unavailable_falls_back_to_account_id(self, mocker):
+        """When the metadata endpoint is unreachable, fall back to checking account_id."""
+        mock_cfg = Mock()
+        mock_cfg.host = "https://accounts.gcp.databricks.com"
+        mock_cfg.account_id = "acc-1"
+        mocker.patch(
+            "databricks.sdk.credentials_provider.oauth.get_host_metadata",
+            side_effect=ValueError("endpoint unavailable"),
+        )
+        assert credentials_provider._requires_gcp_sa_access_token(mock_cfg) is True
+
+    def test_metadata_unavailable_no_account_id(self, mocker):
+        """When metadata fails and account_id is unset, behaves as workspace-level."""
+        mock_cfg = Mock()
+        mock_cfg.host = "https://myworkspace.gcp.databricks.com"
+        mock_cfg.account_id = None
+        mocker.patch(
+            "databricks.sdk.credentials_provider.oauth.get_host_metadata",
+            side_effect=ValueError("endpoint unavailable"),
+        )
+        assert credentials_provider._requires_gcp_sa_access_token(mock_cfg) is False
+
+    def test_google_credentials_spog_includes_sa_token(self, mocker):
+        """google_credentials adds X-Databricks-GCP-SA-Access-Token for SPOG account host."""
+        mock_cfg = Mock()
+        mock_cfg.host = "https://spog.gcp.databricks.com"
+        mock_cfg.google_credentials = '{"type": "service_account", "project_id": "test"}'
+        mock_cfg.disable_async_token_refresh = True
+        # SPOG: server metadata has no workspace_id even though user config might
+        mocker.patch(
+            "databricks.sdk.credentials_provider.oauth.get_host_metadata",
+            return_value=oauth.HostMetadata(oidc_endpoint="", account_id="acc-1"),
+        )
+
+        mock_id_creds = Mock()
+        mock_id_creds.token = "id-token"
+        mock_gcp_creds = Mock()
+        mock_gcp_creds.token = "sa-token"
+        mocker.patch(
+            "databricks.sdk.credentials_provider.service_account.IDTokenCredentials.from_service_account_info",
+            return_value=mock_id_creds,
+        )
+        mocker.patch(
+            "databricks.sdk.credentials_provider.service_account.Credentials.from_service_account_info",
+            return_value=mock_gcp_creds,
+        )
+
+        provider = credentials_provider.google_credentials(mock_cfg)
+        headers = provider()
+        assert headers["Authorization"] == "Bearer id-token"
+        assert headers["X-Databricks-GCP-SA-Access-Token"] == "sa-token"
+
+    def test_google_id_spog_includes_sa_token(self, mocker):
+        """google_id adds X-Databricks-GCP-SA-Access-Token for SPOG account host."""
+        mock_cfg = Mock()
+        mock_cfg.host = "https://spog.gcp.databricks.com"
+        mock_cfg.google_service_account = "sa@project.iam.gserviceaccount.com"
+        # SPOG: server metadata has no workspace_id
+        mocker.patch(
+            "databricks.sdk.credentials_provider.oauth.get_host_metadata",
+            return_value=oauth.HostMetadata(oidc_endpoint="", account_id="acc-1"),
+        )
+
+        mock_source = Mock()
+        mocker.patch(
+            "databricks.sdk.credentials_provider.google.auth.default",
+            return_value=(mock_source, "project"),
+        )
+        mock_id_creds = Mock()
+        mock_id_creds.token = "id-token"
+        mock_gcp_creds = Mock()
+        mock_gcp_creds.token = "sa-token"
+        mocker.patch(
+            "databricks.sdk.credentials_provider.impersonated_credentials.Credentials",
+            return_value=mock_gcp_creds,
+        )
+        mocker.patch(
+            "databricks.sdk.credentials_provider.impersonated_credentials.IDTokenCredentials",
+            return_value=mock_id_creds,
+        )
+
+        provider = credentials_provider.google_id(mock_cfg)
+        headers = provider()
+        assert headers["Authorization"] == "Bearer id-token"
+        assert headers["X-Databricks-GCP-SA-Access-Token"] == "sa-token"

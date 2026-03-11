@@ -568,6 +568,30 @@ GcpScopes = [
 ]
 
 
+def _requires_gcp_sa_access_token(cfg: "Config") -> bool:
+    """Return True if the X-Databricks-GCP-SA-Access-Token header must be included.
+
+    Account-level GCP endpoints require a GCP service account access token in addition
+    to the ID token. We determine this by consulting /.well-known/databricks-config:
+    when the server returns no workspace_id the host is acting as an account-level
+    endpoint and the extra header is required.
+
+    We cannot use cfg.client_type here because SPOG (Single Pane of Glass) hosts are
+    account-level endpoints even when the user config contains a workspace_id.
+    cfg.client_type would incorrectly return WORKSPACE in that case.
+
+    If the metadata endpoint is unavailable we fall back to checking whether
+    account_id is configured. In the legacy deployment model this was a reliable
+    signal: workspace hosts were always reached without an account_id, while
+    account-console hosts required one.
+    """
+    try:
+        meta = oauth.get_host_metadata(cfg.host)
+        return not meta.workspace_id
+    except Exception:
+        return bool(cfg.account_id)
+
+
 @oauth_credentials_strategy("google-credentials", ["host", "google_credentials"])
 def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
     # Reads credentials as JSON. Credentials can be either a path to JSON file, or actual JSON string.
@@ -587,6 +611,8 @@ def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
 
     gcp_credentials = service_account.Credentials.from_service_account_info(info=account_info, scopes=GcpScopes)
 
+    needs_sa_token = _requires_gcp_sa_access_token(cfg)
+
     def token() -> oauth.Token:
         credentials.refresh(request)
         return credentials.token
@@ -594,7 +620,7 @@ def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         credentials.refresh(request)
         headers = {"Authorization": f"Bearer {credentials.token}"}
-        if cfg.client_type == ClientType.ACCOUNT:
+        if needs_sa_token:
             gcp_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_credentials.token
         return headers
@@ -626,6 +652,8 @@ def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
 
     request = Request()
 
+    needs_sa_token = _requires_gcp_sa_access_token(cfg)
+
     def token() -> oauth.Token:
         id_creds.refresh(request)
         return id_creds.token
@@ -633,7 +661,7 @@ def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         id_creds.refresh(request)
         headers = {"Authorization": f"Bearer {id_creds.token}"}
-        if cfg.client_type == ClientType.ACCOUNT:
+        if needs_sa_token:
             gcp_impersonated_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_impersonated_credentials.token
         return headers
