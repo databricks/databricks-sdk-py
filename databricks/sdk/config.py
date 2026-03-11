@@ -630,6 +630,9 @@ class Config:
         Fills in account_id, workspace_id, and discovery_url (derived from oidc_endpoint,
         with any {account_id} placeholder substituted) if not already set.
         """
+        # TODO: Enable this everywhere
+        if not self.host_type == HostType.UNIFIED:
+            return
         if not self.host:
             return
         try:
