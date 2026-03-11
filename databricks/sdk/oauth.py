@@ -20,6 +20,7 @@ import requests
 import requests.auth
 
 from ._base_client import _BaseClient, _fix_host_if_needed
+from .environments import Cloud
 
 # Error code for PKCE flow in Azure Active Directory, that gets additional retry.
 # See https://stackoverflow.com/a/75466778/277035 for more info
@@ -426,6 +427,7 @@ class HostMetadata:
     oidc_endpoint: str
     account_id: Optional[str] = None
     workspace_id: Optional[str] = None
+    cloud: Optional[Cloud] = None
 
     @staticmethod
     def from_dict(d: dict) -> "HostMetadata":
@@ -433,6 +435,7 @@ class HostMetadata:
             oidc_endpoint=d.get("oidc_endpoint", ""),
             account_id=d.get("account_id"),
             workspace_id=d.get("workspace_id"),
+            cloud=Cloud.parse(d.get("cloud", "")),
         )
 
     def as_dict(self) -> dict:
@@ -440,6 +443,7 @@ class HostMetadata:
             "oidc_endpoint": self.oidc_endpoint,
             "account_id": self.account_id,
             "workspace_id": self.workspace_id,
+            "cloud": self.cloud.value if self.cloud else None,
         }
 
 
