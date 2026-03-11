@@ -53,7 +53,7 @@ class _ManualExecutor:
 @contextmanager
 def _manual_executor():
     executor = _ManualExecutor()
-    with patch.object(Refreshable, '_get_executor', return_value=executor):
+    with patch.object(Refreshable, "_get_executor", return_value=executor):
         yield executor
 
 
