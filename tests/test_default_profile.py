@@ -31,6 +31,7 @@ token = dapiXYZ
     cfg = Config(config_file=cfg_file, credentials_strategy=noop_credentials)
     assert cfg.host == "https://my-workspace.cloud.databricks.com"
     assert cfg.token == "dapiXYZ"
+    assert cfg.profile == "my-workspace"
 
 
 def test_default_profile_takes_precedence_over_default_section(tmp_path):
@@ -104,6 +105,23 @@ token = dapiXYZ
     # proving the SDK excludes it from the profile map.
     with pytest.raises(ValueError, match="has no __settings__ profile configured"):
         Config(config_file=cfg_file, profile="__settings__", credentials_strategy=noop_credentials)
+
+
+def test_default_profile_pointing_to_settings_section_is_rejected(tmp_path):
+    """default_profile = __settings__ should fail like any other non-profile target."""
+    cfg_file = _write_cfg(
+        tmp_path,
+        """\
+[__settings__]
+default_profile = __settings__
+
+[my-workspace]
+host = https://my-workspace.cloud.databricks.com
+token = dapiXYZ
+""",
+    )
+    with pytest.raises(ValueError, match="has no __settings__ profile configured"):
+        Config(config_file=cfg_file, credentials_strategy=noop_credentials)
 
 
 def test_explicit_profile_overrides_default_profile(tmp_path):
