@@ -1,6 +1,4 @@
 """Tests for [__settings__].default_profile support in config file resolution."""
-import platform
-
 import pytest
 
 from databricks.sdk.config import Config
@@ -90,7 +88,7 @@ token = dapiXYZ
 
 
 def test_settings_section_is_not_a_profile(tmp_path):
-    """[__settings__] is not enumerated as a profile."""
+    """[__settings__] is not enumerated as a profile; requesting it raises ValueError."""
     cfg_file = _write_cfg(
         tmp_path,
         """\
@@ -102,17 +100,10 @@ host = https://my-workspace.cloud.databricks.com
 token = dapiXYZ
 """,
     )
-    # Load the config file and check that __settings__ is not in the profiles dict.
-    import configparser
-
-    ini = configparser.ConfigParser()
-    ini.read(cfg_file)
-    # Simulate what Config does: build the profiles dict the same way.
-    profiles = dict(ini._sections)
-    profiles.pop("__settings__", None)
-    if ini.defaults():
-        profiles["DEFAULT"] = ini.defaults()
-    assert "__settings__" not in profiles
+    # Explicitly requesting __settings__ as a profile should fail,
+    # proving the SDK excludes it from the profile map.
+    with pytest.raises(ValueError, match="has no __settings__ profile configured"):
+        Config(config_file=cfg_file, profile="__settings__", credentials_strategy=noop_credentials)
 
 
 def test_explicit_profile_overrides_default_profile(tmp_path):
