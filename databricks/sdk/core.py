@@ -42,6 +42,7 @@ class ApiClient:
 
     @property
     def is_account_client(self) -> bool:
+        """[Deprecated] Host type and client type are deprecated. Clients can now support both workspace and account APIs."""
         return self._cfg.is_account_client
 
     def get_oauth_token(self, auth_details: str) -> Token:
