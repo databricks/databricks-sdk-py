@@ -1,4 +1,5 @@
 """Tests for [__settings__].default_profile support in config file resolution."""
+
 import pytest
 
 from databricks.sdk.config import Config
@@ -104,7 +105,11 @@ token = dapiXYZ
     # Explicitly requesting __settings__ as a profile should fail,
     # proving the SDK excludes it from the profile map.
     with pytest.raises(ValueError, match="has no __settings__ profile configured"):
-        Config(config_file=cfg_file, profile="__settings__", credentials_strategy=noop_credentials)
+        Config(
+            config_file=cfg_file,
+            profile="__settings__",
+            credentials_strategy=noop_credentials,
+        )
 
 
 def test_default_profile_pointing_to_settings_section_is_rejected(tmp_path):
@@ -141,7 +146,9 @@ host = https://other.cloud.databricks.com
 token = dapiOTHER
 """,
     )
-    cfg = Config(config_file=cfg_file, profile="other", credentials_strategy=noop_credentials)
+    cfg = Config(
+        config_file=cfg_file, profile="other", credentials_strategy=noop_credentials
+    )
     assert cfg.host == "https://other.cloud.databricks.com"
     assert cfg.token == "dapiOTHER"
 
