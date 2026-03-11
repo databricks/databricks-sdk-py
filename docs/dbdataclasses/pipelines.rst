@@ -23,6 +23,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: ConnectorType
+
+   For certain database sources LakeFlow Connect offers both query based and cdc ingestion, ConnectorType can bse used to convey the type of ingestion. If connection_name is provided for database sources, we default to Query Based ingestion
+
+   .. py:attribute:: CDC
+      :value: "CDC"
+
+   .. py:attribute:: QUERY_BASED
+      :value: "QUERY_BASED"
+
 .. autoclass:: CreatePipelineResponse
    :members:
    :undoc-members:
@@ -32,6 +42,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DataPlaneId
+   :members:
+   :undoc-members:
+
+.. autoclass:: DataStagingOptions
    :members:
    :undoc-members:
 

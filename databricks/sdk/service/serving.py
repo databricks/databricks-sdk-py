@@ -4426,6 +4426,7 @@ class ServingEndpointsAPI:
         headers: Optional[str] = None,
         json: Optional[str] = None,
         params: Optional[str] = None,
+        sub_domain: Optional[str] = None,
     ) -> HttpRequestResponse:
         """Make external services call using the credentials stored in UC Connection.
 
@@ -4442,6 +4443,11 @@ class ServingEndpointsAPI:
           The JSON payload to send in the request body.
         :param params: str (optional)
           Query parameters for the request.
+        :param sub_domain: str (optional)
+          Optional subdomain to prepend to the connection URL's host. If provided, this will be added as a
+          prefix to the connection URL's host. For example, if the connection URL is
+          `https://api.example.com/v1` and `sub_domain` is `"custom"`, the resulting URL will be
+          `https://custom.api.example.com/v1`.
 
         :returns: :class:`HttpRequestResponse`
         """
@@ -4459,6 +4465,8 @@ class ServingEndpointsAPI:
             body["params"] = params
         if path is not None:
             body["path"] = path
+        if sub_domain is not None:
+            body["sub_domain"] = sub_domain
         headers = {
             "Accept": "text/plain",
             "Content-Type": "application/json",
