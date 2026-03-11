@@ -754,6 +754,7 @@ class _PresignedUrl:
 
     url: str
     headers: dict[str, str]
+    part_number: int | None = None
 
 
 class _PresignedUrlRequestBuilder:
@@ -790,11 +791,11 @@ class _PresignedUrlRequestBuilder:
         results = []
         for part_info in upload_part_urls:
             url = part_info["url"]
-            _ = part_info["part_number"]
+            part_number = part_info["part_number"]
             headers: dict[str, str] = {"Content-Type": "application/octet-stream"}
             for h in part_info.get("headers", []):
                 headers[h["name"]] = h["value"]
-            results.append(_PresignedUrl(url=url, headers=headers))
+            results.append(_PresignedUrl(url=url, headers=headers, part_number=part_number))
         return results
 
     def build_resumable_upload_url(self, path: str, session_token: str) -> _PresignedUrl:
@@ -813,7 +814,7 @@ class _PresignedUrlRequestBuilder:
         url = url_node.get("url")
         if not url:
             raise ValueError(f"Unexpected server response: {response}")
-        headers: dict[str, str] = {"Content-Type": "application/octet-stream"}
+        headers: dict[str, str] = {}
         for h in url_node.get("headers", []):
             headers[h["name"]] = h["value"]
         return _PresignedUrl(url=url, headers=headers)
@@ -1755,7 +1756,11 @@ class FilesExt(files.FilesAPI):
         while True:
             try:
                 presigned = builder.build_upload_part_urls(
-                    ctx.target_path, session_token, part_index, 1, self._get_upload_url_expire_time()
+                    ctx.target_path,
+                    session_token,
+                    part_index,
+                    1,
+                    self._get_upload_url_expire_time(),
                 )[0]
             except Exception as e:
                 if is_first_part:
@@ -1868,6 +1873,7 @@ class FilesExt(files.FilesAPI):
                     eof = True
                     break
 
+                assert current_part_number == presigned.part_number
                 actual_chunk_length = min(actual_buffer_length, ctx.part_size)
                 _LOG.debug(
                     f"Uploading part {current_part_number}: [{chunk_offset}, {chunk_offset + actual_chunk_length - 1}]"
