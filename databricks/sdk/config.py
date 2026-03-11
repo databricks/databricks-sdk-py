@@ -721,12 +721,20 @@ class Config:
         # is returning profile key-value pairs _including those from DEFAULT_. This is not what we expect
         # from Unified Auth test suite at the moment. Hence, the private variable access.
         # See: https://docs.python.org/3/library/configparser.html#mapping-protocol-access
-        if not has_explicit_profile and not ini_file.defaults():
-            logger.debug(f"{config_path} has no DEFAULT profile configured")
-            return
         if not has_explicit_profile:
-            profile = "DEFAULT"
+            # Check [__settings__].default_profile before falling back to [DEFAULT].
+            settings = ini_file._sections.get("__settings__", {})
+            default_profile = settings.get("default_profile", "").strip()
+            if default_profile:
+                profile = default_profile
+            elif ini_file.defaults():
+                profile = "DEFAULT"
+            else:
+                logger.debug(f"{config_path} has no DEFAULT profile configured")
+                return
         profiles = ini_file._sections
+        # [__settings__] is not a profile; exclude it from the profile map.
+        profiles.pop("__settings__", None)
         if ini_file.defaults():
             profiles["DEFAULT"] = ini_file.defaults()
         if profile not in profiles:
