@@ -860,25 +860,31 @@ class _StorageProxyRequestBuilder:
         results = []
         for i in range(count):
             part_number = start_part_number + i
-            query = parse.urlencode({
-                "session_token": session_token,
-                "upload_type": "multipart",
-                "part_number": part_number,
-            })
-            results.append(_PresignedUrl(
-                url=f"{base}?{query}",
-                headers={"Content-Type": "application/octet-stream"},
-            ))
+            query = parse.urlencode(
+                {
+                    "session_token": session_token,
+                    "upload_type": "multipart",
+                    "part_number": part_number,
+                }
+            )
+            results.append(
+                _PresignedUrl(
+                    url=f"{base}?{query}",
+                    headers={"Content-Type": "application/octet-stream"},
+                )
+            )
         return results
 
     def build_resumable_upload_url(self, path: str, session_token: str) -> _PresignedUrl:
         """Builds a URL for resumable upload directly to the storage proxy."""
         escaped = _escape_multi_segment_path_parameter(path)
         base = f"{self._hostname}/api/2.0/fs/files{escaped}"
-        query = parse.urlencode({
-            "session_token": session_token,
-            "upload_type": "resumable",
-        })
+        query = parse.urlencode(
+            {
+                "session_token": session_token,
+                "upload_type": "resumable",
+            }
+        )
         return _PresignedUrl(
             url=f"{base}?{query}",
             headers={"Content-Type": "application/octet-stream"},
@@ -888,10 +894,12 @@ class _StorageProxyRequestBuilder:
         """Builds a URL for aborting an upload directly on the storage proxy."""
         escaped = _escape_multi_segment_path_parameter(path)
         base = f"{self._hostname}/api/2.0/fs/files{escaped}"
-        query = parse.urlencode({
-            "action": "abort-upload",
-            "session_token": session_token,
-        })
+        query = parse.urlencode(
+            {
+                "action": "abort-upload",
+                "session_token": session_token,
+            }
+        )
         return _PresignedUrl(
             url=f"{base}?{query}",
             headers={"Content-Type": "application/json"},

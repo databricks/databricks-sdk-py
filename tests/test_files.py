@@ -2998,4 +2998,3 @@ def fast_random_bytes(n: int, chunk_size: int = 1024) -> bytes:
     chunk = os.urandom(chunk_size)
     # Repeat it until we reach n bytes.
     return (chunk * (n // chunk_size + 1))[:n]
-
