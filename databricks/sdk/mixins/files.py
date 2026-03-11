@@ -748,6 +748,78 @@ class DownloadFileResult:
     """Result of a download to file operation. Currently empty, but can be extended in the future."""
 
 
+@dataclass
+class _PresignedUrl:
+    """Resolved presigned URL with associated headers for cloud storage operations."""
+
+    url: str
+    headers: dict[str, str]
+    part_number: int | None = None
+
+
+class _PresignedUrlRequestBuilder:
+    """Builds presigned URL requests for file upload operations.
+
+    Encapsulates the coordination API calls (create-upload-part-urls,
+    create-resumable-upload-url) and response parsing into a single place.
+    """
+
+    def __init__(self, api, hostname: str):
+        self._api = api
+        self._hostname = hostname
+
+    def build_upload_part_urls(
+        self, path: str, session_token: str, start_part_number: int, count: int, expire_time: str
+    ) -> list[_PresignedUrl]:
+        """Fetches a batch of presigned URLs for uploading multiple multipart parts."""
+        body = {
+            "path": path,
+            "session_token": session_token,
+            "start_part_number": start_part_number,
+            "count": count,
+            "expire_time": expire_time,
+        }
+        response = self._api.do(
+            "POST",
+            url=f"{self._hostname}/api/2.0/fs/create-upload-part-urls",
+            headers={"Content-Type": "application/json"},
+            body=body,
+        )
+        upload_part_urls = response.get("upload_part_urls", [])
+        if len(upload_part_urls) == 0:
+            raise ValueError(f"Unexpected server response: {response}")
+        results = []
+        for part_info in upload_part_urls:
+            url = part_info["url"]
+            part_number = part_info["part_number"]
+            headers: dict[str, str] = {"Content-Type": "application/octet-stream"}
+            for h in part_info.get("headers", []):
+                headers[h["name"]] = h["value"]
+            results.append(_PresignedUrl(url=url, headers=headers, part_number=part_number))
+        return results
+
+    def build_resumable_upload_url(self, path: str, session_token: str) -> _PresignedUrl:
+        """Fetches a presigned URL for resumable upload."""
+        body = {"path": path, "session_token": session_token}
+        # The _api.do() method handles retries and will raise an exception in case of failure.
+        response = self._api.do(
+            "POST",
+            url=f"{self._hostname}/api/2.0/fs/create-resumable-upload-url",
+            headers={"Content-Type": "application/json"},
+            body=body,
+        )
+        url_node = response.get("resumable_upload_url")
+        if not url_node:
+            raise ValueError(f"Unexpected server response: {response}")
+        url = url_node.get("url")
+        if not url:
+            raise ValueError(f"Unexpected server response: {response}")
+        headers: dict[str, str] = {}
+        for h in url_node.get("headers", []):
+            headers[h["name"]] = h["value"]
+        return _PresignedUrl(url=url, headers=headers)
+
+
 class FilesExt(files.FilesAPI):
     __doc__ = files.FilesAPI.__doc__
 
@@ -1677,27 +1749,19 @@ class FilesExt(files.FilesAPI):
         part_content: BinaryIO,
         is_first_part: bool = False,
     ) -> str:
-        hostname = self._get_hostname()
+        builder = _PresignedUrlRequestBuilder(self._api, self._get_hostname())
         retry_count = 0
 
         # Try to upload the part, retrying if the upload URL expires.
         while True:
-            body: dict = {
-                "path": ctx.target_path,
-                "session_token": session_token,
-                "start_part_number": part_index,
-                "count": 1,
-                "expire_time": self._get_upload_url_expire_time(),
-            }
-
-            headers = {"Content-Type": "application/json"}
-
-            # Requesting URLs for the same set of parts is an idempotent operation and is safe to retry.
             try:
-                # The _api.do() method handles retries and will raise an exception in case of failure.
-                upload_part_urls_response = self._api.do(
-                    "POST", url=f"{hostname}/api/2.0/fs/create-upload-part-urls", headers=headers, body=body
-                )
+                presigned = builder.build_upload_part_urls(
+                    ctx.target_path,
+                    session_token,
+                    part_index,
+                    1,
+                    self._get_upload_url_expire_time(),
+                )[0]
             except Exception as e:
                 if is_first_part:
                     raise FallbackToUploadUsingFilesApi(
@@ -1707,18 +1771,6 @@ class FilesExt(files.FilesAPI):
                 else:
                     raise e
 
-            upload_part_urls = upload_part_urls_response.get("upload_part_urls", [])
-            if len(upload_part_urls) == 0:
-                raise ValueError(f"Unexpected server response: {upload_part_urls_response}")
-            upload_part_url = upload_part_urls[0]
-            url = upload_part_url["url"]
-            required_headers = upload_part_url.get("headers", [])
-            assert part_index == upload_part_url["part_number"]
-
-            headers: dict = {"Content-Type": "application/octet-stream"}
-            for h in required_headers:
-                headers[h["name"]] = h["value"]
-
             _LOG.debug(f"Uploading part {part_index}: [{part_offset}, {part_offset + part_size - 1}]")
 
             def rewind() -> None:
@@ -1727,8 +1779,8 @@ class FilesExt(files.FilesAPI):
             def perform_upload() -> requests.Response:
                 return self._cloud_provider_session().request(
                     "PUT",
-                    url,
-                    headers=headers,
+                    presigned.url,
+                    headers=presigned.headers,
                     data=part_content,
                     timeout=self._config.files_ext_network_transfer_inactivity_timeout_seconds,
                 )
@@ -1767,7 +1819,7 @@ class FilesExt(files.FilesAPI):
         Performs multipart upload using presigned URLs on AWS and Azure:
         https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html
         """
-        hostname = self._get_hostname()
+        builder = _PresignedUrlRequestBuilder(self._api, self._get_hostname())
         current_part_number = 1
         etags: dict = {}
 
@@ -1798,21 +1850,13 @@ class FilesExt(files.FilesAPI):
                 f"Multipart upload: requesting next {ctx.batch_size} upload URLs starting from part {current_part_number}"
             )
 
-            body: dict = {
-                "path": ctx.target_path,
-                "session_token": session_token,
-                "start_part_number": current_part_number,
-                "count": ctx.batch_size,
-                "expire_time": self._get_upload_url_expire_time(),
-            }
-
-            headers = {"Content-Type": "application/json"}
-
-            # Requesting URLs for the same set of parts is an idempotent operation, safe to retry.
             try:
-                # Method _api.do() takes care of retrying and will raise an exception in case of failure.
-                upload_part_urls_response = self._api.do(
-                    "POST", url=f"{hostname}/api/2.0/fs/create-upload-part-urls", headers=headers, body=body
+                presigned_urls = builder.build_upload_part_urls(
+                    ctx.target_path,
+                    session_token,
+                    current_part_number,
+                    ctx.batch_size,
+                    self._get_upload_url_expire_time(),
                 )
             except Exception as e:
                 if chunk_offset == 0:
@@ -1822,25 +1866,14 @@ class FilesExt(files.FilesAPI):
                 else:
                     raise e
 
-            upload_part_urls = upload_part_urls_response.get("upload_part_urls", [])
-            if len(upload_part_urls) == 0:
-                raise ValueError(f"Unexpected server response: {upload_part_urls_response}")
-
-            for upload_part_url in upload_part_urls:
+            for presigned in presigned_urls:
                 buffer = FilesExt._fill_buffer(buffer, ctx.part_size, input_stream)
                 actual_buffer_length = len(buffer)
                 if actual_buffer_length == 0:
                     eof = True
                     break
 
-                url = upload_part_url["url"]
-                required_headers = upload_part_url.get("headers", [])
-                assert current_part_number == upload_part_url["part_number"]
-
-                headers: dict = {"Content-Type": "application/octet-stream"}
-                for h in required_headers:
-                    headers[h["name"]] = h["value"]
-
+                assert current_part_number == presigned.part_number
                 actual_chunk_length = min(actual_buffer_length, ctx.part_size)
                 _LOG.debug(
                     f"Uploading part {current_part_number}: [{chunk_offset}, {chunk_offset + actual_chunk_length - 1}]"
@@ -1854,8 +1887,8 @@ class FilesExt(files.FilesAPI):
                 def perform():
                     return self._cloud_provider_session().request(
                         "PUT",
-                        url,
-                        headers=headers,
+                        presigned.url,
+                        headers=presigned.headers,
                         data=chunk,
                         timeout=self._config.files_ext_network_transfer_inactivity_timeout_seconds,
                     )
@@ -1863,26 +1896,26 @@ class FilesExt(files.FilesAPI):
                 upload_response = self._retry_cloud_idempotent_operation(perform, rewind)
 
                 if upload_response.status_code in (200, 201):
-                    # Chunk upload successful
+                    # Chunk upload successful.
 
                     chunk_offset += actual_chunk_length
 
                     etag = upload_response.headers.get("ETag", "")
                     etags[current_part_number] = etag
 
-                    # Discard uploaded bytes
+                    # Discard uploaded bytes.
                     buffer = buffer[actual_chunk_length:]
 
-                    # Reset retry count when progressing along the stream
+                    # Reset retry count when progressing along the stream.
                     retry_count = 0
 
                 elif FilesExt._is_url_expired_response(upload_response):
                     if retry_count < self._config.files_ext_multipart_upload_max_retries:
                         retry_count += 1
                         _LOG.debug("Upload URL expired")
-                        # Preserve the buffer so we'll upload the current part again using next upload URL
+                        # Preserve the buffer so we'll upload the current part again using next upload URL.
                     else:
-                        # don't confuse user with unrelated "Permission denied" error.
+                        # Don't confuse user with unrelated "Permission denied" error.
                         raise ValueError(f"Unsuccessful chunk upload: upload URL expired")
 
                 elif upload_response.status_code == 403 and chunk_offset == 0:
@@ -2007,32 +2040,17 @@ class FilesExt(files.FilesAPI):
         # On the contrary, in multipart upload we can decide to complete upload *after*
         # last chunk has been sent.
 
-        body: dict = {"path": ctx.target_path, "session_token": session_token}
-
-        headers = {"Content-Type": "application/json"}
+        builder = _PresignedUrlRequestBuilder(self._api, hostname)
 
         try:
-            # Method _api.do() takes care of retrying and will raise an exception in case of failure.
-            resumable_upload_url_response = self._api.do(
-                "POST", url=f"{hostname}/api/2.0/fs/create-resumable-upload-url", headers=headers, body=body
-            )
+            presigned = builder.build_resumable_upload_url(ctx.target_path, session_token)
         except Exception as e:
             raise FallbackToUploadUsingFilesApi(
                 pre_read_buffer, f"Failed to obtain resumable upload URL: {e}, falling back to single shot upload"
             ) from e
 
-        resumable_upload_url_node = resumable_upload_url_response.get("resumable_upload_url")
-        if not resumable_upload_url_node:
-            raise ValueError(f"Unexpected server response: {resumable_upload_url_response}")
-
-        resumable_upload_url = resumable_upload_url_node.get("url")
-        if not resumable_upload_url:
-            raise ValueError(f"Unexpected server response: {resumable_upload_url_response}")
-
-        required_headers = resumable_upload_url_node.get("headers", [])
-        base_headers: dict = {}
-        for h in required_headers:
-            base_headers[h["name"]] = h["value"]
+        resumable_upload_url = presigned.url
+        base_headers = presigned.headers
 
         try:
             # We will buffer this many bytes: one chunk + read-ahead block.
