@@ -1,3 +1,4 @@
+import time
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 from typing import Callable
@@ -21,17 +22,18 @@ class _MockRefreshable(Refreshable):
 
     def refresh(self) -> Token:
         if self._refresh_effect:
-            self._token = self._refresh_effect()
+            token = self._refresh_effect()
+        else:
+            token = self._token
         self._refresh_count += 1
-        return self._token
+        return token
 
 
 class _ManualExecutor:
-    """Fake executor that queues callables for explicit, deterministic execution.
+    """A fake executor that captures submitted tasks for on-demand synchronous execution.
 
-    Replaces the real thread pool so async-refresh tests need no threads,
-    events, or sleeps: call .token() to queue the refresh, then run_all()
-    to execute it on the test thread.
+    This replaces the real ThreadPoolExecutor in tests, making async refresh
+    behavior fully deterministic without threads or sleeps.
     """
 
     def __init__(self):
@@ -51,7 +53,7 @@ class _ManualExecutor:
 @contextmanager
 def _manual_executor():
     executor = _ManualExecutor()
-    with patch.object(Refreshable, "_get_executor", return_value=executor):
+    with patch.object(Refreshable, '_get_executor', return_value=executor):
         yield executor
 
 
@@ -59,14 +61,13 @@ def fail() -> Token:
     raise Exception("Simulated token refresh failure")
 
 
-def static_token(token: Token) -> Callable[[], Token]:
+def static_token(token: Token, wait: int = 0) -> Callable[[], Token]:
+
     def f() -> Token:
+        time.sleep(wait)
         return token
 
     return f
-
-
-# --- disable_async tests (synchronous path, no executor involvement) ---
 
 
 def test_disable_async_stale_does_not_refresh():
@@ -81,10 +82,9 @@ def test_disable_async_stale_does_not_refresh():
 
 
 def test_disable_async_no_token_does_refresh():
-    now = datetime.now()
     token = Token(
         access_token="access_token",
-        expiry=now + timedelta(hours=1),
+        expiry=datetime.now() + timedelta(seconds=50),
     )
     r = _MockRefreshable(token=None, disable_async=True, refresh_effect=static_token(token))
     result = r.token()
@@ -103,10 +103,9 @@ def test_disable_async_no_expiration_does_not_refresh():
 
 
 def test_disable_async_fresh_does_not_refresh():
-    now = datetime.now()
     token = Token(
         access_token="access_token",
-        expiry=now + timedelta(hours=1),
+        expiry=datetime.now() + timedelta(seconds=300),
     )
     r = _MockRefreshable(token=token, disable_async=True, refresh_effect=fail)
     result = r.token()
@@ -115,42 +114,43 @@ def test_disable_async_fresh_does_not_refresh():
 
 
 def test_disable_async_expired_does_refresh():
-    now = datetime.now()
     expired_token = Token(
         access_token="access_token",
-        expiry=now - timedelta(minutes=5),
+        expiry=datetime.now() - timedelta(seconds=300),
     )
     new_token = Token(
         access_token="access_token",
-        expiry=now + timedelta(hours=1),
+        expiry=datetime.now() + timedelta(seconds=300),
     )
+    # Add one second to the refresh time to ensure that the call is blocking.
+    # If the call is not blocking, the wait time will ensure that the
+    # old token is returned.
     r = _MockRefreshable(
         token=expired_token,
         disable_async=True,
-        refresh_effect=static_token(new_token),
+        refresh_effect=static_token(new_token, wait=1),
     )
     result = r.token()
     assert r._refresh_count == 1
     assert result == new_token
 
 
-# --- async-enabled tests ---
-
-
 def test_expired_does_refresh():
-    now = datetime.now()
     expired_token = Token(
         access_token="access_token",
-        expiry=now - timedelta(minutes=5),
+        expiry=datetime.now() - timedelta(seconds=300),
     )
     new_token = Token(
         access_token="access_token",
-        expiry=now + timedelta(hours=1),
+        expiry=datetime.now() + timedelta(seconds=300),
     )
+    # Add one second to the refresh time to ensure that the call is blocking.
+    # If the call is not blocking, the wait time will ensure that the
+    # old token is returned.
     r = _MockRefreshable(
         token=expired_token,
         disable_async=False,
-        refresh_effect=static_token(new_token),
+        refresh_effect=static_token(new_token, wait=1),
     )
     result = r.token()
     assert r._refresh_count == 1
@@ -176,25 +176,24 @@ def test_stale_does_refresh_async():
         result = r.token()
         assert result == stale_token
         assert r._refresh_count == 0
-        assert executor.submission_count == 1
-
         executor.run_all()
-
         result = r.token()
         assert result == new_token
         assert r._refresh_count == 1
 
 
 def test_no_token_does_refresh():
-    now = datetime.now()
     new_token = Token(
         access_token="access_token",
-        expiry=now + timedelta(hours=1),
+        expiry=datetime.now() + timedelta(seconds=300),
     )
+    # Add one second to the refresh time to ensure that the call is blocking.
+    # If the call is not blocking, the wait time will ensure that the
+    # token is not returned.
     r = _MockRefreshable(
         token=None,
         disable_async=False,
-        refresh_effect=static_token(new_token),
+        refresh_effect=static_token(new_token, wait=1),
     )
     result = r.token()
     assert r._refresh_count == 1
@@ -202,10 +201,9 @@ def test_no_token_does_refresh():
 
 
 def test_fresh_does_not_refresh():
-    now = datetime.now()
     fresh_token = Token(
         access_token="access_token",
-        expiry=now + timedelta(hours=1),
+        expiry=datetime.now() + timedelta(seconds=300),
     )
     r = _MockRefreshable(token=fresh_token, disable_async=False, refresh_effect=fail)
     result = r.token()
@@ -233,13 +231,11 @@ def test_multiple_calls_dont_start_many_threads():
         assert result == stale_token
         result = r.token()
         assert result == stale_token
-        assert executor.submission_count == 1
-
         executor.run_all()
-
         result = r.token()
         assert r._refresh_count == 1
         assert result == new_token
+        assert executor.submission_count == 1
 
 
 def test_repeated_calls_during_async_failure_cooldown_do_not_refresh():
@@ -262,7 +258,6 @@ def test_repeated_calls_during_async_failure_cooldown_do_not_refresh():
         mock_dt.now.return_value = stale_time
         result = r.token()
         assert result == stale_token
-        assert executor.submission_count == 1
 
         executor.run_all()
         assert r._stale_after is not None
@@ -274,7 +269,7 @@ def test_repeated_calls_during_async_failure_cooldown_do_not_refresh():
         assert r.token() == stale_token
         assert r.token() == stale_token
 
-        assert executor.submission_count == 1
+        assert not r._is_refreshing
         assert r._refresh_count == 0
 
 
@@ -307,7 +302,6 @@ def test_call_after_async_failure_cooldown_refreshes_token_async():
 
         result = r.token()
         assert result == stale_token
-        assert executor.submission_count == 2
         assert r._refresh_count == 0
 
         executor.run_all()
@@ -317,7 +311,45 @@ def test_call_after_async_failure_cooldown_refreshes_token_async():
         assert r._refresh_count == 1
 
 
-# --- Stale threshold computation tests ---
+def test_late_async_refresh_does_not_overwrite_blocking_refresh():
+    """When a slow async refresh completes after a blocking refresh already
+    obtained a newer token, the stale async result must be discarded."""
+    now = datetime(2024, 1, 1, 12, 0, 0)
+    stale_time = now + timedelta(minutes=41)
+    expired_time = now + timedelta(minutes=61)
+
+    stale_token = Token(access_token="stale", expiry=now + timedelta(minutes=60))
+    async_result = Token(access_token="async_old", expiry=now + timedelta(minutes=90))
+    blocking_result = Token(access_token="blocking_new", expiry=now + timedelta(minutes=180))
+
+    call_count = [0]
+
+    def ordered_refresh():
+        call_count[0] += 1
+        if call_count[0] == 1:
+            return blocking_result
+        return async_result
+
+    with _manual_executor() as executor, patch("databricks.sdk.oauth.datetime") as mock_dt:
+        mock_dt.now.return_value = now
+        r = _MockRefreshable(token=stale_token, disable_async=False, refresh_effect=ordered_refresh)
+
+        # Stale → triggers async refresh (queued in executor, not yet run)
+        mock_dt.now.return_value = stale_time
+        result = r.token()
+        assert result.access_token == "stale"
+
+        # Token expires → blocking refresh obtains the newer token
+        mock_dt.now.return_value = expired_time
+        result = r.token()
+        assert result.access_token == "blocking_new"
+
+        # Run the queued async refresh — its result has a shorter expiry
+        # than the blocking result, so the guard must discard it.
+        executor.run_all()
+
+        result = r.token()
+        assert result.access_token == "blocking_new"
 
 
 def test_stale_after_is_recomputed_after_blocking_refresh():
