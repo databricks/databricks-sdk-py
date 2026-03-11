@@ -146,9 +146,7 @@ host = https://other.cloud.databricks.com
 token = dapiOTHER
 """,
     )
-    cfg = Config(
-        config_file=cfg_file, profile="other", credentials_strategy=noop_credentials
-    )
+    cfg = Config(config_file=cfg_file, profile="other", credentials_strategy=noop_credentials)
     assert cfg.host == "https://other.cloud.databricks.com"
     assert cfg.token == "dapiOTHER"
 
