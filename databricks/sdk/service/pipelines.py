@@ -117,6 +117,15 @@ class ConnectionParameters:
         return cls(source_catalog=d.get("source_catalog", None))
 
 
+class ConnectorType(Enum):
+    """For certain database sources LakeFlow Connect offers both query based and cdc ingestion,
+    ConnectorType can bse used to convey the type of ingestion. If connection_name is provided for
+    database sources, we default to Query Based ingestion"""
+
+    CDC = "CDC"
+    QUERY_BASED = "QUERY_BASED"
+
+
 @dataclass
 class CreatePipelineResponse:
     effective_settings: Optional[PipelineSpec] = None
@@ -211,6 +220,55 @@ class DataPlaneId:
     def from_dict(cls, d: Dict[str, Any]) -> DataPlaneId:
         """Deserializes the DataPlaneId from a dictionary."""
         return cls(instance=d.get("instance", None), seq_no=d.get("seq_no", None))
+
+
+@dataclass
+class DataStagingOptions:
+    """Location of staged data storage"""
+
+    catalog_name: str
+    """(Required, Immutable) The name of the catalog for the connector's staging storage location."""
+
+    schema_name: str
+    """(Required, Immutable) The name of the schema for the connector's staging storage location."""
+
+    volume_name: Optional[str] = None
+    """(Optional) The Unity Catalog-compatible name for the storage location. This is the volume to use
+    for the data that is extracted by the connector. Spark Declarative Pipelines system will
+    automatically create the volume under the catalog and schema. For Combined Cdc Managed Ingestion
+    pipelines default name for the volume would be :
+    __databricks_ingestion_gateway_staging_data-$pipelineId"""
+
+    def as_dict(self) -> dict:
+        """Serializes the DataStagingOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.volume_name is not None:
+            body["volume_name"] = self.volume_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DataStagingOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.volume_name is not None:
+            body["volume_name"] = self.volume_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DataStagingOptions:
+        """Deserializes the DataStagingOptions from a dictionary."""
+        return cls(
+            catalog_name=d.get("catalog_name", None),
+            schema_name=d.get("schema_name", None),
+            volume_name=d.get("volume_name", None),
+        )
 
 
 class DayOfWeek(Enum):
@@ -724,6 +782,15 @@ class IngestionPipelineDefinition:
     ingestion_gateway_id to change the connector to Cdc Managed Ingestion Pipeline with Gateway
     pipeline."""
 
+    connector_type: Optional[ConnectorType] = None
+    """(Optional) Connector Type for sources. Ex: CDC, Query Based."""
+
+    data_staging_options: Optional[DataStagingOptions] = None
+    """(Optional) Location of staged data storage. This is required for migration from Cdc Managed
+    Ingestion Pipeline with Gateway pipeline to Combined Cdc Managed Ingestion Pipeline. If not
+    specified, the volume for staged data will be created in catalog and schema/target specified in
+    the top level pipeline definition."""
+
     full_refresh_window: Optional[OperationTimeWindow] = None
     """(Optional) A window that specifies a set of time ranges for snapshot queries in CDC."""
 
@@ -761,6 +828,10 @@ class IngestionPipelineDefinition:
         body = {}
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.connector_type is not None:
+            body["connector_type"] = self.connector_type.value
+        if self.data_staging_options:
+            body["data_staging_options"] = self.data_staging_options.as_dict()
         if self.full_refresh_window:
             body["full_refresh_window"] = self.full_refresh_window.as_dict()
         if self.ingest_from_uc_foreign_catalog is not None:
@@ -784,6 +855,10 @@ class IngestionPipelineDefinition:
         body = {}
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.connector_type is not None:
+            body["connector_type"] = self.connector_type
+        if self.data_staging_options:
+            body["data_staging_options"] = self.data_staging_options
         if self.full_refresh_window:
             body["full_refresh_window"] = self.full_refresh_window
         if self.ingest_from_uc_foreign_catalog is not None:
@@ -807,6 +882,8 @@ class IngestionPipelineDefinition:
         """Deserializes the IngestionPipelineDefinition from a dictionary."""
         return cls(
             connection_name=d.get("connection_name", None),
+            connector_type=_enum(d, "connector_type", ConnectorType),
+            data_staging_options=_from_dict(d, "data_staging_options", DataStagingOptions),
             full_refresh_window=_from_dict(d, "full_refresh_window", OperationTimeWindow),
             ingest_from_uc_foreign_catalog=d.get("ingest_from_uc_foreign_catalog", None),
             ingestion_gateway_id=d.get("ingestion_gateway_id", None),
@@ -1261,6 +1338,25 @@ class Origin:
     host: Optional[str] = None
     """The optional host name where the event was triggered"""
 
+    ingestion_source_catalog_name: Optional[str] = None
+    """The name of the source catalog name (if known) from whose data ingestion is described by this
+    event."""
+
+    ingestion_source_connection_name: Optional[str] = None
+    """The name of the source UC connection (if known) from whose data ingestion is described by this
+    event."""
+
+    ingestion_source_schema_name: Optional[str] = None
+    """The name of the source schema name (if known) from whose data ingestion is described by this
+    event."""
+
+    ingestion_source_table_name: Optional[str] = None
+    """The name of the source table name (if known) from whose data ingestion is described by this
+    event."""
+
+    ingestion_source_table_version: Optional[str] = None
+    """An optional implementation-defined source table version of a dataset being (re)ingested."""
+
     maintenance_id: Optional[str] = None
     """The id of a maintenance run. Globally unique."""
 
@@ -1308,6 +1404,16 @@ class Origin:
             body["flow_name"] = self.flow_name
         if self.host is not None:
             body["host"] = self.host
+        if self.ingestion_source_catalog_name is not None:
+            body["ingestion_source_catalog_name"] = self.ingestion_source_catalog_name
+        if self.ingestion_source_connection_name is not None:
+            body["ingestion_source_connection_name"] = self.ingestion_source_connection_name
+        if self.ingestion_source_schema_name is not None:
+            body["ingestion_source_schema_name"] = self.ingestion_source_schema_name
+        if self.ingestion_source_table_name is not None:
+            body["ingestion_source_table_name"] = self.ingestion_source_table_name
+        if self.ingestion_source_table_version is not None:
+            body["ingestion_source_table_version"] = self.ingestion_source_table_version
         if self.maintenance_id is not None:
             body["maintenance_id"] = self.maintenance_id
         if self.materialization_name is not None:
@@ -1347,6 +1453,16 @@ class Origin:
             body["flow_name"] = self.flow_name
         if self.host is not None:
             body["host"] = self.host
+        if self.ingestion_source_catalog_name is not None:
+            body["ingestion_source_catalog_name"] = self.ingestion_source_catalog_name
+        if self.ingestion_source_connection_name is not None:
+            body["ingestion_source_connection_name"] = self.ingestion_source_connection_name
+        if self.ingestion_source_schema_name is not None:
+            body["ingestion_source_schema_name"] = self.ingestion_source_schema_name
+        if self.ingestion_source_table_name is not None:
+            body["ingestion_source_table_name"] = self.ingestion_source_table_name
+        if self.ingestion_source_table_version is not None:
+            body["ingestion_source_table_version"] = self.ingestion_source_table_version
         if self.maintenance_id is not None:
             body["maintenance_id"] = self.maintenance_id
         if self.materialization_name is not None:
@@ -1380,6 +1496,11 @@ class Origin:
             flow_id=d.get("flow_id", None),
             flow_name=d.get("flow_name", None),
             host=d.get("host", None),
+            ingestion_source_catalog_name=d.get("ingestion_source_catalog_name", None),
+            ingestion_source_connection_name=d.get("ingestion_source_connection_name", None),
+            ingestion_source_schema_name=d.get("ingestion_source_schema_name", None),
+            ingestion_source_table_name=d.get("ingestion_source_table_name", None),
+            ingestion_source_table_version=d.get("ingestion_source_table_version", None),
             maintenance_id=d.get("maintenance_id", None),
             materialization_name=d.get("materialization_name", None),
             org_id=d.get("org_id", None),
