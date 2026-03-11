@@ -440,9 +440,8 @@ class Config:
 
     @property
     def is_account_client(self) -> bool:
-        """[Deprecated] Use host_type or client_type instead.
-
-        Determines if this is an account client based on the host URL.
+        """[Deprecated]
+        Host type and client type are deprecated. Clients can now support both workspace and account APIs.
         """
         if self.experimental_is_unified_host:
             raise ValueError(
