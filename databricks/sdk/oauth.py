@@ -280,6 +280,7 @@ class Refreshable(TokenSource):
         self._lock = threading.Lock()
         # Non Thread safe properties. They should be accessed only when protected by the lock above.
         self._stale_after: Optional[datetime] = None
+        self._token_generation: int = 0
         self._update_token(token or Token(""))
         self._is_refreshing = False
 
@@ -290,6 +291,10 @@ class Refreshable(TokenSource):
         naive or timezone-aware depending on where the token came from. Centralizing
         "now" in one helper keeps those internal comparisons timezone-compatible and
         avoids mixing naive and aware `datetime` objects.
+
+        Invariant: all tokens supplied to a single Refreshable instance must use the
+        same tz-awareness convention (all naive or all aware). Mixing conventions
+        across successive refreshes would cause TypeError on datetime comparison.
         """
         if self._token.expiry:
             return datetime.now(tz=self._token.expiry.tzinfo)
@@ -308,6 +313,8 @@ class Refreshable(TokenSource):
         use the full cap of _MAX_STALE_DURATION.
         """
         self._token = token
+        self._token_generation += 1
+        self._stale_after = None
 
         if self._token.expiry:
             if self._use_legacy_stale_duration:
@@ -376,6 +383,7 @@ class Refreshable(TokenSource):
 
     def _trigger_async_refresh(self):
         """Starts an asynchronous refresh if none is in progress."""
+        gen_at_submit = self._token_generation
 
         def _refresh_internal():
             new_token = None
@@ -389,8 +397,8 @@ class Refreshable(TokenSource):
 
             with self._lock:
                 if new_token is not None:
-                    if self._token.expiry and new_token.expiry and new_token.expiry < self._token.expiry:
-                        pass  # A blocking refresh already cached a newer token; skip.
+                    if self._token_generation != gen_at_submit:
+                        pass  # Token was already updated (e.g. by a blocking refresh); skip.
                     else:
                         self._update_token(new_token)
                 else:
