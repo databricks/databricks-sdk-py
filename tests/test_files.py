@@ -1397,13 +1397,31 @@ class UploadTestCase:
                 def custom_matcher(request: requests.Request) -> Optional[requests.Response]:
                     parsed_url = urlparse(request.url)
 
-                    # Handle storage proxy probe.
                     if self.use_storage_proxy:
+                        # Handle workspace ID resolution via SCIM Me.
                         if (
-                            parsed_url.hostname == self._expected_hostname
-                            and parsed_url.path == "/api/2.0/fs/files/DatabricksInternal/Probes/ping"
+                            parsed_url.hostname == "localhost"
+                            and parsed_url.path == "/api/2.0/preview/scim/v2/Me"
                             and request.method == "GET"
                         ):
+                            resp = requests.Response()
+                            resp.status_code = 200
+                            resp._content = b"{}"
+                            resp.headers["X-Databricks-Org-Id"] = "12345"
+                            resp.request = request
+                            resp.url = request.url
+                            return resp
+
+                        # Handle storage proxy probe with workspace ID.
+                        if (
+                            parsed_url.hostname == self._expected_hostname
+                            and parsed_url.path == "/api/2.0/fs/files/DatabricksInternal/Probe/fullstack/wis"
+                            and request.method == "HEAD"
+                        ):
+                            probe_query = parse_qs(parsed_url.query)
+                            assert probe_query.get("ew") == ["12345"], (
+                                f"Expected ew=12345 in probe URL, got: {probe_query}"
+                            )
                             resp = requests.Response()
                             resp.status_code = 200
                             resp._content = b""
