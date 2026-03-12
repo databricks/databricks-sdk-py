@@ -63,7 +63,7 @@ def test_with_extra_different_values_still_allowed(user_agent):
 
 
 @pytest.fixture(scope="function")
-def clear_cicd():
+def clean_useragent_env():
     # Save and clear env vars.
     original_env = os.environ.copy()
     os.environ.clear()
@@ -83,7 +83,7 @@ def clear_cicd():
     useragent._agent_provider = None
 
 
-def test_user_agent_cicd_no_provider(clear_cicd):
+def test_user_agent_cicd_no_provider(clean_useragent_env):
     from databricks.sdk import useragent
 
     user_agent = useragent.to_string()
@@ -91,7 +91,7 @@ def test_user_agent_cicd_no_provider(clear_cicd):
     assert "cicd" not in user_agent
 
 
-def test_user_agent_cicd_one_provider(clear_cicd):
+def test_user_agent_cicd_one_provider(clean_useragent_env):
     os.environ["GITHUB_ACTIONS"] = "true"
 
     from databricks.sdk import useragent
@@ -101,7 +101,7 @@ def test_user_agent_cicd_one_provider(clear_cicd):
     assert "cicd/github" in user_agent
 
 
-def test_user_agent_cicd_two_provider(clear_cicd):
+def test_user_agent_cicd_two_provider(clean_useragent_env):
     os.environ["GITHUB_ACTIONS"] = "true"
     os.environ["GITLAB_CI"] = "true"
 
@@ -112,62 +112,62 @@ def test_user_agent_cicd_two_provider(clear_cicd):
     assert "cicd/github" in user_agent
 
 
-def test_agent_provider_no_agent(clear_cicd):
+def test_agent_provider_no_agent(clean_useragent_env):
     from databricks.sdk import useragent
 
     assert useragent.agent_provider() == ""
 
 
-def test_agent_provider_antigravity(clear_cicd):
+def test_agent_provider_antigravity(clean_useragent_env):
     os.environ["ANTIGRAVITY_AGENT"] = "1"
     from databricks.sdk import useragent
 
     assert useragent.agent_provider() == "antigravity"
 
 
-def test_agent_provider_claude_code(clear_cicd):
+def test_agent_provider_claude_code(clean_useragent_env):
     os.environ["CLAUDECODE"] = "1"
     from databricks.sdk import useragent
 
     assert useragent.agent_provider() == "claude-code"
 
 
-def test_agent_provider_cline(clear_cicd):
+def test_agent_provider_cline(clean_useragent_env):
     os.environ["CLINE_ACTIVE"] = "1"
     from databricks.sdk import useragent
 
     assert useragent.agent_provider() == "cline"
 
 
-def test_agent_provider_codex(clear_cicd):
+def test_agent_provider_codex(clean_useragent_env):
     os.environ["CODEX_CI"] = "1"
     from databricks.sdk import useragent
 
     assert useragent.agent_provider() == "codex"
 
 
-def test_agent_provider_cursor(clear_cicd):
+def test_agent_provider_cursor(clean_useragent_env):
     os.environ["CURSOR_AGENT"] = "1"
     from databricks.sdk import useragent
 
     assert useragent.agent_provider() == "cursor"
 
 
-def test_agent_provider_gemini_cli(clear_cicd):
+def test_agent_provider_gemini_cli(clean_useragent_env):
     os.environ["GEMINI_CLI"] = "1"
     from databricks.sdk import useragent
 
     assert useragent.agent_provider() == "gemini-cli"
 
 
-def test_agent_provider_opencode(clear_cicd):
+def test_agent_provider_opencode(clean_useragent_env):
     os.environ["OPENCODE"] = "1"
     from databricks.sdk import useragent
 
     assert useragent.agent_provider() == "opencode"
 
 
-def test_agent_provider_multiple_agents(clear_cicd):
+def test_agent_provider_multiple_agents(clean_useragent_env):
     os.environ["CLAUDECODE"] = "1"
     os.environ["CURSOR_AGENT"] = "1"
     from databricks.sdk import useragent
@@ -175,14 +175,14 @@ def test_agent_provider_multiple_agents(clear_cicd):
     assert useragent.agent_provider() == ""
 
 
-def test_agent_provider_empty_value(clear_cicd):
+def test_agent_provider_empty_value(clean_useragent_env):
     os.environ["CLAUDECODE"] = ""
     from databricks.sdk import useragent
 
     assert useragent.agent_provider() == ""
 
 
-def test_user_agent_string_includes_agent(clear_cicd):
+def test_user_agent_string_includes_agent(clean_useragent_env):
     os.environ["CLAUDECODE"] = "1"
     from databricks.sdk import useragent
 
@@ -190,14 +190,23 @@ def test_user_agent_string_includes_agent(clear_cicd):
     assert "agent/claude-code" in ua
 
 
-def test_user_agent_string_no_agent(clear_cicd):
+def test_user_agent_string_no_agent(clean_useragent_env):
     from databricks.sdk import useragent
 
     ua = useragent.to_string()
     assert "agent/" not in ua
 
 
-def test_agent_provider_cached(clear_cicd):
+def test_user_agent_string_multiple_agents(clean_useragent_env):
+    os.environ["CLAUDECODE"] = "1"
+    os.environ["CURSOR_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    ua = useragent.to_string()
+    assert "agent/" not in ua
+
+
+def test_agent_provider_cached(clean_useragent_env):
     os.environ["CURSOR_AGENT"] = "1"
     from databricks.sdk import useragent
 
