@@ -23,6 +23,127 @@ _LOG = logging.getLogger("databricks.sdk")
 # all definitions in this file are in alphabetical order
 
 
+class AlertEvaluationState(Enum):
+    """Same alert evaluation state as in redash-v2/api/proto/alertsv2/alerts.proto"""
+
+    ERROR = "ERROR"
+    OK = "OK"
+    TRIGGERED = "TRIGGERED"
+    UNKNOWN = "UNKNOWN"
+
+
+@dataclass
+class AlertTask:
+    alert_id: Optional[str] = None
+    """The alert_id is the canonical identifier of the alert."""
+
+    subscribers: Optional[List[AlertTaskSubscriber]] = None
+    """The subscribers receive alert evaluation result notifications after the alert task is completed.
+    The number of subscriptions is limited to 100."""
+
+    warehouse_id: Optional[str] = None
+    """The warehouse_id identifies the warehouse settings used by the alert task."""
+
+    workspace_path: Optional[str] = None
+    """The workspace_path is the path to the alert file in the workspace. The path: * must start with
+    "/Workspace" * must be a normalized path. User has to select only one of alert_id or
+    workspace_path to identify the alert."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alert_id is not None:
+            body["alert_id"] = self.alert_id
+        if self.subscribers:
+            body["subscribers"] = [v.as_dict() for v in self.subscribers]
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        if self.workspace_path is not None:
+            body["workspace_path"] = self.workspace_path
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alert_id is not None:
+            body["alert_id"] = self.alert_id
+        if self.subscribers:
+            body["subscribers"] = self.subscribers
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        if self.workspace_path is not None:
+            body["workspace_path"] = self.workspace_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertTask:
+        """Deserializes the AlertTask from a dictionary."""
+        return cls(
+            alert_id=d.get("alert_id", None),
+            subscribers=_repeated_dict(d, "subscribers", AlertTaskSubscriber),
+            warehouse_id=d.get("warehouse_id", None),
+            workspace_path=d.get("workspace_path", None),
+        )
+
+
+@dataclass
+class AlertTaskOutput:
+    alert_state: Optional[AlertEvaluationState] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertTaskOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alert_state is not None:
+            body["alert_state"] = self.alert_state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertTaskOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alert_state is not None:
+            body["alert_state"] = self.alert_state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertTaskOutput:
+        """Deserializes the AlertTaskOutput from a dictionary."""
+        return cls(alert_state=_enum(d, "alert_state", AlertEvaluationState))
+
+
+@dataclass
+class AlertTaskSubscriber:
+    """Represents a subscriber that will receive alert notifications. A subscriber can be either a user
+    (via email) or a notification destination (via destination_id)."""
+
+    destination_id: Optional[str] = None
+
+    user_name: Optional[str] = None
+    """A valid workspace email address."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertTaskSubscriber into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination_id is not None:
+            body["destination_id"] = self.destination_id
+        if self.user_name is not None:
+            body["user_name"] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertTaskSubscriber into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_id is not None:
+            body["destination_id"] = self.destination_id
+        if self.user_name is not None:
+            body["user_name"] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertTaskSubscriber:
+        """Deserializes the AlertTaskSubscriber from a dictionary."""
+        return cls(destination_id=d.get("destination_id", None), user_name=d.get("user_name", None))
+
+
 class AuthenticationMethod(Enum):
 
     OAUTH = "OAUTH"
@@ -5289,6 +5410,9 @@ class RunNowResponse:
 class RunOutput:
     """Run output was retrieved successfully."""
 
+    alert_output: Optional[AlertTaskOutput] = None
+    """The output of an alert task, if available"""
+
     clean_rooms_notebook_output: Optional[CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput] = None
     """The output of a clean rooms notebook task, if available"""
 
@@ -5344,6 +5468,8 @@ class RunOutput:
     def as_dict(self) -> dict:
         """Serializes the RunOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.alert_output:
+            body["alert_output"] = self.alert_output.as_dict()
         if self.clean_rooms_notebook_output:
             body["clean_rooms_notebook_output"] = self.clean_rooms_notebook_output.as_dict()
         if self.dashboard_output:
@@ -5377,6 +5503,8 @@ class RunOutput:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunOutput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.alert_output:
+            body["alert_output"] = self.alert_output
         if self.clean_rooms_notebook_output:
             body["clean_rooms_notebook_output"] = self.clean_rooms_notebook_output
         if self.dashboard_output:
@@ -5411,6 +5539,7 @@ class RunOutput:
     def from_dict(cls, d: Dict[str, Any]) -> RunOutput:
         """Deserializes the RunOutput from a dictionary."""
         return cls(
+            alert_output=_from_dict(d, "alert_output", AlertTaskOutput),
             clean_rooms_notebook_output=_from_dict(
                 d, "clean_rooms_notebook_output", CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput
             ),
@@ -5713,6 +5842,9 @@ class RunTask:
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
 
+    alert_task: Optional[AlertTask] = None
+    """New alert v2 task"""
+
     attempt_number: Optional[int] = None
     """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
     has an attempt_number of 0. If the initial run attempt fails, and the job has a retry policy
@@ -5920,6 +6052,8 @@ class RunTask:
     def as_dict(self) -> dict:
         """Serializes the RunTask into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.alert_task:
+            body["alert_task"] = self.alert_task.as_dict()
         if self.attempt_number is not None:
             body["attempt_number"] = self.attempt_number
         if self.clean_rooms_notebook_task:
@@ -6027,6 +6161,8 @@ class RunTask:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunTask into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.alert_task:
+            body["alert_task"] = self.alert_task
         if self.attempt_number is not None:
             body["attempt_number"] = self.attempt_number
         if self.clean_rooms_notebook_task:
@@ -6135,6 +6271,7 @@ class RunTask:
     def from_dict(cls, d: Dict[str, Any]) -> RunTask:
         """Deserializes the RunTask from a dictionary."""
         return cls(
+            alert_task=_from_dict(d, "alert_task", AlertTask),
             attempt_number=d.get("attempt_number", None),
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
             cleanup_duration=d.get("cleanup_duration", None),
@@ -7030,6 +7167,9 @@ class SubmitTask:
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
 
+    alert_task: Optional[AlertTask] = None
+    """New alert v2 task"""
+
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
@@ -7159,6 +7299,8 @@ class SubmitTask:
     def as_dict(self) -> dict:
         """Serializes the SubmitTask into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.alert_task:
+            body["alert_task"] = self.alert_task.as_dict()
         if self.clean_rooms_notebook_task:
             body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task.as_dict()
         if self.compute:
@@ -7234,6 +7376,8 @@ class SubmitTask:
     def as_shallow_dict(self) -> dict:
         """Serializes the SubmitTask into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.alert_task:
+            body["alert_task"] = self.alert_task
         if self.clean_rooms_notebook_task:
             body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task
         if self.compute:
@@ -7310,6 +7454,7 @@ class SubmitTask:
     def from_dict(cls, d: Dict[str, Any]) -> SubmitTask:
         """Deserializes the SubmitTask from a dictionary."""
         return cls(
+            alert_task=_from_dict(d, "alert_task", AlertTask),
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
             compute=_from_dict(d, "compute", Compute),
             condition_task=_from_dict(d, "condition_task", ConditionTask),
@@ -7554,6 +7699,9 @@ class Task:
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
 
+    alert_task: Optional[AlertTask] = None
+    """New alert v2 task"""
+
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
@@ -7695,6 +7843,8 @@ class Task:
     def as_dict(self) -> dict:
         """Serializes the Task into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.alert_task:
+            body["alert_task"] = self.alert_task.as_dict()
         if self.clean_rooms_notebook_task:
             body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task.as_dict()
         if self.compute:
@@ -7774,6 +7924,8 @@ class Task:
     def as_shallow_dict(self) -> dict:
         """Serializes the Task into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.alert_task:
+            body["alert_task"] = self.alert_task
         if self.clean_rooms_notebook_task:
             body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task
         if self.compute:
@@ -7854,6 +8006,7 @@ class Task:
     def from_dict(cls, d: Dict[str, Any]) -> Task:
         """Deserializes the Task from a dictionary."""
         return cls(
+            alert_task=_from_dict(d, "alert_task", AlertTask),
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
             compute=_from_dict(d, "compute", Compute),
             condition_task=_from_dict(d, "condition_task", ConditionTask),
