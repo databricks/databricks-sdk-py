@@ -724,16 +724,26 @@ class Config:
         ini_file.read(config_path)
         profile = self.profile
         has_explicit_profile = self.profile is not None
+        has_default_profile_setting = False
         # In Go SDK, we skip merging the profile with DEFAULT section, though Python's ConfigParser.items()
         # is returning profile key-value pairs _including those from DEFAULT_. This is not what we expect
         # from Unified Auth test suite at the moment. Hence, the private variable access.
         # See: https://docs.python.org/3/library/configparser.html#mapping-protocol-access
-        if not has_explicit_profile and not ini_file.defaults():
-            logger.debug(f"{config_path} has no DEFAULT profile configured")
-            return
         if not has_explicit_profile:
-            profile = "DEFAULT"
-        profiles = ini_file._sections
+            # Check [__settings__].default_profile before falling back to [DEFAULT].
+            settings = ini_file._sections.get("__settings__", {})
+            default_profile = settings.get("default_profile", "").strip()
+            if default_profile:
+                profile = default_profile
+                has_default_profile_setting = True
+            elif ini_file.defaults():
+                profile = "DEFAULT"
+            else:
+                logger.debug(f"{config_path} has no DEFAULT profile configured")
+                return
+        profiles = {name: values for name, values in ini_file._sections.items()}
+        # [__settings__] is not a profile; exclude it from the profile map.
+        profiles.pop("__settings__", None)
         if ini_file.defaults():
             profiles["DEFAULT"] = ini_file.defaults()
         if profile not in profiles:
@@ -745,6 +755,8 @@ class Config:
                 # don't overwrite a value previously set
                 continue
             self.__setattr__(k, v)
+        if has_default_profile_setting:
+            self.profile = profile
 
     def _validate(self):
         auths_used = set()

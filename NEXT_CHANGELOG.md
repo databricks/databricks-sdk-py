@@ -3,6 +3,7 @@
 ## Release v0.100.0
 
 ### New Features and Improvements
+* Support `default_profile` in `[__settings__]` section of `.databrickscfg` for consistent default profile resolution across CLI and SDKs.
 
 ### Security
 
