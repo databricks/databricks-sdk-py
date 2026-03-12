@@ -161,6 +161,9 @@ def to_string(
     base.extend(_get_runtime_info())
     if cicd_provider() != "":
         base.append((CICD_KEY, cicd_provider()))
+    agent = agent_provider()
+    if agent:
+        base.append(("agent", agent))
     return " ".join(f"{k}/{v}" for k, v in base)
 
 
@@ -219,3 +222,46 @@ def cicd_provider() -> str:
         _cicd_provider = providers[0]
 
     return _cicd_provider
+
+
+# Canonical list of known AI coding agents.
+# Keep this list in sync with databricks-sdk-go and databricks-sdk-java.
+_KNOWN_AGENTS = {
+    "ANTIGRAVITY_AGENT": "antigravity",  # Closed source (Google)
+    "CLAUDECODE": "claude-code",  # https://github.com/anthropics/claude-code
+    "CLINE_ACTIVE": "cline",  # https://github.com/cline/cline (v3.24.0+)
+    "CODEX_CI": "codex",  # https://github.com/openai/codex
+    "COPILOT_CLI": "copilot-cli",  # https://github.com/features/copilot
+    "CURSOR_AGENT": "cursor",  # Closed source
+    "GEMINI_CLI": "gemini-cli",  # https://google-gemini.github.io/gemini-cli
+    "OPENCODE": "opencode",  # https://github.com/opencode-ai/opencode
+}
+
+# Private variable to store the detected agent provider. This value is computed
+# at the first invocation of agent_provider() and is cached for subsequent calls.
+# Sentinel: None = not yet computed, "" = computed but no agent found.
+_agent_provider = None
+
+
+def agent_provider() -> str:
+    """Detect if running inside a known AI coding agent.
+
+    Returns the agent name if exactly one known agent env var is set (non-empty).
+    Returns empty string if zero or multiple agents detected.
+    Result is cached after first call.
+
+    Unlike CI/CD detection (which returns the first/sorted match), agent detection
+    uses an ambiguity guard: multiple matches return empty. Agent env vars can be
+    stacked (e.g., running Cline inside Cursor), so we only report when unambiguous.
+    """
+    global _agent_provider
+    if _agent_provider is not None:
+        return _agent_provider
+
+    detected = []
+    for env_var, name in _KNOWN_AGENTS.items():
+        if os.environ.get(env_var, ""):
+            detected.append(name)
+
+    _agent_provider = detected[0] if len(detected) == 1 else ""
+    return _agent_provider
