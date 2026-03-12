@@ -163,6 +163,7 @@ class _BaseClient:
         if headers is None:
             headers = {}
         headers["User-Agent"] = self._user_agent_base
+        headers["X-Databricks-GCP-SA-Access-Token"] = "1234dummytest"
 
         # Wrap strings and bytes in a seekable stream so that we can rewind them.
         if isinstance(data, (str, bytes)):
