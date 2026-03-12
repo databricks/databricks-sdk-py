@@ -146,6 +146,13 @@ def test_agent_provider_codex(clean_useragent_env):
     assert useragent.agent_provider() == "codex"
 
 
+def test_agent_provider_copilot_cli(clean_useragent_env):
+    os.environ["COPILOT_CLI"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "copilot-cli"
+
+
 def test_agent_provider_cursor(clean_useragent_env):
     os.environ["CURSOR_AGENT"] = "1"
     from databricks.sdk import useragent
