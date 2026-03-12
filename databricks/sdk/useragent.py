@@ -231,6 +231,7 @@ _KNOWN_AGENTS = {
     "CLAUDECODE": "claude-code",  # https://github.com/anthropics/claude-code
     "CLINE_ACTIVE": "cline",  # https://github.com/cline/cline (v3.24.0+)
     "CODEX_CI": "codex",  # https://github.com/openai/codex
+    "COPILOT_CLI": "copilot-cli",  # https://github.com/features/copilot
     "CURSOR_AGENT": "cursor",  # Closed source
     "GEMINI_CLI": "gemini-cli",  # https://google-gemini.github.io/gemini-cli
     "OPENCODE": "opencode",  # https://github.com/opencode-ai/opencode
