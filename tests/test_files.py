@@ -1683,7 +1683,7 @@ class MultipartUploadTestCase(UploadTestCase):
             and request_url.hostname == self._expected_hostname
             and request_url.path == f"/api/2.0/fs/files{self.path}"
             and request_query.get("action") == ["abort-upload"]
-            and request.method == "POST"
+            and request.method == "DELETE"
         ):
 
             def processor() -> list:

@@ -871,6 +871,7 @@ class _StorageProxyRequestBuilder:
                 _PresignedUrl(
                     url=f"{base}?{query}",
                     headers={"Content-Type": "application/octet-stream"},
+                    part_number=part_number,
                 )
             )
         return results
