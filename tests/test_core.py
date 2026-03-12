@@ -85,8 +85,7 @@ def write_large_dummy_executable(path: pathlib.Path):
 
     # Generate a long random string to inflate the file size.
     random_string = "".join(random.choice(string.ascii_letters) for i in range(1024 * 1024))
-    cli.write_text(
-        """#!/bin/sh
+    cli.write_text("""#!/bin/sh
 cat <<EOF
 {
 "access_token": "token",
@@ -95,9 +94,7 @@ cat <<EOF
 }
 EOF
 exit 0
-"""
-        + random_string
-    )
+""" + random_string)
     cli.chmod(0o755)
     assert cli.stat().st_size >= (1024 * 1024)
     return cli
@@ -270,10 +267,11 @@ def test_extra_and_upstream_user_agent(monkeypatch):
         def system(self):
             return "TestOS"
 
-    # Clear all environment variables and cached CICD provider.
+    # Clear all environment variables and cached CICD/agent providers.
     for k in os.environ:
         monkeypatch.delenv(k, raising=False)
     useragent._cicd_provider = None
+    useragent._agent_provider = None
 
     monkeypatch.setattr(platform, "python_version", lambda: "3.0.0")
     monkeypatch.setattr(platform, "uname", MockUname)
