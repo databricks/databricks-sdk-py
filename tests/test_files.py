@@ -852,11 +852,13 @@ class PresignedUrlDownloadTestCase:
         parallel_upload_part_size: Optional[int] = None,
         expected_exception_type: Optional[Type[BaseException]] = None,
         expected_download_api: Optional[str] = None,
+        use_storage_proxy: bool = False,
     ):
         # Metadata
         self.name = name
         self.file_size = file_size
         self.last_modified = "Thu, 28 Nov 2024 16:39:14 GMT"
+        self.use_storage_proxy = use_storage_proxy
 
         # Function stubs to customize responses for various API calls
         self.custom_response_get_file_status_api = custom_response_get_file_status_api
@@ -890,6 +892,10 @@ class PresignedUrlDownloadTestCase:
         self.parallel_download_min_file_size = parallel_download_min_file_size
         self.parallel_upload_part_size = parallel_upload_part_size
 
+    @property
+    def _expected_hostname(self) -> str:
+        return "storage-proxy.databricks.com" if self.use_storage_proxy else "localhost"
+
     def _clear_state(self):
         self.custom_response_get_file_status_api.clear_state()
         self.custom_response_create_presigned_url.clear_state()
@@ -910,12 +916,57 @@ class PresignedUrlDownloadTestCase:
         request_url = urlparse(request.url)
         request_query = parse_qs(request_url.query)
 
-        # Create Download URL request
+        # Storage proxy: workspace ID resolution via SCIM Me.
         if (
+            self.use_storage_proxy
+            and request_url.hostname == "localhost"
+            and request_url.path == "/api/2.0/preview/scim/v2/Me"
+            and request.method == "GET"
+        ):
+            resp = requests.Response()
+            resp.status_code = 200
+            resp._content = b"{}"
+            resp.headers["X-Databricks-Org-Id"] = "12345"
+            resp.request = request
+            resp.url = request.url
+            return resp
+
+        # Storage proxy: probe.
+        elif (
+            self.use_storage_proxy
+            and request_url.hostname == self._expected_hostname
+            and request_url.path == "/api/2.0/fs/files/DatabricksInternal/Probe/fullstack/wis"
+            and request.method == "HEAD"
+        ):
+            resp = requests.Response()
+            resp.status_code = 200
+            resp._content = b""
+            resp.request = request
+            resp.url = request.url
+            return resp
+
+        # Storage proxy: direct download.
+        elif (
+            self.use_storage_proxy
+            and request_url.hostname == self._expected_hostname
+            and request.method == "GET"
+            and request_url.path == f"/api/2.0/fs/files{self._FILE_PATH}"
+        ):
+
+            def processor() -> list:
+                resp = server_state.get_content(request, api_used="storage_proxy")
+                return [resp.status_code, resp._content, resp.headers]
+
+            return self.custom_response_download_from_url.generate_response(request, processor, stream=True)
+
+        # Create Download URL request (presigned URL path only).
+        elif (
             request_url.hostname == "localhost"
             and request.method == "POST"
             and request_url.path == "/api/2.0/fs/create-download-url"
         ):
+            # This should never be called when using the storage proxy.
+            assert not self.use_storage_proxy, "create-download-url should not be called with storage proxy"
             assert "path" in request_query, "Expected 'path' in query parameters"
             file_path = request_query.get("path")[0]
 
@@ -925,7 +976,7 @@ class PresignedUrlDownloadTestCase:
 
             return self.custom_response_create_presigned_url.generate_response(request, processor)
 
-        # Get files status request
+        # Get files status request (always goes to workspace host via _api.do).
         elif (
             request_url.hostname == "localhost"
             and request.method == "HEAD"
@@ -938,9 +989,9 @@ class PresignedUrlDownloadTestCase:
 
             return self.custom_response_get_file_status_api.generate_response(request, processor, stream=True)
 
-        # Direct Files API download request
+        # Direct Files API download request.
         elif (
-            request_url.hostname == "localhost"
+            request_url.hostname == self._expected_hostname
             and request.method == "GET"
             and request_url.path == f"/api/2.0/fs/files{self._FILE_PATH}"
         ):
@@ -975,6 +1026,8 @@ class PresignedUrlDownloadTestCase:
             config.files_ext_parallel_download_min_file_size = self.parallel_download_min_file_size
         if self.parallel_upload_part_size is not None:
             config.files_ext_parallel_upload_part_size = self.parallel_upload_part_size
+        if self.use_storage_proxy:
+            config.experimental_files_ext_enable_storage_proxy = True
 
         w = WorkspaceClient(config=config)
         state = PresignedUrlDownloadServerState(self.file_size, self.last_modified)
@@ -1132,6 +1185,24 @@ class PresignedUrlDownloadTestCase:
             file_size=100 * 1024 * 1024,
             expected_download_api="files_api",
             custom_response_download_from_url=CustomResponse(code=403, only_invocation=1),
+        ),
+        # -------------- storage proxy download tests --------------
+        PresignedUrlDownloadTestCase(
+            "Storage proxy: sequential download",
+            file_size=1024 * 1024,
+            use_storage_proxy=True,
+            download_mode=DownloadMode.STREAM,
+            use_parallel=False,
+            expected_download_api="storage_proxy",
+        ),
+        PresignedUrlDownloadTestCase(
+            "Storage proxy: parallel download",
+            file_size=1024 * 1024,
+            use_storage_proxy=True,
+            download_mode=DownloadMode.FILE,
+            use_parallel=True,
+            parallelism=2,
+            expected_download_api="storage_proxy",
         ),
     ],
     ids=PresignedUrlDownloadTestCase.to_string,
