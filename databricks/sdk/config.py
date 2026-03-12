@@ -53,6 +53,15 @@ class ConfigAttribute:
         return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
 
 
+def _parse_cloud(value) -> Optional[Cloud]:
+    """Parse a cloud value from string or Cloud instance; returns None for unknown or empty."""
+    if value is None:
+        return None
+    if isinstance(value, Cloud):
+        return value
+    return Cloud.parse(str(value))
+
+
 def _parse_scopes(value):
     """Parse scopes into a deduplicated, sorted list."""
     if value is None:
@@ -83,6 +92,10 @@ class Config:
 
     # Experimental flag to indicate if the host is a unified host (supports both workspace and account APIs)
     experimental_is_unified_host: bool = ConfigAttribute(env="DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST")
+
+    # [Experimental] Cloud provider. When set, is_aws/is_azure/is_gcp use this value directly
+    # instead of inferring from hostname. Populated automatically from /.well-known/databricks-config.
+    cloud: Cloud = ConfigAttribute(env="DATABRICKS_CLOUD", transform=_parse_cloud)
 
     # [Experimental] OpenID Connect discovery URL. When set, OIDC endpoints are fetched directly
     # from this URL instead of the default host-type-based well-known endpoint logic.
@@ -380,14 +393,20 @@ class Config:
     def is_azure(self) -> bool:
         if self.azure_workspace_resource_id:
             return True
+        if self.cloud:
+            return self.cloud == Cloud.AZURE
         return self.environment.cloud == Cloud.AZURE
 
     @property
     def is_gcp(self) -> bool:
+        if self.cloud:
+            return self.cloud == Cloud.GCP
         return self.environment.cloud == Cloud.GCP
 
     @property
     def is_aws(self) -> bool:
+        if self.cloud:
+            return self.cloud == Cloud.AWS
         return self.environment.cloud == Cloud.AWS
 
     @property
@@ -653,6 +672,9 @@ class Config:
                 raise ValueError("account_id is required to resolve discovery_url from host metadata")
             logger.debug(f"Resolved discovery_url from host metadata: {meta.oidc_endpoint}")
             self.discovery_url = meta.oidc_endpoint.replace("{account_id}", self.account_id or "")
+        if not self.cloud and meta.cloud:
+            logger.debug(f"Resolved cloud from host metadata: {meta.cloud.value}")
+            self.cloud = meta.cloud
 
     def _fix_host_if_needed(self):
         updated_host = _fix_host_if_needed(self.host)

@@ -12,6 +12,7 @@ import pytest
 from databricks.sdk import AccountClient, WorkspaceClient, oauth, useragent
 from databricks.sdk.config import (ClientType, Config, HostType, with_product,
                                    with_user_agent_extra)
+from databricks.sdk.environments import Cloud
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials, set_az_path, set_home
@@ -892,3 +893,121 @@ def test_resolve_host_metadata_skipped_for_non_unified(mocker):
     mock_get = mocker.patch("databricks.sdk.config.get_host_metadata")
     Config(host=_DUMMY_WS_HOST, token="t")
     mock_get.assert_not_called()
+
+
+# ---------------------------------------------------------------------------
+# Cloud field tests
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "cloud_str,expected_cloud",
+    [
+        ("AWS", Cloud.AWS),
+        ("aws", Cloud.AWS),
+        ("Azure", Cloud.AZURE),
+        ("AZURE", Cloud.AZURE),
+        ("GCP", Cloud.GCP),
+        ("gcp", Cloud.GCP),
+    ],
+)
+def test_cloud_parse_case_insensitive(cloud_str, expected_cloud):
+    """Cloud.parse handles any casing."""
+    assert Cloud.parse(cloud_str) == expected_cloud
+
+
+def test_cloud_parse_unknown_returns_none():
+    """Cloud.parse returns None for unrecognized values (forward compatibility)."""
+    assert Cloud.parse("UNKNOWN_FUTURE_CLOUD") is None
+
+
+def test_cloud_parse_empty_returns_none():
+    assert Cloud.parse("") is None
+    assert Cloud.parse(None) is None
+
+
+def test_cloud_field_overrides_dns_detection_aws():
+    """Explicit cloud=AWS wins over hostname-based detection."""
+    config = Config(host="https://myworkspace.azuredatabricks.net", token="t", cloud="AWS")
+    assert config.is_aws
+    assert not config.is_azure
+    assert not config.is_gcp
+
+
+def test_cloud_field_overrides_dns_detection_azure():
+    """Explicit cloud=AZURE wins over hostname-based detection."""
+    config = Config(host="https://myworkspace.cloud.databricks.com", token="t", cloud="AZURE")
+    assert config.is_azure
+    assert not config.is_aws
+    assert not config.is_gcp
+
+
+def test_cloud_field_overrides_dns_detection_gcp():
+    """Explicit cloud=GCP wins over hostname-based detection."""
+    config = Config(host="https://myworkspace.cloud.databricks.com", token="t", cloud="GCP")
+    assert config.is_gcp
+    assert not config.is_aws
+    assert not config.is_azure
+
+
+def test_cloud_field_falls_back_to_dns_when_unset():
+    """When cloud is not set, falls back to DNS-based detection."""
+    config = Config(host="https://myworkspace.azuredatabricks.net", token="t")
+    assert config.is_azure
+    assert not config.is_aws
+
+
+def test_cloud_field_azure_resource_id_still_wins():
+    """azure_workspace_resource_id takes precedence over cloud field for is_azure."""
+    config = Config(
+        host="https://myworkspace.cloud.databricks.com",
+        credentials_strategy=noop_credentials,
+        cloud="AWS",
+        azure_workspace_resource_id="/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Databricks/workspaces/ws",
+    )
+    assert config.is_azure
+
+
+def test_resolve_host_metadata_populates_cloud(mocker):
+    """Cloud is populated from the discovery endpoint."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=oauth.HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+                "cloud": "AWS",
+            }
+        ),
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t", experimental_is_unified_host=True)
+    assert config.cloud == Cloud.AWS
+
+
+def test_resolve_host_metadata_cloud_not_overwritten(mocker):
+    """Explicit cloud config is not overwritten by the discovery endpoint."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=oauth.HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+                "cloud": "AZURE",
+            }
+        ),
+    )
+    config = Config(
+        host=_DUMMY_WS_HOST,
+        token="t",
+        experimental_is_unified_host=True,
+        cloud="AWS",
+    )
+    assert config.cloud == Cloud.AWS
+
+
+def test_resolve_host_metadata_cloud_missing_in_response(mocker):
+    """When endpoint omits cloud, the field stays unset (falls back to DNS)."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=oauth.HostMetadata.from_dict({"oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc"}),
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t", experimental_is_unified_host=True)
+    assert config.cloud is None
