@@ -1011,3 +1011,65 @@ def test_resolve_host_metadata_cloud_missing_in_response(mocker):
     )
     config = Config(host=_DUMMY_WS_HOST, token="t", experimental_is_unified_host=True)
     assert config.cloud is None
+
+
+# ---------------------------------------------------------------------------
+# token_audience resolution from host metadata
+# ---------------------------------------------------------------------------
+
+
+def test_resolve_host_metadata_sets_token_audience_for_account_host(mocker):
+    """When metadata has no workspace_id, token_audience is set to account_id."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=oauth.HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_ACC_HOST}/oidc/accounts/{_DUMMY_ACCOUNT_ID}",
+                "account_id": _DUMMY_ACCOUNT_ID,
+            }
+        ),
+    )
+    config = Config(
+        host=_DUMMY_ACC_HOST,
+        token="t",
+        account_id=_DUMMY_ACCOUNT_ID,
+        experimental_is_unified_host=True,
+    )
+    assert config.token_audience == _DUMMY_ACCOUNT_ID
+
+
+def test_resolve_host_metadata_no_token_audience_for_workspace_host(mocker):
+    """When metadata contains workspace_id, token_audience is not set from metadata."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=oauth.HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+                "account_id": _DUMMY_ACCOUNT_ID,
+                "workspace_id": _DUMMY_WORKSPACE_ID,
+            }
+        ),
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t", experimental_is_unified_host=True)
+    assert config.token_audience is None
+
+
+def test_resolve_host_metadata_does_not_overwrite_token_audience(mocker):
+    """An explicitly set token_audience is never overwritten by metadata resolution."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=oauth.HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_ACC_HOST}/oidc/accounts/{_DUMMY_ACCOUNT_ID}",
+                "account_id": _DUMMY_ACCOUNT_ID,
+            }
+        ),
+    )
+    config = Config(
+        host=_DUMMY_ACC_HOST,
+        token="t",
+        account_id=_DUMMY_ACCOUNT_ID,
+        experimental_is_unified_host=True,
+        token_audience="custom-audience",
+    )
+    assert config.token_audience == "custom-audience"

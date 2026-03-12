@@ -106,7 +106,7 @@ class Config:
 
     # Audience for OIDC ID token source accepting an audience as a parameter.
     # For example, the GitHub action ID token source.
-    token_audience: str = ConfigAttribute(env="DATABRICKS_TOKEN_AUDIENCE", auth="github-oidc")
+    token_audience: str = ConfigAttribute(env="DATABRICKS_TOKEN_AUDIENCE")
 
     # Environment variable for OIDC token.
     oidc_token_env: str = ConfigAttribute(env="DATABRICKS_OIDC_TOKEN_ENV", auth="env-oidc")
@@ -675,6 +675,13 @@ class Config:
         if not self.cloud and meta.cloud:
             logger.debug(f"Resolved cloud from host metadata: {meta.cloud.value}")
             self.cloud = meta.cloud
+        # Account hosts use account_id as the OIDC token audience instead of the token endpoint.
+        # This is a special case: when the metadata has no workspace_id, the host is acting as an
+        # account-level endpoint and the audience must be scoped to the account.
+        # TODO: Add explicit audience to the metadata discovery endpoint.
+        if not self.token_audience and not meta.workspace_id and self.account_id:
+            logger.debug(f"Setting token_audience to account_id for account host: {self.account_id}")
+            self.token_audience = self.account_id
 
     def _fix_host_if_needed(self):
         updated_host = _fix_host_if_needed(self.host)
