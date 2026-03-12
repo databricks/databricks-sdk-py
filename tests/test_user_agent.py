@@ -195,3 +195,16 @@ def test_user_agent_string_no_agent(clear_cicd):
 
     ua = useragent.to_string()
     assert "agent/" not in ua
+
+
+def test_agent_provider_cached(clear_cicd):
+    os.environ["CURSOR_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "cursor"
+
+    # Change the environment: the cached result should persist.
+    del os.environ["CURSOR_AGENT"]
+    os.environ["CLAUDECODE"] = "1"
+
+    assert useragent.agent_provider() == "cursor"
