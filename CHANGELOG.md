@@ -1,5 +1,13 @@
 # Version changelog
 
+## Release v0.99.0 (2026-03-12)
+
+### API Changes
+* Add `connector_type` and `data_staging_options` fields for `databricks.sdk.service.pipelines.IngestionPipelineDefinition`.
+* Add `ingestion_source_catalog_name`, `ingestion_source_connection_name`, `ingestion_source_schema_name`, `ingestion_source_table_name` and `ingestion_source_table_version` fields for `databricks.sdk.service.pipelines.Origin`.
+* Add `sub_domain` field for `databricks.sdk.service.serving.ExternalFunctionRequest`.
+
+
 ## Release v0.98.0 (2026-03-11)
 
 ### API Changes
