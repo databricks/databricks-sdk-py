@@ -15,8 +15,7 @@ import pytest
 from databricks.sdk import AccountClient, WorkspaceClient
 from databricks.sdk.config import Config
 from databricks.sdk.service import iam, oauth2
-from databricks.sdk.service.compute import (ClusterSpec, DataSecurityMode,
-                                            Library, ResultType, SparkVersion)
+from databricks.sdk.service.compute import ClusterSpec, DataSecurityMode, Library, ResultType, SparkVersion
 from databricks.sdk.service.jobs import NotebookTask, Task, ViewType
 from databricks.sdk.service.workspace import ImportFormat
 
@@ -139,13 +138,11 @@ def _test_runtime_auth_from_jobs_inner(w, env_or_skip, random, dbr_versions, lib
 
     my_name = w.current_user.me().user_name
     notebook_path = f"/Users/{my_name}/notebook-native-auth"
-    notebook_content = io.BytesIO(
-        b"""
+    notebook_content = io.BytesIO(b"""
 from databricks.sdk import WorkspaceClient
 w = WorkspaceClient()
 me = w.current_user.me()
-print(me.user_name)"""
-    )
+print(me.user_name)""")
 
     from databricks.sdk.service.workspace import Language
 

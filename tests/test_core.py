@@ -12,13 +12,14 @@ import pytest
 
 from databricks.sdk import WorkspaceClient, errors, useragent
 from databricks.sdk.core import ApiClient, Config, DatabricksError
-from databricks.sdk.credentials_provider import (CliTokenSource,
-                                                 CredentialsProvider,
-                                                 CredentialsStrategy,
-                                                 DatabricksCliTokenSource,
-                                                 databricks_cli)
-from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
-                                         DatabricksEnvironment)
+from databricks.sdk.credentials_provider import (
+    CliTokenSource,
+    CredentialsProvider,
+    CredentialsStrategy,
+    DatabricksCliTokenSource,
+    databricks_cli,
+)
+from databricks.sdk.environments import ENVIRONMENTS, AzureEnvironment, Cloud, DatabricksEnvironment
 from databricks.sdk.oauth import Token
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
@@ -85,8 +86,7 @@ def write_large_dummy_executable(path: pathlib.Path):
 
     # Generate a long random string to inflate the file size.
     random_string = "".join(random.choice(string.ascii_letters) for i in range(1024 * 1024))
-    cli.write_text(
-        """#!/bin/sh
+    cli.write_text("""#!/bin/sh
 cat <<EOF
 {
 "access_token": "token",
@@ -95,9 +95,7 @@ cat <<EOF
 }
 EOF
 exit 0
-"""
-        + random_string
-    )
+""" + random_string)
     cli.chmod(0o755)
     assert cli.stat().st_size >= (1024 * 1024)
     return cli
