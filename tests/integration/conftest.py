@@ -13,6 +13,11 @@ from databricks.sdk.environments import Cloud
 from databricks.sdk.service.catalog import VolumeType
 
 
+@pytest.fixture(autouse=True)
+def stub_host_metadata():
+    """Override root conftest stub — integration tests hit real endpoints."""
+
+
 def pytest_addoption(parser):
     # make logging sensible and readable.
     parser.addini(
