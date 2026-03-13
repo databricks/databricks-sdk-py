@@ -255,6 +255,10 @@ class Config:
     # is hit first will stop the retry loop.
     experimental_files_ext_cloud_api_max_retries: int = 3
 
+    # Whether to enable the storage proxy for file operations.
+    # When enabled, the SDK will probe the storage proxy and use it if available.
+    experimental_files_ext_enable_storage_proxy: bool = False
+
     def __init__(
         self,
         *,
@@ -639,10 +643,10 @@ class Config:
         if not self.discovery_url and meta.oidc_endpoint:
             if "{account_id}" in meta.oidc_endpoint and not self.account_id:
                 raise ValueError("account_id is required to resolve discovery_url from host metadata")
-            logger.debug(f"Resolved discovery_url from host metadata: {meta.oidc_endpoint}")
             # Metadata oidc_endpoint is the root for OIDC. Append the well-known path to form the full discovery URL.
             base = meta.oidc_endpoint.replace("{account_id}", self.account_id or "").rstrip("/")
             self.discovery_url = f"{base}/.well-known/oauth-authorization-server"
+            logger.debug(f"Resolved discovery_url from host metadata: {self.discovery_url}")
         if not self.cloud and meta.cloud:
             logger.debug(f"Resolved cloud from host metadata: {meta.cloud.value}")
             self.cloud = meta.cloud
