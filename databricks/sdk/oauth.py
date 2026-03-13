@@ -396,11 +396,10 @@ class Refreshable(TokenSource):
                 logger.warning(f"Tried to refresh token asynchronously, but failed: {e}")
 
             with self._lock:
-                if new_token is not None:
-                    if self._token_generation != gen_at_submit:
-                        pass  # Token was already updated (e.g. by a blocking refresh); skip.
-                    else:
-                        self._update_token(new_token)
+                if self._token_generation != gen_at_submit:
+                    pass  # Token was already updated (e.g. by a blocking refresh); skip.
+                elif new_token is not None:
+                    self._update_token(new_token)
                 else:
                     self._handle_failed_async_refresh()
                 self._is_refreshing = False

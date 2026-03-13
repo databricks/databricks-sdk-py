@@ -344,12 +344,58 @@ def test_late_async_refresh_does_not_overwrite_blocking_refresh():
         result = r.token()
         assert result.access_token == "blocking_new"
 
-        # Run the queued async refresh — its result has a shorter expiry
-        # than the blocking result, so the guard must discard it.
+        # Run the queued async refresh. Its completion belongs to an older
+        # token generation, so the guard must discard it.
         executor.run_all()
 
         result = r.token()
         assert result.access_token == "blocking_new"
+
+
+def test_late_async_refresh_failure_does_not_backoff_newer_token():
+    """A failed async refresh for an older generation must not change a newer token."""
+    now = datetime(2024, 1, 1, 12, 0, 0)
+    stale_time = now + timedelta(minutes=41)
+    expired_time = now + timedelta(minutes=61)
+
+    stale_token = Token(access_token="stale", expiry=now + timedelta(minutes=60))
+    blocking_result = Token(access_token="blocking_new", expiry=now + timedelta(minutes=180))
+
+    call_count = [0]
+
+    def ordered_refresh():
+        call_count[0] += 1
+        if call_count[0] == 1:
+            return blocking_result
+        raise Exception("late async failure")
+
+    with _manual_executor() as executor, patch("databricks.sdk.oauth.datetime") as mock_dt:
+        mock_dt.now.return_value = now
+        r = _MockRefreshable(token=stale_token, disable_async=False, refresh_effect=ordered_refresh)
+
+        # Stale -> triggers async refresh (queued in executor, not yet run)
+        mock_dt.now.return_value = stale_time
+        result = r.token()
+        assert result.access_token == "stale"
+
+        # Token expires -> blocking refresh obtains the newer token
+        mock_dt.now.return_value = expired_time
+        result = r.token()
+        assert result.access_token == "blocking_new"
+        stale_after_after_blocking_refresh = r._stale_after
+
+        # Run the queued async refresh. Its failure belongs to an older
+        # token generation and must not change the newer token state.
+        executor.run_all()
+
+        assert call_count[0] == 2
+        assert r._stale_after == stale_after_after_blocking_refresh
+
+        # A stale failure would have pushed _stale_after to expired_time + 1 minute.
+        # The newer blocking-refreshed token should still be fresh here instead.
+        mock_dt.now.return_value = expired_time + timedelta(minutes=2)
+        assert r._token_state() == _TokenState.FRESH
+        assert r.token().access_token == "blocking_new"
 
 
 def test_stale_after_is_recomputed_after_blocking_refresh():
