@@ -254,6 +254,8 @@ class Refreshable(TokenSource):
     # Default maximum stale duration. Chosen to cover the maximum monthly downtime
     # allowed by a 99.99% uptime SLA (~4.38 minutes) with generous overhead guarantees
     _MAX_STALE_DURATION = timedelta(minutes=20)
+    # Backoff time after an async refresh failure before trying another one.
+    _ASYNC_REFRESH_RETRY_BACKOFF = timedelta(minutes=1)
 
     @classmethod
     def _get_executor(cls):
@@ -272,15 +274,34 @@ class Refreshable(TokenSource):
         stale_duration: Optional[timedelta] = None,
     ):
         # Config properties
-        self._use_dynamic_stale_duration = stale_duration is None
+        self._use_legacy_stale_duration = stale_duration is not None
         self._stale_duration = stale_duration if stale_duration is not None else timedelta(seconds=0)
         self._disable_async = disable_async
         # Lock
         self._lock = threading.Lock()
         # Non Thread safe properties. They should be accessed only when protected by the lock above.
+        self._stale_after: Optional[datetime] = None
+        self._token_generation: int = 0
         self._update_token(token or Token(""))
         self._is_refreshing = False
-        self._refresh_err = False
+
+    def _now(self) -> datetime:
+        """Return the current time using the timezone convention of the cached token state.
+
+        Refreshable compares `expiry` and `_stale_after` values that may be either
+        naive or timezone-aware depending on where the token came from. Centralizing
+        "now" in one helper keeps those internal comparisons timezone-compatible and
+        avoids mixing naive and aware `datetime` objects.
+
+        Invariant: all tokens supplied to a single Refreshable instance must use the
+        same tz-awareness convention (all naive or all aware). Mixing conventions
+        across successive refreshes would cause TypeError on datetime comparison.
+        """
+        if self._token.expiry:
+            return datetime.now(tz=self._token.expiry.tzinfo)
+        if self._stale_after:
+            return datetime.now(tz=self._stale_after.tzinfo)
+        return datetime.now()
 
     def _update_token(self, token: Token) -> None:
         """Stores the new token and pre-computes the stale threshold.
@@ -290,17 +311,24 @@ class Refreshable(TokenSource):
 
         This ensures short-lived tokens (e.g. FastPath with 10-minute TTL) get a
         proportionally smaller stale window, while standard OAuth tokens (≥1 hour TTL)
-        use the full cap of _DEFAULT_STALE_DURATION.
+        use the full cap of _MAX_STALE_DURATION.
         """
         self._token = token
+        self._token_generation += 1
+        self._stale_after = None
 
-        if self._use_dynamic_stale_duration and self._token.expiry:
-            ttl = self._token.expiry - datetime.now()
-
-            if ttl < timedelta(seconds=0):
-                self._stale_duration = timedelta(seconds=0)
+        if self._token.expiry:
+            if self._use_legacy_stale_duration:
+                self._stale_after = self._token.expiry - self._stale_duration
             else:
-                self._stale_duration = min(ttl // 2, self._MAX_STALE_DURATION)
+                ttl = self._token.expiry - self._now()
+                stale_duration = max(timedelta(seconds=0), min(ttl // 2, self._MAX_STALE_DURATION))
+                self._stale_after = self._token.expiry - stale_duration
+
+    def _handle_failed_async_refresh(self) -> None:
+        """Pushes _stale_after forward by the retry backoff, making the token appear fresh temporarily."""
+        if self._stale_after:
+            self._stale_after = self._now() + self._ASYNC_REFRESH_RETRY_BACKOFF
 
     # This is the main entry point for the Token. Do not access the token
     # using any of the internal functions.
@@ -334,19 +362,15 @@ class Refreshable(TokenSource):
         if not self._token.expiry:
             return _TokenState.FRESH
 
-        lifespan = self._token.expiry - datetime.now()
-        if lifespan < timedelta(seconds=0):
+        if self._token.expiry < self._now():
             return _TokenState.EXPIRED
-        if lifespan < self._stale_duration:
+        if self._stale_after and self._stale_after < self._now():
             return _TokenState.STALE
         return _TokenState.FRESH
 
     def _blocking_token(self) -> Token:
         """Returns a token, blocking if necessary to refresh it."""
         state = self._token_state()
-        # This is important to recover from potential previous failed attempts
-        # to refresh the token asynchronously.
-        self._refresh_err = False
         self._is_refreshing = False
 
         # It's possible that the token got refreshed (either by a _blocking_refresh or
@@ -360,6 +384,7 @@ class Refreshable(TokenSource):
 
     def _trigger_async_refresh(self):
         """Starts an asynchronous refresh if none is in progress."""
+        gen_at_submit = self._token_generation
 
         def _refresh_internal():
             new_token = None
@@ -367,21 +392,23 @@ class Refreshable(TokenSource):
                 new_token = self.refresh()
             except Exception as e:
                 # This happens on a thread, so we don't want to propagate the error.
-                # Instead, if there is no new_token for any reason, we will disable async refresh below
-                # But we will do it inside the lock.
+                # Instead, if there is no new_token for any reason, we apply a retry
+                # backoff below so the token appears fresh for a short cooldown period.
                 logger.warning(f"Tried to refresh token asynchronously, but failed: {e}")
 
             with self._lock:
-                if new_token is not None:
+                if self._token_generation != gen_at_submit:
+                    pass  # Token was already updated (e.g. by a blocking refresh); skip.
+                elif new_token is not None:
                     self._update_token(new_token)
                 else:
-                    self._refresh_err = True
+                    self._handle_failed_async_refresh()
                 self._is_refreshing = False
 
         # The token may have been refreshed by another thread.
         if self._token_state() == _TokenState.FRESH:
             return
-        if not self._is_refreshing and not self._refresh_err:
+        if not self._is_refreshing:
             self._is_refreshing = True
             Refreshable._get_executor().submit(_refresh_internal)
 
