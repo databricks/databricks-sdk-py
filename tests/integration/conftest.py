@@ -176,10 +176,14 @@ def _load_debug_env_if_runs_from_ide(key) -> bool:
 
 
 def _is_in_debug() -> bool:
-    return os.path.basename(sys.argv[0]) in [
-        "_jb_pytest_runner.py",
-        "testlauncher.py",
-    ]
+    return (
+        os.path.basename(sys.argv[0])
+        in [
+            "_jb_pytest_runner.py",
+            "testlauncher.py",
+        ]
+        or "vscode_pytest" in sys.modules
+    )
 
 
 def _is_cloud(cloud: Cloud) -> bool:
