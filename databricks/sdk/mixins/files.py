@@ -819,6 +819,18 @@ class _PresignedUrlRequestBuilder:
             headers[h["name"]] = h["value"]
         return _PresignedUrl(url=url, headers=headers)
 
+    def build_download_url(self, path: str, expire_time: str) -> CreateDownloadUrlResponse:
+        """Fetches a presigned URL for downloading a file."""
+        response = self._api.do(
+            "POST",
+            url=f"{self._hostname}/api/2.0/fs/create-download-url",
+            query={
+                "path": path,
+                "expire_time": expire_time,
+            },
+        )
+        return CreateDownloadUrlResponse.from_dict(response)
+
     def build_abort_url(self, path: str, session_token: str, expire_time: str) -> _PresignedUrl:
         """Fetches a presigned URL for aborting a multipart upload."""
         body = {
@@ -889,6 +901,14 @@ class _StorageProxyRequestBuilder:
         return _PresignedUrl(
             url=f"{base}?{query}",
             headers={"Content-Type": "application/octet-stream"},
+        )
+
+    def build_download_url(self, path: str, expire_time: str) -> CreateDownloadUrlResponse:
+        """Builds a URL for downloading a file directly from the storage proxy."""
+        escaped = _escape_multi_segment_path_parameter(path)
+        return CreateDownloadUrlResponse(
+            url=f"{self._hostname}/api/2.0/fs/files{escaped}",
+            headers={},
         )
 
     def build_abort_url(self, path: str, session_token: str, expire_time: str) -> _PresignedUrl:
@@ -2571,27 +2591,14 @@ class FilesExt(files.FilesAPI):
         return DownloadResponse.from_dict(res)
 
     def _create_download_url(self, file_path: str) -> CreateDownloadUrlResponse:
-        """
-        Creates a presigned download URL using the CSP presigned URL API.
+        """Creates a download URL using the appropriate builder.
 
-        Wrapped in similar retry logic to the internal API.do call:
-        1. Call _.api.do to obtain the presigned URL
-        2. Return the presigned URL
+        When the storage proxy is available, returns a direct proxy URL.
+        Otherwise fetches a presigned URL from the coordination API.
         """
-        hostname = self._get_hostname()
-
-        # Method _api.do() takes care of retrying and will raise an exception in case of failure.
+        builder = self._create_request_builder()
         try:
-            raw_response = self._api.do(
-                "POST",
-                url=f"{hostname}/api/2.0/fs/create-download-url",
-                query={
-                    "path": file_path,
-                    "expire_time": self._get_download_url_expire_time(),
-                },
-            )
-
-            return CreateDownloadUrlResponse.from_dict(raw_response)
+            return builder.build_download_url(file_path, self._get_download_url_expire_time())
         except Exception as e:
             raise FallbackToDownloadUsingFilesApi(f"Failed to create download URL: {e}") from e
 
