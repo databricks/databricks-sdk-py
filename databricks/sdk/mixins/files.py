@@ -980,9 +980,7 @@ class FilesExt(files.FilesAPI):
     def _resolve_workspace_id(self) -> Optional[str]:
         """Resolves the workspace ID by querying the SCIM Me endpoint."""
         try:
-            response = self._api.do(
-                "GET", "/api/2.0/preview/scim/v2/Me", response_headers=["X-Databricks-Org-Id"]
-            )
+            response = self._api.do("GET", "/api/2.0/preview/scim/v2/Me", response_headers=["X-Databricks-Org-Id"])
             workspace_id = response.get("X-Databricks-Org-Id")
             if workspace_id:
                 return str(workspace_id)

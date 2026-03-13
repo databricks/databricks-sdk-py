@@ -1419,9 +1419,9 @@ class UploadTestCase:
                             and request.method == "HEAD"
                         ):
                             probe_query = parse_qs(parsed_url.query)
-                            assert probe_query.get("ew") == ["12345"], (
-                                f"Expected ew=12345 in probe URL, got: {probe_query}"
-                            )
+                            assert probe_query.get("ew") == [
+                                "12345"
+                            ], f"Expected ew=12345 in probe URL, got: {probe_query}"
                             resp = requests.Response()
                             resp.status_code = 200
                             resp._content = b""
