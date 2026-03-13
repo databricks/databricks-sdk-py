@@ -15,8 +15,7 @@ import pytest
 from databricks.sdk import AccountClient, WorkspaceClient
 from databricks.sdk.config import Config
 from databricks.sdk.service import iam, oauth2
-from databricks.sdk.service.compute import (ClusterSpec, DataSecurityMode,
-                                            Library, ResultType, SparkVersion)
+from databricks.sdk.service.compute import ClusterSpec, DataSecurityMode, Library, ResultType, SparkVersion
 from databricks.sdk.service.jobs import NotebookTask, Task, ViewType
 from databricks.sdk.service.workspace import ImportFormat
 
@@ -275,10 +274,7 @@ def test_wif_workspace(ucacct, env_or_skip, random):
 def test_workspace_config_resolves_account_and_workspace_id(w, env_or_skip):
     env_or_skip("CLOUD_ENV")
 
-    host = env_or_skip("DATABRICKS_HOST")
-    token = env_or_skip("DATABRICKS_TOKEN")
-
-    config = Config(host=host, token=token)
+    config = Config()
 
     assert config.account_id, "expected account_id to be resolved from host metadata"
     assert config.workspace_id, "expected workspace_id to be resolved from host metadata"
