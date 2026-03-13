@@ -13,6 +13,7 @@ from pathlib import Path
 import pytest
 
 from databricks.sdk import AccountClient, WorkspaceClient
+from databricks.sdk.config import Config
 from databricks.sdk.service import iam, oauth2
 from databricks.sdk.service.compute import (ClusterSpec, DataSecurityMode,
                                             Library, ResultType, SparkVersion)
@@ -269,6 +270,16 @@ def test_wif_workspace(ucacct, env_or_skip, random):
     )
 
     ws.current_user.me()
+
+
+def test_workspace_config_resolves_account_and_workspace_id(w, env_or_skip):
+    """Test that Config resolves account_id and workspace_id from host metadata."""
+    env_or_skip("CLOUD_ENV")
+
+    config = Config(experimental_is_unified_host=True)
+
+    assert config.account_id, "expected account_id to be resolved from host metadata"
+    assert config.workspace_id, "expected workspace_id to be resolved from host metadata"
 
 
 def test_workspace_oauth_m2m_auth(w, env_or_skip):
