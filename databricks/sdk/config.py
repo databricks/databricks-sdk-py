@@ -419,6 +419,8 @@ class Config:
         Host type and client type are deprecated. Some hosts can now support both workspace and account APIs.
         This method returns the HostType based on the host pattern, which is not accurate.
         For example, a unified host can support both workspace and account APIs, but WORKSPACE is returned.
+
+        This method still returns the correct value for legacy hosts which only support either workspace or account APIs.
         """
         if not self.host:
             return HostType.WORKSPACE
@@ -436,7 +438,8 @@ class Config:
         Host type and client type are deprecated. Some hosts can now support both workspace and account APIs.
         This method returns the ClientType based on the host pattern, which is not accurate.
         For example, a unified host can support both workspace and account APIs, but WORKSPACE is returned.
-        Use client_type instead.
+
+        This method still returns the correct value for legacy hosts which only support either workspace or account APIs.
         """
         host_type = self.host_type
 
@@ -452,10 +455,11 @@ class Config:
     @property
     def is_account_client(self) -> bool:
         """[Deprecated]
-        Host type and client type are deprecated. Clients can now support both workspace and account APIs.
+        Host type and client type are deprecated. Some hosts can now support both workspace and account APIs.
         This method returns True if the host is an accounts host, which is not accurate.
         For example, a unified host can support both workspace and account APIs, but False is returned.
-        Use client_type instead.
+
+        This method still returns the correct value for legacy hosts which only support either workspace or account APIs.
         """
         if not self.host:
             return False

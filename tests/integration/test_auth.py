@@ -273,6 +273,7 @@ def test_wif_workspace(ucacct, env_or_skip, random):
 
 
 def test_workspace_config_resolves_account_and_workspace_id(w, env_or_skip):
+    """Test that Config resolves account_id and workspace_id from host metadata."""
     env_or_skip("CLOUD_ENV")
 
     config = Config()
