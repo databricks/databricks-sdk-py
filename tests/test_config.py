@@ -338,7 +338,7 @@ def test_oidc_endpoints_unified_missing_ids(mocker):
     mocker.patch(
         "databricks.sdk.config.get_host_metadata",
         return_value=HostMetadata(
-            oidc_endpoint="https://unified.databricks.com/oidc/accounts/{account_id}/.well-known/oauth-authorization-server",
+            oidc_endpoint="https://unified.databricks.com/oidc/accounts/{account_id}",
         ),
     )
 
@@ -351,7 +351,7 @@ def test_databricks_oidc_endpoints_ignores_azure_client_id(mocker, requests_mock
     mocker.patch(
         "databricks.sdk.config.get_host_metadata",
         return_value=HostMetadata(
-            oidc_endpoint="https://adb-123.4.azuredatabricks.net/oidc/.well-known/oauth-authorization-server",
+            oidc_endpoint="https://adb-123.4.azuredatabricks.net/oidc",
         ),
     )
     requests_mock.get(
@@ -407,7 +407,7 @@ def test_oidc_endpoints_falls_back_to_databricks_when_no_azure_client_id(mocker,
     mocker.patch(
         "databricks.sdk.config.get_host_metadata",
         return_value=HostMetadata(
-            oidc_endpoint="https://adb-123.4.azuredatabricks.net/oidc/.well-known/oauth-authorization-server",
+            oidc_endpoint="https://adb-123.4.azuredatabricks.net/oidc",
         ),
     )
     requests_mock.get(
@@ -595,7 +595,7 @@ def test_m2m_scopes_sent_to_token_endpoint(mocker, requests_mock, scopes_input, 
     mocker.patch(
         "databricks.sdk.config.get_host_metadata",
         return_value=HostMetadata(
-            oidc_endpoint="https://test.databricks.com/oidc/.well-known/oauth-authorization-server",
+            oidc_endpoint="https://test.databricks.com/oidc",
         ),
     )
     requests_mock.get(
@@ -636,7 +636,7 @@ def test_oidc_scopes_sent_to_token_endpoint(mocker, requests_mock, tmp_path, sco
     mocker.patch(
         "databricks.sdk.config.get_host_metadata",
         return_value=HostMetadata(
-            oidc_endpoint="https://test.databricks.com/oidc/.well-known/oauth-authorization-server",
+            oidc_endpoint="https://test.databricks.com/oidc",
         ),
     )
     oidc_token_file = tmp_path / "oidc_token"
@@ -705,7 +705,7 @@ def test_databricks_oidc_endpoints_uses_discovery_url(requests_mock):
             {
                 "account_id": _DUMMY_ACCOUNT_ID,
                 "workspace_id": _DUMMY_WORKSPACE_ID,
-                "discovery_url": f"{_DUMMY_WS_HOST}/oidc",
+                "discovery_url": f"{_DUMMY_WS_HOST}/oidc/.well-known/oauth-authorization-server",
             },
             id="unified-populates-all-fields",
         ),
@@ -713,7 +713,9 @@ def test_databricks_oidc_endpoints_uses_discovery_url(requests_mock):
             _DUMMY_ACC_HOST,
             {"oidc_endpoint": f"{_DUMMY_ACC_HOST}/oidc/accounts/{{account_id}}"},
             {"account_id": _DUMMY_ACCOUNT_ID, "experimental_is_unified_host": True},
-            {"discovery_url": f"{_DUMMY_ACC_HOST}/oidc/accounts/{_DUMMY_ACCOUNT_ID}"},
+            {
+                "discovery_url": f"{_DUMMY_ACC_HOST}/oidc/accounts/{_DUMMY_ACCOUNT_ID}/.well-known/oauth-authorization-server"
+            },
             id="unified-substitutes-account-id",
         ),
         pytest.param(

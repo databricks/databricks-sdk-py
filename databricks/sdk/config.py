@@ -640,7 +640,9 @@ class Config:
             if "{account_id}" in meta.oidc_endpoint and not self.account_id:
                 raise ValueError("account_id is required to resolve discovery_url from host metadata")
             logger.debug(f"Resolved discovery_url from host metadata: {meta.oidc_endpoint}")
-            self.discovery_url = meta.oidc_endpoint.replace("{account_id}", self.account_id or "")
+            # Metadata oidc_endpoint is the root for OIDC. Append the well-known path to form the full discovery URL.
+            base = meta.oidc_endpoint.replace("{account_id}", self.account_id or "").rstrip("/")
+            self.discovery_url = f"{base}/.well-known/oauth-authorization-server"
         if not self.cloud and meta.cloud:
             logger.debug(f"Resolved cloud from host metadata: {meta.cloud.value}")
             self.cloud = meta.cloud
