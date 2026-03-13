@@ -825,7 +825,7 @@ def test_databricks_oidc_endpoints_uses_discovery_url(requests_mock):
             {
                 "account_id": _DUMMY_ACCOUNT_ID,
                 "workspace_id": _DUMMY_WORKSPACE_ID,
-                "discovery_url": f"{_DUMMY_WS_HOST}/oidc",
+                "discovery_url": f"{_DUMMY_WS_HOST}/oidc/.well-known/oauth-authorization-server",
             },
             id="unified-populates-all-fields",
         ),
@@ -833,7 +833,9 @@ def test_databricks_oidc_endpoints_uses_discovery_url(requests_mock):
             _DUMMY_ACC_HOST,
             {"oidc_endpoint": f"{_DUMMY_ACC_HOST}/oidc/accounts/{{account_id}}"},
             {"account_id": _DUMMY_ACCOUNT_ID, "experimental_is_unified_host": True},
-            {"discovery_url": f"{_DUMMY_ACC_HOST}/oidc/accounts/{_DUMMY_ACCOUNT_ID}"},
+            {
+                "discovery_url": f"{_DUMMY_ACC_HOST}/oidc/accounts/{_DUMMY_ACCOUNT_ID}/.well-known/oauth-authorization-server"
+            },
             id="unified-substitutes-account-id",
         ),
         pytest.param(
