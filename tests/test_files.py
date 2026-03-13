@@ -1289,6 +1289,7 @@ class UploadTestCase:
         # Whether abort is expected to be called for multipart/resumable upload, set to None if we don't care.
         expected_multipart_upload_aborted: Optional[bool],
         expected_single_shot_upload: bool,
+        use_storage_proxy: bool = False,
     ):
         self.name = name
         self.stream_size = stream_size
@@ -1305,10 +1306,16 @@ class UploadTestCase:
         self.expected_exception_type = expected_exception_type
         self.expected_multipart_upload_aborted: Optional[bool] = expected_multipart_upload_aborted
         self.expected_single_shot_upload = expected_single_shot_upload
+        self.use_storage_proxy = use_storage_proxy
 
         self.path = "/test.txt"
         self.cloud_provider_header = {"name": "name1", "value": "value1"}
         self.created_temp_files = []
+
+    @property
+    def _expected_hostname(self) -> str:
+        """Returns the expected hostname for upload requests."""
+        return "storage-proxy.databricks.com" if self.use_storage_proxy else "localhost"
 
     def customize_config(self, config: Config) -> None:
         pass
@@ -1374,6 +1381,9 @@ class UploadTestCase:
 
         self.customize_config(config)
 
+        if self.use_storage_proxy:
+            config.experimental_files_ext_enable_storage_proxy = True
+
         multipart_server_state = self.create_multipart_upload_server_state()
         single_shot_server_state = SingleShotUploadServerState()
 
@@ -1385,8 +1395,23 @@ class UploadTestCase:
             with requests_mock.Mocker() as session_mock:
 
                 def custom_matcher(request: requests.Request) -> Optional[requests.Response]:
-                    # first, try to match single-shot upload
                     parsed_url = urlparse(request.url)
+
+                    # Handle storage proxy probe.
+                    if self.use_storage_proxy:
+                        if (
+                            parsed_url.hostname == self._expected_hostname
+                            and parsed_url.path == "/api/2.0/fs/files/DatabricksInternal/Probes/ping"
+                            and request.method == "GET"
+                        ):
+                            resp = requests.Response()
+                            resp.status_code = 200
+                            resp._content = b""
+                            resp.request = request
+                            resp.url = request.url
+                            return resp
+
+                    # Try to match single-shot upload.
                     if (
                         parsed_url.hostname == "localhost"
                         and parsed_url.path == f"/api/2.0/fs/files{self.path}"
@@ -1401,7 +1426,7 @@ class UploadTestCase:
 
                         return self.custom_response_on_single_shot_upload.generate_response(request, processor)
 
-                    # otherwise fall back to specific matcher from the test case
+                    # Otherwise fall back to specific matcher from the test case.
                     return self.match_request_to_response(request, multipart_server_state)
 
                 session_mock.add_matcher(matcher=custom_matcher)
@@ -1579,6 +1604,7 @@ class MultipartUploadTestCase(UploadTestCase):
         expected_part_size: Optional[int] = None,
         expected_multipart_upload_aborted: Optional[bool] = False,
         expected_single_shot_upload: bool = False,
+        use_storage_proxy: bool = False,
     ):
         super().__init__(
             name,
@@ -1597,6 +1623,7 @@ class MultipartUploadTestCase(UploadTestCase):
             expected_exception_type,
             expected_multipart_upload_aborted,
             expected_single_shot_upload,
+            use_storage_proxy,
         )
 
         self.multipart_upload_batch_url_count = multipart_upload_batch_url_count
@@ -1631,9 +1658,43 @@ class MultipartUploadTestCase(UploadTestCase):
         request_url = urlparse(request.url)
         request_query = parse_qs(request_url.query)
 
-        # initial request
+        # Storage proxy direct part upload.
         if (
-            request_url.hostname == "localhost"
+            self.use_storage_proxy
+            and request_url.hostname == self._expected_hostname
+            and request_url.path == f"/api/2.0/fs/files{self.path}"
+            and request_query.get("upload_type") == ["multipart"]
+            and request.method == "PUT"
+        ):
+            assert UploadTestCase.is_auth_header_present(request)
+            part_num = int(request_query["part_number"][0])
+
+            def processor() -> list:
+                body = request.body.read()
+                etag = "etag-" + MultipartUploadServerState.randomstr()
+                server_state.save_part(part_num, body, etag)
+                return [200, "", {"ETag": etag}]
+
+            return self.custom_response_on_upload.generate_response(request, processor)
+
+        # Storage proxy direct abort.
+        elif (
+            self.use_storage_proxy
+            and request_url.hostname == self._expected_hostname
+            and request_url.path == f"/api/2.0/fs/files{self.path}"
+            and request_query.get("action") == ["abort-upload"]
+            and request.method == "DELETE"
+        ):
+
+            def processor() -> list:
+                server_state.abort_upload()
+                return [200, "", {}]
+
+            return self.custom_response_on_abort.generate_response(request, processor)
+
+        # Initial request.
+        elif (
+            request_url.hostname == self._expected_hostname
             and request_url.path == f"/api/2.0/fs/files{self.path}"
             and request_query.get("action") == ["initiate-upload"]
             and request.method == "POST"
@@ -1648,13 +1709,14 @@ class MultipartUploadTestCase(UploadTestCase):
 
             return self.custom_response_on_initiate.generate_response(request, processor)
 
-        # multipart upload, create upload part URLs
+        # Multipart upload, create upload part URLs (presigned URL path only).
         elif (
-            request_url.hostname == "localhost"
+            request_url.hostname == self._expected_hostname
             and request_url.path == "/api/2.0/fs/create-upload-part-urls"
             and request.method == "POST"
         ):
-
+            # This should never be called when using the storage proxy.
+            assert not self.use_storage_proxy, "create-upload-part-urls should not be called with storage proxy"
             assert UploadTestCase.is_auth_header_present(request)
 
             request_json = request.json()
@@ -1685,7 +1747,7 @@ class MultipartUploadTestCase(UploadTestCase):
 
             return self.custom_response_on_create_multipart_url.generate_response(request, processor)
 
-        # multipart upload, uploading part
+        # Multipart upload, uploading part via presigned URL.
         elif request.url.startswith(MultipartUploadServerState.upload_part_url_prefix) and request.method == "PUT":
 
             assert not UploadTestCase.is_auth_header_present(request)
@@ -1702,9 +1764,9 @@ class MultipartUploadTestCase(UploadTestCase):
 
             return self.custom_response_on_upload.generate_response(request, processor)
 
-        # multipart upload, completion
+        # Multipart upload, completion.
         elif (
-            request_url.hostname == "localhost"
+            request_url.hostname == self._expected_hostname
             and request_url.path == f"/api/2.0/fs/files{self.path}"
             and request_query.get("action") == ["complete-upload"]
             and request_query.get("upload_type") == ["multipart"]
@@ -1727,8 +1789,14 @@ class MultipartUploadTestCase(UploadTestCase):
 
             return self.custom_response_on_complete.generate_response(request, processor)
 
-        # create abort URL
-        elif request.url == "http://localhost/api/2.0/fs/create-abort-upload-url" and request.method == "POST":
+        # Create abort URL (presigned URL path only).
+        elif (
+            request_url.hostname == self._expected_hostname
+            and request_url.path == "/api/2.0/fs/create-abort-upload-url"
+            and request.method == "POST"
+        ):
+            # This should never be called when using the storage proxy.
+            assert not self.use_storage_proxy, "create-abort-upload-url should not be called with storage proxy"
             assert UploadTestCase.is_auth_header_present(request)
             request_json = request.json()
             assert request_json["path"] == self.path
@@ -1745,7 +1813,7 @@ class MultipartUploadTestCase(UploadTestCase):
 
             return self.custom_response_on_create_abort_url.generate_response(request, processor)
 
-        # abort upload
+        # Abort upload via presigned URL.
         elif request.url.startswith(MultipartUploadServerState.abort_upload_url_prefix) and request.method == "DELETE":
             assert not UploadTestCase.is_auth_header_present(request)
             assert request.url[len(MultipartUploadServerState.abort_upload_url_prefix) :] == self.path
@@ -1756,7 +1824,7 @@ class MultipartUploadTestCase(UploadTestCase):
 
             return self.custom_response_on_abort.generate_response(request, processor)
 
-        # direct upload (single-shot upload)
+        # Direct upload (single-shot upload).
         elif (
             request_url.hostname == "localhost"
             and request_url.path == f"/api/2.0/fs/files{self.path}"
@@ -2254,6 +2322,26 @@ class MultipartUploadTestCase(UploadTestCase):
             expected_exception_type=NotImplemented,
             expected_multipart_upload_aborted=True,
         ),
+        # -------------- storage proxy tests --------------
+        MultipartUploadTestCase(
+            "Storage proxy: successful multipart upload",
+            content_size=10 * 1024 * 1024,
+            multipart_upload_part_size=1024 * 1024,
+            use_storage_proxy=True,
+            expected_multipart_upload_aborted=False,
+        ),
+        MultipartUploadTestCase(
+            "Storage proxy: small file uses single-shot (bypasses proxy)",
+            content_size=1024,
+            multipart_upload_min_stream_size=10 * 1024 * 1024,
+            source_type=[
+                UploadSourceType.FILE,
+                UploadSourceType.SEEKABLE_STREAM,
+            ],  # Non-seekable streams always use multipart upload.
+            use_storage_proxy=True,
+            expected_multipart_upload_aborted=False,
+            expected_single_shot_upload=True,
+        ),
     ],
     ids=MultipartUploadTestCase.to_string,
 )
@@ -2400,6 +2488,7 @@ class ResumableUploadTestCase(UploadTestCase):
         expected_multipart_upload_aborted: bool = False,
         expected_single_shot_upload: bool = False,
         expected_part_size: Optional[int] = None,
+        use_storage_proxy: bool = False,
     ):
         super().__init__(
             name,
@@ -2419,6 +2508,7 @@ class ResumableUploadTestCase(UploadTestCase):
             expected_exception_type,
             expected_multipart_upload_aborted,
             expected_single_shot_upload,
+            use_storage_proxy,
         )
 
         self.unconfirmed_delta = unconfirmed_delta
@@ -2445,9 +2535,43 @@ class ResumableUploadTestCase(UploadTestCase):
         request_url = urlparse(request.url)
         request_query = parse_qs(request_url.query)
 
-        # initial request
+        # Storage proxy direct resumable upload.
         if (
-            request_url.hostname == "localhost"
+            self.use_storage_proxy
+            and request_url.hostname == self._expected_hostname
+            and request_query.get("upload_type") == ["resumable"]
+            and request.method == "PUT"
+        ):
+            assert UploadTestCase.is_auth_header_present(request)
+
+            content_range_header = request.headers["Content-range"]
+            is_status_check_request = re.match("bytes \\*/\\*", content_range_header)
+            if is_status_check_request:
+                response_customizer = self.custom_response_on_status_check
+            else:
+                response_customizer = self.custom_response_on_upload
+
+            def processor() -> list:
+                if not is_status_check_request:
+                    body = request.body.read()
+                    match = re.match("bytes (\\d+)-(\\d+)/(.+)", content_range_header)
+                    [range_start_s, range_end_s, file_size_s] = match.groups()
+                    server_state.save_part(int(range_start_s), int(range_end_s), body, file_size_s)
+
+                if server_state.file_content:
+                    return [200, "", {}]
+                else:
+                    if server_state.confirmed_last_byte:
+                        headers = {"Range": f"bytes=0-{server_state.confirmed_last_byte}"}
+                    else:
+                        headers = {}
+                    return [308, "", headers]
+
+            return response_customizer.generate_response(request, processor)
+
+        # Initial request.
+        elif (
+            request_url.hostname == self._expected_hostname
             and request_url.path == f"/api/2.0/fs/files{self.path}"
             and request_query.get("action") == ["initiate-upload"]
             and request.method == "POST"
@@ -2464,12 +2588,14 @@ class ResumableUploadTestCase(UploadTestCase):
             # so we're always generating a "success" response.
             return CustomResponse(enabled=False).generate_response(request, processor)
 
+        # Create resumable upload URL (presigned URL path only).
         elif (
-            request_url.hostname == "localhost"
+            request_url.hostname == self._expected_hostname
             and request_url.path == "/api/2.0/fs/create-resumable-upload-url"
             and request.method == "POST"
         ):
-
+            # This should never be called when using the storage proxy.
+            assert not self.use_storage_proxy, "create-resumable-upload-url should not be called with storage proxy"
             assert UploadTestCase.is_auth_header_present(request)
 
             request_json = request.json()
@@ -2490,7 +2616,7 @@ class ResumableUploadTestCase(UploadTestCase):
 
             return self.custom_response_on_create_resumable_url.generate_response(request, processor)
 
-        # resumable upload, uploading part
+        # Resumable upload, uploading part via presigned URL.
         elif request.url.startswith(ResumableUploadServerState.resumable_upload_url_prefix) and request.method == "PUT":
 
             assert not UploadTestCase.is_auth_header_present(request)
@@ -2518,10 +2644,10 @@ class ResumableUploadTestCase(UploadTestCase):
                     server_state.save_part(int(range_start_s), int(range_end_s), body, file_size_s)
 
                 if server_state.file_content:
-                    # upload complete
+                    # Upload complete.
                     return [200, "", {}]
                 else:
-                    # more data expected
+                    # More data expected.
                     if server_state.confirmed_last_byte:
                         headers = {"Range": f"bytes=0-{server_state.confirmed_last_byte}"}
                     else:
@@ -2530,7 +2656,7 @@ class ResumableUploadTestCase(UploadTestCase):
 
             return response_customizer.generate_response(request, processor)
 
-        # abort upload
+        # Abort upload via presigned URL.
         elif (
             request.url.startswith(ResumableUploadServerState.resumable_upload_url_prefix)
             and request.method == "DELETE"
@@ -2790,6 +2916,16 @@ class ResumableUploadTestCase(UploadTestCase):
             expected_multipart_upload_aborted=False,
             expected_single_shot_upload=True,
         ),
+        # -------------- storage proxy tests --------------
+        ResumableUploadTestCase(
+            "Storage proxy: successful resumable upload",
+            stream_size=100 * 1024 * 1024,
+            multipart_upload_part_size=7 * 1024 * 1024 + 566,
+            unconfirmed_delta=0,
+            use_storage_proxy=True,
+            expected_multipart_upload_aborted=False,
+            expected_part_size=7 * 1024 * 1024 + 566,
+        ),
     ],
     ids=ResumableUploadTestCase.to_string,
 )
@@ -2858,7 +2994,7 @@ def test_create_download_url_response(test_case: CreateDownloadUrlResponseTestCa
 
 
 def fast_random_bytes(n: int, chunk_size: int = 1024) -> bytes:
-    # Generate a small random chunk
+    # Generate a small random chunk.
     chunk = os.urandom(chunk_size)
-    # Repeat it until we reach n bytes
+    # Repeat it until we reach n bytes.
     return (chunk * (n // chunk_size + 1))[:n]
