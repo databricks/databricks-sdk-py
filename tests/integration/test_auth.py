@@ -276,7 +276,7 @@ def test_workspace_config_resolves_account_and_workspace_id(w, env_or_skip):
     """Test that Config resolves account_id and workspace_id from host metadata."""
     env_or_skip("CLOUD_ENV")
 
-    config = Config(experimental_is_unified_host=True)
+    config = Config()
 
     assert config.account_id, "expected account_id to be resolved from host metadata"
     assert config.workspace_id, "expected workspace_id to be resolved from host metadata"

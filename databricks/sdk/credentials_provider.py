@@ -440,9 +440,7 @@ def _oidc_credentials_provider(
 
     # Determine the audience for token exchange
     audience = cfg.token_audience
-    if audience is None and cfg.client_type == ClientType.ACCOUNT:
-        audience = cfg.account_id
-    if audience is None and cfg.client_type != ClientType.ACCOUNT:
+    if audience is None:
         audience = cfg.databricks_oidc_endpoints.token_endpoint
 
     # Try to get an OIDC token. If no supplier returns a token, we cannot use this authentication mode.
@@ -986,14 +984,9 @@ class DatabricksCliTokenSource(CliTokenSource):
     def _build_host_args(cfg: "Config") -> List[str]:
         """Build CLI arguments using --host (legacy path)."""
         args = ["auth", "token", "--host", cfg.host]
-        if cfg.experimental_is_unified_host:
-            # For unified hosts, pass account_id, workspace_id, and experimental flag
-            args += ["--experimental-is-unified-host"]
-            if cfg.account_id:
-                args += ["--account-id", cfg.account_id]
-            if cfg.workspace_id:
-                args += ["--workspace-id", str(cfg.workspace_id)]
-        elif cfg.client_type == ClientType.ACCOUNT:
+        # This is here to support older versions of the Databricks CLI, so we need to keep the client type check.
+        # This won't work for unified hosts, but it is not supposed to.
+        if cfg.client_type == ClientType.ACCOUNT:
             args += ["--account-id", cfg.account_id]
         return args
 

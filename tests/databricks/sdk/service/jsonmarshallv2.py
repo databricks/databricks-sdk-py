@@ -10,7 +10,6 @@ from typing import Any, Dict, List, Optional
 from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.client_types import HostType
 from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import (_duration, _enum, _fieldmask,
                                               _from_dict, _repeated_dict,
@@ -484,7 +483,7 @@ class JsonMarshallV2API:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/json-marshall/{name}", query=query, headers=headers)
