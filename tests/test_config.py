@@ -52,10 +52,12 @@ def test_extra_and_upstream_user_agent(monkeypatch):
         def system(self):
             return "TestOS"
 
-    # Clear all environment variables and cached CICD provider.
+    # Clear all environment variables and cached providers.
     for k in os.environ:
         monkeypatch.delenv(k, raising=False)
-    useragent._cicd_provider = None
+    monkeypatch.setattr(useragent, "_extra", [])
+    monkeypatch.setattr(useragent, "_cicd_provider", None)
+    monkeypatch.setattr(useragent, "_agent_provider", None)
 
     monkeypatch.setattr(platform, "python_version", lambda: "3.0.0")
     monkeypatch.setattr(platform, "uname", MockUname)
