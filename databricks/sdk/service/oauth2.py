@@ -6,7 +6,6 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.client_types import HostType
 from databricks.sdk.service._internal import _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -1838,7 +1837,7 @@ class ServicePrincipalSecretsProxyAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
@@ -1863,7 +1862,7 @@ class ServicePrincipalSecretsProxyAPI:
         headers = {}
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
@@ -1902,7 +1901,7 @@ class ServicePrincipalSecretsProxyAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:

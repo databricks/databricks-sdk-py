@@ -284,17 +284,6 @@ def test_host_type_accounts_dod():
     assert config.host_type == HostType.ACCOUNTS
 
 
-def test_host_type_unified():
-    """Test that a unified host is identified when experimental flag is set."""
-    config = Config(
-        host="https://unified.databricks.com",
-        workspace_id="test-workspace",
-        experimental_is_unified_host=True,
-        token="test-token",
-    )
-    assert config.host_type == HostType.UNIFIED
-
-
 def test_client_type_workspace():
     """Test that client type is workspace when workspace_id is set on unified host."""
     config = Config(

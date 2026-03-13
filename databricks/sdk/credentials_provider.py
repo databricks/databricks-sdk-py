@@ -440,9 +440,7 @@ def _oidc_credentials_provider(
 
     # Determine the audience for token exchange
     audience = cfg.token_audience
-    if audience is None and cfg.client_type == ClientType.ACCOUNT:
-        audience = cfg.account_id
-    if audience is None and cfg.client_type != ClientType.ACCOUNT:
+    if audience is None:
         audience = cfg.databricks_oidc_endpoints.token_endpoint
 
     # Try to get an OIDC token. If no supplier returns a token, we cannot use this authentication mode.

@@ -6,7 +6,6 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
-from databricks.sdk.client_types import HostType
 from databricks.sdk.common.types.fieldmask import FieldMask
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -131,7 +130,7 @@ class HttpCallV2API:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
@@ -177,7 +176,7 @@ class HttpCallV2API:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
@@ -248,7 +247,7 @@ class HttpCallV2API:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(

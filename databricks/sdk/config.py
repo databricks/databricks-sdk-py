@@ -19,10 +19,9 @@ from .credentials_provider import (CredentialsStrategy, DefaultCredentials,
                                    OAuthCredentialsProvider)
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
-from .oauth import (OidcEndpoints, Token, get_account_endpoints,
+from .oauth import (OidcEndpoints, Token,
                     get_azure_entra_id_workspace_endpoints,
-                    get_endpoints_from_url, get_host_metadata,
-                    get_unified_endpoints, get_workspace_endpoints)
+                    get_endpoints_from_url, get_host_metadata)
 
 logger = logging.getLogger("databricks.sdk")
 
@@ -411,14 +410,12 @@ class Config:
 
     @property
     def host_type(self) -> HostType:
-        """Determine the type of host based on the configuration.
-
-        Returns the HostType which can be ACCOUNTS, WORKSPACE, or UNIFIED.
         """
-        # Check if explicitly marked as unified host
-        if self.experimental_is_unified_host:
-            return HostType.UNIFIED
-
+        [DEPRECATED]
+        Host type and client type are deprecated. Some hosts can now support both workspace and account APIs.
+        This method returns the HostType based on the host pattern, which is not accurate.
+        For example, a unified host can support both workspace and account APIs, but WORKSPACE is returned.
+        """
         if not self.host:
             return HostType.WORKSPACE
 
@@ -430,15 +427,12 @@ class Config:
 
     @property
     def client_type(self) -> ClientType:
-        """Determine the type of client configuration.
-
-        This is separate from host_type. For example, a unified host can support both
-        workspace and account client types.
-
-        Returns ClientType.ACCOUNT or ClientType.WORKSPACE based on the configuration.
-
-        For unified hosts, account_id must be set. If workspace_id is also set,
-        returns WORKSPACE, otherwise returns ACCOUNT.
+        """
+        [DEPRECATED]
+        Host type and client type are deprecated. Some hosts can now support both workspace and account APIs.
+        This method returns the ClientType based on the host pattern, which is not accurate.
+        For example, a unified host can support both workspace and account APIs, but WORKSPACE is returned.
+        Use client_type instead.
         """
         host_type = self.host_type
 
@@ -448,13 +442,6 @@ class Config:
         if host_type == HostType.WORKSPACE:
             return ClientType.WORKSPACE
 
-        if host_type == HostType.UNIFIED:
-            if not self.account_id:
-                raise ValueError("Unified host requires account_id to be set")
-            if self.workspace_id:
-                return ClientType.WORKSPACE
-            return ClientType.ACCOUNT
-
         # Default to workspace for backward compatibility
         return ClientType.WORKSPACE
 
@@ -462,11 +449,10 @@ class Config:
     def is_account_client(self) -> bool:
         """[Deprecated]
         Host type and client type are deprecated. Clients can now support both workspace and account APIs.
+        This method returns True if the host is an accounts host, which is not accurate.
+        For example, a unified host can support both workspace and account APIs, but False is returned.
+        Use client_type instead.
         """
-        if self.experimental_is_unified_host:
-            raise ValueError(
-                "is_account_client cannot be used with unified hosts; use host_type or client_type instead"
-            )
         if not self.host:
             return False
         return self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod.")
@@ -531,21 +517,7 @@ class Config:
         if not self.host:
             return None
 
-        if self.discovery_url:
-            return get_endpoints_from_url(self.discovery_url)
-
-        # Handle unified hosts
-        if self.host_type == HostType.UNIFIED:
-            if not self.account_id:
-                raise ValueError("Unified host requires account_id to be set for OAuth endpoints")
-            return get_unified_endpoints(self.host, self.account_id)
-
-        # Handle traditional account hosts
-        if self.host_type == HostType.ACCOUNTS and self.account_id:
-            return get_account_endpoints(self.host, self.account_id)
-
-        # Default to workspace endpoints
-        return get_workspace_endpoints(self.host)
+        return get_endpoints_from_url(self.discovery_url)
 
     @property
     def oidc_endpoints(self) -> Optional[OidcEndpoints]:
@@ -643,15 +615,12 @@ class Config:
         return cls._attributes
 
     def _resolve_host_metadata(self) -> None:
-        """[Experimental] Populate missing config fields from the host's
+        """Populate missing config fields from the host's
         /.well-known/databricks-config discovery endpoint.
 
         Fills in account_id, workspace_id, and discovery_url (derived from oidc_endpoint,
         with any {account_id} placeholder substituted) if not already set.
         """
-        # TODO: Enable this everywhere
-        if not self.host_type == HostType.UNIFIED:
-            return
         if not self.host:
             return
         try:
