@@ -977,19 +977,36 @@ class FilesExt(files.FilesAPI):
             return _StorageProxyRequestBuilder(hostname)
         return _PresignedUrlRequestBuilder(self._api, hostname)
 
-    def _probe_storage_proxy(self) -> bool:
-        """Probes the storage proxy to check if it is reachable.
+    def _resolve_workspace_id(self) -> Optional[str]:
+        """Resolves the workspace ID by querying the SCIM Me endpoint."""
+        try:
+            response = self._api.do("GET", "/api/2.0/preview/scim/v2/Me", response_headers=["X-Databricks-Org-Id"])
+            workspace_id = response.get("X-Databricks-Org-Id")
+            if workspace_id:
+                return str(workspace_id)
+        except Exception:
+            _LOG.debug("Failed to resolve workspace ID for storage proxy probe.")
+        return None
 
-        Makes a GET request to the probe endpoint using SDK auth. The result
-        is cached in self._dp_hostname_available after the first call.
+    def _probe_storage_proxy(self) -> bool:
+        """Probes the storage proxy to check if it can serve this workspace.
+
+        Uses a HEAD request to the probe endpoint with the workspace ID as a
+        query parameter. The proxy returns 200 if it can serve this workspace,
+        403 for a wrong workspace, and connection errors if unreachable.
+        Returns False if the workspace ID cannot be resolved.
         """
+        workspace_id = self._resolve_workspace_id()
+        if not workspace_id:
+            _LOG.debug("Workspace ID not available, skipping storage proxy probe.")
+            return False
         proxy_host = self._STORAGE_PROXY_HOSTNAME
-        probe_url = f"{proxy_host}/api/2.0/fs/files/DatabricksInternal/Probes/ping"
+        probe_url = f"{proxy_host}/api/2.0/fs/files/DatabricksInternal/Probe/fullstack/wis?ew={workspace_id}"
         try:
             headers = self._config.authenticate()
             session = self._cloud_provider_session()
             response = session.request(
-                "GET",
+                "HEAD",
                 probe_url,
                 headers=headers,
                 timeout=self._STORAGE_PROXY_PROBE_TIMEOUT,
