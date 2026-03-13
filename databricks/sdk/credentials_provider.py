@@ -594,9 +594,14 @@ def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         credentials.refresh(request)
         headers = {"Authorization": f"Bearer {credentials.token}"}
-        if cfg.client_type == ClientType.ACCOUNT:
+        # GCP SA Access token is only required for specific account level operations.
+        # It is possible that a user does not have persomissions to mint the GCP SA access token,
+        # but this is not a blocking error at this point.
+        try:
             gcp_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_credentials.token
+        except Exception as e:
+            logger.warning(f"Failed to refresh GCP credentials: {e}")
         return headers
 
     return OAuthCredentialsProvider(refreshed_headers, token)
@@ -633,9 +638,14 @@ def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         id_creds.refresh(request)
         headers = {"Authorization": f"Bearer {id_creds.token}"}
-        if cfg.client_type == ClientType.ACCOUNT:
+        # GCP SA Access token is only required for specific account level operations.
+        # It is possible that a user does not have persomissions to mint the GCP SA access token,
+        # but this is not a blocking error at this point.
+        try:
             gcp_impersonated_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_impersonated_credentials.token
+        except Exception as e:
+            logger.warning(f"Failed to refresh GCP impersonated credentials: {e}")
         return headers
 
     return OAuthCredentialsProvider(refreshed_headers, token)

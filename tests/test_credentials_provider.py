@@ -604,6 +604,63 @@ class TestCloudAgnosticHosts:
         assert "Authorization" in headers
         assert headers["Authorization"] == "Bearer test-google-token"
 
+    def test_google_credentials_includes_sa_token_on_success(self, mocker):
+        """Test that google_credentials includes GCP SA access token when refresh succeeds."""
+        mock_cfg = Mock()
+        mock_cfg.host = "https://api.databricks.com"
+        mock_cfg.google_credentials = '{"type": "service_account", "project_id": "test"}'
+        mock_cfg.disable_async_token_refresh = True
+
+        mock_id_credentials = Mock()
+        mock_id_credentials.token = "test-id-token"
+
+        mock_sa_credentials = Mock()
+        mock_sa_credentials.token = "test-sa-token"
+
+        mocker.patch(
+            "databricks.sdk.credentials_provider.service_account.IDTokenCredentials.from_service_account_info",
+            return_value=mock_id_credentials,
+        )
+        mocker.patch(
+            "databricks.sdk.credentials_provider.service_account.Credentials.from_service_account_info",
+            return_value=mock_sa_credentials,
+        )
+
+        provider = credentials_provider.google_credentials(mock_cfg)
+        headers = provider()
+        assert headers["Authorization"] == "Bearer test-id-token"
+        assert headers["X-Databricks-GCP-SA-Access-Token"] == "test-sa-token"
+
+    def test_google_credentials_warns_on_sa_token_failure(self, mocker):
+        """Test that google_credentials logs warning and omits SA token when refresh fails."""
+        mock_cfg = Mock()
+        mock_cfg.host = "https://api.databricks.com"
+        mock_cfg.google_credentials = '{"type": "service_account", "project_id": "test"}'
+        mock_cfg.disable_async_token_refresh = True
+
+        mock_id_credentials = Mock()
+        mock_id_credentials.token = "test-id-token"
+
+        mock_sa_credentials = Mock()
+        mock_sa_credentials.refresh.side_effect = Exception("permission denied")
+
+        mocker.patch(
+            "databricks.sdk.credentials_provider.service_account.IDTokenCredentials.from_service_account_info",
+            return_value=mock_id_credentials,
+        )
+        mocker.patch(
+            "databricks.sdk.credentials_provider.service_account.Credentials.from_service_account_info",
+            return_value=mock_sa_credentials,
+        )
+
+        provider = credentials_provider.google_credentials(mock_cfg)
+        mock_logger = mocker.patch("databricks.sdk.credentials_provider.logger")
+        headers = provider()
+
+        assert headers["Authorization"] == "Bearer test-id-token"
+        assert "X-Databricks-GCP-SA-Access-Token" not in headers
+        mock_logger.warning.assert_called_once()
+
     def test_google_id_with_cloud_agnostic_host(self, mocker):
         """Test that google_id works with cloud-agnostic hosts after removing is_gcp check."""
         # Mock Config with cloud-agnostic host
@@ -641,6 +698,73 @@ class TestCloudAgnosticHosts:
         headers = provider()
         assert "Authorization" in headers
         assert headers["Authorization"] == "Bearer test-google-id-token"
+
+    def test_google_id_includes_sa_token_on_success(self, mocker):
+        """Test that google_id includes GCP SA access token when refresh succeeds."""
+        mock_cfg = Mock()
+        mock_cfg.host = "https://api.databricks.com"
+        mock_cfg.google_service_account = "test-sa@project.iam.gserviceaccount.com"
+
+        mock_source_credentials = Mock()
+        mocker.patch(
+            "databricks.sdk.credentials_provider.google.auth.default",
+            return_value=(mock_source_credentials, "test-project"),
+        )
+
+        mock_id_creds = Mock()
+        mock_id_creds.token = "test-google-id-token"
+
+        mock_gcp_creds = Mock()
+        mock_gcp_creds.token = "test-gcp-sa-token"
+
+        mocker.patch(
+            "databricks.sdk.credentials_provider.impersonated_credentials.Credentials",
+            return_value=mock_gcp_creds,
+        )
+        mocker.patch(
+            "databricks.sdk.credentials_provider.impersonated_credentials.IDTokenCredentials",
+            return_value=mock_id_creds,
+        )
+
+        provider = credentials_provider.google_id(mock_cfg)
+        headers = provider()
+        assert headers["Authorization"] == "Bearer test-google-id-token"
+        assert headers["X-Databricks-GCP-SA-Access-Token"] == "test-gcp-sa-token"
+
+    def test_google_id_warns_on_sa_token_failure(self, mocker):
+        """Test that google_id logs warning and omits SA token when refresh fails."""
+        mock_cfg = Mock()
+        mock_cfg.host = "https://api.databricks.com"
+        mock_cfg.google_service_account = "test-sa@project.iam.gserviceaccount.com"
+
+        mock_source_credentials = Mock()
+        mocker.patch(
+            "databricks.sdk.credentials_provider.google.auth.default",
+            return_value=(mock_source_credentials, "test-project"),
+        )
+
+        mock_id_creds = Mock()
+        mock_id_creds.token = "test-google-id-token"
+
+        mock_gcp_creds = Mock()
+        mock_gcp_creds.refresh.side_effect = Exception("permission denied")
+
+        mocker.patch(
+            "databricks.sdk.credentials_provider.impersonated_credentials.Credentials",
+            return_value=mock_gcp_creds,
+        )
+        mocker.patch(
+            "databricks.sdk.credentials_provider.impersonated_credentials.IDTokenCredentials",
+            return_value=mock_id_creds,
+        )
+
+        provider = credentials_provider.google_id(mock_cfg)
+        mock_logger = mocker.patch("databricks.sdk.credentials_provider.logger")
+        headers = provider()
+
+        assert headers["Authorization"] == "Bearer test-google-id-token"
+        assert "X-Databricks-GCP-SA-Access-Token" not in headers
+        mock_logger.warning.assert_called_once()
 
     def test_github_oidc_azure_with_cloud_agnostic_host(self, mocker):
         """Test that github_oidc_azure works with cloud-agnostic hosts after removing is_azure check."""
