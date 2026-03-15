@@ -58,9 +58,7 @@ def with_product(name: str, version: str):
     global _product_name, _product_version
     _match_alphanum(name)
     _match_semver(version)
-    logger.debug(
-        f"Changing product from {_product_name}/{_product_version} to {name}/{version}"
-    )
+    logger.debug(f"Changing product from {_product_name}/{_product_version} to {name}/{version}")
     _product_name = name
     _product_version = version
 
