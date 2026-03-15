@@ -58,7 +58,9 @@ def with_product(name: str, version: str):
     global _product_name, _product_version
     _match_alphanum(name)
     _match_semver(version)
-    logger.debug(f"Changing product from {_product_name}/{_product_version} to {name}/{version}")
+    logger.debug(
+        f"Changing product from {_product_name}/{_product_version} to {name}/{version}"
+    )
     _product_name = name
     _product_version = version
 
@@ -235,6 +237,7 @@ _KNOWN_AGENTS = {
     "CURSOR_AGENT": "cursor",  # Closed source
     "GEMINI_CLI": "gemini-cli",  # https://google-gemini.github.io/gemini-cli
     "OPENCODE": "opencode",  # https://github.com/opencode-ai/opencode
+    "OPENCLAW_SHELL": "openclaw",  # https://github.com/anthropics/openclaw
 }
 
 # Private variable to store the detected agent provider. This value is computed

@@ -174,6 +174,13 @@ def test_agent_provider_opencode(clean_useragent_env):
     assert useragent.agent_provider() == "opencode"
 
 
+def test_agent_provider_openclaw(clean_useragent_env):
+    os.environ["OPENCLAW_SHELL"] = "exec"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "openclaw"
+
+
 def test_agent_provider_multiple_agents(clean_useragent_env):
     os.environ["CLAUDECODE"] = "1"
     os.environ["CURSOR_AGENT"] = "1"
