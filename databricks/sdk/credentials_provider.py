@@ -24,6 +24,7 @@ from databricks.sdk.oauth import get_azure_entra_id_workspace_endpoints
 
 from . import azure, oauth, oidc, oidc_token_supplier
 from .client_types import ClientType
+from .environments import Cloud
 
 CredentialsProvider = Callable[[], Dict[str, str]]
 
@@ -1227,6 +1228,19 @@ def model_serving_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     return model_serving_auth_visitor(cfg)
 
 
+# _CLOUD_REQUIREMENTS maps auth type names to the cloud they require.
+# DefaultCredentials uses this to skip cloud-specific strategies in auto-detect
+# mode when the host cloud does not match. Cloud filtering is bypassed when
+# auth_type is explicitly set.
+_CLOUD_REQUIREMENTS: Dict[str, Cloud] = {
+    "github-oidc-azure": Cloud.AZURE,
+    "azure-client-secret": Cloud.AZURE,
+    "azure-cli": Cloud.AZURE,
+    "google-credentials": Cloud.GCP,
+    "google-id": Cloud.GCP,
+}
+
+
 class DefaultCredentials:
     """Select the first applicable credential provider from the chain"""
 
@@ -1271,6 +1285,16 @@ class DefaultCredentials:
                 # ignore other auth types if one is explicitly enforced
                 logger.debug(f"Ignoring {auth_type} auth, because {cfg.auth_type} is preferred")
                 continue
+            # In auto-detect mode, skip cloud-specific strategies that don't
+            # match the detected cloud. This prevents Azure strategies from
+            # being attempted on GCP hosts and vice-versa. When auth_type is
+            # explicitly set, cloud filtering is bypassed so the named strategy
+            # is always attempted regardless of detected host cloud.
+            if not cfg.auth_type and auth_type in _CLOUD_REQUIREMENTS:
+                required_cloud = _CLOUD_REQUIREMENTS[auth_type]
+                if cfg.environment.cloud != required_cloud:
+                    logger.debug(f'Skipping "{auth_type}": not configured for {required_cloud.value}')
+                    continue
             logger.debug(f"Attempting to configure auth: {auth_type}")
             try:
                 # The header factory might be None if the provider cannot be

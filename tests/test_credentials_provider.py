@@ -6,6 +6,7 @@ import pytest
 from databricks.sdk import credentials_provider, oauth, oidc
 from databricks.sdk.client_types import ClientType
 from databricks.sdk.config import Config
+from databricks.sdk.environments import Cloud
 
 
 # Tests for external_browser function
@@ -861,3 +862,57 @@ class TestCloudAgnosticHosts:
         # Should return None due to missing requirement
         provider = credentials_provider.azure_cli(mock_cfg)
         assert provider is None
+
+
+class TestDefaultCredentialsCloudFiltering:
+    """Tests for cloud-based credential filtering in DefaultCredentials."""
+
+    def _recording_strategy(self, name: str, cloud: Cloud = None):
+        """Returns a mock CredentialsStrategy that records whether it was called."""
+        called = []
+
+        class _Strategy:
+            def auth_type(self):
+                return name
+
+            def __call__(self, cfg):
+                called.append(True)
+                return None
+
+        strategy = _Strategy()
+        strategy.called = called
+        return strategy
+
+    def test_skips_azure_strategy_on_gcp_host_in_auto_detect_mode(self):
+        """In auto-detect mode, Azure strategies must be skipped on a GCP host."""
+        azure_strategy = self._recording_strategy("azure-cli")
+
+        dc = credentials_provider.DefaultCredentials()
+        dc._auth_providers = [azure_strategy]
+
+        cfg = Mock()
+        cfg.auth_type = None  # auto-detect
+        cfg.environment = Mock()
+        cfg.environment.cloud = Cloud.GCP
+
+        with pytest.raises(ValueError):
+            dc(cfg)
+
+        assert not azure_strategy.called, "azure-cli must not be called on a GCP host in auto-detect mode"
+
+    def test_bypasses_cloud_filter_when_auth_type_explicitly_set(self):
+        """When auth_type is explicitly set, cloud filtering must be bypassed."""
+        azure_strategy = self._recording_strategy("azure-cli")
+
+        dc = credentials_provider.DefaultCredentials()
+        dc._auth_providers = [azure_strategy]
+
+        cfg = Mock()
+        cfg.auth_type = "azure-cli"  # explicitly set
+        cfg.environment = Mock()
+        cfg.environment.cloud = Cloud.GCP
+
+        with pytest.raises(ValueError):
+            dc(cfg)
+
+        assert azure_strategy.called, "azure-cli must be called despite GCP host when auth_type is explicitly set"
