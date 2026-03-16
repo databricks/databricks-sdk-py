@@ -35,12 +35,9 @@ class ConfigAttribute:
     transform: type = str
     _custom_transform = None
 
-    def __init__(self,
-                 env: str = None,
-                 auth: str = None,
-                 sensitive: bool = False,
-                 transform=None,
-                 env_aliases: List[str] = None):
+    def __init__(
+        self, env: str = None, auth: str = None, sensitive: bool = False, transform=None, env_aliases: List[str] = None
+    ):
         self.env = env
         self.auth = auth
         self.sensitive = sensitive
@@ -117,8 +114,9 @@ class Config:
     # Environment variable for OIDC token.
     oidc_token_env: str = ConfigAttribute(env="DATABRICKS_OIDC_TOKEN_ENV", auth="env-oidc")
     # The DATABRICKS_OIDC_TOKEN_FILE alias is kept for backward compatibility.
-    oidc_token_filepath: str = ConfigAttribute(env="DATABRICKS_OIDC_TOKEN_FILEPATH", auth="file-oidc",
-                                                  env_aliases=["DATABRICKS_OIDC_TOKEN_FILE"])
+    oidc_token_filepath: str = ConfigAttribute(
+        env="DATABRICKS_OIDC_TOKEN_FILEPATH", auth="file-oidc", env_aliases=["DATABRICKS_OIDC_TOKEN_FILE"]
+    )
 
     username: str = ConfigAttribute(env="DATABRICKS_USERNAME", auth="basic")
     password: str = ConfigAttribute(env="DATABRICKS_PASSWORD", auth="basic", sensitive=True)
