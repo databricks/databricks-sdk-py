@@ -732,18 +732,14 @@ class Config:
 
         if requested_profile is not None:
             if requested_profile == _SETTINGS_SECTION:
-                raise ValueError(
-                    f"{_SETTINGS_SECTION} is a reserved section name"
-                    " and cannot be used as a profile")
+                raise ValueError(f"{_SETTINGS_SECTION} is a reserved section name" " and cannot be used as a profile")
             return requested_profile, False
 
         settings = ini_file._sections.get(_SETTINGS_SECTION, {})
         default_profile = settings.get("default_profile", "").strip()
         if default_profile:
             if default_profile == _SETTINGS_SECTION:
-                raise ValueError(
-                    f"{_SETTINGS_SECTION} is a reserved section name"
-                    " and cannot be used as a profile")
+                raise ValueError(f"{_SETTINGS_SECTION} is a reserved section name" " and cannot be used as a profile")
             return default_profile, False
 
         if ini_file.defaults():
