@@ -10,7 +10,8 @@ from urllib.parse import parse_qs
 import pytest
 
 from databricks.sdk import AccountClient, WorkspaceClient, oauth, useragent
-from databricks.sdk.config import ClientType, Config, HostType, with_product, with_user_agent_extra
+from databricks.sdk.config import (ClientType, Config, HostType, with_product,
+                                   with_user_agent_extra)
 from databricks.sdk.environments import Cloud
 from databricks.sdk.oauth import HostMetadata
 from databricks.sdk.version import __version__
