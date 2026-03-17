@@ -2369,9 +2369,6 @@ class PostgresAPI:
 
           NOTE: setting this requires spinning up a compute to succeed, since it involves running SQL queries.
 
-          TODO: #LKB-7187 implement reassign_owned_to on LBM side. This might end-up being a synchronous query
-          when this parameter is used.
-
         :returns: :class:`Operation`
         """
 

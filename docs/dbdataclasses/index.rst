@@ -15,6 +15,7 @@ Dataclasses
    database
    dataclassification
    dataquality
+   environments
    files
    iam
    iamv2
