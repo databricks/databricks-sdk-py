@@ -25,6 +25,7 @@ from databricks.sdk.service import dashboards as pkg_dashboards
 from databricks.sdk.service import database as pkg_database
 from databricks.sdk.service import dataclassification as pkg_dataclassification
 from databricks.sdk.service import dataquality as pkg_dataquality
+from databricks.sdk.service import environments as pkg_environments
 from databricks.sdk.service import files as pkg_files
 from databricks.sdk.service import iam as pkg_iam
 from databricks.sdk.service import iamv2 as pkg_iamv2
@@ -89,6 +90,7 @@ from databricks.sdk.service.dashboards import (GenieAPI, LakeviewAPI,
 from databricks.sdk.service.database import DatabaseAPI
 from databricks.sdk.service.dataclassification import DataClassificationAPI
 from databricks.sdk.service.dataquality import DataQualityAPI
+from databricks.sdk.service.environments import EnvironmentsAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccessControlAPI,
                                         AccountAccessControlAPI,
@@ -309,6 +311,7 @@ class WorkspaceClient:
         self._dbfs = DbfsExt(self._api_client)
         self._dbsql_permissions = pkg_sql.DbsqlPermissionsAPI(self._api_client)
         self._entity_tag_assignments = pkg_catalog.EntityTagAssignmentsAPI(self._api_client)
+        self._environments = pkg_environments.EnvironmentsAPI(self._api_client)
         self._experiments = pkg_ml.ExperimentsAPI(self._api_client)
         self._external_lineage = pkg_catalog.ExternalLineageAPI(self._api_client)
         self._external_locations = pkg_catalog.ExternalLocationsAPI(self._api_client)
@@ -599,6 +602,11 @@ class WorkspaceClient:
     def entity_tag_assignments(self) -> pkg_catalog.EntityTagAssignmentsAPI:
         """Tags are attributes that include keys and optional values that you can use to organize and categorize entities in Unity Catalog."""
         return self._entity_tag_assignments
+
+    @property
+    def environments(self) -> pkg_environments.EnvironmentsAPI:
+        """APIs to manage environment resources."""
+        return self._environments
 
     @property
     def experiments(self) -> pkg_ml.ExperimentsAPI:

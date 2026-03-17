@@ -16,6 +16,7 @@ These APIs are available from WorkspaceClient
    database/index
    dataclassification/index
    dataquality/index
+   environments/index
    files/index
    iam/index
    iamv2/index
