@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from databricks.sdk.client_types import HostType
 from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict
 
@@ -167,7 +166,7 @@ class DataClassificationAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/data-classification/v1/{parent}/config", body=body, headers=headers)
@@ -187,7 +186,7 @@ class DataClassificationAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/data-classification/v1/{name}", headers=headers)
@@ -206,7 +205,7 @@ class DataClassificationAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/data-classification/v1/{name}", headers=headers)
@@ -238,7 +237,7 @@ class DataClassificationAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/data-classification/v1/{name}", query=query, body=body, headers=headers)

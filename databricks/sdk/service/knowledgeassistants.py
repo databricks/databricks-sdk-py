@@ -9,7 +9,6 @@ from typing import Any, Dict, Iterator, List, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.client_types import HostType
 from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import (_enum, _from_dict,
                                               _repeated_dict, _timestamp)
@@ -459,7 +458,7 @@ class KnowledgeAssistantsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/knowledge-assistants", body=body, headers=headers)
@@ -483,7 +482,7 @@ class KnowledgeAssistantsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.1/{parent}/knowledge-sources", body=body, headers=headers)
@@ -504,7 +503,7 @@ class KnowledgeAssistantsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/{name}", headers=headers)
@@ -524,7 +523,7 @@ class KnowledgeAssistantsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/{name}", headers=headers)
@@ -543,7 +542,7 @@ class KnowledgeAssistantsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/{name}", headers=headers)
@@ -564,7 +563,7 @@ class KnowledgeAssistantsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/{name}", headers=headers)
@@ -595,7 +594,7 @@ class KnowledgeAssistantsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
@@ -630,7 +629,7 @@ class KnowledgeAssistantsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
@@ -657,7 +656,7 @@ class KnowledgeAssistantsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.1/{name}/knowledge-sources:sync", headers=headers)
@@ -690,7 +689,7 @@ class KnowledgeAssistantsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/{name}", query=query, body=body, headers=headers)
@@ -725,7 +724,7 @@ class KnowledgeAssistantsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/{name}", query=query, body=body, headers=headers)

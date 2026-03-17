@@ -10,7 +10,6 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from databricks.sdk.client_types import HostType
 from databricks.sdk.service import catalog, jobs, settings, sharing
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
@@ -1421,7 +1420,7 @@ class CleanRoomAssetRevisionsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
@@ -1466,7 +1465,7 @@ class CleanRoomAssetRevisionsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
@@ -1512,7 +1511,7 @@ class CleanRoomAssetsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/clean-rooms/{clean_room_name}/assets", body=body, headers=headers)
@@ -1548,7 +1547,7 @@ class CleanRoomAssetsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
@@ -1577,7 +1576,7 @@ class CleanRoomAssetsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
@@ -1602,7 +1601,7 @@ class CleanRoomAssetsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
@@ -1629,7 +1628,7 @@ class CleanRoomAssetsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
@@ -1674,7 +1673,7 @@ class CleanRoomAssetsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
@@ -1712,7 +1711,7 @@ class CleanRoomAutoApprovalRulesAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
@@ -1734,7 +1733,7 @@ class CleanRoomAutoApprovalRulesAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}", headers=headers)
@@ -1753,7 +1752,7 @@ class CleanRoomAutoApprovalRulesAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
@@ -1785,7 +1784,7 @@ class CleanRoomAutoApprovalRulesAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
@@ -1821,7 +1820,7 @@ class CleanRoomAutoApprovalRulesAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
@@ -1870,7 +1869,7 @@ class CleanRoomTaskRunsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
@@ -1939,7 +1938,7 @@ class CleanRoomsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.0/clean-rooms", body=body, headers=headers)
@@ -1969,7 +1968,7 @@ class CleanRoomsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
@@ -1993,7 +1992,7 @@ class CleanRoomsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/clean-rooms/{name}", headers=headers)
@@ -2011,7 +2010,7 @@ class CleanRoomsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/clean-rooms/{name}", headers=headers)
@@ -2039,7 +2038,7 @@ class CleanRoomsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
@@ -2073,7 +2072,7 @@ class CleanRoomsAPI:
         }
 
         cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+        if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/clean-rooms/{name}", body=body, headers=headers)
