@@ -10282,8 +10282,8 @@ class WarehousesAPI:
           When paginating, all other parameters provided to `ListWarehouses` must match the call that provided
           the page token.
         :param run_as_user_id: int (optional)
-          Service Principal which will be used to fetch the list of endpoints. If not specified, SQL Gateway
-          will use the user from the session header.
+          Deprecated: this field is ignored by the server. Service Principal which will be used to fetch the
+          list of endpoints. If not specified, SQL Gateway will use the user from the session header.
 
         :returns: Iterator over :class:`EndpointInfo`
         """

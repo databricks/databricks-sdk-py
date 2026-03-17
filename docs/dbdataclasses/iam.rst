@@ -213,6 +213,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CAN_CREATE
       :value: "CAN_CREATE"
 
+   .. py:attribute:: CAN_CREATE_APP
+      :value: "CAN_CREATE_APP"
+
    .. py:attribute:: CAN_EDIT
       :value: "CAN_EDIT"
 

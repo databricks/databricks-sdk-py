@@ -1287,6 +1287,9 @@ class GenieSpace:
     description: Optional[str] = None
     """Description of the Genie Space"""
 
+    parent_path: Optional[str] = None
+    """Parent folder path of the Genie Space"""
+
     serialized_space: Optional[str] = None
     """The contents of the Genie Space in serialized string form. This field is excluded in List Genie
     spaces responses. Use the [Get Genie Space](:method:genie/getspace) API to retrieve an example
@@ -1301,6 +1304,8 @@ class GenieSpace:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.parent_path is not None:
+            body["parent_path"] = self.parent_path
         if self.serialized_space is not None:
             body["serialized_space"] = self.serialized_space
         if self.space_id is not None:
@@ -1316,6 +1321,8 @@ class GenieSpace:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.parent_path is not None:
+            body["parent_path"] = self.parent_path
         if self.serialized_space is not None:
             body["serialized_space"] = self.serialized_space
         if self.space_id is not None:
@@ -1331,6 +1338,7 @@ class GenieSpace:
         """Deserializes the GenieSpace from a dictionary."""
         return cls(
             description=d.get("description", None),
+            parent_path=d.get("parent_path", None),
             serialized_space=d.get("serialized_space", None),
             space_id=d.get("space_id", None),
             title=d.get("title", None),

@@ -92,4 +92,9 @@ PACKAGES = [
         "Data Classification",
         "Manage data classification for Unity Catalog catalogs.",
     ),
+    Package(
+        "environments",
+        "Environments",
+        "Manage workspace-level environments including base environments for serverless notebooks and jobs.",
+    ),
 ]

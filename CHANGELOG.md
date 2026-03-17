@@ -1,5 +1,17 @@
 # Version changelog
 
+## Release v0.100.0 (2026-03-16)
+
+### New Features and Improvements
+* Support `default_profile` in `[__settings__]` section of `.databrickscfg` for consistent default profile resolution across CLI and SDKs.
+
+### API Changes
+* Add `alert_output` field for `databricks.sdk.service.jobs.RunOutput`.
+* Add `alert_task` field for `databricks.sdk.service.jobs.RunTask`.
+* Add `alert_task` field for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `alert_task` field for `databricks.sdk.service.jobs.Task`.
+
+
 ## Release v0.99.0 (2026-03-12)
 
 ### API Changes
