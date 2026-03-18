@@ -4574,9 +4574,15 @@ class PublicTokenInfo:
 class RestrictWorkspaceAdminsMessage:
     status: RestrictWorkspaceAdminsMessageStatus
 
+    disable_gov_tag_creation: Optional[bool] = None
+    """When true, workspace admins cannot create governance tags. ALLOW_ALL status does not override
+    this; they are independent."""
+
     def as_dict(self) -> dict:
         """Serializes the RestrictWorkspaceAdminsMessage into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.disable_gov_tag_creation is not None:
+            body["disable_gov_tag_creation"] = self.disable_gov_tag_creation
         if self.status is not None:
             body["status"] = self.status.value
         return body
@@ -4584,6 +4590,8 @@ class RestrictWorkspaceAdminsMessage:
     def as_shallow_dict(self) -> dict:
         """Serializes the RestrictWorkspaceAdminsMessage into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.disable_gov_tag_creation is not None:
+            body["disable_gov_tag_creation"] = self.disable_gov_tag_creation
         if self.status is not None:
             body["status"] = self.status
         return body
@@ -4591,7 +4599,10 @@ class RestrictWorkspaceAdminsMessage:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RestrictWorkspaceAdminsMessage:
         """Deserializes the RestrictWorkspaceAdminsMessage from a dictionary."""
-        return cls(status=_enum(d, "status", RestrictWorkspaceAdminsMessageStatus))
+        return cls(
+            disable_gov_tag_creation=d.get("disable_gov_tag_creation", None),
+            status=_enum(d, "status", RestrictWorkspaceAdminsMessageStatus),
+        )
 
 
 class RestrictWorkspaceAdminsMessageStatus(Enum):
