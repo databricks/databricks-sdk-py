@@ -247,9 +247,6 @@ class Refreshable(TokenSource):
 
     _EXECUTOR = None
     _EXECUTOR_LOCK = threading.Lock()
-    # Legacy default duration for the stale period. This value is chosen to cover the
-    # maximum monthly downtime allowed by a 99.99% uptime SLA (~4.38 minutes).
-    _DEFAULT_STALE_DURATION = timedelta(minutes=5)
     # Default maximum stale duration. Chosen to cover the maximum monthly downtime
     # allowed by a 99.99% uptime SLA (~4.38 minutes) with generous overhead guarantees
     _MAX_STALE_DURATION = timedelta(minutes=20)
@@ -274,6 +271,7 @@ class Refreshable(TokenSource):
     ):
         # Config properties
         self._use_legacy_stale_duration = stale_duration is not None
+        # Only read on the legacy path (when _use_legacy_stale_duration is True).
         self._stale_duration = stale_duration if stale_duration is not None else timedelta(seconds=0)
         self._disable_async = disable_async
         # Lock
@@ -285,17 +283,7 @@ class Refreshable(TokenSource):
         self._is_refreshing = False
 
     def _now(self) -> datetime:
-        """Return the current time using the timezone convention of the cached token state.
-
-        Refreshable compares `expiry` and `_stale_after` values that may be either
-        naive or timezone-aware depending on where the token came from. Centralizing
-        "now" in one helper keeps those internal comparisons timezone-compatible and
-        avoids mixing naive and aware `datetime` objects.
-
-        Invariant: all tokens supplied to a single Refreshable instance must use the
-        same tz-awareness convention (all naive or all aware). Mixing conventions
-        across successive refreshes would cause TypeError on datetime comparison.
-        """
+        """Return the current time, matching the tz-awareness of the cached token."""
         if self._token.expiry:
             return datetime.now(tz=self._token.expiry.tzinfo)
         if self._stale_after:
@@ -325,7 +313,11 @@ class Refreshable(TokenSource):
                 self._stale_after = self._token.expiry - stale_duration
 
     def _handle_failed_async_refresh(self) -> None:
-        """Pushes _stale_after forward by the retry backoff, making the token appear fresh temporarily."""
+        """Pushes _stale_after forward by the retry backoff, making the token appear fresh temporarily.
+
+        This may set _stale_after past the token's expiry; that is safe because
+        _token_state() checks expiry before staleness.
+        """
         if self._stale_after:
             self._stale_after = self._now() + self._ASYNC_REFRESH_RETRY_BACKOFF
 
@@ -361,9 +353,10 @@ class Refreshable(TokenSource):
         if not self._token.expiry:
             return _TokenState.FRESH
 
-        if self._token.expiry < self._now():
+        now = self._now()
+        if self._token.expiry < now:
             return _TokenState.EXPIRED
-        if self._stale_after and self._stale_after < self._now():
+        if self._stale_after and self._stale_after < now:
             return _TokenState.STALE
         return _TokenState.FRESH
 
@@ -397,7 +390,7 @@ class Refreshable(TokenSource):
 
             with self._lock:
                 if self._token_generation != gen_at_submit:
-                    pass  # Token was already updated (e.g. by a blocking refresh); skip.
+                    logger.debug("Async refresh completed but token was already updated; discarding result.")
                 elif new_token is not None:
                     self._update_token(new_token)
                 else:

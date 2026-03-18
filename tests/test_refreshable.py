@@ -322,11 +322,12 @@ def test_late_async_refresh_does_not_overwrite_blocking_refresh():
     async_result = Token(access_token="async_old", expiry=now + timedelta(minutes=90))
     blocking_result = Token(access_token="blocking_new", expiry=now + timedelta(minutes=180))
 
-    call_count = [0]
+    call_count = 0
 
     def ordered_refresh():
-        call_count[0] += 1
-        if call_count[0] == 1:
+        nonlocal call_count
+        call_count += 1
+        if call_count == 1:
             return blocking_result
         return async_result
 
@@ -361,11 +362,12 @@ def test_late_async_refresh_failure_does_not_backoff_newer_token():
     stale_token = Token(access_token="stale", expiry=now + timedelta(minutes=60))
     blocking_result = Token(access_token="blocking_new", expiry=now + timedelta(minutes=180))
 
-    call_count = [0]
+    call_count = 0
 
     def ordered_refresh():
-        call_count[0] += 1
-        if call_count[0] == 1:
+        nonlocal call_count
+        call_count += 1
+        if call_count == 1:
             return blocking_result
         raise Exception("late async failure")
 
@@ -388,7 +390,7 @@ def test_late_async_refresh_failure_does_not_backoff_newer_token():
         # token generation and must not change the newer token state.
         executor.run_all()
 
-        assert call_count[0] == 2
+        assert call_count == 2
         assert r._stale_after == stale_after_after_blocking_refresh
 
         # A stale failure would have pushed _stale_after to expired_time + 1 minute.
