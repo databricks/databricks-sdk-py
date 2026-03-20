@@ -93,8 +93,10 @@ def unified_config(env_or_skip) -> Config:
     _load_debug_env_if_runs_from_ide("account")
     env_or_skip("CLOUD_ENV")
     config = Config()
+    config.host = env_or_skip("UNIFIED_HOST")
     config.workspace_id = env_or_skip("TEST_WORKSPACE_ID")
     config.experimental_is_unified_host = True
+    config._fix_host_if_needed()
     return config
 
 
@@ -123,21 +125,32 @@ def isolated_env(monkeypatch):
     """Fixture for tests that need to construct a client with explicit parameters
     only, without Config picking up env vars automatically.
 
-    Snapshots os.environ, then removes every env var that Config could read.
-    Returns a callable that looks up vars from the original snapshot
-    (skipping the test if missing)."""
-    original_env = os.environ.copy()
+    Usage:
+        def test_something(isolated_env):
+            env = isolated_env("workspace")  # loads debug-env key when running from IDE
+            host = env("UNIFIED_HOST")
 
-    for attr in vars(Config).values():
-        if isinstance(attr, ConfigAttribute) and attr.env:
-            monkeypatch.delenv(attr.env, raising=False)
+    The first call takes a debug-env key (used only when running from an IDE).
+    Returns a callable that looks up vars from the original environment snapshot
+    (skipping the test if missing). All Config-related env vars are removed so
+    the client only sees explicitly passed parameters."""
 
-    def get(var: str) -> str:
-        if var not in original_env:
-            pytest.skip(f"Environment variable {var} is missing")
-        return original_env[var]
+    def init(debug_env_key: str):
+        _load_debug_env_if_runs_from_ide(debug_env_key)
+        original_env = os.environ.copy()
 
-    return get
+        for attr in vars(Config).values():
+            if isinstance(attr, ConfigAttribute) and attr.env:
+                monkeypatch.delenv(attr.env, raising=False)
+
+        def get(var: str) -> str:
+            if var not in original_env:
+                pytest.skip(f"Environment variable {var} is missing")
+            return original_env[var]
+
+        return get
+
+    return init
 
 
 @pytest.fixture(scope="session")
