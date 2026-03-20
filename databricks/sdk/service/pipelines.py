@@ -4214,11 +4214,14 @@ class PipelinesAPI:
         res = self._api.do("POST", "/api/2.0/pipelines", body=body, headers=headers)
         return CreatePipelineResponse.from_dict(res)
 
-    def delete(self, pipeline_id: str, *, force: Optional[bool] = None):
+    def delete(self, pipeline_id: str, *, cascade: Optional[bool] = None, force: Optional[bool] = None):
         """Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletion will cascade to all
         pipeline tables. Please reach out to Databricks support for assistance to undo this action.
 
         :param pipeline_id: str
+        :param cascade: bool (optional)
+          If false, pipeline deletion will not cascade to its datasets (MVs, STs, Views). By default, this
+          parameter will be true and all tables will be deleted with the pipeline.
         :param force: bool (optional)
           If true, deletion will proceed even if resource cleanup fails. By default, deletion will fail if
           resources cleanup is required but fails.
@@ -4227,6 +4230,8 @@ class PipelinesAPI:
         """
 
         query = {}
+        if cascade is not None:
+            query["cascade"] = cascade
         if force is not None:
             query["force"] = force
         headers = {

@@ -3910,6 +3910,12 @@ class ExternalLocationInfo:
     effective_enable_file_events: Optional[bool] = None
     """The effective value of `enable_file_events` after applying server-side defaults."""
 
+    effective_file_event_queue: Optional[FileEventQueue] = None
+    """The effective file event queue configuration after applying server-side defaults. Always
+    populated when a queue is provisioned, regardless of whether the user explicitly set
+    `enable_file_events`. Use this field instead of `file_event_queue` for reading the actual queue
+    state."""
+
     enable_file_events: Optional[bool] = None
     """Whether to enable file events on this external location. Default to `true`. Set to `false` to
     disable file events. The actual applied value may differ due to server-side defaults; check
@@ -3966,6 +3972,8 @@ class ExternalLocationInfo:
             body["credential_name"] = self.credential_name
         if self.effective_enable_file_events is not None:
             body["effective_enable_file_events"] = self.effective_enable_file_events
+        if self.effective_file_event_queue:
+            body["effective_file_event_queue"] = self.effective_file_event_queue.as_dict()
         if self.enable_file_events is not None:
             body["enable_file_events"] = self.enable_file_events
         if self.encryption_details:
@@ -4009,6 +4017,8 @@ class ExternalLocationInfo:
             body["credential_name"] = self.credential_name
         if self.effective_enable_file_events is not None:
             body["effective_enable_file_events"] = self.effective_enable_file_events
+        if self.effective_file_event_queue:
+            body["effective_file_event_queue"] = self.effective_file_event_queue
         if self.enable_file_events is not None:
             body["enable_file_events"] = self.enable_file_events
         if self.encryption_details:
@@ -4046,6 +4056,7 @@ class ExternalLocationInfo:
             credential_id=d.get("credential_id", None),
             credential_name=d.get("credential_name", None),
             effective_enable_file_events=d.get("effective_enable_file_events", None),
+            effective_file_event_queue=_from_dict(d, "effective_file_event_queue", FileEventQueue),
             enable_file_events=d.get("enable_file_events", None),
             encryption_details=_from_dict(d, "encryption_details", EncryptionDetails),
             fallback=d.get("fallback", None),
@@ -12427,6 +12438,7 @@ class ExternalLocationsAPI:
         *,
         comment: Optional[str] = None,
         effective_enable_file_events: Optional[bool] = None,
+        effective_file_event_queue: Optional[FileEventQueue] = None,
         enable_file_events: Optional[bool] = None,
         encryption_details: Optional[EncryptionDetails] = None,
         fallback: Optional[bool] = None,
@@ -12448,6 +12460,10 @@ class ExternalLocationsAPI:
           User-provided free-form text description.
         :param effective_enable_file_events: bool (optional)
           The effective value of `enable_file_events` after applying server-side defaults.
+        :param effective_file_event_queue: :class:`FileEventQueue` (optional)
+          The effective file event queue configuration after applying server-side defaults. Always populated
+          when a queue is provisioned, regardless of whether the user explicitly set `enable_file_events`. Use
+          this field instead of `file_event_queue` for reading the actual queue state.
         :param enable_file_events: bool (optional)
           Whether to enable file events on this external location. Default to `true`. Set to `false` to
           disable file events. The actual applied value may differ due to server-side defaults; check
@@ -12475,6 +12491,8 @@ class ExternalLocationsAPI:
             body["credential_name"] = credential_name
         if effective_enable_file_events is not None:
             body["effective_enable_file_events"] = effective_enable_file_events
+        if effective_file_event_queue is not None:
+            body["effective_file_event_queue"] = effective_file_event_queue.as_dict()
         if enable_file_events is not None:
             body["enable_file_events"] = enable_file_events
         if encryption_details is not None:
@@ -12626,6 +12644,7 @@ class ExternalLocationsAPI:
         comment: Optional[str] = None,
         credential_name: Optional[str] = None,
         effective_enable_file_events: Optional[bool] = None,
+        effective_file_event_queue: Optional[FileEventQueue] = None,
         enable_file_events: Optional[bool] = None,
         encryption_details: Optional[EncryptionDetails] = None,
         fallback: Optional[bool] = None,
@@ -12650,6 +12669,10 @@ class ExternalLocationsAPI:
           Name of the storage credential used with this location.
         :param effective_enable_file_events: bool (optional)
           The effective value of `enable_file_events` after applying server-side defaults.
+        :param effective_file_event_queue: :class:`FileEventQueue` (optional)
+          The effective file event queue configuration after applying server-side defaults. Always populated
+          when a queue is provisioned, regardless of whether the user explicitly set `enable_file_events`. Use
+          this field instead of `file_event_queue` for reading the actual queue state.
         :param enable_file_events: bool (optional)
           Whether to enable file events on this external location. Default to `true`. Set to `false` to
           disable file events. The actual applied value may differ due to server-side defaults; check
@@ -12686,6 +12709,8 @@ class ExternalLocationsAPI:
             body["credential_name"] = credential_name
         if effective_enable_file_events is not None:
             body["effective_enable_file_events"] = effective_enable_file_events
+        if effective_file_event_queue is not None:
+            body["effective_file_event_queue"] = effective_file_event_queue.as_dict()
         if enable_file_events is not None:
             body["enable_file_events"] = enable_file_events
         if encryption_details is not None:

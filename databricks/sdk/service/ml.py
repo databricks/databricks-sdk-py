@@ -529,6 +529,34 @@ class ColumnIdentifier:
         return cls(variant_expr_path=d.get("variant_expr_path", None))
 
 
+@dataclass
+class ColumnSelection:
+    """A ColumnSelection function, equivalent to the LAST() record of an entity over a lifetime
+    ContinuousWindow"""
+
+    column: str
+    """Column name from source to select as the feature value."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnSelection into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column is not None:
+            body["column"] = self.column
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnSelection into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column is not None:
+            body["column"] = self.column
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnSelection:
+        """Deserializes the ColumnSelection from a dictionary."""
+        return cls(column=d.get("column", None))
+
+
 class CommentActivityAction(Enum):
     """An action that a user (with sufficient permissions) could take on an activity or comment.
 
@@ -2205,6 +2233,9 @@ class Function:
     aggregation_function: Optional[AggregationFunction] = None
     """An aggregation function applied over a time window."""
 
+    column_selection: Optional[ColumnSelection] = None
+    """Selects the latest value of a single column in a data source"""
+
     extra_parameters: Optional[List[FunctionExtraParameter]] = None
     """Deprecated: Use the function oneof with AggregationFunction instead. Kept for backwards
     compatibility. Extra parameters for parameterized functions."""
@@ -2218,6 +2249,8 @@ class Function:
         body = {}
         if self.aggregation_function:
             body["aggregation_function"] = self.aggregation_function.as_dict()
+        if self.column_selection:
+            body["column_selection"] = self.column_selection.as_dict()
         if self.extra_parameters:
             body["extra_parameters"] = [v.as_dict() for v in self.extra_parameters]
         if self.function_type is not None:
@@ -2229,6 +2262,8 @@ class Function:
         body = {}
         if self.aggregation_function:
             body["aggregation_function"] = self.aggregation_function
+        if self.column_selection:
+            body["column_selection"] = self.column_selection
         if self.extra_parameters:
             body["extra_parameters"] = self.extra_parameters
         if self.function_type is not None:
@@ -2240,6 +2275,7 @@ class Function:
         """Deserializes the Function from a dictionary."""
         return cls(
             aggregation_function=_from_dict(d, "aggregation_function", AggregationFunction),
+            column_selection=_from_dict(d, "column_selection", ColumnSelection),
             extra_parameters=_repeated_dict(d, "extra_parameters", FunctionExtraParameter),
             function_type=_enum(d, "function_type", FunctionFunctionType),
         )
