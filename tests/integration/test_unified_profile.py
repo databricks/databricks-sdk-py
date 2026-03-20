@@ -1,9 +1,17 @@
 import pytest
 
 from databricks.sdk import AccountClient, WorkspaceClient
+from databricks.sdk.environments import Cloud
+
+from .conftest import _is_cloud
 
 
 def test_workspace_operations(unified_config):
+    # GCP google-credentials auth produces a workspace-local SP that is not
+    # federated at the account level. Workspace APIs via the unified host
+    # return 401 for this SP. See test_spog_workspace_google_credentials.
+    if _is_cloud(Cloud.GCP):
+        pytest.skip("google-credentials workspace ops not supported on unified hosts (workspace-local SP)")
     client = WorkspaceClient(config=unified_config)
     user = client.current_user.me()
     assert user is not None
