@@ -34,11 +34,14 @@ class ConfigAttribute:
     transform: type = str
     _custom_transform = None
 
-    def __init__(self, env: str = None, auth: str = None, sensitive: bool = False, transform=None):
+    def __init__(
+        self, env: str = None, auth: str = None, sensitive: bool = False, transform=None, env_aliases: List[str] = None
+    ):
         self.env = env
         self.auth = auth
         self.sensitive = sensitive
         self._custom_transform = transform
+        self.env_aliases = env_aliases or []
 
     def __get__(self, cfg: "Config", owner):
         if not cfg:
@@ -109,7 +112,10 @@ class Config:
 
     # Environment variable for OIDC token.
     oidc_token_env: str = ConfigAttribute(env="DATABRICKS_OIDC_TOKEN_ENV", auth="env-oidc")
-    oidc_token_filepath: str = ConfigAttribute(env="DATABRICKS_OIDC_TOKEN_FILE", auth="file-oidc")
+    # The DATABRICKS_OIDC_TOKEN_FILE alias is kept for backward compatibility.
+    oidc_token_filepath: str = ConfigAttribute(
+        env="DATABRICKS_OIDC_TOKEN_FILEPATH", auth="file-oidc", env_aliases=["DATABRICKS_OIDC_TOKEN_FILE"]
+    )
 
     username: str = ConfigAttribute(env="DATABRICKS_USERNAME", auth="basic")
     password: str = ConfigAttribute(env="DATABRICKS_PASSWORD", auth="basic", sensitive=True)
@@ -557,6 +563,11 @@ class Config:
         for attr in Config.attributes():
             if attr.env and os.environ.get(attr.env):
                 envs_used.append(attr.env)
+            else:
+                for alias in attr.env_aliases:
+                    if os.environ.get(alias):
+                        envs_used.append(alias)
+                        break
             value = getattr(self, attr.name)
             if not value:
                 continue
@@ -709,6 +720,11 @@ class Config:
             if attr.name in self._inner:
                 continue
             value = os.environ.get(attr.env)
+            if not value:
+                for alias in attr.env_aliases:
+                    value = os.environ.get(alias)
+                    if value:
+                        break
             if not value:
                 continue
             self.__setattr__(attr.name, value)
