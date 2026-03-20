@@ -34,6 +34,18 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: create_catalog(catalog: Catalog, catalog_id: str) -> CreateCatalogOperation
+
+        Register a Postgres database in the Unity Catalog.
+
+        :param catalog: :class:`Catalog`
+        :param catalog_id: str
+          The ID in the Unity Catalog. It becomes the full resource name, for example "my_catalog" becomes
+          "catalogs/my_catalog".
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: create_database(parent: str, database: Database [, database_id: Optional[str]]) -> CreateDatabaseOperation
 
         Create a Database.
@@ -108,12 +120,44 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: create_synced_table(synced_table: SyncedTable, synced_table_id: str) -> CreateSyncedTableOperation
+
+        Create a Synced Table.
+
+        :param synced_table: :class:`SyncedTable`
+        :param synced_table_id: str
+          The ID to use for the Synced Table. This becomes the final component of the SyncedTable's resource
+          name. ID is required and is the synced table name, containing (catalog, schema, table) tuple.
+          Elements of the tuple are the UC entity names.
+
+          Example: "{catalog}.{schema}.{table}"
+
+          synced_table_id represents both of the following:
+
+          1. An online VIEW virtual table in the Unity Catalog accessible via the Lakehouse Federation. 2.
+          Postgres table named "{table}" in schema "{schema}" in the connected Postgres database
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: delete_branch(name: str) -> DeleteBranchOperation
 
         Deletes the specified database branch.
 
         :param name: str
           The full resource path of the branch to delete. Format: projects/{project_id}/branches/{branch_id}
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: delete_catalog(name: str) -> DeleteCatalogOperation
+
+        Delete a Database Catalog.
+
+        :param name: str
+          The full resource path of the catalog to delete.
+
+          Format: "catalogs/{catalog_id}".
 
         :returns: :class:`Operation`
         
@@ -166,6 +210,17 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: delete_synced_table(name: str) -> DeleteSyncedTableOperation
+
+        Delete a Synced Table.
+
+        :param name: str
+          The Full resource name of the synced table, of the format
+          "synced_tables/{catalog}.{schema}.{table}", where (catalog, schema, table) are the UC entity names.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: generate_database_credential(endpoint: str [, claims: Optional[List[RequestedClaims]]]) -> DatabaseCredential
 
         Generate OAuth credentials for a Postgres database.
@@ -187,6 +242,18 @@
           The full resource path of the branch to retrieve. Format: projects/{project_id}/branches/{branch_id}
 
         :returns: :class:`Branch`
+        
+
+    .. py:method:: get_catalog(name: str) -> Catalog
+
+        Get a Database Catalog.
+
+        :param name: str
+          The full resource path of the catalog to retrieve.
+
+          Format: "catalogs/{catalog_id}".
+
+        :returns: :class:`Catalog`
         
 
     .. py:method:: get_database(name: str) -> Database
@@ -242,6 +309,17 @@
           projects/{project_id}/branches/{branch_id}/roles/{role_id}
 
         :returns: :class:`Role`
+        
+
+    .. py:method:: get_synced_table(name: str) -> SyncedTable
+
+        Get a Synced Table.
+
+        :param name: str
+          Format: "synced_tables/{catalog}.{schema}.{table}", where (catalog, schema, table) are the entity
+          names in the Unity Catalog.
+
+        :returns: :class:`SyncedTable`
         
 
     .. py:method:: list_branches(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Branch]

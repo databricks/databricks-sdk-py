@@ -98,6 +98,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ColumnSelection
+   :members:
+   :undoc-members:
+
 .. py:class:: CommentActivityAction
 
    An action that a user (with sufficient permissions) could take on an activity or comment.

@@ -15,7 +15,7 @@
     To create external locations, you must be a metastore admin or a user with the
     **CREATE_EXTERNAL_LOCATION** privilege.
 
-    .. py:method:: create(name: str, url: str, credential_name: str [, comment: Optional[str], effective_enable_file_events: Optional[bool], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], read_only: Optional[bool], skip_validation: Optional[bool]]) -> ExternalLocationInfo
+    .. py:method:: create(name: str, url: str, credential_name: str [, comment: Optional[str], effective_enable_file_events: Optional[bool], effective_file_event_queue: Optional[FileEventQueue], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], read_only: Optional[bool], skip_validation: Optional[bool]]) -> ExternalLocationInfo
 
 
         Usage:
@@ -61,6 +61,10 @@
           User-provided free-form text description.
         :param effective_enable_file_events: bool (optional)
           The effective value of `enable_file_events` after applying server-side defaults.
+        :param effective_file_event_queue: :class:`FileEventQueue` (optional)
+          The effective file event queue configuration after applying server-side defaults. Always populated
+          when a queue is provisioned, regardless of whether the user explicitly set `enable_file_events`. Use
+          this field instead of `file_event_queue` for reading the actual queue state.
         :param enable_file_events: bool (optional)
           Whether to enable file events on this external location. Default to `true`. Set to `false` to
           disable file events. The actual applied value may differ due to server-side defaults; check
@@ -179,7 +183,7 @@
         :returns: Iterator over :class:`ExternalLocationInfo`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], credential_name: Optional[str], effective_enable_file_events: Optional[bool], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
+    .. py:method:: update(name: str [, comment: Optional[str], credential_name: Optional[str], effective_enable_file_events: Optional[bool], effective_file_event_queue: Optional[FileEventQueue], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
 
 
         Usage:
@@ -227,6 +231,10 @@
           Name of the storage credential used with this location.
         :param effective_enable_file_events: bool (optional)
           The effective value of `enable_file_events` after applying server-side defaults.
+        :param effective_file_event_queue: :class:`FileEventQueue` (optional)
+          The effective file event queue configuration after applying server-side defaults. Always populated
+          when a queue is provisioned, regardless of whether the user explicitly set `enable_file_events`. Use
+          this field instead of `file_event_queue` for reading the actual queue state.
         :param enable_file_events: bool (optional)
           Whether to enable file events on this external location. Default to `true`. Set to `false` to
           disable file events. The actual applied value may differ due to server-side defaults; check

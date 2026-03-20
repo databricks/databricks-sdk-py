@@ -15,3 +15,11 @@
 * Extract `_resolve_profile` to simplify config file loading and improve `__settings__` error messages.
 
 ### API Changes
+* Add `create_catalog()`, `create_synced_table()`, `delete_catalog()`, `delete_synced_table()`, `get_catalog()` and `get_synced_table()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
+* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+* Add `column_selection` field for `databricks.sdk.service.ml.Function`.
+* Add `cascade` field for `databricks.sdk.service.pipelines.DeletePipelineRequest`.
+* Add `default_branch` field for `databricks.sdk.service.postgres.ProjectSpec`.
+* Add `default_branch` field for `databricks.sdk.service.postgres.ProjectStatus`.
