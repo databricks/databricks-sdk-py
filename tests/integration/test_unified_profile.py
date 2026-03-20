@@ -40,10 +40,9 @@ def clean_env(monkeypatch):
 
 
 # SPOG/W — Workspace operations on unified host with explicit auth
-# Environments: azure-prod-ucws (oauth-m2m), azure-prod/azure-prod-ucws (azure-client-secret),
-#               gcp-prod/gcp-prod-ucws (google-credentials), aws-prod/gcp-prod (pat)
 
 
+# Environment: azure-prod-ucws
 def test_spog_workspace_oauth_m2m(clean_env):
     host = clean_env("UNIFIED_HOST")
     client_id = clean_env("TEST_DATABRICKS_CLIENT_ID")
@@ -62,6 +61,7 @@ def test_spog_workspace_oauth_m2m(clean_env):
     assert me.user_name
 
 
+# Environment: azure-prod, azure-prod-ucws
 def test_spog_workspace_azure_client_secret(clean_env):
     host = clean_env("UNIFIED_HOST")
     workspace_id = clean_env("THIS_WORKSPACE_ID")
@@ -82,6 +82,7 @@ def test_spog_workspace_azure_client_secret(clean_env):
     assert me.user_name
 
 
+# Environment: gcp-prod, gcp-prod-ucws
 def test_spog_workspace_google_credentials(clean_env):
     host = clean_env("UNIFIED_HOST")
     workspace_id = clean_env("THIS_WORKSPACE_ID")
@@ -100,6 +101,7 @@ def test_spog_workspace_google_credentials(clean_env):
     assert me.user_name
 
 
+# Environment: aws-prod, gcp-prod, gcp-prod-ucws
 def test_spog_workspace_pat(clean_env):
     host = clean_env("UNIFIED_HOST")
     workspace_id = clean_env("THIS_WORKSPACE_ID")
@@ -116,10 +118,9 @@ def test_spog_workspace_pat(clean_env):
 
 
 # SPOG/A — Account operations on unified host with explicit auth
-# Environments: azure-prod-acct (oauth-m2m, azure-client-secret),
-#               gcp-acct-prod/gcp-prod-ucacct (google-credentials)
 
 
+# Environment: azure-prod-acct
 def test_spog_account_oauth_m2m(clean_env):
     host = clean_env("UNIFIED_HOST")
     account_id = clean_env("DATABRICKS_ACCOUNT_ID")
@@ -136,6 +137,7 @@ def test_spog_account_oauth_m2m(clean_env):
     next(sps)
 
 
+# Environment: azure-prod-acct
 def test_spog_account_azure_client_secret(clean_env):
     host = clean_env("UNIFIED_HOST")
     account_id = clean_env("DATABRICKS_ACCOUNT_ID")
@@ -154,6 +156,7 @@ def test_spog_account_azure_client_secret(clean_env):
     next(sps)
 
 
+# Environment: gcp-acct-prod, gcp-prod-ucacct
 def test_spog_account_google_credentials(clean_env):
     host = clean_env("UNIFIED_HOST")
     account_id = clean_env("DATABRICKS_ACCOUNT_ID")
