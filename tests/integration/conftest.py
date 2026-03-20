@@ -8,6 +8,7 @@ import sys
 import pytest
 
 from databricks.sdk import AccountClient, FilesAPI, FilesExt, WorkspaceClient
+from databricks.sdk.config import ConfigAttribute
 from databricks.sdk.core import Config
 from databricks.sdk.environments import Cloud
 from databricks.sdk.service.catalog import VolumeType
@@ -46,7 +47,7 @@ def pytest_configure(config):
 
 def pytest_collection_modifyitems(items):
     # safer to refer to fixture fns instead of strings
-    client_fixtures = [x.__name__ for x in [a, w, ucws, ucacct]]
+    client_fixtures = [x.__name__ for x in [a, w, ucws, ucacct, unified_config, isolated_env]]
     for item in items:
         current_fixtures = getattr(item, "fixturenames", ())
         for requires_client in client_fixtures:
@@ -115,6 +116,28 @@ def ucws(env_or_skip) -> WorkspaceClient:
     if "TEST_METASTORE_ID" not in os.environ:
         pytest.skip("not Databricks UC Workspace environment")
     return WorkspaceClient()
+
+
+@pytest.fixture
+def isolated_env(monkeypatch):
+    """Fixture for tests that need to construct a client with explicit parameters
+    only, without Config picking up env vars automatically.
+
+    Snapshots os.environ, then removes every env var that Config could read.
+    Returns a callable that looks up vars from the original snapshot
+    (skipping the test if missing)."""
+    original_env = os.environ.copy()
+
+    for attr in vars(Config).values():
+        if isinstance(attr, ConfigAttribute) and attr.env:
+            monkeypatch.delenv(attr.env, raising=False)
+
+    def get(var: str) -> str:
+        if var not in original_env:
+            pytest.skip(f"Environment variable {var} is missing")
+        return original_env[var]
+
+    return get
 
 
 @pytest.fixture(scope="session")
