@@ -36,7 +36,8 @@ def test_scim_get_user_as_dict(w):
     ],
 )
 def test_workspace_users_list_pagination(w, path, call):
-    raw = w.api_client.do("GET", path)
+    # Use count=1 to avoid serializing the full result set just to read totalResults.
+    raw = w.api_client.do("GET", path, query={"count": 1})
     total = raw["totalResults"]
     all = call(w)
     found = len(list(all))
@@ -61,7 +62,8 @@ def test_workspace_users_list_pagination(w, path, call):
     ],
 )
 def test_account_users_list_pagination(a, path, call):
-    raw = a.api_client.do("GET", path.replace("%s", a.config.account_id))
+    # Use count=1 to avoid serializing the full result set just to read totalResults.
+    raw = a.api_client.do("GET", path.replace("%s", a.config.account_id), query={"count": 1})
     total = raw["totalResults"]
     all = call(a)
     found = len(list(all))

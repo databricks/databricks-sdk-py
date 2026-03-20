@@ -39,6 +39,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: RESETTING
       :value: "RESETTING"
 
+.. autoclass:: Catalog
+   :members:
+   :undoc-members:
+
+.. autoclass:: CatalogCatalogSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: CatalogCatalogStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: CatalogOperationMetadata
+   :members:
+   :undoc-members:
+
 .. autoclass:: Database
    :members:
    :undoc-members:
@@ -60,6 +76,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DatabricksServiceExceptionWithDetailsProto
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeltaTableSyncInfo
    :members:
    :undoc-members:
 
@@ -392,6 +412,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: NewPipelineSpec
+   :members:
+   :undoc-members:
+
 .. autoclass:: Operation
    :members:
    :undoc-members:
@@ -419,6 +443,39 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ProjectStatus
    :members:
    :undoc-members:
+
+.. py:class:: ProvisioningInfoState
+
+   .. py:attribute:: ACTIVE
+      :value: "ACTIVE"
+
+   .. py:attribute:: DEGRADED
+      :value: "DEGRADED"
+
+   .. py:attribute:: DELETING
+      :value: "DELETING"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: PROVISIONING
+      :value: "PROVISIONING"
+
+   .. py:attribute:: UPDATING
+      :value: "UPDATING"
+
+.. py:class:: ProvisioningPhase
+
+   Copied from database_table_statuses.proto to decouple SDK packages.
+
+   .. py:attribute:: PROVISIONING_PHASE_INDEX_SCAN
+      :value: "PROVISIONING_PHASE_INDEX_SCAN"
+
+   .. py:attribute:: PROVISIONING_PHASE_INDEX_SORT
+      :value: "PROVISIONING_PHASE_INDEX_SORT"
+
+   .. py:attribute:: PROVISIONING_PHASE_MAIN
+      :value: "PROVISIONING_PHASE_MAIN"
 
 .. autoclass:: RequestedClaims
    :members:
@@ -483,5 +540,79 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RoleRoleStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTable
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTableOperationMetadata
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTablePipelineProgress
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTablePosition
+   :members:
+   :undoc-members:
+
+.. py:class:: SyncedTableState
+
+   The state of a synced table. Copied from database_table_statuses.proto to decouple SDK packages.
+
+   .. py:attribute:: SYNCED_TABLE_OFFLINE
+      :value: "SYNCED_TABLE_OFFLINE"
+
+   .. py:attribute:: SYNCED_TABLE_OFFLINE_FAILED
+      :value: "SYNCED_TABLE_OFFLINE_FAILED"
+
+   .. py:attribute:: SYNCED_TABLE_ONLINE
+      :value: "SYNCED_TABLE_ONLINE"
+
+   .. py:attribute:: SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE
+      :value: "SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE"
+
+   .. py:attribute:: SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE
+      :value: "SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE"
+
+   .. py:attribute:: SYNCED_TABLE_ONLINE_PIPELINE_FAILED
+      :value: "SYNCED_TABLE_ONLINE_PIPELINE_FAILED"
+
+   .. py:attribute:: SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE
+      :value: "SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE"
+
+   .. py:attribute:: SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES
+      :value: "SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES"
+
+   .. py:attribute:: SYNCED_TABLE_PROVISIONING
+      :value: "SYNCED_TABLE_PROVISIONING"
+
+   .. py:attribute:: SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT
+      :value: "SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT"
+
+   .. py:attribute:: SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES
+      :value: "SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES"
+
+.. autoclass:: SyncedTableSyncedTableSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy
+
+   Scheduling policy of the synced table's underlying pipeline.
+
+   .. py:attribute:: CONTINUOUS
+      :value: "CONTINUOUS"
+
+   .. py:attribute:: SNAPSHOT
+      :value: "SNAPSHOT"
+
+   .. py:attribute:: TRIGGERED
+      :value: "TRIGGERED"
+
+.. autoclass:: SyncedTableSyncedTableStatus
    :members:
    :undoc-members:

@@ -47,6 +47,30 @@ def test_config_host_url_format_check(mocker, host, expected):
     assert Config(host=host).host == expected
 
 
+def test_oidc_token_filepath_env_alias(monkeypatch, mocker):
+    monkeypatch.setenv("DATABRICKS_HOST", "https://abc.def.ghi")
+    monkeypatch.setenv("DATABRICKS_OIDC_TOKEN_FILE", "/tmp/token")
+    monkeypatch.delenv("DATABRICKS_OIDC_TOKEN_FILEPATH", raising=False)
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    assert Config().oidc_token_filepath == "/tmp/token"
+
+
+def test_oidc_token_filepath_env_primary_precedence(monkeypatch, mocker):
+    monkeypatch.setenv("DATABRICKS_HOST", "https://abc.def.ghi")
+    monkeypatch.setenv("DATABRICKS_OIDC_TOKEN_FILEPATH", "/tmp/primary")
+    monkeypatch.setenv("DATABRICKS_OIDC_TOKEN_FILE", "/tmp/alias")
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    assert Config().oidc_token_filepath == "/tmp/primary"
+
+
+def test_oidc_token_filepath_env_constructor_precedence(monkeypatch, mocker):
+    monkeypatch.setenv("DATABRICKS_HOST", "https://abc.def.ghi")
+    monkeypatch.setenv("DATABRICKS_OIDC_TOKEN_FILEPATH", "/tmp/env")
+    monkeypatch.setenv("DATABRICKS_OIDC_TOKEN_FILE", "/tmp/alias")
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    assert Config(oidc_token_filepath="/tmp/constructor").oidc_token_filepath == "/tmp/constructor"
+
+
 def test_extra_and_upstream_user_agent(monkeypatch):
 
     class MockUname:

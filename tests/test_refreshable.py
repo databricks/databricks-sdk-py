@@ -1,6 +1,6 @@
 import time
+from contextlib import contextmanager
 from datetime import datetime, timedelta
-from time import sleep
 from typing import Callable
 from unittest.mock import patch
 
@@ -16,19 +16,45 @@ class _MockRefreshable(Refreshable):
         stale_duration=None,
         refresh_effect: Callable[[], Token] = None,
     ):
-        super().__init__(token, disable_async)
-        # Optional override: bypasses the dynamic min(TTL×0.5, max) formula so
-        # tests can put a token directly into STALE state at construction time.
-        if stale_duration is not None:
-            self._stale_duration = stale_duration
+        super().__init__(token=token, disable_async=disable_async, stale_duration=stale_duration)
         self._refresh_effect = refresh_effect
         self._refresh_count = 0
 
     def refresh(self) -> Token:
         if self._refresh_effect:
-            self._token = self._refresh_effect()
+            token = self._refresh_effect()
+        else:
+            token = self._token
         self._refresh_count += 1
-        return self._token
+        return token
+
+
+class _ManualExecutor:
+    """A fake executor that captures submitted tasks for on-demand synchronous execution.
+
+    This replaces the real ThreadPoolExecutor in tests, making async refresh
+    behavior fully deterministic without threads or sleeps.
+    """
+
+    def __init__(self):
+        self._pending: list = []
+        self.submission_count: int = 0
+
+    def submit(self, fn, *args, **kwargs):
+        self.submission_count += 1
+        self._pending.append((fn, args, kwargs))
+
+    def run_all(self):
+        while self._pending:
+            fn, args, kwargs = self._pending.pop(0)
+            fn(*args, **kwargs)
+
+
+@contextmanager
+def _manual_executor():
+    executor = _ManualExecutor()
+    with patch.object(Refreshable, "_get_executor", return_value=executor):
+        yield executor
 
 
 def fail() -> Token:
@@ -42,33 +68,6 @@ def static_token(token: Token, wait: int = 0) -> Callable[[], Token]:
         return token
 
     return f
-
-
-def blocking_refresh(
-    token: Token,
-) -> (Callable[[], Token], Callable[[], None]):
-    """
-    Create a refresh function that blocks until unblock is called.
-
-    Param:
-     token: the token that will be returned
-
-    Returns:
-        A tuple containing the refresh function and the unblock function.
-
-    """
-    blocking = True
-
-    def refresh():
-        while blocking:
-            sleep(0.1)
-        return token
-
-    def unblock():
-        nonlocal blocking
-        blocking = False
-
-    return refresh, unblock
 
 
 def test_disable_async_stale_does_not_refresh():
@@ -104,7 +103,6 @@ def test_disable_async_no_expiration_does_not_refresh():
 
 
 def test_disable_async_fresh_does_not_refresh():
-    # Create a token that is already stale. If async is disabled, the token should not be refreshed.
     token = Token(
         access_token="access_token",
         expiry=datetime.now() + timedelta(seconds=300),
@@ -168,25 +166,20 @@ def test_stale_does_refresh_async():
         access_token="access_token",
         expiry=datetime.now() + timedelta(seconds=300),
     )
-    # Add one second to the refresh to avoid race conditions.
-    # Without it, the new token may be returned in some cases.
-    refresh, unblock = blocking_refresh(new_token)
-    r = _MockRefreshable(
-        token=stale_token, disable_async=False, stale_duration=timedelta(seconds=60), refresh_effect=refresh
-    )
-    result = r.token()
-    # NOTE: Do not check for refresh count here, since the
-    assert result == stale_token
-    assert r._refresh_count == 0
-    # Unblock the refresh and wait
-    unblock()
-    time.sleep(2)
-    # Call again and check that you get the new token
-    result = r.token()
-    assert result == new_token
-    # Ensure that all calls have completed
-    time.sleep(0.1)
-    assert r._refresh_count == 1
+    with _manual_executor() as executor:
+        r = _MockRefreshable(
+            token=stale_token,
+            disable_async=False,
+            stale_duration=timedelta(seconds=60),
+            refresh_effect=static_token(new_token),
+        )
+        result = r.token()
+        assert result == stale_token
+        assert r._refresh_count == 0
+        executor.run_all()
+        result = r.token()
+        assert result == new_token
+        assert r._refresh_count == 1
 
 
 def test_no_token_does_refresh():
@@ -227,118 +220,226 @@ def test_multiple_calls_dont_start_many_threads():
         access_token="access_token",
         expiry=datetime.now() + timedelta(seconds=300),
     )
-    refresh, unblock = blocking_refresh(new_token)
-    r = _MockRefreshable(
-        token=stale_token, disable_async=False, stale_duration=timedelta(seconds=60), refresh_effect=refresh
-    )
-    # Call twice. The second call should not start a new thread.
-    result = r.token()
-    assert result == stale_token
-    result = r.token()
-    assert result == stale_token
-    unblock()
-    # Wait for the refresh to complete
-    time.sleep(1)
-    result = r.token()
-    # Check that only one refresh was called
-    assert r._refresh_count == 1
-    assert result == new_token
+    with _manual_executor() as executor:
+        r = _MockRefreshable(
+            token=stale_token,
+            disable_async=False,
+            stale_duration=timedelta(seconds=60),
+            refresh_effect=static_token(new_token),
+        )
+        result = r.token()
+        assert result == stale_token
+        result = r.token()
+        assert result == stale_token
+        executor.run_all()
+        result = r.token()
+        assert r._refresh_count == 1
+        assert result == new_token
+        assert executor.submission_count == 1
 
 
-def test_async_failure_disables_async():
+def test_repeated_calls_during_async_failure_cooldown_do_not_refresh():
+    now = datetime(2024, 1, 1, 12, 0, 0)
+    stale_time = now + timedelta(minutes=41)
+
     stale_token = Token(
         access_token="access_token",
-        expiry=datetime.now() + timedelta(seconds=59),
+        expiry=now + timedelta(minutes=60),
     )
     new_token = Token(
         access_token="new_token",
-        expiry=datetime.now() + timedelta(seconds=300),
+        expiry=now + timedelta(minutes=120),
     )
-    r = _MockRefreshable(
-        token=stale_token, disable_async=False, stale_duration=timedelta(seconds=60), refresh_effect=fail
-    )
-    # The call should fail and disable async refresh,
-    # but the exception will be catch inside the tread.
-    result = r.token()
-    assert result == stale_token
-    # Give time to the async refresh to fail
-    time.sleep(1)
-    assert r._refresh_err
-    # Now, the refresh should be blocking.
-    # Blocking refresh only happens for expired, not stale.
-    # Therefore, the next call should return the stale token.
-    r._refresh_effect = static_token(new_token, wait=1)
-    result = r.token()
-    assert result == stale_token
-    # Wait to be sure no async thread was started
-    time.sleep(1)
-    assert r._refresh_count == 0
 
-    # Inject an expired token.
-    expired_token = Token(
+    with _manual_executor() as executor, patch("databricks.sdk.oauth.datetime") as mock_dt:
+        mock_dt.now.return_value = now
+        r = _MockRefreshable(token=stale_token, disable_async=False, refresh_effect=fail)
+
+        mock_dt.now.return_value = stale_time
+        result = r.token()
+        assert result == stale_token
+
+        executor.run_all()
+        assert r._stale_after is not None
+
+        r._refresh_effect = static_token(new_token)
+        mock_dt.now.return_value = r._stale_after - timedelta(seconds=1)
+
+        assert r.token() == stale_token
+        assert r.token() == stale_token
+        assert r.token() == stale_token
+
+        assert not r._is_refreshing
+        assert r._refresh_count == 0
+
+
+def test_call_after_async_failure_cooldown_refreshes_token_async():
+    now = datetime(2024, 1, 1, 12, 0, 0)
+    stale_time = now + timedelta(minutes=41)
+
+    stale_token = Token(
         access_token="access_token",
-        expiry=datetime.now() - timedelta(seconds=300),
+        expiry=now + timedelta(minutes=60),
     )
-    r._token = expired_token
+    new_token = Token(
+        access_token="new_token",
+        expiry=now + timedelta(minutes=120),
+    )
 
-    # This should be blocking and return the new token.
-    result = r.token()
-    assert r._refresh_count == 1
-    assert result == new_token
-    # The refresh error should be cleared.
-    assert not r._refresh_err
+    with _manual_executor() as executor, patch("databricks.sdk.oauth.datetime") as mock_dt:
+        mock_dt.now.return_value = now
+        r = _MockRefreshable(token=stale_token, disable_async=False, refresh_effect=fail)
+
+        mock_dt.now.return_value = stale_time
+        result = r.token()
+        assert result == stale_token
+
+        executor.run_all()
+        assert r._stale_after is not None
+
+        r._refresh_effect = static_token(new_token)
+        mock_dt.now.return_value = r._stale_after + timedelta(seconds=1)
+
+        result = r.token()
+        assert result == stale_token
+        assert r._refresh_count == 0
+
+        executor.run_all()
+
+        result = r.token()
+        assert result == new_token
+        assert r._refresh_count == 1
 
 
-def test_dynamic_stale_period_blocking_refresh():
-    """
-    For each token type, verifies:
-    - Stale tokens trigger async refresh (returns old token immediately)
-    - Expired tokens trigger blocking refresh (blocks and returns new token)
-    """
+def test_late_async_refresh_does_not_overwrite_blocking_refresh():
+    """When a slow async refresh completes after a blocking refresh already
+    obtained a newer token, the stale async result must be discarded."""
+    now = datetime(2024, 1, 1, 12, 0, 0)
+    stale_time = now + timedelta(minutes=41)
+    expired_time = now + timedelta(minutes=61)
+
+    stale_token = Token(access_token="stale", expiry=now + timedelta(minutes=60))
+    async_result = Token(access_token="async_old", expiry=now + timedelta(minutes=90))
+    blocking_result = Token(access_token="blocking_new", expiry=now + timedelta(minutes=180))
+
+    call_count = 0
+
+    def ordered_refresh():
+        nonlocal call_count
+        call_count += 1
+        if call_count == 1:
+            return blocking_result
+        return async_result
+
+    with _manual_executor() as executor, patch("databricks.sdk.oauth.datetime") as mock_dt:
+        mock_dt.now.return_value = now
+        r = _MockRefreshable(token=stale_token, disable_async=False, refresh_effect=ordered_refresh)
+
+        # Stale → triggers async refresh (queued in executor, not yet run)
+        mock_dt.now.return_value = stale_time
+        result = r.token()
+        assert result.access_token == "stale"
+
+        # Token expires → blocking refresh obtains the newer token
+        mock_dt.now.return_value = expired_time
+        result = r.token()
+        assert result.access_token == "blocking_new"
+
+        # Run the queued async refresh. Its completion belongs to an older
+        # token generation, so the guard must discard it.
+        executor.run_all()
+
+        result = r.token()
+        assert result.access_token == "blocking_new"
+
+
+def test_late_async_refresh_failure_does_not_backoff_newer_token():
+    """A failed async refresh for an older generation must not change a newer token."""
+    now = datetime(2024, 1, 1, 12, 0, 0)
+    stale_time = now + timedelta(minutes=41)
+    expired_time = now + timedelta(minutes=61)
+
+    stale_token = Token(access_token="stale", expiry=now + timedelta(minutes=60))
+    blocking_result = Token(access_token="blocking_new", expiry=now + timedelta(minutes=180))
+
+    call_count = 0
+
+    def ordered_refresh():
+        nonlocal call_count
+        call_count += 1
+        if call_count == 1:
+            return blocking_result
+        raise Exception("late async failure")
+
+    with _manual_executor() as executor, patch("databricks.sdk.oauth.datetime") as mock_dt:
+        mock_dt.now.return_value = now
+        r = _MockRefreshable(token=stale_token, disable_async=False, refresh_effect=ordered_refresh)
+
+        # Stale -> triggers async refresh (queued in executor, not yet run)
+        mock_dt.now.return_value = stale_time
+        result = r.token()
+        assert result.access_token == "stale"
+
+        # Token expires -> blocking refresh obtains the newer token
+        mock_dt.now.return_value = expired_time
+        result = r.token()
+        assert result.access_token == "blocking_new"
+        stale_after_after_blocking_refresh = r._stale_after
+
+        # Run the queued async refresh. Its failure belongs to an older
+        # token generation and must not change the newer token state.
+        executor.run_all()
+
+        assert call_count == 2
+        assert r._stale_after == stale_after_after_blocking_refresh
+
+        # A stale failure would have pushed _stale_after to expired_time + 1 minute.
+        # The newer blocking-refreshed token should still be fresh here instead.
+        mock_dt.now.return_value = expired_time + timedelta(minutes=2)
+        assert r._token_state() == _TokenState.FRESH
+        assert r.token().access_token == "blocking_new"
+
+
+def test_stale_after_is_recomputed_after_blocking_refresh():
+    """Verifies that `_stale_after` is recomputed from the refreshed token."""
     test_cases = [
         {
-            "name": "standard OAuth token with 60-min TTL",
-            "token_ttl": timedelta(minutes=60),
-            "want_stale_duration": timedelta(minutes=20),  # min(30min, 20min) = 20min (capped)
+            "name": "recompute to a capped 20-minute stale period",
+            "initial_token_ttl": timedelta(minutes=10),
+            "refreshed_token_ttl": timedelta(minutes=60),
+            "want_stale_after_offset": timedelta(minutes=40),  # 60min - min(30min, 20min)
         },
         {
-            "name": "FastPath token with 10-min TTL",
-            "token_ttl": timedelta(minutes=10),
-            "want_stale_duration": timedelta(minutes=5),  # min(5min, 20min) = 5min (not capped)
+            "name": "recompute to a proportional 5-minute stale period",
+            "initial_token_ttl": timedelta(minutes=60),
+            "refreshed_token_ttl": timedelta(minutes=10),
+            "want_stale_after_offset": timedelta(minutes=5),  # 10min - min(5min, 20min)
         },
         {
-            "name": "very short token with 90-seconds TTL",
-            "token_ttl": timedelta(seconds=90),
-            "want_stale_duration": timedelta(seconds=45),  # min(90s, 20min) = 45s (not capped)
+            "name": "recompute to a proportional 45-second stale period",
+            "initial_token_ttl": timedelta(minutes=60),
+            "refreshed_token_ttl": timedelta(seconds=90),
+            "want_stale_after_offset": timedelta(seconds=45),  # 90s - min(45s, 20min)
         },
     ]
 
     for tc in test_cases:
         now = datetime(2024, 1, 1, 12, 0, 0)
+        refresh_time = now + tc["initial_token_ttl"] + timedelta(seconds=5)
 
         with patch("databricks.sdk.oauth.datetime") as mock_dt:
             mock_dt.now.return_value = now
 
-            initial_token = Token(access_token="initial", expiry=now + tc["token_ttl"])
+            initial_token = Token(access_token="initial", expiry=now + tc["initial_token_ttl"])
             r = _MockRefreshable(token=initial_token, disable_async=False)
-
-            assert r._stale_duration == tc["want_stale_duration"]
-            assert (
-                r._token_state() == _TokenState.FRESH
-            ), f'{tc["name"]}: initial state should be FRESH, is {r._token_state()}'
-
-            expired_time = now + tc["token_ttl"] + timedelta(seconds=5)
-            mock_dt.now.return_value = expired_time
-            assert (
-                r._token_state() == _TokenState.EXPIRED
-            ), f'{tc["name"]}: state should be EXPIRED, is {r._token_state()}'
 
             fresh_after_expired = Token(
                 access_token="after_expired_refresh",
-                expiry=expired_time + tc["token_ttl"],
+                expiry=refresh_time + tc["refreshed_token_ttl"],
             )
             r._refresh_effect = static_token(fresh_after_expired)
 
+            mock_dt.now.return_value = refresh_time
             result = r.token()
             assert (
                 result.access_token == "after_expired_refresh"
@@ -350,31 +451,42 @@ def test_dynamic_stale_period_blocking_refresh():
                 r._token_state() == _TokenState.FRESH
             ), f'{tc["name"]}: state should be FRESH after expired refresh, is {r._token_state()}'
             assert (
-                r._stale_duration == tc["want_stale_duration"]
-            ), f'{tc["name"]}: stale duration should be {tc["want_stale_duration"]}, is {r._stale_duration}'
+                r._stale_after == refresh_time + tc["want_stale_after_offset"]
+            ), f'{tc["name"]}: _stale_after should be {refresh_time + tc["want_stale_after_offset"]}, is {r._stale_after}'
 
 
-def test_dynamic_stale_period_async_refresh():
+def test_stale_after_computation():
     """
-    For each token type, verifies:
-    - Stale tokens trigger async refresh (returns old token immediately)
-    - Expired tokens trigger blocking refresh (blocks and returns new token)
+    Verifies that `_stale_after` is computed correctly for both the dynamic
+    and legacy stale-duration paths.
     """
     test_cases = [
         {
-            "name": "standard OAuth token with 60-min TTL",
+            "name": "standard OAuth token with 60-min TTL uses capped dynamic stale period",
             "token_ttl": timedelta(minutes=60),
-            "advance_time_for_stale": timedelta(minutes=41),  # 19min remaining < 20min stale period
+            "want_stale_after_offset": timedelta(minutes=40),  # 60min - min(30min, 20min)
         },
         {
-            "name": "FastPath token with 10-min TTL",
+            "name": "FastPath token with 10-min TTL uses proportional dynamic stale period",
             "token_ttl": timedelta(minutes=10),
-            "advance_time_for_stale": timedelta(minutes=6),  # 4min remaining < 5min stale period
+            "want_stale_after_offset": timedelta(minutes=5),  # 10min - min(5min, 20min)
         },
         {
-            "name": "very short token with 90-seconds TTL",
+            "name": "very short token with 90-seconds TTL uses proportional dynamic stale period",
             "token_ttl": timedelta(seconds=90),
-            "advance_time_for_stale": timedelta(seconds=46),  # 44s remaining < 45s stale period
+            "want_stale_after_offset": timedelta(seconds=45),  # 90s - min(45s, 20min)
+        },
+        {
+            "name": "legacy path honors a 5-minute stale duration",
+            "token_ttl": timedelta(minutes=60),
+            "stale_duration": timedelta(minutes=5),
+            "want_stale_after_offset": timedelta(minutes=55),
+        },
+        {
+            "name": "legacy path honors zero stale duration",
+            "token_ttl": timedelta(minutes=10),
+            "stale_duration": timedelta(seconds=0),
+            "want_stale_after_offset": timedelta(minutes=10),
         },
     ]
 
@@ -385,30 +497,12 @@ def test_dynamic_stale_period_async_refresh():
             mock_dt.now.return_value = now
 
             initial_token = Token(access_token="initial", expiry=now + tc["token_ttl"])
-
-            stale_refresh_token = Token(
-                access_token="after_stale_refresh",
-                expiry=now + tc["token_ttl"] + tc["token_ttl"],
+            r = _MockRefreshable(
+                token=initial_token,
+                disable_async=False,
+                stale_duration=tc.get("stale_duration"),
             )
-            refresh_fn, unblock = blocking_refresh(stale_refresh_token)
-            r = _MockRefreshable(token=initial_token, disable_async=False, refresh_effect=refresh_fn)
 
             assert (
-                r._token_state() == _TokenState.FRESH
-            ), f'{tc["name"]}: initial state should be FRESH, is {r._token_state()}'
-
-            # --- STALE: async refresh returns old token immediately ---
-            mock_dt.now.return_value = now + tc["advance_time_for_stale"]
-            assert r._token_state() == _TokenState.STALE, f'{tc["name"]}: state should be STALE, is {r._token_state()}'
-
-            result = r.token()
-            assert result.access_token == "initial", f'{tc["name"]}: stale refresh should return old token (async)'
-
-            unblock()
-            time.sleep(0.1)
-
-            result = r.token()
-            assert (
-                result.access_token == "after_stale_refresh"
-            ), f'{tc["name"]}: after async refresh should return new token'
-            assert r._refresh_count == 1, f'{tc["name"]}: one refresh after stale, got {r._refresh_count}'
+                r._stale_after == now + tc["want_stale_after_offset"]
+            ), f'{tc["name"]}: _stale_after should be {now + tc["want_stale_after_offset"]}, is {r._stale_after}'
