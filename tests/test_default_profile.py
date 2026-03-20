@@ -102,9 +102,9 @@ host = https://my-workspace.cloud.databricks.com
 token = dapiXYZ
 """,
     )
-    # Explicitly requesting __settings__ as a profile should fail,
-    # proving the SDK excludes it from the profile map.
-    with pytest.raises(ValueError, match="has no __settings__ profile configured"):
+    # Explicitly requesting __settings__ as a profile should fail with a
+    # clear "reserved section name" error, not a generic "no profile" error.
+    with pytest.raises(ValueError, match="__settings__ is a reserved section name"):
         Config(
             config_file=cfg_file,
             profile="__settings__",
@@ -113,7 +113,7 @@ token = dapiXYZ
 
 
 def test_default_profile_pointing_to_settings_section_is_rejected(tmp_path):
-    """default_profile = __settings__ should fail like any other non-profile target."""
+    """default_profile = __settings__ should fail with a reserved section name error."""
     cfg_file = _write_cfg(
         tmp_path,
         """\
@@ -125,7 +125,7 @@ host = https://my-workspace.cloud.databricks.com
 token = dapiXYZ
 """,
     )
-    with pytest.raises(ValueError, match="has no __settings__ profile configured"):
+    with pytest.raises(ValueError, match="__settings__ is a reserved section name"):
         Config(config_file=cfg_file, credentials_strategy=noop_credentials)
 
 

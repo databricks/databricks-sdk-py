@@ -716,6 +716,37 @@ class Config:
         if found:
             logger.debug("Loaded from environment")
 
+    @staticmethod
+    def _resolve_profile(requested_profile, ini_file):
+        """Resolve which profile to load from the config file.
+
+        Returns (profile_name, is_fallback):
+          - If requested_profile is set explicitly, returns it with is_fallback=False.
+          - If [__settings__].default_profile is set, returns it with is_fallback=False.
+          - If [DEFAULT] has keys, returns "DEFAULT" with is_fallback=True.
+          - Otherwise returns (None, True) to signal no config is available.
+
+        Raises ValueError if the resolved profile is the reserved __settings__ section.
+        """
+        _SETTINGS_SECTION = "__settings__"
+
+        if requested_profile is not None:
+            if requested_profile == _SETTINGS_SECTION:
+                raise ValueError(f"{_SETTINGS_SECTION} is a reserved section name" " and cannot be used as a profile")
+            return requested_profile, False
+
+        settings = ini_file._sections.get(_SETTINGS_SECTION, {})
+        default_profile = settings.get("default_profile", "").strip()
+        if default_profile:
+            if default_profile == _SETTINGS_SECTION:
+                raise ValueError(f"{_SETTINGS_SECTION} is a reserved section name" " and cannot be used as a profile")
+            return default_profile, False
+
+        if ini_file.defaults():
+            return "DEFAULT", True
+
+        return None, True
+
     def _known_file_config_loader(self):
         if not self.profile and (self.is_any_auth_configured or self.host or self.azure_workspace_resource_id):
             # skip loading configuration file if there's any auth configured
@@ -730,31 +761,22 @@ class Config:
             return
         ini_file = configparser.ConfigParser()
         ini_file.read(config_path)
-        profile = self.profile
-        has_explicit_profile = self.profile is not None
-        has_default_profile_setting = False
         # In Go SDK, we skip merging the profile with DEFAULT section, though Python's ConfigParser.items()
         # is returning profile key-value pairs _including those from DEFAULT_. This is not what we expect
         # from Unified Auth test suite at the moment. Hence, the private variable access.
         # See: https://docs.python.org/3/library/configparser.html#mapping-protocol-access
-        if not has_explicit_profile:
-            # Check [__settings__].default_profile before falling back to [DEFAULT].
-            settings = ini_file._sections.get("__settings__", {})
-            default_profile = settings.get("default_profile", "").strip()
-            if default_profile:
-                profile = default_profile
-                has_default_profile_setting = True
-            elif ini_file.defaults():
-                profile = "DEFAULT"
-            else:
-                logger.debug(f"{config_path} has no DEFAULT profile configured")
-                return
+        profile, is_fallback = self._resolve_profile(self.profile, ini_file)
+        if profile is None:
+            logger.debug(f"{config_path} has no DEFAULT profile configured")
+            return
         profiles = {name: values for name, values in ini_file._sections.items()}
-        # [__settings__] is not a profile; exclude it from the profile map.
         profiles.pop("__settings__", None)
         if ini_file.defaults():
             profiles["DEFAULT"] = ini_file.defaults()
         if profile not in profiles:
+            if is_fallback:
+                logger.debug(f"{config_path} has no {profile} profile configured")
+                return
             raise ValueError(f"resolve: {config_path} has no {profile} profile configured")
         raw_config = profiles[profile]
         logger.info(f"loading {profile} profile from {config_file}: {', '.join(raw_config.keys())}")
@@ -763,7 +785,7 @@ class Config:
                 # don't overwrite a value previously set
                 continue
             self.__setattr__(k, v)
-        if has_default_profile_setting:
+        if not is_fallback:
             self.profile = profile
 
     def _validate(self):
