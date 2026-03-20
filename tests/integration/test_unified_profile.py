@@ -43,6 +43,7 @@ def clean_env(monkeypatch):
 
 
 # Environment: azure-prod-ucws
+@pytest.mark.integration
 def test_spog_workspace_oauth_m2m(clean_env):
     host = clean_env("UNIFIED_HOST")
     client_id = clean_env("TEST_DATABRICKS_CLIENT_ID")
@@ -62,6 +63,7 @@ def test_spog_workspace_oauth_m2m(clean_env):
 
 
 # Environment: azure-prod, azure-prod-ucws
+@pytest.mark.integration
 def test_spog_workspace_azure_client_secret(clean_env):
     host = clean_env("UNIFIED_HOST")
     workspace_id = clean_env("THIS_WORKSPACE_ID")
@@ -83,6 +85,7 @@ def test_spog_workspace_azure_client_secret(clean_env):
 
 
 # Environment: gcp-prod, gcp-prod-ucws
+@pytest.mark.integration
 def test_spog_workspace_google_credentials(clean_env):
     host = clean_env("UNIFIED_HOST")
     workspace_id = clean_env("THIS_WORKSPACE_ID")
@@ -102,6 +105,7 @@ def test_spog_workspace_google_credentials(clean_env):
 
 
 # Environment: aws-prod, gcp-prod, gcp-prod-ucws
+@pytest.mark.integration
 def test_spog_workspace_pat(clean_env):
     host = clean_env("UNIFIED_HOST")
     workspace_id = clean_env("THIS_WORKSPACE_ID")
@@ -121,6 +125,7 @@ def test_spog_workspace_pat(clean_env):
 
 
 # Environment: azure-prod-acct
+@pytest.mark.integration
 def test_spog_account_oauth_m2m(clean_env):
     host = clean_env("UNIFIED_HOST")
     account_id = clean_env("DATABRICKS_ACCOUNT_ID")
@@ -138,6 +143,7 @@ def test_spog_account_oauth_m2m(clean_env):
 
 
 # Environment: azure-prod-acct
+@pytest.mark.integration
 def test_spog_account_azure_client_secret(clean_env):
     host = clean_env("UNIFIED_HOST")
     account_id = clean_env("DATABRICKS_ACCOUNT_ID")
@@ -157,6 +163,7 @@ def test_spog_account_azure_client_secret(clean_env):
 
 
 # Environment: gcp-acct-prod, gcp-prod-ucacct
+@pytest.mark.integration
 def test_spog_account_google_credentials(clean_env):
     host = clean_env("UNIFIED_HOST")
     account_id = clean_env("DATABRICKS_ACCOUNT_ID")
