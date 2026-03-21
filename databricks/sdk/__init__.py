@@ -208,7 +208,6 @@ class WorkspaceClient:
         *,
         host: Optional[str] = None,
         account_id: Optional[str] = None,
-        workspace_id: Optional[str] = None,
         username: Optional[str] = None,
         password: Optional[str] = None,
         client_id: Optional[str] = None,
@@ -241,7 +240,6 @@ class WorkspaceClient:
             config = client.Config(
                 host=host,
                 account_id=account_id,
-                workspace_id=workspace_id,
                 username=username,
                 password=password,
                 client_id=client_id,
