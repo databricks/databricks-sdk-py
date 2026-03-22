@@ -5614,7 +5614,8 @@ class QueryStatementType(Enum):
 
 
 class QueryStatus(Enum):
-    """Statuses which are also used by OperationStatus in runtime"""
+    """Statuses which are also used by OperationStatus in runtime. When adding a new QueryStatus, make
+    sure to update com.databricks.sqlgateway.history.QueryStatusOrdering"""
 
     CANCELED = "CANCELED"
     COMPILED = "COMPILED"
