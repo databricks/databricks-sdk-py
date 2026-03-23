@@ -869,7 +869,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: QueryStatus
 
-   Statuses which are also used by OperationStatus in runtime
+   Statuses which are also used by OperationStatus in runtime. When adding a new QueryStatus, make sure to update com.databricks.sqlgateway.history.QueryStatusOrdering
 
    .. py:attribute:: CANCELED
       :value: "CANCELED"
