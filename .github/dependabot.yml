@@ -4,3 +4,14 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    # Disable version update PRs; only security updates are opened.
+    open-pull-requests-limit: 0
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    # tagging.yml is generated and maintained externally.
+    exclude-paths:
+      - .github/workflows/tagging.yml
