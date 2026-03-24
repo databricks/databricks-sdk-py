@@ -202,6 +202,81 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CustomerFacingIngressNetworkPolicy
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAppsDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAuthentication
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAuthenticationIdentity
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType
+
+   .. py:attribute:: PRINCIPAL_TYPE_SERVICE_PRINCIPAL
+      :value: "PRINCIPAL_TYPE_SERVICE_PRINCIPAL"
+
+   .. py:attribute:: PRINCIPAL_TYPE_USER
+      :value: "PRINCIPAL_TYPE_USER"
+
+.. py:class:: CustomerFacingIngressNetworkPolicyAuthenticationIdentityType
+
+   .. py:attribute:: IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS
+      :value: "IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS"
+
+   .. py:attribute:: IDENTITY_TYPE_ALL_USERS
+      :value: "IDENTITY_TYPE_ALL_USERS"
+
+   .. py:attribute:: IDENTITY_TYPE_SELECTED_IDENTITIES
+      :value: "IDENTITY_TYPE_SELECTED_IDENTITIES"
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyIpRanges
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyLakebaseDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPublicAccess
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode
+
+   .. py:attribute:: FULL_ACCESS
+      :value: "FULL_ACCESS"
+
+   .. py:attribute:: RESTRICTED_ACCESS
+      :value: "RESTRICTED_ACCESS"
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPublicIngressRule
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPublicRequestOrigin
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyRequestDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyWorkspaceApiDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyWorkspaceUiDestination
+   :members:
+   :undoc-members:
+
 .. autoclass:: CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule
    :members:
    :undoc-members:
