@@ -3,6 +3,7 @@
 ## Release v0.103.0
 
 ### New Features and Improvements
+* Add support for host-agnostic and SPOG (Single Pane of Glass) URLs. The SDK now automatically supports for all hosts without requiring the `experimental_is_unified_host` flag, which has been removed.
 * Accept `DATABRICKS_OIDC_TOKEN_FILEPATH` environment variable for consistency with other Databricks SDKs (Go, CLI, Terraform). The previous `DATABRICKS_OIDC_TOKEN_FILE` is still supported as an alias.
 
 ### Security

@@ -321,7 +321,7 @@ class TestDatabricksCliTokenSourceArgs:
         mock_cfg = Mock()
         mock_cfg.profile = None
         mock_cfg.host = "https://accounts.cloud.databricks.com"
-        mock_cfg.experimental_is_unified_host = False
+
         mock_cfg.account_id = "test-account-id"
         mock_cfg.client_type = ClientType.ACCOUNT
         mock_cfg.databricks_cli_path = "/path/to/databricks"
@@ -348,7 +348,7 @@ class TestDatabricksCliTokenSourceArgs:
         mock_cfg = Mock()
         mock_cfg.profile = "my-profile"
         mock_cfg.host = "https://workspace.databricks.com"
-        mock_cfg.experimental_is_unified_host = False
+
         mock_cfg.databricks_cli_path = "/path/to/databricks"
         mock_cfg.disable_async_token_refresh = False
 
