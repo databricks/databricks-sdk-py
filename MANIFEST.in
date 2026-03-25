@@ -14,6 +14,8 @@ exclude .readthedocs.yaml
 exclude docs-requirements.txt
 exclude NEXT_CHANGELOG.md
 exclude tagging.py
+exclude tagging.py.lock
+exclude uv.lock
 exclude .package.json
 exclude .release_metadata.json
 
