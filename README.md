@@ -137,11 +137,11 @@ Depending on the Databricks authentication method, the SDK uses the following in
 
 ### Unified host support
 
-Certain Databricks host types, such as SPOG (Single Pane of Glass) URLs, support both account-level and workspace-level API operations from a single endpoint. When using a unified host, a single configuration profile can be used to create both `WorkspaceClient` and `AccountClient` instances without changing the `host`.
+Certain Databricks host types support both account-level and workspace-level API operations from a single endpoint. When using such a unified host, a single configuration profile can be used to create both `WorkspaceClient` and `AccountClient` instances without changing the `host`.
 
 For this to work, the following conditions must be met:
 
-1. The host must support unified operations (e.g., a SPOG URL).
+1. The host must support unified operations.
 2. Both `account_id` and `workspace_id` must be available — either set explicitly in the configuration or auto-discovered.
 
 When both values are present, the SDK uses `workspace_id` to route workspace-level requests and `account_id` to route account-level requests, all through the same host.
