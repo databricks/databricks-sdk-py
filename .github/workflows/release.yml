@@ -25,7 +25,7 @@ jobs:
           python-version: 3.13
 
       - name: Install build
-        run: pip install build
+        run: pip install --require-hashes -r requirements-build-lock.txt
 
       - name: Build wheel
         run: python -m build
