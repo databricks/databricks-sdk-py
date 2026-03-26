@@ -19,7 +19,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install pip-tools
-        run: pip install pip-tools
+        run: pip install --require-hashes -r requirements-pip-tools-lock.txt
 
       - name: Verify lockfiles are in sync with pyproject.toml
         run: make check-lock
