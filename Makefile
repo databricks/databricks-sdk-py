@@ -46,5 +46,15 @@ benchmark:
 coverage: test
 	open htmlcov/index.html
 
+lock:
+	pip-compile --generate-hashes --allow-unsafe --extra dev --output-file requirements-dev-lock.txt pyproject.toml
+	pip-compile --generate-hashes --allow-unsafe --output-file requirements-lock.txt pyproject.toml
+
+check-lock:
+	pip-compile --generate-hashes --allow-unsafe --extra dev --output-file /tmp/requirements-dev-lock.txt pyproject.toml
+	pip-compile --generate-hashes --allow-unsafe --output-file /tmp/requirements-lock.txt pyproject.toml
+	diff -q requirements-dev-lock.txt /tmp/requirements-dev-lock.txt || (echo "requirements-dev-lock.txt is out of date - run 'make lock'" && exit 1)
+	diff -q requirements-lock.txt /tmp/requirements-lock.txt || (echo "requirements-lock.txt is out of date - run 'make lock'" && exit 1)
+
 clean:
 	rm -fr dist *.egg-info .pytest_cache build htmlcov

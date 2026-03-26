@@ -12,6 +12,17 @@ The GitHub review process for major features is also important so that organizat
 If it is appropriate to write a design document, the document must be hosted either in the GitHub tracking issue, or linked to from the issue and hosted in a world-readable location.
 Small patches and bug fixes don't need prior communication.
 
+## Dependencies
+
+Dependencies are declared in `pyproject.toml` and pinned with SHA-256 hashes in lockfiles (`requirements-dev-lock.txt`, `requirements-lock.txt`). If you add, remove, or change a dependency in `pyproject.toml`, regenerate the lockfiles:
+
+```
+pip install pip-tools
+make lock
+```
+
+Commit the updated lockfiles alongside your `pyproject.toml` changes. CI will fail if the lockfiles are out of sync.
+
 ## Coding Style
 
 Code style is enforced by a formatter check in your pull request. We use [Black](https://github.com/psf/black) to format our code. Run `make fmt` to ensure your code is properly formatted prior to raising a pull request.
