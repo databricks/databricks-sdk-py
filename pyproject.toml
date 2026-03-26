@@ -7,7 +7,7 @@ name = "databricks-sdk"
 dynamic = ["version"]
 description = "Databricks SDK for Python (Beta)"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 keywords = ["databricks", "sdk"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -15,7 +15,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Intended Audience :: System Administrators",
     "License :: OSI Approved :: Apache Software License",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -53,9 +52,10 @@ dev = [
     "databricks-connect",
     "pytest-rerunfailures",
     "openai",
-    'langchain-openai; python_version > "3.7"',
+    'langchain-openai; python_version >= "3.9"',
     "httpx",
     "build", # some integration tests depend on the databricks-sdk-py wheel
+    "check-manifest",
 ]
 notebook = [
     "ipython>=8,<10",
@@ -63,7 +63,7 @@ notebook = [
 ]
 openai = [
     "openai",
-    'langchain-openai; python_version > "3.7"',
+    'langchain-openai; python_version >= "3.9"',
     "httpx",
 ]
 
@@ -78,11 +78,11 @@ include = ["databricks", "databricks.*"]
 
 [tool.black]
 line-length = 120 
-target-version = ['py37', 'py38', 'py39', 'py310', 'py311','py312','py313']
+target-version = ['py38', 'py39', 'py310', 'py311','py312','py313']
 
 [tool.pyright]
 include = ["."]
 exclude = ["**/node_modules", "**/__pycache__"]
 reportMissingImports = true
 reportMissingTypeStubs = false
-pythonVersion = "3.7"
+pythonVersion = "3.8"

@@ -26,13 +26,18 @@ jobs:
       with:
         os: windows-latest
         pyVersion: ${{ matrix.pyVersion }}
-          
+
   fmt:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
+        with:
+          version: "0.6.5"
 
       - name: Format all files
         run: make dev fmt
@@ -47,11 +52,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
 
-      - uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4.9.1
+      - name: Install uv
+        uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
         with:
-          python-version: 3.13
+          version: "0.6.5"
 
       - name: Check MANIFEST.in
-        run: |
-          pip install check-manifest
-          check-manifest .
+        run: make dev && uv run check-manifest .
