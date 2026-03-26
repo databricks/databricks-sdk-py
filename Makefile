@@ -5,10 +5,20 @@ ifeq ($(OS), Windows_NT)
 else
 	. .venv/bin/activate
 endif
+ifeq ($(CI),true)
+	pip install --require-hashes -r requirements-dev-lock.txt
+	pip install --no-deps .
+else
 	pip install '.[dev]'
+endif
 
 install:
+ifeq ($(CI),true)
+	pip install --require-hashes -r requirements-lock.txt
+	pip install --no-deps .
+else
 	pip install .
+endif
 
 fmt:
 	black databricks tests
