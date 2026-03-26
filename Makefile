@@ -46,13 +46,16 @@ benchmark:
 coverage: test
 	open htmlcov/index.html
 
+define pip-lock
+	pip-compile --generate-hashes --allow-unsafe --extra dev --output-file $(1)/requirements-dev-lock.txt pyproject.toml
+	pip-compile --generate-hashes --allow-unsafe --output-file $(1)/requirements-lock.txt pyproject.toml
+endef
+
 lock:
-	pip-compile --generate-hashes --allow-unsafe --extra dev --output-file requirements-dev-lock.txt pyproject.toml
-	pip-compile --generate-hashes --allow-unsafe --output-file requirements-lock.txt pyproject.toml
+	$(call pip-lock,.)
 
 check-lock:
-	pip-compile --generate-hashes --allow-unsafe --extra dev --output-file /tmp/requirements-dev-lock.txt pyproject.toml
-	pip-compile --generate-hashes --allow-unsafe --output-file /tmp/requirements-lock.txt pyproject.toml
+	$(call pip-lock,/tmp)
 	diff -q requirements-dev-lock.txt /tmp/requirements-dev-lock.txt || (echo "requirements-dev-lock.txt is out of date - run 'make lock'" && exit 1)
 	diff -q requirements-lock.txt /tmp/requirements-lock.txt || (echo "requirements-lock.txt is out of date - run 'make lock'" && exit 1)
 
