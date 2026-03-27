@@ -9,7 +9,6 @@ import pathlib
 import platform
 import re
 import shutil
-import sys
 import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
 from collections import deque
@@ -430,10 +429,7 @@ class _LocalPath(_Path):
                     _LocalPath(leaf.path).delete()
             self._path.rmdir()
         else:
-            kw = {}
-            if sys.version_info[:2] > (3, 7):
-                kw["missing_ok"] = True
-            self._path.unlink(**kw)
+            self._path.unlink(missing_ok=True)
 
     def __repr__(self) -> str:
         return f"<_LocalPath {self._path}>"

@@ -11,6 +11,9 @@
 
 ### Documentation
 
+### Breaking Changes
+* Drop support for Python 3.8 and 3.9. The minimum supported Python version is now 3.10, in line with the oldest supported Databricks Runtime LTS (DBR 13.3).
+
 ### Internal Changes
 * Replace the async-disabling mechanism on token refresh failure with a 1-minute retry backoff. Previously, a single failed async refresh would disable proactive token renewal until the token expired. Now, the SDK waits a short cooldown period and retries, improving resilience to transient errors.
 * Extract `_resolve_profile` to simplify config file loading and improve `__settings__` error messages.

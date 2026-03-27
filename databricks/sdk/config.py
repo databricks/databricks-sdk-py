@@ -5,7 +5,6 @@ import logging
 import os
 import pathlib
 import re
-import sys
 import urllib.parse
 from typing import Dict, Iterable, List, Optional
 
@@ -614,15 +613,9 @@ class Config:
         """Returns a list of Databricks SDK configuration metadata"""
         if hasattr(cls, "_attributes"):
             return cls._attributes
-        if sys.version_info[1] >= 10:
-            import inspect
+        import inspect
 
-            anno = inspect.get_annotations(cls)
-        else:
-            # Python 3.7 compatibility: getting type hints require extra hop, as described in
-            # "Accessing The Annotations Dict Of An Object In Python 3.9 And Older" section of
-            # https://docs.python.org/3/howto/annotations.html
-            anno = cls.__dict__["__annotations__"]
+        anno = inspect.get_annotations(cls)
         attrs = []
         for name, v in cls.__dict__.items():
             if type(v) != ConfigAttribute:
