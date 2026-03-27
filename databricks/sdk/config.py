@@ -259,7 +259,7 @@ class Config:
 
     # Whether to enable the storage proxy for file operations.
     # When enabled, the SDK will probe the storage proxy and use it if available.
-    experimental_files_ext_enable_storage_proxy: bool = False
+    experimental_files_ext_enable_storage_proxy: bool = ConfigAttribute(env="DATABRICKS_EXPERIMENTAL_FILES_EXT_ENABLE_STORAGE_PROXY")
 
     def __init__(
         self,
