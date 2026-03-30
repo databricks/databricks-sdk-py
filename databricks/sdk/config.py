@@ -421,14 +421,14 @@ class Config:
 
     @property
     def host_type(self) -> HostType:
-        """
-        [DEPRECATED]
-        Host type and client type are deprecated. Some hosts can now support both workspace and account APIs.
-        This method returns the HostType based on the host pattern, which is not accurate.
-        For example, a unified host can support both workspace and account APIs, but WORKSPACE is returned.
+        """Returns the type of host that the client is configured for.
 
-        This method still returns the correct value for legacy hosts which only support either workspace or account APIs.
+        When available, uses the host type resolved from the /.well-known/databricks-config
+        discovery endpoint. Falls back to URL-based pattern matching when metadata is unavailable.
         """
+        if self._resolved_host_type is not None:
+            return self._resolved_host_type
+
         if not self.host:
             return HostType.WORKSPACE
 

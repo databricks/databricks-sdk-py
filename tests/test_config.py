@@ -1169,3 +1169,103 @@ def test_resolve_host_metadata_falls_back_to_account_id_when_no_default_oidc_aud
     config = Config(host=_DUMMY_ACC_HOST, token="t", account_id=_DUMMY_ACCOUNT_ID)
     # No default_oidc_audience and no workspace_id → falls back to account_id
     assert config.token_audience == _DUMMY_ACCOUNT_ID
+
+
+# ---------------------------------------------------------------------------
+# host_type property uses resolved host type from metadata
+# ---------------------------------------------------------------------------
+
+
+def test_host_type_uses_metadata_workspace(mocker):
+    """Metadata host_type=workspace overrides an account-like URL pattern."""
+    acc_host = "https://accounts.cloud.databricks.com"
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{acc_host}/oidc/accounts/{_DUMMY_ACCOUNT_ID}",
+                "account_id": _DUMMY_ACCOUNT_ID,
+                "host_type": "workspace",
+            }
+        ),
+    )
+    config = Config(host=acc_host, token="t", account_id=_DUMMY_ACCOUNT_ID)
+    assert config.host_type == HostType.WORKSPACE
+
+
+def test_host_type_uses_metadata_account(mocker):
+    """Metadata host_type=account overrides a workspace-like URL pattern."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+                "host_type": "account",
+            }
+        ),
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t")
+    assert config.host_type == HostType.ACCOUNTS
+
+
+def test_host_type_uses_metadata_unified(mocker):
+    """Metadata host_type=unified is returned by host_type property."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+                "host_type": "unified",
+            }
+        ),
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t")
+    assert config.host_type == HostType.UNIFIED
+
+
+def test_host_type_falls_back_to_url_when_metadata_unknown(mocker):
+    """Falls back to URL-based matching when metadata host_type is unrecognized."""
+    acc_host = "https://accounts.cloud.databricks.com"
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{acc_host}/oidc/accounts/{_DUMMY_ACCOUNT_ID}",
+                "account_id": _DUMMY_ACCOUNT_ID,
+            }
+        ),
+    )
+    config = Config(host=acc_host, token="t", account_id=_DUMMY_ACCOUNT_ID)
+    assert config.host_type == HostType.ACCOUNTS
+
+
+def test_host_type_falls_back_to_url_workspace_when_metadata_unknown(mocker):
+    """Falls back to URL-based WORKSPACE when metadata has no host_type."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+            }
+        ),
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t")
+    assert config.host_type == HostType.WORKSPACE
+
+
+def test_host_type_end_to_end_metadata_resolves(mocker):
+    """End-to-end: resolve → host_type returns metadata value over URL matching."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+                "account_id": _DUMMY_ACCOUNT_ID,
+                "host_type": "account",
+            }
+        ),
+    )
+    # Workspace-like URL but account host_type from metadata
+    config = Config(host=_DUMMY_WS_HOST, token="t")
+    assert config.host_type == HostType.ACCOUNTS
+    assert config._resolved_host_type == HostType.ACCOUNTS
