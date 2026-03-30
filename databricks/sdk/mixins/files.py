@@ -412,16 +412,24 @@ class _LocalPath(_Path):
             path = queue.popleft()
             for leaf in path.iterdir():
                 if leaf.is_dir():
+                    # Yield directory info, path ends with '/'
+                    info = leaf.stat()
+                    yield files.FileInfo(
+                        path="file:" + str(leaf.absolute()) + "/",
+                        is_dir=True,
+                        file_size=0,
+                        modification_time=int(info.st_mtime_ns / 1e6),
+                    )
                     if recursive:
                         queue.append(leaf)
-                    continue
-                info = leaf.stat()
-                yield files.FileInfo(
-                    path="file:" + str(leaf.absolute()),
-                    is_dir=False,
-                    file_size=info.st_size,
-                    modification_time=int(info.st_mtime_ns / 1e6),
-                )
+                else:
+                    info = leaf.stat()
+                    yield files.FileInfo(
+                        path="file:" + str(leaf.absolute()),
+                        is_dir=False,
+                        file_size=info.st_size,
+                        modification_time=int(info.st_mtime_ns / 1e6),
+                    )
 
     def delete(self, *, recursive=False):
         if self.is_dir:
