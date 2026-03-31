@@ -8,8 +8,7 @@ import pytest
 from requests import PreparedRequest, Response, Timeout
 
 from databricks.sdk import errors, useragent
-from databricks.sdk._base_client import (_BaseClient, _RawResponse,
-                                         _StreamingResponse)
+from databricks.sdk._base_client import _BaseClient, _RawResponse, _StreamingResponse
 from databricks.sdk.core import DatabricksError
 
 from .clock import FakeClock

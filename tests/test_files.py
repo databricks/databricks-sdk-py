@@ -24,9 +24,14 @@ from requests import RequestException
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.core import Config
 from databricks.sdk.environments import Cloud, DatabricksEnvironment
-from databricks.sdk.errors.platform import (AlreadyExists, BadRequest,
-                                            InternalError, NotImplemented,
-                                            PermissionDenied, TooManyRequests)
+from databricks.sdk.errors.platform import (
+    AlreadyExists,
+    BadRequest,
+    InternalError,
+    NotImplemented,
+    PermissionDenied,
+    TooManyRequests,
+)
 from databricks.sdk.mixins.files import FallbackToDownloadUsingFilesApi
 from databricks.sdk.mixins.files_utils import CreateDownloadUrlResponse
 from tests.clock import FakeClock

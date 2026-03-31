@@ -11,8 +11,7 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 from ..errors import OperationFailed
 

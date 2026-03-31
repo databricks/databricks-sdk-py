@@ -10,8 +10,7 @@ from urllib.parse import parse_qs
 import pytest
 
 from databricks.sdk import AccountClient, WorkspaceClient, oauth, useragent
-from databricks.sdk.config import (ClientType, Config, HostType, with_product,
-                                   with_user_agent_extra)
+from databricks.sdk.config import ClientType, Config, HostType, with_product, with_user_agent_extra
 from databricks.sdk.environments import Cloud
 from databricks.sdk.oauth import HostMetadata
 from databricks.sdk.version import __version__
@@ -900,7 +899,6 @@ def test_resolve_host_metadata_cloud_not_overwritten(mocker):
     config = Config(
         host=_DUMMY_WS_HOST,
         token="t",
-
         cloud="AWS",
     )
     assert config.cloud == Cloud.AWS
@@ -936,7 +934,6 @@ def test_resolve_host_metadata_sets_token_audience_for_account_host(mocker):
         host=_DUMMY_ACC_HOST,
         token="t",
         account_id=_DUMMY_ACCOUNT_ID,
-
     )
     assert config.token_audience == _DUMMY_ACCOUNT_ID
 
@@ -972,7 +969,6 @@ def test_resolve_host_metadata_does_not_overwrite_token_audience(mocker):
         host=_DUMMY_ACC_HOST,
         token="t",
         account_id=_DUMMY_ACCOUNT_ID,
-
         token_audience="custom-audience",
     )
     assert config.token_audience == "custom-audience"

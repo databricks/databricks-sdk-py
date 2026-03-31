@@ -3,8 +3,7 @@
 import pytest
 
 from databricks.sdk.core import ApiClient
-from tests.databricks.sdk.service.idempotencytesting import (
-    IdempotencyTestingAPI, TestResource)
+from tests.databricks.sdk.service.idempotencytesting import IdempotencyTestingAPI, TestResource
 
 
 @pytest.mark.parametrize(

@@ -6,12 +6,15 @@ import requests
 from ..logger import RoundTrip
 from .base import DatabricksError
 from .customizer import _ErrorCustomizer, _RetryAfterCustomizer
-from .deserializer import (_EmptyDeserializer, _ErrorDeserializer,
-                           _HtmlErrorDeserializer, _StandardErrorDeserializer,
-                           _StringErrorDeserializer)
+from .deserializer import (
+    _EmptyDeserializer,
+    _ErrorDeserializer,
+    _HtmlErrorDeserializer,
+    _StandardErrorDeserializer,
+    _StringErrorDeserializer,
+)
 from .mapper import _error_mapper
-from .private_link import (_get_private_link_validation_error,
-                           _is_private_link_redirect)
+from .private_link import _get_private_link_validation_error, _is_private_link_redirect
 
 # A list of _ErrorDeserializers that are tried in order to parse an API error from a response body. Most errors should
 # be parsable by the _StandardErrorDeserializer, but additional parsers can be added here for specific error formats.

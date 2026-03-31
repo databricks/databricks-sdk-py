@@ -21,8 +21,7 @@ from queue import Empty, Full, Queue
 from tempfile import mkstemp
 from threading import Event, Lock, Thread
 from types import TracebackType
-from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Callable, Generator,
-                    Iterable, Optional, Type, Union)
+from typing import TYPE_CHECKING, AnyStr, BinaryIO, Callable, Generator, Iterable, Optional, Type, Union
 from urllib import parse
 
 import requests
@@ -38,8 +37,7 @@ from ..retries import retried
 from ..service import files
 from ..service._internal import _escape_multi_segment_path_parameter
 from ..service.files import DownloadResponse
-from .files_utils import (CreateDownloadUrlResponse, _ConcatenatedInputStream,
-                          _PresignedUrlDistributor)
+from .files_utils import CreateDownloadUrlResponse, _ConcatenatedInputStream, _PresignedUrlDistributor
 
 if TYPE_CHECKING:
     from _typeshed import Self

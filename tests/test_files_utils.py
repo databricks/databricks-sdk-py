@@ -6,8 +6,7 @@ from typing import BinaryIO, Callable, List, Optional, Tuple
 
 import pytest
 
-from databricks.sdk.mixins.files_utils import (_ConcatenatedInputStream,
-                                               _PresignedUrlDistributor)
+from databricks.sdk.mixins.files_utils import _ConcatenatedInputStream, _PresignedUrlDistributor
 
 logger = logging.getLogger(__name__)
 

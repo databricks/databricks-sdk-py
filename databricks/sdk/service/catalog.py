@@ -12,9 +12,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum,
-                                              _timestamp)
+from databricks.sdk.service._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum, _timestamp
 
 from ..errors import OperationFailed
 
