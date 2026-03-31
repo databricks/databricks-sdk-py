@@ -4,7 +4,8 @@ import urllib.parse
 from abc import ABC, abstractmethod
 from datetime import timedelta
 from types import TracebackType
-from typing import Any, BinaryIO, Callable, Dict, Iterable, Iterator, List, Optional, Type, Union
+from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
+                    Optional, Type, Union)
 
 import requests
 import requests.adapters

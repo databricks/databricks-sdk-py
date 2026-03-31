@@ -13,7 +13,8 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from databricks.sdk.common import lro
 from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.retries import RetryError, poll
-from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict, _timestamp
+from databricks.sdk.service._internal import (_enum, _from_dict,
+                                              _repeated_dict, _timestamp)
 
 _LOG = logging.getLogger("databricks.sdk")
 

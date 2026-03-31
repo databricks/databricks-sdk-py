@@ -10,12 +10,10 @@ import pytest
 
 from databricks.sdk import oauth
 from databricks.sdk.config import Config
-from databricks.sdk.credentials_provider import (
-    CredentialsProvider,
-    CredentialsStrategy,
-    DefaultCredentials,
-    runtime_oauth,
-)
+from databricks.sdk.credentials_provider import (CredentialsProvider,
+                                                 CredentialsStrategy,
+                                                 DefaultCredentials,
+                                                 runtime_oauth)
 
 
 @pytest.fixture

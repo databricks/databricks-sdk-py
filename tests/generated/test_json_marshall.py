@@ -8,13 +8,11 @@ from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from tests.databricks.sdk.service.jsonmarshallv2 import (
-    NestedMessage,
-    OptionalFields,
-    RepeatedFields,
-    RequiredFields,
-    TestEnum,
-)
+from tests.databricks.sdk.service.jsonmarshallv2 import (NestedMessage,
+                                                         OptionalFields,
+                                                         RepeatedFields,
+                                                         RequiredFields,
+                                                         TestEnum)
 
 
 # Helper methods for well known types
