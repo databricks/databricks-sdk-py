@@ -91,14 +91,11 @@ class Config:
     account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")
     workspace_id: str = ConfigAttribute(env="DATABRICKS_WORKSPACE_ID")
 
-    # Experimental flag to indicate if the host is a unified host (supports both workspace and account APIs)
-    experimental_is_unified_host: bool = ConfigAttribute(env="DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST")
-
-    # [Experimental] Cloud provider. When set, is_aws/is_azure/is_gcp use this value directly
+    # Cloud provider. When set, is_aws/is_azure/is_gcp use this value directly
     # instead of inferring from hostname. Populated automatically from /.well-known/databricks-config.
     cloud: Cloud = ConfigAttribute(env="DATABRICKS_CLOUD", transform=_parse_cloud)
 
-    # [Experimental] OpenID Connect discovery URL. When set, OIDC endpoints are fetched directly
+    # OpenID Connect discovery URL. When set, OIDC endpoints are fetched directly
     # from this URL instead of the default host-type-based well-known endpoint logic.
     discovery_url: str = ConfigAttribute(env="DATABRICKS_DISCOVERY_URL")
 
