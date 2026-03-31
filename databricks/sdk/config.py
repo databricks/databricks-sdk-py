@@ -293,6 +293,7 @@ class Config:
         self._header_factory = None
         self._inner = {}
         self._user_agent_other_info = []
+        self._resolved_host_type = None
         self._custom_headers = custom_headers or {}
         if credentials_strategy and credentials_provider:
             raise ValueError("When providing `credentials_strategy` field, `credential_provider` cannot be specified.")
@@ -658,6 +659,11 @@ class Config:
         if not self.cloud and meta.cloud:
             logger.debug(f"Resolved cloud from host metadata: {meta.cloud.value}")
             self.cloud = meta.cloud
+        if self._resolved_host_type is None and meta.host_type:
+            resolved = HostType.from_api_value(meta.host_type)
+            if resolved is not None:
+                logger.debug(f"Resolved host_type from host metadata: {meta.host_type}")
+                self._resolved_host_type = resolved
         # Account hosts use account_id as the OIDC token audience instead of the token endpoint.
         # This is a special case: when the metadata has no workspace_id, the host is acting as an
         # account-level endpoint and the audience must be scoped to the account.
