@@ -19,6 +19,7 @@
 ### Internal Changes
 * Replace the async-disabling mechanism on token refresh failure with a 1-minute retry backoff. Previously, a single failed async refresh would disable proactive token renewal until the token expired. Now, the SDK waits a short cooldown period and retries, improving resilience to transient errors.
 * Extract `_resolve_profile` to simplify config file loading and improve `__settings__` error messages.
+* Generalize CLI token source into a progressive command list for forward-compatible flag support.
 
 ### API Changes
 * Add `create_catalog()`, `create_synced_table()`, `delete_catalog()`, `delete_synced_table()`, `get_catalog()` and `get_synced_table()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.

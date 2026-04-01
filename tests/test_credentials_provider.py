@@ -337,8 +337,8 @@ class TestDatabricksCliTokenSourceArgs:
         assert "test-account-id" in cmd
         assert "--workspace-id" not in cmd
 
-    def test_profile_uses_profile_flag_with_host_fallback(self, mocker):
-        """When profile is set, --profile is used as primary and --host as fallback."""
+    def test_profile_with_host_builds_three_commands(self, mocker):
+        """With profile + host: force-refresh, profile, host fallback."""
         mock_init = mocker.patch.object(
             credentials_provider.CliTokenSource,
             "__init__",
@@ -348,24 +348,21 @@ class TestDatabricksCliTokenSourceArgs:
         mock_cfg = Mock()
         mock_cfg.profile = "my-profile"
         mock_cfg.host = "https://workspace.databricks.com"
-
+        mock_cfg.client_type = ClientType.WORKSPACE
+        mock_cfg.account_id = None
         mock_cfg.databricks_cli_path = "/path/to/databricks"
         mock_cfg.disable_async_token_refresh = False
 
         credentials_provider.DatabricksCliTokenSource(mock_cfg)
 
-        call_kwargs = mock_init.call_args
-        cmd = call_kwargs.kwargs["cmd"]
-        host_cmd = call_kwargs.kwargs["fallback_cmd"]
+        commands = mock_init.call_args.kwargs["commands"]
+        assert len(commands) == 3
+        assert "--force-refresh" in commands[0].args and "--profile" in commands[0].args
+        assert "--profile" in commands[1].args and "--force-refresh" not in commands[1].args
+        assert "--host" in commands[2].args and "--force-refresh" not in commands[2].args
 
-        assert cmd == ["/path/to/databricks", "auth", "token", "--profile", "my-profile"]
-        assert host_cmd is not None
-        assert "--host" in host_cmd
-        assert "https://workspace.databricks.com" in host_cmd
-        assert "--profile" not in host_cmd
-
-    def test_profile_without_host_no_fallback(self, mocker):
-        """When profile is set but host is absent, no fallback is built."""
+    def test_profile_without_host_builds_two_commands(self, mocker):
+        """With profile only: force-refresh and plain profile."""
         mock_init = mocker.patch.object(
             credentials_provider.CliTokenSource,
             "__init__",
@@ -380,95 +377,33 @@ class TestDatabricksCliTokenSourceArgs:
 
         credentials_provider.DatabricksCliTokenSource(mock_cfg)
 
-        call_kwargs = mock_init.call_args
-        cmd = call_kwargs.kwargs["cmd"]
-        host_cmd = call_kwargs.kwargs["fallback_cmd"]
+        commands = mock_init.call_args.kwargs["commands"]
+        assert len(commands) == 2
+        assert "--force-refresh" in commands[0].args
+        assert "--force-refresh" not in commands[1].args
 
-        assert cmd == ["/path/to/databricks", "auth", "token", "--profile", "my-profile"]
-        assert host_cmd is None
+    def test_host_only_builds_one_command(self, mocker):
+        """With host only: single plain host command."""
+        mock_init = mocker.patch.object(
+            credentials_provider.CliTokenSource,
+            "__init__",
+            return_value=None,
+        )
 
+        mock_cfg = Mock()
+        mock_cfg.profile = None
+        mock_cfg.host = "https://workspace.databricks.com"
+        mock_cfg.client_type = ClientType.WORKSPACE
+        mock_cfg.account_id = None
+        mock_cfg.databricks_cli_path = "/path/to/databricks"
+        mock_cfg.disable_async_token_refresh = False
 
-# Tests for CliTokenSource fallback on unknown --profile flag
-class TestCliTokenSourceFallback:
-    """Tests that CliTokenSource falls back to --host when CLI doesn't support --profile."""
+        credentials_provider.DatabricksCliTokenSource(mock_cfg)
 
-    def _make_token_source(self, fallback_cmd=None):
-        ts = credentials_provider.CliTokenSource.__new__(credentials_provider.CliTokenSource)
-        ts._cmd = ["databricks", "auth", "token", "--profile", "my-profile"]
-        ts._fallback_cmd = fallback_cmd
-        ts._token_type_field = "token_type"
-        ts._access_token_field = "access_token"
-        ts._expiry_field = "expiry"
-        return ts
-
-    def _make_process_error(self, stderr: str, stdout: str = ""):
-        import subprocess
-
-        err = subprocess.CalledProcessError(1, ["databricks"])
-        err.stdout = stdout.encode()
-        err.stderr = stderr.encode()
-        return err
-
-    def test_fallback_on_unknown_profile_flag(self, mocker):
-        """When --profile fails with 'unknown flag: --profile', falls back to --host command."""
-        import json
-
-        expiry = (datetime.now() + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S")
-        valid_response = json.dumps({"access_token": "fallback-token", "token_type": "Bearer", "expiry": expiry})
-
-        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
-        mock_run.side_effect = [
-            self._make_process_error("Error: unknown flag: --profile"),
-            Mock(stdout=valid_response.encode()),
-        ]
-
-        fallback_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
-        ts = self._make_token_source(fallback_cmd=fallback_cmd)
-        token = ts.refresh()
-        assert token.access_token == "fallback-token"
-        assert mock_run.call_count == 2
-        assert mock_run.call_args_list[1][0][0] == fallback_cmd
-
-    def test_fallback_triggered_when_unknown_flag_in_stderr_only(self, mocker):
-        """Fallback triggers even when CLI also writes usage text to stdout."""
-        import json
-
-        expiry = (datetime.now() + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S")
-        valid_response = json.dumps({"access_token": "fallback-token", "token_type": "Bearer", "expiry": expiry})
-
-        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
-        mock_run.side_effect = [
-            self._make_process_error(stderr="Error: unknown flag: --profile", stdout="Usage: databricks auth token"),
-            Mock(stdout=valid_response.encode()),
-        ]
-
-        fallback_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
-        ts = self._make_token_source(fallback_cmd=fallback_cmd)
-        token = ts.refresh()
-        assert token.access_token == "fallback-token"
-
-    def test_no_fallback_on_real_auth_error(self, mocker):
-        """When --profile fails with a real error (not unknown flag), no fallback is attempted."""
-        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
-        mock_run.side_effect = self._make_process_error("cache: databricks OAuth is not configured for this host")
-
-        fallback_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
-        ts = self._make_token_source(fallback_cmd=fallback_cmd)
-        with pytest.raises(IOError) as exc_info:
-            ts.refresh()
-        assert "databricks OAuth is not configured" in str(exc_info.value)
-        assert mock_run.call_count == 1
-
-    def test_no_fallback_when_fallback_cmd_not_set(self, mocker):
-        """When fallback_cmd is None and --profile fails, the original error is raised."""
-        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
-        mock_run.side_effect = self._make_process_error("Error: unknown flag: --profile")
-
-        ts = self._make_token_source(fallback_cmd=None)
-        with pytest.raises(IOError) as exc_info:
-            ts.refresh()
-        assert "unknown flag: --profile" in str(exc_info.value)
-        assert mock_run.call_count == 1
+        commands = mock_init.call_args.kwargs["commands"]
+        assert len(commands) == 1
+        assert "--host" in commands[0].args
+        assert "--force-refresh" not in commands[0].args
 
 
 class TestDatabricksCliForceRefresh:
@@ -539,7 +474,7 @@ class TestDatabricksCliForceRefresh:
         assert "--host" in cmd
 
     def test_force_refresh_fallback_when_unsupported(self, mocker):
-        """Old CLI without --force-refresh: falls back to cmd without --force-refresh."""
+        """Old CLI without --force-refresh: falls back to plain --profile command."""
         ts = self._make_token_source(profile="my-profile")
 
         mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
@@ -556,18 +491,16 @@ class TestDatabricksCliForceRefresh:
         second_cmd = mock_run.call_args_list[1][0][0]
         assert "--force-refresh" in first_cmd
         assert "--force-refresh" not in second_cmd
+        assert "--profile" in second_cmd
 
-    def test_profile_fallback_when_unsupported(self, mocker):
-        """Old CLI without --profile: force_cmd fails, fallback retries with --host."""
+    def test_profile_fallback_to_host(self, mocker):
+        """Old CLI without --profile: progressive loop walks to --host terminal command."""
         ts = self._make_token_source(profile="my-profile")
 
         mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
         mock_run.side_effect = [
-            # force_cmd: --profile + --force-refresh → unknown --profile
             self._make_process_error("Error: unknown flag: --profile"),
-            # _refresh_without_force cmd: --profile → unknown --profile
             self._make_process_error("Error: unknown flag: --profile"),
-            # _refresh_without_force fallback_cmd: --host → success
             Mock(stdout=self._valid_response_json("host-token").encode()),
         ]
 
@@ -576,17 +509,14 @@ class TestDatabricksCliForceRefresh:
         assert mock_run.call_count == 3
         assert "--host" in mock_run.call_args_list[2][0][0]
 
-    def test_two_step_downgrade_both_flags_unsupported(self, mocker):
-        """CLI supports neither --force-refresh nor --profile: force_cmd fails, then full fallback."""
+    def test_full_fallback_chain(self, mocker):
+        """CLI supports neither --force-refresh nor --profile: walks the full chain."""
         ts = self._make_token_source(profile="my-profile")
 
         mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
         mock_run.side_effect = [
-            # 1st: force_cmd (--profile + --force-refresh) → unknown --force-refresh
             self._make_process_error("Error: unknown flag: --force-refresh"),
-            # 2nd: _refresh_without_force cmd (--profile) → unknown --profile
             self._make_process_error("Error: unknown flag: --profile"),
-            # 3rd: _refresh_without_force fallback_cmd (--host) → success
             Mock(stdout=self._valid_response_json("plain").encode()),
         ]
 
@@ -599,9 +529,28 @@ class TestDatabricksCliForceRefresh:
         assert "--force-refresh" not in cmds[1] and "--profile" in cmds[1]
         assert "--host" in cmds[2]
 
+    def test_active_command_index_caching(self, mocker):
+        """After fallback, subsequent refreshes start at the cached command index."""
+        ts = self._make_token_source(profile="my-profile")
+
+        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
+        mock_run.side_effect = [
+            self._make_process_error("Error: unknown flag: --force-refresh"),
+            Mock(stdout=self._valid_response_json("first").encode()),
+            Mock(stdout=self._valid_response_json("second").encode()),
+        ]
+
+        token1 = ts.refresh()
+        assert token1.access_token == "first"
+        assert mock_run.call_count == 2
+
+        token2 = ts.refresh()
+        assert token2.access_token == "second"
+        assert mock_run.call_count == 3
+
     def test_real_auth_error_does_not_trigger_fallback(self, mocker):
         """Real auth failures (not unknown-flag) surface immediately."""
-        ts = self._make_token_source()
+        ts = self._make_token_source(profile="my-profile")
 
         mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
         mock_run.side_effect = self._make_process_error("cache: databricks OAuth is not configured for this host")
@@ -610,6 +559,14 @@ class TestDatabricksCliForceRefresh:
             ts.refresh()
         assert "databricks OAuth is not configured" in str(exc_info.value)
         assert mock_run.call_count == 1
+
+    def test_is_unknown_flag_error(self):
+        """_is_unknown_flag_error matches against specific flag list."""
+        check = credentials_provider.CliTokenSource._is_unknown_flag_error
+        assert check(IOError("Error: unknown flag: --force-refresh"), ["--force-refresh", "--profile"])
+        assert check(IOError("Error: unknown flag: --profile"), ["--profile"])
+        assert not check(IOError("Error: unknown flag: --force-refresh"), ["--profile"])
+        assert not check(IOError("some other error"), ["--force-refresh"])
 
 
 # Tests for cloud-agnostic hosts and removed cloud checks
