@@ -36,7 +36,7 @@ fix-lockfile:
 	find . -type f -name '*.lock' -not -path './.github/*' \
 	  -exec sed -i 's|databricks\.jfrog\.io/artifactory/api/pypi/db-pypi/simple|pypi.org/simple|g' {} +
 	find . -type f -name '*.lock' -not -path './.github/*' \
-	  -exec sed -i 's|databricks\.jfrog\.io/artifactory/api/pypi/db-pypi/packages|files.pythonhosted.org/packages|g' {} +
+	  -exec sed -i 's|databricks\.jfrog\.io/artifactory/api/pypi/db-pypi/packages|files.pythonhosted.org|g' {} +
 
 clean:
 	rm -fr dist *.egg-info .pytest_cache build htmlcov .venv
