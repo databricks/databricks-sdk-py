@@ -15,6 +15,11 @@ jobs:
     strategy:
         fail-fast: false
     runs-on: ${{ inputs.os }}
+
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
@@ -27,6 +32,13 @@ jobs:
         with:
           version: "0.6.5"
           python-version: ${{ inputs.pyVersion }}
+
+      - name: Setup JFrog PyPI proxy
+        uses: ./.github/actions/setup-jfrog-pypi
+
+      - name: Re-lock for JFrog
+        shell: bash
+        run: uv lock
 
       - name: Run tests
         run: make dev test
