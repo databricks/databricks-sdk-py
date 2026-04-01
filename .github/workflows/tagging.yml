@@ -34,6 +34,10 @@ jobs:
     runs-on:
       group: databricks-deco-testing-runner-group
       labels: ubuntu-latest-deco
+
+    permissions:
+      id-token: write
+      contents: write
     steps:
       - name: Generate GitHub App Token
         id: generate-token
@@ -56,6 +60,12 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4.2.0
+
+      - name: Setup JFrog PyPI proxy
+        uses: ./.github/actions/setup-jfrog-pypi
+
+      - name: Re-lock tagging script for JFrog
+        run: uv lock --script tagging.py
 
       - name: Run script
         env:

@@ -6,6 +6,10 @@ on:
   merge_group:
     types: [checks_requested]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   tests-ubuntu:
     uses: ./.github/workflows/test.yml
@@ -39,8 +43,17 @@ jobs:
         with:
           version: "0.6.5"
 
+      - name: Setup JFrog PyPI proxy
+        uses: ./.github/actions/setup-jfrog-pypi
+
+      - name: Re-lock for JFrog
+        run: uv lock
+
       - name: Format all files
         run: make dev fmt
+
+      - name: Fix lockfile
+        run: make fix-lockfile
 
       - name: Fail on differences
         run: git diff --exit-code
@@ -56,6 +69,12 @@ jobs:
         uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
         with:
           version: "0.6.5"
+
+      - name: Setup JFrog PyPI proxy
+        uses: ./.github/actions/setup-jfrog-pypi
+
+      - name: Re-lock for JFrog
+        run: uv lock
 
       - name: Check MANIFEST.in
         run: make dev && uv run check-manifest .

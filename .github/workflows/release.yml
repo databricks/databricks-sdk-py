@@ -25,6 +25,12 @@ jobs:
         with:
           version: "0.6.5"
 
+      - name: Setup JFrog PyPI proxy
+        uses: ./.github/actions/setup-jfrog-pypi
+
+      - name: Re-lock for JFrog
+        run: uv lock
+
       - name: Build wheel
         run: uv build
         env:
