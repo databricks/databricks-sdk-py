@@ -650,6 +650,7 @@ def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
 
 
 class CliTokenSource(oauth.Refreshable):
+
     def __init__(
         self,
         cmd: List[str],
@@ -899,11 +900,10 @@ class DatabricksCliTokenSource(CliTokenSource):
             cli_path = self.__class__._find_executable(cli_path)
 
         fallback_cmd = None
+        self._force_cmd = None
         if cfg.profile:
-            # When profile is set, use --profile as the primary command.
-            # The profile contains the full config (host, account_id, etc.).
             args = ["auth", "token", "--profile", cfg.profile]
-            # Build a --host fallback for older CLIs that don't support --profile.
+            self._force_cmd = [cli_path, *args, "--force-refresh"]
             if cfg.host:
                 fallback_cmd = [cli_path, *self.__class__._build_host_args(cfg)]
         else:
@@ -926,12 +926,21 @@ class DatabricksCliTokenSource(CliTokenSource):
         )
 
     def refresh(self) -> oauth.Token:
-        # The scope validation lives in refresh() because this is the only method that
-        # produces new tokens (see Refreshable._token assignments). By overriding here,
-        # every token is validated — both at initial auth and on every subsequent refresh
-        # when the cached token expires. This catches cases where a user re-authenticates
-        # mid-session with different scopes.
-        token = super().refresh()
+        if self._force_cmd is None:
+            token = super().refresh()
+        else:
+            try:
+                token = self._exec_cli_command(self._force_cmd)
+            except IOError as e:
+                err_msg = str(e)
+                if "unknown flag: --force-refresh" in err_msg or "unknown flag: --profile" in err_msg:
+                    logger.warning(
+                        "Databricks CLI does not support --force-refresh. "
+                        "Please upgrade your CLI to the latest version."
+                    )
+                    token = super().refresh()
+                else:
+                    raise
         if self._requested_scopes:
             self._validate_token_scopes(token)
         return token
