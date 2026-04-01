@@ -471,6 +471,147 @@ class TestCliTokenSourceFallback:
         assert mock_run.call_count == 1
 
 
+class TestDatabricksCliForceRefresh:
+    """Tests for --force-refresh support in DatabricksCliTokenSource."""
+
+    @staticmethod
+    def _make_process_error(stderr: str, stdout: str = ""):
+        import subprocess
+
+        err = subprocess.CalledProcessError(1, ["databricks"])
+        err.stdout = stdout.encode()
+        err.stderr = stderr.encode()
+        return err
+
+    @staticmethod
+    def _make_token_source(
+        *,
+        profile=None,
+        host="https://workspace.databricks.com",
+        cli_path="/path/to/databricks",
+    ):
+        """Build a DatabricksCliTokenSource by mocking only the executable check."""
+        mock_cfg = Mock()
+        mock_cfg.profile = profile
+        mock_cfg.host = host
+        mock_cfg.databricks_cli_path = cli_path
+        mock_cfg.disable_async_token_refresh = True
+        mock_cfg.scopes = None
+        mock_cfg.get_scopes = Mock(return_value=["all-apis"])
+        mock_cfg.client_type = ClientType.WORKSPACE
+        mock_cfg.account_id = None
+        return credentials_provider.DatabricksCliTokenSource(mock_cfg)
+
+    def _valid_response_json(self, access_token="fresh-token"):
+        import json
+
+        expiry = (datetime.now() + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S")
+        return json.dumps({"access_token": access_token, "token_type": "Bearer", "expiry": expiry})
+
+    def test_force_refresh_tried_first_with_profile(self, mocker):
+        """When profile is configured, refresh() tries --force-refresh first."""
+        ts = self._make_token_source(profile="my-profile")
+
+        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
+        mock_run.return_value = Mock(stdout=self._valid_response_json("refreshed").encode())
+
+        token = ts.refresh()
+        assert token.access_token == "refreshed"
+        assert mock_run.call_count == 1
+
+        cmd = mock_run.call_args[0][0]
+        assert "--force-refresh" in cmd
+        assert "--profile" in cmd
+
+    def test_host_only_skips_force_refresh(self, mocker):
+        """When only host is configured, --force-refresh is not used."""
+        ts = self._make_token_source()
+
+        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
+        mock_run.return_value = Mock(stdout=self._valid_response_json("token").encode())
+
+        token = ts.refresh()
+        assert token.access_token == "token"
+        assert mock_run.call_count == 1
+
+        cmd = mock_run.call_args[0][0]
+        assert "--force-refresh" not in cmd
+        assert "--host" in cmd
+
+    def test_force_refresh_fallback_when_unsupported(self, mocker):
+        """Old CLI without --force-refresh: falls back to cmd without --force-refresh."""
+        ts = self._make_token_source(profile="my-profile")
+
+        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
+        mock_run.side_effect = [
+            self._make_process_error("Error: unknown flag: --force-refresh"),
+            Mock(stdout=self._valid_response_json("fallback").encode()),
+        ]
+
+        token = ts.refresh()
+        assert token.access_token == "fallback"
+        assert mock_run.call_count == 2
+
+        first_cmd = mock_run.call_args_list[0][0][0]
+        second_cmd = mock_run.call_args_list[1][0][0]
+        assert "--force-refresh" in first_cmd
+        assert "--force-refresh" not in second_cmd
+
+    def test_profile_fallback_when_unsupported(self, mocker):
+        """Old CLI without --profile: force_cmd fails, fallback retries with --host."""
+        ts = self._make_token_source(profile="my-profile")
+
+        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
+        mock_run.side_effect = [
+            # force_cmd: --profile + --force-refresh → unknown --profile
+            self._make_process_error("Error: unknown flag: --profile"),
+            # _refresh_without_force cmd: --profile → unknown --profile
+            self._make_process_error("Error: unknown flag: --profile"),
+            # _refresh_without_force fallback_cmd: --host → success
+            Mock(stdout=self._valid_response_json("host-token").encode()),
+        ]
+
+        token = ts.refresh()
+        assert token.access_token == "host-token"
+        assert mock_run.call_count == 3
+        assert "--host" in mock_run.call_args_list[2][0][0]
+
+    def test_two_step_downgrade_both_flags_unsupported(self, mocker):
+        """CLI supports neither --force-refresh nor --profile: force_cmd fails, then full fallback."""
+        ts = self._make_token_source(profile="my-profile")
+
+        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
+        mock_run.side_effect = [
+            # 1st: force_cmd (--profile + --force-refresh) → unknown --force-refresh
+            self._make_process_error("Error: unknown flag: --force-refresh"),
+            # 2nd: _refresh_without_force cmd (--profile) → unknown --profile
+            self._make_process_error("Error: unknown flag: --profile"),
+            # 3rd: _refresh_without_force fallback_cmd (--host) → success
+            Mock(stdout=self._valid_response_json("plain").encode()),
+        ]
+
+        token = ts.refresh()
+        assert token.access_token == "plain"
+        assert mock_run.call_count == 3
+
+        cmds = [call[0][0] for call in mock_run.call_args_list]
+        assert "--force-refresh" in cmds[0] and "--profile" in cmds[0]
+        assert "--force-refresh" not in cmds[1] and "--profile" in cmds[1]
+        assert "--host" in cmds[2]
+
+    def test_real_auth_error_does_not_trigger_fallback(self, mocker):
+        """Real auth failures (not unknown-flag) surface immediately."""
+        ts = self._make_token_source()
+
+        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
+        mock_run.side_effect = self._make_process_error("cache: databricks OAuth is not configured for this host")
+
+        with pytest.raises(IOError) as exc_info:
+            ts.refresh()
+        assert "databricks OAuth is not configured" in str(exc_info.value)
+        assert mock_run.call_count == 1
+
+
 # Tests for cloud-agnostic hosts and removed cloud checks
 class TestCloudAgnosticHosts:
     """Tests that credential providers work with cloud-agnostic hosts after removing is_azure/is_gcp checks."""
