@@ -1,4 +1,3 @@
-import sys
 import warnings
 from io import BytesIO
 
@@ -80,7 +79,6 @@ def test_open_ai_client_prevents_reserved_param_override(monkeypatch):
         w.serving_endpoints.get_open_ai_client(base_url="https://custom-host", api_key="custom-key")
 
 
-@pytest.mark.skipif(sys.version_info < (3, 8), reason="Requires Python > 3.7")
 def test_langchain_open_ai_client(monkeypatch):
     from unittest.mock import MagicMock, Mock
 
@@ -163,7 +161,6 @@ def test_get_open_ai_client_deprecation_warning(monkeypatch):
         assert client.api_key == "no-token"
 
 
-@pytest.mark.skipif(sys.version_info < (3, 8), reason="Requires Python > 3.7")
 def test_get_langchain_chat_open_ai_client_deprecation_warning(monkeypatch):
     """Test that get_langchain_chat_open_ai_client raises a DeprecationWarning."""
     from unittest.mock import MagicMock, Mock
