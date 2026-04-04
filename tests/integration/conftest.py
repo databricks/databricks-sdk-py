@@ -70,22 +70,16 @@ def random():
 def a(env_or_skip) -> AccountClient:
     _load_debug_env_if_runs_from_ide("account")
     env_or_skip("CLOUD_ENV")
-    account_client = AccountClient()
-    if env_or_skip("TEST_ENVIRONMENT_TYPE") not in ["ACCOUNT", "UC_ACCOUNT"]:
-        pytest.skip("not Databricks Account environment")
-    return account_client
+    _skip_if_not_environment_type("ACCOUNT", "UC_ACCOUNT")
+    return AccountClient()
 
 
 @pytest.fixture(scope="session")
 def ucacct(env_or_skip) -> AccountClient:
     _load_debug_env_if_runs_from_ide("ucacct")
     env_or_skip("CLOUD_ENV")
-    account_client = AccountClient()
-    if env_or_skip("TEST_ENVIRONMENT_TYPE") not in ["UC_ACCOUNT"]:
-        pytest.skip("not Databricks UC Account environment")
-    if "TEST_METASTORE_ID" not in os.environ:
-        pytest.skip("not in Unity Catalog Workspace test env")
-    return account_client
+    _skip_if_not_environment_type("UC_ACCOUNT")
+    return AccountClient()
 
 
 @pytest.fixture(scope="session")
@@ -104,8 +98,7 @@ def unified_config(env_or_skip) -> Config:
 def w(env_or_skip) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide("workspace")
     env_or_skip("CLOUD_ENV")
-    if env_or_skip("TEST_ENVIRONMENT_TYPE") not in ["WORKSPACE", "UC_WORKSPACE"]:
-        pytest.skip("not Databricks Workspace environment")
+    _skip_if_not_environment_type("WORKSPACE", "UC_WORKSPACE")
     return WorkspaceClient()
 
 
@@ -113,10 +106,7 @@ def w(env_or_skip) -> WorkspaceClient:
 def ucws(env_or_skip) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide("ucws")
     env_or_skip("CLOUD_ENV")
-    if env_or_skip("TEST_ENVIRONMENT_TYPE") not in ["UC_WORKSPACE"]:
-        pytest.skip("not Databricks UC Workspace environment")
-    if "TEST_METASTORE_ID" not in os.environ:
-        pytest.skip("not Databricks UC Workspace environment")
+    _skip_if_not_environment_type("UC_WORKSPACE")
     return WorkspaceClient()
 
 
@@ -196,6 +186,18 @@ def workspace_dir(w, random):
     w.workspace.mkdirs(directory)
     yield directory
     w.workspace.delete(directory, recursive=True)
+
+
+def _skip_if_not_environment_type(*expected_types: str):
+    """Skip the test if TEST_ENVIRONMENT_TYPE doesn't match any of the expected types.
+
+    TEST_ENVIRONMENT_TYPE values: "ACCOUNT", "WORKSPACE", "UC_ACCOUNT", "UC_WORKSPACE".
+    """
+    env_type = os.getenv("TEST_ENVIRONMENT_TYPE", "")
+    if not env_type:
+        pytest.skip("Skipping test because TEST_ENVIRONMENT_TYPE is not set")
+    if env_type not in expected_types:
+        pytest.skip(f"Skipping {'/'.join(expected_types)} test in {env_type} environment")
 
 
 def _load_debug_env_if_runs_from_ide(key) -> bool:
