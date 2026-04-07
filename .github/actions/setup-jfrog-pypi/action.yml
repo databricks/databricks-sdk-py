@@ -25,3 +25,8 @@ runs:
         # differs from the registry URL stored in uv.lock, and uv run would
         # trigger auto-sync which rewrites the lockfile with JFrog URLs.
         echo "UV_FROZEN=1" >> "$GITHUB_ENV"
+
+        # Clear the Makefile's --locked flag since it conflicts with --frozen.
+        # The Makefile uses UV_LOCK_FLAG ?= --locked, so setting it empty here
+        # prevents the conflict while UV_FROZEN=1 handles lockfile behavior.
+        echo "UV_LOCK_FLAG=" >> "$GITHUB_ENV"

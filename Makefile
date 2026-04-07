@@ -1,8 +1,12 @@
+# In CI, the JFrog composite action sets UV_LOCK_FLAG= (empty) because
+# UV_FROZEN=1 handles lockfile behavior and conflicts with --locked.
+UV_LOCK_FLAG ?= --locked
+
 dev:
-	uv sync --locked --extra dev
+	uv sync $(UV_LOCK_FLAG) --extra dev
 
 install:
-	uv sync --locked
+	uv sync $(UV_LOCK_FLAG)
 
 fmt:
 	uv run black databricks tests
