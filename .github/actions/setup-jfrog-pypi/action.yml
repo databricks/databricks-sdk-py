@@ -4,38 +4,24 @@ description: Authenticate to JFrog via OIDC and configure uv to use the db-pypi 
 runs:
   using: composite
   steps:
-    - name: Get JFrog OIDC token
+    - name: Setup JFrog CLI with OIDC
+      id: jfrog
+      uses: jfrog/setup-jfrog-cli@279b1f629f43dd5bc658d8361ac4802a7ef8d2d5 # v4.9.1
+      env:
+        JF_URL: https://databricks.jfrog.io
+      with:
+        oidc-provider-name: github-actions
+
+    - name: Configure uv for JFrog
       shell: bash
       run: |
-        set -euo pipefail
-
-        ID_TOKEN=$(curl -sLS \
-          -H "User-Agent: actions/oidc-client" \
-          -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-          "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jfrog-github" | jq .value | tr -d '"')
-        echo "::add-mask::${ID_TOKEN}"
-
-        ACCESS_TOKEN=$(curl -sLS -XPOST -H "Content-Type: application/json" \
-          "https://databricks.jfrog.io/access/api/v1/oidc/token" \
-          -d "{\"grant_type\": \"urn:ietf:params:oauth:grant-type:token-exchange\", \"subject_token_type\":\"urn:ietf:params:oauth:token-type:id_token\", \"subject_token\": \"${ID_TOKEN}\", \"provider_name\": \"github-actions\"}" | jq .access_token | tr -d '"')
-        echo "::add-mask::${ACCESS_TOKEN}"
-
-        if [ -z "$ACCESS_TOKEN" ] || [ "$ACCESS_TOKEN" = "null" ]; then
-          echo "FAIL: Could not extract JFrog access token"
-          exit 1
-        fi
-
-        echo "JFROG_ACCESS_TOKEN=${ACCESS_TOKEN}" >> "$GITHUB_ENV"
-
         # Route uv package resolution through the JFrog PyPI proxy. Hardened
         # runners block direct access to pypi.org, so all index queries go
         # through this authenticated mirror instead.
-        echo "UV_INDEX_URL=https://gha-service-account:${ACCESS_TOKEN}@databricks.jfrog.io/artifactory/api/pypi/db-pypi/simple" >> "$GITHUB_ENV"
+        echo "UV_INDEX_URL=https://${{ steps.jfrog.outputs.oidc-user }}:${{ steps.jfrog.outputs.oidc-token }}@databricks.jfrog.io/artifactory/api/pypi/db-pypi/simple" >> "$GITHUB_ENV"
 
         # Tell uv to use the committed lockfile as-is without re-resolving.
         # Without this, uv sync --locked would fail because UV_INDEX_URL
         # differs from the registry URL stored in uv.lock, and uv run would
         # trigger auto-sync which rewrites the lockfile with JFrog URLs.
         echo "UV_FROZEN=1" >> "$GITHUB_ENV"
-
-        echo "JFrog OIDC token obtained and uv configured to use JFrog registry"
