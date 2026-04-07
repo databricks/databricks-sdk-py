@@ -46,11 +46,16 @@ jobs:
       - name: Setup JFrog PyPI proxy
         uses: ./.github/actions/setup-jfrog-pypi
 
+      - name: Re-lock for JFrog
+        run: uv lock
+
       - name: Format all files
         run: make dev fmt
 
-      - name: Fix lockfile
-        run: make fix-lockfile
+      - name: Restore lockfiles and fix proxy URLs
+        run: |
+          git checkout -- '*.lock'
+          make fix-lockfile
 
       - name: Fail on differences
         run: git diff --exit-code
@@ -69,6 +74,9 @@ jobs:
 
       - name: Setup JFrog PyPI proxy
         uses: ./.github/actions/setup-jfrog-pypi
+
+      - name: Re-lock for JFrog
+        run: uv lock
 
       - name: Check MANIFEST.in
         run: make dev && uv run check-manifest .

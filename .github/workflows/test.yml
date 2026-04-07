@@ -36,6 +36,12 @@ jobs:
       - name: Setup JFrog PyPI proxy
         uses: ./.github/actions/setup-jfrog-pypi
 
+      # Re-lock so uv.lock matches the JFrog-configured UV_INDEX_URL.
+      # Keeps the same versions; only registry URLs change. Ephemeral (not committed).
+      - name: Re-lock for JFrog
+        shell: bash
+        run: uv lock
+
       - name: Run tests
         run: make dev test
 
