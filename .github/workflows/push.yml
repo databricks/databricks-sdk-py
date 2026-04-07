@@ -49,9 +49,9 @@ jobs:
       - name: Format all files
         run: |
           uv sync --frozen --extra dev
-          uv run black databricks tests
-          uv run autoflake -ri databricks tests
-          uv run isort databricks tests
+          uv run --frozen black databricks tests
+          uv run --frozen autoflake -ri databricks tests
+          uv run --frozen isort databricks tests
 
       - name: Fix lockfile
         run: make fix-lockfile
@@ -77,4 +77,4 @@ jobs:
       - name: Check MANIFEST.in
         run: |
           uv sync --frozen --extra dev
-          uv run check-manifest .
+          uv run --frozen check-manifest .

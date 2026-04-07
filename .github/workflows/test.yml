@@ -39,7 +39,7 @@ jobs:
       - name: Run tests
         run: |
           uv sync --frozen --extra dev
-          uv run pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
+          uv run --frozen pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
 
       - name: Publish test coverage
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4.6.0
