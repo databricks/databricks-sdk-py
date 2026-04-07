@@ -26,6 +26,16 @@ runs:
         fi
 
         echo "JFROG_ACCESS_TOKEN=${ACCESS_TOKEN}" >> "$GITHUB_ENV"
+
+        # Route uv package resolution through the JFrog PyPI proxy. Hardened
+        # runners block direct access to pypi.org, so all index queries go
+        # through this authenticated mirror instead.
         echo "UV_INDEX_URL=https://gha-service-account:${ACCESS_TOKEN}@databricks.jfrog.io/artifactory/api/pypi/db-pypi/simple" >> "$GITHUB_ENV"
+
+        # Tell uv to use the committed lockfile as-is without re-resolving.
+        # Without this, uv sync --locked would fail because UV_INDEX_URL
+        # differs from the registry URL stored in uv.lock, and uv run would
+        # trigger auto-sync which rewrites the lockfile with JFrog URLs.
+        echo "UV_FROZEN=1" >> "$GITHUB_ENV"
 
         echo "JFrog OIDC token obtained and uv configured to use JFrog registry"

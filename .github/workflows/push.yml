@@ -47,7 +47,7 @@ jobs:
         uses: ./.github/actions/setup-jfrog-pypi
 
       - name: Format all files
-        run: make dev fmt UV_SYNC_FLAGS=--frozen UV_RUN_FLAGS=--frozen
+        run: make dev fmt
 
       - name: Fix lockfile
         run: make fix-lockfile
@@ -71,4 +71,4 @@ jobs:
         uses: ./.github/actions/setup-jfrog-pypi
 
       - name: Check MANIFEST.in
-        run: make dev UV_SYNC_FLAGS=--frozen UV_RUN_FLAGS=--frozen && uv run --frozen check-manifest .
+        run: make dev && uv run check-manifest .
