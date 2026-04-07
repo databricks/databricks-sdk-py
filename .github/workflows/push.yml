@@ -47,11 +47,7 @@ jobs:
         uses: ./.github/actions/setup-jfrog-pypi
 
       - name: Format all files
-        run: |
-          uv sync --frozen --extra dev
-          uv run --frozen black databricks tests
-          uv run --frozen autoflake -ri databricks tests
-          uv run --frozen isort databricks tests
+        run: make dev fmt UV_SYNC_FLAGS=--frozen UV_RUN_FLAGS=--frozen
 
       - name: Fix lockfile
         run: make fix-lockfile
@@ -75,6 +71,4 @@ jobs:
         uses: ./.github/actions/setup-jfrog-pypi
 
       - name: Check MANIFEST.in
-        run: |
-          uv sync --frozen --extra dev
-          uv run --frozen check-manifest .
+        run: make dev UV_SYNC_FLAGS=--frozen UV_RUN_FLAGS=--frozen && uv run --frozen check-manifest .

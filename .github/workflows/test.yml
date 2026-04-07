@@ -37,9 +37,7 @@ jobs:
         uses: ./.github/actions/setup-jfrog-pypi
 
       - name: Run tests
-        run: |
-          uv sync --frozen --extra dev
-          uv run --frozen pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
+        run: make dev test UV_SYNC_FLAGS=--frozen UV_RUN_FLAGS=--frozen
 
       - name: Publish test coverage
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4.6.0

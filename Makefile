@@ -1,31 +1,34 @@
+UV_SYNC_FLAGS ?= --locked
+UV_RUN_FLAGS ?=
+
 dev:
-	uv sync --locked --extra dev
+	uv sync $(UV_SYNC_FLAGS) --extra dev
 
 install:
-	uv sync --locked
+	uv sync $(UV_SYNC_FLAGS)
 
 fmt:
-	uv run black databricks tests
-	uv run autoflake -ri databricks tests
-	uv run isort databricks tests
+	uv run $(UV_RUN_FLAGS) black databricks tests
+	uv run $(UV_RUN_FLAGS) autoflake -ri databricks tests
+	uv run $(UV_RUN_FLAGS) isort databricks tests
 
 fmte:
-	uv run black examples
-	uv run autoflake -ri examples
-	uv run isort examples
+	uv run $(UV_RUN_FLAGS) black examples
+	uv run $(UV_RUN_FLAGS) autoflake -ri examples
+	uv run $(UV_RUN_FLAGS) isort examples
 
 lint:
-	uv run pycodestyle databricks
-	uv run autoflake --check-diff --quiet --recursive databricks
+	uv run $(UV_RUN_FLAGS) pycodestyle databricks
+	uv run $(UV_RUN_FLAGS) autoflake --check-diff --quiet --recursive databricks
 
 test:
-	uv run pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
+	uv run $(UV_RUN_FLAGS) pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
 
 integration:
-	uv run pytest -n auto -m 'integration and not benchmark' --reruns 4 --dist loadgroup --cov=databricks --cov-report html tests
+	uv run $(UV_RUN_FLAGS) pytest -n auto -m 'integration and not benchmark' --reruns 4 --dist loadgroup --cov=databricks --cov-report html tests
 
 benchmark:
-	uv run pytest -m 'benchmark' tests
+	uv run $(UV_RUN_FLAGS) pytest -m 'benchmark' tests
 
 coverage: test
 	open htmlcov/index.html
