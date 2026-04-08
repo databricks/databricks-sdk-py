@@ -10,6 +10,8 @@
 
 ### Bug Fixes
 
+* Added `timeout` to `requests.post()`/`requests.get()` calls in `oauth.py` that previously had no timeout, which could cause indefinite hangs when the OAuth endpoint is unreachable during token refresh ([#1338](https://github.com/databricks/databricks-sdk-py/issues/1338)).
+
 ### Documentation
 
 ### Breaking Changes

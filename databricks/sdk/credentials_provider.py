@@ -23,6 +23,7 @@ from google.oauth2 import service_account  # type: ignore
 from databricks.sdk.oauth import get_azure_entra_id_workspace_endpoints
 
 from . import azure, oauth, oidc, oidc_token_supplier
+from ._base_client import _DEFAULT_HTTP_TIMEOUT_SECONDS
 from .client_types import ClientType
 
 CredentialsProvider = Callable[[], Dict[str, str]]
@@ -203,6 +204,7 @@ def runtime_oauth(cfg: "Config") -> Optional[CredentialsProvider]:
         host=cfg.host,
         scopes=cfg.get_scopes_as_string(),
         authorization_details=cfg.authorization_details,
+        http_timeout_seconds=cfg.http_timeout_seconds or _DEFAULT_HTTP_TIMEOUT_SECONDS,
     )
 
     def inner() -> Dict[str, str]:
@@ -232,6 +234,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
         use_header=True,
         disable_async=cfg.disable_async_token_refresh,
         authorization_details=cfg.authorization_details,
+        http_timeout_seconds=cfg.http_timeout_seconds or _DEFAULT_HTTP_TIMEOUT_SECONDS,
     )
 
     def inner() -> Dict[str, str]:
@@ -258,7 +261,9 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
     elif cfg.azure_client_id:
         client_id = cfg.azure_client_id
         client_secret = cfg.azure_client_secret
-        oidc_endpoints = get_azure_entra_id_workspace_endpoints(cfg.host)
+        oidc_endpoints = get_azure_entra_id_workspace_endpoints(
+            cfg.host, timeout=cfg.http_timeout_seconds or _DEFAULT_HTTP_TIMEOUT_SECONDS
+        )
     if not client_id:
         client_id = "databricks-cli"
         oidc_endpoints = cfg.databricks_oidc_endpoints
@@ -348,6 +353,7 @@ def azure_service_principal(cfg: "Config") -> CredentialsProvider:
             disable_async=cfg.disable_async_token_refresh,
             scopes=cfg.get_scopes_as_string(),
             authorization_details=cfg.authorization_details,
+            http_timeout_seconds=cfg.http_timeout_seconds or _DEFAULT_HTTP_TIMEOUT_SECONDS,
         )
 
     _ensure_host_present(cfg, token_source_for)
@@ -470,6 +476,7 @@ def _oidc_credentials_provider(
             use_params=True,
             disable_async=cfg.disable_async_token_refresh,
             authorization_details=cfg.authorization_details,
+            http_timeout_seconds=cfg.http_timeout_seconds or _DEFAULT_HTTP_TIMEOUT_SECONDS,
         )
 
     def refreshed_headers() -> Dict[str, str]:
@@ -532,7 +539,9 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
     aad_endpoint = cfg.arm_environment.active_directory_endpoint
     if not cfg.azure_tenant_id:
         # detect Azure AD Tenant ID if it's not specified directly
-        token_endpoint = get_azure_entra_id_workspace_endpoints(cfg.host).token_endpoint
+        token_endpoint = get_azure_entra_id_workspace_endpoints(
+            cfg.host, timeout=cfg.http_timeout_seconds or _DEFAULT_HTTP_TIMEOUT_SECONDS
+        ).token_endpoint
         cfg.azure_tenant_id = token_endpoint.replace(aad_endpoint, "").split("/")[0]
 
     inner = oauth.ClientCredentials(
@@ -548,6 +557,7 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
         disable_async=cfg.disable_async_token_refresh,
         scopes=cfg.get_scopes_as_string(),
         authorization_details=cfg.authorization_details,
+        http_timeout_seconds=cfg.http_timeout_seconds or _DEFAULT_HTTP_TIMEOUT_SECONDS,
     )
 
     def refreshed_headers() -> Dict[str, str]:

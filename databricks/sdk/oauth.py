@@ -19,7 +19,7 @@ from typing import Any, Callable, Dict, List, Optional
 import requests
 import requests.auth
 
-from ._base_client import _BaseClient, _fix_host_if_needed
+from ._base_client import _BaseClient, _DEFAULT_HTTP_TIMEOUT_SECONDS, _fix_host_if_needed
 from .environments import Cloud
 
 # Error code for PKCE flow in Azure Active Directory, that gets additional retry.
@@ -194,6 +194,7 @@ def retrieve_token(
     use_params=False,
     use_header=False,
     headers=None,
+    timeout=_DEFAULT_HTTP_TIMEOUT_SECONDS,
 ) -> Token:
     logger.debug(f"Retrieving token for {client_id}")
     if use_params:
@@ -206,7 +207,7 @@ def retrieve_token(
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
     else:
         auth = IgnoreNetrcAuth()
-    resp = requests.post(token_url, params, auth=auth, headers=headers)
+    resp = requests.post(token_url, params, auth=auth, headers=headers, timeout=timeout)
     if not resp.ok:
         if resp.headers["Content-Type"].startswith("application/json"):
             err = resp.json()
@@ -533,16 +534,18 @@ def get_unified_endpoints(host: str, account_id: str, client: _BaseClient = _Bas
 
 def get_azure_entra_id_workspace_endpoints(
     host: str,
+    timeout: int = _DEFAULT_HTTP_TIMEOUT_SECONDS,
 ) -> Optional[OidcEndpoints]:
     """
     Get the Azure Entra ID endpoints for a given workspace. Can only be used when authenticating to Azure Databricks
     using an application registered in Azure Entra ID.
     :param host: The Databricks workspace host.
+    :param timeout: HTTP request timeout in seconds.
     :return: The OIDC endpoints for the workspace's Azure Entra ID tenant.
     """
     # In Azure, this workspace endpoint redirects to the Entra ID authorization endpoint
     host = _fix_host_if_needed(host)
-    res = requests.get(f"{host}/oidc/oauth2/v2.0/authorize", allow_redirects=False)
+    res = requests.get(f"{host}/oidc/oauth2/v2.0/authorize", allow_redirects=False, timeout=timeout)
     real_auth_url = res.headers.get("location")
     if not real_auth_url:
         return None
@@ -848,6 +851,7 @@ class ClientCredentials(Refreshable):
     use_header: bool = False
     disable_async: bool = True
     authorization_details: str = None
+    http_timeout_seconds: int = _DEFAULT_HTTP_TIMEOUT_SECONDS
 
     def __post_init__(self):
         super().__init__(disable_async=self.disable_async)
@@ -868,6 +872,7 @@ class ClientCredentials(Refreshable):
             params,
             use_params=self.use_params,
             use_header=self.use_header,
+            timeout=self.http_timeout_seconds,
         )
 
 
@@ -894,6 +899,7 @@ class PATOAuthTokenExchange(Refreshable):
     scopes: str
     authorization_details: str = None
     disable_async: bool = True
+    http_timeout_seconds: int = _DEFAULT_HTTP_TIMEOUT_SECONDS
 
     def __post_init__(self):
         super().__init__(disable_async=self.disable_async)
@@ -910,7 +916,7 @@ class PATOAuthTokenExchange(Refreshable):
         if self.authorization_details:
             params["authorization_details"] = self.authorization_details
 
-        resp = requests.post(token_exchange_url, params)
+        resp = requests.post(token_exchange_url, params, timeout=self.http_timeout_seconds)
         if not resp.ok:
             if resp.headers["Content-Type"].startswith("application/json"):
                 err = resp.json()

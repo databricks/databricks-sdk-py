@@ -11,7 +11,7 @@ from typing import Dict, Iterable, List, Optional
 import requests
 
 from . import useragent
-from ._base_client import _fix_host_if_needed
+from ._base_client import _DEFAULT_HTTP_TIMEOUT_SECONDS, _fix_host_if_needed
 from .client_types import ClientType, HostType
 from .clock import Clock, RealClock
 from .credentials_provider import (CredentialsStrategy, DefaultCredentials,
@@ -548,7 +548,9 @@ class Config:
         if not self.host:
             return None
         if self.is_azure and self.azure_client_id:
-            return get_azure_entra_id_workspace_endpoints(self.host)
+            return get_azure_entra_id_workspace_endpoints(
+                self.host, timeout=self.http_timeout_seconds or _DEFAULT_HTTP_TIMEOUT_SECONDS
+            )
         return self.databricks_oidc_endpoints
 
     def debug_string(self) -> str:
