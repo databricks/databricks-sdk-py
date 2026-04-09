@@ -17,6 +17,15 @@ def test_workspace_operations(unified_config):
     assert user is not None
 
 
+def test_workspace_groups_via_unified_host(unified_config):
+    if _is_cloud(Cloud.GCP):
+        pytest.skip("google-credentials workspace ops not supported on unified hosts (workspace-local SP)")
+    client = WorkspaceClient(config=unified_config)
+    groups = list(client.groups.list(attributes="displayName", count=1))
+    assert len(groups) > 0
+    assert groups[0].display_name is not None
+
+
 def test_account_operations(unified_config):
     client = AccountClient(config=unified_config)
     groups = client.groups.list()

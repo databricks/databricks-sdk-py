@@ -9,6 +9,7 @@
 ### Security
 
 ### Bug Fixes
+* Added `X-Databricks-Org-Id` header to deprecated workspace SCIM APIs (Groups, ServicePrincipals, Users) for SPOG host compatibility.
 
 ### Documentation
 

@@ -5540,6 +5540,9 @@ class GroupsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/Groups", body=body, headers=headers)
         return Group.from_dict(res)
@@ -5554,6 +5557,9 @@ class GroupsAPI:
         """
 
         headers = {}
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Groups/{id}", headers=headers)
 
@@ -5569,6 +5575,9 @@ class GroupsAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/Groups/{id}", headers=headers)
         return Group.from_dict(res)
@@ -5627,6 +5636,9 @@ class GroupsAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         # deduplicate items that may have been added during iteration
         seen = set()
@@ -5665,6 +5677,9 @@ class GroupsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body, headers=headers)
 
@@ -5724,6 +5739,9 @@ class GroupsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body, headers=headers)
 
@@ -5798,6 +5816,9 @@ class ServicePrincipalsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/ServicePrincipals", body=body, headers=headers)
         return ServicePrincipal.from_dict(res)
@@ -5812,6 +5833,9 @@ class ServicePrincipalsAPI:
         """
 
         headers = {}
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", headers=headers)
 
@@ -5827,6 +5851,9 @@ class ServicePrincipalsAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", headers=headers)
         return ServicePrincipal.from_dict(res)
@@ -5885,6 +5912,9 @@ class ServicePrincipalsAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         # deduplicate items that may have been added during iteration
         seen = set()
@@ -5923,6 +5953,9 @@ class ServicePrincipalsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body, headers=headers)
 
@@ -5985,6 +6018,9 @@ class ServicePrincipalsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body, headers=headers)
 
@@ -6077,6 +6113,9 @@ class UsersAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/Users", body=body, headers=headers)
         return User.from_dict(res)
@@ -6092,6 +6131,9 @@ class UsersAPI:
         """
 
         headers = {}
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Users/{id}", headers=headers)
 
@@ -6153,6 +6195,9 @@ class UsersAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, headers=headers)
         return User.from_dict(res)
@@ -6167,6 +6212,9 @@ class UsersAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/passwords/permissionLevels", headers=headers)
         return GetPasswordPermissionLevelsResponse.from_dict(res)
@@ -6181,6 +6229,9 @@ class UsersAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/passwords", headers=headers)
         return PasswordPermissions.from_dict(res)
@@ -6240,6 +6291,9 @@ class UsersAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         # deduplicate items that may have been added during iteration
         seen = set()
@@ -6278,6 +6332,9 @@ class UsersAPI:
         headers = {
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Users/{id}", body=body, headers=headers)
 
@@ -6298,6 +6355,9 @@ class UsersAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", "/api/2.0/permissions/authorization/passwords", body=body, headers=headers)
         return PasswordPermissions.from_dict(res)
@@ -6372,6 +6432,9 @@ class UsersAPI:
         headers = {
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/Users/{id}", body=body, headers=headers)
 
@@ -6391,6 +6454,9 @@ class UsersAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/2.0/permissions/authorization/passwords", body=body, headers=headers)
         return PasswordPermissions.from_dict(res)
