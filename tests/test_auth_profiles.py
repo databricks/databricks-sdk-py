@@ -513,6 +513,7 @@ def test_google_id(mocker, profile):
 def test_metadata_service(mocker, requests_mock, profile):
     _mock_metadata(mocker, profile)
     import time
+
     kwargs = _profile_config_kwargs(profile)
     requests_mock.get(
         "http://169.254.169.254/metadata",
@@ -562,6 +563,7 @@ def test_runtime_oauth(mocker, requests_mock, monkeypatch, profile):
     _mock_runtime_module(mocker, monkeypatch, kwargs["host"])
     # Mock the PAT-to-OAuth token exchange
     from databricks.sdk.oauth import Token
+
     mock_token = Token(access_token="test-oauth-token", token_type="Bearer")
     mocker.patch(
         "databricks.sdk.oauth.PATOAuthTokenExchange.token",
