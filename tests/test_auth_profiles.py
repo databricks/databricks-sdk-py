@@ -543,6 +543,7 @@ def _mock_runtime_module(mocker, monkeypatch, host):
     mock_runtime.init_runtime_native_auth = mock_init_native
     mock_runtime.init_runtime_repl_auth = None
     mock_runtime.init_runtime_legacy_auth = None
+    mock_runtime.init_runtime_native_unified = None
     mocker.patch.dict("sys.modules", {"databricks.sdk.runtime": mock_runtime})
 
 
