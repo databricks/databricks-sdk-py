@@ -123,8 +123,9 @@ def test_runtime_auth_from_jobs_volumes(ucws, files_api, fresh_wheel_file, env_o
 
 
 def test_runtime_auth_from_jobs_dbfs(w, fresh_wheel_file, env_or_skip, random):
-    # Library installation from DBFS is not supported past DBR 14.3
-    dbr_versions = [v for v in _get_lts_versions(w) if int(v.key.split(".")[0]) < 15]
+    # Library installation from DBFS is not supported past DBR 14.3.
+    # DBR < 13 ships Python < 3.10 which is below our requires-python.
+    dbr_versions = [v for v in _get_lts_versions(w) if 13 <= int(v.key.split(".")[0]) < 15]
 
     dbfs_wheel = f"/tmp/wheels/{random(10)}/{fresh_wheel_file.name}"
     with fresh_wheel_file.open("rb") as f:

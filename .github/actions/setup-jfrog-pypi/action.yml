@@ -1,0 +1,21 @@
+name: Setup JFrog PyPI proxy
+description: Authenticate to JFrog via OIDC and configure uv to use the db-pypi proxy
+
+runs:
+  using: composite
+  steps:
+    - name: Setup JFrog CLI with OIDC
+      id: jfrog
+      uses: jfrog/setup-jfrog-cli@279b1f629f43dd5bc658d8361ac4802a7ef8d2d5 # v4.9.1
+      env:
+        JF_URL: https://databricks.jfrog.io
+      with:
+        oidc-provider-name: github-actions
+
+    - name: Configure uv for JFrog
+      shell: bash
+      run: |
+        # Route uv package resolution through the JFrog PyPI proxy. Hardened
+        # runners block direct access to pypi.org, so all index queries go
+        # through this authenticated mirror instead.
+        echo "UV_INDEX_URL=https://${{ steps.jfrog.outputs.oidc-user }}:${{ steps.jfrog.outputs.oidc-token }}@databricks.jfrog.io/artifactory/api/pypi/db-pypi/simple" >> "$GITHUB_ENV"

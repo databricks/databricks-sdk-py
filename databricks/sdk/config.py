@@ -5,7 +5,6 @@ import logging
 import os
 import pathlib
 import re
-import sys
 import urllib.parse
 from typing import Dict, Iterable, List, Optional
 
@@ -92,14 +91,11 @@ class Config:
     account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")
     workspace_id: str = ConfigAttribute(env="DATABRICKS_WORKSPACE_ID")
 
-    # Experimental flag to indicate if the host is a unified host (supports both workspace and account APIs)
-    experimental_is_unified_host: bool = ConfigAttribute(env="DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST")
-
-    # [Experimental] Cloud provider. When set, is_aws/is_azure/is_gcp use this value directly
+    # Cloud provider. When set, is_aws/is_azure/is_gcp use this value directly
     # instead of inferring from hostname. Populated automatically from /.well-known/databricks-config.
     cloud: Cloud = ConfigAttribute(env="DATABRICKS_CLOUD", transform=_parse_cloud)
 
-    # [Experimental] OpenID Connect discovery URL. When set, OIDC endpoints are fetched directly
+    # OpenID Connect discovery URL. When set, OIDC endpoints are fetched directly
     # from this URL instead of the default host-type-based well-known endpoint logic.
     discovery_url: str = ConfigAttribute(env="DATABRICKS_DISCOVERY_URL")
 
@@ -615,15 +611,9 @@ class Config:
         """Returns a list of Databricks SDK configuration metadata"""
         if hasattr(cls, "_attributes"):
             return cls._attributes
-        if sys.version_info[1] >= 10:
-            import inspect
+        import inspect
 
-            anno = inspect.get_annotations(cls)
-        else:
-            # Python 3.7 compatibility: getting type hints require extra hop, as described in
-            # "Accessing The Annotations Dict Of An Object In Python 3.9 And Older" section of
-            # https://docs.python.org/3/howto/annotations.html
-            anno = cls.__dict__["__annotations__"]
+        anno = inspect.get_annotations(cls)
         attrs = []
         for name, v in cls.__dict__.items():
             if type(v) != ConfigAttribute:

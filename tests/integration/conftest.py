@@ -95,7 +95,7 @@ def unified_config(env_or_skip) -> Config:
     config = Config()
     config.host = env_or_skip("UNIFIED_HOST")
     config.workspace_id = env_or_skip("TEST_WORKSPACE_ID")
-    config.experimental_is_unified_host = True
+
     config._fix_host_if_needed()
     return config
 
