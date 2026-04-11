@@ -92,6 +92,7 @@ The conventional name for the variable that holds the workspace-level client of 
 ### In this section
 
 - [Default authentication flow](#default-authentication-flow)
+- [Unified host support](#unified-host-support)
 - [Databricks native authentication](#databricks-native-authentication)
 - [Azure native authentication](#azure-native-authentication)
 - [Overriding .databrickscfg](#overriding-databrickscfg)
@@ -107,10 +108,19 @@ in the following order, until it succeeds:
 
 1. [Databricks native authentication](#databricks-native-authentication)
 2. [Azure native authentication](#azure-native-authentication)
+3. [GCP native authentication](#google-cloud-platform-native-authentication)
 4. If the SDK is unsuccessful at this point, it returns an authentication error and stops running.
 
-You can instruct the Databricks SDK for Python to use a specific authentication method by setting the `auth_type` argument
-as described in the following sections.
+Each authentication method requires specific configuration attributes (e.g., `token` for PAT auth, `azure_client_id` for Azure service principal auth). The SDK automatically detects the cloud provider and skips authentication methods whose required configuration attributes are not present. This means that Azure-specific methods like `azure-cli` are automatically skipped when connecting to an AWS or GCP workspace, and vice versa for GCP-specific methods.
+
+To force a specific authentication method instead of relying on auto-detection, set the `auth_type` argument:
+
+```python
+from databricks.sdk import WorkspaceClient
+# Force Azure CLI authentication — skip all other methods
+w = WorkspaceClient(host='https://mycompany.databricks.com', auth_type='azure-cli', cloud='AZURE')
+```
+This is useful when your environment has credentials for multiple authentication methods and you want to ensure a specific one is used or when auto detection is not accurate.
 
 For each authentication method, the SDK searches for compatible authentication credentials in the following locations,
 in the following order. Once the SDK finds a compatible set of credentials that it can use, it stops searching:
@@ -125,6 +135,38 @@ in the following order. Once the SDK finds a compatible set of credentials that 
 
 Depending on the Databricks authentication method, the SDK uses the following information. Presented are the `WorkspaceClient` and `AccountClient` arguments (which have corresponding `.databrickscfg` file fields), their descriptions, and any corresponding environment variables.
 
+### Unified host support
+
+Certain Databricks host types support both account-level and workspace-level API operations from a single endpoint. When using such a unified host, a single configuration profile can be used to create both `WorkspaceClient` and `AccountClient` instances without changing the `host`.
+
+For this to work, the following conditions must be met:
+
+1. The host must support unified operations.
+2. Both `account_id` and `workspace_id` must be available — either set explicitly in the configuration or auto-discovered.
+
+When both values are present, the SDK uses `workspace_id` to route workspace-level requests and `account_id` to route account-level requests, all through the same host.
+
+```ini
+# .databrickscfg
+[unified]
+host         = https://mycompany.databricks.com
+account_id   = 00000000-0000-0000-0000-000000000000
+workspace_id = 1234567890
+```
+
+```python
+from databricks.sdk import WorkspaceClient, AccountClient
+
+# Both clients share the same host and profile
+w = WorkspaceClient(profile='unified')
+a = AccountClient(profile='unified')
+
+# A WorkspaceClient for a different workspace under the same host and account
+w = WorkspaceClient(profile='unified', workspace_id='2345678901')
+```
+
+If the host supports it, `account_id` and `workspace_id` may be auto-discovered, reducing the required explicit configuration.
+
 ### Databricks native authentication
 
 By default, the Databricks SDK for Python initially tries [Databricks token authentication](https://docs.databricks.com/dev-tools/api/latest/authentication.html) (`auth_type='pat'` argument). If the SDK is unsuccessful, it then tries Workload Identity Federation (WIF). See [Supported WIF](https://docs.databricks.com/aws/en/dev-tools/auth/oauth-federation-provider) for the supported JWT token providers.
@@ -133,10 +175,15 @@ By default, the Databricks SDK for Python initially tries [Databricks token auth
 - For Databricks OIDC authentication, you must provide the `host`, `client_id` and `token_audience` _(optional)_ either directly, through the corresponding environment variables, or in your `.databrickscfg` configuration file.
 - For Azure DevOps OIDC authentication, the `token_audience` is irrelevant as the audience is always set to `api://AzureADTokenExchange`. Also, the `System.AccessToken` pipeline variable required for OIDC request must be exposed as the `SYSTEM_ACCESSTOKEN` environment variable, following [Pipeline variables](https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken)
 
+During initialization, the SDK automatically resolves missing configuration fields (`account_id`, `workspace_id`, `cloud`, and `discovery_url`). Any explicitly provided values take precedence and are never overwritten. If the auto discovery fails, the SDK falls back to the explicit configuration. It is recommended to always set explicit configuration.
+
 | Argument         | Description                                                                                                                                                                                                                                                               | Environment variable    |
 |------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------|
-| `host`           | _(String)_ The Databricks host URL for either the Databricks workspace endpoint or the Databricks accounts endpoint.                                                                                                                                                      | `DATABRICKS_HOST`       |     
-| `account_id`     | _(String)_ The Databricks account ID for the Databricks accounts endpoint. Only has effect when `Host` is either `https://accounts.cloud.databricks.com/` _(AWS)_, `https://accounts.azuredatabricks.net/` _(Azure)_, or `https://accounts.gcp.databricks.com/` _(GCP)_.  | `DATABRICKS_ACCOUNT_ID` |
+| `host`           | _(String)_ The Databricks host URL for either the Databricks workspace endpoint or the Databricks accounts endpoint.                                                                                                                                                      | `DATABRICKS_HOST`       |
+| `account_id`     | _(String)_ The Databricks account ID for the Databricks accounts endpoint. Auto-discovered if not provided.  | `DATABRICKS_ACCOUNT_ID` |
+| `workspace_id`   | _(String)_ The Databricks workspace ID for the Databricks workspace endpoint. Auto-discovered if not provided. | `DATABRICKS_WORKSPACE_ID` |
+| `cloud`          | _(String)_ The cloud provider for the Databricks workspace (`AWS`, `AZURE`, or `GCP`). Auto-discovered if not provided. When set, `is_aws`, `is_azure`, and `is_gcp` use this value directly instead of inferring from hostname. | `DATABRICKS_CLOUD` |
+| `discovery_url`  | _(String)_ The OpenID Connect discovery URL. Auto-discovered if not provided. When set, OIDC endpoints are fetched directly from this URL instead of using the default host-based well-known endpoint logic. | `DATABRICKS_DISCOVERY_URL` |
 | `token`          | _(String)_ The Databricks personal access token (PAT) _(AWS, Azure, and GCP)_ or Azure Active Directory (Azure AD) token _(Azure)_.                                                                                                                                       | `DATABRICKS_TOKEN`      |
 | `client_id`      | _(String)_ The Databricks Service Principal Application ID.                                                                                                                                                                                                               | `DATABRICKS_CLIENT_ID`  |
 | `token_audience` | _(String)_ When using Workload Identity Federation, the audience to specify when fetching an ID token from the ID token supplier.                                                                                                                                         | `TOKEN_AUDIENCE`        |
@@ -528,7 +575,7 @@ useragent.with_partner("partner-xyz")
 
 `with_product()` can be used to define the name and version of the product that is built with the Databricks SDK for Python. The product name has the same restrictions as the partner name above, and the product version must be a valid [SemVer](https://semver.org/). Subsequent calls to `with_product()` replace the original product with the new user-specified one.
 
-```go
+```python
 from databricks.sdk import useragent
 useragent.with_product("databricks-example-product", "1.2.0")
 ```

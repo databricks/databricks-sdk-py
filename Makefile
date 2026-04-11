@@ -30,5 +30,13 @@ benchmark:
 coverage: test
 	open htmlcov/index.html
 
+fix-lockfile:
+	@# Replace JFrog proxy URLs with public equivalents in lockfiles.
+	@# Prevents proxy URLs from being accidentally committed.
+	find . -type f -name '*.lock' -not -path './.github/*' \
+	  -exec sed -i 's|databricks\.jfrog\.io/artifactory/api/pypi/db-pypi/simple|pypi.org/simple|g' {} +
+	find . -type f -name '*.lock' -not -path './.github/*' \
+	  -exec sed -i 's|databricks\.jfrog\.io/artifactory/api/pypi/db-pypi/packages|files.pythonhosted.org|g' {} +
+
 clean:
 	rm -fr dist *.egg-info .pytest_cache build htmlcov .venv

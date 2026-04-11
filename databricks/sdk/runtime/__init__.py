@@ -24,6 +24,13 @@ dbruntime_objects = [
 
 # DO NOT MOVE THE TRY-CATCH BLOCK BELOW AND DO NOT ADD THINGS BEFORE IT! WILL MAKE TEST FAIL.
 try:
+    from dbruntime.sdk_credential_provider import init_runtime_native_unified
+
+    logger.debug("runtime SDK credential provider (unified) available")
+except ImportError:
+    init_runtime_native_unified = None
+
+try:
     # We don't want to expose additional entity to user namespace, so
     # a workaround here for exposing required information in notebook environment
     from dbruntime.sdk_credential_provider import init_runtime_native_auth
@@ -34,6 +41,7 @@ except ImportError:
     init_runtime_native_auth = None
 
 globals()["init_runtime_native_auth"] = init_runtime_native_auth
+globals()["init_runtime_native_unified"] = init_runtime_native_unified
 
 
 def init_runtime_repl_auth():
