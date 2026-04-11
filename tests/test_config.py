@@ -973,3 +973,119 @@ def test_resolve_host_metadata_does_not_overwrite_token_audience(mocker):
         token_audience="custom-audience",
     )
     assert config.token_audience == "custom-audience"
+
+
+# ---------------------------------------------------------------------------
+# HostType.from_api_value tests
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "api_value,expected",
+    [
+        ("workspace", HostType.WORKSPACE),
+        ("Workspace", HostType.WORKSPACE),
+        ("WORKSPACE", HostType.WORKSPACE),
+        ("account", HostType.ACCOUNTS),
+        ("Account", HostType.ACCOUNTS),
+        ("ACCOUNT", HostType.ACCOUNTS),
+        ("unified", HostType.UNIFIED),
+        ("Unified", HostType.UNIFIED),
+        ("UNIFIED", HostType.UNIFIED),
+        ("unknown", None),
+        ("", None),
+        (None, None),
+    ],
+)
+def test_host_type_from_api_value(api_value, expected):
+    assert HostType.from_api_value(api_value) == expected
+
+
+# ---------------------------------------------------------------------------
+# HostMetadata.from_dict with host_type field
+# ---------------------------------------------------------------------------
+
+
+def test_host_metadata_from_dict_with_host_type():
+    """HostMetadata.from_dict parses the host_type field."""
+    d = {
+        "oidc_endpoint": "https://host/oidc",
+        "account_id": "acc-1",
+        "host_type": "workspace",
+    }
+    meta = HostMetadata.from_dict(d)
+    assert meta.host_type == "workspace"
+
+
+def test_host_metadata_from_dict_without_host_type():
+    """HostMetadata.from_dict returns None for missing host_type."""
+    d = {"oidc_endpoint": "https://host/oidc"}
+    meta = HostMetadata.from_dict(d)
+    assert meta.host_type is None
+
+
+# ---------------------------------------------------------------------------
+# _resolve_host_metadata populates _resolved_host_type
+# ---------------------------------------------------------------------------
+
+
+def test_resolve_host_metadata_populates_resolved_host_type(mocker):
+    """_resolved_host_type is populated from metadata host_type."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+                "host_type": "unified",
+            }
+        ),
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t")
+    assert config._resolved_host_type == HostType.UNIFIED
+
+
+def test_resolve_host_metadata_does_not_overwrite_existing_resolved_host_type(mocker):
+    """An already-set _resolved_host_type is not overwritten by metadata."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+                "host_type": "account",
+            }
+        ),
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t")
+    # Manually set resolved host type then re-resolve
+    config._resolved_host_type = HostType.UNIFIED
+    config._resolve_host_metadata()
+    assert config._resolved_host_type == HostType.UNIFIED
+
+
+def test_resolve_host_metadata_resolved_host_type_none_when_missing(mocker):
+    """_resolved_host_type stays None when metadata has no host_type."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+            }
+        ),
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t")
+    assert config._resolved_host_type is None
+
+
+def test_resolve_host_metadata_resolved_host_type_unknown_string(mocker):
+    """_resolved_host_type stays None for unrecognized host_type strings."""
+    mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=HostMetadata.from_dict(
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+                "host_type": "some_future_type",
+            }
+        ),
+    )
+    config = Config(host=_DUMMY_WS_HOST, token="t")
+    assert config._resolved_host_type is None
