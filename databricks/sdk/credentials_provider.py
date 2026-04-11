@@ -160,8 +160,21 @@ def runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     # runtime and no config variables are set.
     from databricks.sdk.runtime import (init_runtime_legacy_auth,
                                         init_runtime_native_auth,
+                                        init_runtime_native_unified,
                                         init_runtime_repl_auth)
 
+    # Try the unified provider first (returns host, account_id, workspace_id, inner).
+    if init_runtime_native_unified is not None:
+        host, account_id, workspace_id, inner = init_runtime_native_unified()
+        if host is not None:
+            cfg.host = host
+            cfg.account_id = account_id
+            cfg.workspace_id = workspace_id
+            logger.debug("[init_runtime_native_unified] runtime native auth configured")
+            return inner
+        logger.debug("[init_runtime_native_unified] no host detected")
+
+    # Fall back to legacy providers (return host, inner).
     for init in [
         init_runtime_native_auth,
         init_runtime_repl_auth,
