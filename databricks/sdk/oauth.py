@@ -449,7 +449,7 @@ class HostMetadata:
     workspace_id: Optional[str] = None
     cloud: Optional[Cloud] = None
     host_type: Optional[str] = None
-    default_oidc_audience: Optional[str] = None
+    token_federation_default_oidc_audiences: Optional[str] = None
 
     @staticmethod
     def from_dict(d: dict) -> "HostMetadata":
@@ -459,7 +459,7 @@ class HostMetadata:
             workspace_id=d.get("workspace_id"),
             cloud=Cloud.parse(d.get("cloud", "")),
             host_type=d.get("host_type"),
-            default_oidc_audience=d.get("default_oidc_audience"),
+            token_federation_default_oidc_audiences=d.get("token_federation_default_oidc_audiences"),
         )
 
     def as_dict(self) -> dict:
@@ -469,7 +469,7 @@ class HostMetadata:
             "workspace_id": self.workspace_id,
             "cloud": self.cloud.value if self.cloud else None,
             "host_type": self.host_type,
-            "default_oidc_audience": self.default_oidc_audience,
+            "token_federation_default_oidc_audiences": self.token_federation_default_oidc_audiences,
         }
 
 

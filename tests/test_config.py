@@ -1092,12 +1092,12 @@ def test_resolve_host_metadata_resolved_host_type_unknown_string(mocker):
 
 
 # ---------------------------------------------------------------------------
-# default_oidc_audience resolution from host metadata
+# token_federation_default_oidc_audiences resolution from host metadata
 # ---------------------------------------------------------------------------
 
 
-def test_resolve_host_metadata_sets_token_audience_from_default_oidc_audience(mocker):
-    """token_audience is set from default_oidc_audience in host metadata."""
+def test_resolve_host_metadata_sets_token_audience_from_token_federation_default_oidc_audiences(mocker):
+    """token_audience is set from token_federation_default_oidc_audiences in host metadata."""
     mocker.patch(
         "databricks.sdk.config.get_host_metadata",
         return_value=HostMetadata.from_dict(
@@ -1105,7 +1105,7 @@ def test_resolve_host_metadata_sets_token_audience_from_default_oidc_audience(mo
                 "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
                 "account_id": _DUMMY_ACCOUNT_ID,
                 "workspace_id": _DUMMY_WORKSPACE_ID,
-                "default_oidc_audience": f"{_DUMMY_WS_HOST}/oidc/v1/token",
+                "token_federation_default_oidc_audiences": f"{_DUMMY_WS_HOST}/oidc/v1/token",
             }
         ),
     )
@@ -1113,25 +1113,25 @@ def test_resolve_host_metadata_sets_token_audience_from_default_oidc_audience(mo
     assert config.token_audience == f"{_DUMMY_WS_HOST}/oidc/v1/token"
 
 
-def test_resolve_host_metadata_default_oidc_audience_takes_priority_over_account_id_fallback(mocker):
-    """default_oidc_audience takes priority over the account_id fallback."""
+def test_resolve_host_metadata_token_federation_default_oidc_audiences_takes_priority_over_account_id_fallback(mocker):
+    """token_federation_default_oidc_audiences takes priority over the account_id fallback."""
     mocker.patch(
         "databricks.sdk.config.get_host_metadata",
         return_value=HostMetadata.from_dict(
             {
                 "oidc_endpoint": f"{_DUMMY_ACC_HOST}/oidc/accounts/{_DUMMY_ACCOUNT_ID}",
                 "account_id": _DUMMY_ACCOUNT_ID,
-                "default_oidc_audience": "custom-audience-from-server",
+                "token_federation_default_oidc_audiences": "custom-audience-from-server",
             }
         ),
     )
     config = Config(host=_DUMMY_ACC_HOST, token="t", account_id=_DUMMY_ACCOUNT_ID)
-    # default_oidc_audience should take priority over the account_id fallback
+    # token_federation_default_oidc_audiences should take priority over the account_id fallback
     assert config.token_audience == "custom-audience-from-server"
 
 
-def test_resolve_host_metadata_default_oidc_audience_does_not_override_existing_token_audience(mocker):
-    """An explicitly set token_audience is not overwritten by default_oidc_audience."""
+def test_resolve_host_metadata_token_federation_default_oidc_audiences_does_not_override_existing_token_audience(mocker):
+    """An explicitly set token_audience is not overwritten by token_federation_default_oidc_audiences."""
     mocker.patch(
         "databricks.sdk.config.get_host_metadata",
         return_value=HostMetadata.from_dict(
@@ -1139,7 +1139,7 @@ def test_resolve_host_metadata_default_oidc_audience_does_not_override_existing_
                 "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
                 "account_id": _DUMMY_ACCOUNT_ID,
                 "workspace_id": _DUMMY_WORKSPACE_ID,
-                "default_oidc_audience": f"{_DUMMY_WS_HOST}/oidc/v1/token",
+                "token_federation_default_oidc_audiences": f"{_DUMMY_WS_HOST}/oidc/v1/token",
             }
         ),
     )
@@ -1147,8 +1147,8 @@ def test_resolve_host_metadata_default_oidc_audience_does_not_override_existing_
     assert config.token_audience == "my-custom-audience"
 
 
-def test_resolve_host_metadata_falls_back_to_account_id_when_no_default_oidc_audience(mocker):
-    """When no default_oidc_audience and no workspace_id, falls back to account_id."""
+def test_resolve_host_metadata_falls_back_to_account_id_when_no_token_federation_default_oidc_audiences(mocker):
+    """When no token_federation_default_oidc_audiences and no workspace_id, falls back to account_id."""
     mocker.patch(
         "databricks.sdk.config.get_host_metadata",
         return_value=HostMetadata.from_dict(
@@ -1159,5 +1159,5 @@ def test_resolve_host_metadata_falls_back_to_account_id_when_no_default_oidc_aud
         ),
     )
     config = Config(host=_DUMMY_ACC_HOST, token="t", account_id=_DUMMY_ACCOUNT_ID)
-    # No default_oidc_audience and no workspace_id → falls back to account_id
+    # No token_federation_default_oidc_audiences and no workspace_id → falls back to account_id
     assert config.token_audience == _DUMMY_ACCOUNT_ID
