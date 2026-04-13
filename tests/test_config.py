@@ -1105,7 +1105,7 @@ def test_resolve_host_metadata_sets_token_audience_from_token_federation_default
                 "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
                 "account_id": _DUMMY_ACCOUNT_ID,
                 "workspace_id": _DUMMY_WORKSPACE_ID,
-                "token_federation_default_oidc_audiences": f"{_DUMMY_WS_HOST}/oidc/v1/token",
+                "token_federation_default_oidc_audiences": [f"{_DUMMY_WS_HOST}/oidc/v1/token"],
             }
         ),
     )
@@ -1121,7 +1121,7 @@ def test_resolve_host_metadata_token_federation_default_oidc_audiences_takes_pri
             {
                 "oidc_endpoint": f"{_DUMMY_ACC_HOST}/oidc/accounts/{_DUMMY_ACCOUNT_ID}",
                 "account_id": _DUMMY_ACCOUNT_ID,
-                "token_federation_default_oidc_audiences": "custom-audience-from-server",
+                "token_federation_default_oidc_audiences": ["custom-audience-from-server"],
             }
         ),
     )
@@ -1139,7 +1139,7 @@ def test_resolve_host_metadata_token_federation_default_oidc_audiences_does_not_
                 "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
                 "account_id": _DUMMY_ACCOUNT_ID,
                 "workspace_id": _DUMMY_WORKSPACE_ID,
-                "token_federation_default_oidc_audiences": f"{_DUMMY_WS_HOST}/oidc/v1/token",
+                "token_federation_default_oidc_audiences": [f"{_DUMMY_WS_HOST}/oidc/v1/token"],
             }
         ),
     )

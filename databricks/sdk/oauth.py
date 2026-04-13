@@ -449,7 +449,7 @@ class HostMetadata:
     workspace_id: Optional[str] = None
     cloud: Optional[Cloud] = None
     host_type: Optional[str] = None
-    token_federation_default_oidc_audiences: Optional[str] = None
+    token_federation_default_oidc_audiences: Optional[List[str]] = None
 
     @staticmethod
     def from_dict(d: dict) -> "HostMetadata":

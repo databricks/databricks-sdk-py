@@ -662,8 +662,9 @@ class Config:
                 logger.debug(f"Resolved host_type from host metadata: {meta.host_type}")
                 self._resolved_host_type = resolved
         if not self.token_audience and meta.token_federation_default_oidc_audiences:
-            logger.debug(f"Resolved token_audience from host metadata token_federation_default_oidc_audiences: {meta.token_federation_default_oidc_audiences}")
-            self.token_audience = meta.token_federation_default_oidc_audiences
+            audience = meta.token_federation_default_oidc_audiences[0]
+            logger.debug(f"Resolved token_audience from host metadata token_federation_default_oidc_audiences: {audience}")
+            self.token_audience = audience
         # Account hosts use account_id as the OIDC token audience instead of the token endpoint.
         # This is a special case: when the metadata has no workspace_id, the host is acting as an
         # account-level endpoint and the audience must be scoped to the account.
