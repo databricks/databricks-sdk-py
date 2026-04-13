@@ -1130,7 +1130,9 @@ def test_resolve_host_metadata_token_federation_default_oidc_audiences_takes_pri
     assert config.token_audience == "custom-audience-from-server"
 
 
-def test_resolve_host_metadata_token_federation_default_oidc_audiences_does_not_override_existing_token_audience(mocker):
+def test_resolve_host_metadata_token_federation_default_oidc_audiences_does_not_override_existing_token_audience(
+    mocker,
+):
     """An explicitly set token_audience is not overwritten by token_federation_default_oidc_audiences."""
     mocker.patch(
         "databricks.sdk.config.get_host_metadata",
