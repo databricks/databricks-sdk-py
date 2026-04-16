@@ -9,6 +9,7 @@
 ### Security
 
 ### Bug Fixes
+* Add `X-Databricks-Org-Id` header to hand-written extension methods (`Workspace.upload()`, `Workspace.download()`, `Shares.list()`, `ServingEndpoints.http_request()`) for SPOG host compatibility.
 
 ### Documentation
 

@@ -85,10 +85,15 @@ class WorkspaceExt(WorkspaceAPI):
             data["language"] = language.value
         if overwrite:
             data["overwrite"] = "true"
+        headers = {}
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
         try:
             return self._api.do(
                 "POST",
                 "/api/2.0/workspace/import",
+                headers=headers,
                 files={"content": content},
                 data=data,
             )
@@ -113,5 +118,9 @@ class WorkspaceExt(WorkspaceAPI):
         query = {"path": path, "direct_download": "true"}
         if format:
             query["format"] = format.value
-        response = self._api.do("GET", "/api/2.0/workspace/export", query=query, raw=True)
+        headers = {}
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+        response = self._api.do("GET", "/api/2.0/workspace/export", query=query, headers=headers, raw=True)
         return response["contents"]

@@ -170,6 +170,10 @@ class ServingEndpointsExt(ServingEndpointsAPI):
         # This is a temporary fix to get the headers we need for the MCP session id
         # TODO: Remove this once we have a better way to get back the response headers
         headers_to_capture = ["mcp-session-id"]
+        request_headers = {"Accept": "text/plain", "Content-Type": "application/json"}
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            request_headers["X-Databricks-Org-Id"] = cfg.workspace_id
         res = self._api.do(
             "POST",
             "/api/2.0/external-function",
@@ -181,7 +185,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
                 "json": js.dumps(json) if json is not None else None,
                 "params": js.dumps(params) if params is not None else None,
             },
-            headers={"Accept": "text/plain", "Content-Type": "application/json"},
+            headers=request_headers,
             raw=True,
             response_headers=headers_to_capture,
         )
