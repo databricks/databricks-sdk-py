@@ -319,6 +319,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: FieldDefinition
+   :members:
+   :undoc-members:
+
 .. autoclass:: FileInfo
    :members:
    :undoc-members:
@@ -328,6 +332,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: FirstFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: FlatSchema
    :members:
    :undoc-members:
 
@@ -863,6 +871,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RequestSource
+   :members:
+   :undoc-members:
+
 .. autoclass:: RestoreExperimentResponse
    :members:
    :undoc-members:
@@ -913,6 +925,43 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: RunTag
    :members:
    :undoc-members:
+
+.. py:class:: ScalarDataType
+
+   Scalar data types for request-time field definitions. Only flat (non-nested) types are supported.
+
+   .. py:attribute:: BINARY
+      :value: "BINARY"
+
+   .. py:attribute:: BOOLEAN
+      :value: "BOOLEAN"
+
+   .. py:attribute:: DATE
+      :value: "DATE"
+
+   .. py:attribute:: DECIMAL
+      :value: "DECIMAL"
+
+   .. py:attribute:: DOUBLE
+      :value: "DOUBLE"
+
+   .. py:attribute:: FLOAT
+      :value: "FLOAT"
+
+   .. py:attribute:: INTEGER
+      :value: "INTEGER"
+
+   .. py:attribute:: LONG
+      :value: "LONG"
+
+   .. py:attribute:: SHORT
+      :value: "SHORT"
+
+   .. py:attribute:: STRING
+      :value: "STRING"
+
+   .. py:attribute:: TIMESTAMP
+      :value: "TIMESTAMP"
 
 .. autoclass:: SchemaConfig
    :members:

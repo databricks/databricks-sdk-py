@@ -7,7 +7,7 @@
     Enables administrators to get all tokens and delete tokens for other users. Admins can either get every
     token, get a specific token by ID, or get all tokens for a particular user.
 
-    .. py:method:: create_obo_token(application_id: str [, comment: Optional[str], lifetime_seconds: Optional[int]]) -> CreateOboTokenResponse
+    .. py:method:: create_obo_token(application_id: str [, comment: Optional[str], lifetime_seconds: Optional[int], scopes: Optional[List[str]]]) -> CreateOboTokenResponse
 
 
         Usage:
@@ -42,6 +42,7 @@
           Comment that describes the purpose of the token.
         :param lifetime_seconds: int (optional)
           The number of seconds before the token expires.
+        :param scopes: List[str] (optional)
 
         :returns: :class:`CreateOboTokenResponse`
         

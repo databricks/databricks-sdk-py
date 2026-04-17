@@ -109,6 +109,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AzureEncryptionSettings
+   :members:
+   :undoc-members:
+
 .. autoclass:: AzureManagedIdentity
    :members:
    :undoc-members:
@@ -279,7 +283,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 72
+   Next Id: 75
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -420,7 +424,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CredentialType
 
-   Next Id: 17
+   Next Id: 18
 
    .. py:attribute:: ANY_STATIC_CREDENTIAL
       :value: "ANY_STATIC_CREDENTIAL"
@@ -685,6 +689,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: EncryptionDetails
+   :members:
+   :undoc-members:
+
+.. autoclass:: EncryptionSettings
    :members:
    :undoc-members:
 
@@ -1507,7 +1515,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_GOOGLE_DRIVE_SERVICE_ACCOUNT = 301; Next id: 302
+   Latest kind: CONNECTION_VEEVA_VAULT_OAUTH_M2M = 311; Next id: 312
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
@@ -1538,6 +1546,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL
       :value: "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL"
+
+   .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING
+      :value: "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING"
 
    .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING
       :value: "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING"

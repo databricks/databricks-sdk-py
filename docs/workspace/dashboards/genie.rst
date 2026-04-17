@@ -29,6 +29,22 @@
     .. py:method:: create_message_and_wait(space_id: str, conversation_id: str, content: str, timeout: datetime.timedelta = 0:20:00) -> GenieMessage
 
 
+    .. py:method:: create_message_comment(space_id: str, conversation_id: str, message_id: str, content: str) -> GenieMessageComment
+
+        Create a comment on a conversation message.
+
+        :param space_id: str
+          The ID associated with the Genie space.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message.
+        :param content: str
+          Comment text content.
+
+        :returns: :class:`GenieMessageComment`
+        
+
     .. py:method:: create_space(warehouse_id: str, serialized_space: str [, description: Optional[str], parent_path: Optional[str], title: Optional[str]]) -> GenieSpace
 
         Creates a Genie space from a serialized payload.
@@ -328,6 +344,22 @@
         :returns: :class:`GenieSpace`
         
 
+    .. py:method:: list_conversation_comments(space_id: str, conversation_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListConversationCommentsResponse
+
+        List all comments across all messages in a conversation.
+
+        :param space_id: str
+          The ID associated with the Genie space.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param page_size: int (optional)
+          Maximum number of comments to return per page.
+        :param page_token: str (optional)
+          Pagination token for getting the next page of results.
+
+        :returns: :class:`GenieListConversationCommentsResponse`
+        
+
     .. py:method:: list_conversation_messages(space_id: str, conversation_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListConversationMessagesResponse
 
         List messages in a conversation
@@ -361,6 +393,24 @@
         :returns: :class:`GenieListConversationsResponse`
         
 
+    .. py:method:: list_message_comments(space_id: str, conversation_id: str, message_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListMessageCommentsResponse
+
+        List comments on a specific conversation message.
+
+        :param space_id: str
+          The ID associated with the Genie space.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message.
+        :param page_size: int (optional)
+          Maximum number of comments to return per page.
+        :param page_token: str (optional)
+          Pagination token for getting the next page of results.
+
+        :returns: :class:`GenieListMessageCommentsResponse`
+        
+
     .. py:method:: list_spaces( [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListSpacesResponse
 
         Get list of Genie Spaces.
@@ -373,7 +423,7 @@
         :returns: :class:`GenieListSpacesResponse`
         
 
-    .. py:method:: send_message_feedback(space_id: str, conversation_id: str, message_id: str, rating: GenieFeedbackRating)
+    .. py:method:: send_message_feedback(space_id: str, conversation_id: str, message_id: str, rating: GenieFeedbackRating [, comment: Optional[str]])
 
         Send feedback for a message.
 
@@ -385,6 +435,8 @@
           The ID associated with the message to provide feedback for.
         :param rating: :class:`GenieFeedbackRating`
           The rating (POSITIVE, NEGATIVE, or NONE).
+        :param comment: str (optional)
+          Optional text feedback that will be stored as a comment.
 
 
         
