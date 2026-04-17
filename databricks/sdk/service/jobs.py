@@ -5842,7 +5842,8 @@ class RunTask:
     used to reference the tasks to be updated or reset."""
 
     alert_task: Optional[AlertTask] = None
-    """New alert v2 task"""
+    """The task evaluates a Databricks alert and sends notifications to subscribers when the
+    `alert_task` field is present."""
 
     attempt_number: Optional[int] = None
     """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
@@ -7167,7 +7168,8 @@ class SubmitTask:
     used to reference the tasks to be updated or reset."""
 
     alert_task: Optional[AlertTask] = None
-    """New alert v2 task"""
+    """The task evaluates a Databricks alert and sends notifications to subscribers when the
+    `alert_task` field is present."""
 
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
@@ -7699,7 +7701,8 @@ class Task:
     used to reference the tasks to be updated or reset."""
 
     alert_task: Optional[AlertTask] = None
-    """New alert v2 task"""
+    """The task evaluates a Databricks alert and sends notifications to subscribers when the
+    `alert_task` field is present."""
 
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
@@ -8254,7 +8257,9 @@ class TerminationCodeCode(Enum):
     `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
     limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user.
     * `BREAKING_CHANGE`: Run failed because of an intentional breaking change in Spark, but it will
-    be retried with a mitigation config.
+    be retried with a mitigation config. * `CLUSTER_TERMINATED_BY_USER`: The run failed because the
+    externally managed cluster entered an unusable state, likely due to the user terminating or
+    restarting it outside the jobs service.
 
     [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
 

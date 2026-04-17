@@ -1139,20 +1139,37 @@ class AppResource:
 
 @dataclass
 class AppResourceApp:
+    name: Optional[str] = None
+
+    permission: Optional[AppResourceAppAppPermission] = None
+
     def as_dict(self) -> dict:
         """Serializes the AppResourceApp into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.permission is not None:
+            body["permission"] = self.permission.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppResourceApp into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.permission is not None:
+            body["permission"] = self.permission
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppResourceApp:
         """Deserializes the AppResourceApp from a dictionary."""
-        return cls()
+        return cls(name=d.get("name", None), permission=_enum(d, "permission", AppResourceAppAppPermission))
+
+
+class AppResourceAppAppPermission(Enum):
+
+    CAN_USE = "CAN_USE"
 
 
 @dataclass
@@ -1576,6 +1593,33 @@ class AppResourceUcSecurableUcSecurableType(Enum):
     FUNCTION = "FUNCTION"
     TABLE = "TABLE"
     VOLUME = "VOLUME"
+
+
+@dataclass
+class AppThumbnail:
+    """The thumbnail for an app."""
+
+    thumbnail: Optional[str] = None
+    """The thumbnail image bytes."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppThumbnail into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.thumbnail is not None:
+            body["thumbnail"] = self.thumbnail
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppThumbnail into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.thumbnail is not None:
+            body["thumbnail"] = self.thumbnail
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppThumbnail:
+        """Deserializes the AppThumbnail from a dictionary."""
+        return cls(thumbnail=d.get("thumbnail", None))
 
 
 @dataclass
@@ -2984,6 +3028,25 @@ class AppsAPI:
         res = self._api.do("DELETE", f"/api/2.0/apps/{name}", headers=headers)
         return App.from_dict(res)
 
+    def delete_app_thumbnail(self, name: str):
+        """Deletes the thumbnail for an app.
+
+        :param name: str
+          The name of the app.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/apps/{name}/thumbnail", headers=headers)
+
     def delete_space(self, name: str) -> DeleteSpaceOperation:
         """Deletes an app space.
 
@@ -3395,6 +3458,32 @@ class AppsAPI:
 
         res = self._api.do("PATCH", f"/api/2.0/apps/{name}", body=body, headers=headers)
         return App.from_dict(res)
+
+    def update_app_thumbnail(self, name: str, *, app_thumbnail: Optional[AppThumbnail] = None) -> AppThumbnail:
+        """Updates the thumbnail for an app.
+
+        :param name: str
+          The name of the app.
+        :param app_thumbnail: :class:`AppThumbnail` (optional)
+          The app thumbnail to set.
+
+        :returns: :class:`AppThumbnail`
+        """
+
+        body = {}
+        if app_thumbnail is not None:
+            body["app_thumbnail"] = app_thumbnail.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/apps/{name}/thumbnail", body=body, headers=headers)
+        return AppThumbnail.from_dict(res)
 
     def update_permissions(
         self, app_name: str, *, access_control_list: Optional[List[AppAccessControlRequest]] = None

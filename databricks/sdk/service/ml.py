@@ -428,7 +428,10 @@ class AvgFunction:
     """Computes the average of values."""
 
     input: str
-    """The input column from which the average is computed."""
+    """The input column from which the average is computed. For Kafka sources, use dot-prefixed path
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. TODO(FS-939):
+    Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility but is
+    deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the AvgFunction into a dictionary suitable for use as a JSON request body."""
@@ -505,9 +508,10 @@ class BatchCreateMaterializedFeaturesResponse:
 @dataclass
 class ColumnIdentifier:
     variant_expr_path: str
-    """String representation of the column name or variant expression path. For nested fields, the leaf
-    value is what will be present in materialized tables and expected to match at query time. For
-    example, the leaf node of value:trip_details.location_details.pickup_zip is pickup_zip."""
+    """String representation of the column name using dot-prefixed path notation. For nested fields,
+    the leaf value is what will be present in materialized tables and expected to match at query
+    time. For example, the leaf node of value.trip_details.location_details.pickup_zip is
+    pickup_zip."""
 
     def as_dict(self) -> dict:
         """Serializes the ColumnIdentifier into a dictionary suitable for use as a JSON request body."""
@@ -684,7 +688,10 @@ class CountFunction:
     """Computes the count of values."""
 
     input: str
-    """The input column from which the count is computed."""
+    """The input column from which the count is computed. For Kafka sources, use dot-prefixed path
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. TODO(FS-939):
+    Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility but is
+    deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the CountFunction into a dictionary suitable for use as a JSON request body."""
@@ -956,9 +963,16 @@ class CreateWebhookResponse:
 
 @dataclass
 class DataSource:
+    """Specifies the data source backing a feature. Exactly one source type must be set."""
+
     delta_table_source: Optional[DeltaTableSource] = None
+    """A Delta table data source."""
 
     kafka_source: Optional[KafkaSource] = None
+    """A Kafka stream data source."""
+
+    request_source: Optional[RequestSource] = None
+    """A request-time data source."""
 
     def as_dict(self) -> dict:
         """Serializes the DataSource into a dictionary suitable for use as a JSON request body."""
@@ -967,6 +981,8 @@ class DataSource:
             body["delta_table_source"] = self.delta_table_source.as_dict()
         if self.kafka_source:
             body["kafka_source"] = self.kafka_source.as_dict()
+        if self.request_source:
+            body["request_source"] = self.request_source.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -976,6 +992,8 @@ class DataSource:
             body["delta_table_source"] = self.delta_table_source
         if self.kafka_source:
             body["kafka_source"] = self.kafka_source
+        if self.request_source:
+            body["request_source"] = self.request_source
         return body
 
     @classmethod
@@ -984,6 +1002,7 @@ class DataSource:
         return cls(
             delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
             kafka_source=_from_dict(d, "kafka_source", KafkaSource),
+            request_source=_from_dict(d, "request_source", RequestSource),
         )
 
 
@@ -1421,7 +1440,12 @@ class DeltaTableSource:
 @dataclass
 class EntityColumn:
     name: str
-    """The name of the entity column."""
+    """The name of the entity column. For Kafka sources, use dot-prefixed path notation to reference
+    fields within the key or value schema (e.g., "value.user_id", "key.partition_key"). For nested
+    fields, the leaf node name (e.g., "user_id" from "value.trip_details.user_id") is what will be
+    present in materialized tables and expected to match at query time. TODO(FS-939): Colon-prefixed
+    notation (e.g., "value:user_id") is supported for backwards compatibility but is deprecated;
+    migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the EntityColumn into a dictionary suitable for use as a JSON request body."""
@@ -2082,6 +2106,41 @@ class FeatureTag:
 
 
 @dataclass
+class FieldDefinition:
+    """A single field definition within a FlatSchema, specifying the field name and its scalar data
+    type. Does not support nested or complex types (arrays, maps, structs)."""
+
+    name: str
+    """The name of the field."""
+
+    data_type: ScalarDataType
+    """The scalar data type of the field."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FieldDefinition into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_type is not None:
+            body["data_type"] = self.data_type.value
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FieldDefinition into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_type is not None:
+            body["data_type"] = self.data_type
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FieldDefinition:
+        """Deserializes the FieldDefinition from a dictionary."""
+        return cls(data_type=_enum(d, "data_type", ScalarDataType), name=d.get("name", None))
+
+
+@dataclass
 class FileInfo:
     """Metadata of a single artifact file or directory."""
 
@@ -2172,6 +2231,34 @@ class FirstFunction:
     def from_dict(cls, d: Dict[str, Any]) -> FirstFunction:
         """Deserializes the FirstFunction from a dictionary."""
         return cls(input=d.get("input", None))
+
+
+@dataclass
+class FlatSchema:
+    """A flat (non-nested) schema for request-time fields, defined as an ordered list of field
+    definitions. This schema only supports scalar types."""
+
+    fields: List[FieldDefinition]
+    """The list of fields in this schema."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FlatSchema into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.fields:
+            body["fields"] = [v.as_dict() for v in self.fields]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FlatSchema into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.fields:
+            body["fields"] = self.fields
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FlatSchema:
+        """Deserializes the FlatSchema from a dictionary."""
+        return cls(fields=_repeated_dict(d, "fields", FieldDefinition))
 
 
 @dataclass
@@ -3854,6 +3941,9 @@ class MaterializedFeature:
     """The quartz cron expression that defines the schedule of the materialization pipeline. The
     schedule is evaluated in the UTC timezone."""
 
+    is_online: Optional[bool] = None
+    """True if this is an online materialized feature. False if it is an offline materialized feature."""
+
     last_materialization_time: Optional[str] = None
     """The timestamp when the pipeline last ran and updated the materialized feature values. If the
     pipeline has not run yet, this field will be null."""
@@ -3879,6 +3969,8 @@ class MaterializedFeature:
             body["cron_schedule"] = self.cron_schedule
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
+        if self.is_online is not None:
+            body["is_online"] = self.is_online
         if self.last_materialization_time is not None:
             body["last_materialization_time"] = self.last_materialization_time
         if self.materialized_feature_id is not None:
@@ -3900,6 +3992,8 @@ class MaterializedFeature:
             body["cron_schedule"] = self.cron_schedule
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
+        if self.is_online is not None:
+            body["is_online"] = self.is_online
         if self.last_materialization_time is not None:
             body["last_materialization_time"] = self.last_materialization_time
         if self.materialized_feature_id is not None:
@@ -3920,6 +4014,7 @@ class MaterializedFeature:
         return cls(
             cron_schedule=d.get("cron_schedule", None),
             feature_name=d.get("feature_name", None),
+            is_online=d.get("is_online", None),
             last_materialization_time=d.get("last_materialization_time", None),
             materialized_feature_id=d.get("materialized_feature_id", None),
             offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
@@ -5422,6 +5517,34 @@ class RenameModelResponse:
 
 
 @dataclass
+class RequestSource:
+    """A request-time data source whose value is provided at inference time: offline batch scoring or
+    online serving endpoint"""
+
+    flat_schema: Optional[FlatSchema] = None
+    """A flat schema with scalar-typed fields only."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RequestSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.flat_schema:
+            body["flat_schema"] = self.flat_schema.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RequestSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.flat_schema:
+            body["flat_schema"] = self.flat_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RequestSource:
+        """Deserializes the RequestSource from a dictionary."""
+        return cls(flat_schema=_from_dict(d, "flat_schema", FlatSchema))
+
+
+@dataclass
 class RestoreExperimentResponse:
     def as_dict(self) -> dict:
         """Serializes the RestoreExperimentResponse into a dictionary suitable for use as a JSON request body."""
@@ -5756,6 +5879,23 @@ class RunTag:
     def from_dict(cls, d: Dict[str, Any]) -> RunTag:
         """Deserializes the RunTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+class ScalarDataType(Enum):
+    """Scalar data types for request-time field definitions. Only flat (non-nested) types are
+    supported."""
+
+    BINARY = "BINARY"
+    BOOLEAN = "BOOLEAN"
+    DATE = "DATE"
+    DECIMAL = "DECIMAL"
+    DOUBLE = "DOUBLE"
+    FLOAT = "FLOAT"
+    INTEGER = "INTEGER"
+    LONG = "LONG"
+    SHORT = "SHORT"
+    STRING = "STRING"
+    TIMESTAMP = "TIMESTAMP"
 
 
 @dataclass
@@ -6179,7 +6319,10 @@ class StddevPopFunction:
     """Computes the population standard deviation."""
 
     input: str
-    """The input column from which the population standard deviation is computed."""
+    """The input column from which the population standard deviation is computed. For Kafka sources,
+    use dot-prefixed path notation (e.g., "value.amount"). For nested fields, the leaf node name is
+    used. TODO(FS-939): Colon-prefixed notation (e.g., "value:amount") is supported for backwards
+    compatibility but is deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the StddevPopFunction into a dictionary suitable for use as a JSON request body."""
@@ -6278,7 +6421,10 @@ class SumFunction:
     """Computes the sum of values."""
 
     input: str
-    """The input column from which the sum is computed."""
+    """The input column from which the sum is computed. For Kafka sources, use dot-prefixed path
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. TODO(FS-939):
+    Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility but is
+    deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the SumFunction into a dictionary suitable for use as a JSON request body."""
@@ -6375,7 +6521,12 @@ class TimeWindow:
 @dataclass
 class TimeseriesColumn:
     name: str
-    """The name of the timeseries column."""
+    """The name of the timeseries column. For Kafka sources, use dot-prefixed path notation to
+    reference fields within the key or value schema (e.g., "value.event_timestamp"). For nested
+    fields, the leaf node name (e.g., "event_timestamp" from "value.event_details.event_timestamp")
+    is what will be present in materialized tables and expected to match at query time.
+    TODO(FS-939): Colon-prefixed notation (e.g., "value:event_timestamp") is supported for backwards
+    compatibility but is deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the TimeseriesColumn into a dictionary suitable for use as a JSON request body."""

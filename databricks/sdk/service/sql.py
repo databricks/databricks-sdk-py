@@ -6209,6 +6209,10 @@ class StatementStatus:
 
     error: Optional[ServiceError] = None
 
+    sql_state: Optional[str] = None
+    """SQLSTATE error code returned when the statement execution fails. Only populated when the
+    statement status is `FAILED`."""
+
     state: Optional[StatementState] = None
     """Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running -
     `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution
@@ -6221,6 +6225,8 @@ class StatementStatus:
         body = {}
         if self.error:
             body["error"] = self.error.as_dict()
+        if self.sql_state is not None:
+            body["sql_state"] = self.sql_state
         if self.state is not None:
             body["state"] = self.state.value
         return body
@@ -6230,6 +6236,8 @@ class StatementStatus:
         body = {}
         if self.error:
             body["error"] = self.error
+        if self.sql_state is not None:
+            body["sql_state"] = self.sql_state
         if self.state is not None:
             body["state"] = self.state
         return body
@@ -6237,7 +6245,11 @@ class StatementStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StatementStatus:
         """Deserializes the StatementStatus from a dictionary."""
-        return cls(error=_from_dict(d, "error", ServiceError), state=_enum(d, "state", StatementState))
+        return cls(
+            error=_from_dict(d, "error", ServiceError),
+            sql_state=d.get("sql_state", None),
+            state=_enum(d, "state", StatementState),
+        )
 
 
 class Status(Enum):

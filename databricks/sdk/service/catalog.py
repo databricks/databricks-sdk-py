@@ -748,6 +748,46 @@ class AzureActiveDirectoryToken:
 
 
 @dataclass
+class AzureEncryptionSettings:
+    azure_tenant_id: str
+
+    azure_cmk_access_connector_id: Optional[str] = None
+
+    azure_cmk_managed_identity_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AzureEncryptionSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.azure_cmk_access_connector_id is not None:
+            body["azure_cmk_access_connector_id"] = self.azure_cmk_access_connector_id
+        if self.azure_cmk_managed_identity_id is not None:
+            body["azure_cmk_managed_identity_id"] = self.azure_cmk_managed_identity_id
+        if self.azure_tenant_id is not None:
+            body["azure_tenant_id"] = self.azure_tenant_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AzureEncryptionSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.azure_cmk_access_connector_id is not None:
+            body["azure_cmk_access_connector_id"] = self.azure_cmk_access_connector_id
+        if self.azure_cmk_managed_identity_id is not None:
+            body["azure_cmk_managed_identity_id"] = self.azure_cmk_managed_identity_id
+        if self.azure_tenant_id is not None:
+            body["azure_tenant_id"] = self.azure_tenant_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AzureEncryptionSettings:
+        """Deserializes the AzureEncryptionSettings from a dictionary."""
+        return cls(
+            azure_cmk_access_connector_id=d.get("azure_cmk_access_connector_id", None),
+            azure_cmk_managed_identity_id=d.get("azure_cmk_managed_identity_id", None),
+            azure_tenant_id=d.get("azure_tenant_id", None),
+        )
+
+
+@dataclass
 class AzureManagedIdentity:
     """The Azure managed identity configuration."""
 
@@ -1090,6 +1130,9 @@ class CatalogInfo:
     isolation_mode: Optional[CatalogIsolationMode] = None
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
+    managed_encryption_settings: Optional[EncryptionSettings] = None
+    """Control CMK encryption for managed catalog data"""
+
     metastore_id: Optional[str] = None
     """Unique identifier of parent metastore."""
 
@@ -1152,6 +1195,8 @@ class CatalogInfo:
             body["full_name"] = self.full_name
         if self.isolation_mode is not None:
             body["isolation_mode"] = self.isolation_mode.value
+        if self.managed_encryption_settings:
+            body["managed_encryption_settings"] = self.managed_encryption_settings.as_dict()
         if self.metastore_id is not None:
             body["metastore_id"] = self.metastore_id
         if self.name is not None:
@@ -1203,6 +1248,8 @@ class CatalogInfo:
             body["full_name"] = self.full_name
         if self.isolation_mode is not None:
             body["isolation_mode"] = self.isolation_mode
+        if self.managed_encryption_settings:
+            body["managed_encryption_settings"] = self.managed_encryption_settings
         if self.metastore_id is not None:
             body["metastore_id"] = self.metastore_id
         if self.name is not None:
@@ -1247,6 +1294,7 @@ class CatalogInfo:
             enable_predictive_optimization=_enum(d, "enable_predictive_optimization", EnablePredictiveOptimization),
             full_name=d.get("full_name", None),
             isolation_mode=_enum(d, "isolation_mode", CatalogIsolationMode),
+            managed_encryption_settings=_from_dict(d, "managed_encryption_settings", EncryptionSettings),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
             options=d.get("options", None),
@@ -1622,7 +1670,7 @@ class ConnectionDependency:
 
 @dataclass
 class ConnectionInfo:
-    """Next ID: 24"""
+    """Next ID: 25"""
 
     comment: Optional[str] = None
     """User-provided free-form text description."""
@@ -1784,7 +1832,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 72"""
+    """Next Id: 75"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -2597,7 +2645,7 @@ class CredentialPurpose(Enum):
 
 
 class CredentialType(Enum):
-    """Next Id: 17"""
+    """Next Id: 18"""
 
     ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
@@ -3271,6 +3319,52 @@ class EncryptionDetails:
 
 
 @dataclass
+class EncryptionSettings:
+    """Encryption Settings are used to carry metadata for securable encryption at rest. Currently used
+    for catalogs, we can use the information supplied here to interact with a CMK."""
+
+    azure_encryption_settings: Optional[AzureEncryptionSettings] = None
+    """optional Azure settings - only required if an Azure CMK is used."""
+
+    azure_key_vault_key_id: Optional[str] = None
+    """the AKV URL in Azure, null otherwise."""
+
+    customer_managed_key_id: Optional[str] = None
+    """the CMK uuid in AWS and GCP, null otherwise."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EncryptionSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.azure_encryption_settings:
+            body["azure_encryption_settings"] = self.azure_encryption_settings.as_dict()
+        if self.azure_key_vault_key_id is not None:
+            body["azure_key_vault_key_id"] = self.azure_key_vault_key_id
+        if self.customer_managed_key_id is not None:
+            body["customer_managed_key_id"] = self.customer_managed_key_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EncryptionSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.azure_encryption_settings:
+            body["azure_encryption_settings"] = self.azure_encryption_settings
+        if self.azure_key_vault_key_id is not None:
+            body["azure_key_vault_key_id"] = self.azure_key_vault_key_id
+        if self.customer_managed_key_id is not None:
+            body["customer_managed_key_id"] = self.customer_managed_key_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EncryptionSettings:
+        """Deserializes the EncryptionSettings from a dictionary."""
+        return cls(
+            azure_encryption_settings=_from_dict(d, "azure_encryption_settings", AzureEncryptionSettings),
+            azure_key_vault_key_id=d.get("azure_key_vault_key_id", None),
+            customer_managed_key_id=d.get("customer_managed_key_id", None),
+        )
+
+
+@dataclass
 class EntityTagAssignment:
     """Represents a tag assignment to an entity"""
 
@@ -3281,8 +3375,7 @@ class EntityTagAssignment:
     """The key of the tag"""
 
     entity_type: str
-    """The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas,
-    tables, columns, volumes."""
+    """The type of the entity to which the tag is assigned."""
 
     source_type: Optional[TagAssignmentSourceType] = None
     """The source type of the tag assignment, e.g., user-assigned or system-assigned"""
@@ -8881,7 +8974,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_GOOGLE_DRIVE_SERVICE_ACCOUNT = 301; Next id: 302"""
+    """Latest kind: CONNECTION_VEEVA_VAULT_OAUTH_M2M = 311; Next id: 312"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -8893,6 +8986,7 @@ class SecurableKind(Enum):
     TABLE_DELTA_ICEBERG_MANAGED = "TABLE_DELTA_ICEBERG_MANAGED"
     TABLE_DELTA_UNIFORM_HUDI_EXTERNAL = "TABLE_DELTA_UNIFORM_HUDI_EXTERNAL"
     TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL = "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL"
+    TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING = "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING"
     TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING = "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING"
     TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL = (
         "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL"
@@ -11229,6 +11323,7 @@ class CatalogsAPI:
         *,
         comment: Optional[str] = None,
         connection_name: Optional[str] = None,
+        managed_encryption_settings: Optional[EncryptionSettings] = None,
         options: Optional[Dict[str, str]] = None,
         properties: Optional[Dict[str, str]] = None,
         provider_name: Optional[str] = None,
@@ -11244,6 +11339,8 @@ class CatalogsAPI:
           User-provided free-form text description.
         :param connection_name: str (optional)
           The name of the connection to an external data source.
+        :param managed_encryption_settings: :class:`EncryptionSettings` (optional)
+          Control CMK encryption for managed catalog data
         :param options: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param properties: Dict[str,str] (optional)
@@ -11265,6 +11362,8 @@ class CatalogsAPI:
             body["comment"] = comment
         if connection_name is not None:
             body["connection_name"] = connection_name
+        if managed_encryption_settings is not None:
+            body["managed_encryption_settings"] = managed_encryption_settings.as_dict()
         if name is not None:
             body["name"] = name
         if options is not None:
@@ -11416,6 +11515,7 @@ class CatalogsAPI:
         comment: Optional[str] = None,
         enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
         isolation_mode: Optional[CatalogIsolationMode] = None,
+        managed_encryption_settings: Optional[EncryptionSettings] = None,
         new_name: Optional[str] = None,
         options: Optional[Dict[str, str]] = None,
         owner: Optional[str] = None,
@@ -11432,6 +11532,8 @@ class CatalogsAPI:
           Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`CatalogIsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+        :param managed_encryption_settings: :class:`EncryptionSettings` (optional)
+          Control CMK encryption for managed catalog data
         :param new_name: str (optional)
           New name for the catalog.
         :param options: Dict[str,str] (optional)
@@ -11451,6 +11553,8 @@ class CatalogsAPI:
             body["enable_predictive_optimization"] = enable_predictive_optimization.value
         if isolation_mode is not None:
             body["isolation_mode"] = isolation_mode.value
+        if managed_encryption_settings is not None:
+            body["managed_encryption_settings"] = managed_encryption_settings.as_dict()
         if new_name is not None:
             body["new_name"] = new_name
         if options is not None:
@@ -12105,8 +12209,7 @@ class EntityTagAssignmentsAPI:
         [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
 
         :param entity_type: str
-          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
-          columns, volumes.
+          The type of the entity to which the tag is assigned.
         :param entity_name: str
           The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str
@@ -12133,8 +12236,7 @@ class EntityTagAssignmentsAPI:
         """Gets a tag assignment for an Unity Catalog entity by tag key.
 
         :param entity_type: str
-          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
-          columns, volumes.
+          The type of the entity to which the tag is assigned.
         :param entity_name: str
           The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str
@@ -12168,8 +12270,7 @@ class EntityTagAssignmentsAPI:
         which is the only indication that the end of results has been reached.
 
         :param entity_type: str
-          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
-          columns, volumes.
+          The type of the entity to which the tag is assigned.
         :param entity_name: str
           The fully qualified name of the entity to which the tag is assigned
         :param max_results: int (optional)
@@ -12222,8 +12323,7 @@ class EntityTagAssignmentsAPI:
         [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
 
         :param entity_type: str
-          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
-          columns, volumes.
+          The type of the entity to which the tag is assigned.
         :param entity_name: str
           The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str

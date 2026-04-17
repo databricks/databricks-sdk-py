@@ -2272,8 +2272,8 @@ class RoleRoleSpec:
     identity_type: * For the managed identities, OAUTH is used. * For the regular postgres roles,
     authentication based on postgres passwords is used.
     
-    NOTE: this is ignored for the Databricks identity type GROUP, and NO_LOGIN is implicitly assumed
-    instead for the GROUP identity type."""
+    NOTE: for the Databricks identity type GROUP, LAKEBASE_OAUTH_V1 is the default auth method
+    (group can login as well)."""
 
     identity_type: Optional[RoleIdentityType] = None
     """The type of role. When specifying a managed-identity, the chosen role_id must be a valid:
@@ -2419,6 +2419,7 @@ class SyncedTable:
     """Synced Table data synchronization status."""
 
     uid: Optional[str] = None
+    """The Unity Catalog table ID for this synced table."""
 
     def as_dict(self) -> dict:
         """Serializes the SyncedTable into a dictionary suitable for use as a JSON request body."""
@@ -2643,11 +2644,6 @@ class SyncedTableSyncedTableSpec:
     primary_key_columns: Optional[List[str]] = None
     """Primary Key columns to be used for data insert/update in the destination."""
 
-    project: Optional[str] = None
-    """The full resource name of the project associated with the table.
-    
-    Format: "projects/{project_id}"."""
-
     scheduling_policy: Optional[SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy] = None
     """Scheduling policy of the underlying pipeline."""
 
@@ -2677,8 +2673,6 @@ class SyncedTableSyncedTableSpec:
             body["postgres_database"] = self.postgres_database
         if self.primary_key_columns:
             body["primary_key_columns"] = [v for v in self.primary_key_columns]
-        if self.project is not None:
-            body["project"] = self.project
         if self.scheduling_policy is not None:
             body["scheduling_policy"] = self.scheduling_policy.value
         if self.source_table_full_name is not None:
@@ -2702,8 +2696,6 @@ class SyncedTableSyncedTableSpec:
             body["postgres_database"] = self.postgres_database
         if self.primary_key_columns:
             body["primary_key_columns"] = self.primary_key_columns
-        if self.project is not None:
-            body["project"] = self.project
         if self.scheduling_policy is not None:
             body["scheduling_policy"] = self.scheduling_policy
         if self.source_table_full_name is not None:
@@ -2722,7 +2714,6 @@ class SyncedTableSyncedTableSpec:
             new_pipeline_spec=_from_dict(d, "new_pipeline_spec", NewPipelineSpec),
             postgres_database=d.get("postgres_database", None),
             primary_key_columns=d.get("primary_key_columns", None),
-            project=d.get("project", None),
             scheduling_policy=_enum(d, "scheduling_policy", SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy),
             source_table_full_name=d.get("source_table_full_name", None),
             timeseries_key=d.get("timeseries_key", None),
