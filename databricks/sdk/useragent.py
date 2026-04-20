@@ -228,40 +228,34 @@ def cicd_provider() -> str:
 # Canonical list of known AI coding agents. Alphabetical by product name.
 # Keep this list in sync with databricks-sdk-go and databricks-sdk-java.
 #
-# Each record has a product name and a list of matchers. A matcher is a
-# (env_var, value) pair: an empty value means presence-only (the env var just
-# needs to be set, even to an empty string), a non-empty value requires an
-# exact match. An agent fires if ANY of its matchers fires. Ambiguity is
-# judged by unique product (not raw matcher count), so an agent with two
-# overlapping matchers set at the same time still counts as one match.
+# Each record has a single env var that identifies the product by presence
+# (the env var just needs to be set, even to an empty string).
 @dataclass(frozen=True)
 class _AgentRecord:
+    env_var: str
     product: str
-    matchers: List[Tuple[str, str]]
 
 
 _KNOWN_AGENTS: List[_AgentRecord] = [
+    _AgentRecord("AMP_CURRENT_THREAD_ID", "amp"),  # https://ampcode.com/ (also sets AGENT=amp, handled centrally)
+    _AgentRecord("ANTIGRAVITY_AGENT", "antigravity"),  # Closed source (Google)
+    _AgentRecord("AUGMENT_AGENT", "augment"),  # https://www.augmentcode.com/
+    _AgentRecord("CLAUDECODE", "claude-code"),  # https://github.com/anthropics/claude-code
+    _AgentRecord("CLINE_ACTIVE", "cline"),  # https://github.com/cline/cline (v3.24.0+)
+    _AgentRecord("CODEX_CI", "codex"),  # https://github.com/openai/codex
+    _AgentRecord("COPILOT_CLI", "copilot-cli"),  # https://github.com/features/copilot
     _AgentRecord(
-        "amp", [("AMP_CURRENT_THREAD_ID", "")]
-    ),  # https://ampcode.com/ (also sets AGENT=amp, handled centrally)
-    _AgentRecord("antigravity", [("ANTIGRAVITY_AGENT", "")]),  # Closed source (Google)
-    _AgentRecord("augment", [("AUGMENT_AGENT", "")]),  # https://www.augmentcode.com/
-    _AgentRecord("claude-code", [("CLAUDECODE", "")]),  # https://github.com/anthropics/claude-code
-    _AgentRecord("cline", [("CLINE_ACTIVE", "")]),  # https://github.com/cline/cline (v3.24.0+)
-    _AgentRecord("codex", [("CODEX_CI", "")]),  # https://github.com/openai/codex
-    _AgentRecord("copilot-cli", [("COPILOT_CLI", "")]),  # https://github.com/features/copilot
-    _AgentRecord(
-        "copilot-vscode", [("COPILOT_MODEL", "")]
+        "COPILOT_MODEL", "copilot-vscode"
     ),  # VS Code Copilot terminal, best-effort heuristic, not officially identified
-    _AgentRecord("cursor", [("CURSOR_AGENT", "")]),  # Closed source
-    _AgentRecord("gemini-cli", [("GEMINI_CLI", "")]),  # https://google-gemini.github.io/gemini-cli
+    _AgentRecord("CURSOR_AGENT", "cursor"),  # Closed source
+    _AgentRecord("GEMINI_CLI", "gemini-cli"),  # https://google-gemini.github.io/gemini-cli
     _AgentRecord(
-        "goose", [("GOOSE_TERMINAL", "")]
+        "GOOSE_TERMINAL", "goose"
     ),  # https://block.github.io/goose/ (also sets AGENT=goose, handled centrally)
-    _AgentRecord("kiro", [("KIRO", "")]),  # https://kiro.dev/ (Amazon)
-    _AgentRecord("openclaw", [("OPENCLAW_SHELL", "")]),  # https://github.com/anthropics/openclaw
-    _AgentRecord("opencode", [("OPENCODE", "")]),  # https://github.com/opencode-ai/opencode
-    _AgentRecord("windsurf", [("WINDSURF_AGENT", "")]),  # https://codeium.com/windsurf (Codeium)
+    _AgentRecord("KIRO", "kiro"),  # https://kiro.dev/ (Amazon)
+    _AgentRecord("OPENCLAW_SHELL", "openclaw"),  # https://github.com/anthropics/openclaw
+    _AgentRecord("OPENCODE", "opencode"),  # https://github.com/opencode-ai/opencode
+    _AgentRecord("WINDSURF_AGENT", "windsurf"),  # https://codeium.com/windsurf (Codeium)
 ]
 
 # Private variable to store the detected agent provider. This value is computed
@@ -270,22 +264,11 @@ _KNOWN_AGENTS: List[_AgentRecord] = [
 _agent_provider = None
 
 
-def _matcher_fires(env_var: str, value: str) -> bool:
-    """Return True if the matcher (env_var, value) fires given the current environment.
-
-    Empty value = presence check (env var must be set, even to an empty string).
-    Non-empty value = exact match required (empty string does NOT match a non-empty expected value).
-    """
-    if value == "":
-        return env_var in os.environ
-    return os.environ.get(env_var) == value
-
-
 def agent_provider() -> str:
     """Detect if running inside a known AI coding agent.
 
-    Iterates the list of known agents. Each agent fires if ANY of its explicit,
-    product-specific matchers fires. If exactly one agent fired, returns its
+    Iterates the list of known agents. Each agent fires if its explicit,
+    product-specific env var is set. If exactly one agent fired, returns its
     product name. If more than one fired, returns empty (ambiguity).
 
     Explicit agent env vars (e.g. CLAUDECODE, GOOSE_TERMINAL) always take
@@ -307,26 +290,26 @@ def agent_provider() -> str:
     if _agent_provider is not None:
         return _agent_provider
 
-    detected = []
-    for agent in _KNOWN_AGENTS:
-        for env_var, value in agent.matchers:
-            if _matcher_fires(env_var, value):
-                detected.append(agent.product)
-                break  # count each agent at most once
+    matches = [a.product for a in _KNOWN_AGENTS if a.env_var in os.environ]
 
-    if len(detected) == 1:
-        _agent_provider = detected[0]
-    elif len(detected) > 1:
-        _agent_provider = ""
+    if len(matches) == 1:
+        _agent_provider = matches[0]
+    elif len(matches) > 1:
+        _agent_provider = ""  # ambiguity
     else:
-        # Fallback: honor the agents.md AGENT=<name> standard.
-        agent_value = os.environ.get("AGENT", "")
-        if agent_value:
-            known_products = {a.product for a in _KNOWN_AGENTS}
-            if agent_value in known_products:
-                _agent_provider = agent_value
-            else:
-                _agent_provider = "unknown"
-        else:
-            _agent_provider = ""
+        _agent_provider = _agent_env_fallback()
     return _agent_provider
+
+
+def _agent_env_fallback() -> str:
+    """Honor the agents.md AGENT=<name> standard.
+
+    Returns the value if it matches a known product name, "unknown" if AGENT
+    is set to any other non-empty value, and "" if AGENT is unset or empty.
+    """
+    v = os.environ.get("AGENT", "")
+    if not v:
+        return ""
+    if v in {a.product for a in _KNOWN_AGENTS}:
+        return v
+    return "unknown"
