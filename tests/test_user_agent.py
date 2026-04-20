@@ -181,9 +181,111 @@ def test_agent_provider_openclaw(clean_useragent_env):
     assert useragent.agent_provider() == "openclaw"
 
 
+def test_agent_provider_goose_env_var(clean_useragent_env):
+    os.environ["GOOSE_TERMINAL"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "goose"
+
+
+def test_agent_provider_goose_via_agent_standard(clean_useragent_env):
+    os.environ["AGENT"] = "goose"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "goose"
+
+
+def test_agent_provider_goose_both_signals(clean_useragent_env):
+    # Both the dedicated env var and the AGENT=goose standard are set.
+    # This should NOT be ambiguous - it's still a single agent (goose).
+    os.environ["GOOSE_TERMINAL"] = "1"
+    os.environ["AGENT"] = "goose"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "goose"
+
+
+def test_agent_provider_amp_env_var(clean_useragent_env):
+    os.environ["AMP_CURRENT_THREAD_ID"] = "thread-123"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "amp"
+
+
+def test_agent_provider_amp_via_agent_standard(clean_useragent_env):
+    os.environ["AGENT"] = "amp"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "amp"
+
+
+def test_agent_provider_amp_both_signals(clean_useragent_env):
+    # Both AMP_CURRENT_THREAD_ID and AGENT=amp set - still single agent.
+    os.environ["AMP_CURRENT_THREAD_ID"] = "thread-123"
+    os.environ["AGENT"] = "amp"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "amp"
+
+
+def test_agent_provider_augment(clean_useragent_env):
+    os.environ["AUGMENT_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "augment"
+
+
+def test_agent_provider_copilot_vscode(clean_useragent_env):
+    os.environ["COPILOT_MODEL"] = "gpt-4"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "copilot-vscode"
+
+
+def test_agent_provider_kiro(clean_useragent_env):
+    os.environ["KIRO"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "kiro"
+
+
+def test_agent_provider_windsurf(clean_useragent_env):
+    os.environ["WINDSURF_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "windsurf"
+
+
+def test_agent_provider_unknown_agent_fallback(clean_useragent_env):
+    # AGENT set to a value that doesn't match any known agent
+    # should fall back to "unknown".
+    os.environ["AGENT"] = "someweirdthing"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "unknown"
+
+
+def test_agent_provider_agent_empty_string(clean_useragent_env):
+    # AGENT="" (empty) should NOT trigger the fallback.
+    os.environ["AGENT"] = ""
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == ""
+
+
 def test_agent_provider_multiple_agents(clean_useragent_env):
     os.environ["CLAUDECODE"] = "1"
     os.environ["CURSOR_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == ""
+
+
+def test_agent_provider_goose_and_claude_code_ambiguous(clean_useragent_env):
+    # Two distinct agents (goose via AGENT standard + claude-code via CLAUDECODE)
+    # should still be ambiguous.
+    os.environ["AGENT"] = "goose"
+    os.environ["CLAUDECODE"] = "1"
     from databricks.sdk import useragent
 
     assert useragent.agent_provider() == ""

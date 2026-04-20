@@ -3,6 +3,7 @@ import logging
 import os
 import platform
 import re
+from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
 from .version import __version__
@@ -226,17 +227,36 @@ def cicd_provider() -> str:
 
 # Canonical list of known AI coding agents.
 # Keep this list in sync with databricks-sdk-go and databricks-sdk-java.
-_KNOWN_AGENTS = {
-    "ANTIGRAVITY_AGENT": "antigravity",  # Closed source (Google)
-    "CLAUDECODE": "claude-code",  # https://github.com/anthropics/claude-code
-    "CLINE_ACTIVE": "cline",  # https://github.com/cline/cline (v3.24.0+)
-    "CODEX_CI": "codex",  # https://github.com/openai/codex
-    "COPILOT_CLI": "copilot-cli",  # https://github.com/features/copilot
-    "CURSOR_AGENT": "cursor",  # Closed source
-    "GEMINI_CLI": "gemini-cli",  # https://google-gemini.github.io/gemini-cli
-    "OPENCODE": "opencode",  # https://github.com/opencode-ai/opencode
-    "OPENCLAW_SHELL": "openclaw",  # https://github.com/anthropics/openclaw
-}
+#
+# Each record has a product name and a list of matchers. A matcher is a
+# (env_var, value) pair: an empty value means presence-only (the env var just
+# needs to be set to a non-empty string), a non-empty value requires an exact
+# match. An agent fires if ANY of its matchers fires. Ambiguity is judged by
+# unique product (not raw matcher count), so an agent with two overlapping
+# matchers set at the same time still counts as one match.
+@dataclass(frozen=True)
+class _AgentRecord:
+    product: str
+    matchers: List[Tuple[str, str]]
+
+
+_KNOWN_AGENTS: List[_AgentRecord] = [
+    _AgentRecord("amp", [("AMP_CURRENT_THREAD_ID", ""), ("AGENT", "amp")]),
+    _AgentRecord("antigravity", [("ANTIGRAVITY_AGENT", "")]),  # Closed source (Google)
+    _AgentRecord("augment", [("AUGMENT_AGENT", "")]),
+    _AgentRecord("claude-code", [("CLAUDECODE", "")]),  # https://github.com/anthropics/claude-code
+    _AgentRecord("cline", [("CLINE_ACTIVE", "")]),  # https://github.com/cline/cline (v3.24.0+)
+    _AgentRecord("codex", [("CODEX_CI", "")]),  # https://github.com/openai/codex
+    _AgentRecord("copilot-cli", [("COPILOT_CLI", "")]),  # https://github.com/features/copilot
+    _AgentRecord("copilot-vscode", [("COPILOT_MODEL", "")]),
+    _AgentRecord("cursor", [("CURSOR_AGENT", "")]),  # Closed source
+    _AgentRecord("gemini-cli", [("GEMINI_CLI", "")]),  # https://google-gemini.github.io/gemini-cli
+    _AgentRecord("goose", [("GOOSE_TERMINAL", ""), ("AGENT", "goose")]),
+    _AgentRecord("kiro", [("KIRO", "")]),
+    _AgentRecord("opencode", [("OPENCODE", "")]),  # https://github.com/opencode-ai/opencode
+    _AgentRecord("openclaw", [("OPENCLAW_SHELL", "")]),  # https://github.com/anthropics/openclaw
+    _AgentRecord("windsurf", [("WINDSURF_AGENT", "")]),
+]
 
 # Private variable to store the detected agent provider. This value is computed
 # at the first invocation of agent_provider() and is cached for subsequent calls.
@@ -244,25 +264,51 @@ _KNOWN_AGENTS = {
 _agent_provider = None
 
 
+def _matcher_fires(env_var: str, value: str) -> bool:
+    """Return True if the matcher (env_var, value) fires given the current environment.
+
+    Empty value = presence check (env var must be set to a non-empty string).
+    Non-empty value = exact match required.
+    """
+    v = os.environ.get(env_var, "")
+    if value == "":
+        return v != ""
+    return v == value
+
+
 def agent_provider() -> str:
     """Detect if running inside a known AI coding agent.
 
-    Returns the agent name if exactly one known agent env var is set (non-empty).
-    Returns empty string if zero or multiple agents detected.
+    Iterates the list of known agents. Each agent fires if ANY of its matchers
+    fires. If exactly one agent fired, returns its product name. If more than
+    one fired, returns empty (ambiguity).
+
+    If zero known agents matched but the AGENT env var is set to a non-empty
+    string, returns "unknown" (agents.md standard fallback).
+
     Result is cached after first call.
 
-    Unlike CI/CD detection (which returns the first/sorted match), agent detection
-    uses an ambiguity guard: multiple matches return empty. Agent env vars can be
-    stacked (e.g., running Cline inside Cursor), so we only report when unambiguous.
+    Agent env vars can be stacked (e.g. running Cline inside Cursor), so we
+    only report when unambiguous.
     """
     global _agent_provider
     if _agent_provider is not None:
         return _agent_provider
 
     detected = []
-    for env_var, name in _KNOWN_AGENTS.items():
-        if os.environ.get(env_var, ""):
-            detected.append(name)
+    for agent in _KNOWN_AGENTS:
+        for env_var, value in agent.matchers:
+            if _matcher_fires(env_var, value):
+                detected.append(agent.product)
+                break  # count each agent at most once
 
-    _agent_provider = detected[0] if len(detected) == 1 else ""
+    if len(detected) == 1:
+        _agent_provider = detected[0]
+    elif len(detected) > 1:
+        _agent_provider = ""
+    elif os.environ.get("AGENT", ""):
+        # Fallback: honor the agents.md AGENT=<name> standard for unknown values.
+        _agent_provider = "unknown"
+    else:
+        _agent_provider = ""
     return _agent_provider
