@@ -294,11 +294,22 @@ def test_agent_provider_agent_empty_string(clean_useragent_env):
 
 
 def test_agent_provider_multiple_agents(clean_useragent_env):
+    # Nested agents (e.g. Claude Code spawning a Cursor CLI subagent) set
+    # multiple explicit matchers on the same process.
     os.environ["CLAUDECODE"] = "1"
     os.environ["CURSOR_AGENT"] = "1"
     from databricks.sdk import useragent
 
-    assert useragent.agent_provider() == ""
+    assert useragent.agent_provider() == "multiple"
+
+
+def test_agent_provider_three_stacked_agents(clean_useragent_env):
+    os.environ["CLAUDECODE"] = "1"
+    os.environ["CURSOR_AGENT"] = "1"
+    os.environ["AUGMENT_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "multiple"
 
 
 def test_agent_provider_explicit_wins_over_agent_naming_different_product(clean_useragent_env):
@@ -323,17 +334,26 @@ def test_agent_provider_explicit_goose_wins_over_agent_cursor(clean_useragent_en
     assert useragent.agent_provider() == "goose"
 
 
-def test_agent_provider_copilot_cli_and_vscode_ambiguous(clean_useragent_env):
-    # COPILOT_CLI and COPILOT_MODEL are both explicit matchers that fire on
-    # different products (copilot-cli and copilot-vscode). Having both set
-    # is genuine ambiguity. This test pins the behavior for Copilot CLI BYOK
-    # users who may set COPILOT_MODEL alongside COPILOT_CLI; documented
-    # intentional behavior.
+def test_agent_provider_copilot_cli_and_vscode_collapses_to_copilot_cli(clean_useragent_env):
+    # Copilot CLI users (BYOK mode) often set COPILOT_MODEL alongside
+    # COPILOT_CLI. Treat the pair as a single copilot-cli signal rather than
+    # a stacked multi-agent setup.
     os.environ["COPILOT_CLI"] = "1"
     os.environ["COPILOT_MODEL"] = "gpt-4"
     from databricks.sdk import useragent
 
-    assert useragent.agent_provider() == ""
+    assert useragent.agent_provider() == "copilot-cli"
+
+
+def test_agent_provider_copilot_byok_collapse_then_still_multiple(clean_useragent_env):
+    # The Copilot BYOK collapse only removes the copilot-vscode match. If
+    # another agent is also present, the result is still "multiple".
+    os.environ["COPILOT_CLI"] = "1"
+    os.environ["COPILOT_MODEL"] = "gpt-4"
+    os.environ["CLAUDECODE"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "multiple"
 
 
 def test_agent_provider_empty_value_still_counts_as_set(clean_useragent_env):
@@ -366,7 +386,7 @@ def test_user_agent_string_multiple_agents(clean_useragent_env):
     from databricks.sdk import useragent
 
     ua = useragent.to_string()
-    assert "agent/" not in ua
+    assert "agent/multiple" in ua
 
 
 def test_agent_provider_cached(clean_useragent_env):

@@ -269,7 +269,9 @@ def agent_provider() -> str:
 
     Iterates the list of known agents. Each agent fires if its explicit,
     product-specific env var is set. If exactly one agent fired, returns its
-    product name. If more than one fired, returns empty (ambiguity).
+    product name. If more than one fired, returns "multiple" (nested agents,
+    e.g. a Cursor CLI subagent invoked by Claude Code, inherit env vars from
+    every enclosing layer).
 
     Explicit agent env vars (e.g. CLAUDECODE, GOOSE_TERMINAL) always take
     precedence. The agents.md-standard AGENT=<name> env var is only consulted
@@ -277,14 +279,11 @@ def agent_provider() -> str:
       - If AGENT matches a known product name, return that product.
       - Otherwise return "unknown".
 
-    This means AGENT=<name> never contributes to ambiguity: if any explicit
-    matcher fires, AGENT is ignored entirely, even when it names a different
-    known product.
+    This means AGENT=<name> never contributes to the multi-agent signal: if
+    any explicit matcher fires, AGENT is ignored entirely, even when it names
+    a different known product.
 
     Result is cached after first call.
-
-    Agent env vars can be stacked (e.g. running Cline inside Cursor), so we
-    only report when unambiguous across explicit matchers.
     """
     global _agent_provider
     if _agent_provider is not None:
@@ -292,10 +291,16 @@ def agent_provider() -> str:
 
     matches = [a.product for a in _KNOWN_AGENTS if a.env_var in os.environ]
 
+    # Known BYOK false positive: Copilot CLI users often set COPILOT_MODEL
+    # alongside COPILOT_CLI. That pair is a single copilot-cli signal, not a
+    # stacked multi-agent setup.
+    if "copilot-cli" in matches and "copilot-vscode" in matches:
+        matches = [m for m in matches if m != "copilot-vscode"]
+
     if len(matches) == 1:
         _agent_provider = matches[0]
     elif len(matches) > 1:
-        _agent_provider = ""  # ambiguity
+        _agent_provider = "multiple"
     else:
         _agent_provider = _agent_env_fallback()
     return _agent_provider
