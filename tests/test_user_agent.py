@@ -301,11 +301,36 @@ def test_agent_provider_multiple_agents(clean_useragent_env):
     assert useragent.agent_provider() == ""
 
 
-def test_agent_provider_goose_and_claude_code_ambiguous(clean_useragent_env):
-    # Two distinct agents (goose via AGENT standard + claude-code via CLAUDECODE)
-    # should still be ambiguous.
+def test_agent_provider_explicit_wins_over_agent_naming_different_product(clean_useragent_env):
+    # Explicit env vars always win over the generic AGENT=<name> signal.
+    # AGENT=goose names a different known product, but CLAUDECODE is explicit,
+    # so claude-code wins. AGENT is ignored entirely when any explicit
+    # matcher fires.
     os.environ["AGENT"] = "goose"
     os.environ["CLAUDECODE"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "claude-code"
+
+
+def test_agent_provider_explicit_goose_wins_over_agent_cursor(clean_useragent_env):
+    # Mirror of the above: GOOSE_TERMINAL is explicit, AGENT=cursor names a
+    # different known product. Explicit wins; AGENT is ignored.
+    os.environ["GOOSE_TERMINAL"] = "1"
+    os.environ["AGENT"] = "cursor"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "goose"
+
+
+def test_agent_provider_copilot_cli_and_vscode_ambiguous(clean_useragent_env):
+    # COPILOT_CLI and COPILOT_MODEL are both explicit matchers that fire on
+    # different products (copilot-cli and copilot-vscode). Having both set
+    # is genuine ambiguity. This test pins the behavior for Copilot CLI BYOK
+    # users who may set COPILOT_MODEL alongside COPILOT_CLI; documented
+    # intentional behavior.
+    os.environ["COPILOT_CLI"] = "1"
+    os.environ["COPILOT_MODEL"] = "gpt-4"
     from databricks.sdk import useragent
 
     assert useragent.agent_provider() == ""

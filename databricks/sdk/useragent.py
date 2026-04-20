@@ -241,7 +241,9 @@ class _AgentRecord:
 
 
 _KNOWN_AGENTS: List[_AgentRecord] = [
-    _AgentRecord("amp", [("AMP_CURRENT_THREAD_ID", ""), ("AGENT", "amp")]),  # https://ampcode.com/
+    _AgentRecord(
+        "amp", [("AMP_CURRENT_THREAD_ID", "")]
+    ),  # https://ampcode.com/ (also sets AGENT=amp, handled centrally)
     _AgentRecord("antigravity", [("ANTIGRAVITY_AGENT", "")]),  # Closed source (Google)
     _AgentRecord("augment", [("AUGMENT_AGENT", "")]),  # https://www.augmentcode.com/
     _AgentRecord("claude-code", [("CLAUDECODE", "")]),  # https://github.com/anthropics/claude-code
@@ -253,7 +255,9 @@ _KNOWN_AGENTS: List[_AgentRecord] = [
     ),  # VS Code Copilot terminal, best-effort heuristic, not officially identified
     _AgentRecord("cursor", [("CURSOR_AGENT", "")]),  # Closed source
     _AgentRecord("gemini-cli", [("GEMINI_CLI", "")]),  # https://google-gemini.github.io/gemini-cli
-    _AgentRecord("goose", [("GOOSE_TERMINAL", ""), ("AGENT", "goose")]),  # https://block.github.io/goose/
+    _AgentRecord(
+        "goose", [("GOOSE_TERMINAL", "")]
+    ),  # https://block.github.io/goose/ (also sets AGENT=goose, handled centrally)
     _AgentRecord("kiro", [("KIRO", "")]),  # https://kiro.dev/ (Amazon)
     _AgentRecord("openclaw", [("OPENCLAW_SHELL", "")]),  # https://github.com/anthropics/openclaw
     _AgentRecord("opencode", [("OPENCODE", "")]),  # https://github.com/opencode-ai/opencode
@@ -280,20 +284,24 @@ def _matcher_fires(env_var: str, value: str) -> bool:
 def agent_provider() -> str:
     """Detect if running inside a known AI coding agent.
 
-    Iterates the list of known agents. Each agent fires if ANY of its matchers
-    fires. If exactly one agent fired, returns its product name. If more than
-    one fired, returns empty (ambiguity).
+    Iterates the list of known agents. Each agent fires if ANY of its explicit,
+    product-specific matchers fires. If exactly one agent fired, returns its
+    product name. If more than one fired, returns empty (ambiguity).
 
-    If zero known agents matched but the agents.md-standard AGENT env var is
-    set to a non-empty value, fall back as follows:
-      - If the value matches any known product name, return that product.
+    Explicit agent env vars (e.g. CLAUDECODE, GOOSE_TERMINAL) always take
+    precedence. The agents.md-standard AGENT=<name> env var is only consulted
+    as a fallback when no explicit matcher fired:
+      - If AGENT matches a known product name, return that product.
       - Otherwise return "unknown".
+
+    This means AGENT=<name> never contributes to ambiguity: if any explicit
+    matcher fires, AGENT is ignored entirely, even when it names a different
+    known product.
 
     Result is cached after first call.
 
     Agent env vars can be stacked (e.g. running Cline inside Cursor), so we
-    only report when unambiguous. Known matchers always win over the AGENT
-    fallback.
+    only report when unambiguous across explicit matchers.
     """
     global _agent_provider
     if _agent_provider is not None:
