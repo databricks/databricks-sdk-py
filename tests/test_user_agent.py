@@ -265,6 +265,26 @@ def test_agent_provider_unknown_agent_fallback(clean_useragent_env):
     assert useragent.agent_provider() == "unknown"
 
 
+def test_agent_provider_agent_known_product_name_fallback(clean_useragent_env):
+    # AGENT=<known product name> with no other matchers set should resolve
+    # to the matching product (e.g. cursor is only identified by CURSOR_AGENT;
+    # AGENT=cursor is a reasonable implicit signal to attribute it).
+    os.environ["AGENT"] = "cursor"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "cursor"
+
+
+def test_agent_provider_known_matcher_wins_over_agent_fallback(clean_useragent_env):
+    # When a known matcher fires, it wins even if AGENT is set to an
+    # unrelated value. The AGENT fallback only applies when nothing else hits.
+    os.environ["AGENT"] = "somethingweird"
+    os.environ["CLAUDECODE"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "claude-code"
+
+
 def test_agent_provider_agent_empty_string(clean_useragent_env):
     # AGENT="" (empty) should NOT trigger the fallback.
     os.environ["AGENT"] = ""
@@ -291,11 +311,13 @@ def test_agent_provider_goose_and_claude_code_ambiguous(clean_useragent_env):
     assert useragent.agent_provider() == ""
 
 
-def test_agent_provider_empty_value(clean_useragent_env):
+def test_agent_provider_empty_value_still_counts_as_set(clean_useragent_env):
+    # Presence-only matchers fire even when the env var is set to an empty
+    # string. Parity with Go (os.LookupEnv) and Java (env.get != null).
     os.environ["CLAUDECODE"] = ""
     from databricks.sdk import useragent
 
-    assert useragent.agent_provider() == ""
+    assert useragent.agent_provider() == "claude-code"
 
 
 def test_user_agent_string_includes_agent(clean_useragent_env):
