@@ -8,6 +8,10 @@
 
 ### Bug Fixes
 
+* Add `X-Databricks-Org-Id` header to `WorkspaceExt.upload()` and `WorkspaceExt.download()` for SPOG host compatibility.
+* `WorkspaceClient.get_workspace_id()` now returns `Config.workspace_id` directly when set, instead of calling `/api/2.0/preview/scim/v2/Me`. This removes an API round-trip on every call where the workspace ID is already known (profile, `?o=` query param, env var, or host metadata) and fixes a failure on SPOG hosts where the unauthenticated probe request was rejected with `Unable to load OAuth Config`.
+* Add `X-Databricks-Org-Id` header to `SharesExt.list()` for SPOG host compatibility.
+
 ### Documentation
 
 ### Breaking Changes
