@@ -206,7 +206,7 @@ def retrieve_token(
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
     else:
         auth = IgnoreNetrcAuth()
-    resp = requests.post(token_url, params, auth=auth, headers=headers)
+    resp = requests.post(token_url, params, auth=auth, headers=headers, timeout=60)
     if not resp.ok:
         if resp.headers["Content-Type"].startswith("application/json"):
             err = resp.json()
@@ -545,7 +545,7 @@ def get_azure_entra_id_workspace_endpoints(
     """
     # In Azure, this workspace endpoint redirects to the Entra ID authorization endpoint
     host = _fix_host_if_needed(host)
-    res = requests.get(f"{host}/oidc/oauth2/v2.0/authorize", allow_redirects=False)
+    res = requests.get(f"{host}/oidc/oauth2/v2.0/authorize", allow_redirects=False, timeout=60)
     real_auth_url = res.headers.get("location")
     if not real_auth_url:
         return None
@@ -913,7 +913,7 @@ class PATOAuthTokenExchange(Refreshable):
         if self.authorization_details:
             params["authorization_details"] = self.authorization_details
 
-        resp = requests.post(token_exchange_url, params)
+        resp = requests.post(token_exchange_url, params, timeout=60)
         if not resp.ok:
             if resp.headers["Content-Type"].startswith("application/json"):
                 err = resp.json()
