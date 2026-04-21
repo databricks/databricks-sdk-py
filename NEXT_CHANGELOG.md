@@ -4,6 +4,8 @@
 
 ### New Features and Improvements
 
+* Add `databricks.apps` module with `get_workspace_client()` and `get_user_workspace_client()` helpers for code running inside Databricks Apps. Both pin `auth_type` explicitly so the SDK's auth validator does not raise `more than one authorization method configured` when both the app's SP env vars and a user OBO token are available in the same process. `get_user_workspace_client()` reads the user token from `X-Forwarded-Access-Token` without mutating process env vars, making it safe for concurrent request handlers. A `get_mcp_client()` placeholder is exposed; the real implementation will land alongside the mcp_server resource type (tracked separately).
+
 ### Security
 
 ### Bug Fixes
