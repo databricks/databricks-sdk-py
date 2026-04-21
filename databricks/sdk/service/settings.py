@@ -866,6 +866,8 @@ class CreatePrivateEndpointRule:
 
     error_message: Optional[str] = None
 
+    gcp_endpoint: Optional[GcpEndpoint] = None
+
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
     
@@ -891,6 +893,8 @@ class CreatePrivateEndpointRule:
             body["endpoint_service"] = self.endpoint_service
         if self.error_message is not None:
             body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint.as_dict()
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -908,6 +912,8 @@ class CreatePrivateEndpointRule:
             body["endpoint_service"] = self.endpoint_service
         if self.error_message is not None:
             body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -923,6 +929,7 @@ class CreatePrivateEndpointRule:
             domain_names=d.get("domain_names", None),
             endpoint_service=d.get("endpoint_service", None),
             error_message=d.get("error_message", None),
+            gcp_endpoint=_from_dict(d, "gcp_endpoint", GcpEndpoint),
             group_id=d.get("group_id", None),
             resource_id=d.get("resource_id", None),
             resource_names=d.get("resource_names", None),
@@ -1077,31 +1084,6 @@ class CustomerFacingIngressNetworkPolicy:
 
 
 @dataclass
-class CustomerFacingIngressNetworkPolicyAppsDestination:
-    all_destinations: Optional[bool] = None
-    """Must be set to true."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CustomerFacingIngressNetworkPolicyAppsDestination into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_destinations is not None:
-            body["all_destinations"] = self.all_destinations
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CustomerFacingIngressNetworkPolicyAppsDestination into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_destinations is not None:
-            body["all_destinations"] = self.all_destinations
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAppsDestination:
-        """Deserializes the CustomerFacingIngressNetworkPolicyAppsDestination from a dictionary."""
-        return cls(all_destinations=d.get("all_destinations", None))
-
-
-@dataclass
 class CustomerFacingIngressNetworkPolicyAuthentication:
     identities: Optional[List[CustomerFacingIngressNetworkPolicyAuthenticationIdentity]] = None
     """Valid only when IdentityType is IDENTITY_TYPE_SELECTED_IDENTITIES."""
@@ -1206,31 +1188,6 @@ class CustomerFacingIngressNetworkPolicyIpRanges:
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyIpRanges:
         """Deserializes the CustomerFacingIngressNetworkPolicyIpRanges from a dictionary."""
         return cls(ip_ranges=d.get("ip_ranges", None))
-
-
-@dataclass
-class CustomerFacingIngressNetworkPolicyLakebaseDestination:
-    all_destinations: Optional[bool] = None
-    """Must be set to true."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CustomerFacingIngressNetworkPolicyLakebaseDestination into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.all_destinations is not None:
-            body["all_destinations"] = self.all_destinations
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CustomerFacingIngressNetworkPolicyLakebaseDestination into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.all_destinations is not None:
-            body["all_destinations"] = self.all_destinations
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyLakebaseDestination:
-        """Deserializes the CustomerFacingIngressNetworkPolicyLakebaseDestination from a dictionary."""
-        return cls(all_destinations=d.get("all_destinations", None))
 
 
 @dataclass
@@ -1382,23 +1339,16 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
     """When true, match all destinations, no other destination fields can be set. When not set or
     false, at least one specific destination must be provided."""
 
-    apps: Optional[CustomerFacingIngressNetworkPolicyAppsDestination] = None
-
-    lakebase: Optional[CustomerFacingIngressNetworkPolicyLakebaseDestination] = None
-
     workspace_api: Optional[CustomerFacingIngressNetworkPolicyWorkspaceApiDestination] = None
 
     workspace_ui: Optional[CustomerFacingIngressNetworkPolicyWorkspaceUiDestination] = None
+    """Workspace destinations"""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyRequestDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_destinations is not None:
             body["all_destinations"] = self.all_destinations
-        if self.apps:
-            body["apps"] = self.apps.as_dict()
-        if self.lakebase:
-            body["lakebase"] = self.lakebase.as_dict()
         if self.workspace_api:
             body["workspace_api"] = self.workspace_api.as_dict()
         if self.workspace_ui:
@@ -1410,10 +1360,6 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
         body = {}
         if self.all_destinations is not None:
             body["all_destinations"] = self.all_destinations
-        if self.apps:
-            body["apps"] = self.apps
-        if self.lakebase:
-            body["lakebase"] = self.lakebase
         if self.workspace_api:
             body["workspace_api"] = self.workspace_api
         if self.workspace_ui:
@@ -1425,8 +1371,6 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyRequestDestination from a dictionary."""
         return cls(
             all_destinations=d.get("all_destinations", None),
-            apps=_from_dict(d, "apps", CustomerFacingIngressNetworkPolicyAppsDestination),
-            lakebase=_from_dict(d, "lakebase", CustomerFacingIngressNetworkPolicyLakebaseDestination),
             workspace_api=_from_dict(d, "workspace_api", CustomerFacingIngressNetworkPolicyWorkspaceApiDestination),
             workspace_ui=_from_dict(d, "workspace_ui", CustomerFacingIngressNetworkPolicyWorkspaceUiDestination),
         )
@@ -3347,6 +3291,41 @@ class FetchIpAccessListResponse:
 
 
 @dataclass
+class GcpEndpoint:
+    psc_endpoint_uri: Optional[str] = None
+    """Output only. The URI of the created PSC endpoint."""
+
+    service_attachment: Optional[str] = None
+    """The full url of the target service attachment. Example:
+    projects/my-gcp-project/regions/us-east4/serviceAttachments/my-service-attachment"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GcpEndpoint into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.psc_endpoint_uri is not None:
+            body["psc_endpoint_uri"] = self.psc_endpoint_uri
+        if self.service_attachment is not None:
+            body["service_attachment"] = self.service_attachment
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpEndpoint into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.psc_endpoint_uri is not None:
+            body["psc_endpoint_uri"] = self.psc_endpoint_uri
+        if self.service_attachment is not None:
+            body["service_attachment"] = self.service_attachment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GcpEndpoint:
+        """Deserializes the GcpEndpoint from a dictionary."""
+        return cls(
+            psc_endpoint_uri=d.get("psc_endpoint_uri", None), service_attachment=d.get("service_attachment", None)
+        )
+
+
+@dataclass
 class GenericWebhookConfig:
     password: Optional[str] = None
     """[Input-Only][Optional] Password for webhook."""
@@ -4517,6 +4496,8 @@ class NccPrivateEndpointRule:
 
     error_message: Optional[str] = None
 
+    gcp_endpoint: Optional[GcpEndpoint] = None
+
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
     
@@ -4569,6 +4550,8 @@ class NccPrivateEndpointRule:
             body["endpoint_service"] = self.endpoint_service
         if self.error_message is not None:
             body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint.as_dict()
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4608,6 +4591,8 @@ class NccPrivateEndpointRule:
             body["endpoint_service"] = self.endpoint_service
         if self.error_message is not None:
             body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4638,6 +4623,7 @@ class NccPrivateEndpointRule:
             endpoint_name=d.get("endpoint_name", None),
             endpoint_service=d.get("endpoint_service", None),
             error_message=d.get("error_message", None),
+            gcp_endpoint=_from_dict(d, "gcp_endpoint", GcpEndpoint),
             group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),
@@ -5620,6 +5606,8 @@ class UpdatePrivateEndpointRule:
 
     error_message: Optional[str] = None
 
+    gcp_endpoint: Optional[GcpEndpoint] = None
+
     resource_names: Optional[List[str]] = None
     """Only used by private endpoints towards AWS S3 service.
     
@@ -5636,6 +5624,8 @@ class UpdatePrivateEndpointRule:
             body["enabled"] = self.enabled
         if self.error_message is not None:
             body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint.as_dict()
         if self.resource_names:
             body["resource_names"] = [v for v in self.resource_names]
         return body
@@ -5649,6 +5639,8 @@ class UpdatePrivateEndpointRule:
             body["enabled"] = self.enabled
         if self.error_message is not None:
             body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint
         if self.resource_names:
             body["resource_names"] = self.resource_names
         return body
@@ -5660,6 +5652,7 @@ class UpdatePrivateEndpointRule:
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
             error_message=d.get("error_message", None),
+            gcp_endpoint=_from_dict(d, "gcp_endpoint", GcpEndpoint),
             resource_names=d.get("resource_names", None),
         )
 
@@ -9138,7 +9131,12 @@ class TokenManagementAPI:
         self._api = api_client
 
     def create_obo_token(
-        self, application_id: str, *, comment: Optional[str] = None, lifetime_seconds: Optional[int] = None
+        self,
+        application_id: str,
+        *,
+        comment: Optional[str] = None,
+        lifetime_seconds: Optional[int] = None,
+        scopes: Optional[List[str]] = None,
     ) -> CreateOboTokenResponse:
         """Creates a token on behalf of a service principal.
 
@@ -9148,6 +9146,7 @@ class TokenManagementAPI:
           Comment that describes the purpose of the token.
         :param lifetime_seconds: int (optional)
           The number of seconds before the token expires.
+        :param scopes: List[str] (optional)
 
         :returns: :class:`CreateOboTokenResponse`
         """
@@ -9159,6 +9158,8 @@ class TokenManagementAPI:
             body["comment"] = comment
         if lifetime_seconds is not None:
             body["lifetime_seconds"] = lifetime_seconds
+        if scopes is not None:
+            body["scopes"] = [v for v in scopes]
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -9333,7 +9334,13 @@ class TokensAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, comment: Optional[str] = None, lifetime_seconds: Optional[int] = None) -> CreateTokenResponse:
+    def create(
+        self,
+        *,
+        comment: Optional[str] = None,
+        lifetime_seconds: Optional[int] = None,
+        scopes: Optional[List[str]] = None,
+    ) -> CreateTokenResponse:
         """Creates and returns a token for a user. If this call is made through token authentication, it creates
         a token with the same client ID as the authenticated token. If the user's token quota is exceeded,
         this call returns an error **QUOTA_EXCEEDED**.
@@ -9344,6 +9351,8 @@ class TokensAPI:
           The lifetime of the token, in seconds.
 
           If the lifetime is not specified, this token remains valid for 2 years.
+        :param scopes: List[str] (optional)
+          Optional scopes of the token.
 
         :returns: :class:`CreateTokenResponse`
         """
@@ -9353,6 +9362,8 @@ class TokensAPI:
             body["comment"] = comment
         if lifetime_seconds is not None:
             body["lifetime_seconds"] = lifetime_seconds
+        if scopes is not None:
+            body["scopes"] = [v for v in scopes]
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

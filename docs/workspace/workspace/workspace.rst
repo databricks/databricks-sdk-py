@@ -13,10 +13,10 @@
 
     .. py:method:: delete(path: str [, recursive: Optional[bool]])
 
-        Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *
-        If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a
-        non-empty directory and `recursive` is set to `false`, this call returns an error
-        `DIRECTORY_NOT_EMPTY`.
+        Deprecated: use WorkspaceHierarchyService.DeleteTreeNode instead. Deletes an object or a directory
+        (and optionally recursively deletes all objects in the directory). * If `path` does not exist, this
+        call returns an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a non-empty directory and `recursive`
+        is set to `false`, this call returns an error `DIRECTORY_NOT_EMPTY`.
 
         Object deletion cannot be undone and deleting a directory recursively is not atomic.
 
@@ -150,12 +150,12 @@
             
             w = WorkspaceClient()
             
-            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
+            notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            get_status_response = w.workspace.get_status(path=notebook)
+            obj = w.workspace.get_status(path=notebook_path)
 
-        Gets the status of an object or a directory. If `path` does not exist, this call returns an error
-        `RESOURCE_DOES_NOT_EXIST`.
+        Deprecated: use WorkspaceHierarchyService.GetTreeNode instead. Gets the status of an object or a
+        directory. If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
 
         :param path: str
           The absolute path of the notebook or directory.
@@ -181,18 +181,11 @@
             notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
             w.workspace.import_(
-                path=notebook_path,
-                overwrite=true_,
+                content=base64.b64encode(("CREATE LIVE TABLE dlt_sample AS SELECT 1").encode()).decode(),
                 format=workspace.ImportFormat.SOURCE,
-                language=workspace.Language.PYTHON,
-                content=base64.b64encode(
-                    (
-                        """import time
-            time.sleep(10)
-            dbutils.notebook.exit('hello')
-            """
-                    ).encode()
-                ).decode(),
+                language=workspace.Language.SQL,
+                overwrite=true_,
+                path=notebook_path,
             )
 
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
@@ -236,14 +229,16 @@
 
         .. code-block::
 
+            import os
+            import time
+            
             from databricks.sdk import WorkspaceClient
             
             w = WorkspaceClient()
             
-            names = []
-            for i in w.workspace.list(f"/Users/{w.current_user.me().user_name}", recursive=True):
-                names.append(i.path)
-            assert len(names) > 0
+            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
+            
+            objects = w.workspace.list(path=os.path.dirname(notebook))
 
         List workspace objects
 
@@ -255,9 +250,9 @@
 
     .. py:method:: mkdirs(path: str)
 
-        Creates the specified directory (and necessary parent directories if they do not exist). If there is
-        an object (not a directory) at any prefix of the input path, this call returns an error
-        `RESOURCE_ALREADY_EXISTS`.
+        Deprecated: use WorkspaceHierarchyService.CreateTreeNode instead. Creates the specified directory (and
+        necessary parent directories if they do not exist). If there is an object (not a directory) at any
+        prefix of the input path, this call returns an error `RESOURCE_ALREADY_EXISTS`.
 
         Note that if this operation fails it may have succeeded in creating some of the necessary parent
         directories.

@@ -1,33 +1,24 @@
 # NEXT CHANGELOG
 
-## Release v0.103.0
+## Release v0.104.0
 
 ### New Features and Improvements
-* Add support for unified hosts. A single configuration profile can now be used for both account-level and workspace-level operations when the host supports it and both `account_id` and `workspace_id` are available. The `experimental_is_unified_host` flag has been removed; unified host detection is now automatic.
-* Accept `DATABRICKS_OIDC_TOKEN_FILEPATH` environment variable for consistency with other Databricks SDKs (Go, CLI, Terraform). The previous `DATABRICKS_OIDC_TOKEN_FILE` is still supported as an alias.
 
 ### Security
 
 ### Bug Fixes
 * Add `X-Databricks-Org-Id` header to hand-written extension methods (`Workspace.upload()`, `Workspace.download()`, `Shares.list()`, `ServingEndpoints.http_request()`) for SPOG host compatibility.
 
+* Add `X-Databricks-Org-Id` header to `WorkspaceExt.upload()` and `WorkspaceExt.download()` for SPOG host compatibility.
+* `WorkspaceClient.get_workspace_id()` now returns `Config.workspace_id` directly when set, instead of calling `/api/2.0/preview/scim/v2/Me`. This removes an API round-trip on every call where the workspace ID is already known (profile, `?o=` query param, env var, or host metadata) and fixes a failure on SPOG hosts where the unauthenticated probe request was rejected with `Unable to load OAuth Config`.
+* Add `X-Databricks-Org-Id` header to `SharesExt.list()` for SPOG host compatibility.
+
 ### Documentation
 
 ### Breaking Changes
-* Drop support for Python 3.8 and 3.9. The minimum supported Python version is now 3.10, in line with the oldest supported Databricks Runtime LTS (DBR 13.3).
 
 ### Internal Changes
-* Replace the async-disabling mechanism on token refresh failure with a 1-minute retry backoff. Previously, a single failed async refresh would disable proactive token renewal until the token expired. Now, the SDK waits a short cooldown period and retries, improving resilience to transient errors.
-* Extract `_resolve_profile` to simplify config file loading and improve `__settings__` error messages.
-* Resolve `token_audience` from the `token_federation_default_oidc_audiences` field in the host metadata discovery endpoint, removing the need for explicit audience configuration.
+
+* Expanded AI agent detection: added Goose, Amp, Augment, Copilot (VS Code), Kiro, Windsurf. Honors the `AGENT=<name>` standard (resolves to a known product if the value matches one, otherwise `unknown`). Presence-only env var matchers now treat an empty string as "set" for parity with the Go and Java SDKs. Explicit agent env vars (e.g. `CLAUDECODE`, `GOOSE_TERMINAL`) always take precedence over the generic `AGENT=<name>` signal. When multiple agent env vars are present (e.g. a Cursor CLI subagent invoked from Claude Code), the user-agent reports `agent/multiple`.
 
 ### API Changes
-* Add `create_catalog()`, `create_synced_table()`, `delete_catalog()`, `delete_synced_table()`, `get_catalog()` and `get_synced_table()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
-* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
-* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
-* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
-* Add `column_selection` field for `databricks.sdk.service.ml.Function`.
-* Add `cascade` field for `databricks.sdk.service.pipelines.DeletePipelineRequest`.
-* Add `default_branch` field for `databricks.sdk.service.postgres.ProjectSpec`.
-* Add `default_branch` field for `databricks.sdk.service.postgres.ProjectStatus`.
-* Add `ingress` and `ingress_dry_run` fields for `databricks.sdk.service.settings.AccountNetworkPolicy`.

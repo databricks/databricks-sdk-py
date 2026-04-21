@@ -100,6 +100,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: STANDARD
       :value: "STANDARD"
 
+   .. py:attribute:: STORAGE_OPTIMIZED
+      :value: "STORAGE_OPTIMIZED"
+
+.. py:class:: IndexSubtype
+
+   The subtype of the vector search index, determining the indexing and retrieval strategy. - `VECTOR`: Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An index that uses full-text search without vector embeddings. - `HYBRID`: An index that uses vector embeddings for similarity search and hybrid search.
+
+   .. py:attribute:: FULL_TEXT
+      :value: "FULL_TEXT"
+
+   .. py:attribute:: HYBRID
+      :value: "HYBRID"
+
+   .. py:attribute:: VECTOR
+      :value: "VECTOR"
+
 .. autoclass:: ListEndpointResponse
    :members:
    :undoc-members:

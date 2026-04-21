@@ -23,6 +23,24 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
+class ApplyEnvironmentRequestResponse:
+    def as_dict(self) -> dict:
+        """Serializes the ApplyEnvironmentRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ApplyEnvironmentRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ApplyEnvironmentRequestResponse:
+        """Deserializes the ApplyEnvironmentRequestResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class AutoFullRefreshPolicy:
     """Policy for auto full refresh."""
 
@@ -114,6 +132,55 @@ class ConnectionParameters:
     def from_dict(cls, d: Dict[str, Any]) -> ConnectionParameters:
         """Deserializes the ConnectionParameters from a dictionary."""
         return cls(source_catalog=d.get("source_catalog", None))
+
+
+@dataclass
+class ConnectorOptions:
+    """Wrapper message for source-specific options to support multiple connector types"""
+
+    gdrive_options: Optional[GoogleDriveOptions] = None
+
+    google_ads_options: Optional[GoogleAdsOptions] = None
+
+    sharepoint_options: Optional[SharepointOptions] = None
+
+    tiktok_ads_options: Optional[TikTokAdsOptions] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ConnectorOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.gdrive_options:
+            body["gdrive_options"] = self.gdrive_options.as_dict()
+        if self.google_ads_options:
+            body["google_ads_options"] = self.google_ads_options.as_dict()
+        if self.sharepoint_options:
+            body["sharepoint_options"] = self.sharepoint_options.as_dict()
+        if self.tiktok_ads_options:
+            body["tiktok_ads_options"] = self.tiktok_ads_options.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConnectorOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.gdrive_options:
+            body["gdrive_options"] = self.gdrive_options
+        if self.google_ads_options:
+            body["google_ads_options"] = self.google_ads_options
+        if self.sharepoint_options:
+            body["sharepoint_options"] = self.sharepoint_options
+        if self.tiktok_ads_options:
+            body["tiktok_ads_options"] = self.tiktok_ads_options
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConnectorOptions:
+        """Deserializes the ConnectorOptions from a dictionary."""
+        return cls(
+            gdrive_options=_from_dict(d, "gdrive_options", GoogleDriveOptions),
+            google_ads_options=_from_dict(d, "google_ads_options", GoogleAdsOptions),
+            sharepoint_options=_from_dict(d, "sharepoint_options", SharepointOptions),
+            tiktok_ads_options=_from_dict(d, "tiktok_ads_options", TikTokAdsOptions),
+        )
 
 
 class ConnectorType(Enum):
@@ -409,6 +476,182 @@ class EventLogSpec:
 
 
 @dataclass
+class FileFilter:
+    modified_after: Optional[str] = None
+    """Include files with modification times occurring after the specified time. Timestamp format:
+    YYYY-MM-DDTHH:mm:ss (e.g. 2020-06-01T13:00:00) Based on
+    https://spark.apache.org/docs/latest/sql-data-sources-generic-options.html#modification-time-path-filters"""
+
+    modified_before: Optional[str] = None
+    """Include files with modification times occurring before the specified time. Timestamp format:
+    YYYY-MM-DDTHH:mm:ss (e.g. 2020-06-01T13:00:00) Based on
+    https://spark.apache.org/docs/latest/sql-data-sources-generic-options.html#modification-time-path-filters"""
+
+    path_filter: Optional[str] = None
+    """Include files with file names matching the pattern Based on
+    https://spark.apache.org/docs/latest/sql-data-sources-generic-options.html#path-glob-filter"""
+
+    def as_dict(self) -> dict:
+        """Serializes the FileFilter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.modified_after is not None:
+            body["modified_after"] = self.modified_after
+        if self.modified_before is not None:
+            body["modified_before"] = self.modified_before
+        if self.path_filter is not None:
+            body["path_filter"] = self.path_filter
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FileFilter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.modified_after is not None:
+            body["modified_after"] = self.modified_after
+        if self.modified_before is not None:
+            body["modified_before"] = self.modified_before
+        if self.path_filter is not None:
+            body["path_filter"] = self.path_filter
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FileFilter:
+        """Deserializes the FileFilter from a dictionary."""
+        return cls(
+            modified_after=d.get("modified_after", None),
+            modified_before=d.get("modified_before", None),
+            path_filter=d.get("path_filter", None),
+        )
+
+
+@dataclass
+class FileIngestionOptions:
+    corrupt_record_column: Optional[str] = None
+
+    file_filters: Optional[List[FileFilter]] = None
+    """Generic options"""
+
+    format: Optional[FileIngestionOptionsFileFormat] = None
+    """required for TableSpec"""
+
+    format_options: Optional[Dict[str, str]] = None
+    """Format-specific options Based on
+    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/options#file-format-options"""
+
+    ignore_corrupt_files: Optional[bool] = None
+
+    infer_column_types: Optional[bool] = None
+
+    reader_case_sensitive: Optional[bool] = None
+    """Column name case sensitivity
+    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#change-case-sensitive-behavior"""
+
+    rescued_data_column: Optional[str] = None
+
+    schema_evolution_mode: Optional[FileIngestionOptionsSchemaEvolutionMode] = None
+
+    schema_hints: Optional[str] = None
+    """Override inferred schema of specific columns Based on
+    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#override-schema-inference-with-schema-hints"""
+
+    single_variant_column: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the FileIngestionOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.corrupt_record_column is not None:
+            body["corrupt_record_column"] = self.corrupt_record_column
+        if self.file_filters:
+            body["file_filters"] = [v.as_dict() for v in self.file_filters]
+        if self.format is not None:
+            body["format"] = self.format.value
+        if self.format_options:
+            body["format_options"] = self.format_options
+        if self.ignore_corrupt_files is not None:
+            body["ignore_corrupt_files"] = self.ignore_corrupt_files
+        if self.infer_column_types is not None:
+            body["infer_column_types"] = self.infer_column_types
+        if self.reader_case_sensitive is not None:
+            body["reader_case_sensitive"] = self.reader_case_sensitive
+        if self.rescued_data_column is not None:
+            body["rescued_data_column"] = self.rescued_data_column
+        if self.schema_evolution_mode is not None:
+            body["schema_evolution_mode"] = self.schema_evolution_mode.value
+        if self.schema_hints is not None:
+            body["schema_hints"] = self.schema_hints
+        if self.single_variant_column is not None:
+            body["single_variant_column"] = self.single_variant_column
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FileIngestionOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.corrupt_record_column is not None:
+            body["corrupt_record_column"] = self.corrupt_record_column
+        if self.file_filters:
+            body["file_filters"] = self.file_filters
+        if self.format is not None:
+            body["format"] = self.format
+        if self.format_options:
+            body["format_options"] = self.format_options
+        if self.ignore_corrupt_files is not None:
+            body["ignore_corrupt_files"] = self.ignore_corrupt_files
+        if self.infer_column_types is not None:
+            body["infer_column_types"] = self.infer_column_types
+        if self.reader_case_sensitive is not None:
+            body["reader_case_sensitive"] = self.reader_case_sensitive
+        if self.rescued_data_column is not None:
+            body["rescued_data_column"] = self.rescued_data_column
+        if self.schema_evolution_mode is not None:
+            body["schema_evolution_mode"] = self.schema_evolution_mode
+        if self.schema_hints is not None:
+            body["schema_hints"] = self.schema_hints
+        if self.single_variant_column is not None:
+            body["single_variant_column"] = self.single_variant_column
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FileIngestionOptions:
+        """Deserializes the FileIngestionOptions from a dictionary."""
+        return cls(
+            corrupt_record_column=d.get("corrupt_record_column", None),
+            file_filters=_repeated_dict(d, "file_filters", FileFilter),
+            format=_enum(d, "format", FileIngestionOptionsFileFormat),
+            format_options=d.get("format_options", None),
+            ignore_corrupt_files=d.get("ignore_corrupt_files", None),
+            infer_column_types=d.get("infer_column_types", None),
+            reader_case_sensitive=d.get("reader_case_sensitive", None),
+            rescued_data_column=d.get("rescued_data_column", None),
+            schema_evolution_mode=_enum(d, "schema_evolution_mode", FileIngestionOptionsSchemaEvolutionMode),
+            schema_hints=d.get("schema_hints", None),
+            single_variant_column=d.get("single_variant_column", None),
+        )
+
+
+class FileIngestionOptionsFileFormat(Enum):
+
+    AVRO = "AVRO"
+    BINARYFILE = "BINARYFILE"
+    CSV = "CSV"
+    EXCEL = "EXCEL"
+    JSON = "JSON"
+    ORC = "ORC"
+    PARQUET = "PARQUET"
+    XML = "XML"
+
+
+class FileIngestionOptionsSchemaEvolutionMode(Enum):
+    """Based on
+    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#how-does-auto-loader-schema-evolution-work
+    """
+
+    ADD_NEW_COLUMNS = "ADD_NEW_COLUMNS"
+    ADD_NEW_COLUMNS_WITH_TYPE_WIDENING = "ADD_NEW_COLUMNS_WITH_TYPE_WIDENING"
+    FAIL_ON_NEW_COLUMNS = "FAIL_ON_NEW_COLUMNS"
+    NONE = "NONE"
+    RESCUE = "RESCUE"
+
+
+@dataclass
 class FileLibrary:
     path: Optional[str] = None
     """The absolute path of the source code."""
@@ -653,6 +896,105 @@ class GetUpdateResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetUpdateResponse:
         """Deserializes the GetUpdateResponse from a dictionary."""
         return cls(update=_from_dict(d, "update", UpdateInfo))
+
+
+@dataclass
+class GoogleAdsOptions:
+    """Google Ads specific options for ingestion (object-level). When set, these values override the
+    corresponding fields in GoogleAdsConfig (source_configurations)."""
+
+    manager_account_id: str
+    """(Optional at this level) Manager Account ID (also called MCC Account ID) used to list and access
+    customer accounts under this manager account. Overrides GoogleAdsConfig.manager_account_id from
+    source_configurations when set."""
+
+    lookback_window_days: Optional[int] = None
+    """(Optional) Number of days to look back for report tables to capture late-arriving data. If not
+    specified, defaults to 30 days."""
+
+    sync_start_date: Optional[str] = None
+    """(Optional) Start date for the initial sync of report tables in YYYY-MM-DD format. This
+    determines the earliest date from which to sync historical data. If not specified, defaults to 2
+    years of historical data."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GoogleAdsOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.lookback_window_days is not None:
+            body["lookback_window_days"] = self.lookback_window_days
+        if self.manager_account_id is not None:
+            body["manager_account_id"] = self.manager_account_id
+        if self.sync_start_date is not None:
+            body["sync_start_date"] = self.sync_start_date
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GoogleAdsOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.lookback_window_days is not None:
+            body["lookback_window_days"] = self.lookback_window_days
+        if self.manager_account_id is not None:
+            body["manager_account_id"] = self.manager_account_id
+        if self.sync_start_date is not None:
+            body["sync_start_date"] = self.sync_start_date
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GoogleAdsOptions:
+        """Deserializes the GoogleAdsOptions from a dictionary."""
+        return cls(
+            lookback_window_days=d.get("lookback_window_days", None),
+            manager_account_id=d.get("manager_account_id", None),
+            sync_start_date=d.get("sync_start_date", None),
+        )
+
+
+@dataclass
+class GoogleDriveOptions:
+    entity_type: Optional[GoogleDriveOptionsGoogleDriveEntityType] = None
+
+    file_ingestion_options: Optional[FileIngestionOptions] = None
+
+    url: Optional[str] = None
+    """Google Drive URL."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GoogleDriveOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type.value
+        if self.file_ingestion_options:
+            body["file_ingestion_options"] = self.file_ingestion_options.as_dict()
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GoogleDriveOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
+        if self.file_ingestion_options:
+            body["file_ingestion_options"] = self.file_ingestion_options
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GoogleDriveOptions:
+        """Deserializes the GoogleDriveOptions from a dictionary."""
+        return cls(
+            entity_type=_enum(d, "entity_type", GoogleDriveOptionsGoogleDriveEntityType),
+            file_ingestion_options=_from_dict(d, "file_ingestion_options", FileIngestionOptions),
+            url=d.get("url", None),
+        )
+
+
+class GoogleDriveOptionsGoogleDriveEntityType(Enum):
+
+    FILE = "FILE"
+    FILE_METADATA = "FILE_METADATA"
+    PERMISSION = "PERMISSION"
 
 
 @dataclass
@@ -1044,6 +1386,7 @@ class IngestionSourceType(Enum):
     DYNAMICS365 = "DYNAMICS365"
     FOREIGN_CATALOG = "FOREIGN_CATALOG"
     GA4_RAW_DATA = "GA4_RAW_DATA"
+    GOOGLE_DRIVE = "GOOGLE_DRIVE"
     MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
     MYSQL = "MYSQL"
     NETSUITE = "NETSUITE"
@@ -3032,6 +3375,9 @@ class SchemaSpec:
     are created in this destination schema. The pipeline fails If a table with the same name already
     exists."""
 
+    connector_options: Optional[ConnectorOptions] = None
+    """(Optional) Source Specific Connector Options"""
+
     source_catalog: Optional[str] = None
     """The source catalog name. Might be optional depending on the type of source."""
 
@@ -3043,6 +3389,8 @@ class SchemaSpec:
     def as_dict(self) -> dict:
         """Serializes the SchemaSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.connector_options:
+            body["connector_options"] = self.connector_options.as_dict()
         if self.destination_catalog is not None:
             body["destination_catalog"] = self.destination_catalog
         if self.destination_schema is not None:
@@ -3058,6 +3406,8 @@ class SchemaSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the SchemaSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.connector_options:
+            body["connector_options"] = self.connector_options
         if self.destination_catalog is not None:
             body["destination_catalog"] = self.destination_catalog
         if self.destination_schema is not None:
@@ -3074,6 +3424,7 @@ class SchemaSpec:
     def from_dict(cls, d: Dict[str, Any]) -> SchemaSpec:
         """Deserializes the SchemaSpec from a dictionary."""
         return cls(
+            connector_options=_from_dict(d, "connector_options", ConnectorOptions),
             destination_catalog=d.get("destination_catalog", None),
             destination_schema=d.get("destination_schema", None),
             source_catalog=d.get("source_catalog", None),
@@ -3158,6 +3509,57 @@ class SerializedException:
             message=d.get("message", None),
             stack=_repeated_dict(d, "stack", StackFrame),
         )
+
+
+@dataclass
+class SharepointOptions:
+    entity_type: Optional[SharepointOptionsSharepointEntityType] = None
+    """(Optional) The type of SharePoint entity to ingest. If not specified, defaults to FILE."""
+
+    file_ingestion_options: Optional[FileIngestionOptions] = None
+    """(Optional) File ingestion options for processing files."""
+
+    url: Optional[str] = None
+    """Required. The SharePoint URL."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SharepointOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type.value
+        if self.file_ingestion_options:
+            body["file_ingestion_options"] = self.file_ingestion_options.as_dict()
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SharepointOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
+        if self.file_ingestion_options:
+            body["file_ingestion_options"] = self.file_ingestion_options
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SharepointOptions:
+        """Deserializes the SharepointOptions from a dictionary."""
+        return cls(
+            entity_type=_enum(d, "entity_type", SharepointOptionsSharepointEntityType),
+            file_ingestion_options=_from_dict(d, "file_ingestion_options", FileIngestionOptions),
+            url=d.get("url", None),
+        )
+
+
+class SharepointOptionsSharepointEntityType(Enum):
+
+    FILE = "FILE"
+    FILE_METADATA = "FILE_METADATA"
+    LIST = "LIST"
+    PERMISSION = "PERMISSION"
 
 
 @dataclass
@@ -3337,6 +3739,9 @@ class TableSpec:
     destination_schema: str
     """Required. Destination schema to store table."""
 
+    connector_options: Optional[ConnectorOptions] = None
+    """(Optional) Source Specific Connector Options"""
+
     destination_table: Optional[str] = None
     """Optional. Destination table name. The pipeline fails if a table with that name already exists.
     If not set, the source table name is used."""
@@ -3354,6 +3759,8 @@ class TableSpec:
     def as_dict(self) -> dict:
         """Serializes the TableSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.connector_options:
+            body["connector_options"] = self.connector_options.as_dict()
         if self.destination_catalog is not None:
             body["destination_catalog"] = self.destination_catalog
         if self.destination_schema is not None:
@@ -3373,6 +3780,8 @@ class TableSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the TableSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.connector_options:
+            body["connector_options"] = self.connector_options
         if self.destination_catalog is not None:
             body["destination_catalog"] = self.destination_catalog
         if self.destination_schema is not None:
@@ -3393,6 +3802,7 @@ class TableSpec:
     def from_dict(cls, d: Dict[str, Any]) -> TableSpec:
         """Deserializes the TableSpec from a dictionary."""
         return cls(
+            connector_options=_from_dict(d, "connector_options", ConnectorOptions),
             destination_catalog=d.get("destination_catalog", None),
             destination_schema=d.get("destination_schema", None),
             destination_table=d.get("destination_table", None),
@@ -3440,7 +3850,6 @@ class TableSpecificConfig:
     valid for the Salesforce connector"""
 
     scd_type: Optional[TableSpecificConfigScdType] = None
-    """The SCD type to use to ingest the table."""
 
     sequence_by: Optional[List[str]] = None
     """The column names specifying the logical order of events in the source data. Spark Declarative
@@ -3528,6 +3937,110 @@ class TableSpecificConfigScdType(Enum):
     APPEND_ONLY = "APPEND_ONLY"
     SCD_TYPE_1 = "SCD_TYPE_1"
     SCD_TYPE_2 = "SCD_TYPE_2"
+
+
+@dataclass
+class TikTokAdsOptions:
+    """TikTok Ads specific options for ingestion"""
+
+    data_level: Optional[TikTokAdsOptionsTikTokDataLevel] = None
+    """(Optional) Data level for the report. If not specified, defaults to AUCTION_CAMPAIGN."""
+
+    dimensions: Optional[List[str]] = None
+    """(Optional) Dimensions to include in the report. Examples: "campaign_id", "adgroup_id", "ad_id",
+    "stat_time_day", "stat_time_hour" If not specified, defaults to campaign_id."""
+
+    lookback_window_days: Optional[int] = None
+    """(Optional) Number of days to look back for report tables during incremental sync to capture
+    late-arriving conversions and attribution data. If not specified, defaults to 7 days."""
+
+    metrics: Optional[List[str]] = None
+    """(Optional) Metrics to include in the report. Examples: "spend", "impressions", "clicks",
+    "conversion", "cpc" If not specified, defaults to basic metrics (spend, impressions, clicks,
+    etc.)"""
+
+    query_lifetime: Optional[bool] = None
+    """(Optional) Whether to request lifetime metrics (all-time aggregated data). When true, the report
+    returns all-time data. If not specified, defaults to false."""
+
+    report_type: Optional[TikTokAdsOptionsTikTokReportType] = None
+    """(Optional) Report type for the TikTok Ads API. If not specified, defaults to BASIC."""
+
+    sync_start_date: Optional[str] = None
+    """(Optional) Start date for the initial sync of report tables in YYYY-MM-DD format. This
+    determines the earliest date from which to sync historical data. If not specified, defaults to 1
+    year of historical data for daily reports and 30 days for hourly reports."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TikTokAdsOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_level is not None:
+            body["data_level"] = self.data_level.value
+        if self.dimensions:
+            body["dimensions"] = [v for v in self.dimensions]
+        if self.lookback_window_days is not None:
+            body["lookback_window_days"] = self.lookback_window_days
+        if self.metrics:
+            body["metrics"] = [v for v in self.metrics]
+        if self.query_lifetime is not None:
+            body["query_lifetime"] = self.query_lifetime
+        if self.report_type is not None:
+            body["report_type"] = self.report_type.value
+        if self.sync_start_date is not None:
+            body["sync_start_date"] = self.sync_start_date
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TikTokAdsOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_level is not None:
+            body["data_level"] = self.data_level
+        if self.dimensions:
+            body["dimensions"] = self.dimensions
+        if self.lookback_window_days is not None:
+            body["lookback_window_days"] = self.lookback_window_days
+        if self.metrics:
+            body["metrics"] = self.metrics
+        if self.query_lifetime is not None:
+            body["query_lifetime"] = self.query_lifetime
+        if self.report_type is not None:
+            body["report_type"] = self.report_type
+        if self.sync_start_date is not None:
+            body["sync_start_date"] = self.sync_start_date
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TikTokAdsOptions:
+        """Deserializes the TikTokAdsOptions from a dictionary."""
+        return cls(
+            data_level=_enum(d, "data_level", TikTokAdsOptionsTikTokDataLevel),
+            dimensions=d.get("dimensions", None),
+            lookback_window_days=d.get("lookback_window_days", None),
+            metrics=d.get("metrics", None),
+            query_lifetime=d.get("query_lifetime", None),
+            report_type=_enum(d, "report_type", TikTokAdsOptionsTikTokReportType),
+            sync_start_date=d.get("sync_start_date", None),
+        )
+
+
+class TikTokAdsOptionsTikTokDataLevel(Enum):
+    """Data level for TikTok Ads report aggregation."""
+
+    AUCTION_AD = "AUCTION_AD"
+    AUCTION_ADGROUP = "AUCTION_ADGROUP"
+    AUCTION_ADVERTISER = "AUCTION_ADVERTISER"
+    AUCTION_CAMPAIGN = "AUCTION_CAMPAIGN"
+
+
+class TikTokAdsOptionsTikTokReportType(Enum):
+    """Report type for TikTok Ads API."""
+
+    AUDIENCE = "AUDIENCE"
+    BASIC = "BASIC"
+    BUSINESS_CENTER = "BUSINESS_CENTER"
+    DSA = "DSA"
+    GMV_MAX = "GMV_MAX"
+    PLAYABLE_AD = "PLAYABLE_AD"
 
 
 @dataclass
@@ -3836,6 +4349,26 @@ class PipelinesAPI:
             time.sleep(sleep + random.random())
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
+
+    def apply_environment(self, pipeline_id: str) -> ApplyEnvironmentRequestResponse:
+        """* Applies the current pipeline environment onto the pipeline compute. The environment applied can be
+        used by subsequent dev-mode updates.
+
+        :param pipeline_id: str
+
+        :returns: :class:`ApplyEnvironmentRequestResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/environment/apply", headers=headers)
+        return ApplyEnvironmentRequestResponse.from_dict(res)
 
     def clone(
         self,

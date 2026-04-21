@@ -68,6 +68,16 @@
         :returns: :class:`App`
         
 
+    .. py:method:: delete_app_thumbnail(name: str)
+
+        Deletes the thumbnail for an app.
+
+        :param name: str
+          The name of the app.
+
+
+        
+
     .. py:method:: delete_space(name: str) -> DeleteSpaceOperation
 
         Deletes an app space.
@@ -259,6 +269,18 @@
         :param app: :class:`App`
 
         :returns: :class:`App`
+        
+
+    .. py:method:: update_app_thumbnail(name: str [, app_thumbnail: Optional[AppThumbnail]]) -> AppThumbnail
+
+        Updates the thumbnail for an app.
+
+        :param name: str
+          The name of the app.
+        :param app_thumbnail: :class:`AppThumbnail` (optional)
+          The app thumbnail to set.
+
+        :returns: :class:`AppThumbnail`
         
 
     .. py:method:: update_permissions(app_name: str [, access_control_list: Optional[List[AppAccessControlRequest]]]) -> AppPermissions

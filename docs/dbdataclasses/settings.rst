@@ -206,10 +206,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CustomerFacingIngressNetworkPolicyAppsDestination
-   :members:
-   :undoc-members:
-
 .. autoclass:: CustomerFacingIngressNetworkPolicyAuthentication
    :members:
    :undoc-members:
@@ -238,10 +234,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "IDENTITY_TYPE_SELECTED_IDENTITIES"
 
 .. autoclass:: CustomerFacingIngressNetworkPolicyIpRanges
-   :members:
-   :undoc-members:
-
-.. autoclass:: CustomerFacingIngressNetworkPolicyLakebaseDestination
    :members:
    :undoc-members:
 
@@ -586,6 +578,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: FetchIpAccessListResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GcpEndpoint
    :members:
    :undoc-members:
 

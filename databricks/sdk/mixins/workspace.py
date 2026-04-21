@@ -96,6 +96,7 @@ class WorkspaceExt(WorkspaceAPI):
                 headers=headers,
                 files={"content": content},
                 data=data,
+                headers=headers,
             )
         except DatabricksError as e:
             if e.error_code == "INVALID_PARAMETER_VALUE":

@@ -1066,7 +1066,16 @@ class WorkspaceClient:
         return self._files
 
     def get_workspace_id(self) -> int:
-        """Get the workspace ID of the workspace that this client is connected to."""
+        """Get the workspace ID of the workspace that this client is connected to.
+
+        If ``Config.workspace_id`` is already set (from the databrickscfg profile,
+        the ``DATABRICKS_WORKSPACE_ID`` env var, host metadata, or a ``?o=`` query
+        param), it is returned without an API round-trip. Otherwise the ID is
+        fetched from the ``X-Databricks-Org-Id`` response header on
+        ``/api/2.0/preview/scim/v2/Me``.
+        """
+        if self._config.workspace_id:
+            return int(self._config.workspace_id)
         response = self._api_client.do("GET", "/api/2.0/preview/scim/v2/Me", response_headers=["X-Databricks-Org-Id"])
         return int(response["X-Databricks-Org-Id"])
 
