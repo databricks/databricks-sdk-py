@@ -3,6 +3,7 @@ import logging
 import os
 import platform
 import re
+from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
 from .version import __version__
@@ -224,19 +225,38 @@ def cicd_provider() -> str:
     return _cicd_provider
 
 
-# Canonical list of known AI coding agents.
+# Canonical list of known AI coding agents. Alphabetical by product name.
 # Keep this list in sync with databricks-sdk-go and databricks-sdk-java.
-_KNOWN_AGENTS = {
-    "ANTIGRAVITY_AGENT": "antigravity",  # Closed source (Google)
-    "CLAUDECODE": "claude-code",  # https://github.com/anthropics/claude-code
-    "CLINE_ACTIVE": "cline",  # https://github.com/cline/cline (v3.24.0+)
-    "CODEX_CI": "codex",  # https://github.com/openai/codex
-    "COPILOT_CLI": "copilot-cli",  # https://github.com/features/copilot
-    "CURSOR_AGENT": "cursor",  # Closed source
-    "GEMINI_CLI": "gemini-cli",  # https://google-gemini.github.io/gemini-cli
-    "OPENCODE": "opencode",  # https://github.com/opencode-ai/opencode
-    "OPENCLAW_SHELL": "openclaw",  # https://github.com/anthropics/openclaw
-}
+#
+# Each record has a single env var that identifies the product by presence
+# (the env var just needs to be set, even to an empty string).
+@dataclass(frozen=True)
+class _AgentRecord:
+    env_var: str
+    product: str
+
+
+_KNOWN_AGENTS: List[_AgentRecord] = [
+    _AgentRecord("AMP_CURRENT_THREAD_ID", "amp"),  # https://ampcode.com/ (also sets AGENT=amp, handled centrally)
+    _AgentRecord("ANTIGRAVITY_AGENT", "antigravity"),  # Closed source (Google)
+    _AgentRecord("AUGMENT_AGENT", "augment"),  # https://www.augmentcode.com/
+    _AgentRecord("CLAUDECODE", "claude-code"),  # https://github.com/anthropics/claude-code
+    _AgentRecord("CLINE_ACTIVE", "cline"),  # https://github.com/cline/cline (v3.24.0+)
+    _AgentRecord("CODEX_CI", "codex"),  # https://github.com/openai/codex
+    _AgentRecord("COPILOT_CLI", "copilot-cli"),  # https://github.com/features/copilot
+    _AgentRecord(
+        "COPILOT_MODEL", "copilot-vscode"
+    ),  # VS Code Copilot terminal, best-effort heuristic, not officially identified
+    _AgentRecord("CURSOR_AGENT", "cursor"),  # Closed source
+    _AgentRecord("GEMINI_CLI", "gemini-cli"),  # https://google-gemini.github.io/gemini-cli
+    _AgentRecord(
+        "GOOSE_TERMINAL", "goose"
+    ),  # https://block.github.io/goose/ (also sets AGENT=goose, handled centrally)
+    _AgentRecord("KIRO", "kiro"),  # https://kiro.dev/ (Amazon)
+    _AgentRecord("OPENCLAW_SHELL", "openclaw"),  # https://github.com/anthropics/openclaw
+    _AgentRecord("OPENCODE", "opencode"),  # https://github.com/opencode-ai/opencode
+    _AgentRecord("WINDSURF_AGENT", "windsurf"),  # https://codeium.com/windsurf (Codeium)
+]
 
 # Private variable to store the detected agent provider. This value is computed
 # at the first invocation of agent_provider() and is cached for subsequent calls.
@@ -247,22 +267,54 @@ _agent_provider = None
 def agent_provider() -> str:
     """Detect if running inside a known AI coding agent.
 
-    Returns the agent name if exactly one known agent env var is set (non-empty).
-    Returns empty string if zero or multiple agents detected.
-    Result is cached after first call.
+    Iterates the list of known agents. Each agent fires if its explicit,
+    product-specific env var is set. If exactly one agent fired, returns its
+    product name. If more than one fired, returns "multiple" (nested agents,
+    e.g. a Cursor CLI subagent invoked by Claude Code, inherit env vars from
+    every enclosing layer).
 
-    Unlike CI/CD detection (which returns the first/sorted match), agent detection
-    uses an ambiguity guard: multiple matches return empty. Agent env vars can be
-    stacked (e.g., running Cline inside Cursor), so we only report when unambiguous.
+    Explicit agent env vars (e.g. CLAUDECODE, GOOSE_TERMINAL) always take
+    precedence. The agents.md-standard AGENT=<name> env var is only consulted
+    as a fallback when no explicit matcher fired:
+      - If AGENT matches a known product name, return that product.
+      - Otherwise return "unknown".
+
+    This means AGENT=<name> never contributes to the multi-agent signal: if
+    any explicit matcher fires, AGENT is ignored entirely, even when it names
+    a different known product.
+
+    Result is cached after first call.
     """
     global _agent_provider
     if _agent_provider is not None:
         return _agent_provider
 
-    detected = []
-    for env_var, name in _KNOWN_AGENTS.items():
-        if os.environ.get(env_var, ""):
-            detected.append(name)
+    matches = [a.product for a in _KNOWN_AGENTS if a.env_var in os.environ]
 
-    _agent_provider = detected[0] if len(detected) == 1 else ""
+    # Known BYOK false positive: Copilot CLI users often set COPILOT_MODEL
+    # alongside COPILOT_CLI. That pair is a single copilot-cli signal, not a
+    # stacked multi-agent setup.
+    if "copilot-cli" in matches and "copilot-vscode" in matches:
+        matches = [m for m in matches if m != "copilot-vscode"]
+
+    if len(matches) == 1:
+        _agent_provider = matches[0]
+    elif len(matches) > 1:
+        _agent_provider = "multiple"
+    else:
+        _agent_provider = _agent_env_fallback()
     return _agent_provider
+
+
+def _agent_env_fallback() -> str:
+    """Honor the agents.md AGENT=<name> standard.
+
+    Returns the value if it matches a known product name, "unknown" if AGENT
+    is set to any other non-empty value, and "" if AGENT is unset or empty.
+    """
+    v = os.environ.get("AGENT", "")
+    if not v:
+        return ""
+    if v in {a.product for a in _KNOWN_AGENTS}:
+        return v
+    return "unknown"
