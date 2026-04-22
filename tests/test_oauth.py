@@ -1,10 +1,15 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
 
+from databricks.sdk import oauth as oauth_module
 from databricks.sdk._base_client import _BaseClient
-from databricks.sdk.oauth import (HostMetadata, OidcEndpoints, TokenCache,
+from databricks.sdk.oauth import (HostMetadata, OidcEndpoints,
+                                  PATOAuthTokenExchange, TokenCache,
                                   get_account_endpoints,
+                                  get_azure_entra_id_workspace_endpoints,
                                   get_endpoints_from_url, get_host_metadata,
-                                  get_workspace_endpoints)
+                                  get_workspace_endpoints, retrieve_token)
 
 from .clock import FakeClock
 
@@ -237,3 +242,56 @@ def test_get_endpoints_from_url(requests_mock):
         authorization_endpoint=f"{_DUMMY_HOST}/oidc/v1/authorize",
         token_endpoint=f"{_DUMMY_HOST}/oidc/v1/token",
     )
+
+
+# Regression tests for https://github.com/databricks/databricks-sdk-py/issues/1338:
+# the `requests.post` and `requests.get` calls in oauth.py must pass a `timeout=`
+# value to avoid hanging indefinitely when the OAuth endpoint is unreachable.
+
+
+def _ok_response(json_payload=None):
+    """Build a minimal mock Response for requests.post/get."""
+    resp = MagicMock()
+    resp.ok = True
+    resp.headers = {"Content-Type": "application/json"}
+    resp.json.return_value = json_payload or {
+        "access_token": "access",
+        "token_type": "Bearer",
+        "expires_in": 3600,
+    }
+    return resp
+
+
+def test_retrieve_token_passes_timeout():
+    with patch("databricks.sdk.oauth.requests.post", return_value=_ok_response()) as post:
+        retrieve_token(
+            client_id="id",
+            client_secret="secret",
+            token_url="https://example.com/oidc/v1/token",
+            params={"grant_type": "client_credentials"},
+            use_header=True,
+        )
+    post.assert_called_once()
+    assert post.call_args.kwargs.get("timeout") == oauth_module._OAUTH_DEFAULT_TIMEOUT_SECONDS
+
+
+def test_get_azure_entra_id_workspace_endpoints_passes_timeout():
+    redirect_resp = MagicMock()
+    redirect_resp.headers = {"location": "https://login.microsoftonline.com/tenant/oauth2/v2.0/authorize"}
+    with patch("databricks.sdk.oauth.requests.get", return_value=redirect_resp) as get:
+        endpoints = get_azure_entra_id_workspace_endpoints("https://my-workspace.cloud.databricks.com")
+    get.assert_called_once()
+    assert get.call_args.kwargs.get("timeout") == oauth_module._OAUTH_DEFAULT_TIMEOUT_SECONDS
+    assert endpoints is not None
+
+
+def test_pat_oauth_token_exchange_refresh_passes_timeout():
+    exchange = PATOAuthTokenExchange(
+        get_original_token=lambda: "dapi-pat-token",
+        host="https://my-workspace.cloud.databricks.com",
+        scopes="all-apis",
+    )
+    with patch("databricks.sdk.oauth.requests.post", return_value=_ok_response()) as post:
+        exchange.refresh()
+    post.assert_called_once()
+    assert post.call_args.kwargs.get("timeout") == oauth_module._OAUTH_DEFAULT_TIMEOUT_SECONDS
