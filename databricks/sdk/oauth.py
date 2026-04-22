@@ -30,6 +30,13 @@ URL_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded"
 JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
 OIDC_TOKEN_PATH = "/oidc/v1/token"
 
+# Default timeout (in seconds) for OAuth HTTP calls. Matches the SDK's default
+# `http_timeout_seconds` in `_BaseClient`. These calls run inside the
+# `session.auth` header factory, which executes before the per-request timeout
+# configured on the underlying `requests.Session` takes effect, so an explicit
+# timeout is required to prevent hangs when the OAuth endpoint is unreachable.
+_OAUTH_DEFAULT_TIMEOUT_SECONDS = 60
+
 logger = logging.getLogger(__name__)
 
 
@@ -206,7 +213,7 @@ def retrieve_token(
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
     else:
         auth = IgnoreNetrcAuth()
-    resp = requests.post(token_url, params, auth=auth, headers=headers)
+    resp = requests.post(token_url, params, auth=auth, headers=headers, timeout=_OAUTH_DEFAULT_TIMEOUT_SECONDS)
     if not resp.ok:
         if resp.headers["Content-Type"].startswith("application/json"):
             err = resp.json()
@@ -545,7 +552,11 @@ def get_azure_entra_id_workspace_endpoints(
     """
     # In Azure, this workspace endpoint redirects to the Entra ID authorization endpoint
     host = _fix_host_if_needed(host)
-    res = requests.get(f"{host}/oidc/oauth2/v2.0/authorize", allow_redirects=False)
+    res = requests.get(
+        f"{host}/oidc/oauth2/v2.0/authorize",
+        allow_redirects=False,
+        timeout=_OAUTH_DEFAULT_TIMEOUT_SECONDS,
+    )
     real_auth_url = res.headers.get("location")
     if not real_auth_url:
         return None
@@ -913,7 +924,7 @@ class PATOAuthTokenExchange(Refreshable):
         if self.authorization_details:
             params["authorization_details"] = self.authorization_details
 
-        resp = requests.post(token_exchange_url, params)
+        resp = requests.post(token_exchange_url, params, timeout=_OAUTH_DEFAULT_TIMEOUT_SECONDS)
         if not resp.ok:
             if resp.headers["Content-Type"].startswith("application/json"):
                 err = resp.json()
