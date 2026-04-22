@@ -3318,7 +3318,7 @@ class SharesAPI:
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/shares/{name}", headers=headers)
 
-    def get(self, name: str, *, include_shared_data: Optional[bool] = None, ) -> ShareInfo:
+    def get(self, name: str, *, include_shared_data: Optional[bool] = None) -> ShareInfo:
         """Gets a data object share from the metastore. The caller must have the USE_SHARE privilege on the
         metastore or be the owner of the share.
 
@@ -3420,7 +3420,6 @@ class SharesAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
-
         headers = {
             "Accept": "application/json",
         }
