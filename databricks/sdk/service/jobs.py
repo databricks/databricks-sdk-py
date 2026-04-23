@@ -8263,6 +8263,7 @@ class TerminationCodeCode(Enum):
 
     [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
 
+    BREAKING_CHANGE = "BREAKING_CHANGE"
     BUDGET_POLICY_LIMIT_EXCEEDED = "BUDGET_POLICY_LIMIT_EXCEEDED"
     CANCELED = "CANCELED"
     CLOUD_FAILURE = "CLOUD_FAILURE"

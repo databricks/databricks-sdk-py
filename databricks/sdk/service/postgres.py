@@ -201,6 +201,14 @@ class BranchSpec:
 
 @dataclass
 class BranchStatus:
+    branch_id: Optional[str] = None
+    """The short identifier of the branch, suitable for showing to the users. For a branch with name
+    `projects/my-project/branches/my-branch`, the branch_id is `my-branch`.
+    
+    Use this field when building UI components that display branches to users (e.g., a drop-down
+    selector). Prefer showing `branch_id` instead of the full resource name from `Branch.name`,
+    which follows the `projects/{project_id}/branches/{branch_id}` format and is not user-friendly."""
+
     current_state: Optional[BranchStatusState] = None
     """The branch's state, indicating if it is initializing, ready for use, or archived."""
 
@@ -235,6 +243,8 @@ class BranchStatus:
     def as_dict(self) -> dict:
         """Serializes the BranchStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.branch_id is not None:
+            body["branch_id"] = self.branch_id
         if self.current_state is not None:
             body["current_state"] = self.current_state.value
         if self.default is not None:
@@ -260,6 +270,8 @@ class BranchStatus:
     def as_shallow_dict(self) -> dict:
         """Serializes the BranchStatus into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.branch_id is not None:
+            body["branch_id"] = self.branch_id
         if self.current_state is not None:
             body["current_state"] = self.current_state
         if self.default is not None:
@@ -286,6 +298,7 @@ class BranchStatus:
     def from_dict(cls, d: Dict[str, Any]) -> BranchStatus:
         """Deserializes the BranchStatus from a dictionary."""
         return cls(
+            branch_id=d.get("branch_id", None),
             current_state=_enum(d, "current_state", BranchStatusState),
             default=d.get("default", None),
             expire_time=_timestamp(d, "expire_time"),
@@ -452,6 +465,14 @@ class CatalogCatalogStatus:
     
     Format: projects/{project_id}/branches/{branch_id}."""
 
+    catalog_id: Optional[str] = None
+    """The short identifier of the catalog, suitable for showing to the users. For a catalog with name
+    `catalogs/my-catalog`, the catalog_id is `my-catalog`.
+    
+    Use this field when building UI components that display catalogs to users (e.g., a drop-down
+    selector). Prefer showing `catalog_id` instead of the full resource name from `Catalog.name`,
+    which follows the `catalogs/{catalog_id}` format and is not user-friendly."""
+
     postgres_database: Optional[str] = None
     """The name of the Postgres database associated with the catalog."""
 
@@ -465,6 +486,8 @@ class CatalogCatalogStatus:
         body = {}
         if self.branch is not None:
             body["branch"] = self.branch
+        if self.catalog_id is not None:
+            body["catalog_id"] = self.catalog_id
         if self.postgres_database is not None:
             body["postgres_database"] = self.postgres_database
         if self.project is not None:
@@ -476,6 +499,8 @@ class CatalogCatalogStatus:
         body = {}
         if self.branch is not None:
             body["branch"] = self.branch
+        if self.catalog_id is not None:
+            body["catalog_id"] = self.catalog_id
         if self.postgres_database is not None:
             body["postgres_database"] = self.postgres_database
         if self.project is not None:
@@ -487,6 +512,7 @@ class CatalogCatalogStatus:
         """Deserializes the CatalogCatalogStatus from a dictionary."""
         return cls(
             branch=d.get("branch", None),
+            catalog_id=d.get("catalog_id", None),
             postgres_database=d.get("postgres_database", None),
             project=d.get("project", None),
         )
@@ -657,6 +683,15 @@ class DatabaseDatabaseSpec:
 
 @dataclass
 class DatabaseDatabaseStatus:
+    database_id: Optional[str] = None
+    """The short identifier of the database, suitable for showing to the users. For a database with
+    name `projects/my-project/branches/my-branch/databases/my-db`, the database_id is `my-db`.
+    
+    Use this field when building UI components that display databases to users (e.g., a drop-down
+    selector). Prefer showing `database_id` instead of the full resource name from `Database.name`,
+    which follows the `projects/{project_id}/branches/{branch_id}/databases/{database_id}` format
+    and is not user-friendly."""
+
     postgres_database: Optional[str] = None
     """The name of the Postgres database."""
 
@@ -667,6 +702,8 @@ class DatabaseDatabaseStatus:
     def as_dict(self) -> dict:
         """Serializes the DatabaseDatabaseStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.database_id is not None:
+            body["database_id"] = self.database_id
         if self.postgres_database is not None:
             body["postgres_database"] = self.postgres_database
         if self.role is not None:
@@ -676,6 +713,8 @@ class DatabaseDatabaseStatus:
     def as_shallow_dict(self) -> dict:
         """Serializes the DatabaseDatabaseStatus into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.database_id is not None:
+            body["database_id"] = self.database_id
         if self.postgres_database is not None:
             body["postgres_database"] = self.postgres_database
         if self.role is not None:
@@ -685,7 +724,11 @@ class DatabaseDatabaseStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DatabaseDatabaseStatus:
         """Deserializes the DatabaseDatabaseStatus from a dictionary."""
-        return cls(postgres_database=d.get("postgres_database", None), role=d.get("role", None))
+        return cls(
+            database_id=d.get("database_id", None),
+            postgres_database=d.get("postgres_database", None),
+            role=d.get("role", None),
+        )
 
 
 @dataclass
@@ -1150,6 +1193,16 @@ class EndpointStatus:
     suspend compute operation. A disabled compute endpoint cannot be enabled by a connection or
     console action."""
 
+    endpoint_id: Optional[str] = None
+    """The short identifier of the endpoint, suitable for showing to the users. For an endpoint with
+    name `projects/my-project/branches/my-branch/endpoints/my-endpoint`, the endpoint_id is
+    `my-endpoint`.
+    
+    Use this field when building UI components that display endpoints to users (e.g., a drop-down
+    selector). Prefer showing `endpoint_id` instead of the full resource name from `Endpoint.name`,
+    which follows the `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}` format
+    and is not user-friendly."""
+
     endpoint_type: Optional[EndpointType] = None
     """The endpoint type. A branch can only have one READ_WRITE endpoint."""
 
@@ -1177,6 +1230,8 @@ class EndpointStatus:
             body["current_state"] = self.current_state.value
         if self.disabled is not None:
             body["disabled"] = self.disabled
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type.value
         if self.group:
@@ -1202,6 +1257,8 @@ class EndpointStatus:
             body["current_state"] = self.current_state
         if self.disabled is not None:
             body["disabled"] = self.disabled
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type
         if self.group:
@@ -1224,6 +1281,7 @@ class EndpointStatus:
             autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
             current_state=_enum(d, "current_state", EndpointStatusState),
             disabled=d.get("disabled", None),
+            endpoint_id=d.get("endpoint_id", None),
             endpoint_type=_enum(d, "endpoint_type", EndpointType),
             group=_from_dict(d, "group", EndpointGroupStatus),
             hosts=_from_dict(d, "hosts", EndpointHosts),
@@ -1945,6 +2003,14 @@ class ProjectStatus:
     pg_version: Optional[int] = None
     """The effective major Postgres version number."""
 
+    project_id: Optional[str] = None
+    """The short identifier of the project, suitable for showing to the users. For a project with name
+    `projects/my-project`, the project_id is `my-project`.
+    
+    Use this field when building UI components that display projects to users (e.g., a drop-down
+    selector). Prefer showing `project_id` instead of the full resource name from `Project.name`,
+    which follows the `projects/{project_id}` format and is not user-friendly."""
+
     synthetic_storage_size_bytes: Optional[int] = None
     """The current space occupied by the project in storage."""
 
@@ -1971,6 +2037,8 @@ class ProjectStatus:
             body["owner"] = self.owner
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
         if self.synthetic_storage_size_bytes is not None:
             body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
         return body
@@ -1998,6 +2066,8 @@ class ProjectStatus:
             body["owner"] = self.owner
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
         if self.synthetic_storage_size_bytes is not None:
             body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
         return body
@@ -2016,6 +2086,7 @@ class ProjectStatus:
             history_retention_duration=_duration(d, "history_retention_duration"),
             owner=d.get("owner", None),
             pg_version=d.get("pg_version", None),
+            project_id=d.get("project_id", None),
             synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),
         )
 
@@ -2355,6 +2426,15 @@ class RoleRoleStatus:
     postgres_role: Optional[str] = None
     """The name of the Postgres role."""
 
+    role_id: Optional[str] = None
+    """The short identifier of the role, suitable for showing to the users. For a role with name
+    `projects/my-project/branches/my-branch/roles/my-role`, the role_id is `my-role`.
+    
+    Use this field when building UI components that display roles to users (e.g., a drop-down
+    selector). Prefer showing `role_id` instead of the full resource name from `Role.name`, which
+    follows the `projects/{project_id}/branches/{branch_id}/roles/{role_id}` format and is not
+    user-friendly."""
+
     def as_dict(self) -> dict:
         """Serializes the RoleRoleStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2368,6 +2448,8 @@ class RoleRoleStatus:
             body["membership_roles"] = [v.value for v in self.membership_roles]
         if self.postgres_role is not None:
             body["postgres_role"] = self.postgres_role
+        if self.role_id is not None:
+            body["role_id"] = self.role_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2383,6 +2465,8 @@ class RoleRoleStatus:
             body["membership_roles"] = self.membership_roles
         if self.postgres_role is not None:
             body["postgres_role"] = self.postgres_role
+        if self.role_id is not None:
+            body["role_id"] = self.role_id
         return body
 
     @classmethod
@@ -2394,6 +2478,7 @@ class RoleRoleStatus:
             identity_type=_enum(d, "identity_type", RoleIdentityType),
             membership_roles=_repeated_enum(d, "membership_roles", RoleMembershipRole),
             postgres_role=d.get("postgres_role", None),
+            role_id=d.get("role_id", None),
         )
 
 
@@ -2751,6 +2836,11 @@ class SyncedTableSyncedTableStatus:
     pipeline_id: Optional[str] = None
     """ID of the associated pipeline."""
 
+    project: Optional[str] = None
+    """The full resource name of the project associated with the table.
+    
+    Format: "projects/{project_id}"."""
+
     provisioning_phase: Optional[ProvisioningPhase] = None
     """The current phase of the data synchronization pipeline."""
 
@@ -2774,6 +2864,8 @@ class SyncedTableSyncedTableStatus:
             body["ongoing_sync_progress"] = self.ongoing_sync_progress.as_dict()
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
+        if self.project is not None:
+            body["project"] = self.project
         if self.provisioning_phase is not None:
             body["provisioning_phase"] = self.provisioning_phase.value
         if self.unity_catalog_provisioning_state is not None:
@@ -2797,6 +2889,8 @@ class SyncedTableSyncedTableStatus:
             body["ongoing_sync_progress"] = self.ongoing_sync_progress
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
+        if self.project is not None:
+            body["project"] = self.project
         if self.provisioning_phase is not None:
             body["provisioning_phase"] = self.provisioning_phase
         if self.unity_catalog_provisioning_state is not None:
@@ -2814,6 +2908,7 @@ class SyncedTableSyncedTableStatus:
             message=d.get("message", None),
             ongoing_sync_progress=_from_dict(d, "ongoing_sync_progress", SyncedTablePipelineProgress),
             pipeline_id=d.get("pipeline_id", None),
+            project=d.get("project", None),
             provisioning_phase=_enum(d, "provisioning_phase", ProvisioningPhase),
             unity_catalog_provisioning_state=_enum(d, "unity_catalog_provisioning_state", ProvisioningInfoState),
         )

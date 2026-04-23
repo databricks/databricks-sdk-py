@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
+from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import (_enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
 
@@ -1084,6 +1085,31 @@ class CustomerFacingIngressNetworkPolicy:
 
 
 @dataclass
+class CustomerFacingIngressNetworkPolicyAppsRuntimeDestination:
+    all_destinations: Optional[bool] = None
+    """Must be set to true."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAppsRuntimeDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAppsRuntimeDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAppsRuntimeDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyAppsRuntimeDestination from a dictionary."""
+        return cls(all_destinations=d.get("all_destinations", None))
+
+
+@dataclass
 class CustomerFacingIngressNetworkPolicyAuthentication:
     identities: Optional[List[CustomerFacingIngressNetworkPolicyAuthenticationIdentity]] = None
     """Valid only when IdentityType is IDENTITY_TYPE_SELECTED_IDENTITIES."""
@@ -1191,6 +1217,31 @@ class CustomerFacingIngressNetworkPolicyIpRanges:
 
 
 @dataclass
+class CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination:
+    all_destinations: Optional[bool] = None
+    """Must be set to true."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination from a dictionary."""
+        return cls(all_destinations=d.get("all_destinations", None))
+
+
+@dataclass
 class CustomerFacingIngressNetworkPolicyPublicAccess:
     restriction_mode: CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode
 
@@ -1248,8 +1299,7 @@ class CustomerFacingIngressNetworkPolicyPublicIngressRule:
     destination: Optional[CustomerFacingIngressNetworkPolicyRequestDestination] = None
 
     label: Optional[str] = None
-    """User-provided name for this ingress rule. Helps identify which rule caused a request to be
-    denied or dry-run denied."""
+    """The label for this ingress rule."""
 
     origin: Optional[CustomerFacingIngressNetworkPolicyPublicRequestOrigin] = None
 
@@ -1339,6 +1389,10 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
     """When true, match all destinations, no other destination fields can be set. When not set or
     false, at least one specific destination must be provided."""
 
+    apps_runtime: Optional[CustomerFacingIngressNetworkPolicyAppsRuntimeDestination] = None
+
+    lakebase_runtime: Optional[CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination] = None
+
     workspace_api: Optional[CustomerFacingIngressNetworkPolicyWorkspaceApiDestination] = None
 
     workspace_ui: Optional[CustomerFacingIngressNetworkPolicyWorkspaceUiDestination] = None
@@ -1349,6 +1403,10 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
         body = {}
         if self.all_destinations is not None:
             body["all_destinations"] = self.all_destinations
+        if self.apps_runtime:
+            body["apps_runtime"] = self.apps_runtime.as_dict()
+        if self.lakebase_runtime:
+            body["lakebase_runtime"] = self.lakebase_runtime.as_dict()
         if self.workspace_api:
             body["workspace_api"] = self.workspace_api.as_dict()
         if self.workspace_ui:
@@ -1360,6 +1418,10 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
         body = {}
         if self.all_destinations is not None:
             body["all_destinations"] = self.all_destinations
+        if self.apps_runtime:
+            body["apps_runtime"] = self.apps_runtime
+        if self.lakebase_runtime:
+            body["lakebase_runtime"] = self.lakebase_runtime
         if self.workspace_api:
             body["workspace_api"] = self.workspace_api
         if self.workspace_ui:
@@ -1371,6 +1433,10 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyRequestDestination from a dictionary."""
         return cls(
             all_destinations=d.get("all_destinations", None),
+            apps_runtime=_from_dict(d, "apps_runtime", CustomerFacingIngressNetworkPolicyAppsRuntimeDestination),
+            lakebase_runtime=_from_dict(
+                d, "lakebase_runtime", CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination
+            ),
             workspace_api=_from_dict(d, "workspace_api", CustomerFacingIngressNetworkPolicyWorkspaceApiDestination),
             workspace_ui=_from_dict(d, "workspace_ui", CustomerFacingIngressNetworkPolicyWorkspaceUiDestination),
         )
@@ -2633,6 +2699,11 @@ class EgressNetworkPolicyNetworkAccessPolicy:
     """List of storage destinations that serverless workloads are allowed to access when in
     RESTRICTED_ACCESS mode."""
 
+    blocked_internet_destinations: Optional[List[EgressNetworkPolicyNetworkAccessPolicyInternetDestination]] = None
+    """List of internet destinations that serverless workloads are blocked from accessing. These
+    destinations are enforced when restriction mode is RESTRICTED_ACCESS or DRY_RUN. Currently
+    supports DNS_NAME type only; IP_RANGE support is planned."""
+
     policy_enforcement: Optional[EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement] = None
     """Optional. When policy_enforcement is not provided, we default to ENFORCE_MODE_ALL_SERVICES"""
 
@@ -2643,6 +2714,8 @@ class EgressNetworkPolicyNetworkAccessPolicy:
             body["allowed_internet_destinations"] = [v.as_dict() for v in self.allowed_internet_destinations]
         if self.allowed_storage_destinations:
             body["allowed_storage_destinations"] = [v.as_dict() for v in self.allowed_storage_destinations]
+        if self.blocked_internet_destinations:
+            body["blocked_internet_destinations"] = [v.as_dict() for v in self.blocked_internet_destinations]
         if self.policy_enforcement:
             body["policy_enforcement"] = self.policy_enforcement.as_dict()
         if self.restriction_mode is not None:
@@ -2656,6 +2729,8 @@ class EgressNetworkPolicyNetworkAccessPolicy:
             body["allowed_internet_destinations"] = self.allowed_internet_destinations
         if self.allowed_storage_destinations:
             body["allowed_storage_destinations"] = self.allowed_storage_destinations
+        if self.blocked_internet_destinations:
+            body["blocked_internet_destinations"] = self.blocked_internet_destinations
         if self.policy_enforcement:
             body["policy_enforcement"] = self.policy_enforcement
         if self.restriction_mode is not None:
@@ -2671,6 +2746,9 @@ class EgressNetworkPolicyNetworkAccessPolicy:
             ),
             allowed_storage_destinations=_repeated_dict(
                 d, "allowed_storage_destinations", EgressNetworkPolicyNetworkAccessPolicyStorageDestination
+            ),
+            blocked_internet_destinations=_repeated_dict(
+                d, "blocked_internet_destinations", EgressNetworkPolicyNetworkAccessPolicyInternetDestination
             ),
             policy_enforcement=_from_dict(
                 d, "policy_enforcement", EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement
@@ -5655,6 +5733,24 @@ class UpdatePrivateEndpointRule:
             gcp_endpoint=_from_dict(d, "gcp_endpoint", GcpEndpoint),
             resource_names=d.get("resource_names", None),
         )
+
+
+@dataclass
+class UpdateTokenResponse:
+    def as_dict(self) -> dict:
+        """Serializes the UpdateTokenResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateTokenResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateTokenResponse:
+        """Deserializes the UpdateTokenResponse from a dictionary."""
+        return cls()
 
 
 WorkspaceConf = Dict[str, str]
@@ -9419,6 +9515,48 @@ class TokensAPI:
         json = self._api.do("GET", "/api/2.0/token/list", headers=headers)
         parsed = ListPublicTokensResponse.from_dict(json).token_infos
         return parsed if parsed is not None else []
+
+    def update(self, token_id: str, token: PublicTokenInfo, update_mask: FieldMask) -> UpdateTokenResponse:
+        """Updates the comment or scopes of a token.
+
+        If a token with the specified ID is not valid, this call returns an error **RESOURCE_DOES_NOT_EXIST**.
+
+        :param token_id: str
+          The SHA-256 hash of the token to be updated.
+        :param token: :class:`PublicTokenInfo`
+        :param update_mask: FieldMask
+          A list of field name under PublicTokenInfo, For example in request use {"update_mask":
+          "comment,scopes"}
+
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`UpdateTokenResponse`
+        """
+
+        body = {}
+        if token is not None:
+            body["token"] = token.as_dict()
+        if update_mask is not None:
+            body["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/token/{token_id}", body=body, headers=headers)
+        return UpdateTokenResponse.from_dict(res)
 
 
 class WorkspaceConfAPI:

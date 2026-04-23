@@ -3165,7 +3165,7 @@ class EnforceClusterComplianceResponse:
 @dataclass
 class Environment:
     """The environment entity used to preserve serverless environment side panel, jobs' environment for
-    non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
+    non-notebook task, and SDP's environment for classic and serverless pipelines. In this minimal
     environment spec, only pip and java dependencies are supported."""
 
     base_environment: Optional[str] = None
@@ -10899,7 +10899,7 @@ class PolicyComplianceForClustersAPI:
         If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time the
         cluster is started, the new attributes will take effect.
 
-        Clusters created by the Databricks Jobs, DLT, or Models services cannot be enforced by this API.
+        Clusters created by the Databricks Jobs, SDP, or Models services cannot be enforced by this API.
         Instead, use the "Enforce job policy compliance" API to enforce policy compliance on jobs.
 
         :param cluster_id: str

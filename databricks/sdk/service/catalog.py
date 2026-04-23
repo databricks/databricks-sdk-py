@@ -12,6 +12,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
+from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict, _repeated_enum,
                                               _timestamp)
@@ -1670,8 +1671,6 @@ class ConnectionDependency:
 
 @dataclass
 class ConnectionInfo:
-    """Next ID: 25"""
-
     comment: Optional[str] = None
     """User-provided free-form text description."""
 
@@ -1832,7 +1831,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 75"""
+    """Next Id: 77"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -3001,7 +3000,7 @@ class DeltaSharingScopeEnum(Enum):
 @dataclass
 class Dependency:
     """A dependency of a SQL object. One of the following fields must be defined: __table__,
-    __function__, __connection__, or __credential__."""
+    __function__, __connection__, __credential__, __volume__, or __secret__."""
 
     connection: Optional[ConnectionDependency] = None
 
@@ -6058,6 +6057,41 @@ class ListSchemasResponse:
 
 
 @dataclass
+class ListSecretsResponse:
+    """Response message for ListSecrets."""
+
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    **page_token** should be set to this value for the next request."""
+
+    secrets: Optional[List[Secret]] = None
+    """An array of secret objects."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListSecretsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.secrets:
+            body["secrets"] = [v.as_dict() for v in self.secrets]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListSecretsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.secrets:
+            body["secrets"] = self.secrets
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListSecretsResponse:
+        """Deserializes the ListSecretsResponse from a dictionary."""
+        return cls(next_page_token=d.get("next_page_token", None), secrets=_repeated_dict(d, "secrets", Secret))
+
+
+@dataclass
 class ListStorageCredentialsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
@@ -8927,6 +8961,174 @@ class SchemaInfo:
 
 
 @dataclass
+class Secret:
+    """A secret stored in Unity Catalog. Secrets are three-level namespace objects
+    (catalog.schema.secret) that securely store sensitive credential data such as passwords, tokens,
+    and keys."""
+
+    name: str
+    """The name of the secret, relative to its parent schema."""
+
+    catalog_name: str
+    """The name of the catalog where the schema and the secret reside."""
+
+    schema_name: str
+    """The name of the schema where the secret resides."""
+
+    value: str
+    """The secret value to store. This field is input-only and is not returned in responses — use the
+    **effective_value** field (via GetSecret with **include_value** set to true) to read the secret
+    value. The maximum size is 60 KiB (pre-encryption). Accepted content includes passwords, tokens,
+    keys, and other sensitive credential data."""
+
+    browse_only: Optional[bool] = None
+    """Indicates whether the principal is limited to retrieving metadata for the associated object
+    through the **BROWSE** privilege when **include_browse** is enabled in the request."""
+
+    comment: Optional[str] = None
+    """User-provided free-form text description of the secret."""
+
+    create_time: Optional[Timestamp] = None
+    """The time at which this secret was created."""
+
+    created_by: Optional[str] = None
+    """The principal that created the secret."""
+
+    effective_owner: Optional[str] = None
+    """The effective owner of the secret, which may differ from the directly-set **owner** due to
+    inheritance."""
+
+    effective_value: Optional[str] = None
+    """The secret value. Only populated in responses when you have the **READ_SECRET** privilege and
+    **include_value** is set to true in the request. The maximum size is 60 KiB."""
+
+    expire_time: Optional[Timestamp] = None
+    """User-provided expiration time of the secret. This field indicates when the secret should no
+    longer be used and may be displayed as a warning in the UI. It is purely informational and does
+    not trigger any automatic actions or affect the secret's lifecycle."""
+
+    external_secret_id: Optional[str] = None
+
+    full_name: Optional[str] = None
+    """The three-level (fully qualified) name of the secret, in the form of
+    **catalog_name.schema_name.secret_name**."""
+
+    metastore_id: Optional[str] = None
+    """Unique identifier of the metastore hosting the secret."""
+
+    owner: Optional[str] = None
+    """The owner of the secret. Defaults to the creating principal on creation. Can be updated to
+    transfer ownership of the secret to another principal."""
+
+    update_time: Optional[Timestamp] = None
+    """The time at which this secret was last updated."""
+
+    updated_by: Optional[str] = None
+    """The principal that last updated the secret."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Secret into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.effective_owner is not None:
+            body["effective_owner"] = self.effective_owner
+        if self.effective_value is not None:
+            body["effective_value"] = self.effective_value
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time.ToJsonString()
+        if self.external_secret_id is not None:
+            body["external_secret_id"] = self.external_secret_id
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Secret into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.effective_owner is not None:
+            body["effective_owner"] = self.effective_owner
+        if self.effective_value is not None:
+            body["effective_value"] = self.effective_value
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time
+        if self.external_secret_id is not None:
+            body["external_secret_id"] = self.external_secret_id
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Secret:
+        """Deserializes the Secret from a dictionary."""
+        return cls(
+            browse_only=d.get("browse_only", None),
+            catalog_name=d.get("catalog_name", None),
+            comment=d.get("comment", None),
+            create_time=_timestamp(d, "create_time"),
+            created_by=d.get("created_by", None),
+            effective_owner=d.get("effective_owner", None),
+            effective_value=d.get("effective_value", None),
+            expire_time=_timestamp(d, "expire_time"),
+            external_secret_id=d.get("external_secret_id", None),
+            full_name=d.get("full_name", None),
+            metastore_id=d.get("metastore_id", None),
+            name=d.get("name", None),
+            owner=d.get("owner", None),
+            schema_name=d.get("schema_name", None),
+            update_time=_timestamp(d, "update_time"),
+            updated_by=d.get("updated_by", None),
+            value=d.get("value", None),
+        )
+
+
+@dataclass
 class Securable:
     """Generic definition of a securable, which is uniquely defined in a metastore by its type and full
     name."""
@@ -8974,7 +9176,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_VEEVA_VAULT_OAUTH_M2M = 311; Next id: 312"""
+    """Latest kind: ENDPOINT_LLM_PROVIDER = 317; Next id: 318"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -15663,6 +15865,209 @@ class SchemasAPI:
         return SchemaInfo.from_dict(res)
 
 
+class SecretsUcAPI:
+    """A secret is a Unity Catalog securable object that stores sensitive credential data (such as passwords,
+    tokens, and keys) within a three-level namespace (**catalog_name.schema_name.secret_name**).
+
+    Secrets can be managed using standard Unity Catalog permissions and are scoped to a schema within a
+    catalog."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_secret(self, secret: Secret) -> Secret:
+        """Creates a new secret in Unity Catalog.
+
+        You must be the owner of the parent schema or have the **CREATE_SECRET** and **USE SCHEMA** privileges
+        on the parent schema and **USE CATALOG** on the parent catalog.
+
+        The secret is stored in the specified catalog and schema, and the **value** field contains the
+        sensitive data to be securely stored.
+
+        :param secret: :class:`Secret`
+          The secret object to create. The **name**, **catalog_name**, **schema_name**, and **value** fields
+          are required.
+
+        :returns: :class:`Secret`
+        """
+
+        body = secret.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.1/unity-catalog/secrets", body=body, headers=headers)
+        return Secret.from_dict(res)
+
+    def delete_secret(self, full_name: str):
+        """Deletes a secret by its three-level (fully qualified) name.
+
+        You must be the owner of the secret or a metastore admin.
+
+        :param full_name: str
+          The three-level (fully qualified) name of the secret (for example,
+          **catalog_name.schema_name.secret_name**).
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/secrets/{full_name}", headers=headers)
+
+    def get_secret(self, full_name: str, *, include_browse: Optional[bool] = None) -> Secret:
+        """Gets a secret by its three-level (fully qualified) name.
+
+        You must be a metastore admin, the owner of the secret, or have the **MANAGE** privilege on the
+        secret.
+
+        The secret value isn't returned by default. To retrieve it, you must also have the **READ_SECRET**
+        privilege and set **include_value** to true in the request.
+
+        :param full_name: str
+          The three-level (fully qualified) name of the secret (for example,
+          **catalog_name.schema_name.secret_name**).
+        :param include_browse: bool (optional)
+          Whether to include secrets in the response for which you only have the **BROWSE** privilege, which
+          limits access to metadata.
+
+        :returns: :class:`Secret`
+        """
+
+        query = {}
+        if include_browse is not None:
+            query["include_browse"] = include_browse
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/secrets/{full_name}", query=query, headers=headers)
+        return Secret.from_dict(res)
+
+    def list_secrets(
+        self,
+        *,
+        catalog_name: Optional[str] = None,
+        include_browse: Optional[bool] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        schema_name: Optional[str] = None,
+    ) -> Iterator[Secret]:
+        """Lists secrets in Unity Catalog.
+
+        You must be a metastore admin, the owner of the secret, or have the **MANAGE** privilege on the
+        secret.
+
+        Both **catalog_name** and **schema_name** must be specified together to filter secrets within a
+        specific schema. Results are paginated; use the **page_token** field from the response to retrieve
+        subsequent pages.
+
+        :param catalog_name: str (optional)
+          The name of the catalog under which to list secrets. Both **catalog_name** and **schema_name** must
+          be specified together.
+        :param include_browse: bool (optional)
+          Whether to include secrets in the response for which you only have the **BROWSE** privilege, which
+          limits access to metadata.
+        :param page_size: int (optional)
+          Maximum number of secrets to return.
+
+          - If not specified, at most 10000 secrets are returned. - If set to a value greater than 0, the page
+          length is the minimum of this value and 10000. - If set to 0, the page length is set to 10000. - If
+          set to a value less than 0, an invalid parameter error is returned.
+        :param page_token: str (optional)
+          Opaque pagination token to go to the next page based on previous query. The maximum page length is
+          determined by a server configured value.
+        :param schema_name: str (optional)
+          The name of the schema under which to list secrets. Both **catalog_name** and **schema_name** must
+          be specified together.
+
+        :returns: Iterator over :class:`Secret`
+        """
+
+        query = {}
+        if catalog_name is not None:
+            query["catalog_name"] = catalog_name
+        if include_browse is not None:
+            query["include_browse"] = include_browse
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if schema_name is not None:
+            query["schema_name"] = schema_name
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.1/unity-catalog/secrets", query=query, headers=headers)
+            if "secrets" in json:
+                for v in json["secrets"]:
+                    yield Secret.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_secret(self, full_name: str, secret: Secret, update_mask: FieldMask) -> Secret:
+        """Updates an existing secret in Unity Catalog.
+
+        You must be the owner of the secret or a metastore admin. If you are a metastore admin, only the
+        **owner** field can be changed.
+
+        Use the **update_mask** field to specify which fields to update. Supported updatable fields include
+        **value**, **comment**, **owner**, and **expire_time**.
+
+        :param full_name: str
+          The three-level (fully qualified) name of the secret (for example,
+          **catalog_name.schema_name.secret_name**).
+        :param secret: :class:`Secret`
+          The secret object containing the fields to update. Only fields specified in **update_mask** will be
+          updated.
+        :param update_mask: FieldMask
+          The field mask specifying which fields of the secret to update. Supported fields: **value**,
+          **comment**, **owner**, **expire_time**.
+
+        :returns: :class:`Secret`
+        """
+
+        body = secret.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH", f"/api/2.1/unity-catalog/secrets/{full_name}", query=query, body=body, headers=headers
+        )
+        return Secret.from_dict(res)
+
+
 class StorageCredentialsAPI:
     """A storage credential represents an authentication and authorization mechanism for accessing data stored on
     your cloud tenant. Each storage credential is subject to Unity Catalog access-control policies that
@@ -16621,9 +17026,9 @@ class TemporaryPathCredentialsAPI:
     enable the external_access_enabled flag (off by default) at the metastore level. A user needs to be
     granted the EXTERNAL USE LOCATION permission by external location owner. For requests on existing external
     tables, user also needs to be granted the EXTERNAL USE SCHEMA permission at the schema level by catalog
-    admin.
+    owner.
 
-    Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by catalog admin
+    Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by catalog owner
     explicitly and is not included in schema ownership or ALL PRIVILEGES on the schema for security reasons.
     Similarly, EXTERNAL USE LOCATION is an external location level permission that can only be granted by
     external location owner explicitly and is not included in external location ownership or ALL PRIVILEGES on
@@ -16690,8 +17095,8 @@ class TemporaryTableCredentialsAPI:
     Temporary table credentials ensure that data access is limited in scope and duration, reducing the risk of
     unauthorized access or misuse. To use the temporary table credentials API, a metastore admin needs to
     enable the external_access_enabled flag (off by default) at the metastore level, and user needs to be
-    granted the EXTERNAL USE SCHEMA permission at the schema level by catalog admin. Note that EXTERNAL USE
-    SCHEMA is a schema level permission that can only be granted by catalog admin explicitly and is not
+    granted the EXTERNAL USE SCHEMA permission at the schema level by catalog owner. Note that EXTERNAL USE
+    SCHEMA is a schema level permission that can only be granted by catalog owner explicitly and is not
     included in schema ownership or ALL PRIVILEGES on the schema for security reasons."""
 
     def __init__(self, api_client):

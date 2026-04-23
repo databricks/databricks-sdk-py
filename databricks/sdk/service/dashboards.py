@@ -1486,6 +1486,10 @@ class GenieSpace:
     description: Optional[str] = None
     """Description of the Genie Space"""
 
+    etag: Optional[str] = None
+    """ETag for this space. Pass this value back in the update request to prevent overwriting
+    concurrent changes."""
+
     parent_path: Optional[str] = None
     """Parent folder path of the Genie Space"""
 
@@ -1503,6 +1507,8 @@ class GenieSpace:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.etag is not None:
+            body["etag"] = self.etag
         if self.parent_path is not None:
             body["parent_path"] = self.parent_path
         if self.serialized_space is not None:
@@ -1520,6 +1526,8 @@ class GenieSpace:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.etag is not None:
+            body["etag"] = self.etag
         if self.parent_path is not None:
             body["parent_path"] = self.parent_path
         if self.serialized_space is not None:
@@ -1537,6 +1545,7 @@ class GenieSpace:
         """Deserializes the GenieSpace from a dictionary."""
         return cls(
             description=d.get("description", None),
+            etag=d.get("etag", None),
             parent_path=d.get("parent_path", None),
             serialized_space=d.get("serialized_space", None),
             space_id=d.get("space_id", None),
@@ -2401,7 +2410,12 @@ class Thought:
     """The md formatted content for this thought."""
 
     thought_type: Optional[ThoughtType] = None
-    """The category of this thought."""
+    """The category of this thought. The possible values are: * `THOUGHT_TYPE_DESCRIPTION`: A
+    high-level description of how the question was interpreted. * `THOUGHT_TYPE_UNDERSTANDING`: How
+    ambiguous parts of the question were resolved. * `THOUGHT_TYPE_DATA_SOURCING`: Which tables or
+    datasets were identified as relevant. * `THOUGHT_TYPE_INSTRUCTIONS`: Which author-defined
+    instructions were referenced. * `THOUGHT_TYPE_STEPS`: The logical steps taken to compute the
+    answer."""
 
     def as_dict(self) -> dict:
         """Serializes the Thought into a dictionary suitable for use as a JSON request body."""
@@ -3483,6 +3497,7 @@ class GenieAPI:
         space_id: str,
         *,
         description: Optional[str] = None,
+        etag: Optional[str] = None,
         serialized_space: Optional[str] = None,
         title: Optional[str] = None,
         warehouse_id: Optional[str] = None,
@@ -3493,6 +3508,9 @@ class GenieAPI:
           Genie space ID
         :param description: str (optional)
           Optional description
+        :param etag: str (optional)
+          ETag returned by a previous GET or UPDATE. When set, the update will fail if the space has been
+          modified since. Omit to apply the update unconditionally.
         :param serialized_space: str (optional)
           The contents of the Genie Space in serialized string form (full replacement). Use the [Get Genie
           Space](:method:genie/getspace) API to retrieve an example response, which includes the
@@ -3509,6 +3527,8 @@ class GenieAPI:
         body = {}
         if description is not None:
             body["description"] = description
+        if etag is not None:
+            body["etag"] = etag
         if serialized_space is not None:
             body["serialized_space"] = serialized_space
         if title is not None:

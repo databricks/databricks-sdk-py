@@ -335,6 +335,10 @@ class CreateGcpKeyInfo:
     """Globally unique service account email that has access to the KMS key. The service account exists
     within the Databricks CP project."""
 
+    manual: Optional[bool] = None
+    """When true, Databricks will not use OAuth to grant the service account access to the KMS key. The
+    customer is responsible for granting access manually."""
+
     def as_dict(self) -> dict:
         """Serializes the CreateGcpKeyInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -342,6 +346,8 @@ class CreateGcpKeyInfo:
             body["gcp_service_account"] = self.gcp_service_account.as_dict()
         if self.kms_key_id is not None:
             body["kms_key_id"] = self.kms_key_id
+        if self.manual is not None:
+            body["manual"] = self.manual
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -351,6 +357,8 @@ class CreateGcpKeyInfo:
             body["gcp_service_account"] = self.gcp_service_account
         if self.kms_key_id is not None:
             body["kms_key_id"] = self.kms_key_id
+        if self.manual is not None:
+            body["manual"] = self.manual
         return body
 
     @classmethod
@@ -359,6 +367,7 @@ class CreateGcpKeyInfo:
         return cls(
             gcp_service_account=_from_dict(d, "gcp_service_account", GcpServiceAccount),
             kms_key_id=d.get("kms_key_id", None),
+            manual=d.get("manual", None),
         )
 
 
@@ -598,6 +607,10 @@ class GcpKeyInfo:
     """Globally unique service account email that has access to the KMS key. The service account exists
     within the Databricks CP project."""
 
+    manual: Optional[bool] = None
+    """When true, Databricks will not use OAuth to grant the service account access to the KMS key. The
+    customer is responsible for granting access manually."""
+
     def as_dict(self) -> dict:
         """Serializes the GcpKeyInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -605,6 +618,8 @@ class GcpKeyInfo:
             body["gcp_service_account"] = self.gcp_service_account.as_dict()
         if self.kms_key_id is not None:
             body["kms_key_id"] = self.kms_key_id
+        if self.manual is not None:
+            body["manual"] = self.manual
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -614,6 +629,8 @@ class GcpKeyInfo:
             body["gcp_service_account"] = self.gcp_service_account
         if self.kms_key_id is not None:
             body["kms_key_id"] = self.kms_key_id
+        if self.manual is not None:
+            body["manual"] = self.manual
         return body
 
     @classmethod
@@ -622,6 +639,7 @@ class GcpKeyInfo:
         return cls(
             gcp_service_account=_from_dict(d, "gcp_service_account", GcpServiceAccount),
             kms_key_id=d.get("kms_key_id", None),
+            manual=d.get("manual", None),
         )
 
 
@@ -1916,6 +1934,14 @@ class EncryptionKeysAPI:
 
         This operation is available only if your account is on the E2 version of the platform or on a select
         custom plan that allows multiple workspaces per account.
+
+        **GCP only**: To create a customer-managed key on GCP, you must include the
+        `X-Databricks-GCP-SA-Access-Token` HTTP header in your request. This header must contain a Google
+        Cloud OAuth access token with the `cloud-platform` scope. The Google identity associated with the
+        token must also have the `setIamPermissions` and `getIamPermissions` IAM permissions on the key
+        resource. For details on obtaining this token, see [Authenticate with Google ID tokens].
+
+        [Authenticate with Google ID tokens]: https://docs.databricks.com/gcp/en/dev-tools/auth/authentication-google-id.html
 
         :param use_cases: List[:class:`KeyUseCase`]
           The cases that the key can be used for.

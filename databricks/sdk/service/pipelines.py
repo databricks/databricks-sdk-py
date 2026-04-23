@@ -2597,7 +2597,7 @@ class PipelineSpec:
     Catalog."""
 
     channel: Optional[str] = None
-    """DLT Release Channel that specifies which version to use."""
+    """SDP Release Channel that specifies which version to use."""
 
     clusters: Optional[List[PipelineCluster]] = None
     """Cluster settings for this pipeline deployment."""
@@ -2975,7 +2975,7 @@ class PipelineTrigger:
 @dataclass
 class PipelinesEnvironment:
     """The environment entity used to preserve serverless environment side panel, jobs' environment for
-    non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
+    non-notebook task, and SDP's environment for classic and serverless pipelines. In this minimal
     environment spec, only pip dependencies are supported."""
 
     dependencies: Optional[List[str]] = None
@@ -4421,7 +4421,7 @@ class PipelinesAPI:
           in this pipeline are published to a `target` schema inside `catalog` (for example,
           `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
         :param channel: str (optional)
-          DLT Release Channel that specifies which version to use.
+          SDP Release Channel that specifies which version to use.
         :param clone_mode: :class:`CloneMode` (optional)
           The type of clone to perform. Currently, only deep copies are supported
         :param clusters: List[:class:`PipelineCluster`] (optional)
@@ -4609,7 +4609,7 @@ class PipelinesAPI:
           in this pipeline are published to a `target` schema inside `catalog` (for example,
           `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
         :param channel: str (optional)
-          DLT Release Channel that specifies which version to use.
+          SDP Release Channel that specifies which version to use.
         :param clusters: List[:class:`PipelineCluster`] (optional)
           Cluster settings for this pipeline deployment.
         :param configuration: Dict[str,str] (optional)
@@ -5197,7 +5197,7 @@ class PipelinesAPI:
           in this pipeline are published to a `target` schema inside `catalog` (for example,
           `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
         :param channel: str (optional)
-          DLT Release Channel that specifies which version to use.
+          SDP Release Channel that specifies which version to use.
         :param clusters: List[:class:`PipelineCluster`] (optional)
           Cluster settings for this pipeline deployment.
         :param configuration: Dict[str,str] (optional)

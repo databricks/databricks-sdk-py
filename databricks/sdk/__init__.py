@@ -45,6 +45,7 @@ from databricks.sdk.service import settings as pkg_settings
 from databricks.sdk.service import settingsv2 as pkg_settingsv2
 from databricks.sdk.service import sharing as pkg_sharing
 from databricks.sdk.service import sql as pkg_sql
+from databricks.sdk.service import supervisoragents as pkg_supervisoragents
 from databricks.sdk.service import tags as pkg_tags
 from databricks.sdk.service import vectorsearch as pkg_vectorsearch
 from databricks.sdk.service import workspace as pkg_workspace
@@ -67,7 +68,8 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             PoliciesAPI, QualityMonitorsAPI,
                                             RegisteredModelsAPI,
                                             ResourceQuotasAPI, RfaAPI,
-                                            SchemasAPI, StorageCredentialsAPI,
+                                            SchemasAPI, SecretsUcAPI,
+                                            StorageCredentialsAPI,
                                             SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
                                             TemporaryPathCredentialsAPI,
@@ -167,6 +169,7 @@ from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
                                         QueryVisualizationsLegacyAPI,
                                         RedashConfigAPI, StatementExecutionAPI,
                                         WarehousesAPI)
+from databricks.sdk.service.supervisoragents import SupervisorAgentsAPI
 from databricks.sdk.service.tags import (TagPoliciesAPI,
                                          WorkspaceEntityTagAssignmentsAPI)
 from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
@@ -377,6 +380,7 @@ class WorkspaceClient:
         self._rfa = pkg_catalog.RfaAPI(self._api_client)
         self._schemas = pkg_catalog.SchemasAPI(self._api_client)
         self._secrets = pkg_workspace.SecretsAPI(self._api_client)
+        self._secrets_uc = pkg_catalog.SecretsUcAPI(self._api_client)
         self._service_principal_secrets_proxy = pkg_oauth2.ServicePrincipalSecretsProxyAPI(self._api_client)
         self._service_principals_v2 = pkg_iam.ServicePrincipalsV2API(self._api_client)
         self._serving_endpoints = serving_endpoints
@@ -390,6 +394,7 @@ class WorkspaceClient:
         self._shares = pkg_sharing.SharesAPI(self._api_client)
         self._statement_execution = pkg_sql.StatementExecutionAPI(self._api_client)
         self._storage_credentials = pkg_catalog.StorageCredentialsAPI(self._api_client)
+        self._supervisor_agents = pkg_supervisoragents.SupervisorAgentsAPI(self._api_client)
         self._system_schemas = pkg_catalog.SystemSchemasAPI(self._api_client)
         self._table_constraints = pkg_catalog.TableConstraintsAPI(self._api_client)
         self._tables = pkg_catalog.TablesAPI(self._api_client)
@@ -911,6 +916,11 @@ class WorkspaceClient:
         return self._secrets
 
     @property
+    def secrets_uc(self) -> pkg_catalog.SecretsUcAPI:
+        """A secret is a Unity Catalog securable object that stores sensitive credential data (such as passwords, tokens, and keys) within a three-level namespace (**catalog_name.schema_name.secret_name**)."""
+        return self._secrets_uc
+
+    @property
     def service_principal_secrets_proxy(self) -> pkg_oauth2.ServicePrincipalSecretsProxyAPI:
         """These APIs enable administrators to manage service principal secrets at the workspace level."""
         return self._service_principal_secrets_proxy
@@ -949,6 +959,11 @@ class WorkspaceClient:
     def storage_credentials(self) -> pkg_catalog.StorageCredentialsAPI:
         """A storage credential represents an authentication and authorization mechanism for accessing data stored on your cloud tenant."""
         return self._storage_credentials
+
+    @property
+    def supervisor_agents(self) -> pkg_supervisoragents.SupervisorAgentsAPI:
+        """Manage Supervisor Agents and related resources."""
+        return self._supervisor_agents
 
     @property
     def system_schemas(self) -> pkg_catalog.SystemSchemasAPI:
