@@ -43,7 +43,7 @@
           in this pipeline are published to a `target` schema inside `catalog` (for example,
           `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
         :param channel: str (optional)
-          DLT Release Channel that specifies which version to use.
+          SDP Release Channel that specifies which version to use.
         :param clone_mode: :class:`CloneMode` (optional)
           The type of clone to perform. Currently, only deep copies are supported
         :param clusters: List[:class:`PipelineCluster`] (optional)
@@ -157,7 +157,7 @@
           in this pipeline are published to a `target` schema inside `catalog` (for example,
           `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
         :param channel: str (optional)
-          DLT Release Channel that specifies which version to use.
+          SDP Release Channel that specifies which version to use.
         :param clusters: List[:class:`PipelineCluster`] (optional)
           Cluster settings for this pipeline deployment.
         :param configuration: Dict[str,str] (optional)
@@ -558,7 +558,7 @@
           in this pipeline are published to a `target` schema inside `catalog` (for example,
           `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
         :param channel: str (optional)
-          DLT Release Channel that specifies which version to use.
+          SDP Release Channel that specifies which version to use.
         :param clusters: List[:class:`PipelineCluster`] (optional)
           Cluster settings for this pipeline deployment.
         :param configuration: Dict[str,str] (optional)

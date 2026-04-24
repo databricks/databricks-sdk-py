@@ -1831,7 +1831,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 77"""
+    """Next Id: 123"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -5203,6 +5203,77 @@ class GenerateTemporaryTableCredentialResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenerateTemporaryTableCredentialResponse:
         """Deserializes the GenerateTemporaryTableCredentialResponse from a dictionary."""
+        return cls(
+            aws_temp_credentials=_from_dict(d, "aws_temp_credentials", AwsCredentials),
+            azure_aad=_from_dict(d, "azure_aad", AzureActiveDirectoryToken),
+            azure_user_delegation_sas=_from_dict(d, "azure_user_delegation_sas", AzureUserDelegationSas),
+            expiration_time=d.get("expiration_time", None),
+            gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
+            r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
+            url=d.get("url", None),
+        )
+
+
+@dataclass
+class GenerateTemporaryVolumeCredentialResponse:
+    aws_temp_credentials: Optional[AwsCredentials] = None
+
+    azure_aad: Optional[AzureActiveDirectoryToken] = None
+
+    azure_user_delegation_sas: Optional[AzureUserDelegationSas] = None
+
+    expiration_time: Optional[int] = None
+    """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
+    cache the credential given this expiration time."""
+
+    gcp_oauth_token: Optional[GcpOauthToken] = None
+
+    r2_temp_credentials: Optional[R2Credentials] = None
+
+    url: Optional[str] = None
+    """The URL of the storage path accessible by the temporary credential."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenerateTemporaryVolumeCredentialResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_temp_credentials:
+            body["aws_temp_credentials"] = self.aws_temp_credentials.as_dict()
+        if self.azure_aad:
+            body["azure_aad"] = self.azure_aad.as_dict()
+        if self.azure_user_delegation_sas:
+            body["azure_user_delegation_sas"] = self.azure_user_delegation_sas.as_dict()
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.gcp_oauth_token:
+            body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
+        if self.r2_temp_credentials:
+            body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenerateTemporaryVolumeCredentialResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_temp_credentials:
+            body["aws_temp_credentials"] = self.aws_temp_credentials
+        if self.azure_aad:
+            body["azure_aad"] = self.azure_aad
+        if self.azure_user_delegation_sas:
+            body["azure_user_delegation_sas"] = self.azure_user_delegation_sas
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.gcp_oauth_token:
+            body["gcp_oauth_token"] = self.gcp_oauth_token
+        if self.r2_temp_credentials:
+            body["r2_temp_credentials"] = self.r2_temp_credentials
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenerateTemporaryVolumeCredentialResponse:
+        """Deserializes the GenerateTemporaryVolumeCredentialResponse from a dictionary."""
         return cls(
             aws_temp_credentials=_from_dict(d, "aws_temp_credentials", AwsCredentials),
             azure_aad=_from_dict(d, "azure_aad", AzureActiveDirectoryToken),
@@ -9176,7 +9247,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: ENDPOINT_LLM_PROVIDER = 317; Next id: 318"""
+    """Latest kind: TOOLSET_EXTERNAL_MCP = 318; Next id: 319"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -10974,6 +11045,12 @@ class VolumeInfo:
             volume_id=d.get("volume_id", None),
             volume_type=_enum(d, "volume_type", VolumeType),
         )
+
+
+class VolumeOperation(Enum):
+
+    READ_VOLUME = "READ_VOLUME"
+    WRITE_VOLUME = "WRITE_VOLUME"
 
 
 class VolumeType(Enum):
@@ -17135,6 +17212,59 @@ class TemporaryTableCredentialsAPI:
 
         res = self._api.do("POST", "/api/2.0/unity-catalog/temporary-table-credentials", body=body, headers=headers)
         return GenerateTemporaryTableCredentialResponse.from_dict(res)
+
+
+class TemporaryVolumeCredentialsAPI:
+    """Temporary Volume Credentials refer to short-lived, downscoped credentials used to access cloud storage
+    locations where volume data is stored in Databricks. These credentials are employed to provide secure and
+    time-limited access to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud
+    provider has its own type of credentials: AWS uses temporary session tokens via AWS Security Token Service
+    (STS), Azure utilizes Shared Access Signatures (SAS) for its data storage services, and Google Cloud
+    supports temporary credentials through OAuth 2.0.
+
+    Temporary volume credentials ensure that data access is limited in scope and duration, reducing the risk
+    of unauthorized access or misuse. To use the temporary volume credentials API, a metastore admin needs to
+    enable the external_access_enabled flag (off by default) at the metastore level, and user needs to be
+    granted the EXTERNAL USE SCHEMA permission at the schema level by catalog owner. Note that EXTERNAL USE
+    SCHEMA is a schema level permission that can only be granted by catalog owner explicitly and is not
+    included in schema ownership or ALL PRIVILEGES on the schema for security reasons."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def generate_temporary_volume_credentials(
+        self, *, operation: Optional[VolumeOperation] = None, volume_id: Optional[str] = None
+    ) -> GenerateTemporaryVolumeCredentialResponse:
+        """Get a short-lived credential for directly accessing the volume data on cloud storage. The metastore
+        must have **external_access_enabled** flag set to true (default false). The caller must have the
+        **EXTERNAL_USE_SCHEMA** privilege on the parent schema and this privilege can only be granted by
+        catalog owners.
+
+        :param operation: :class:`VolumeOperation` (optional)
+          The operation performed against the volume data, either READ_VOLUME or WRITE_VOLUME. If WRITE_VOLUME
+          is specified, the credentials returned will have write permissions, otherwise, it will be read only.
+        :param volume_id: str (optional)
+          Id of the volume to read or write.
+
+        :returns: :class:`GenerateTemporaryVolumeCredentialResponse`
+        """
+
+        body = {}
+        if operation is not None:
+            body["operation"] = operation.value
+        if volume_id is not None:
+            body["volume_id"] = volume_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/unity-catalog/temporary-volume-credentials", body=body, headers=headers)
+        return GenerateTemporaryVolumeCredentialResponse.from_dict(res)
 
 
 class VolumesAPI:

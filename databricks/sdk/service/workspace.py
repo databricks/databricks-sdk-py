@@ -886,7 +886,8 @@ class ObjectInfo:
     """Only applicable to files. The creation UTC timestamp."""
 
     language: Optional[Language] = None
-    """The language of the object. This value is set only if the object type is ``NOTEBOOK``."""
+    """The language of the object. This value is set only if the object type is ``NOTEBOOK``. For
+    Jupyter (.ipynb) notebooks, this is always ``PYTHON``."""
 
     modified_at: Optional[int] = None
     """Only applicable to files, the last modified UTC timestamp."""

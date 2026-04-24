@@ -593,12 +593,14 @@ class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
 
 @dataclass
 class ComplianceSecurityProfile:
-    """SHIELD feature: CSP"""
+    """SHIELD feature: CSP Compliance Security Profile (CSP) enables enhanced compliance controls on
+    the workspace."""
 
     compliance_standards: Optional[List[ComplianceStandard]] = None
-    """Set by customers when they request Compliance Security Profile (CSP)"""
+    """Compliance standards selected by the customer for this Compliance Security Profile."""
 
     is_enabled: Optional[bool] = None
+    """Whether Compliance Security Profile (CSP) is enabled on the workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the ComplianceSecurityProfile into a dictionary suitable for use as a JSON request body."""
@@ -3103,9 +3105,11 @@ class EnableResultsDownloading:
 
 @dataclass
 class EnhancedSecurityMonitoring:
-    """SHIELD feature: ESM"""
+    """SHIELD feature: ESM Enhanced Security Monitoring (ESM) enables additional security monitoring on
+    the workspace."""
 
     is_enabled: Optional[bool] = None
+    """Whether Enhanced Security Monitoring (ESM) is enabled on the workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the EnhancedSecurityMonitoring into a dictionary suitable for use as a JSON request body."""
@@ -8335,8 +8339,8 @@ class NetworkConnectivityAPI:
     ) -> NccPrivateEndpointRule:
         """Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private
         endpoint is immediately deleted. Otherwise, the private endpoint is deactivated and will be deleted
-        after seven days of deactivation. When a private endpoint is deactivated, the `deactivated` field is
-        set to `true` and the private endpoint is not available to your serverless compute resources.
+        after one day of deactivation. When a private endpoint is deactivated, the `deactivated` field is set
+        to `true` and the private endpoint is not available to your serverless compute resources.
 
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.

@@ -2453,6 +2453,16 @@ class CommandStatusResponse:
         )
 
 
+class ConfidentialComputeType(Enum):
+    """Confidential computing technology for GCP instances. Aligns with gcloud's
+    --confidential-compute-type flag and the REST API's
+    confidentialInstanceConfig.confidentialInstanceType field. See:
+    https://cloud.google.com/confidential-computing/confidential-vm/docs/create-a-confidential-vm-instance"""
+
+    CONFIDENTIAL_COMPUTE_TYPE_NONE = "CONFIDENTIAL_COMPUTE_TYPE_NONE"
+    SEV_SNP = "SEV_SNP"
+
+
 class ContextStatus(Enum):
 
     ERROR = "Error"
@@ -3477,6 +3487,10 @@ class GcpAttributes:
     boot_disk_size: Optional[int] = None
     """Boot disk size in GB"""
 
+    confidential_compute_type: Optional[ConfidentialComputeType] = None
+    """The confidential computing technology for this cluster's instances. Currently only SEV_SNP is
+    supported, and only on N2D instance types. When not set, no confidential computing is applied."""
+
     first_on_demand: Optional[int] = None
     """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This
     value should be greater than 0, to make sure the cluster driver node is placed on an on-demand
@@ -3517,6 +3531,8 @@ class GcpAttributes:
             body["availability"] = self.availability.value
         if self.boot_disk_size is not None:
             body["boot_disk_size"] = self.boot_disk_size
+        if self.confidential_compute_type is not None:
+            body["confidential_compute_type"] = self.confidential_compute_type.value
         if self.first_on_demand is not None:
             body["first_on_demand"] = self.first_on_demand
         if self.google_service_account is not None:
@@ -3536,6 +3552,8 @@ class GcpAttributes:
             body["availability"] = self.availability
         if self.boot_disk_size is not None:
             body["boot_disk_size"] = self.boot_disk_size
+        if self.confidential_compute_type is not None:
+            body["confidential_compute_type"] = self.confidential_compute_type
         if self.first_on_demand is not None:
             body["first_on_demand"] = self.first_on_demand
         if self.google_service_account is not None:
@@ -3554,6 +3572,7 @@ class GcpAttributes:
         return cls(
             availability=_enum(d, "availability", GcpAvailability),
             boot_disk_size=d.get("boot_disk_size", None),
+            confidential_compute_type=_enum(d, "confidential_compute_type", ConfidentialComputeType),
             first_on_demand=d.get("first_on_demand", None),
             google_service_account=d.get("google_service_account", None),
             local_ssd_count=d.get("local_ssd_count", None),

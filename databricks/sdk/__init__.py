@@ -74,6 +74,7 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             TableConstraintsAPI, TablesAPI,
                                             TemporaryPathCredentialsAPI,
                                             TemporaryTableCredentialsAPI,
+                                            TemporaryVolumeCredentialsAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
 from databricks.sdk.service.cleanrooms import (CleanRoomAssetRevisionsAPI,
                                                CleanRoomAssetsAPI,
@@ -401,6 +402,7 @@ class WorkspaceClient:
         self._tag_policies = pkg_tags.TagPoliciesAPI(self._api_client)
         self._temporary_path_credentials = pkg_catalog.TemporaryPathCredentialsAPI(self._api_client)
         self._temporary_table_credentials = pkg_catalog.TemporaryTableCredentialsAPI(self._api_client)
+        self._temporary_volume_credentials = pkg_catalog.TemporaryVolumeCredentialsAPI(self._api_client)
         self._token_management = pkg_settings.TokenManagementAPI(self._api_client)
         self._tokens = pkg_settings.TokensAPI(self._api_client)
         self._users_v2 = pkg_iam.UsersV2API(self._api_client)
@@ -994,6 +996,11 @@ class WorkspaceClient:
     def temporary_table_credentials(self) -> pkg_catalog.TemporaryTableCredentialsAPI:
         """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where table data is stored in Databricks."""
         return self._temporary_table_credentials
+
+    @property
+    def temporary_volume_credentials(self) -> pkg_catalog.TemporaryVolumeCredentialsAPI:
+        """Temporary Volume Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where volume data is stored in Databricks."""
+        return self._temporary_volume_credentials
 
     @property
     def token_management(self) -> pkg_settings.TokenManagementAPI:

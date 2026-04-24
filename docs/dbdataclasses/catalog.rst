@@ -283,7 +283,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 75
+   Next Id: 123
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -854,6 +854,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenerateTemporaryVolumeCredentialResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetCatalogWorkspaceBindingsResponse
    :members:
    :undoc-members:
@@ -951,6 +955,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListSchemasResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListSecretsResponse
    :members:
    :undoc-members:
 
@@ -1509,13 +1517,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Secret
+   :members:
+   :undoc-members:
+
 .. autoclass:: Securable
    :members:
    :undoc-members:
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_VEEVA_VAULT_OAUTH_M2M = 311; Next id: 312
+   Latest kind: TOOLSET_EXTERNAL_MCP = 318; Next id: 319
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
@@ -2060,6 +2072,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: VolumeInfo
    :members:
    :undoc-members:
+
+.. py:class:: VolumeOperation
+
+   .. py:attribute:: READ_VOLUME
+      :value: "READ_VOLUME"
+
+   .. py:attribute:: WRITE_VOLUME
+      :value: "WRITE_VOLUME"
 
 .. py:class:: VolumeType
 

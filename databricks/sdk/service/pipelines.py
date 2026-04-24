@@ -142,7 +142,13 @@ class ConnectorOptions:
 
     google_ads_options: Optional[GoogleAdsOptions] = None
 
+    jira_options: Optional[JiraConnectorOptions] = None
+
+    outlook_options: Optional[OutlookOptions] = None
+
     sharepoint_options: Optional[SharepointOptions] = None
+
+    smartsheet_options: Optional[SmartsheetOptions] = None
 
     tiktok_ads_options: Optional[TikTokAdsOptions] = None
 
@@ -153,8 +159,14 @@ class ConnectorOptions:
             body["gdrive_options"] = self.gdrive_options.as_dict()
         if self.google_ads_options:
             body["google_ads_options"] = self.google_ads_options.as_dict()
+        if self.jira_options:
+            body["jira_options"] = self.jira_options.as_dict()
+        if self.outlook_options:
+            body["outlook_options"] = self.outlook_options.as_dict()
         if self.sharepoint_options:
             body["sharepoint_options"] = self.sharepoint_options.as_dict()
+        if self.smartsheet_options:
+            body["smartsheet_options"] = self.smartsheet_options.as_dict()
         if self.tiktok_ads_options:
             body["tiktok_ads_options"] = self.tiktok_ads_options.as_dict()
         return body
@@ -166,8 +178,14 @@ class ConnectorOptions:
             body["gdrive_options"] = self.gdrive_options
         if self.google_ads_options:
             body["google_ads_options"] = self.google_ads_options
+        if self.jira_options:
+            body["jira_options"] = self.jira_options
+        if self.outlook_options:
+            body["outlook_options"] = self.outlook_options
         if self.sharepoint_options:
             body["sharepoint_options"] = self.sharepoint_options
+        if self.smartsheet_options:
+            body["smartsheet_options"] = self.smartsheet_options
         if self.tiktok_ads_options:
             body["tiktok_ads_options"] = self.tiktok_ads_options
         return body
@@ -178,7 +196,10 @@ class ConnectorOptions:
         return cls(
             gdrive_options=_from_dict(d, "gdrive_options", GoogleDriveOptions),
             google_ads_options=_from_dict(d, "google_ads_options", GoogleAdsOptions),
+            jira_options=_from_dict(d, "jira_options", JiraConnectorOptions),
+            outlook_options=_from_dict(d, "outlook_options", OutlookOptions),
             sharepoint_options=_from_dict(d, "sharepoint_options", SharepointOptions),
+            smartsheet_options=_from_dict(d, "smartsheet_options", SmartsheetOptions),
             tiktok_ads_options=_from_dict(d, "tiktok_ads_options", TikTokAdsOptions),
         )
 
@@ -899,6 +920,34 @@ class GetUpdateResponse:
 
 
 @dataclass
+class GoogleAdsConfig:
+    manager_account_id: Optional[str] = None
+    """(Required) Manager Account ID (also called MCC Account ID) used to list and access customer
+    accounts under this manager account. This is required for fetching the list of customer accounts
+    during source selection. If the same field is also set in the object-level GoogleAdsOptions
+    (connector_options), the object-level value takes precedence over this top-level config."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GoogleAdsConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.manager_account_id is not None:
+            body["manager_account_id"] = self.manager_account_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GoogleAdsConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.manager_account_id is not None:
+            body["manager_account_id"] = self.manager_account_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GoogleAdsConfig:
+        """Deserializes the GoogleAdsConfig from a dictionary."""
+        return cls(manager_account_id=d.get("manager_account_id", None))
+
+
+@dataclass
 class GoogleAdsOptions:
     """Google Ads specific options for ingestion (object-level). When set, these values override the
     corresponding fields in GoogleAdsConfig (source_configurations)."""
@@ -1401,6 +1450,33 @@ class IngestionSourceType(Enum):
 
 
 @dataclass
+class JiraConnectorOptions:
+    """Jira specific options for ingestion"""
+
+    include_jira_spaces: Optional[List[str]] = None
+    """(Optional) Projects to filter Jira data on"""
+
+    def as_dict(self) -> dict:
+        """Serializes the JiraConnectorOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.include_jira_spaces:
+            body["include_jira_spaces"] = [v for v in self.include_jira_spaces]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JiraConnectorOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.include_jira_spaces:
+            body["include_jira_spaces"] = self.include_jira_spaces
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JiraConnectorOptions:
+        """Deserializes the JiraConnectorOptions from a dictionary."""
+        return cls(include_jira_spaces=d.get("include_jira_spaces", None))
+
+
+@dataclass
 class ListPipelineEventsResponse:
     events: Optional[List[PipelineEvent]] = None
     """The list of events matching the request criteria."""
@@ -1853,6 +1929,136 @@ class Origin:
             table_id=d.get("table_id", None),
             uc_resource_id=d.get("uc_resource_id", None),
             update_id=d.get("update_id", None),
+        )
+
+
+class OutlookAttachmentMode(Enum):
+    """Attachment behavior mode for Outlook ingestion"""
+
+    ALL = "ALL"
+    INLINE_ONLY = "INLINE_ONLY"
+    NONE = "NONE"
+    NON_INLINE_ONLY = "NON_INLINE_ONLY"
+
+
+class OutlookBodyFormat(Enum):
+    """Body format for Outlook email content"""
+
+    TEXT_HTML = "TEXT_HTML"
+    TEXT_PLAIN = "TEXT_PLAIN"
+
+
+@dataclass
+class OutlookOptions:
+    """Outlook specific options for ingestion"""
+
+    attachment_mode: Optional[OutlookAttachmentMode] = None
+    """(Optional) Controls which attachments to ingest. If not specified, defaults to ALL."""
+
+    body_format: Optional[OutlookBodyFormat] = None
+    """(Optional) Defines how the body_content column is populated. TEXT_HTML: Preserves full
+    formatting, links, and styling. TEXT_PLAIN: Converts body to plain text. Recommended for AI/RAG
+    pipelines to reduce token usage and noise."""
+
+    folder_filter: Optional[List[str]] = None
+    """Deprecated. Use include_folders instead."""
+
+    include_folders: Optional[List[str]] = None
+    """(Optional) Filter mail folders to include in the sync. If not specified, all folders will be
+    synced. Examples: Inbox, Sent Items, Custom_Folder Filter semantics: OR between different
+    folders."""
+
+    include_mailboxes: Optional[List[str]] = None
+    """(Optional) List of mailboxes to sync (e.g. mailbox email addresses or identifiers). If not
+    specified, all accessible mailboxes are ingested. Filter semantics: OR between different
+    mailboxes."""
+
+    include_senders: Optional[List[str]] = None
+    """(Optional) Filter emails by sender address. Uses exact email match. Examples: user@vendor.com,
+    alerts@system.io, noreply@company.com If not specified, emails from all senders will be synced.
+    Filter semantics: OR between different senders."""
+
+    include_subjects: Optional[List[str]] = None
+    """(Optional) Filter emails by subject line. Values ending with "*" use prefix match (subject
+    starts with the part before "*"); otherwise substring match (subject contains the value).
+    Examples: "Invoice" (substring), "Re:*" (prefix), "Support Ticket", "URGENT*" If not specified,
+    emails with all subjects will be synced. Filter semantics: OR between different subjects."""
+
+    sender_filter: Optional[List[str]] = None
+    """Deprecated. Use include_senders instead."""
+
+    start_date: Optional[str] = None
+    """(Optional) Start date for the initial sync in YYYY-MM-DD format. Format: YYYY-MM-DD (e.g.,
+    2024-01-01) This determines the earliest date from which to sync historical data. If not
+    specified, complete history is ingested."""
+
+    subject_filter: Optional[List[str]] = None
+    """Deprecated. Use include_subjects instead."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OutlookOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.attachment_mode is not None:
+            body["attachment_mode"] = self.attachment_mode.value
+        if self.body_format is not None:
+            body["body_format"] = self.body_format.value
+        if self.folder_filter:
+            body["folder_filter"] = [v for v in self.folder_filter]
+        if self.include_folders:
+            body["include_folders"] = [v for v in self.include_folders]
+        if self.include_mailboxes:
+            body["include_mailboxes"] = [v for v in self.include_mailboxes]
+        if self.include_senders:
+            body["include_senders"] = [v for v in self.include_senders]
+        if self.include_subjects:
+            body["include_subjects"] = [v for v in self.include_subjects]
+        if self.sender_filter:
+            body["sender_filter"] = [v for v in self.sender_filter]
+        if self.start_date is not None:
+            body["start_date"] = self.start_date
+        if self.subject_filter:
+            body["subject_filter"] = [v for v in self.subject_filter]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OutlookOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.attachment_mode is not None:
+            body["attachment_mode"] = self.attachment_mode
+        if self.body_format is not None:
+            body["body_format"] = self.body_format
+        if self.folder_filter:
+            body["folder_filter"] = self.folder_filter
+        if self.include_folders:
+            body["include_folders"] = self.include_folders
+        if self.include_mailboxes:
+            body["include_mailboxes"] = self.include_mailboxes
+        if self.include_senders:
+            body["include_senders"] = self.include_senders
+        if self.include_subjects:
+            body["include_subjects"] = self.include_subjects
+        if self.sender_filter:
+            body["sender_filter"] = self.sender_filter
+        if self.start_date is not None:
+            body["start_date"] = self.start_date
+        if self.subject_filter:
+            body["subject_filter"] = self.subject_filter
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OutlookOptions:
+        """Deserializes the OutlookOptions from a dictionary."""
+        return cls(
+            attachment_mode=_enum(d, "attachment_mode", OutlookAttachmentMode),
+            body_format=_enum(d, "body_format", OutlookBodyFormat),
+            folder_filter=d.get("folder_filter", None),
+            include_folders=d.get("include_folders", None),
+            include_mailboxes=d.get("include_mailboxes", None),
+            include_senders=d.get("include_senders", None),
+            include_subjects=d.get("include_subjects", None),
+            sender_filter=d.get("sender_filter", None),
+            start_date=d.get("start_date", None),
+            subject_filter=d.get("subject_filter", None),
         )
 
 
@@ -3563,6 +3769,36 @@ class SharepointOptionsSharepointEntityType(Enum):
 
 
 @dataclass
+class SmartsheetOptions:
+    """Smartsheet specific options for ingestion"""
+
+    enforce_schema: Optional[bool] = None
+    """(Optional) When true, maps each column to its Smartsheet-declared type (Text/Number/Date/
+    Checkbox/etc.). Cells that do not conform to the declared type are set to NULL. When false, all
+    columns land as STRING. Use false for sheets with irregular data or columns that frequently
+    violate their own declared type. If not specified, defaults to true."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SmartsheetOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enforce_schema is not None:
+            body["enforce_schema"] = self.enforce_schema
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SmartsheetOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enforce_schema is not None:
+            body["enforce_schema"] = self.enforce_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SmartsheetOptions:
+        """Deserializes the SmartsheetOptions from a dictionary."""
+        return cls(enforce_schema=d.get("enforce_schema", None))
+
+
+@dataclass
 class SourceCatalogConfig:
     """SourceCatalogConfig contains catalog-level custom configuration parameters for each source"""
 
@@ -3603,11 +3839,15 @@ class SourceConfig:
     catalog: Optional[SourceCatalogConfig] = None
     """Catalog-level source configuration parameters"""
 
+    google_ads_config: Optional[GoogleAdsConfig] = None
+
     def as_dict(self) -> dict:
         """Serializes the SourceConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog:
             body["catalog"] = self.catalog.as_dict()
+        if self.google_ads_config:
+            body["google_ads_config"] = self.google_ads_config.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3615,12 +3855,17 @@ class SourceConfig:
         body = {}
         if self.catalog:
             body["catalog"] = self.catalog
+        if self.google_ads_config:
+            body["google_ads_config"] = self.google_ads_config
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SourceConfig:
         """Deserializes the SourceConfig from a dictionary."""
-        return cls(catalog=_from_dict(d, "catalog", SourceCatalogConfig))
+        return cls(
+            catalog=_from_dict(d, "catalog", SourceCatalogConfig),
+            google_ads_config=_from_dict(d, "google_ads_config", GoogleAdsConfig),
+        )
 
 
 @dataclass

@@ -5901,7 +5901,7 @@ class ScalarDataType(Enum):
 @dataclass
 class SchemaConfig:
     json_schema: Optional[str] = None
-    """Schema of the JSON object in standard IETF JSON schema format (https://json-schema.org/)"""
+    """Schema of the JSON object in standard IETF JSON schema format (https://json-schema.org/)."""
 
     def as_dict(self) -> dict:
         """Serializes the SchemaConfig into a dictionary suitable for use as a JSON request body."""

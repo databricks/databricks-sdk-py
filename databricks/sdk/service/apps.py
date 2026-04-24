@@ -93,6 +93,9 @@ class App:
 
     telemetry_export_destinations: Optional[List[TelemetryExportDestination]] = None
 
+    thumbnail_url: Optional[str] = None
+    """The URL of the thumbnail image for the app."""
+
     update_time: Optional[str] = None
     """The update time of the app. Formatted timestamp in ISO 6801."""
 
@@ -157,6 +160,8 @@ class App:
             body["space"] = self.space
         if self.telemetry_export_destinations:
             body["telemetry_export_destinations"] = [v.as_dict() for v in self.telemetry_export_destinations]
+        if self.thumbnail_url is not None:
+            body["thumbnail_url"] = self.thumbnail_url
         if self.update_time is not None:
             body["update_time"] = self.update_time
         if self.updater is not None:
@@ -220,6 +225,8 @@ class App:
             body["space"] = self.space
         if self.telemetry_export_destinations:
             body["telemetry_export_destinations"] = self.telemetry_export_destinations
+        if self.thumbnail_url is not None:
+            body["thumbnail_url"] = self.thumbnail_url
         if self.update_time is not None:
             body["update_time"] = self.update_time
         if self.updater is not None:
@@ -262,6 +269,7 @@ class App:
             telemetry_export_destinations=_repeated_dict(
                 d, "telemetry_export_destinations", TelemetryExportDestination
             ),
+            thumbnail_url=d.get("thumbnail_url", None),
             update_time=d.get("update_time", None),
             updater=d.get("updater", None),
             url=d.get("url", None),

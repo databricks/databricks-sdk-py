@@ -71,3 +71,29 @@
 
         :returns: Iterator over :class:`PublicTokenInfo`
         
+
+    .. py:method:: update(token_id: str, token: PublicTokenInfo, update_mask: FieldMask) -> UpdateTokenResponse
+
+        Updates the comment or scopes of a token.
+
+        If a token with the specified ID is not valid, this call returns an error **RESOURCE_DOES_NOT_EXIST**.
+
+        :param token_id: str
+          The SHA-256 hash of the token to be updated.
+        :param token: :class:`PublicTokenInfo`
+        :param update_mask: FieldMask
+          A list of field name under PublicTokenInfo, For example in request use {"update_mask":
+          "comment,scopes"}
+
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`UpdateTokenResponse`
+        

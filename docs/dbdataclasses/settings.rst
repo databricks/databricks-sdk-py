@@ -206,6 +206,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CustomerFacingIngressNetworkPolicyAppsRuntimeDestination
+   :members:
+   :undoc-members:
+
 .. autoclass:: CustomerFacingIngressNetworkPolicyAuthentication
    :members:
    :undoc-members:
@@ -234,6 +238,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "IDENTITY_TYPE_SELECTED_IDENTITIES"
 
 .. autoclass:: CustomerFacingIngressNetworkPolicyIpRanges
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination
    :members:
    :undoc-members:
 
@@ -870,6 +878,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "AZURE_ACTIVE_DIRECTORY_TOKEN"
 
 .. autoclass:: UpdatePrivateEndpointRule
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateTokenResponse
    :members:
    :undoc-members:
 

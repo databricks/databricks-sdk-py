@@ -468,7 +468,7 @@
 
         
 
-    .. py:method:: update_space(space_id: str [, description: Optional[str], serialized_space: Optional[str], title: Optional[str], warehouse_id: Optional[str]]) -> GenieSpace
+    .. py:method:: update_space(space_id: str [, description: Optional[str], etag: Optional[str], serialized_space: Optional[str], title: Optional[str], warehouse_id: Optional[str]]) -> GenieSpace
 
         Updates a Genie space with a serialized payload.
 
@@ -476,6 +476,9 @@
           Genie space ID
         :param description: str (optional)
           Optional description
+        :param etag: str (optional)
+          ETag returned by a previous GET or UPDATE. When set, the update will fail if the space has been
+          modified since. Omit to apply the update unconditionally.
         :param serialized_space: str (optional)
           The contents of the Genie Space in serialized string form (full replacement). Use the [Get Genie
           Space](:method:genie/getspace) API to retrieve an example response, which includes the

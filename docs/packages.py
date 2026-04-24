@@ -88,6 +88,11 @@ PACKAGES = [
         "Manage Knowledge Assistants and related resources.",
     ),
     Package(
+        "supervisoragents",
+        "Supervisor Agents",
+        "Manage Supervisor Agents and related resources.",
+    ),
+    Package(
         "dataclassification",
         "Data Classification",
         "Manage data classification for Unity Catalog catalogs.",

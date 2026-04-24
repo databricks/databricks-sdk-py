@@ -17,8 +17,9 @@
         :param budget_policy_id: str (optional)
           The budget policy id to be applied
         :param min_qps: int (optional)
-          Min QPS for the endpoint. Mutually exclusive with num_replicas. The actual replica count is
-          calculated at index creation/sync time based on this value.
+          Deprecated: use target_qps. Min QPS for the endpoint. Mutually exclusive with num_replicas. Kept at
+          PUBLIC_BETA with deprecated = true so generated SDK surfaces keep the field with a deprecation
+          marker; hiding completely is a follow-up PR.
         :param usage_policy_id: str (optional)
           The usage policy id to be applied once we've migrated to usage policies
 
@@ -67,7 +68,9 @@
         :param endpoint_name: str
           Name of the vector search endpoint
         :param min_qps: int (optional)
-          Min QPS for the endpoint. Positive integer sets QPS target; -1 resets to default scaling behavior.
+          Deprecated: use target_qps. Min QPS for the endpoint. Positive integer sets QPS target; -1 resets to
+          default scaling behavior. Kept at PUBLIC_BETA with deprecated = true so generated SDK surfaces keep
+          the field with a deprecation marker; hiding completely is a follow-up PR.
 
         :returns: :class:`EndpointInfo`
         

@@ -1,5 +1,5 @@
-Delta Live Tables
-=================
+Spark Declarative Pipelines
+===========================
 
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.pipelines`` module.
 
@@ -204,6 +204,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GoogleAdsConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: GoogleAdsOptions
    :members:
    :undoc-members:
@@ -297,6 +301,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
 
+.. autoclass:: JiraConnectorOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListPipelineEventsResponse
    :members:
    :undoc-members:
@@ -339,6 +347,36 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: Origin
+   :members:
+   :undoc-members:
+
+.. py:class:: OutlookAttachmentMode
+
+   Attachment behavior mode for Outlook ingestion
+
+   .. py:attribute:: ALL
+      :value: "ALL"
+
+   .. py:attribute:: INLINE_ONLY
+      :value: "INLINE_ONLY"
+
+   .. py:attribute:: NONE
+      :value: "NONE"
+
+   .. py:attribute:: NON_INLINE_ONLY
+      :value: "NON_INLINE_ONLY"
+
+.. py:class:: OutlookBodyFormat
+
+   Body format for Outlook email content
+
+   .. py:attribute:: TEXT_HTML
+      :value: "TEXT_HTML"
+
+   .. py:attribute:: TEXT_PLAIN
+      :value: "TEXT_PLAIN"
+
+.. autoclass:: OutlookOptions
    :members:
    :undoc-members:
 
@@ -540,6 +578,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: PERMISSION
       :value: "PERMISSION"
+
+.. autoclass:: SmartsheetOptions
+   :members:
+   :undoc-members:
 
 .. autoclass:: SourceCatalogConfig
    :members:
