@@ -206,7 +206,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CustomerFacingIngressNetworkPolicyAppsDestination
+.. autoclass:: CustomerFacingIngressNetworkPolicyAppsRuntimeDestination
    :members:
    :undoc-members:
 
@@ -241,7 +241,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CustomerFacingIngressNetworkPolicyLakebaseDestination
+.. autoclass:: CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination
    :members:
    :undoc-members:
 
@@ -589,6 +589,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GcpEndpoint
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenericWebhookConfig
    :members:
    :undoc-members:
@@ -874,6 +878,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "AZURE_ACTIVE_DIRECTORY_TOKEN"
 
 .. autoclass:: UpdatePrivateEndpointRule
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateTokenResponse
    :members:
    :undoc-members:
 

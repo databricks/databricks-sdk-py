@@ -448,6 +448,7 @@ class HostMetadata:
     account_id: Optional[str] = None
     workspace_id: Optional[str] = None
     cloud: Optional[Cloud] = None
+    token_federation_default_oidc_audiences: Optional[List[str]] = None
 
     @staticmethod
     def from_dict(d: dict) -> "HostMetadata":
@@ -456,6 +457,7 @@ class HostMetadata:
             account_id=d.get("account_id"),
             workspace_id=d.get("workspace_id"),
             cloud=Cloud.parse(d.get("cloud", "")),
+            token_federation_default_oidc_audiences=d.get("token_federation_default_oidc_audiences"),
         )
 
     def as_dict(self) -> dict:
@@ -464,6 +466,7 @@ class HostMetadata:
             "account_id": self.account_id,
             "workspace_id": self.workspace_id,
             "cloud": self.cloud.value if self.cloud else None,
+            "token_federation_default_oidc_audiences": self.token_federation_default_oidc_audiences,
         }
 
 

@@ -121,6 +121,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenieListConversationCommentsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenieListConversationMessagesResponse
    :members:
    :undoc-members:
@@ -137,11 +141,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenieListMessageCommentsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenieListSpacesResponse
    :members:
    :undoc-members:
 
 .. autoclass:: GenieMessage
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieMessageComment
    :members:
    :undoc-members:
 
@@ -539,6 +551,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: FOLLOW_UP_QUESTION
       :value: "FOLLOW_UP_QUESTION"
+
+.. autoclass:: Thought
+   :members:
+   :undoc-members:
+
+.. py:class:: ThoughtType
+
+   ThoughtType. The possible values are: * `THOUGHT_TYPE_UNSPECIFIED`: Default value that should not be used. * `THOUGHT_TYPE_DESCRIPTION`: A high-level description of how the question was interpreted. * `THOUGHT_TYPE_UNDERSTANDING`: How ambiguous parts of the question were resolved. * `THOUGHT_TYPE_DATA_SOURCING`: Which tables or datasets were identified as relevant. * `THOUGHT_TYPE_INSTRUCTIONS`: Which author-defined instructions were referenced. * `THOUGHT_TYPE_STEPS`: The logical steps taken to compute the answer. The category of a Thought. Additional values may be added in the future.
+
+   .. py:attribute:: THOUGHT_TYPE_DATA_SOURCING
+      :value: "THOUGHT_TYPE_DATA_SOURCING"
+
+   .. py:attribute:: THOUGHT_TYPE_DESCRIPTION
+      :value: "THOUGHT_TYPE_DESCRIPTION"
+
+   .. py:attribute:: THOUGHT_TYPE_INSTRUCTIONS
+      :value: "THOUGHT_TYPE_INSTRUCTIONS"
+
+   .. py:attribute:: THOUGHT_TYPE_STEPS
+      :value: "THOUGHT_TYPE_STEPS"
+
+   .. py:attribute:: THOUGHT_TYPE_UNDERSTANDING
+      :value: "THOUGHT_TYPE_UNDERSTANDING"
 
 .. autoclass:: TrashDashboardResponse
    :members:

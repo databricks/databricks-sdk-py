@@ -1,9 +1,13 @@
-Delta Live Tables
-=================
+Spark Declarative Pipelines
+===========================
 
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.pipelines`` module.
 
 .. py:currentmodule:: databricks.sdk.service.pipelines
+.. autoclass:: ApplyEnvironmentRequestResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: AutoFullRefreshPolicy
    :members:
    :undoc-members:
@@ -20,6 +24,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ConnectionParameters
+   :members:
+   :undoc-members:
+
+.. autoclass:: ConnectorOptions
    :members:
    :undoc-members:
 
@@ -113,6 +121,59 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: FileFilter
+   :members:
+   :undoc-members:
+
+.. autoclass:: FileIngestionOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: FileIngestionOptionsFileFormat
+
+   .. py:attribute:: AVRO
+      :value: "AVRO"
+
+   .. py:attribute:: BINARYFILE
+      :value: "BINARYFILE"
+
+   .. py:attribute:: CSV
+      :value: "CSV"
+
+   .. py:attribute:: EXCEL
+      :value: "EXCEL"
+
+   .. py:attribute:: JSON
+      :value: "JSON"
+
+   .. py:attribute:: ORC
+      :value: "ORC"
+
+   .. py:attribute:: PARQUET
+      :value: "PARQUET"
+
+   .. py:attribute:: XML
+      :value: "XML"
+
+.. py:class:: FileIngestionOptionsSchemaEvolutionMode
+
+   Based on https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#how-does-auto-loader-schema-evolution-work
+
+   .. py:attribute:: ADD_NEW_COLUMNS
+      :value: "ADD_NEW_COLUMNS"
+
+   .. py:attribute:: ADD_NEW_COLUMNS_WITH_TYPE_WIDENING
+      :value: "ADD_NEW_COLUMNS_WITH_TYPE_WIDENING"
+
+   .. py:attribute:: FAIL_ON_NEW_COLUMNS
+      :value: "FAIL_ON_NEW_COLUMNS"
+
+   .. py:attribute:: NONE
+      :value: "NONE"
+
+   .. py:attribute:: RESCUE
+      :value: "RESCUE"
+
 .. autoclass:: FileLibrary
    :members:
    :undoc-members:
@@ -142,6 +203,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: GetUpdateResponse
    :members:
    :undoc-members:
+
+.. autoclass:: GoogleAdsConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: GoogleAdsOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: GoogleDriveOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: GoogleDriveOptionsGoogleDriveEntityType
+
+   .. py:attribute:: FILE
+      :value: "FILE"
+
+   .. py:attribute:: FILE_METADATA
+      :value: "FILE_METADATA"
+
+   .. py:attribute:: PERMISSION
+      :value: "PERMISSION"
 
 .. autoclass:: IngestionConfig
    :members:
@@ -181,6 +265,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GA4_RAW_DATA
       :value: "GA4_RAW_DATA"
 
+   .. py:attribute:: GOOGLE_DRIVE
+      :value: "GOOGLE_DRIVE"
+
    .. py:attribute:: MANAGED_POSTGRESQL
       :value: "MANAGED_POSTGRESQL"
 
@@ -213,6 +300,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
+
+.. autoclass:: JiraConnectorOptions
+   :members:
+   :undoc-members:
 
 .. autoclass:: ListPipelineEventsResponse
    :members:
@@ -256,6 +347,36 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: Origin
+   :members:
+   :undoc-members:
+
+.. py:class:: OutlookAttachmentMode
+
+   Attachment behavior mode for Outlook ingestion
+
+   .. py:attribute:: ALL
+      :value: "ALL"
+
+   .. py:attribute:: INLINE_ONLY
+      :value: "INLINE_ONLY"
+
+   .. py:attribute:: NONE
+      :value: "NONE"
+
+   .. py:attribute:: NON_INLINE_ONLY
+      :value: "NON_INLINE_ONLY"
+
+.. py:class:: OutlookBodyFormat
+
+   Body format for Outlook email content
+
+   .. py:attribute:: TEXT_HTML
+      :value: "TEXT_HTML"
+
+   .. py:attribute:: TEXT_PLAIN
+      :value: "TEXT_PLAIN"
+
+.. autoclass:: OutlookOptions
    :members:
    :undoc-members:
 
@@ -440,6 +561,28 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SharepointOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: SharepointOptionsSharepointEntityType
+
+   .. py:attribute:: FILE
+      :value: "FILE"
+
+   .. py:attribute:: FILE_METADATA
+      :value: "FILE_METADATA"
+
+   .. py:attribute:: LIST
+      :value: "LIST"
+
+   .. py:attribute:: PERMISSION
+      :value: "PERMISSION"
+
+.. autoclass:: SmartsheetOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: SourceCatalogConfig
    :members:
    :undoc-members:
@@ -505,6 +648,48 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SCD_TYPE_2
       :value: "SCD_TYPE_2"
+
+.. autoclass:: TikTokAdsOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: TikTokAdsOptionsTikTokDataLevel
+
+   Data level for TikTok Ads report aggregation.
+
+   .. py:attribute:: AUCTION_AD
+      :value: "AUCTION_AD"
+
+   .. py:attribute:: AUCTION_ADGROUP
+      :value: "AUCTION_ADGROUP"
+
+   .. py:attribute:: AUCTION_ADVERTISER
+      :value: "AUCTION_ADVERTISER"
+
+   .. py:attribute:: AUCTION_CAMPAIGN
+      :value: "AUCTION_CAMPAIGN"
+
+.. py:class:: TikTokAdsOptionsTikTokReportType
+
+   Report type for TikTok Ads API.
+
+   .. py:attribute:: AUDIENCE
+      :value: "AUDIENCE"
+
+   .. py:attribute:: BASIC
+      :value: "BASIC"
+
+   .. py:attribute:: BUSINESS_CENTER
+      :value: "BUSINESS_CENTER"
+
+   .. py:attribute:: DSA
+      :value: "DSA"
+
+   .. py:attribute:: GMV_MAX
+      :value: "GMV_MAX"
+
+   .. py:attribute:: PLAYABLE_AD
+      :value: "PLAYABLE_AD"
 
 .. autoclass:: Truncation
    :members:

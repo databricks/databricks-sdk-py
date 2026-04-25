@@ -71,6 +71,27 @@
         :returns: :class:`KnowledgeSource`
         
 
+    .. py:method:: get_permission_levels(knowledge_assistant_id: str) -> GetKnowledgeAssistantPermissionLevelsResponse
+
+        Gets the permission levels that a user can have on an object.
+
+        :param knowledge_assistant_id: str
+          The knowledge assistant for which to get or manage permissions.
+
+        :returns: :class:`GetKnowledgeAssistantPermissionLevelsResponse`
+        
+
+    .. py:method:: get_permissions(knowledge_assistant_id: str) -> KnowledgeAssistantPermissions
+
+        Gets the permissions of a knowledge assistant. Knowledge assistants can inherit permissions from their
+        root object.
+
+        :param knowledge_assistant_id: str
+          The knowledge assistant for which to get or manage permissions.
+
+        :returns: :class:`KnowledgeAssistantPermissions`
+        
+
     .. py:method:: list_knowledge_assistants( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[KnowledgeAssistant]
 
         List Knowledge Assistants
@@ -95,6 +116,18 @@
         :param page_token: str (optional)
 
         :returns: Iterator over :class:`KnowledgeSource`
+        
+
+    .. py:method:: set_permissions(knowledge_assistant_id: str [, access_control_list: Optional[List[KnowledgeAssistantAccessControlRequest]]]) -> KnowledgeAssistantPermissions
+
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
+
+        :param knowledge_assistant_id: str
+          The knowledge assistant for which to get or manage permissions.
+        :param access_control_list: List[:class:`KnowledgeAssistantAccessControlRequest`] (optional)
+
+        :returns: :class:`KnowledgeAssistantPermissions`
         
 
     .. py:method:: sync_knowledge_sources(name: str)
@@ -140,4 +173,16 @@
           `description`. Examples: - `display_name` - `display_name,description`
 
         :returns: :class:`KnowledgeSource`
+        
+
+    .. py:method:: update_permissions(knowledge_assistant_id: str [, access_control_list: Optional[List[KnowledgeAssistantAccessControlRequest]]]) -> KnowledgeAssistantPermissions
+
+        Updates the permissions on a knowledge assistant. Knowledge assistants can inherit permissions from
+        their root object.
+
+        :param knowledge_assistant_id: str
+          The knowledge assistant for which to get or manage permissions.
+        :param access_control_list: List[:class:`KnowledgeAssistantAccessControlRequest`] (optional)
+
+        :returns: :class:`KnowledgeAssistantPermissions`
         

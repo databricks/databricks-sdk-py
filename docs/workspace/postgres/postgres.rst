@@ -17,7 +17,7 @@
     contains this full path and is output-only. Note that `name` refers to this resource path, not the
     user-visible `display_name`.
 
-    .. py:method:: create_branch(parent: str, branch: Branch, branch_id: str) -> CreateBranchOperation
+    .. py:method:: create_branch(parent: str, branch: Branch, branch_id: str [, replace_existing: Optional[bool]]) -> CreateBranchOperation
 
         Creates a new database branch in the project.
 
@@ -30,6 +30,8 @@
           is required and must be 1-63 characters long, start with a lowercase letter, and contain only
           lowercase letters, numbers, and hyphens. For example, `development` becomes
           `projects/my-app/branches/development`.
+        :param replace_existing: bool (optional)
+          If true, update the branch if it already exists instead of returning an error.
 
         :returns: :class:`Operation`
         
@@ -68,7 +70,7 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_endpoint(parent: str, endpoint: Endpoint, endpoint_id: str) -> CreateEndpointOperation
+    .. py:method:: create_endpoint(parent: str, endpoint: Endpoint, endpoint_id: str [, replace_existing: Optional[bool]]) -> CreateEndpointOperation
 
         Creates a new compute endpoint in the branch.
 
@@ -81,6 +83,8 @@
           The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
           lowercase letters, numbers, and hyphens. For example, `primary` becomes
           `projects/my-app/branches/development/endpoints/primary`.
+        :param replace_existing: bool (optional)
+          If true, update the endpoint if it already exists instead of returning an error.
 
         :returns: :class:`Operation`
         
@@ -184,12 +188,14 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: delete_project(name: str) -> DeleteProjectOperation
+    .. py:method:: delete_project(name: str [, purge: Optional[bool]]) -> DeleteProjectOperation
 
         Deletes the specified database project.
 
         :param name: str
           The full resource path of the project to delete. Format: projects/{project_id}
+        :param purge: bool (optional)
+          If true, permanently deletes the project (hard delete). If false or unset, performs a soft delete.
 
         :returns: :class:`Operation`
         
@@ -366,7 +372,7 @@
         :returns: Iterator over :class:`Endpoint`
         
 
-    .. py:method:: list_projects( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Project]
+    .. py:method:: list_projects( [, page_size: Optional[int], page_token: Optional[str], show_deleted: Optional[bool]]) -> Iterator[Project]
 
         Returns a paginated list of database projects in the workspace that the user has permission to access.
 
@@ -374,6 +380,9 @@
           Upper bound for items returned. Cannot be negative. The maximum value is 100.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
+        :param show_deleted: bool (optional)
+          Whether to include soft-deleted projects in the response. When true, soft-deleted projects are
+          included alongside active projects. Hard-deleted and already-purged projects are never returned.
 
         :returns: Iterator over :class:`Project`
         
@@ -390,6 +399,16 @@
           Page token from a previous response. If not provided, returns the first page.
 
         :returns: Iterator over :class:`Role`
+        
+
+    .. py:method:: undelete_project(name: str) -> UndeleteProjectOperation
+
+        Undeletes a soft-deleted project.
+
+        :param name: str
+          The full resource path of the project to undelete. Format: projects/{project_id}
+
+        :returns: :class:`Operation`
         
 
     .. py:method:: update_branch(name: str, branch: Branch, update_mask: FieldMask) -> UpdateBranchOperation

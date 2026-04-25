@@ -34,6 +34,7 @@ Dataclasses
    settingsv2
    sharing
    sql
+   supervisoragents
    tags
    vectorsearch
    workspace

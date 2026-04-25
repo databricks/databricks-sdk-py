@@ -2453,6 +2453,16 @@ class CommandStatusResponse:
         )
 
 
+class ConfidentialComputeType(Enum):
+    """Confidential computing technology for GCP instances. Aligns with gcloud's
+    --confidential-compute-type flag and the REST API's
+    confidentialInstanceConfig.confidentialInstanceType field. See:
+    https://cloud.google.com/confidential-computing/confidential-vm/docs/create-a-confidential-vm-instance"""
+
+    CONFIDENTIAL_COMPUTE_TYPE_NONE = "CONFIDENTIAL_COMPUTE_TYPE_NONE"
+    SEV_SNP = "SEV_SNP"
+
+
 class ContextStatus(Enum):
 
     ERROR = "Error"
@@ -3165,16 +3175,17 @@ class EnforceClusterComplianceResponse:
 @dataclass
 class Environment:
     """The environment entity used to preserve serverless environment side panel, jobs' environment for
-    non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
+    non-notebook task, and SDP's environment for classic and serverless pipelines. In this minimal
     environment spec, only pip and java dependencies are supported."""
 
     base_environment: Optional[str] = None
-    """The `base_environment` key refers to an `env.yaml` file that specifies an environment version
-    and a collection of dependencies required for the environment setup. This `env.yaml` file may
-    itself include a `base_environment` reference pointing to another `env_1.yaml` file. However,
-    when used as a base environment, `env_1.yaml` (or further nested references) will not be
-    processed or included in the final environment, meaning that the resolution of
-    `base_environment` references is not recursive."""
+    """The base environment this environment is built on top of. A base environment defines the
+    environment version and a list of dependencies for serverless compute. The value can be a file
+    path to a custom `env.yaml` file (e.g., `/Workspace/path/to/env.yaml`). Support for a
+    Databricks-provided base environment ID (e.g., `workspace-base-environments/databricks_ai_v4`)
+    and workspace base environment ID (e.g.,
+    `workspace-base-environments/dbe_b849b66e-b31a-4cb5-b161-1f2b10877fb7`) is in Beta. Either
+    `environment_version` or `base_environment` can be provided. For more information, see"""
 
     client: Optional[str] = None
     """Use `environment_version` instead."""
@@ -3476,6 +3487,10 @@ class GcpAttributes:
     boot_disk_size: Optional[int] = None
     """Boot disk size in GB"""
 
+    confidential_compute_type: Optional[ConfidentialComputeType] = None
+    """The confidential computing technology for this cluster's instances. Currently only SEV_SNP is
+    supported, and only on N2D instance types. When not set, no confidential computing is applied."""
+
     first_on_demand: Optional[int] = None
     """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This
     value should be greater than 0, to make sure the cluster driver node is placed on an on-demand
@@ -3516,6 +3531,8 @@ class GcpAttributes:
             body["availability"] = self.availability.value
         if self.boot_disk_size is not None:
             body["boot_disk_size"] = self.boot_disk_size
+        if self.confidential_compute_type is not None:
+            body["confidential_compute_type"] = self.confidential_compute_type.value
         if self.first_on_demand is not None:
             body["first_on_demand"] = self.first_on_demand
         if self.google_service_account is not None:
@@ -3535,6 +3552,8 @@ class GcpAttributes:
             body["availability"] = self.availability
         if self.boot_disk_size is not None:
             body["boot_disk_size"] = self.boot_disk_size
+        if self.confidential_compute_type is not None:
+            body["confidential_compute_type"] = self.confidential_compute_type
         if self.first_on_demand is not None:
             body["first_on_demand"] = self.first_on_demand
         if self.google_service_account is not None:
@@ -3553,6 +3572,7 @@ class GcpAttributes:
         return cls(
             availability=_enum(d, "availability", GcpAvailability),
             boot_disk_size=d.get("boot_disk_size", None),
+            confidential_compute_type=_enum(d, "confidential_compute_type", ConfidentialComputeType),
             first_on_demand=d.get("first_on_demand", None),
             google_service_account=d.get("google_service_account", None),
             local_ssd_count=d.get("local_ssd_count", None),
@@ -10898,7 +10918,7 @@ class PolicyComplianceForClustersAPI:
         If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time the
         cluster is started, the new attributes will take effect.
 
-        Clusters created by the Databricks Jobs, DLT, or Models services cannot be enforced by this API.
+        Clusters created by the Databricks Jobs, SDP, or Models services cannot be enforced by this API.
         Instead, use the "Enforce job policy compliance" API to enforce policy compliance on jobs.
 
         :param cluster_id: str

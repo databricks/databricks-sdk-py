@@ -16,9 +16,9 @@
     enable the external_access_enabled flag (off by default) at the metastore level. A user needs to be
     granted the EXTERNAL USE LOCATION permission by external location owner. For requests on existing external
     tables, user also needs to be granted the EXTERNAL USE SCHEMA permission at the schema level by catalog
-    admin.
+    owner.
 
-    Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by catalog admin
+    Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by catalog owner
     explicitly and is not included in schema ownership or ALL PRIVILEGES on the schema for security reasons.
     Similarly, EXTERNAL USE LOCATION is an external location level permission that can only be granted by
     external location owner explicitly and is not included in external location ownership or ALL PRIVILEGES on

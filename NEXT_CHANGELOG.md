@@ -1,10 +1,8 @@
 # NEXT CHANGELOG
 
-## Release v0.103.0
+## Release v0.106.0
 
 ### New Features and Improvements
-* Add support for unified hosts. A single configuration profile can now be used for both account-level and workspace-level operations when the host supports it and both `account_id` and `workspace_id` are available. The `experimental_is_unified_host` flag has been removed; unified host detection is now automatic.
-* Accept `DATABRICKS_OIDC_TOKEN_FILEPATH` environment variable for consistency with other Databricks SDKs (Go, CLI, Terraform). The previous `DATABRICKS_OIDC_TOKEN_FILE` is still supported as an alias.
 
 ### Security
 
@@ -13,19 +11,22 @@
 ### Documentation
 
 ### Breaking Changes
-* Drop support for Python 3.8 and 3.9. The minimum supported Python version is now 3.10, in line with the oldest supported Databricks Runtime LTS (DBR 13.3).
 
 ### Internal Changes
-* Replace the async-disabling mechanism on token refresh failure with a 1-minute retry backoff. Previously, a single failed async refresh would disable proactive token renewal until the token expired. Now, the SDK waits a short cooldown period and retries, improving resilience to transient errors.
-* Extract `_resolve_profile` to simplify config file loading and improve `__settings__` error messages.
 
 ### API Changes
-* Add `create_catalog()`, `create_synced_table()`, `delete_catalog()`, `delete_synced_table()`, `get_catalog()` and `get_synced_table()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
-* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
-* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
-* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
-* Add `column_selection` field for `databricks.sdk.service.ml.Function`.
-* Add `cascade` field for `databricks.sdk.service.pipelines.DeletePipelineRequest`.
-* Add `default_branch` field for `databricks.sdk.service.postgres.ProjectSpec`.
-* Add `default_branch` field for `databricks.sdk.service.postgres.ProjectStatus`.
-* Add `ingress` and `ingress_dry_run` fields for `databricks.sdk.service.settings.AccountNetworkPolicy`.
+* Add [w.temporary_volume_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/temporary_volume_credentials.html) workspace-level service.
+* Add `get_permission_levels()`, `get_permissions()`, `set_permissions()` and `update_permissions()` methods for [w.knowledge_assistants](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/knowledgeassistants/knowledge_assistants.html) workspace-level service.
+* Add `undelete_project()` method for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `thumbnail_url` field for `databricks.sdk.service.apps.App`.
+* Add `confidential_compute_type` field for `databricks.sdk.service.compute.GcpAttributes`.
+* Add `jira_options`, `outlook_options` and `smartsheet_options` fields for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `google_ads_config` field for `databricks.sdk.service.pipelines.SourceConfig`.
+* Add `replace_existing` field for `databricks.sdk.service.postgres.CreateBranchRequest`.
+* Add `replace_existing` field for `databricks.sdk.service.postgres.CreateEndpointRequest`.
+* Add `purge` field for `databricks.sdk.service.postgres.DeleteProjectRequest`.
+* Add `show_deleted` field for `databricks.sdk.service.postgres.ListProjectsRequest`.
+* Add `delete_time` and `purge_time` fields for `databricks.sdk.service.postgres.Project`.
+* Add `uc_connection` field for `databricks.sdk.service.supervisoragents.Tool`.
+* Change `name` field for `databricks.sdk.service.supervisoragents.Connection` to no longer be required.
+* [Breaking] Change `name` field for `databricks.sdk.service.supervisoragents.Connection` to no longer be required.

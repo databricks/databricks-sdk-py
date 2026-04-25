@@ -269,6 +269,11 @@ class DeltaSyncVectorIndexSpecRequest:
 
 @dataclass
 class DeltaSyncVectorIndexSpecResponse:
+    columns_to_sync: Optional[List[str]] = None
+    """[Optional] Select the columns to sync with the vector index. If you leave this field blank, all
+    columns from the source table are synced with the index. The primary key column and embedding
+    source column or embedding vector column are always synced."""
+
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
 
@@ -294,6 +299,8 @@ class DeltaSyncVectorIndexSpecResponse:
     def as_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.columns_to_sync:
+            body["columns_to_sync"] = [v for v in self.columns_to_sync]
         if self.embedding_source_columns:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -311,6 +318,8 @@ class DeltaSyncVectorIndexSpecResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.columns_to_sync:
+            body["columns_to_sync"] = self.columns_to_sync
         if self.embedding_source_columns:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
@@ -329,6 +338,7 @@ class DeltaSyncVectorIndexSpecResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecResponse:
         """Deserializes the DeltaSyncVectorIndexSpecResponse from a dictionary."""
         return cls(
+            columns_to_sync=d.get("columns_to_sync", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
             embedding_writeback_table=d.get("embedding_writeback_table", None),
@@ -460,6 +470,11 @@ class EmbeddingVectorColumn:
 
 @dataclass
 class EndpointInfo:
+    budget_policy_id: Optional[str] = None
+    """Discussed here: https://databricks.atlassian.net/wiki/x/OQDlCQE Additional documentation:
+    https://aip.dev.databricks.com/129 the user selected budget policy id for the endpoint
+    (client-side)"""
+
     creation_timestamp: Optional[int] = None
     """Timestamp of endpoint creation"""
 
@@ -499,6 +514,8 @@ class EndpointInfo:
     def as_dict(self) -> dict:
         """Serializes the EndpointInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
@@ -528,6 +545,8 @@ class EndpointInfo:
     def as_shallow_dict(self) -> dict:
         """Serializes the EndpointInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
@@ -558,6 +577,7 @@ class EndpointInfo:
     def from_dict(cls, d: Dict[str, Any]) -> EndpointInfo:
         """Deserializes the EndpointInfo from a dictionary."""
         return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
             custom_tags=_repeated_dict(d, "custom_tags", CustomTag),
@@ -576,7 +596,10 @@ class EndpointInfo:
 @dataclass
 class EndpointScalingInfo:
     requested_min_qps: Optional[int] = None
-    """The minimum QPS target requested for the endpoint."""
+    """Deprecated: use requested_target_qps. Kept at PUBLIC_BETA with deprecated = true so generated
+    SDK surfaces (Go, Java, TypeScript, Terraform) keep exposing the field with a deprecation marker
+    rather than losing it on next regeneration. Hiding completely (visibility = PUBLIC_UNDOCUMENTED)
+    is a follow-up PR once downstream consumers have migrated."""
 
     state: Optional[ScalingChangeState] = None
     """The current state of the scaling change request."""
@@ -654,6 +677,18 @@ class EndpointType(Enum):
     """Type of endpoint."""
 
     STANDARD = "STANDARD"
+    STORAGE_OPTIMIZED = "STORAGE_OPTIMIZED"
+
+
+class IndexSubtype(Enum):
+    """The subtype of the vector search index, determining the indexing and retrieval strategy. -
+    `VECTOR`: Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An index that uses full-text
+    search without vector embeddings. - `HYBRID`: An index that uses vector embeddings for
+    similarity search and hybrid search."""
+
+    FULL_TEXT = "FULL_TEXT"
+    HYBRID = "HYBRID"
+    VECTOR = "VECTOR"
 
 
 @dataclass
@@ -940,6 +975,9 @@ class MiniVectorIndex:
     endpoint_name: Optional[str] = None
     """Name of the endpoint associated with the index"""
 
+    index_subtype: Optional[IndexSubtype] = None
+    """The subtype of the index."""
+
     index_type: Optional[VectorIndexType] = None
 
     name: Optional[str] = None
@@ -955,6 +993,8 @@ class MiniVectorIndex:
             body["creator"] = self.creator
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.index_subtype is not None:
+            body["index_subtype"] = self.index_subtype.value
         if self.index_type is not None:
             body["index_type"] = self.index_type.value
         if self.name is not None:
@@ -970,6 +1010,8 @@ class MiniVectorIndex:
             body["creator"] = self.creator
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.index_subtype is not None:
+            body["index_subtype"] = self.index_subtype
         if self.index_type is not None:
             body["index_type"] = self.index_type
         if self.name is not None:
@@ -984,6 +1026,7 @@ class MiniVectorIndex:
         return cls(
             creator=d.get("creator", None),
             endpoint_name=d.get("endpoint_name", None),
+            index_subtype=_enum(d, "index_subtype", IndexSubtype),
             index_type=_enum(d, "index_type", VectorIndexType),
             name=d.get("name", None),
             primary_key=d.get("primary_key", None),
@@ -992,12 +1035,16 @@ class MiniVectorIndex:
 
 @dataclass
 class PatchEndpointBudgetPolicyResponse:
+    budget_policy_id: Optional[str] = None
+
     effective_budget_policy_id: Optional[str] = None
     """The budget policy applied to the vector search endpoint."""
 
     def as_dict(self) -> dict:
         """Serializes the PatchEndpointBudgetPolicyResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
         return body
@@ -1005,6 +1052,8 @@ class PatchEndpointBudgetPolicyResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the PatchEndpointBudgetPolicyResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
         return body
@@ -1012,7 +1061,10 @@ class PatchEndpointBudgetPolicyResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PatchEndpointBudgetPolicyResponse:
         """Deserializes the PatchEndpointBudgetPolicyResponse from a dictionary."""
-        return cls(effective_budget_policy_id=d.get("effective_budget_policy_id", None))
+        return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+        )
 
 
 class PipelineType(Enum):
@@ -1486,6 +1538,9 @@ class VectorIndex:
     endpoint_name: Optional[str] = None
     """Name of the endpoint associated with the index"""
 
+    index_subtype: Optional[IndexSubtype] = None
+    """The subtype of the index."""
+
     index_type: Optional[VectorIndexType] = None
 
     name: Optional[str] = None
@@ -1507,6 +1562,8 @@ class VectorIndex:
             body["direct_access_index_spec"] = self.direct_access_index_spec.as_dict()
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.index_subtype is not None:
+            body["index_subtype"] = self.index_subtype.value
         if self.index_type is not None:
             body["index_type"] = self.index_type.value
         if self.name is not None:
@@ -1528,6 +1585,8 @@ class VectorIndex:
             body["direct_access_index_spec"] = self.direct_access_index_spec
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.index_subtype is not None:
+            body["index_subtype"] = self.index_subtype
         if self.index_type is not None:
             body["index_type"] = self.index_type
         if self.name is not None:
@@ -1546,6 +1605,7 @@ class VectorIndex:
             delta_sync_index_spec=_from_dict(d, "delta_sync_index_spec", DeltaSyncVectorIndexSpecResponse),
             direct_access_index_spec=_from_dict(d, "direct_access_index_spec", DirectAccessVectorIndexSpec),
             endpoint_name=d.get("endpoint_name", None),
+            index_subtype=_enum(d, "index_subtype", IndexSubtype),
             index_type=_enum(d, "index_type", VectorIndexType),
             name=d.get("name", None),
             primary_key=d.get("primary_key", None),
@@ -1662,6 +1722,7 @@ class VectorSearchEndpointsAPI:
         *,
         budget_policy_id: Optional[str] = None,
         min_qps: Optional[int] = None,
+        usage_policy_id: Optional[str] = None,
     ) -> Wait[EndpointInfo]:
         """Create a new endpoint.
 
@@ -1672,8 +1733,11 @@ class VectorSearchEndpointsAPI:
         :param budget_policy_id: str (optional)
           The budget policy id to be applied
         :param min_qps: int (optional)
-          Min QPS for the endpoint. Mutually exclusive with num_replicas. The actual replica count is
-          calculated at index creation/sync time based on this value.
+          Deprecated: use target_qps. Min QPS for the endpoint. Mutually exclusive with num_replicas. Kept at
+          PUBLIC_BETA with deprecated = true so generated SDK surfaces keep the field with a deprecation
+          marker; hiding completely is a follow-up PR.
+        :param usage_policy_id: str (optional)
+          The usage policy id to be applied once we've migrated to usage policies
 
         :returns:
           Long-running operation waiter for :class:`EndpointInfo`.
@@ -1689,6 +1753,8 @@ class VectorSearchEndpointsAPI:
             body["min_qps"] = min_qps
         if name is not None:
             body["name"] = name
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1712,10 +1778,15 @@ class VectorSearchEndpointsAPI:
         *,
         budget_policy_id: Optional[str] = None,
         min_qps: Optional[int] = None,
+        usage_policy_id: Optional[str] = None,
         timeout=timedelta(minutes=20),
     ) -> EndpointInfo:
         return self.create_endpoint(
-            budget_policy_id=budget_policy_id, endpoint_type=endpoint_type, min_qps=min_qps, name=name
+            budget_policy_id=budget_policy_id,
+            endpoint_type=endpoint_type,
+            min_qps=min_qps,
+            name=name,
+            usage_policy_id=usage_policy_id,
         ).result(timeout=timeout)
 
     def delete_endpoint(self, endpoint_name: str):
@@ -1792,7 +1863,9 @@ class VectorSearchEndpointsAPI:
         :param endpoint_name: str
           Name of the vector search endpoint
         :param min_qps: int (optional)
-          Min QPS for the endpoint. Positive integer sets QPS target; -1 resets to default scaling behavior.
+          Deprecated: use target_qps. Min QPS for the endpoint. Positive integer sets QPS target; -1 resets to
+          default scaling behavior. Kept at PUBLIC_BETA with deprecated = true so generated SDK surfaces keep
+          the field with a deprecation marker; hiding completely is a follow-up PR.
 
         :returns: :class:`EndpointInfo`
         """
@@ -1945,6 +2018,7 @@ class VectorSearchIndexesAPI:
         *,
         delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest] = None,
         direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None,
+        index_subtype: Optional[IndexSubtype] = None,
     ) -> VectorIndex:
         """Create a new index.
 
@@ -1959,6 +2033,8 @@ class VectorSearchIndexesAPI:
           Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
           Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
+        :param index_subtype: :class:`IndexSubtype` (optional)
+          The subtype of the index. Use `HYBRID` or `FULL_TEXT`. `VECTOR` is not supported.
 
         :returns: :class:`VectorIndex`
         """
@@ -1970,6 +2046,8 @@ class VectorSearchIndexesAPI:
             body["direct_access_index_spec"] = direct_access_index_spec.as_dict()
         if endpoint_name is not None:
             body["endpoint_name"] = endpoint_name
+        if index_subtype is not None:
+            body["index_subtype"] = index_subtype.value
         if index_type is not None:
             body["index_type"] = index_type.value
         if name is not None:

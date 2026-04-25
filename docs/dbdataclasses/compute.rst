@@ -224,6 +224,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: ConfidentialComputeType
+
+   Confidential computing technology for GCP instances. Aligns with gcloud's --confidential-compute-type flag and the REST API's confidentialInstanceConfig.confidentialInstanceType field. See: https://cloud.google.com/confidential-computing/confidential-vm/docs/create-a-confidential-vm-instance
+
+   .. py:attribute:: CONFIDENTIAL_COMPUTE_TYPE_NONE
+      :value: "CONFIDENTIAL_COMPUTE_TYPE_NONE"
+
+   .. py:attribute:: SEV_SNP
+      :value: "SEV_SNP"
+
 .. py:class:: ContextStatus
 
    .. py:attribute:: ERROR
