@@ -109,6 +109,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AzureEncryptionSettings
+   :members:
+   :undoc-members:
+
 .. autoclass:: AzureManagedIdentity
    :members:
    :undoc-members:
@@ -279,7 +283,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 72
+   Next Id: 123
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -420,7 +424,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CredentialType
 
-   Next Id: 17
+   Next Id: 18
 
    .. py:attribute:: ANY_STATIC_CREDENTIAL
       :value: "ANY_STATIC_CREDENTIAL"
@@ -688,6 +692,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EncryptionSettings
+   :members:
+   :undoc-members:
+
 .. autoclass:: EntityTagAssignment
    :members:
    :undoc-members:
@@ -846,6 +854,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenerateTemporaryVolumeCredentialResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetCatalogWorkspaceBindingsResponse
    :members:
    :undoc-members:
@@ -943,6 +955,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListSchemasResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListSecretsResponse
    :members:
    :undoc-members:
 
@@ -1501,13 +1517,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Secret
+   :members:
+   :undoc-members:
+
 .. autoclass:: Securable
    :members:
    :undoc-members:
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_GOOGLE_DRIVE_SERVICE_ACCOUNT = 301; Next id: 302
+   Latest kind: TOOLSET_EXTERNAL_MCP = 318; Next id: 319
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
@@ -1538,6 +1558,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL
       :value: "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL"
+
+   .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING
+      :value: "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING"
 
    .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING
       :value: "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING"
@@ -2049,6 +2072,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: VolumeInfo
    :members:
    :undoc-members:
+
+.. py:class:: VolumeOperation
+
+   .. py:attribute:: READ_VOLUME
+      :value: "READ_VOLUME"
+
+   .. py:attribute:: WRITE_VOLUME
+      :value: "WRITE_VOLUME"
 
 .. py:class:: VolumeType
 

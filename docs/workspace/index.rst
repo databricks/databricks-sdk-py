@@ -33,6 +33,7 @@ These APIs are available from WorkspaceClient
    settingsv2/index
    sharing/index
    sql/index
+   supervisoragents/index
    tags/index
    vectorsearch/index
    workspace/index

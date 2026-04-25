@@ -1,8 +1,8 @@
 
-Delta Live Tables
-=================
+Spark Declarative Pipelines
+===========================
 
-Manage pipelines, runs, and other Delta Live Table resources
+Manage pipelines, runs, and other Spark Declarative Pipeline resources
 
 .. toctree::
    :maxdepth: 1

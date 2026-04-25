@@ -201,6 +201,14 @@ class BranchSpec:
 
 @dataclass
 class BranchStatus:
+    branch_id: Optional[str] = None
+    """The short identifier of the branch, suitable for showing to the users. For a branch with name
+    `projects/my-project/branches/my-branch`, the branch_id is `my-branch`.
+    
+    Use this field when building UI components that display branches to users (e.g., a drop-down
+    selector). Prefer showing `branch_id` instead of the full resource name from `Branch.name`,
+    which follows the `projects/{project_id}/branches/{branch_id}` format and is not user-friendly."""
+
     current_state: Optional[BranchStatusState] = None
     """The branch's state, indicating if it is initializing, ready for use, or archived."""
 
@@ -235,6 +243,8 @@ class BranchStatus:
     def as_dict(self) -> dict:
         """Serializes the BranchStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.branch_id is not None:
+            body["branch_id"] = self.branch_id
         if self.current_state is not None:
             body["current_state"] = self.current_state.value
         if self.default is not None:
@@ -260,6 +270,8 @@ class BranchStatus:
     def as_shallow_dict(self) -> dict:
         """Serializes the BranchStatus into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.branch_id is not None:
+            body["branch_id"] = self.branch_id
         if self.current_state is not None:
             body["current_state"] = self.current_state
         if self.default is not None:
@@ -286,6 +298,7 @@ class BranchStatus:
     def from_dict(cls, d: Dict[str, Any]) -> BranchStatus:
         """Deserializes the BranchStatus from a dictionary."""
         return cls(
+            branch_id=d.get("branch_id", None),
             current_state=_enum(d, "current_state", BranchStatusState),
             default=d.get("default", None),
             expire_time=_timestamp(d, "expire_time"),
@@ -452,6 +465,14 @@ class CatalogCatalogStatus:
     
     Format: projects/{project_id}/branches/{branch_id}."""
 
+    catalog_id: Optional[str] = None
+    """The short identifier of the catalog, suitable for showing to the users. For a catalog with name
+    `catalogs/my-catalog`, the catalog_id is `my-catalog`.
+    
+    Use this field when building UI components that display catalogs to users (e.g., a drop-down
+    selector). Prefer showing `catalog_id` instead of the full resource name from `Catalog.name`,
+    which follows the `catalogs/{catalog_id}` format and is not user-friendly."""
+
     postgres_database: Optional[str] = None
     """The name of the Postgres database associated with the catalog."""
 
@@ -465,6 +486,8 @@ class CatalogCatalogStatus:
         body = {}
         if self.branch is not None:
             body["branch"] = self.branch
+        if self.catalog_id is not None:
+            body["catalog_id"] = self.catalog_id
         if self.postgres_database is not None:
             body["postgres_database"] = self.postgres_database
         if self.project is not None:
@@ -476,6 +499,8 @@ class CatalogCatalogStatus:
         body = {}
         if self.branch is not None:
             body["branch"] = self.branch
+        if self.catalog_id is not None:
+            body["catalog_id"] = self.catalog_id
         if self.postgres_database is not None:
             body["postgres_database"] = self.postgres_database
         if self.project is not None:
@@ -487,6 +512,7 @@ class CatalogCatalogStatus:
         """Deserializes the CatalogCatalogStatus from a dictionary."""
         return cls(
             branch=d.get("branch", None),
+            catalog_id=d.get("catalog_id", None),
             postgres_database=d.get("postgres_database", None),
             project=d.get("project", None),
         )
@@ -657,6 +683,15 @@ class DatabaseDatabaseSpec:
 
 @dataclass
 class DatabaseDatabaseStatus:
+    database_id: Optional[str] = None
+    """The short identifier of the database, suitable for showing to the users. For a database with
+    name `projects/my-project/branches/my-branch/databases/my-db`, the database_id is `my-db`.
+    
+    Use this field when building UI components that display databases to users (e.g., a drop-down
+    selector). Prefer showing `database_id` instead of the full resource name from `Database.name`,
+    which follows the `projects/{project_id}/branches/{branch_id}/databases/{database_id}` format
+    and is not user-friendly."""
+
     postgres_database: Optional[str] = None
     """The name of the Postgres database."""
 
@@ -667,6 +702,8 @@ class DatabaseDatabaseStatus:
     def as_dict(self) -> dict:
         """Serializes the DatabaseDatabaseStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.database_id is not None:
+            body["database_id"] = self.database_id
         if self.postgres_database is not None:
             body["postgres_database"] = self.postgres_database
         if self.role is not None:
@@ -676,6 +713,8 @@ class DatabaseDatabaseStatus:
     def as_shallow_dict(self) -> dict:
         """Serializes the DatabaseDatabaseStatus into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.database_id is not None:
+            body["database_id"] = self.database_id
         if self.postgres_database is not None:
             body["postgres_database"] = self.postgres_database
         if self.role is not None:
@@ -685,7 +724,11 @@ class DatabaseDatabaseStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DatabaseDatabaseStatus:
         """Deserializes the DatabaseDatabaseStatus from a dictionary."""
-        return cls(postgres_database=d.get("postgres_database", None), role=d.get("role", None))
+        return cls(
+            database_id=d.get("database_id", None),
+            postgres_database=d.get("postgres_database", None),
+            role=d.get("role", None),
+        )
 
 
 @dataclass
@@ -1053,7 +1096,8 @@ class EndpointSpec:
     """The endpoint type. A branch can only have one READ_WRITE endpoint."""
 
     autoscaling_limit_max_cu: Optional[float] = None
-    """The maximum number of Compute Units. Minimum value is 0.5."""
+    """The maximum number of Compute Units. The maximum value is 64. The difference between the minimum
+    and maximum Compute Units (max - min) must not exceed 16."""
 
     autoscaling_limit_min_cu: Optional[float] = None
     """The minimum number of Compute Units. Minimum value is 0.5."""
@@ -1138,7 +1182,8 @@ class EndpointSpec:
 @dataclass
 class EndpointStatus:
     autoscaling_limit_max_cu: Optional[float] = None
-    """The maximum number of Compute Units."""
+    """The maximum number of Compute Units. The maximum value is 64. The difference between the minimum
+    and maximum Compute Units (max - min) must not exceed 16."""
 
     autoscaling_limit_min_cu: Optional[float] = None
     """The minimum number of Compute Units."""
@@ -1149,6 +1194,16 @@ class EndpointStatus:
     """Whether to restrict connections to the compute endpoint. Enabling this option schedules a
     suspend compute operation. A disabled compute endpoint cannot be enabled by a connection or
     console action."""
+
+    endpoint_id: Optional[str] = None
+    """The short identifier of the endpoint, suitable for showing to the users. For an endpoint with
+    name `projects/my-project/branches/my-branch/endpoints/my-endpoint`, the endpoint_id is
+    `my-endpoint`.
+    
+    Use this field when building UI components that display endpoints to users (e.g., a drop-down
+    selector). Prefer showing `endpoint_id` instead of the full resource name from `Endpoint.name`,
+    which follows the `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}` format
+    and is not user-friendly."""
 
     endpoint_type: Optional[EndpointType] = None
     """The endpoint type. A branch can only have one READ_WRITE endpoint."""
@@ -1177,6 +1232,8 @@ class EndpointStatus:
             body["current_state"] = self.current_state.value
         if self.disabled is not None:
             body["disabled"] = self.disabled
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type.value
         if self.group:
@@ -1202,6 +1259,8 @@ class EndpointStatus:
             body["current_state"] = self.current_state
         if self.disabled is not None:
             body["disabled"] = self.disabled
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type
         if self.group:
@@ -1224,6 +1283,7 @@ class EndpointStatus:
             autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
             current_state=_enum(d, "current_state", EndpointStatusState),
             disabled=d.get("disabled", None),
+            endpoint_id=d.get("endpoint_id", None),
             endpoint_type=_enum(d, "endpoint_type", EndpointType),
             group=_from_dict(d, "group", EndpointGroupStatus),
             hosts=_from_dict(d, "hosts", EndpointHosts),
@@ -1337,8 +1397,10 @@ class ErrorCode(Enum):
 
 @dataclass
 class InitialEndpointSpec:
+    """Configuration for the initial Read/Write endpoint created during project creation."""
+
     group: Optional[EndpointGroupSpec] = None
-    """Settings for HA configuration of the endpoint"""
+    """Settings for HA configuration of the endpoint."""
 
     def as_dict(self) -> dict:
         """Serializes the InitialEndpointSpec into a dictionary suitable for use as a JSON request body."""
@@ -1636,6 +1698,10 @@ class Project:
     create_time: Optional[Timestamp] = None
     """A timestamp indicating when the project was created."""
 
+    delete_time: Optional[Timestamp] = None
+    """A timestamp indicating when the project was soft-deleted. Empty if the project is not deleted,
+    otherwise set to a timestamp in the past."""
+
     initial_endpoint_spec: Optional[InitialEndpointSpec] = None
     """Configuration settings for the initial Read/Write endpoint created inside the default branch for
     a newly created project. If omitted, the initial endpoint created will have default settings,
@@ -1645,6 +1711,10 @@ class Project:
 
     name: Optional[str] = None
     """Output only. The full resource path of the project. Format: projects/{project_id}"""
+
+    purge_time: Optional[Timestamp] = None
+    """A timestamp indicating when the project is scheduled for permanent deletion. Empty if the
+    project is not deleted, otherwise set to a timestamp in the future."""
 
     spec: Optional[ProjectSpec] = None
     """The spec contains the project configuration, including display_name, pg_version (Postgres
@@ -1664,10 +1734,14 @@ class Project:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time.ToJsonString()
+        if self.delete_time is not None:
+            body["delete_time"] = self.delete_time.ToJsonString()
         if self.initial_endpoint_spec:
             body["initial_endpoint_spec"] = self.initial_endpoint_spec.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.purge_time is not None:
+            body["purge_time"] = self.purge_time.ToJsonString()
         if self.spec:
             body["spec"] = self.spec.as_dict()
         if self.status:
@@ -1683,10 +1757,14 @@ class Project:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time
+        if self.delete_time is not None:
+            body["delete_time"] = self.delete_time
         if self.initial_endpoint_spec:
             body["initial_endpoint_spec"] = self.initial_endpoint_spec
         if self.name is not None:
             body["name"] = self.name
+        if self.purge_time is not None:
+            body["purge_time"] = self.purge_time
         if self.spec:
             body["spec"] = self.spec
         if self.status:
@@ -1702,8 +1780,10 @@ class Project:
         """Deserializes the Project from a dictionary."""
         return cls(
             create_time=_timestamp(d, "create_time"),
+            delete_time=_timestamp(d, "delete_time"),
             initial_endpoint_spec=_from_dict(d, "initial_endpoint_spec", InitialEndpointSpec),
             name=d.get("name", None),
+            purge_time=_timestamp(d, "purge_time"),
             spec=_from_dict(d, "spec", ProjectSpec),
             status=_from_dict(d, "status", ProjectStatus),
             uid=d.get("uid", None),
@@ -1851,7 +1931,7 @@ class ProjectSpec:
 
     history_retention_duration: Optional[Duration] = None
     """The number of seconds to retain the shared history for point in time recovery for all branches
-    in this project. Value should be between 172800s (2 days) and 2592000s (30 days)."""
+    in this project. Value should be between 172800s (2 days) and 3024000s (35 days)."""
 
     pg_version: Optional[int] = None
     """The major Postgres version number. Supported versions are 16 and 17."""
@@ -1945,6 +2025,14 @@ class ProjectStatus:
     pg_version: Optional[int] = None
     """The effective major Postgres version number."""
 
+    project_id: Optional[str] = None
+    """The short identifier of the project, suitable for showing to the users. For a project with name
+    `projects/my-project`, the project_id is `my-project`.
+    
+    Use this field when building UI components that display projects to users (e.g., a drop-down
+    selector). Prefer showing `project_id` instead of the full resource name from `Project.name`,
+    which follows the `projects/{project_id}` format and is not user-friendly."""
+
     synthetic_storage_size_bytes: Optional[int] = None
     """The current space occupied by the project in storage."""
 
@@ -1971,6 +2059,8 @@ class ProjectStatus:
             body["owner"] = self.owner
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
         if self.synthetic_storage_size_bytes is not None:
             body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
         return body
@@ -1998,6 +2088,8 @@ class ProjectStatus:
             body["owner"] = self.owner
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
         if self.synthetic_storage_size_bytes is not None:
             body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
         return body
@@ -2016,6 +2108,7 @@ class ProjectStatus:
             history_retention_duration=_duration(d, "history_retention_duration"),
             owner=d.get("owner", None),
             pg_version=d.get("pg_version", None),
+            project_id=d.get("project_id", None),
             synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),
         )
 
@@ -2272,8 +2365,8 @@ class RoleRoleSpec:
     identity_type: * For the managed identities, OAUTH is used. * For the regular postgres roles,
     authentication based on postgres passwords is used.
     
-    NOTE: this is ignored for the Databricks identity type GROUP, and NO_LOGIN is implicitly assumed
-    instead for the GROUP identity type."""
+    NOTE: for the Databricks identity type GROUP, LAKEBASE_OAUTH_V1 is the default auth method
+    (group can login as well)."""
 
     identity_type: Optional[RoleIdentityType] = None
     """The type of role. When specifying a managed-identity, the chosen role_id must be a valid:
@@ -2355,6 +2448,15 @@ class RoleRoleStatus:
     postgres_role: Optional[str] = None
     """The name of the Postgres role."""
 
+    role_id: Optional[str] = None
+    """The short identifier of the role, suitable for showing to the users. For a role with name
+    `projects/my-project/branches/my-branch/roles/my-role`, the role_id is `my-role`.
+    
+    Use this field when building UI components that display roles to users (e.g., a drop-down
+    selector). Prefer showing `role_id` instead of the full resource name from `Role.name`, which
+    follows the `projects/{project_id}/branches/{branch_id}/roles/{role_id}` format and is not
+    user-friendly."""
+
     def as_dict(self) -> dict:
         """Serializes the RoleRoleStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2368,6 +2470,8 @@ class RoleRoleStatus:
             body["membership_roles"] = [v.value for v in self.membership_roles]
         if self.postgres_role is not None:
             body["postgres_role"] = self.postgres_role
+        if self.role_id is not None:
+            body["role_id"] = self.role_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2383,6 +2487,8 @@ class RoleRoleStatus:
             body["membership_roles"] = self.membership_roles
         if self.postgres_role is not None:
             body["postgres_role"] = self.postgres_role
+        if self.role_id is not None:
+            body["role_id"] = self.role_id
         return body
 
     @classmethod
@@ -2394,6 +2500,7 @@ class RoleRoleStatus:
             identity_type=_enum(d, "identity_type", RoleIdentityType),
             membership_roles=_repeated_enum(d, "membership_roles", RoleMembershipRole),
             postgres_role=d.get("postgres_role", None),
+            role_id=d.get("role_id", None),
         )
 
 
@@ -2419,6 +2526,7 @@ class SyncedTable:
     """Synced Table data synchronization status."""
 
     uid: Optional[str] = None
+    """The Unity Catalog table ID for this synced table."""
 
     def as_dict(self) -> dict:
         """Serializes the SyncedTable into a dictionary suitable for use as a JSON request body."""
@@ -2643,11 +2751,6 @@ class SyncedTableSyncedTableSpec:
     primary_key_columns: Optional[List[str]] = None
     """Primary Key columns to be used for data insert/update in the destination."""
 
-    project: Optional[str] = None
-    """The full resource name of the project associated with the table.
-    
-    Format: "projects/{project_id}"."""
-
     scheduling_policy: Optional[SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy] = None
     """Scheduling policy of the underlying pipeline."""
 
@@ -2677,8 +2780,6 @@ class SyncedTableSyncedTableSpec:
             body["postgres_database"] = self.postgres_database
         if self.primary_key_columns:
             body["primary_key_columns"] = [v for v in self.primary_key_columns]
-        if self.project is not None:
-            body["project"] = self.project
         if self.scheduling_policy is not None:
             body["scheduling_policy"] = self.scheduling_policy.value
         if self.source_table_full_name is not None:
@@ -2702,8 +2803,6 @@ class SyncedTableSyncedTableSpec:
             body["postgres_database"] = self.postgres_database
         if self.primary_key_columns:
             body["primary_key_columns"] = self.primary_key_columns
-        if self.project is not None:
-            body["project"] = self.project
         if self.scheduling_policy is not None:
             body["scheduling_policy"] = self.scheduling_policy
         if self.source_table_full_name is not None:
@@ -2722,7 +2821,6 @@ class SyncedTableSyncedTableSpec:
             new_pipeline_spec=_from_dict(d, "new_pipeline_spec", NewPipelineSpec),
             postgres_database=d.get("postgres_database", None),
             primary_key_columns=d.get("primary_key_columns", None),
-            project=d.get("project", None),
             scheduling_policy=_enum(d, "scheduling_policy", SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy),
             source_table_full_name=d.get("source_table_full_name", None),
             timeseries_key=d.get("timeseries_key", None),
@@ -2760,6 +2858,11 @@ class SyncedTableSyncedTableStatus:
     pipeline_id: Optional[str] = None
     """ID of the associated pipeline."""
 
+    project: Optional[str] = None
+    """The full resource name of the project associated with the table.
+    
+    Format: "projects/{project_id}"."""
+
     provisioning_phase: Optional[ProvisioningPhase] = None
     """The current phase of the data synchronization pipeline."""
 
@@ -2783,6 +2886,8 @@ class SyncedTableSyncedTableStatus:
             body["ongoing_sync_progress"] = self.ongoing_sync_progress.as_dict()
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
+        if self.project is not None:
+            body["project"] = self.project
         if self.provisioning_phase is not None:
             body["provisioning_phase"] = self.provisioning_phase.value
         if self.unity_catalog_provisioning_state is not None:
@@ -2806,6 +2911,8 @@ class SyncedTableSyncedTableStatus:
             body["ongoing_sync_progress"] = self.ongoing_sync_progress
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
+        if self.project is not None:
+            body["project"] = self.project
         if self.provisioning_phase is not None:
             body["provisioning_phase"] = self.provisioning_phase
         if self.unity_catalog_provisioning_state is not None:
@@ -2823,6 +2930,7 @@ class SyncedTableSyncedTableStatus:
             message=d.get("message", None),
             ongoing_sync_progress=_from_dict(d, "ongoing_sync_progress", SyncedTablePipelineProgress),
             pipeline_id=d.get("pipeline_id", None),
+            project=d.get("project", None),
             provisioning_phase=_enum(d, "provisioning_phase", ProvisioningPhase),
             unity_catalog_provisioning_state=_enum(d, "unity_catalog_provisioning_state", ProvisioningInfoState),
         )
@@ -2845,7 +2953,9 @@ class PostgresAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_branch(self, parent: str, branch: Branch, branch_id: str) -> CreateBranchOperation:
+    def create_branch(
+        self, parent: str, branch: Branch, branch_id: str, *, replace_existing: Optional[bool] = None
+    ) -> CreateBranchOperation:
         """Creates a new database branch in the project.
 
         :param parent: str
@@ -2857,6 +2967,8 @@ class PostgresAPI:
           is required and must be 1-63 characters long, start with a lowercase letter, and contain only
           lowercase letters, numbers, and hyphens. For example, `development` becomes
           `projects/my-app/branches/development`.
+        :param replace_existing: bool (optional)
+          If true, update the branch if it already exists instead of returning an error.
 
         :returns: :class:`Operation`
         """
@@ -2865,6 +2977,8 @@ class PostgresAPI:
         query = {}
         if branch_id is not None:
             query["branch_id"] = branch_id
+        if replace_existing is not None:
+            query["replace_existing"] = replace_existing
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -2946,7 +3060,9 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateDatabaseOperation(self, operation)
 
-    def create_endpoint(self, parent: str, endpoint: Endpoint, endpoint_id: str) -> CreateEndpointOperation:
+    def create_endpoint(
+        self, parent: str, endpoint: Endpoint, endpoint_id: str, *, replace_existing: Optional[bool] = None
+    ) -> CreateEndpointOperation:
         """Creates a new compute endpoint in the branch.
 
         :param parent: str
@@ -2958,6 +3074,8 @@ class PostgresAPI:
           The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
           lowercase letters, numbers, and hyphens. For example, `primary` becomes
           `projects/my-app/branches/development/endpoints/primary`.
+        :param replace_existing: bool (optional)
+          If true, update the endpoint if it already exists instead of returning an error.
 
         :returns: :class:`Operation`
         """
@@ -2966,6 +3084,8 @@ class PostgresAPI:
         query = {}
         if endpoint_id is not None:
             query["endpoint_id"] = endpoint_id
+        if replace_existing is not None:
+            query["replace_existing"] = replace_existing
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3170,15 +3290,20 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return DeleteEndpointOperation(self, operation)
 
-    def delete_project(self, name: str) -> DeleteProjectOperation:
+    def delete_project(self, name: str, *, purge: Optional[bool] = None) -> DeleteProjectOperation:
         """Deletes the specified database project.
 
         :param name: str
           The full resource path of the project to delete. Format: projects/{project_id}
+        :param purge: bool (optional)
+          If true, permanently deletes the project (hard delete). If false or unset, performs a soft delete.
 
         :returns: :class:`Operation`
         """
 
+        query = {}
+        if purge is not None:
+            query["purge"] = purge
         headers = {
             "Accept": "application/json",
         }
@@ -3187,7 +3312,7 @@ class PostgresAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", query=query, headers=headers)
         operation = Operation.from_dict(res)
         return DeleteProjectOperation(self, operation)
 
@@ -3555,13 +3680,18 @@ class PostgresAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def list_projects(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Project]:
+    def list_projects(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None, show_deleted: Optional[bool] = None
+    ) -> Iterator[Project]:
         """Returns a paginated list of database projects in the workspace that the user has permission to access.
 
         :param page_size: int (optional)
           Upper bound for items returned. Cannot be negative. The maximum value is 100.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
+        :param show_deleted: bool (optional)
+          Whether to include soft-deleted projects in the response. When true, soft-deleted projects are
+          included alongside active projects. Hard-deleted and already-purged projects are never returned.
 
         :returns: Iterator over :class:`Project`
         """
@@ -3571,6 +3701,8 @@ class PostgresAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
+        if show_deleted is not None:
+            query["show_deleted"] = show_deleted
         headers = {
             "Accept": "application/json",
         }
@@ -3624,6 +3756,28 @@ class PostgresAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def undelete_project(self, name: str) -> UndeleteProjectOperation:
+        """Undeletes a soft-deleted project.
+
+        :param name: str
+          The full resource path of the project to undelete. Format: projects/{project_id}
+
+        :returns: :class:`Operation`
+        """
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", headers=headers)
+        operation = Operation.from_dict(res)
+        return UndeleteProjectOperation(self, operation)
 
     def update_branch(self, name: str, branch: Branch, update_mask: FieldMask) -> UpdateBranchOperation:
         """Updates the specified database branch. You can set this branch as the project's default branch, or
@@ -4846,6 +5000,81 @@ class DeleteSyncedTableOperation:
             return None
 
         return SyncedTableOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class UndeleteProjectOperation:
+    """Long-running operation for undelete_project"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> ProjectOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`ProjectOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return ProjectOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

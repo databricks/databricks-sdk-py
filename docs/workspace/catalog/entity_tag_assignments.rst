@@ -41,8 +41,7 @@
         [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
 
         :param entity_type: str
-          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
-          columns, volumes.
+          The type of the entity to which the tag is assigned.
         :param entity_name: str
           The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str
@@ -56,8 +55,7 @@
         Gets a tag assignment for an Unity Catalog entity by tag key.
 
         :param entity_type: str
-          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
-          columns, volumes.
+          The type of the entity to which the tag is assigned.
         :param entity_name: str
           The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str
@@ -75,8 +73,7 @@
         which is the only indication that the end of results has been reached.
 
         :param entity_type: str
-          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
-          columns, volumes.
+          The type of the entity to which the tag is assigned.
         :param entity_name: str
           The fully qualified name of the entity to which the tag is assigned
         :param max_results: int (optional)
@@ -101,8 +98,7 @@
         [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
 
         :param entity_type: str
-          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
-          columns, volumes.
+          The type of the entity to which the tag is assigned.
         :param entity_name: str
           The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str

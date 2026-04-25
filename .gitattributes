@@ -34,6 +34,7 @@ databricks/sdk/service/settings.py linguist-generated=true
 databricks/sdk/service/settingsv2.py linguist-generated=true
 databricks/sdk/service/sharing.py linguist-generated=true
 databricks/sdk/service/sql.py linguist-generated=true
+databricks/sdk/service/supervisoragents.py linguist-generated=true
 databricks/sdk/service/tags.py linguist-generated=true
 databricks/sdk/service/vectorsearch.py linguist-generated=true
 databricks/sdk/service/workspace.py linguist-generated=true

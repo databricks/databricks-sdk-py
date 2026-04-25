@@ -45,6 +45,7 @@ from databricks.sdk.service import settings as pkg_settings
 from databricks.sdk.service import settingsv2 as pkg_settingsv2
 from databricks.sdk.service import sharing as pkg_sharing
 from databricks.sdk.service import sql as pkg_sql
+from databricks.sdk.service import supervisoragents as pkg_supervisoragents
 from databricks.sdk.service import tags as pkg_tags
 from databricks.sdk.service import vectorsearch as pkg_vectorsearch
 from databricks.sdk.service import workspace as pkg_workspace
@@ -67,11 +68,13 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             PoliciesAPI, QualityMonitorsAPI,
                                             RegisteredModelsAPI,
                                             ResourceQuotasAPI, RfaAPI,
-                                            SchemasAPI, StorageCredentialsAPI,
+                                            SchemasAPI, SecretsUcAPI,
+                                            StorageCredentialsAPI,
                                             SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
                                             TemporaryPathCredentialsAPI,
                                             TemporaryTableCredentialsAPI,
+                                            TemporaryVolumeCredentialsAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
 from databricks.sdk.service.cleanrooms import (CleanRoomAssetRevisionsAPI,
                                                CleanRoomAssetsAPI,
@@ -167,6 +170,7 @@ from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
                                         QueryVisualizationsLegacyAPI,
                                         RedashConfigAPI, StatementExecutionAPI,
                                         WarehousesAPI)
+from databricks.sdk.service.supervisoragents import SupervisorAgentsAPI
 from databricks.sdk.service.tags import (TagPoliciesAPI,
                                          WorkspaceEntityTagAssignmentsAPI)
 from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
@@ -377,6 +381,7 @@ class WorkspaceClient:
         self._rfa = pkg_catalog.RfaAPI(self._api_client)
         self._schemas = pkg_catalog.SchemasAPI(self._api_client)
         self._secrets = pkg_workspace.SecretsAPI(self._api_client)
+        self._secrets_uc = pkg_catalog.SecretsUcAPI(self._api_client)
         self._service_principal_secrets_proxy = pkg_oauth2.ServicePrincipalSecretsProxyAPI(self._api_client)
         self._service_principals_v2 = pkg_iam.ServicePrincipalsV2API(self._api_client)
         self._serving_endpoints = serving_endpoints
@@ -390,12 +395,14 @@ class WorkspaceClient:
         self._shares = pkg_sharing.SharesAPI(self._api_client)
         self._statement_execution = pkg_sql.StatementExecutionAPI(self._api_client)
         self._storage_credentials = pkg_catalog.StorageCredentialsAPI(self._api_client)
+        self._supervisor_agents = pkg_supervisoragents.SupervisorAgentsAPI(self._api_client)
         self._system_schemas = pkg_catalog.SystemSchemasAPI(self._api_client)
         self._table_constraints = pkg_catalog.TableConstraintsAPI(self._api_client)
         self._tables = pkg_catalog.TablesAPI(self._api_client)
         self._tag_policies = pkg_tags.TagPoliciesAPI(self._api_client)
         self._temporary_path_credentials = pkg_catalog.TemporaryPathCredentialsAPI(self._api_client)
         self._temporary_table_credentials = pkg_catalog.TemporaryTableCredentialsAPI(self._api_client)
+        self._temporary_volume_credentials = pkg_catalog.TemporaryVolumeCredentialsAPI(self._api_client)
         self._token_management = pkg_settings.TokenManagementAPI(self._api_client)
         self._tokens = pkg_settings.TokensAPI(self._api_client)
         self._users_v2 = pkg_iam.UsersV2API(self._api_client)
@@ -911,6 +918,11 @@ class WorkspaceClient:
         return self._secrets
 
     @property
+    def secrets_uc(self) -> pkg_catalog.SecretsUcAPI:
+        """A secret is a Unity Catalog securable object that stores sensitive credential data (such as passwords, tokens, and keys) within a three-level namespace (**catalog_name.schema_name.secret_name**)."""
+        return self._secrets_uc
+
+    @property
     def service_principal_secrets_proxy(self) -> pkg_oauth2.ServicePrincipalSecretsProxyAPI:
         """These APIs enable administrators to manage service principal secrets at the workspace level."""
         return self._service_principal_secrets_proxy
@@ -951,6 +963,11 @@ class WorkspaceClient:
         return self._storage_credentials
 
     @property
+    def supervisor_agents(self) -> pkg_supervisoragents.SupervisorAgentsAPI:
+        """Manage Supervisor Agents and related resources."""
+        return self._supervisor_agents
+
+    @property
     def system_schemas(self) -> pkg_catalog.SystemSchemasAPI:
         """A system schema is a schema that lives within the system catalog."""
         return self._system_schemas
@@ -979,6 +996,11 @@ class WorkspaceClient:
     def temporary_table_credentials(self) -> pkg_catalog.TemporaryTableCredentialsAPI:
         """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where table data is stored in Databricks."""
         return self._temporary_table_credentials
+
+    @property
+    def temporary_volume_credentials(self) -> pkg_catalog.TemporaryVolumeCredentialsAPI:
+        """Temporary Volume Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where volume data is stored in Databricks."""
+        return self._temporary_volume_credentials
 
     @property
     def token_management(self) -> pkg_settings.TokenManagementAPI:
@@ -1066,7 +1088,16 @@ class WorkspaceClient:
         return self._files
 
     def get_workspace_id(self) -> int:
-        """Get the workspace ID of the workspace that this client is connected to."""
+        """Get the workspace ID of the workspace that this client is connected to.
+
+        If ``Config.workspace_id`` is already set (from the databrickscfg profile,
+        the ``DATABRICKS_WORKSPACE_ID`` env var, host metadata, or a ``?o=`` query
+        param), it is returned without an API round-trip. Otherwise the ID is
+        fetched from the ``X-Databricks-Org-Id`` response header on
+        ``/api/2.0/preview/scim/v2/Me``.
+        """
+        if self._config.workspace_id:
+            return int(self._config.workspace_id)
         response = self._api_client.do("GET", "/api/2.0/preview/scim/v2/Me", response_headers=["X-Databricks-Org-Id"])
         return int(response["X-Databricks-Org-Id"])
 

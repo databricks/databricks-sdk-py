@@ -783,10 +783,6 @@ class FilesAPI:
     working with directories (`/fs/directories`). Both endpoints use the standard HTTP methods GET, HEAD, PUT,
     and DELETE to manage files and directories specified using their URI path. The path is always absolute.
 
-    Some Files API client features are currently experimental. To enable them, set
-    `enable_experimental_files_api_client = True` in your configuration profile or use the environment
-    variable `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
-
     Use of Files API may incur Databricks data transfer charges.
 
     [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html"""

@@ -12,7 +12,7 @@
     Delta Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of
     vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
 
-    .. py:method:: create_index(name: str, endpoint_name: str, primary_key: str, index_type: VectorIndexType [, delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest], direct_access_index_spec: Optional[DirectAccessVectorIndexSpec]]) -> VectorIndex
+    .. py:method:: create_index(name: str, endpoint_name: str, primary_key: str, index_type: VectorIndexType [, delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest], direct_access_index_spec: Optional[DirectAccessVectorIndexSpec], index_subtype: Optional[IndexSubtype]]) -> VectorIndex
 
         Create a new index.
 
@@ -27,6 +27,8 @@
           Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
           Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
+        :param index_subtype: :class:`IndexSubtype` (optional)
+          The subtype of the index. Use `HYBRID` or `FULL_TEXT`. `VECTOR` is not supported.
 
         :returns: :class:`VectorIndex`
         

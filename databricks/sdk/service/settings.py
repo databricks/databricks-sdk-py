@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
+from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import (_enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
 
@@ -592,12 +593,14 @@ class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
 
 @dataclass
 class ComplianceSecurityProfile:
-    """SHIELD feature: CSP"""
+    """SHIELD feature: CSP Compliance Security Profile (CSP) enables enhanced compliance controls on
+    the workspace."""
 
     compliance_standards: Optional[List[ComplianceStandard]] = None
-    """Set by customers when they request Compliance Security Profile (CSP)"""
+    """Compliance standards selected by the customer for this Compliance Security Profile."""
 
     is_enabled: Optional[bool] = None
+    """Whether Compliance Security Profile (CSP) is enabled on the workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the ComplianceSecurityProfile into a dictionary suitable for use as a JSON request body."""
@@ -866,6 +869,8 @@ class CreatePrivateEndpointRule:
 
     error_message: Optional[str] = None
 
+    gcp_endpoint: Optional[GcpEndpoint] = None
+
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
     
@@ -891,6 +896,8 @@ class CreatePrivateEndpointRule:
             body["endpoint_service"] = self.endpoint_service
         if self.error_message is not None:
             body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint.as_dict()
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -908,6 +915,8 @@ class CreatePrivateEndpointRule:
             body["endpoint_service"] = self.endpoint_service
         if self.error_message is not None:
             body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -923,6 +932,7 @@ class CreatePrivateEndpointRule:
             domain_names=d.get("domain_names", None),
             endpoint_service=d.get("endpoint_service", None),
             error_message=d.get("error_message", None),
+            gcp_endpoint=_from_dict(d, "gcp_endpoint", GcpEndpoint),
             group_id=d.get("group_id", None),
             resource_id=d.get("resource_id", None),
             resource_names=d.get("resource_names", None),
@@ -1077,27 +1087,27 @@ class CustomerFacingIngressNetworkPolicy:
 
 
 @dataclass
-class CustomerFacingIngressNetworkPolicyAppsDestination:
+class CustomerFacingIngressNetworkPolicyAppsRuntimeDestination:
     all_destinations: Optional[bool] = None
     """Must be set to true."""
 
     def as_dict(self) -> dict:
-        """Serializes the CustomerFacingIngressNetworkPolicyAppsDestination into a dictionary suitable for use as a JSON request body."""
+        """Serializes the CustomerFacingIngressNetworkPolicyAppsRuntimeDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_destinations is not None:
             body["all_destinations"] = self.all_destinations
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the CustomerFacingIngressNetworkPolicyAppsDestination into a shallow dictionary of its immediate attributes."""
+        """Serializes the CustomerFacingIngressNetworkPolicyAppsRuntimeDestination into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.all_destinations is not None:
             body["all_destinations"] = self.all_destinations
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAppsDestination:
-        """Deserializes the CustomerFacingIngressNetworkPolicyAppsDestination from a dictionary."""
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAppsRuntimeDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyAppsRuntimeDestination from a dictionary."""
         return cls(all_destinations=d.get("all_destinations", None))
 
 
@@ -1209,27 +1219,27 @@ class CustomerFacingIngressNetworkPolicyIpRanges:
 
 
 @dataclass
-class CustomerFacingIngressNetworkPolicyLakebaseDestination:
+class CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination:
     all_destinations: Optional[bool] = None
     """Must be set to true."""
 
     def as_dict(self) -> dict:
-        """Serializes the CustomerFacingIngressNetworkPolicyLakebaseDestination into a dictionary suitable for use as a JSON request body."""
+        """Serializes the CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_destinations is not None:
             body["all_destinations"] = self.all_destinations
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the CustomerFacingIngressNetworkPolicyLakebaseDestination into a shallow dictionary of its immediate attributes."""
+        """Serializes the CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.all_destinations is not None:
             body["all_destinations"] = self.all_destinations
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyLakebaseDestination:
-        """Deserializes the CustomerFacingIngressNetworkPolicyLakebaseDestination from a dictionary."""
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination from a dictionary."""
         return cls(all_destinations=d.get("all_destinations", None))
 
 
@@ -1291,8 +1301,7 @@ class CustomerFacingIngressNetworkPolicyPublicIngressRule:
     destination: Optional[CustomerFacingIngressNetworkPolicyRequestDestination] = None
 
     label: Optional[str] = None
-    """User-provided name for this ingress rule. Helps identify which rule caused a request to be
-    denied or dry-run denied."""
+    """The label for this ingress rule."""
 
     origin: Optional[CustomerFacingIngressNetworkPolicyPublicRequestOrigin] = None
 
@@ -1382,23 +1391,24 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
     """When true, match all destinations, no other destination fields can be set. When not set or
     false, at least one specific destination must be provided."""
 
-    apps: Optional[CustomerFacingIngressNetworkPolicyAppsDestination] = None
+    apps_runtime: Optional[CustomerFacingIngressNetworkPolicyAppsRuntimeDestination] = None
 
-    lakebase: Optional[CustomerFacingIngressNetworkPolicyLakebaseDestination] = None
+    lakebase_runtime: Optional[CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination] = None
 
     workspace_api: Optional[CustomerFacingIngressNetworkPolicyWorkspaceApiDestination] = None
 
     workspace_ui: Optional[CustomerFacingIngressNetworkPolicyWorkspaceUiDestination] = None
+    """Workspace destinations"""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyRequestDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_destinations is not None:
             body["all_destinations"] = self.all_destinations
-        if self.apps:
-            body["apps"] = self.apps.as_dict()
-        if self.lakebase:
-            body["lakebase"] = self.lakebase.as_dict()
+        if self.apps_runtime:
+            body["apps_runtime"] = self.apps_runtime.as_dict()
+        if self.lakebase_runtime:
+            body["lakebase_runtime"] = self.lakebase_runtime.as_dict()
         if self.workspace_api:
             body["workspace_api"] = self.workspace_api.as_dict()
         if self.workspace_ui:
@@ -1410,10 +1420,10 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
         body = {}
         if self.all_destinations is not None:
             body["all_destinations"] = self.all_destinations
-        if self.apps:
-            body["apps"] = self.apps
-        if self.lakebase:
-            body["lakebase"] = self.lakebase
+        if self.apps_runtime:
+            body["apps_runtime"] = self.apps_runtime
+        if self.lakebase_runtime:
+            body["lakebase_runtime"] = self.lakebase_runtime
         if self.workspace_api:
             body["workspace_api"] = self.workspace_api
         if self.workspace_ui:
@@ -1425,8 +1435,10 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyRequestDestination from a dictionary."""
         return cls(
             all_destinations=d.get("all_destinations", None),
-            apps=_from_dict(d, "apps", CustomerFacingIngressNetworkPolicyAppsDestination),
-            lakebase=_from_dict(d, "lakebase", CustomerFacingIngressNetworkPolicyLakebaseDestination),
+            apps_runtime=_from_dict(d, "apps_runtime", CustomerFacingIngressNetworkPolicyAppsRuntimeDestination),
+            lakebase_runtime=_from_dict(
+                d, "lakebase_runtime", CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination
+            ),
             workspace_api=_from_dict(d, "workspace_api", CustomerFacingIngressNetworkPolicyWorkspaceApiDestination),
             workspace_ui=_from_dict(d, "workspace_ui", CustomerFacingIngressNetworkPolicyWorkspaceUiDestination),
         )
@@ -2689,6 +2701,11 @@ class EgressNetworkPolicyNetworkAccessPolicy:
     """List of storage destinations that serverless workloads are allowed to access when in
     RESTRICTED_ACCESS mode."""
 
+    blocked_internet_destinations: Optional[List[EgressNetworkPolicyNetworkAccessPolicyInternetDestination]] = None
+    """List of internet destinations that serverless workloads are blocked from accessing. These
+    destinations are enforced when restriction mode is RESTRICTED_ACCESS or DRY_RUN. Currently
+    supports DNS_NAME type only; IP_RANGE support is planned."""
+
     policy_enforcement: Optional[EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement] = None
     """Optional. When policy_enforcement is not provided, we default to ENFORCE_MODE_ALL_SERVICES"""
 
@@ -2699,6 +2716,8 @@ class EgressNetworkPolicyNetworkAccessPolicy:
             body["allowed_internet_destinations"] = [v.as_dict() for v in self.allowed_internet_destinations]
         if self.allowed_storage_destinations:
             body["allowed_storage_destinations"] = [v.as_dict() for v in self.allowed_storage_destinations]
+        if self.blocked_internet_destinations:
+            body["blocked_internet_destinations"] = [v.as_dict() for v in self.blocked_internet_destinations]
         if self.policy_enforcement:
             body["policy_enforcement"] = self.policy_enforcement.as_dict()
         if self.restriction_mode is not None:
@@ -2712,6 +2731,8 @@ class EgressNetworkPolicyNetworkAccessPolicy:
             body["allowed_internet_destinations"] = self.allowed_internet_destinations
         if self.allowed_storage_destinations:
             body["allowed_storage_destinations"] = self.allowed_storage_destinations
+        if self.blocked_internet_destinations:
+            body["blocked_internet_destinations"] = self.blocked_internet_destinations
         if self.policy_enforcement:
             body["policy_enforcement"] = self.policy_enforcement
         if self.restriction_mode is not None:
@@ -2727,6 +2748,9 @@ class EgressNetworkPolicyNetworkAccessPolicy:
             ),
             allowed_storage_destinations=_repeated_dict(
                 d, "allowed_storage_destinations", EgressNetworkPolicyNetworkAccessPolicyStorageDestination
+            ),
+            blocked_internet_destinations=_repeated_dict(
+                d, "blocked_internet_destinations", EgressNetworkPolicyNetworkAccessPolicyInternetDestination
             ),
             policy_enforcement=_from_dict(
                 d, "policy_enforcement", EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement
@@ -3081,9 +3105,11 @@ class EnableResultsDownloading:
 
 @dataclass
 class EnhancedSecurityMonitoring:
-    """SHIELD feature: ESM"""
+    """SHIELD feature: ESM Enhanced Security Monitoring (ESM) enables additional security monitoring on
+    the workspace."""
 
     is_enabled: Optional[bool] = None
+    """Whether Enhanced Security Monitoring (ESM) is enabled on the workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the EnhancedSecurityMonitoring into a dictionary suitable for use as a JSON request body."""
@@ -3344,6 +3370,41 @@ class FetchIpAccessListResponse:
     def from_dict(cls, d: Dict[str, Any]) -> FetchIpAccessListResponse:
         """Deserializes the FetchIpAccessListResponse from a dictionary."""
         return cls(ip_access_list=_from_dict(d, "ip_access_list", IpAccessListInfo))
+
+
+@dataclass
+class GcpEndpoint:
+    psc_endpoint_uri: Optional[str] = None
+    """Output only. The URI of the created PSC endpoint."""
+
+    service_attachment: Optional[str] = None
+    """The full url of the target service attachment. Example:
+    projects/my-gcp-project/regions/us-east4/serviceAttachments/my-service-attachment"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GcpEndpoint into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.psc_endpoint_uri is not None:
+            body["psc_endpoint_uri"] = self.psc_endpoint_uri
+        if self.service_attachment is not None:
+            body["service_attachment"] = self.service_attachment
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpEndpoint into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.psc_endpoint_uri is not None:
+            body["psc_endpoint_uri"] = self.psc_endpoint_uri
+        if self.service_attachment is not None:
+            body["service_attachment"] = self.service_attachment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GcpEndpoint:
+        """Deserializes the GcpEndpoint from a dictionary."""
+        return cls(
+            psc_endpoint_uri=d.get("psc_endpoint_uri", None), service_attachment=d.get("service_attachment", None)
+        )
 
 
 @dataclass
@@ -4517,6 +4578,8 @@ class NccPrivateEndpointRule:
 
     error_message: Optional[str] = None
 
+    gcp_endpoint: Optional[GcpEndpoint] = None
+
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
     
@@ -4569,6 +4632,8 @@ class NccPrivateEndpointRule:
             body["endpoint_service"] = self.endpoint_service
         if self.error_message is not None:
             body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint.as_dict()
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4608,6 +4673,8 @@ class NccPrivateEndpointRule:
             body["endpoint_service"] = self.endpoint_service
         if self.error_message is not None:
             body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4638,6 +4705,7 @@ class NccPrivateEndpointRule:
             endpoint_name=d.get("endpoint_name", None),
             endpoint_service=d.get("endpoint_service", None),
             error_message=d.get("error_message", None),
+            gcp_endpoint=_from_dict(d, "gcp_endpoint", GcpEndpoint),
             group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),
@@ -5620,6 +5688,8 @@ class UpdatePrivateEndpointRule:
 
     error_message: Optional[str] = None
 
+    gcp_endpoint: Optional[GcpEndpoint] = None
+
     resource_names: Optional[List[str]] = None
     """Only used by private endpoints towards AWS S3 service.
     
@@ -5636,6 +5706,8 @@ class UpdatePrivateEndpointRule:
             body["enabled"] = self.enabled
         if self.error_message is not None:
             body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint.as_dict()
         if self.resource_names:
             body["resource_names"] = [v for v in self.resource_names]
         return body
@@ -5649,6 +5721,8 @@ class UpdatePrivateEndpointRule:
             body["enabled"] = self.enabled
         if self.error_message is not None:
             body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint
         if self.resource_names:
             body["resource_names"] = self.resource_names
         return body
@@ -5660,8 +5734,27 @@ class UpdatePrivateEndpointRule:
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
             error_message=d.get("error_message", None),
+            gcp_endpoint=_from_dict(d, "gcp_endpoint", GcpEndpoint),
             resource_names=d.get("resource_names", None),
         )
+
+
+@dataclass
+class UpdateTokenResponse:
+    def as_dict(self) -> dict:
+        """Serializes the UpdateTokenResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateTokenResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateTokenResponse:
+        """Deserializes the UpdateTokenResponse from a dictionary."""
+        return cls()
 
 
 WorkspaceConf = Dict[str, str]
@@ -8246,8 +8339,8 @@ class NetworkConnectivityAPI:
     ) -> NccPrivateEndpointRule:
         """Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private
         endpoint is immediately deleted. Otherwise, the private endpoint is deactivated and will be deleted
-        after seven days of deactivation. When a private endpoint is deactivated, the `deactivated` field is
-        set to `true` and the private endpoint is not available to your serverless compute resources.
+        after one day of deactivation. When a private endpoint is deactivated, the `deactivated` field is set
+        to `true` and the private endpoint is not available to your serverless compute resources.
 
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
@@ -9138,7 +9231,12 @@ class TokenManagementAPI:
         self._api = api_client
 
     def create_obo_token(
-        self, application_id: str, *, comment: Optional[str] = None, lifetime_seconds: Optional[int] = None
+        self,
+        application_id: str,
+        *,
+        comment: Optional[str] = None,
+        lifetime_seconds: Optional[int] = None,
+        scopes: Optional[List[str]] = None,
     ) -> CreateOboTokenResponse:
         """Creates a token on behalf of a service principal.
 
@@ -9148,6 +9246,7 @@ class TokenManagementAPI:
           Comment that describes the purpose of the token.
         :param lifetime_seconds: int (optional)
           The number of seconds before the token expires.
+        :param scopes: List[str] (optional)
 
         :returns: :class:`CreateOboTokenResponse`
         """
@@ -9159,6 +9258,8 @@ class TokenManagementAPI:
             body["comment"] = comment
         if lifetime_seconds is not None:
             body["lifetime_seconds"] = lifetime_seconds
+        if scopes is not None:
+            body["scopes"] = [v for v in scopes]
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -9333,7 +9434,13 @@ class TokensAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, comment: Optional[str] = None, lifetime_seconds: Optional[int] = None) -> CreateTokenResponse:
+    def create(
+        self,
+        *,
+        comment: Optional[str] = None,
+        lifetime_seconds: Optional[int] = None,
+        scopes: Optional[List[str]] = None,
+    ) -> CreateTokenResponse:
         """Creates and returns a token for a user. If this call is made through token authentication, it creates
         a token with the same client ID as the authenticated token. If the user's token quota is exceeded,
         this call returns an error **QUOTA_EXCEEDED**.
@@ -9344,6 +9451,8 @@ class TokensAPI:
           The lifetime of the token, in seconds.
 
           If the lifetime is not specified, this token remains valid for 2 years.
+        :param scopes: List[str] (optional)
+          Optional scopes of the token.
 
         :returns: :class:`CreateTokenResponse`
         """
@@ -9353,6 +9462,8 @@ class TokensAPI:
             body["comment"] = comment
         if lifetime_seconds is not None:
             body["lifetime_seconds"] = lifetime_seconds
+        if scopes is not None:
+            body["scopes"] = [v for v in scopes]
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -9408,6 +9519,48 @@ class TokensAPI:
         json = self._api.do("GET", "/api/2.0/token/list", headers=headers)
         parsed = ListPublicTokensResponse.from_dict(json).token_infos
         return parsed if parsed is not None else []
+
+    def update(self, token_id: str, token: PublicTokenInfo, update_mask: FieldMask) -> UpdateTokenResponse:
+        """Updates the comment or scopes of a token.
+
+        If a token with the specified ID is not valid, this call returns an error **RESOURCE_DOES_NOT_EXIST**.
+
+        :param token_id: str
+          The SHA-256 hash of the token to be updated.
+        :param token: :class:`PublicTokenInfo`
+        :param update_mask: FieldMask
+          A list of field name under PublicTokenInfo, For example in request use {"update_mask":
+          "comment,scopes"}
+
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`UpdateTokenResponse`
+        """
+
+        body = {}
+        if token is not None:
+            body["token"] = token.as_dict()
+        if update_mask is not None:
+            body["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/token/{token_id}", body=body, headers=headers)
+        return UpdateTokenResponse.from_dict(res)
 
 
 class WorkspaceConfAPI:

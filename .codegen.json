@@ -5,7 +5,7 @@
     "databricks/sdk/version.py": "__version__ = \"$VERSION\""
   },
   "toolchain": {
-    "required": ["python3.12"],
+    "required": ["python3.12", "uv"],
     "pre_setup": [
       "python3.12 -m venv .databricks"
     ],

@@ -1,5 +1,104 @@
 # Version changelog
 
+## Release v0.105.0 (2026-04-23)
+
+### API Changes
+* Add `databricks.sdk.service.supervisoragents` package.
+* Add [w.secrets_uc](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/secrets_uc.html) workspace-level service.
+* Add [w.supervisor_agents](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/supervisoragents/supervisor_agents.html) workspace-level service.
+* Add `update()` method for [w.tokens](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/tokens.html) workspace-level service.
+* Add `etag` field for `databricks.sdk.service.dashboards.GenieSpace`.
+* Add `etag` field for `databricks.sdk.service.dashboards.GenieUpdateSpaceRequest`.
+* Add `branch_id` field for `databricks.sdk.service.postgres.BranchStatus`.
+* Add `catalog_id` field for `databricks.sdk.service.postgres.CatalogCatalogStatus`.
+* Add `database_id` field for `databricks.sdk.service.postgres.DatabaseDatabaseStatus`.
+* Add `endpoint_id` field for `databricks.sdk.service.postgres.EndpointStatus`.
+* Add `project_id` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* Add `role_id` field for `databricks.sdk.service.postgres.RoleRoleStatus`.
+* Add `project` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableStatus`.
+* Add `manual` field for `databricks.sdk.service.provisioning.CreateGcpKeyInfo`.
+* Add `manual` field for `databricks.sdk.service.provisioning.GcpKeyInfo`.
+* Add `apps_runtime` and `lakebase_runtime` fields for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicyRequestDestination`.
+* Add `blocked_internet_destinations` field for `databricks.sdk.service.settings.EgressNetworkPolicyNetworkAccessPolicy`.
+* Add `columns_to_sync` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecResponse`.
+* Add `breaking_change` enum value for `databricks.sdk.service.jobs.TerminationCodeCode`.
+* [Breaking] Change `update_catalog_config()` method for [w.data_classification](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dataclassification/data_classification.html) workspace-level service. Method path has changed.
+* [Breaking] Change `update_default_workspace_base_environment()` method for [w.environments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/environments/environments.html) workspace-level service. Method path has changed.
+* [Breaking] Change `update_knowledge_assistant()` method for [w.knowledge_assistants](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/knowledgeassistants/knowledge_assistants.html) workspace-level service. Method path has changed.
+* [Breaking] Change `update_branch()`, `update_database()`, `update_endpoint()`, `update_project()` and `update_role()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service. Method path has changed.
+* [Breaking] Change `update_default_warehouse_override()` method for [w.warehouses](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sql/warehouses.html) workspace-level service. Method path has changed.
+
+
+## Release v0.104.0 (2026-04-23)
+
+### Bug Fixes
+
+* Add `X-Databricks-Org-Id` header to `WorkspaceExt.upload()` and `WorkspaceExt.download()` for SPOG host compatibility.
+* `WorkspaceClient.get_workspace_id()` now returns `Config.workspace_id` directly when set, instead of calling `/api/2.0/preview/scim/v2/Me`. This removes an API round-trip on every call where the workspace ID is already known (profile, `?o=` query param, env var, or host metadata) and fixes a failure on SPOG hosts where the unauthenticated probe request was rejected with `Unable to load OAuth Config`.
+* Add `X-Databricks-Org-Id` header to `SharesExt.list()` for SPOG host compatibility.
+
+### Internal Changes
+
+* Expanded AI agent detection: added Goose, Amp, Augment, Copilot (VS Code), Kiro, Windsurf. Honors the `AGENT=<name>` standard (resolves to a known product if the value matches one, otherwise `unknown`). Presence-only env var matchers now treat an empty string as "set" for parity with the Go and Java SDKs. Explicit agent env vars (e.g. `CLAUDECODE`, `GOOSE_TERMINAL`) always take precedence over the generic `AGENT=<name>` signal. When multiple agent env vars are present (e.g. a Cursor CLI subagent invoked from Claude Code), the user-agent reports `agent/multiple`.
+
+
+## Release v0.103.0 (2026-04-20)
+
+### New Features and Improvements
+* Add support for unified hosts. A single configuration profile can now be used for both account-level and workspace-level operations when the host supports it and both `account_id` and `workspace_id` are available. The `experimental_is_unified_host` flag has been removed; unified host detection is now automatic.
+* Accept `DATABRICKS_OIDC_TOKEN_FILEPATH` environment variable for consistency with other Databricks SDKs (Go, CLI, Terraform). The previous `DATABRICKS_OIDC_TOKEN_FILE` is still supported as an alias.
+
+### Breaking Changes
+* Drop support for Python 3.8 and 3.9. The minimum supported Python version is now 3.10, in line with the oldest supported Databricks Runtime LTS (DBR 13.3).
+
+### Internal Changes
+* Replace the async-disabling mechanism on token refresh failure with a 1-minute retry backoff. Previously, a single failed async refresh would disable proactive token renewal until the token expired. Now, the SDK waits a short cooldown period and retries, improving resilience to transient errors.
+* Extract `_resolve_profile` to simplify config file loading and improve `__settings__` error messages.
+* Resolve `token_audience` from the `token_federation_default_oidc_audiences` field in the host metadata discovery endpoint, removing the need for explicit audience configuration.
+
+### API Changes
+* Add `create_catalog()`, `create_synced_table()`, `delete_catalog()`, `delete_synced_table()`, `get_catalog()` and `get_synced_table()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
+* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+* Add `column_selection` field for `databricks.sdk.service.ml.Function`.
+* Add `cascade` field for `databricks.sdk.service.pipelines.DeletePipelineRequest`.
+* Add `default_branch` field for `databricks.sdk.service.postgres.ProjectSpec`.
+* Add `default_branch` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* Add `ingress` and `ingress_dry_run` fields for `databricks.sdk.service.settings.AccountNetworkPolicy`.
+* Add `delete_app_thumbnail()` and `update_app_thumbnail()` methods for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps/apps.html) workspace-level service.
+* Add `create_message_comment()`, `list_conversation_comments()` and `list_message_comments()` methods for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service.
+* Add `apply_environment()` method for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines/pipelines.html) workspace-level service.
+* Add `name` and `permission` fields for `databricks.sdk.service.apps.AppResourceApp`.
+* Add `managed_encryption_settings` field for `databricks.sdk.service.catalog.CatalogInfo`.
+* Add `managed_encryption_settings` field for `databricks.sdk.service.catalog.CreateCatalog`.
+* Add `managed_encryption_settings` field for `databricks.sdk.service.catalog.UpdateCatalog`.
+* Add `comment` field for `databricks.sdk.service.dashboards.GenieFeedback`.
+* Add `thoughts` field for `databricks.sdk.service.dashboards.GenieQueryAttachment`.
+* Add `comment` field for `databricks.sdk.service.dashboards.GenieSendMessageFeedbackRequest`.
+* Add `request_source` field for `databricks.sdk.service.ml.DataSource`.
+* Add `is_online` field for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `connector_options` field for `databricks.sdk.service.pipelines.SchemaSpec`.
+* Add `connector_options` field for `databricks.sdk.service.pipelines.TableSpec`.
+* Add `scopes` field for `databricks.sdk.service.settings.CreateOboTokenRequest`.
+* Add `gcp_endpoint` field for `databricks.sdk.service.settings.CreatePrivateEndpointRule`.
+* Add `scopes` field for `databricks.sdk.service.settings.CreateTokenRequest`.
+* Add `gcp_endpoint` field for `databricks.sdk.service.settings.NccPrivateEndpointRule`.
+* Add `gcp_endpoint` field for `databricks.sdk.service.settings.UpdatePrivateEndpointRule`.
+* Add `sql_state` field for `databricks.sdk.service.sql.StatementStatus`.
+* Add `usage_policy_id` field for `databricks.sdk.service.vectorsearch.CreateEndpoint`.
+* Add `index_subtype` field for `databricks.sdk.service.vectorsearch.CreateVectorIndexRequest`.
+* Add `budget_policy_id` field for `databricks.sdk.service.vectorsearch.EndpointInfo`.
+* Add `index_subtype` field for `databricks.sdk.service.vectorsearch.MiniVectorIndex`.
+* Add `budget_policy_id` field for `databricks.sdk.service.vectorsearch.PatchEndpointBudgetPolicyResponse`.
+* Add `index_subtype` field for `databricks.sdk.service.vectorsearch.VectorIndex`.
+* Add `table_delta_uniform_iceberg_external_deltasharing` enum value for `databricks.sdk.service.catalog.SecurableKind`.
+* Add `google_drive` enum value for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* Add `storage_optimized` enum value for `databricks.sdk.service.vectorsearch.EndpointType`.
+* [Breaking] Remove `project` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableSpec`.
+* [Breaking] Remove `apps` and `lakebase` fields for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicyRequestDestination`.
+
+
 ## Release v0.102.0 (2026-03-19)
 
 ### New Features and Improvements

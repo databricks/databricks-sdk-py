@@ -31,6 +31,9 @@ class SharesExt(sharing.SharesAPI):
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
