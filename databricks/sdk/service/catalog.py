@@ -13,9 +13,10 @@ from typing import Any, Callable, Dict, Iterator, List, Optional
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum,
-                                              _timestamp)
+from databricks.sdk.service._internal import (Wait, _enum,
+    _escape_multi_segment_path_parameter, _from_dict,
+    _repeated_dict, _repeated_enum,
+    _timestamp)
 
 from ..errors import OperationFailed
 
@@ -13553,7 +13554,7 @@ class GrantsAPI:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/permissions/{securable_type}/{full_name}", query=query, headers=headers
+            "GET", f"/api/2.1/unity-catalog/permissions/{securable_type}/{_escape_multi_segment_path_parameter(full_name)}", query=query, headers=headers
         )
         return GetPermissionsResponse.from_dict(res)
 
@@ -13617,7 +13618,7 @@ class GrantsAPI:
 
         res = self._api.do(
             "GET",
-            f"/api/2.1/unity-catalog/effective-permissions/{securable_type}/{full_name}",
+            f"/api/2.1/unity-catalog/effective-permissions/{securable_type}/{_escape_multi_segment_path_parameter(full_name)}",
             query=query,
             headers=headers,
         )
@@ -13651,7 +13652,7 @@ class GrantsAPI:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/permissions/{securable_type}/{full_name}", body=body, headers=headers
+            "PATCH", f"/api/2.1/unity-catalog/permissions/{securable_type}/{_escape_multi_segment_path_parameter(full_name)}", body=body, headers=headers
         )
         return UpdatePermissionsResponse.from_dict(res)
 
@@ -14046,7 +14047,7 @@ class ModelVersionsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}", headers=headers)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{_escape_multi_segment_path_parameter(full_name)}/versions/{version}", headers=headers)
 
     def get(
         self,
@@ -14089,7 +14090,7 @@ class ModelVersionsAPI:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}", query=query, headers=headers
+            "GET", f"/api/2.1/unity-catalog/models/{_escape_multi_segment_path_parameter(full_name)}/versions/{version}", query=query, headers=headers
         )
         return ModelVersionInfo.from_dict(res)
 
@@ -14122,7 +14123,7 @@ class ModelVersionsAPI:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}", query=query, headers=headers
+            "GET", f"/api/2.1/unity-catalog/models/{_escape_multi_segment_path_parameter(full_name)}/aliases/{alias}", query=query, headers=headers
         )
         return ModelVersionInfo.from_dict(res)
 
@@ -14184,7 +14185,7 @@ class ModelVersionsAPI:
 
         while True:
             json = self._api.do(
-                "GET", f"/api/2.1/unity-catalog/models/{full_name}/versions", query=query, headers=headers
+                "GET", f"/api/2.1/unity-catalog/models/{_escape_multi_segment_path_parameter(full_name)}/versions", query=query, headers=headers
             )
             if "model_versions" in json:
                 for v in json["model_versions"]:
@@ -14313,7 +14314,7 @@ class ModelVersionsAPI:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}", body=body, headers=headers
+            "PATCH", f"/api/2.1/unity-catalog/models/{_escape_multi_segment_path_parameter(full_name)}/versions/{version}", body=body, headers=headers
         )
         return ModelVersionInfo.from_dict(res)
 
@@ -15230,7 +15231,7 @@ class RegisteredModelsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}", headers=headers)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{_escape_multi_segment_path_parameter(full_name)}", headers=headers)
 
     def delete_alias(self, full_name: str, alias: str):
         """Deletes a registered model alias.
@@ -15253,7 +15254,7 @@ class RegisteredModelsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}", headers=headers)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{_escape_multi_segment_path_parameter(full_name)}/aliases/{alias}", headers=headers)
 
     def get(
         self, full_name: str, *, include_aliases: Optional[bool] = None, include_browse: Optional[bool] = None
@@ -15288,7 +15289,7 @@ class RegisteredModelsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/models/{full_name}", query=query, headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/models/{_escape_multi_segment_path_parameter(full_name)}", query=query, headers=headers)
         return RegisteredModelInfo.from_dict(res)
 
     def list(
@@ -15402,7 +15403,7 @@ class RegisteredModelsAPI:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
-            "PUT", f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}", body=body, headers=headers
+            "PUT", f"/api/2.1/unity-catalog/models/{_escape_multi_segment_path_parameter(full_name)}/aliases/{alias}", body=body, headers=headers
         )
         return RegisteredModelAlias.from_dict(res)
 
@@ -15506,7 +15507,7 @@ class RegisteredModelsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/models/{full_name}", body=body, headers=headers)
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/models/{_escape_multi_segment_path_parameter(full_name)}", body=body, headers=headers)
         return RegisteredModelInfo.from_dict(res)
 
 
@@ -15662,7 +15663,7 @@ class RfaAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/3.0/rfa/destinations/{securable_type}/{full_name}", headers=headers)
+        res = self._api.do("GET", f"/api/3.0/rfa/destinations/{securable_type}/{_escape_multi_segment_path_parameter(full_name)}", headers=headers)
         return AccessRequestDestinations.from_dict(res)
 
     def update_access_request_destinations(
@@ -15794,7 +15795,7 @@ class SchemasAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/schemas/{full_name}", query=query, headers=headers)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/schemas/{_escape_multi_segment_path_parameter(full_name)}", query=query, headers=headers)
 
     def get(self, full_name: str, *, include_browse: Optional[bool] = None) -> SchemaInfo:
         """Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the
@@ -15820,7 +15821,7 @@ class SchemasAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/schemas/{full_name}", query=query, headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/schemas/{_escape_multi_segment_path_parameter(full_name)}", query=query, headers=headers)
         return SchemaInfo.from_dict(res)
 
     def list(
@@ -15938,7 +15939,7 @@ class SchemasAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/schemas/{full_name}", body=body, headers=headers)
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/schemas/{_escape_multi_segment_path_parameter(full_name)}", body=body, headers=headers)
         return SchemaInfo.from_dict(res)
 
 
@@ -16707,7 +16708,7 @@ class TableConstraintsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/constraints/{full_name}", query=query, headers=headers)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/constraints/{_escape_multi_segment_path_parameter(full_name)}", query=query, headers=headers)
 
 
 class TablesAPI:
@@ -16821,7 +16822,7 @@ class TablesAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{full_name}", headers=headers)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{_escape_multi_segment_path_parameter(full_name)}", headers=headers)
 
     def exists(self, full_name: str) -> TableExistsResponse:
         """Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
@@ -16845,7 +16846,7 @@ class TablesAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}/exists", headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{_escape_multi_segment_path_parameter(full_name)}/exists", headers=headers)
         return TableExistsResponse.from_dict(res)
 
     def get(
@@ -16890,7 +16891,7 @@ class TablesAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}", query=query, headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{_escape_multi_segment_path_parameter(full_name)}", query=query, headers=headers)
         return TableInfo.from_dict(res)
 
     def list(
@@ -17087,7 +17088,7 @@ class TablesAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        self._api.do("PATCH", f"/api/2.1/unity-catalog/tables/{full_name}", body=body, headers=headers)
+        self._api.do("PATCH", f"/api/2.1/unity-catalog/tables/{_escape_multi_segment_path_parameter(full_name)}", body=body, headers=headers)
 
 
 class TemporaryPathCredentialsAPI:
