@@ -8,13 +8,13 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from databricks.sdk.common.types.fieldmask import FieldMask
 
 
-def _from_dict(d: Dict[str, any], field: str, cls: Type) -> any:
+def _from_dict(d: Dict[str, Any], field: str, cls: Type) -> Any:
     if field not in d or d[field] is None:
         return None
     return getattr(cls, "from_dict")(d[field])
 
 
-def _repeated_dict(d: Dict[str, any], field: str, cls: Type) -> any:
+def _repeated_dict(d: Dict[str, Any], field: str, cls: Type) -> Any:
     if field not in d or not d[field]:
         return []
     from_dict = getattr(cls, "from_dict")
@@ -28,14 +28,14 @@ def _get_enum_value(cls: Type, value: str) -> Optional[Type]:
     )
 
 
-def _enum(d: Dict[str, any], field: str, cls: Type) -> any:
+def _enum(d: Dict[str, Any], field: str, cls: Type) -> Any:
     """Unknown enum values are returned as None."""
     if field not in d or not d[field]:
         return None
     return _get_enum_value(cls, d[field])
 
 
-def _repeated_enum(d: Dict[str, any], field: str, cls: Type) -> any:
+def _repeated_enum(d: Dict[str, Any], field: str, cls: Type) -> Any:
     """For now, unknown enum values are not included in the response."""
     if field not in d or not d[field]:
         return None

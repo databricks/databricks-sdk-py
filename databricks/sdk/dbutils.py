@@ -186,8 +186,8 @@ class _JobsUtil:
             self,
             taskKey: str,
             key: str,
-            default: any = None,
-            debugValue: any = None,
+            default: Any = None,
+            debugValue: Any = None,
         ) -> None:
             """
             Returns `debugValue` if present, throws an error otherwise as this implementation is always run outside of a job run
@@ -198,7 +198,7 @@ class _JobsUtil:
                 )
             return debugValue
 
-        def set(self, key: str, value: any) -> None:
+        def set(self, key: str, value: Any) -> None:
             """
             Sets a task value on the current task run
             """

@@ -789,7 +789,7 @@ class OAuthClient:
         from .credentials_provider import credentials_strategy
 
         @credentials_strategy("noop", [])
-        def noop_credentials(_: any):
+        def noop_credentials(_: Any):
             return lambda: {}
 
         config = Config(host=host, credentials_strategy=noop_credentials)

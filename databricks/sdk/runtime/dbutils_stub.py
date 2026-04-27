@@ -57,7 +57,7 @@ class dbutils:
         """
 
         @staticmethod
-        def summarize(df: any, precise: bool = False) -> None:
+        def summarize(df: typing.Any, precise: bool = False) -> None:
             """Summarize a Spark/pandas/Koalas DataFrame and visualize the statistics to get quick insights.
 
             Example: dbutils.data.summarize(df)
@@ -200,8 +200,8 @@ class dbutils:
             def get(
                 taskKey: str,
                 key: str,
-                default: any = None,
-                debugValue: any = None,
+                default: typing.Any = None,
+                debugValue: typing.Any = None,
             ) -> None:
                 """
                 Returns the latest task value that belongs to the current job run
@@ -209,7 +209,7 @@ class dbutils:
                 ...
 
             @staticmethod
-            def set(key: str, value: any) -> None:
+            def set(key: str, value: typing.Any) -> None:
                 """
                 Sets a task value on the current task run
                 """
