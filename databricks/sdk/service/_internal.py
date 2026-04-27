@@ -1,6 +1,6 @@
 import datetime
 import urllib.parse
-from typing import Callable, Dict, Generic, List, Optional, Type, TypeVar
+from typing import Any, Callable, Dict, Generic, List, Optional, Type, TypeVar
 
 from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -143,13 +143,13 @@ ReturnType = TypeVar("ReturnType")
 
 class Wait(Generic[ReturnType]):
 
-    def __init__(self, waiter: Callable, response: any = None, **kwargs) -> None:
+    def __init__(self, waiter: Callable, response: Any = None, **kwargs) -> None:
         self.response = response
 
         self._waiter = waiter
         self._bind = kwargs
 
-    def __getattr__(self, key) -> any:
+    def __getattr__(self, key) -> Any:
         return self._bind[key]
 
     def bind(self) -> dict:
