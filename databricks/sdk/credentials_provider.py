@@ -1012,6 +1012,9 @@ class DatabricksCliTokenSource(CliTokenSource):
     # --profile support added in CLI v0.207.1: https://github.com/databricks/cli/pull/855
     _CLI_VERSION_FOR_PROFILE = CliVersion(0, 207, 1)
 
+    # --force-refresh support added in CLI v0.296.0: https://github.com/databricks/cli/pull/4767
+    _CLI_VERSION_FOR_FORCE_REFRESH = CliVersion(0, 296, 0)
+
     @staticmethod
     def _parse_cli_version(output: str) -> CliVersion:
         """Parse the JSON output of `databricks version --output json`.
@@ -1101,7 +1104,34 @@ class DatabricksCliTokenSource(CliTokenSource):
 
     @staticmethod
     def _build_cli_command(cli_path: str, cfg: "Config", version: CliVersion) -> List[str]:
-        """Build the `auth token` command.
+        """Build the full CLI command, including capability-gated flags.
+
+        Delegates the profile/host decision to _build_core_cli_command and
+        appends --force-refresh when supported.
+        """
+        cmd = DatabricksCliTokenSource._build_core_cli_command(cli_path, cfg, version)
+        if version >= DatabricksCliTokenSource._CLI_VERSION_FOR_FORCE_REFRESH:
+            cmd.append("--force-refresh")
+        elif version == CliVersion() or version.is_default_dev_build:
+            # Detection failed or no version metadata — we can't prove the CLI
+            # lacks --force-refresh, just failed to confirm it. Upstream has
+            # already logged the underlying cause, so use softer wording.
+            logger.warning(
+                f"Could not confirm --force-refresh support for Databricks CLI {version} "
+                f"(requires >= {DatabricksCliTokenSource._CLI_VERSION_FOR_FORCE_REFRESH}). "
+                "The CLI's token cache may provide stale tokens."
+            )
+        else:
+            logger.warning(
+                f"Databricks CLI {version} does not support --force-refresh "
+                f"(requires >= {DatabricksCliTokenSource._CLI_VERSION_FOR_FORCE_REFRESH}). "
+                "The CLI's token cache may provide stale tokens."
+            )
+        return cmd
+
+    @staticmethod
+    def _build_core_cli_command(cli_path: str, cfg: "Config", version: CliVersion) -> List[str]:
+        """Build the base `auth token` command without capability-gated flags.
 
         Falls back to --host when --profile is either not configured or not
         supported by the installed CLI. Raises IOError describing which

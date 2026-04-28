@@ -451,6 +451,48 @@ def _make_cfg(*, profile=None, host=None, account_id=None):
             _CV(0, 0, 0),
             [_CLI, "auth", "token", "--host", _HOST],
         ),
+        (
+            "host with force-refresh",
+            _make_cfg(host=_HOST),
+            _CV(0, 296, 0),
+            [_CLI, "auth", "token", "--host", _HOST, "--force-refresh"],
+        ),
+        (
+            "account host with force-refresh",
+            _make_cfg(host=_ACCT_HOST, account_id="acct-123"),
+            _CV(0, 296, 0),
+            [_CLI, "auth", "token", "--host", _ACCT_HOST, "--account-id", "acct-123", "--force-refresh"],
+        ),
+        (
+            "profile with force-refresh",
+            _make_cfg(profile="my-profile", host=_HOST),
+            _CV(0, 296, 0),
+            [_CLI, "auth", "token", "--profile", "my-profile", "--force-refresh"],
+        ),
+        (
+            "profile supports profile but not force-refresh",
+            _make_cfg(profile="my-profile", host=_HOST),
+            _CV(0, 207, 1),
+            [_CLI, "auth", "token", "--profile", "my-profile"],
+        ),
+        (
+            "profile-only with force-refresh",
+            _make_cfg(profile="my-profile"),
+            _CV(0, 296, 0),
+            [_CLI, "auth", "token", "--profile", "my-profile", "--force-refresh"],
+        ),
+        (
+            "unknown version, host only, no force-refresh",
+            _make_cfg(host=_HOST),
+            _CV(),
+            [_CLI, "auth", "token", "--host", _HOST],
+        ),
+        (
+            "dev-build version, host only, no force-refresh",
+            _make_cfg(host=_HOST),
+            _CV(0, 0, 0),
+            [_CLI, "auth", "token", "--host", _HOST],
+        ),
     ],
 )
 def test_build_cli_command(name, cfg, version, expected):
@@ -590,6 +632,68 @@ def test_resolve_cli_command_new_cli_uses_profile(mocker):
     cfg = _make_cfg(profile="my-profile", host=_HOST)
     cmd = credentials_provider.DatabricksCliTokenSource._resolve_cli_command(_CLI, cfg)
     assert cmd == [_CLI, "auth", "token", "--profile", "my-profile"]
+
+
+def test_build_cli_command_force_refresh_unsupported_logs_warning(caplog):
+    import logging
+
+    cfg = _make_cfg(host=_HOST)
+    with caplog.at_level(logging.WARNING, logger="databricks.sdk.credentials_provider"):
+        credentials_provider.DatabricksCliTokenSource._build_cli_command(_CLI, cfg, _CV(0, 295, 0))
+    assert any(
+        "does not support --force-refresh" in rec.message and rec.levelname == "WARNING" for rec in caplog.records
+    )
+
+
+@pytest.mark.parametrize(
+    "version",
+    [
+        # Detection failed: we don't actually know the CLI lacks --force-refresh.
+        _CV(),
+        # Default dev build: no version metadata injected, same story.
+        _CV(0, 0, 0),
+    ],
+)
+def test_build_cli_command_unconfirmed_force_refresh_softens_warning(caplog, version):
+    import logging
+
+    cfg = _make_cfg(host=_HOST)
+    with caplog.at_level(logging.WARNING, logger="databricks.sdk.credentials_provider"):
+        credentials_provider.DatabricksCliTokenSource._build_cli_command(_CLI, cfg, version)
+    # Softer phrasing for states where --force-refresh support wasn't proven absent.
+    assert any(
+        "Could not confirm --force-refresh support" in rec.message and rec.levelname == "WARNING"
+        for rec in caplog.records
+    )
+    assert not any("does not support --force-refresh" in rec.message for rec in caplog.records)
+
+
+def test_build_cli_command_force_refresh_supported_no_warning(caplog):
+    import logging
+
+    cfg = _make_cfg(host=_HOST)
+    with caplog.at_level(logging.WARNING, logger="databricks.sdk.credentials_provider"):
+        credentials_provider.DatabricksCliTokenSource._build_cli_command(_CLI, cfg, _CV(0, 296, 0))
+    # No --force-refresh-related warning when the flag is supported.
+    assert not any("--force-refresh" in rec.message for rec in caplog.records)
+
+
+def test_resolve_cli_command_malformed_version_json_falls_back(mocker, caplog):
+    # Pin the integrated path: `databricks version --output json` succeeds but
+    # emits unparseable JSON. _parse_cli_version returns CliVersion() with only
+    # DEBUG logging, _resolve_cli_command falls back to --host, and no WARNING
+    # about --profile fires because the unknown sentinel takes the softened branch.
+    import logging
+
+    _stub_version_output(mocker, "{not valid json")
+    cfg = _make_cfg(profile="my-profile", host=_HOST)
+    with caplog.at_level(logging.DEBUG, logger="databricks.sdk.credentials_provider"):
+        cmd = credentials_provider.DatabricksCliTokenSource._resolve_cli_command(_CLI, cfg)
+    assert cmd == [_CLI, "auth", "token", "--host", _HOST]
+    assert any(
+        "Failed to parse Databricks CLI version" in rec.message and rec.levelname == "DEBUG" for rec in caplog.records
+    )
+    assert not any("does not support --profile" in rec.message for rec in caplog.records)
 
 
 # Tests for cloud-agnostic hosts and removed cloud checks

@@ -13,5 +13,6 @@
 ### Breaking Changes
 
 ### Internal Changes
+* Pass `--force-refresh` to Databricks CLI `auth token` command so the SDK always receives a freshly minted token instead of a potentially stale one from the CLI's internal cache.
 
 ### API Changes
