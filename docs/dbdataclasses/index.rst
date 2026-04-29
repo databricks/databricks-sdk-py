@@ -15,6 +15,7 @@ Dataclasses
    database
    dataclassification
    dataquality
+   disasterrecovery
    environments
    files
    iam

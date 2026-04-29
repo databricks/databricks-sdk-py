@@ -455,14 +455,20 @@ class AvgFunction:
 
 @dataclass
 class BackfillSource:
+    delta_table_name: Optional[str] = None
+    """The full three-part name (catalog, schema, name) of the Delta table containing the historical
+    data to backfill."""
+
     delta_table_source: Optional[DeltaTableSource] = None
-    """The Delta table source containing the historic data to backfill. Only the delta table name is
-    used for backfill, the entity columns and timeseries column are ignored as they are defined by
-    the associated KafkaSource."""
+    """Deprecated: Use delta_table_name instead. Kept for backwards compatibility. The Delta table
+    source containing the historical data to backfill. Only the delta table name is used for
+    backfill, other fields are ignored."""
 
     def as_dict(self) -> dict:
         """Serializes the BackfillSource into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.delta_table_name is not None:
+            body["delta_table_name"] = self.delta_table_name
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source.as_dict()
         return body
@@ -470,6 +476,8 @@ class BackfillSource:
     def as_shallow_dict(self) -> dict:
         """Serializes the BackfillSource into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.delta_table_name is not None:
+            body["delta_table_name"] = self.delta_table_name
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source
         return body
@@ -477,7 +485,10 @@ class BackfillSource:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> BackfillSource:
         """Deserializes the BackfillSource from a dictionary."""
-        return cls(delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource))
+        return cls(
+            delta_table_name=d.get("delta_table_name", None),
+            delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
+        )
 
 
 @dataclass

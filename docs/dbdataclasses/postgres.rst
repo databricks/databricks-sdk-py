@@ -466,7 +466,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ProvisioningPhase
 
-   Copied from database_table_statuses.proto to decouple SDK packages.
+   The current phase of the data synchronization pipeline.
 
    .. py:attribute:: PROVISIONING_PHASE_INDEX_SCAN
       :value: "PROVISIONING_PHASE_INDEX_SCAN"
@@ -561,7 +561,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SyncedTableState
 
-   The state of a synced table. Copied from database_table_statuses.proto to decouple SDK packages.
+   The state of a synced table.
 
    .. py:attribute:: SYNCED_TABLE_OFFLINE
       :value: "SYNCED_TABLE_OFFLINE"

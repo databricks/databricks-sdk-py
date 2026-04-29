@@ -11,6 +11,7 @@ databricks/sdk/service/dashboards.py linguist-generated=true
 databricks/sdk/service/database.py linguist-generated=true
 databricks/sdk/service/dataclassification.py linguist-generated=true
 databricks/sdk/service/dataquality.py linguist-generated=true
+databricks/sdk/service/disasterrecovery.py linguist-generated=true
 databricks/sdk/service/environments.py linguist-generated=true
 databricks/sdk/service/files.py linguist-generated=true
 databricks/sdk/service/httpcallv2.py linguist-generated=true

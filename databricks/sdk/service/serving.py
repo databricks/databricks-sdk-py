@@ -580,6 +580,9 @@ class ApiKeyAuth:
 
 @dataclass
 class AutoCaptureConfigInput:
+    """Deprecated: legacy inference table configuration. Please use AI Gateway inference tables
+    instead. See https://docs.databricks.com/aws/en/ai-gateway/inference-tables."""
+
     catalog_name: Optional[str] = None
     """The name of the catalog in Unity Catalog. NOTE: On update, you cannot change the catalog name if
     the inference table is already enabled."""
@@ -634,6 +637,9 @@ class AutoCaptureConfigInput:
 
 @dataclass
 class AutoCaptureConfigOutput:
+    """Deprecated: legacy inference table configuration. Please use AI Gateway inference tables
+    instead. See https://docs.databricks.com/aws/en/ai-gateway/inference-tables."""
+
     catalog_name: Optional[str] = None
     """The name of the catalog in Unity Catalog. NOTE: On update, you cannot change the catalog name if
     the inference table is already enabled."""
@@ -1127,10 +1133,9 @@ class EndpointCoreConfigInput:
     """The name of the serving endpoint to update. This field is required."""
 
     auto_capture_config: Optional[AutoCaptureConfigInput] = None
-    """Configuration for Inference Tables which automatically logs requests and responses to Unity
-    Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or
-    updating existing provisioned throughput endpoints that never have inference table configured;
-    in these cases please use AI Gateway to manage inference tables."""
+    """Configuration for legacy Inference Tables which automatically log requests and responses to
+    Unity Catalog. Deprecated: please use AI Gateway inference tables instead. See
+    https://docs.databricks.com/aws/en/ai-gateway/inference-tables."""
 
     served_entities: Optional[List[ServedEntityInput]] = None
     """The list of served entities under the serving endpoint config."""
@@ -1187,10 +1192,9 @@ class EndpointCoreConfigInput:
 @dataclass
 class EndpointCoreConfigOutput:
     auto_capture_config: Optional[AutoCaptureConfigOutput] = None
-    """Configuration for Inference Tables which automatically logs requests and responses to Unity
-    Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or
-    updating existing provisioned throughput endpoints that never have inference table configured;
-    in these cases please use AI Gateway to manage inference tables."""
+    """Configuration for legacy Inference Tables which automatically log requests and responses to
+    Unity Catalog. Deprecated: please use AI Gateway inference tables instead. See
+    https://docs.databricks.com/aws/en/ai-gateway/inference-tables."""
 
     config_version: Optional[int] = None
     """The config version that the serving endpoint is currently serving."""
@@ -1286,10 +1290,9 @@ class EndpointCoreConfigSummary:
 @dataclass
 class EndpointPendingConfig:
     auto_capture_config: Optional[AutoCaptureConfigOutput] = None
-    """Configuration for Inference Tables which automatically logs requests and responses to Unity
-    Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or
-    updating existing provisioned throughput endpoints that never have inference table configured;
-    in these cases please use AI Gateway to manage inference tables."""
+    """Configuration for legacy Inference Tables which automatically log requests and responses to
+    Unity Catalog. Deprecated: please use AI Gateway inference tables instead. See
+    https://docs.databricks.com/aws/en/ai-gateway/inference-tables."""
 
     config_version: Optional[int] = None
     """The config version that the serving endpoint is currently serving."""
@@ -4809,10 +4812,9 @@ class ServingEndpointsAPI:
         :param name: str
           The name of the serving endpoint to update. This field is required.
         :param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)
-          Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.
-          Note: this field is deprecated for creating new provisioned throughput endpoints, or updating
-          existing provisioned throughput endpoints that never have inference table configured; in these cases
-          please use AI Gateway to manage inference tables.
+          Configuration for legacy Inference Tables which automatically log requests and responses to Unity
+          Catalog. Deprecated: please use AI Gateway inference tables instead. See
+          https://docs.databricks.com/aws/en/ai-gateway/inference-tables.
         :param served_entities: List[:class:`ServedEntityInput`] (optional)
           The list of served entities under the serving endpoint config.
         :param served_models: List[:class:`ServedModelInput`] (optional)

@@ -23,6 +23,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ConfluenceConnectorOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: ConnectionParameters
    :members:
    :undoc-members:
@@ -255,6 +259,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
+
+   .. py:attribute:: CONFLUENCE
+      :value: "CONFLUENCE"
 
    .. py:attribute:: DYNAMICS365
       :value: "DYNAMICS365"

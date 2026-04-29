@@ -1831,9 +1831,10 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 123"""
+    """Next Id: 124"""
 
     BIGQUERY = "BIGQUERY"
+    CONFLUENCE = "CONFLUENCE"
     DATABRICKS = "DATABRICKS"
     GA4_RAW_DATA = "GA4_RAW_DATA"
     GLUE = "GLUE"
@@ -9247,7 +9248,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: TOOLSET_EXTERNAL_MCP = 318; Next id: 319"""
+    """Latest kind: CONNECTION_SLACK_ACCESS_AND_INTEGRATION_LOGS_OAUTH_U2M = 319; Next id: 320"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"

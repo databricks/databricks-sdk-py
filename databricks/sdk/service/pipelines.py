@@ -108,6 +108,33 @@ class ClonePipelineResponse:
 
 
 @dataclass
+class ConfluenceConnectorOptions:
+    """Confluence specific options for ingestion"""
+
+    include_confluence_spaces: Optional[List[str]] = None
+    """(Optional) Spaces to filter Confluence data on"""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConfluenceConnectorOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.include_confluence_spaces:
+            body["include_confluence_spaces"] = [v for v in self.include_confluence_spaces]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConfluenceConnectorOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.include_confluence_spaces:
+            body["include_confluence_spaces"] = self.include_confluence_spaces
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConfluenceConnectorOptions:
+        """Deserializes the ConfluenceConnectorOptions from a dictionary."""
+        return cls(include_confluence_spaces=d.get("include_confluence_spaces", None))
+
+
+@dataclass
 class ConnectionParameters:
     source_catalog: Optional[str] = None
     """Source catalog for initial connection. This is necessary for schema exploration in some database
@@ -138,6 +165,8 @@ class ConnectionParameters:
 class ConnectorOptions:
     """Wrapper message for source-specific options to support multiple connector types"""
 
+    confluence_options: Optional[ConfluenceConnectorOptions] = None
+
     gdrive_options: Optional[GoogleDriveOptions] = None
 
     google_ads_options: Optional[GoogleAdsOptions] = None
@@ -155,6 +184,8 @@ class ConnectorOptions:
     def as_dict(self) -> dict:
         """Serializes the ConnectorOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.confluence_options:
+            body["confluence_options"] = self.confluence_options.as_dict()
         if self.gdrive_options:
             body["gdrive_options"] = self.gdrive_options.as_dict()
         if self.google_ads_options:
@@ -174,6 +205,8 @@ class ConnectorOptions:
     def as_shallow_dict(self) -> dict:
         """Serializes the ConnectorOptions into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.confluence_options:
+            body["confluence_options"] = self.confluence_options
         if self.gdrive_options:
             body["gdrive_options"] = self.gdrive_options
         if self.google_ads_options:
@@ -194,6 +227,7 @@ class ConnectorOptions:
     def from_dict(cls, d: Dict[str, Any]) -> ConnectorOptions:
         """Deserializes the ConnectorOptions from a dictionary."""
         return cls(
+            confluence_options=_from_dict(d, "confluence_options", ConfluenceConnectorOptions),
             gdrive_options=_from_dict(d, "gdrive_options", GoogleDriveOptions),
             google_ads_options=_from_dict(d, "google_ads_options", GoogleAdsOptions),
             jira_options=_from_dict(d, "jira_options", JiraConnectorOptions),
@@ -1432,6 +1466,7 @@ class IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
 class IngestionSourceType(Enum):
 
     BIGQUERY = "BIGQUERY"
+    CONFLUENCE = "CONFLUENCE"
     DYNAMICS365 = "DYNAMICS365"
     FOREIGN_CATALOG = "FOREIGN_CATALOG"
     GA4_RAW_DATA = "GA4_RAW_DATA"

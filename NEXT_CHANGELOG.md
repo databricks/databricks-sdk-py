@@ -30,3 +30,13 @@
 * Add `uc_connection` field for `databricks.sdk.service.supervisoragents.Tool`.
 * Change `name` field for `databricks.sdk.service.supervisoragents.Connection` to no longer be required.
 * [Breaking] Change `name` field for `databricks.sdk.service.supervisoragents.Connection` to no longer be required.
+* Add `databricks.sdk.service.disasterrecovery` package.
+* Add [a.disaster_recovery](https://databricks-sdk-py.readthedocs.io/en/latest/account/disasterrecovery/disaster_recovery.html) account-level service.
+* Add `create_example()`, `delete_example()`, `get_example()`, `list_examples()` and `update_example()` methods for [w.knowledge_assistants](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/knowledgeassistants/knowledge_assistants.html) workspace-level service.
+* Add `delta_table_name` field for `databricks.sdk.service.ml.BackfillSource`.
+* Add `confluence_options` field for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `confluence` enum value for `databricks.sdk.service.catalog.ConnectionType`.
+* Add `confluence` enum value for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* Change `description` field for `databricks.sdk.service.supervisoragents.SupervisorAgent` to no longer be required.
+* [Breaking] Change `description` field for `databricks.sdk.service.supervisoragents.SupervisorAgent` to no longer be required.
+* [Breaking] Remove `connection` field for `databricks.sdk.service.supervisoragents.Tool`.

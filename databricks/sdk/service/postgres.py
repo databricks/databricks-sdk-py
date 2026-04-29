@@ -123,7 +123,8 @@ class BranchOperationMetadata:
 @dataclass
 class BranchSpec:
     expire_time: Optional[Timestamp] = None
-    """Absolute expiration timestamp. When set, the branch will expire at this time."""
+    """Absolute expiration timestamp. When set, the branch will expire at this time. Mutually exclusive
+    with `ttl` and `no_expiry`. When updating, use `spec.expiration` in the update_mask."""
 
     is_protected: Optional[bool] = None
     """When set to true, protects the branch from deletion and reset. Associated compute endpoints and
@@ -131,7 +132,8 @@ class BranchSpec:
 
     no_expiry: Optional[bool] = None
     """Explicitly disable expiration. When set to true, the branch will not expire. If set to false,
-    the request is invalid; provide either ttl or expire_time instead."""
+    the request is invalid; provide either ttl or expire_time instead. Mutually exclusive with
+    `expire_time` and `ttl`. When updating, use `spec.expiration` in the update_mask."""
 
     source_branch: Optional[str] = None
     """The name of the source branch from which this branch was created (data lineage for point-in-time
@@ -145,7 +147,9 @@ class BranchSpec:
     """The point in time on the source branch from which this branch was created."""
 
     ttl: Optional[Duration] = None
-    """Relative time-to-live duration. When set, the branch will expire at creation_time + ttl."""
+    """Relative time-to-live duration. When set, the branch will expire at creation_time + ttl.
+    Mutually exclusive with `expire_time` and `no_expiry`. When updating, use `spec.expiration` in
+    the update_mask."""
 
     def as_dict(self) -> dict:
         """Serializes the BranchSpec into a dictionary suitable for use as a JSON request body."""
@@ -1114,13 +1118,15 @@ class EndpointSpec:
 
     no_suspension: Optional[bool] = None
     """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
-    true when provided."""
+    true when provided. Mutually exclusive with `suspend_timeout_duration`. When updating, use
+    `spec.suspension` in the update_mask."""
 
     settings: Optional[EndpointSettings] = None
 
     suspend_timeout_duration: Optional[Duration] = None
     """Duration of inactivity after which the compute endpoint is automatically suspended. If specified
-    should be between 60s and 604800s (1 minute to 1 week)."""
+    should be between 60s and 604800s (1 minute to 1 week). Mutually exclusive with `no_suspension`.
+    When updating, use `spec.suspension` in the update_mask."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointSpec into a dictionary suitable for use as a JSON request body."""
@@ -1703,7 +1709,7 @@ class Project:
     otherwise set to a timestamp in the past."""
 
     initial_endpoint_spec: Optional[InitialEndpointSpec] = None
-    """Configuration settings for the initial Read/Write endpoint created inside the default branch for
+    """Configuration settings for the initial Read/Write endpoint created inside the initial branch for
     a newly created project. If omitted, the initial endpoint created will have default settings,
     without high availability configured. This field does not apply to any endpoints created after
     project creation. Use spec.default_endpoint_settings to configure default settings for endpoints
@@ -1835,14 +1841,16 @@ class ProjectDefaultEndpointSettings:
 
     no_suspension: Optional[bool] = None
     """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
-    true when provided."""
+    true when provided. Mutually exclusive with `suspend_timeout_duration`. When updating, use
+    `spec.project_default_settings.suspension` in the update_mask."""
 
     pg_settings: Optional[Dict[str, str]] = None
     """A raw representation of Postgres settings."""
 
     suspend_timeout_duration: Optional[Duration] = None
     """Duration of inactivity after which the compute endpoint is automatically suspended. If specified
-    should be between 60s and 604800s (1 minute to 1 week)."""
+    should be between 60s and 604800s (1 minute to 1 week). Mutually exclusive with `no_suspension`.
+    When updating, use `spec.project_default_settings.suspension` in the update_mask."""
 
     def as_dict(self) -> dict:
         """Serializes the ProjectDefaultEndpointSettings into a dictionary suitable for use as a JSON request body."""
@@ -2124,7 +2132,7 @@ class ProvisioningInfoState(Enum):
 
 
 class ProvisioningPhase(Enum):
-    """Copied from database_table_statuses.proto to decouple SDK packages."""
+    """The current phase of the data synchronization pipeline."""
 
     PROVISIONING_PHASE_INDEX_SCAN = "PROVISIONING_PHASE_INDEX_SCAN"
     PROVISIONING_PHASE_INDEX_SORT = "PROVISIONING_PHASE_INDEX_SORT"
@@ -2172,6 +2180,7 @@ class RequestedClaimsPermissionSet(Enum):
 @dataclass
 class RequestedResource:
     table_name: Optional[str] = None
+    """The full Unity Catalog table name."""
 
     unspecified_resource_name: Optional[str] = None
 
@@ -2361,7 +2370,18 @@ class RoleRoleSpec:
     """The desired API-exposed Postgres role attribute to associate with the role. Optional."""
 
     auth_method: Optional[RoleAuthMethod] = None
-    """If auth_method is left unspecified, a meaningful authentication method is derived from the
+    """Controls how the Postgres role authenticates when a client opens a database connection.
+    Supported values:
+    
+    * LAKEBASE_OAUTH_V1: the role authenticates by presenting a Databricks OAuth access token
+    derived from the backing managed identity (the Databricks user, service principal, or group
+    named by the role's `postgres_role`). No static password exists for roles using this method. *
+    PG_PASSWORD_SCRAM_SHA_256: the role authenticates with a Postgres password verified server-side
+    using the SCRAM-SHA-256 mechanism. Lakebase generates a password for the role. * NO_LOGIN: the
+    role cannot open a Postgres session at all. Useful for roles that exist only to own objects or
+    to aggregate privileges that are then granted to other, loginable roles.
+    
+    If auth_method is left unspecified, a meaningful authentication method is derived from the
     identity_type: * For the managed identities, OAUTH is used. * For the regular postgres roles,
     authentication based on postgres passwords is used.
     
@@ -2698,7 +2718,7 @@ class SyncedTablePosition:
 
 
 class SyncedTableState(Enum):
-    """The state of a synced table. Copied from database_table_statuses.proto to decouple SDK packages."""
+    """The state of a synced table."""
 
     SYNCED_TABLE_OFFLINE = "SYNCED_TABLE_OFFLINE"
     SYNCED_TABLE_OFFLINE_FAILED = "SYNCED_TABLE_OFFLINE_FAILED"
@@ -3550,8 +3570,8 @@ class PostgresAPI:
         """Get a Synced Table.
 
         :param name: str
-          Format: "synced_tables/{catalog}.{schema}.{table}", where (catalog, schema, table) are the entity
-          names in the Unity Catalog.
+          The Full resource name of the synced table. Format: "synced_tables/{catalog}.{schema}.{table}",
+          where (catalog, schema, table) are the entity names in the Unity Catalog.
 
         :returns: :class:`SyncedTable`
         """

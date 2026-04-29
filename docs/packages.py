@@ -102,4 +102,9 @@ PACKAGES = [
         "Environments",
         "Manage workspace-level environments including base environments for serverless notebooks and jobs.",
     ),
+    Package(
+        "disasterrecovery",
+        "Disaster Recovery",
+        "Manage disaster recovery configurations and execute failover operations.",
+    ),
 ]

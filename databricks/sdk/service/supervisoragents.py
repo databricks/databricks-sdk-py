@@ -46,33 +46,6 @@ class App:
 
 
 @dataclass
-class Connection:
-    """Deprecated: Use UcConnection instead. Databricks connection. Supported connection: external mcp
-    server."""
-
-    name: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the Connection into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Connection into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Connection:
-        """Deserializes the Connection from a dictionary."""
-        return cls(name=d.get("name", None))
-
-
-@dataclass
 class GenieSpace:
     id: str
     """The ID of the genie space."""
@@ -202,14 +175,14 @@ class SupervisorAgent:
     display_name: str
     """The display name of the Supervisor Agent, unique at workspace level."""
 
-    description: str
-    """Description of what this agent can do (user-facing)."""
-
     create_time: Optional[Timestamp] = None
     """Creation timestamp."""
 
     creator: Optional[str] = None
     """The creator of the Supervisor Agent."""
+
+    description: Optional[str] = None
+    """Description of what this agent can do (user-facing)."""
 
     endpoint_name: Optional[str] = None
     """The name of the supervisor agent's serving endpoint."""
@@ -307,9 +280,6 @@ class Tool:
 
     app: Optional[App] = None
 
-    connection: Optional[Connection] = None
-    """Deprecated: Use uc_connection instead."""
-
     genie_space: Optional[GenieSpace] = None
 
     id: Optional[str] = None
@@ -334,8 +304,6 @@ class Tool:
         body = {}
         if self.app:
             body["app"] = self.app.as_dict()
-        if self.connection:
-            body["connection"] = self.connection.as_dict()
         if self.description is not None:
             body["description"] = self.description
         if self.genie_space:
@@ -363,8 +331,6 @@ class Tool:
         body = {}
         if self.app:
             body["app"] = self.app
-        if self.connection:
-            body["connection"] = self.connection
         if self.description is not None:
             body["description"] = self.description
         if self.genie_space:
@@ -392,7 +358,6 @@ class Tool:
         """Deserializes the Tool from a dictionary."""
         return cls(
             app=_from_dict(d, "app", App),
-            connection=_from_dict(d, "connection", Connection),
             description=d.get("description", None),
             genie_space=_from_dict(d, "genie_space", GenieSpace),
             id=d.get("id", None),

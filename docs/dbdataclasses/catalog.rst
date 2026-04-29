@@ -283,10 +283,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 123
+   Next Id: 124
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
+
+   .. py:attribute:: CONFLUENCE
+      :value: "CONFLUENCE"
 
    .. py:attribute:: DATABRICKS
       :value: "DATABRICKS"
@@ -1527,7 +1530,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: TOOLSET_EXTERNAL_MCP = 318; Next id: 319
+   Latest kind: CONNECTION_SLACK_ACCESS_AND_INTEGRATION_LOGS_OAUTH_U2M = 319; Next id: 320
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"

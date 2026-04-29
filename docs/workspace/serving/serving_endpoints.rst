@@ -368,10 +368,9 @@
         :param name: str
           The name of the serving endpoint to update. This field is required.
         :param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)
-          Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.
-          Note: this field is deprecated for creating new provisioned throughput endpoints, or updating
-          existing provisioned throughput endpoints that never have inference table configured; in these cases
-          please use AI Gateway to manage inference tables.
+          Configuration for legacy Inference Tables which automatically log requests and responses to Unity
+          Catalog. Deprecated: please use AI Gateway inference tables instead. See
+          https://docs.databricks.com/aws/en/ai-gateway/inference-tables.
         :param served_entities: List[:class:`ServedEntityInput`] (optional)
           The list of served entities under the serving endpoint config.
         :param served_models: List[:class:`ServedModelInput`] (optional)

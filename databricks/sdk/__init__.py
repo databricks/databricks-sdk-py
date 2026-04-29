@@ -25,6 +25,7 @@ from databricks.sdk.service import dashboards as pkg_dashboards
 from databricks.sdk.service import database as pkg_database
 from databricks.sdk.service import dataclassification as pkg_dataclassification
 from databricks.sdk.service import dataquality as pkg_dataquality
+from databricks.sdk.service import disasterrecovery as pkg_disasterrecovery
 from databricks.sdk.service import environments as pkg_environments
 from databricks.sdk.service import files as pkg_files
 from databricks.sdk.service import iam as pkg_iam
@@ -93,6 +94,7 @@ from databricks.sdk.service.dashboards import (GenieAPI, LakeviewAPI,
 from databricks.sdk.service.database import DatabaseAPI
 from databricks.sdk.service.dataclassification import DataClassificationAPI
 from databricks.sdk.service.dataquality import DataQualityAPI
+from databricks.sdk.service.disasterrecovery import DisasterRecoveryAPI
 from databricks.sdk.service.environments import EnvironmentsAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccessControlAPI,
@@ -1178,6 +1180,7 @@ class AccountClient:
         self._budgets = pkg_billing.BudgetsAPI(self._api_client)
         self._credentials = pkg_provisioning.CredentialsAPI(self._api_client)
         self._custom_app_integration = pkg_oauth2.CustomAppIntegrationAPI(self._api_client)
+        self._disaster_recovery = pkg_disasterrecovery.DisasterRecoveryAPI(self._api_client)
         self._encryption_keys = pkg_provisioning.EncryptionKeysAPI(self._api_client)
         self._endpoints = pkg_networking.EndpointsAPI(self._api_client)
         self._federation_policy = pkg_oauth2.AccountFederationPolicyAPI(self._api_client)
@@ -1247,6 +1250,11 @@ class AccountClient:
     def custom_app_integration(self) -> pkg_oauth2.CustomAppIntegrationAPI:
         """These APIs enable administrators to manage custom OAuth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud."""
         return self._custom_app_integration
+
+    @property
+    def disaster_recovery(self) -> pkg_disasterrecovery.DisasterRecoveryAPI:
+        """Manage disaster recovery configurations and execute failover operations."""
+        return self._disaster_recovery
 
     @property
     def encryption_keys(self) -> pkg_provisioning.EncryptionKeysAPI:
