@@ -306,169 +306,290 @@ def test_oidc_credentials_provider_valid_id_token_source(mocker):
     assert headers == {"Authorization": "Bearer exchanged-test-jwt-token"}
 
 
-# Tests for DatabricksCliTokenSource CLI argument construction
-class TestDatabricksCliTokenSourceArgs:
-    """Tests that DatabricksCliTokenSource constructs correct CLI arguments."""
-
-    def test_account_client_passes_account_id(self, mocker):
-        """Non-unified account client should pass --account-id."""
-        mock_init = mocker.patch.object(
-            credentials_provider.CliTokenSource,
-            "__init__",
-            return_value=None,
-        )
-
-        mock_cfg = Mock()
-        mock_cfg.profile = None
-        mock_cfg.host = "https://accounts.cloud.databricks.com"
-
-        mock_cfg.account_id = "test-account-id"
-        mock_cfg.client_type = ClientType.ACCOUNT
-        mock_cfg.databricks_cli_path = "/path/to/databricks"
-        mock_cfg.disable_async_token_refresh = False
-
-        credentials_provider.DatabricksCliTokenSource(mock_cfg)
-
-        call_kwargs = mock_init.call_args
-        cmd = call_kwargs.kwargs["cmd"]
-
-        assert "--experimental-is-unified-host" not in cmd
-        assert "--account-id" in cmd
-        assert "test-account-id" in cmd
-        assert "--workspace-id" not in cmd
-
-    def test_profile_uses_profile_flag_with_host_fallback(self, mocker):
-        """When profile is set, --profile is used as primary and --host as fallback."""
-        mock_init = mocker.patch.object(
-            credentials_provider.CliTokenSource,
-            "__init__",
-            return_value=None,
-        )
-
-        mock_cfg = Mock()
-        mock_cfg.profile = "my-profile"
-        mock_cfg.host = "https://workspace.databricks.com"
-
-        mock_cfg.databricks_cli_path = "/path/to/databricks"
-        mock_cfg.disable_async_token_refresh = False
-
-        credentials_provider.DatabricksCliTokenSource(mock_cfg)
-
-        call_kwargs = mock_init.call_args
-        cmd = call_kwargs.kwargs["cmd"]
-        host_cmd = call_kwargs.kwargs["fallback_cmd"]
-
-        assert cmd == ["/path/to/databricks", "auth", "token", "--profile", "my-profile"]
-        assert host_cmd is not None
-        assert "--host" in host_cmd
-        assert "https://workspace.databricks.com" in host_cmd
-        assert "--profile" not in host_cmd
-
-    def test_profile_without_host_no_fallback(self, mocker):
-        """When profile is set but host is absent, no fallback is built."""
-        mock_init = mocker.patch.object(
-            credentials_provider.CliTokenSource,
-            "__init__",
-            return_value=None,
-        )
-
-        mock_cfg = Mock()
-        mock_cfg.profile = "my-profile"
-        mock_cfg.host = None
-        mock_cfg.databricks_cli_path = "/path/to/databricks"
-        mock_cfg.disable_async_token_refresh = False
-
-        credentials_provider.DatabricksCliTokenSource(mock_cfg)
-
-        call_kwargs = mock_init.call_args
-        cmd = call_kwargs.kwargs["cmd"]
-        host_cmd = call_kwargs.kwargs["fallback_cmd"]
-
-        assert cmd == ["/path/to/databricks", "auth", "token", "--profile", "my-profile"]
-        assert host_cmd is None
+_CV = credentials_provider.CliVersion
 
 
-# Tests for CliTokenSource fallback on unknown --profile flag
-class TestCliTokenSourceFallback:
-    """Tests that CliTokenSource falls back to --host when CLI doesn't support --profile."""
+@pytest.fixture(autouse=True)
+def _clear_cli_version_cache():
+    # `_probe_cli_version` is `@lru_cache`-decorated, so a value cached by one
+    # test would leak into the next. Clear before every test.
+    credentials_provider.DatabricksCliTokenSource._probe_cli_version.cache_clear()
 
-    def _make_token_source(self, fallback_cmd=None):
-        ts = credentials_provider.CliTokenSource.__new__(credentials_provider.CliTokenSource)
-        ts._cmd = ["databricks", "auth", "token", "--profile", "my-profile"]
-        ts._fallback_cmd = fallback_cmd
-        ts._token_type_field = "token_type"
-        ts._access_token_field = "access_token"
-        ts._expiry_field = "expiry"
-        return ts
 
-    def _make_process_error(self, stderr: str, stdout: str = ""):
-        import subprocess
+@pytest.mark.parametrize(
+    "output,expected",
+    [
+        # Stable releases.
+        ('{"Major": 0, "Minor": 207, "Patch": 1}', _CV(0, 207, 1)),
+        ('{"Major": 0, "Minor": 296, "Patch": 0}', _CV(0, 296, 0)),
+        ('{"Major": 1, "Minor": 2, "Patch": 3}', _CV(1, 2, 3)),
+        # RC release — we intentionally ignore the prerelease tag;
+        # the base triple alone is what we gate features on.
+        ('{"Major": 0, "Minor": 296, "Patch": 0, "Prerelease": "rc.1"}', _CV(0, 296, 0)),
+        # Nightly snapshot.
+        ('{"Major": 0, "Minor": 295, "Patch": 1, "Prerelease": "dev"}', _CV(0, 295, 1)),
+        # Default dev build: numeric fields stay at their "0" defaults when
+        # the CLI is built without version metadata. (0, 0, 0) is the sentinel.
+        ('{"Major": 0, "Minor": 0, "Patch": 0}', _CV(0, 0, 0)),
+        # User-chosen dev version (intentional — treated as v1.0.0).
+        ('{"Major": 1, "Minor": 0, "Patch": 0, "Prerelease": "dev"}', _CV(1, 0, 0)),
+        # Full real-world payload with the additional fields the CLI emits.
+        (
+            '{"ProjectName":"cli","Version":"0.295.0","Branch":"HEAD","Tag":"v0.295.0",'
+            '"Major":0,"Minor":295,"Patch":0,"Prerelease":"","IsSnapshot":false}',
+            _CV(0, 295, 0),
+        ),
+        # Failure cases — all fall back to the unknown CliVersion() (-1,-1,-1).
+        ("not json", _CV()),
+        ("", _CV()),
+        # Old CLIs that don't support --output json emit text — parse fails.
+        ("Databricks CLI v0.207.1", _CV()),
+        # Missing a numeric field.
+        ('{"Minor": 207, "Patch": 1}', _CV()),
+        # Wrong type on a numeric field.
+        ('{"Major": "oops", "Minor": 207, "Patch": 1}', _CV()),
+    ],
+)
+def test_parse_cli_version(output, expected):
+    assert credentials_provider.DatabricksCliTokenSource._parse_cli_version(output) == expected
 
-        err = subprocess.CalledProcessError(1, ["databricks"])
-        err.stdout = stdout.encode()
-        err.stderr = stderr.encode()
-        return err
 
-    def test_fallback_on_unknown_profile_flag(self, mocker):
-        """When --profile fails with 'unknown flag: --profile', falls back to --host command."""
-        import json
+@pytest.mark.parametrize(
+    "a,b,ordering",
+    [
+        (_CV(0, 207, 1), _CV(0, 207, 1), "=="),
+        (_CV(0, 207, 2), _CV(0, 207, 1), ">"),
+        (_CV(0, 207, 0), _CV(0, 207, 1), "<"),
+        (_CV(0, 208, 0), _CV(0, 207, 1), ">"),
+        (_CV(0, 206, 9), _CV(0, 207, 1), "<"),
+        (_CV(1, 0, 0), _CV(0, 207, 1), ">"),
+        (_CV(0, 999, 0), _CV(1, 0, 0), "<"),
+        (_CV(0, 0, 0), _CV(0, 0, 0), "=="),
+        (_CV(0, 0, 0), _CV(0, 207, 1), "<"),
+        # Unknown (-1, -1, -1) compares less than every real version so all
+        # feature gates fail for it.
+        (_CV(), _CV(0, 207, 1), "<"),
+        (_CV(), _CV(0, 0, 0), "<"),
+        (_CV(), _CV(), "=="),
+    ],
+)
+def test_cli_version_total_order(a, b, ordering):
+    # Lock in all six operators so a future refactor that replaces
+    # @dataclass(order=True) with a custom __lt__ can't introduce
+    # asymmetries (e.g. `a > b` True while `b < a` False).
+    lt, eq, gt = ordering == "<", ordering == "==", ordering == ">"
+    assert (a < b) is lt
+    assert (a == b) is eq
+    assert (a > b) is gt
+    assert (a <= b) is (lt or eq)
+    assert (a >= b) is (gt or eq)
+    assert (a != b) is not eq
 
-        expiry = (datetime.now() + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S")
-        valid_response = json.dumps({"access_token": "fallback-token", "token_type": "Bearer", "expiry": expiry})
 
-        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
-        mock_run.side_effect = [
-            self._make_process_error("Error: unknown flag: --profile"),
-            Mock(stdout=valid_response.encode()),
-        ]
+@pytest.mark.parametrize(
+    "version,expected",
+    [
+        # Default dev build: the CLI's "no version injected" sentinel.
+        (_CV(0, 0, 0), True),
+        # Regular releases.
+        (_CV(0, 207, 1), False),
+        (_CV(0, 296, 0), False),
+        (_CV(1, 0, 0), False),
+        # Unknown (detection failure) is distinct from the dev-build sentinel.
+        (_CV(), False),
+    ],
+)
+def test_cli_version_is_default_dev_build(version, expected):
+    assert version.is_default_dev_build is expected
 
-        fallback_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
-        ts = self._make_token_source(fallback_cmd=fallback_cmd)
-        token = ts.refresh()
-        assert token.access_token == "fallback-token"
-        assert mock_run.call_count == 2
-        assert mock_run.call_args_list[1][0][0] == fallback_cmd
 
-    def test_fallback_triggered_when_unknown_flag_in_stderr_only(self, mocker):
-        """Fallback triggers even when CLI also writes usage text to stdout."""
-        import json
+_CLI = "/path/to/databricks"
+_HOST = "https://workspace.databricks.com"
+_ACCT_HOST = "https://accounts.cloud.databricks.com"
 
-        expiry = (datetime.now() + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S")
-        valid_response = json.dumps({"access_token": "fallback-token", "token_type": "Bearer", "expiry": expiry})
 
-        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
-        mock_run.side_effect = [
-            self._make_process_error(stderr="Error: unknown flag: --profile", stdout="Usage: databricks auth token"),
-            Mock(stdout=valid_response.encode()),
-        ]
+def _make_cfg(*, profile=None, host=None, account_id=None):
+    cfg = Mock()
+    cfg.profile = profile
+    cfg.host = host
+    cfg.account_id = account_id
+    cfg.client_type = ClientType.ACCOUNT if (host and "accounts" in host) else ClientType.WORKSPACE
+    return cfg
 
-        fallback_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
-        ts = self._make_token_source(fallback_cmd=fallback_cmd)
-        token = ts.refresh()
-        assert token.access_token == "fallback-token"
 
-    def test_no_fallback_on_real_auth_error(self, mocker):
-        """When --profile fails with a real error (not unknown flag), no fallback is attempted."""
-        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
-        mock_run.side_effect = self._make_process_error("cache: databricks OAuth is not configured for this host")
+@pytest.mark.parametrize(
+    "name,cfg,version,expected",
+    [
+        ("host only", _make_cfg(host=_HOST), _CV(0, 200, 0), [_CLI, "auth", "token", "--host", _HOST]),
+        (
+            "account host",
+            _make_cfg(host=_ACCT_HOST, account_id="acct-123"),
+            _CV(0, 200, 0),
+            [_CLI, "auth", "token", "--host", _ACCT_HOST, "--account-id", "acct-123"],
+        ),
+        (
+            "profile with new CLI",
+            _make_cfg(profile="my-profile", host=_HOST),
+            _CV(0, 207, 1),
+            [_CLI, "auth", "token", "--profile", "my-profile"],
+        ),
+        (
+            "profile with old CLI falls back to host",
+            _make_cfg(profile="my-profile", host=_HOST),
+            _CV(0, 200, 0),
+            [_CLI, "auth", "token", "--host", _HOST],
+        ),
+        (
+            "unknown version falls back to host",
+            _make_cfg(profile="my-profile", host=_HOST),
+            _CV(),
+            [_CLI, "auth", "token", "--host", _HOST],
+        ),
+        (
+            "dev-build version falls back to host",
+            _make_cfg(profile="my-profile", host=_HOST),
+            _CV(0, 0, 0),
+            [_CLI, "auth", "token", "--host", _HOST],
+        ),
+    ],
+)
+def test_build_cli_command(name, cfg, version, expected):
+    assert credentials_provider.DatabricksCliTokenSource._build_cli_command(_CLI, cfg, version) == expected
 
-        fallback_cmd = ["databricks", "auth", "token", "--host", "https://workspace.databricks.com"]
-        ts = self._make_token_source(fallback_cmd=fallback_cmd)
-        with pytest.raises(IOError) as exc_info:
-            ts.refresh()
-        assert "databricks OAuth is not configured" in str(exc_info.value)
-        assert mock_run.call_count == 1
 
-    def test_no_fallback_when_fallback_cmd_not_set(self, mocker):
-        """When fallback_cmd is None and --profile fails, the original error is raised."""
-        mock_run = mocker.patch("databricks.sdk.credentials_provider._run_subprocess")
-        mock_run.side_effect = self._make_process_error("Error: unknown flag: --profile")
+@pytest.mark.parametrize(
+    "name,cfg,version,match",
+    [
+        (
+            "neither profile nor host",
+            _make_cfg(),
+            _CV(0, 207, 1),
+            r"neither profile nor host is configured",
+        ),
+        (
+            "profile only with old CLI has no host fallback",
+            _make_cfg(profile="my-profile"),
+            _CV(0, 200, 0),
+            r"does not support --profile .* and no host fallback is configured",
+        ),
+    ],
+)
+def test_build_cli_command_errors(name, cfg, version, match):
+    with pytest.raises(IOError, match=match):
+        credentials_provider.DatabricksCliTokenSource._build_cli_command(_CLI, cfg, version)
 
-        ts = self._make_token_source(fallback_cmd=None)
-        with pytest.raises(IOError) as exc_info:
-            ts.refresh()
-        assert "unknown flag: --profile" in str(exc_info.value)
-        assert mock_run.call_count == 1
+
+def test_build_cli_command_old_cli_logs_warning(caplog):
+    import logging
+
+    cfg = _make_cfg(profile="my-profile", host=_HOST)
+    with caplog.at_level(logging.WARNING, logger="databricks.sdk"):
+        credentials_provider.DatabricksCliTokenSource._build_cli_command(_CLI, cfg, _CV(0, 200, 0))
+    assert any("does not support --profile" in rec.message and rec.levelname == "WARNING" for rec in caplog.records)
+
+
+@pytest.mark.parametrize(
+    "version",
+    [
+        # Detection failed: we don't actually know the CLI lacks --profile.
+        _CV(),
+        # Default dev build: no version metadata injected, same story.
+        _CV(0, 0, 0),
+    ],
+)
+def test_build_cli_command_unconfirmed_profile_softens_warning(caplog, version):
+    import logging
+
+    cfg = _make_cfg(profile="my-profile", host=_HOST)
+    with caplog.at_level(logging.WARNING, logger="databricks.sdk"):
+        credentials_provider.DatabricksCliTokenSource._build_cli_command(_CLI, cfg, version)
+    # Softer phrasing for states where --profile support wasn't proven absent.
+    assert any(
+        "Could not confirm --profile support" in rec.message and rec.levelname == "WARNING" for rec in caplog.records
+    )
+    assert not any("does not support --profile" in rec.message for rec in caplog.records)
+
+
+def _stub_version_output(mocker, output: str):
+    """Mock `_run_subprocess` so `_get_cli_version` returns a controlled version."""
+    return mocker.patch(
+        "databricks.sdk.credentials_provider._run_subprocess",
+        return_value=Mock(stdout=output.encode()),
+    )
+
+
+def test_resolve_cli_command_dev_build_logs_info_and_falls_back(mocker, caplog):
+    import logging
+
+    _stub_version_output(
+        mocker,
+        '{"Version": "0.0.0-dev+abcdef123456", "Major": 0, "Minor": 0, "Patch": 0}',
+    )
+    cfg = _make_cfg(profile="my-profile", host=_HOST)
+    with caplog.at_level(logging.INFO, logger="databricks.sdk.credentials_provider"):
+        cmd = credentials_provider.DatabricksCliTokenSource._resolve_cli_command(_CLI, cfg)
+    # Dev build reports as zero version, so --profile is disabled and we fall
+    # back to --host.
+    assert cmd == [_CLI, "auth", "token", "--host", _HOST]
+    assert any("development build" in rec.message and rec.levelname == "INFO" for rec in caplog.records)
+
+
+def test_resolve_cli_command_version_detection_failure_logs_warning(mocker, caplog):
+    import logging
+
+    mocker.patch(
+        "databricks.sdk.credentials_provider._run_subprocess",
+        side_effect=OSError("boom"),
+    )
+    cfg = _make_cfg(host=_HOST)
+    with caplog.at_level(logging.WARNING, logger="databricks.sdk.credentials_provider"):
+        cmd = credentials_provider.DatabricksCliTokenSource._resolve_cli_command(_CLI, cfg)
+    assert cmd == [_CLI, "auth", "token", "--host", _HOST]
+    assert any(
+        "Failed to detect Databricks CLI version" in rec.message and rec.levelname == "WARNING"
+        for rec in caplog.records
+    )
+
+
+def test_get_cli_version_does_not_cache_subprocess_failures(mocker):
+    # Regression: a transient subprocess failure (timeout, OSError) must not
+    # be cached. Otherwise a one-off blip pins every later DatabricksCliTokenSource
+    # to the conservative fallback for the rest of the process lifetime.
+    mock_run = mocker.patch(
+        "databricks.sdk.credentials_provider._run_subprocess",
+        side_effect=[
+            OSError("transient"),
+            Mock(stdout=b'{"Major": 0, "Minor": 207, "Patch": 1}'),
+        ],
+    )
+    assert credentials_provider.DatabricksCliTokenSource._get_cli_version(_CLI) == _CV()
+    assert credentials_provider.DatabricksCliTokenSource._get_cli_version(_CLI) == _CV(0, 207, 1)
+    assert mock_run.call_count == 2
+
+
+def test_resolve_cli_command_wraps_missing_config_error(mocker):
+    _stub_version_output(
+        mocker,
+        '{"Version": "0.207.1", "Major": 0, "Minor": 207, "Patch": 1}',
+    )
+    cfg = _make_cfg()
+    with pytest.raises(
+        IOError,
+        match=r"cannot configure CLI token source: neither profile nor host is configured",
+    ):
+        credentials_provider.DatabricksCliTokenSource._resolve_cli_command(_CLI, cfg)
+
+
+def test_resolve_cli_command_new_cli_uses_profile(mocker):
+    # Happy path: post-v0.207.1 CLI + profile+host cfg produces a --profile
+    # command. Exercises the primary code path this PR enables end-to-end.
+    _stub_version_output(
+        mocker,
+        '{"Version": "0.207.1", "Major": 0, "Minor": 207, "Patch": 1}',
+    )
+    cfg = _make_cfg(profile="my-profile", host=_HOST)
+    cmd = credentials_provider.DatabricksCliTokenSource._resolve_cli_command(_CLI, cfg)
+    assert cmd == [_CLI, "auth", "token", "--profile", "my-profile"]
 
 
 # Tests for cloud-agnostic hosts and removed cloud checks

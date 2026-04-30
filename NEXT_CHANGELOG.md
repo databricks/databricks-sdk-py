@@ -7,12 +7,15 @@
 ### Security
 
 ### Bug Fixes
+* Fixed Databricks CLI `--profile` fallback by detecting the CLI version at init time. The previous error-based detection was broken because `--profile` is a global Cobra flag silently accepted by old CLIs.
 
 ### Documentation
 
 ### Breaking Changes
 
 ### Internal Changes
+* Detect Databricks CLI version at init time via `databricks version`, enabling version-gated flag support without additional subprocess calls.
+* Validate Databricks CLI configuration at `DatabricksCliTokenSource.__init__` time. Misconfiguration (missing profile and host, or `--profile`-unsupported CLI without a host fallback) now surfaces as `IOError` synchronously from construction rather than lazily from the first `refresh()` call. The exception type matches the previous `refresh()`-time behaviour, so callers who already catch `IOError` are unaffected.
 
 ### API Changes
 * Add [w.temporary_volume_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/temporary_volume_credentials.html) workspace-level service.
