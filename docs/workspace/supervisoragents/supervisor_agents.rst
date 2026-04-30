@@ -20,7 +20,7 @@
 
         Creates a Tool under a Supervisor Agent. Specify one of "genie_space", "knowledge_assistant",
         "uc_function", "uc_connection", "app", "volume", "lakeview_dashboard", "uc_table",
-        "vector_search_index" in the request body.
+        "vector_search_index", "catalog", "schema" in the request body.
 
         :param parent: str
           Parent resource where this tool will be created. Format: supervisor-agents/{supervisor_agent_id}

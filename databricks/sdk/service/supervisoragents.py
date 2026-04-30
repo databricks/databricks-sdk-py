@@ -273,7 +273,8 @@ class SupervisorAgent:
 class Tool:
     tool_type: str
     """Tool type. Must be one of: "genie_space", "knowledge_assistant", "uc_function", "uc_connection",
-    "app", "volume", "lakeview_dashboard", "serving_endpoint", "uc_table", "vector_search_index"."""
+    "app", "volume", "lakeview_dashboard", "serving_endpoint", "uc_table", "vector_search_index",
+    "catalog", "schema"."""
 
     description: str
     """Description of what this tool does (user-facing)."""
@@ -478,7 +479,7 @@ class SupervisorAgentsAPI:
     def create_tool(self, parent: str, tool: Tool, tool_id: str) -> Tool:
         """Creates a Tool under a Supervisor Agent. Specify one of "genie_space", "knowledge_assistant",
         "uc_function", "uc_connection", "app", "volume", "lakeview_dashboard", "uc_table",
-        "vector_search_index" in the request body.
+        "vector_search_index", "catalog", "schema" in the request body.
 
         :param parent: str
           Parent resource where this tool will be created. Format: supervisor-agents/{supervisor_agent_id}
