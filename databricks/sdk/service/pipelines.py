@@ -173,6 +173,8 @@ class ConnectorOptions:
 
     jira_options: Optional[JiraConnectorOptions] = None
 
+    meta_ads_options: Optional[MetaMarketingOptions] = None
+
     outlook_options: Optional[OutlookOptions] = None
 
     sharepoint_options: Optional[SharepointOptions] = None
@@ -192,6 +194,8 @@ class ConnectorOptions:
             body["google_ads_options"] = self.google_ads_options.as_dict()
         if self.jira_options:
             body["jira_options"] = self.jira_options.as_dict()
+        if self.meta_ads_options:
+            body["meta_ads_options"] = self.meta_ads_options.as_dict()
         if self.outlook_options:
             body["outlook_options"] = self.outlook_options.as_dict()
         if self.sharepoint_options:
@@ -213,6 +217,8 @@ class ConnectorOptions:
             body["google_ads_options"] = self.google_ads_options
         if self.jira_options:
             body["jira_options"] = self.jira_options
+        if self.meta_ads_options:
+            body["meta_ads_options"] = self.meta_ads_options
         if self.outlook_options:
             body["outlook_options"] = self.outlook_options
         if self.sharepoint_options:
@@ -231,6 +237,7 @@ class ConnectorOptions:
             gdrive_options=_from_dict(d, "gdrive_options", GoogleDriveOptions),
             google_ads_options=_from_dict(d, "google_ads_options", GoogleAdsOptions),
             jira_options=_from_dict(d, "jira_options", JiraConnectorOptions),
+            meta_ads_options=_from_dict(d, "meta_ads_options", MetaMarketingOptions),
             outlook_options=_from_dict(d, "outlook_options", OutlookOptions),
             sharepoint_options=_from_dict(d, "sharepoint_options", SharepointOptions),
             smartsheet_options=_from_dict(d, "smartsheet_options", SmartsheetOptions),
@@ -1472,6 +1479,7 @@ class IngestionSourceType(Enum):
     GA4_RAW_DATA = "GA4_RAW_DATA"
     GOOGLE_DRIVE = "GOOGLE_DRIVE"
     MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
+    META_MARKETING = "META_MARKETING"
     MYSQL = "MYSQL"
     NETSUITE = "NETSUITE"
     ORACLE = "ORACLE"
@@ -1655,6 +1663,94 @@ class MaturityLevel(Enum):
     DEPRECATED = "DEPRECATED"
     EVOLVING = "EVOLVING"
     STABLE = "STABLE"
+
+
+@dataclass
+class MetaMarketingOptions:
+    """Meta Marketing (Meta Ads) specific options for ingestion"""
+
+    action_attribution_windows: Optional[List[str]] = None
+    """(Optional) Action attribution windows for insights reporting (e.g. "28d_click", "1d_view")"""
+
+    action_breakdowns: Optional[List[str]] = None
+    """(Optional) Action breakdowns to configure for data aggregation"""
+
+    action_report_time: Optional[str] = None
+    """(Optional) Timing used to report action statistics (impression, conversion, mixed, or lifetime)"""
+
+    breakdowns: Optional[List[str]] = None
+    """(Optional) Breakdowns to configure for data aggregation"""
+
+    custom_insights_lookback_window: Optional[int] = None
+    """(Optional) Window in days to revisit data during sync to capture updated conversion data from
+    the API."""
+
+    level: Optional[str] = None
+    """(Optional) Granularity of data to pull (account, ad, adset, campaign)"""
+
+    start_date: Optional[str] = None
+    """(Optional) Start date in yyyy-MM-dd format (e.g. 2025-01-15). Data added after this date will be
+    ingested"""
+
+    time_increment: Optional[str] = None
+    """(Optional) Value in string by which to aggregate statistics (can take all_days, monthly or
+    number of days)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetaMarketingOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.action_attribution_windows:
+            body["action_attribution_windows"] = [v for v in self.action_attribution_windows]
+        if self.action_breakdowns:
+            body["action_breakdowns"] = [v for v in self.action_breakdowns]
+        if self.action_report_time is not None:
+            body["action_report_time"] = self.action_report_time
+        if self.breakdowns:
+            body["breakdowns"] = [v for v in self.breakdowns]
+        if self.custom_insights_lookback_window is not None:
+            body["custom_insights_lookback_window"] = self.custom_insights_lookback_window
+        if self.level is not None:
+            body["level"] = self.level
+        if self.start_date is not None:
+            body["start_date"] = self.start_date
+        if self.time_increment is not None:
+            body["time_increment"] = self.time_increment
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetaMarketingOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.action_attribution_windows:
+            body["action_attribution_windows"] = self.action_attribution_windows
+        if self.action_breakdowns:
+            body["action_breakdowns"] = self.action_breakdowns
+        if self.action_report_time is not None:
+            body["action_report_time"] = self.action_report_time
+        if self.breakdowns:
+            body["breakdowns"] = self.breakdowns
+        if self.custom_insights_lookback_window is not None:
+            body["custom_insights_lookback_window"] = self.custom_insights_lookback_window
+        if self.level is not None:
+            body["level"] = self.level
+        if self.start_date is not None:
+            body["start_date"] = self.start_date
+        if self.time_increment is not None:
+            body["time_increment"] = self.time_increment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetaMarketingOptions:
+        """Deserializes the MetaMarketingOptions from a dictionary."""
+        return cls(
+            action_attribution_windows=d.get("action_attribution_windows", None),
+            action_breakdowns=d.get("action_breakdowns", None),
+            action_report_time=d.get("action_report_time", None),
+            breakdowns=d.get("breakdowns", None),
+            custom_insights_lookback_window=d.get("custom_insights_lookback_window", None),
+            level=d.get("level", None),
+            start_date=d.get("start_date", None),
+            time_increment=d.get("time_increment", None),
+        )
 
 
 @dataclass
