@@ -22,7 +22,8 @@ class AutoTaggingConfig:
     automatically tagged with Unity Catalog tags."""
 
     classification_tag: str
-    """The Classification Tag (e.g., "class.name", "class.location")"""
+    """The Classification Tag. For built-in classes this is a system tag (e.g., "class.name",
+    "class.location"); for custom classes it is a user-defined governance tag key."""
 
     auto_tagging_mode: AutoTaggingConfigAutoTaggingMode
     """Whether auto-tagging is enabled or disabled for this classification tag."""

@@ -53,7 +53,8 @@
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
           clusters, cluster-policies, dashboards, database-projects, dbsql-dashboards, directories,
           experiments, files, genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
-          queries, registered-models, repos, serving-endpoints, or warehouses.
+          queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
+          warehouses.
         :param request_object_id: str
           The id of the request object.
 
@@ -85,7 +86,8 @@
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
           clusters, cluster-policies, dashboards, database-projects, dbsql-dashboards, directories,
           experiments, files, genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
-          queries, registered-models, repos, serving-endpoints, or warehouses.
+          queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
+          warehouses.
         :param request_object_id: str
 
         :returns: :class:`GetPermissionLevelsResponse`
@@ -133,7 +135,8 @@
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
           clusters, cluster-policies, dashboards, database-projects, dbsql-dashboards, directories,
           experiments, files, genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
-          queries, registered-models, repos, serving-endpoints, or warehouses.
+          queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
+          warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -150,7 +153,8 @@
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
           clusters, cluster-policies, dashboards, database-projects, dbsql-dashboards, directories,
           experiments, files, genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
-          queries, registered-models, repos, serving-endpoints, or warehouses.
+          queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
+          warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)

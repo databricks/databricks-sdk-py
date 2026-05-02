@@ -3927,7 +3927,7 @@ class PeriodicTriggerConfigurationTimeUnit(Enum):
 @dataclass
 class PipelineParams:
     full_refresh: Optional[bool] = None
-    """If true, triggers a full refresh on the delta live table."""
+    """If true, triggers a full refresh on the spark declarative pipeline."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelineParams into a dictionary suitable for use as a JSON request body."""
@@ -3955,7 +3955,7 @@ class PipelineTask:
     """The full name of the pipeline task to execute."""
 
     full_refresh: Optional[bool] = None
-    """If true, triggers a full refresh on the delta live table."""
+    """If true, triggers a full refresh on the spark declarative pipeline."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelineTask into a dictionary suitable for use as a JSON request body."""
