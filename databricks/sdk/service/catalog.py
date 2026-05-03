@@ -1840,6 +1840,7 @@ class ConnectionType(Enum):
     GLUE = "GLUE"
     HIVE_METASTORE = "HIVE_METASTORE"
     HTTP = "HTTP"
+    META_MARKETING = "META_MARKETING"
     MYSQL = "MYSQL"
     ORACLE = "ORACLE"
     POSTGRESQL = "POSTGRESQL"
@@ -1854,6 +1855,7 @@ class ConnectionType(Enum):
     TERADATA = "TERADATA"
     UNKNOWN_CONNECTION_TYPE = "UNKNOWN_CONNECTION_TYPE"
     WORKDAY_RAAS = "WORKDAY_RAAS"
+    ZENDESK = "ZENDESK"
 
 
 @dataclass
@@ -9248,7 +9250,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_SLACK_ACCESS_AND_INTEGRATION_LOGS_OAUTH_U2M = 319; Next id: 320"""
+    """Latest kind: CONNECTION_RABBITMQ = 326; Next id: 327"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"

@@ -278,6 +278,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MANAGED_POSTGRESQL
       :value: "MANAGED_POSTGRESQL"
 
+   .. py:attribute:: META_MARKETING
+      :value: "META_MARKETING"
+
    .. py:attribute:: MYSQL
       :value: "MYSQL"
 
@@ -340,6 +343,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: STABLE
       :value: "STABLE"
+
+.. autoclass:: MetaMarketingOptions
+   :members:
+   :undoc-members:
 
 .. autoclass:: NotebookLibrary
    :members:

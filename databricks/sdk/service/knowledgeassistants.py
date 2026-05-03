@@ -27,14 +27,15 @@ class Example:
     question: str
     """The example question."""
 
-    guidelines: List[str]
-    """Guidelines for answering the question."""
-
     create_time: Optional[Timestamp] = None
     """Timestamp when this example was created."""
 
     example_id: Optional[str] = None
     """The universally unique identifier (UUID) of the example."""
+
+    guidelines: Optional[List[str]] = None
+    """Guidelines for answering the question. Optional — examples may be created with just a
+    question; the front-end form does not require guidelines."""
 
     name: Optional[str] = None
     """Full resource name: knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}"""

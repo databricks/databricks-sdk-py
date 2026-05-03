@@ -306,6 +306,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: HTTP
       :value: "HTTP"
 
+   .. py:attribute:: META_MARKETING
+      :value: "META_MARKETING"
+
    .. py:attribute:: MYSQL
       :value: "MYSQL"
 
@@ -347,6 +350,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
+
+   .. py:attribute:: ZENDESK
+      :value: "ZENDESK"
 
 .. autoclass:: ContinuousUpdateStatus
    :members:
@@ -1530,7 +1536,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_SLACK_ACCESS_AND_INTEGRATION_LOGS_OAUTH_U2M = 319; Next id: 320
+   Latest kind: CONNECTION_RABBITMQ = 326; Next id: 327
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
