@@ -15,6 +15,8 @@
 ### Internal Changes
 * Pass `--force-refresh` to Databricks CLI `auth token` command so the SDK always receives a freshly minted token instead of a potentially stale one from the CLI's internal cache.
 
+* Increase count in integration test for listing workspace groups to reduce API calls and timeout. 
+
 ### API Changes
 * Add `create_example()`, `delete_example()`, `get_example()`, `get_permission_levels()`, `get_permissions()`, `list_examples()`, `set_permissions()`, `update_example()` and `update_permissions()` methods for [w.supervisor_agents](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/supervisoragents/supervisor_agents.html) workspace-level service.
 * Add `meta_ads_options` field for `databricks.sdk.service.pipelines.ConnectorOptions`.
