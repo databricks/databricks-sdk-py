@@ -6,7 +6,7 @@
 
     **Endpoint**: Represents the compute resources to host vector search indexes.
 
-    .. py:method:: create_endpoint(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str], min_qps: Optional[int], usage_policy_id: Optional[str]]) -> Wait[EndpointInfo]
+    .. py:method:: create_endpoint(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str], target_qps: Optional[int], usage_policy_id: Optional[str]]) -> Wait[EndpointInfo]
 
         Create a new endpoint.
 
@@ -16,10 +16,10 @@
           Type of endpoint
         :param budget_policy_id: str (optional)
           The budget policy id to be applied
-        :param min_qps: int (optional)
-          Deprecated: use target_qps. Min QPS for the endpoint. Mutually exclusive with num_replicas. Kept at
-          PUBLIC_BETA with deprecated = true so generated SDK surfaces keep the field with a deprecation
-          marker; hiding completely is a follow-up PR.
+        :param target_qps: int (optional)
+          Target QPS for the endpoint. Mutually exclusive with num_replicas. The actual replica count is
+          calculated at index creation/sync time based on this value. Best-effort target; the system does not
+          guarantee this QPS will be achieved.
         :param usage_policy_id: str (optional)
           The usage policy id to be applied once we've migrated to usage policies
 
@@ -28,7 +28,7 @@
           See :method:wait_get_endpoint_vector_search_endpoint_online for more details.
         
 
-    .. py:method:: create_endpoint_and_wait(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str], min_qps: Optional[int], usage_policy_id: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> EndpointInfo
+    .. py:method:: create_endpoint_and_wait(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str], target_qps: Optional[int], usage_policy_id: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> EndpointInfo
 
 
     .. py:method:: delete_endpoint(endpoint_name: str)
@@ -61,16 +61,14 @@
         :returns: Iterator over :class:`EndpointInfo`
         
 
-    .. py:method:: patch_endpoint(endpoint_name: str [, min_qps: Optional[int]]) -> EndpointInfo
+    .. py:method:: patch_endpoint(endpoint_name: str [, target_qps: Optional[int]]) -> EndpointInfo
 
         Update an endpoint
 
         :param endpoint_name: str
           Name of the vector search endpoint
-        :param min_qps: int (optional)
-          Deprecated: use target_qps. Min QPS for the endpoint. Positive integer sets QPS target; -1 resets to
-          default scaling behavior. Kept at PUBLIC_BETA with deprecated = true so generated SDK surfaces keep
-          the field with a deprecation marker; hiding completely is a follow-up PR.
+        :param target_qps: int (optional)
+          Target QPS for the endpoint. Best-effort; the system does not guarantee this QPS will be achieved.
 
         :returns: :class:`EndpointInfo`
         

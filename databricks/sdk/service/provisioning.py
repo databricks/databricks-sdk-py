@@ -277,6 +277,75 @@ class CreateAwsKeyInfo:
 
 
 @dataclass
+class CreateAzureKeyInfo:
+    disk_encryption_set_id: Optional[str] = None
+    """The Disk Encryption Set id that is used to represent the key info used for Managed Disk BYOK use
+    case"""
+
+    key_access_configuration: Optional[KeyAccessConfiguration] = None
+    """The structure to store key access credential This is set if the Managed Identity is being used
+    to access the Azure Key Vault key."""
+
+    key_name: Optional[str] = None
+    """The name of the key in KeyVault."""
+
+    key_vault_uri: Optional[str] = None
+    """The base URI of the KeyVault."""
+
+    tenant_id: Optional[str] = None
+    """The tenant id where the KeyVault lives."""
+
+    version: Optional[str] = None
+    """The current key version."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateAzureKeyInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disk_encryption_set_id is not None:
+            body["disk_encryption_set_id"] = self.disk_encryption_set_id
+        if self.key_access_configuration:
+            body["key_access_configuration"] = self.key_access_configuration.as_dict()
+        if self.key_name is not None:
+            body["key_name"] = self.key_name
+        if self.key_vault_uri is not None:
+            body["key_vault_uri"] = self.key_vault_uri
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateAzureKeyInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disk_encryption_set_id is not None:
+            body["disk_encryption_set_id"] = self.disk_encryption_set_id
+        if self.key_access_configuration:
+            body["key_access_configuration"] = self.key_access_configuration
+        if self.key_name is not None:
+            body["key_name"] = self.key_name
+        if self.key_vault_uri is not None:
+            body["key_vault_uri"] = self.key_vault_uri
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateAzureKeyInfo:
+        """Deserializes the CreateAzureKeyInfo from a dictionary."""
+        return cls(
+            disk_encryption_set_id=d.get("disk_encryption_set_id", None),
+            key_access_configuration=_from_dict(d, "key_access_configuration", KeyAccessConfiguration),
+            key_name=d.get("key_name", None),
+            key_vault_uri=d.get("key_vault_uri", None),
+            tenant_id=d.get("tenant_id", None),
+            version=d.get("version", None),
+        )
+
+
+@dataclass
 class CreateCredentialAwsCredentials:
     sts_role: Optional[CreateCredentialStsRole] = None
 
@@ -1919,6 +1988,7 @@ class EncryptionKeysAPI:
         use_cases: List[KeyUseCase],
         *,
         aws_key_info: Optional[CreateAwsKeyInfo] = None,
+        azure_key_info: Optional[CreateAzureKeyInfo] = None,
         gcp_key_info: Optional[CreateGcpKeyInfo] = None,
     ) -> CustomerManagedKey:
         """Creates a customer-managed key configuration object for an account, specified by ID. This operation
@@ -1946,6 +2016,7 @@ class EncryptionKeysAPI:
         :param use_cases: List[:class:`KeyUseCase`]
           The cases that the key can be used for.
         :param aws_key_info: :class:`CreateAwsKeyInfo` (optional)
+        :param azure_key_info: :class:`CreateAzureKeyInfo` (optional)
         :param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)
 
         :returns: :class:`CustomerManagedKey`
@@ -1954,6 +2025,8 @@ class EncryptionKeysAPI:
         body = {}
         if aws_key_info is not None:
             body["aws_key_info"] = aws_key_info.as_dict()
+        if azure_key_info is not None:
+            body["azure_key_info"] = azure_key_info.as_dict()
         if gcp_key_info is not None:
             body["gcp_key_info"] = gcp_key_info.as_dict()
         if use_cases is not None:

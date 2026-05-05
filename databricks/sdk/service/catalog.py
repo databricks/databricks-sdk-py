@@ -9250,7 +9250,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_RABBITMQ = 326; Next id: 327"""
+    """Latest kind: MODEL_SERVICE_STANDARD = 327; Next id: 328"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -10263,6 +10263,8 @@ class TemporaryCredentials:
 
     gcp_oauth_token: Optional[GcpOauthToken] = None
 
+    r2_temp_credentials: Optional[R2Credentials] = None
+
     def as_dict(self) -> dict:
         """Serializes the TemporaryCredentials into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -10274,6 +10276,8 @@ class TemporaryCredentials:
             body["expiration_time"] = self.expiration_time
         if self.gcp_oauth_token:
             body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
+        if self.r2_temp_credentials:
+            body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -10287,6 +10291,8 @@ class TemporaryCredentials:
             body["expiration_time"] = self.expiration_time
         if self.gcp_oauth_token:
             body["gcp_oauth_token"] = self.gcp_oauth_token
+        if self.r2_temp_credentials:
+            body["r2_temp_credentials"] = self.r2_temp_credentials
         return body
 
     @classmethod
@@ -10297,6 +10303,7 @@ class TemporaryCredentials:
             azure_aad=_from_dict(d, "azure_aad", AzureActiveDirectoryToken),
             expiration_time=d.get("expiration_time", None),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
+            r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
         )
 
 

@@ -471,9 +471,7 @@ class EmbeddingVectorColumn:
 @dataclass
 class EndpointInfo:
     budget_policy_id: Optional[str] = None
-    """Discussed here: https://databricks.atlassian.net/wiki/x/OQDlCQE Additional documentation:
-    https://aip.dev.databricks.com/129 the user selected budget policy id for the endpoint
-    (client-side)"""
+    """The user-selected budget policy id for the endpoint."""
 
     creation_timestamp: Optional[int] = None
     """Timestamp of endpoint creation"""
@@ -595,11 +593,9 @@ class EndpointInfo:
 
 @dataclass
 class EndpointScalingInfo:
-    requested_min_qps: Optional[int] = None
-    """Deprecated: use requested_target_qps. Kept at PUBLIC_BETA with deprecated = true so generated
-    SDK surfaces (Go, Java, TypeScript, Terraform) keep exposing the field with a deprecation marker
-    rather than losing it on next regeneration. Hiding completely (visibility = PUBLIC_UNDOCUMENTED)
-    is a follow-up PR once downstream consumers have migrated."""
+    requested_target_qps: Optional[int] = None
+    """The requested QPS target for the endpoint. Best-effort; the system does not guarantee this QPS
+    will be achieved."""
 
     state: Optional[ScalingChangeState] = None
     """The current state of the scaling change request."""
@@ -607,8 +603,8 @@ class EndpointScalingInfo:
     def as_dict(self) -> dict:
         """Serializes the EndpointScalingInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.requested_min_qps is not None:
-            body["requested_min_qps"] = self.requested_min_qps
+        if self.requested_target_qps is not None:
+            body["requested_target_qps"] = self.requested_target_qps
         if self.state is not None:
             body["state"] = self.state.value
         return body
@@ -616,8 +612,8 @@ class EndpointScalingInfo:
     def as_shallow_dict(self) -> dict:
         """Serializes the EndpointScalingInfo into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.requested_min_qps is not None:
-            body["requested_min_qps"] = self.requested_min_qps
+        if self.requested_target_qps is not None:
+            body["requested_target_qps"] = self.requested_target_qps
         if self.state is not None:
             body["state"] = self.state
         return body
@@ -625,7 +621,9 @@ class EndpointScalingInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointScalingInfo:
         """Deserializes the EndpointScalingInfo from a dictionary."""
-        return cls(requested_min_qps=d.get("requested_min_qps", None), state=_enum(d, "state", ScalingChangeState))
+        return cls(
+            requested_target_qps=d.get("requested_target_qps", None), state=_enum(d, "state", ScalingChangeState)
+        )
 
 
 @dataclass
@@ -1721,7 +1719,7 @@ class VectorSearchEndpointsAPI:
         endpoint_type: EndpointType,
         *,
         budget_policy_id: Optional[str] = None,
-        min_qps: Optional[int] = None,
+        target_qps: Optional[int] = None,
         usage_policy_id: Optional[str] = None,
     ) -> Wait[EndpointInfo]:
         """Create a new endpoint.
@@ -1732,10 +1730,10 @@ class VectorSearchEndpointsAPI:
           Type of endpoint
         :param budget_policy_id: str (optional)
           The budget policy id to be applied
-        :param min_qps: int (optional)
-          Deprecated: use target_qps. Min QPS for the endpoint. Mutually exclusive with num_replicas. Kept at
-          PUBLIC_BETA with deprecated = true so generated SDK surfaces keep the field with a deprecation
-          marker; hiding completely is a follow-up PR.
+        :param target_qps: int (optional)
+          Target QPS for the endpoint. Mutually exclusive with num_replicas. The actual replica count is
+          calculated at index creation/sync time based on this value. Best-effort target; the system does not
+          guarantee this QPS will be achieved.
         :param usage_policy_id: str (optional)
           The usage policy id to be applied once we've migrated to usage policies
 
@@ -1749,10 +1747,10 @@ class VectorSearchEndpointsAPI:
             body["budget_policy_id"] = budget_policy_id
         if endpoint_type is not None:
             body["endpoint_type"] = endpoint_type.value
-        if min_qps is not None:
-            body["min_qps"] = min_qps
         if name is not None:
             body["name"] = name
+        if target_qps is not None:
+            body["target_qps"] = target_qps
         if usage_policy_id is not None:
             body["usage_policy_id"] = usage_policy_id
         headers = {
@@ -1777,15 +1775,15 @@ class VectorSearchEndpointsAPI:
         endpoint_type: EndpointType,
         *,
         budget_policy_id: Optional[str] = None,
-        min_qps: Optional[int] = None,
+        target_qps: Optional[int] = None,
         usage_policy_id: Optional[str] = None,
         timeout=timedelta(minutes=20),
     ) -> EndpointInfo:
         return self.create_endpoint(
             budget_policy_id=budget_policy_id,
             endpoint_type=endpoint_type,
-            min_qps=min_qps,
             name=name,
+            target_qps=target_qps,
             usage_policy_id=usage_policy_id,
         ).result(timeout=timeout)
 
@@ -1857,22 +1855,20 @@ class VectorSearchEndpointsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def patch_endpoint(self, endpoint_name: str, *, min_qps: Optional[int] = None) -> EndpointInfo:
+    def patch_endpoint(self, endpoint_name: str, *, target_qps: Optional[int] = None) -> EndpointInfo:
         """Update an endpoint
 
         :param endpoint_name: str
           Name of the vector search endpoint
-        :param min_qps: int (optional)
-          Deprecated: use target_qps. Min QPS for the endpoint. Positive integer sets QPS target; -1 resets to
-          default scaling behavior. Kept at PUBLIC_BETA with deprecated = true so generated SDK surfaces keep
-          the field with a deprecation marker; hiding completely is a follow-up PR.
+        :param target_qps: int (optional)
+          Target QPS for the endpoint. Best-effort; the system does not guarantee this QPS will be achieved.
 
         :returns: :class:`EndpointInfo`
         """
 
         body = {}
-        if min_qps is not None:
-            body["min_qps"] = min_qps
+        if target_qps is not None:
+            body["target_qps"] = target_qps
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

@@ -275,6 +275,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GOOGLE_DRIVE
       :value: "GOOGLE_DRIVE"
 
+   .. py:attribute:: JIRA
+      :value: "JIRA"
+
    .. py:attribute:: MANAGED_POSTGRESQL
       :value: "MANAGED_POSTGRESQL"
 
@@ -310,6 +313,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
+
+   .. py:attribute:: ZENDESK
+      :value: "ZENDESK"
 
 .. autoclass:: JiraConnectorOptions
    :members:
@@ -819,3 +825,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WAITING_FOR_RESOURCES
       :value: "WAITING_FOR_RESOURCES"
+
+.. autoclass:: ZendeskSupportOptions
+   :members:
+   :undoc-members:

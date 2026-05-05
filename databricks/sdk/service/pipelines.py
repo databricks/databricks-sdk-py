@@ -183,6 +183,8 @@ class ConnectorOptions:
 
     tiktok_ads_options: Optional[TikTokAdsOptions] = None
 
+    zendesk_support_options: Optional[ZendeskSupportOptions] = None
+
     def as_dict(self) -> dict:
         """Serializes the ConnectorOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -204,6 +206,8 @@ class ConnectorOptions:
             body["smartsheet_options"] = self.smartsheet_options.as_dict()
         if self.tiktok_ads_options:
             body["tiktok_ads_options"] = self.tiktok_ads_options.as_dict()
+        if self.zendesk_support_options:
+            body["zendesk_support_options"] = self.zendesk_support_options.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -227,6 +231,8 @@ class ConnectorOptions:
             body["smartsheet_options"] = self.smartsheet_options
         if self.tiktok_ads_options:
             body["tiktok_ads_options"] = self.tiktok_ads_options
+        if self.zendesk_support_options:
+            body["zendesk_support_options"] = self.zendesk_support_options
         return body
 
     @classmethod
@@ -242,6 +248,7 @@ class ConnectorOptions:
             sharepoint_options=_from_dict(d, "sharepoint_options", SharepointOptions),
             smartsheet_options=_from_dict(d, "smartsheet_options", SmartsheetOptions),
             tiktok_ads_options=_from_dict(d, "tiktok_ads_options", TikTokAdsOptions),
+            zendesk_support_options=_from_dict(d, "zendesk_support_options", ZendeskSupportOptions),
         )
 
 
@@ -1478,6 +1485,7 @@ class IngestionSourceType(Enum):
     FOREIGN_CATALOG = "FOREIGN_CATALOG"
     GA4_RAW_DATA = "GA4_RAW_DATA"
     GOOGLE_DRIVE = "GOOGLE_DRIVE"
+    JIRA = "JIRA"
     MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
     META_MARKETING = "META_MARKETING"
     MYSQL = "MYSQL"
@@ -1490,6 +1498,7 @@ class IngestionSourceType(Enum):
     SQLSERVER = "SQLSERVER"
     TERADATA = "TERADATA"
     WORKDAY_RAAS = "WORKDAY_RAAS"
+    ZENDESK = "ZENDESK"
 
 
 @dataclass
@@ -4676,6 +4685,34 @@ class UpdateStateInfoState(Enum):
     SETTING_UP_TABLES = "SETTING_UP_TABLES"
     STOPPING = "STOPPING"
     WAITING_FOR_RESOURCES = "WAITING_FOR_RESOURCES"
+
+
+@dataclass
+class ZendeskSupportOptions:
+    """Zendesk Support specific options for ingestion"""
+
+    start_date: Optional[str] = None
+    """(Optional) Start date in YYYY-MM-DD format for the initial sync. This determines the earliest
+    date from which to sync historical data."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ZendeskSupportOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.start_date is not None:
+            body["start_date"] = self.start_date
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ZendeskSupportOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.start_date is not None:
+            body["start_date"] = self.start_date
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ZendeskSupportOptions:
+        """Deserializes the ZendeskSupportOptions from a dictionary."""
+        return cls(start_date=d.get("start_date", None))
 
 
 class PipelinesAPI:

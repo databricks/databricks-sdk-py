@@ -4564,10 +4564,8 @@ class NccPrivateEndpointRule:
     domain_names must be specified."""
 
     enabled: Optional[bool] = None
-    """Only used by private endpoints towards an AWS S3 service.
-    
-    Update this field to activate/deactivate this private endpoint to allow egress access from
-    serverless compute resources."""
+    """Update this field to activate/deactivate this private endpoint to allow egress access from
+    serverless compute resources. Only honored for first-party services on each cloud (e.g. AWS S3)."""
 
     endpoint_name: Optional[str] = None
     """The name of the Azure private endpoint resource."""
@@ -5681,10 +5679,8 @@ class UpdatePrivateEndpointRule:
     domain_names must be specified."""
 
     enabled: Optional[bool] = None
-    """Only used by private endpoints towards an AWS S3 service.
-    
-    Update this field to activate/deactivate this private endpoint to allow egress access from
-    serverless compute resources."""
+    """Update this field to activate/deactivate this private endpoint to allow egress access from
+    serverless compute resources. Only honored for first-party services on each cloud (e.g. AWS S3)."""
 
     error_message: Optional[str] = None
 

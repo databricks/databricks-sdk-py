@@ -18,7 +18,7 @@
     have an older workspace, it might not be on the E2 version of the platform. If you are not sure, contact
     your Databricks representative.
 
-    .. py:method:: create(use_cases: List[KeyUseCase] [, aws_key_info: Optional[CreateAwsKeyInfo], gcp_key_info: Optional[CreateGcpKeyInfo]]) -> CustomerManagedKey
+    .. py:method:: create(use_cases: List[KeyUseCase] [, aws_key_info: Optional[CreateAwsKeyInfo], azure_key_info: Optional[CreateAzureKeyInfo], gcp_key_info: Optional[CreateGcpKeyInfo]]) -> CustomerManagedKey
 
 
         Usage:
@@ -68,6 +68,7 @@
         :param use_cases: List[:class:`KeyUseCase`]
           The cases that the key can be used for.
         :param aws_key_info: :class:`CreateAwsKeyInfo` (optional)
+        :param azure_key_info: :class:`CreateAzureKeyInfo` (optional)
         :param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)
 
         :returns: :class:`CustomerManagedKey`
