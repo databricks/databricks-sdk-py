@@ -3,6 +3,7 @@
 ## Release v0.107.0
 
 ### New Features and Improvements
+* Add a new `_ProtobufErrorDeserializer` for handling Protobuf response errors.
 
 ### Security
 
