@@ -196,6 +196,12 @@ class DeleteIndexResponse:
 
 @dataclass
 class DeltaSyncVectorIndexSpecRequest:
+    columns_to_index: Optional[List[str]] = None
+    """[Optional] Alias for columns_to_sync. Select the columns to include in the vector index. If you
+    leave this field blank, all columns from the source table are included. The primary key column
+    and embedding source column or embedding vector column are always included. Only one of
+    columns_to_sync or columns_to_index may be specified."""
+
     columns_to_sync: Optional[List[str]] = None
     """[Optional] Select the columns to sync with the vector index. If you leave this field blank, all
     columns from the source table are synced with the index. The primary key column and embedding
@@ -223,6 +229,8 @@ class DeltaSyncVectorIndexSpecRequest:
     def as_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.columns_to_index:
+            body["columns_to_index"] = [v for v in self.columns_to_index]
         if self.columns_to_sync:
             body["columns_to_sync"] = [v for v in self.columns_to_sync]
         if self.embedding_source_columns:
@@ -240,6 +248,8 @@ class DeltaSyncVectorIndexSpecRequest:
     def as_shallow_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecRequest into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.columns_to_index:
+            body["columns_to_index"] = self.columns_to_index
         if self.columns_to_sync:
             body["columns_to_sync"] = self.columns_to_sync
         if self.embedding_source_columns:
@@ -258,6 +268,7 @@ class DeltaSyncVectorIndexSpecRequest:
     def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecRequest:
         """Deserializes the DeltaSyncVectorIndexSpecRequest from a dictionary."""
         return cls(
+            columns_to_index=d.get("columns_to_index", None),
             columns_to_sync=d.get("columns_to_sync", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
@@ -269,6 +280,12 @@ class DeltaSyncVectorIndexSpecRequest:
 
 @dataclass
 class DeltaSyncVectorIndexSpecResponse:
+    columns_to_index: Optional[List[str]] = None
+    """[Optional] Alias for columns_to_sync. Select the columns to include in the vector index. If you
+    leave this field blank, all columns from the source table are included. The primary key column
+    and embedding source column or embedding vector column are always included. Only one of
+    columns_to_sync or columns_to_index may be specified."""
+
     columns_to_sync: Optional[List[str]] = None
     """[Optional] Select the columns to sync with the vector index. If you leave this field blank, all
     columns from the source table are synced with the index. The primary key column and embedding
@@ -299,6 +316,8 @@ class DeltaSyncVectorIndexSpecResponse:
     def as_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.columns_to_index:
+            body["columns_to_index"] = [v for v in self.columns_to_index]
         if self.columns_to_sync:
             body["columns_to_sync"] = [v for v in self.columns_to_sync]
         if self.embedding_source_columns:
@@ -318,6 +337,8 @@ class DeltaSyncVectorIndexSpecResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.columns_to_index:
+            body["columns_to_index"] = self.columns_to_index
         if self.columns_to_sync:
             body["columns_to_sync"] = self.columns_to_sync
         if self.embedding_source_columns:
@@ -338,6 +359,7 @@ class DeltaSyncVectorIndexSpecResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecResponse:
         """Deserializes the DeltaSyncVectorIndexSpecResponse from a dictionary."""
         return cls(
+            columns_to_index=d.get("columns_to_index", None),
             columns_to_sync=d.get("columns_to_sync", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
