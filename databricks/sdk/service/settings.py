@@ -1064,11 +1064,19 @@ class CustomerFacingIngressNetworkPolicy:
     """This proto is under development. The network policies applying for ingress traffic. Any changes
     here should also be synced to estore/namespaces/lakehousenetworkmanager/latest.proto."""
 
+    private_access: Optional[CustomerFacingIngressNetworkPolicyPrivateAccess] = None
+    """The network policy restrictions for private access to the workspace. Configures how registered
+    private endpoints are allowed or denied access."""
+
     public_access: Optional[CustomerFacingIngressNetworkPolicyPublicAccess] = None
+    """The network policy restrictions for public access to the workspace. Configures how public
+    internet traffic is allowed or denied access."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.private_access:
+            body["private_access"] = self.private_access.as_dict()
         if self.public_access:
             body["public_access"] = self.public_access.as_dict()
         return body
@@ -1076,6 +1084,8 @@ class CustomerFacingIngressNetworkPolicy:
     def as_shallow_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.private_access:
+            body["private_access"] = self.private_access
         if self.public_access:
             body["public_access"] = self.public_access
         return body
@@ -1083,7 +1093,103 @@ class CustomerFacingIngressNetworkPolicy:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicy:
         """Deserializes the CustomerFacingIngressNetworkPolicy from a dictionary."""
-        return cls(public_access=_from_dict(d, "public_access", CustomerFacingIngressNetworkPolicyPublicAccess))
+        return cls(
+            private_access=_from_dict(d, "private_access", CustomerFacingIngressNetworkPolicyPrivateAccess),
+            public_access=_from_dict(d, "public_access", CustomerFacingIngressNetworkPolicyPublicAccess),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyAccountApiDestination:
+    scope_qualifier: Optional[CustomerFacingIngressNetworkPolicyApiScopeQualifier] = None
+    """Qualifies the breadth of API access for the listed scopes. See ApiScopeQualifier."""
+
+    scopes: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAccountApiDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.scope_qualifier is not None:
+            body["scope_qualifier"] = self.scope_qualifier.value
+        if self.scopes:
+            body["scopes"] = [v for v in self.scopes]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAccountApiDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.scope_qualifier is not None:
+            body["scope_qualifier"] = self.scope_qualifier
+        if self.scopes:
+            body["scopes"] = self.scopes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAccountApiDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyAccountApiDestination from a dictionary."""
+        return cls(
+            scope_qualifier=_enum(d, "scope_qualifier", CustomerFacingIngressNetworkPolicyApiScopeQualifier),
+            scopes=d.get("scopes", None),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination:
+    all_destinations: Optional[bool] = None
+    """Must be set to true."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination from a dictionary."""
+        return cls(all_destinations=d.get("all_destinations", None))
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyAccountUiDestination:
+    all_destinations: Optional[bool] = None
+    """Must be set to true."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAccountUiDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAccountUiDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAccountUiDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyAccountUiDestination from a dictionary."""
+        return cls(all_destinations=d.get("all_destinations", None))
+
+
+class CustomerFacingIngressNetworkPolicyApiScopeQualifier(Enum):
+    """Qualifies the breadth of API access permitted by an ingress network policy rule.
+    API_SCOPE_QUALIFIER_READ narrows matching to read-only variants of the listed scopes;
+    API_SCOPE_QUALIFIER_ALL matches any scope. When unset, scopes match exactly as listed."""
+
+    API_SCOPE_QUALIFIER_ALL = "API_SCOPE_QUALIFIER_ALL"
+    API_SCOPE_QUALIFIER_READ = "API_SCOPE_QUALIFIER_READ"
 
 
 @dataclass
@@ -1194,6 +1300,30 @@ class CustomerFacingIngressNetworkPolicyAuthenticationIdentityType(Enum):
 
 
 @dataclass
+class CustomerFacingIngressNetworkPolicyEndpoints:
+    endpoint_ids: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyEndpoints into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.endpoint_ids:
+            body["endpoint_ids"] = [v for v in self.endpoint_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyEndpoints into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.endpoint_ids:
+            body["endpoint_ids"] = self.endpoint_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyEndpoints:
+        """Deserializes the CustomerFacingIngressNetworkPolicyEndpoints from a dictionary."""
+        return cls(endpoint_ids=d.get("endpoint_ids", None))
+
+
+@dataclass
 class CustomerFacingIngressNetworkPolicyIpRanges:
     ip_ranges: Optional[List[str]] = None
     """We only support IPv4 and IPv4 CIDR notation for now."""
@@ -1241,6 +1371,149 @@ class CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination:
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination from a dictionary."""
         return cls(all_destinations=d.get("all_destinations", None))
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyPrivateAccess:
+    restriction_mode: CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode
+
+    allow_rules: Optional[List[CustomerFacingIngressNetworkPolicyPrivateIngressRule]] = None
+
+    deny_rules: Optional[List[CustomerFacingIngressNetworkPolicyPrivateIngressRule]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPrivateAccess into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_rules:
+            body["allow_rules"] = [v.as_dict() for v in self.allow_rules]
+        if self.deny_rules:
+            body["deny_rules"] = [v.as_dict() for v in self.deny_rules]
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPrivateAccess into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_rules:
+            body["allow_rules"] = self.allow_rules
+        if self.deny_rules:
+            body["deny_rules"] = self.deny_rules
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyPrivateAccess:
+        """Deserializes the CustomerFacingIngressNetworkPolicyPrivateAccess from a dictionary."""
+        return cls(
+            allow_rules=_repeated_dict(d, "allow_rules", CustomerFacingIngressNetworkPolicyPrivateIngressRule),
+            deny_rules=_repeated_dict(d, "deny_rules", CustomerFacingIngressNetworkPolicyPrivateIngressRule),
+            restriction_mode=_enum(
+                d, "restriction_mode", CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode
+            ),
+        )
+
+
+class CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode(Enum):
+
+    ALLOW_ALL_REGISTERED_ENDPOINTS = "ALLOW_ALL_REGISTERED_ENDPOINTS"
+    RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyPrivateIngressRule:
+    authentication: Optional[CustomerFacingIngressNetworkPolicyAuthentication] = None
+
+    destination: Optional[CustomerFacingIngressNetworkPolicyRequestDestination] = None
+
+    label: Optional[str] = None
+    """The label for this ingress rule."""
+
+    origin: Optional[CustomerFacingIngressNetworkPolicyPrivateRequestOrigin] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPrivateIngressRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.authentication:
+            body["authentication"] = self.authentication.as_dict()
+        if self.destination:
+            body["destination"] = self.destination.as_dict()
+        if self.label is not None:
+            body["label"] = self.label
+        if self.origin:
+            body["origin"] = self.origin.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPrivateIngressRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.authentication:
+            body["authentication"] = self.authentication
+        if self.destination:
+            body["destination"] = self.destination
+        if self.label is not None:
+            body["label"] = self.label
+        if self.origin:
+            body["origin"] = self.origin
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyPrivateIngressRule:
+        """Deserializes the CustomerFacingIngressNetworkPolicyPrivateIngressRule from a dictionary."""
+        return cls(
+            authentication=_from_dict(d, "authentication", CustomerFacingIngressNetworkPolicyAuthentication),
+            destination=_from_dict(d, "destination", CustomerFacingIngressNetworkPolicyRequestDestination),
+            label=d.get("label", None),
+            origin=_from_dict(d, "origin", CustomerFacingIngressNetworkPolicyPrivateRequestOrigin),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyPrivateRequestOrigin:
+    all_private_access: Optional[bool] = None
+
+    all_registered_endpoints: Optional[bool] = None
+
+    azure_workspace_private_link: Optional[bool] = None
+
+    endpoints: Optional[CustomerFacingIngressNetworkPolicyEndpoints] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPrivateRequestOrigin into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_private_access is not None:
+            body["all_private_access"] = self.all_private_access
+        if self.all_registered_endpoints is not None:
+            body["all_registered_endpoints"] = self.all_registered_endpoints
+        if self.azure_workspace_private_link is not None:
+            body["azure_workspace_private_link"] = self.azure_workspace_private_link
+        if self.endpoints:
+            body["endpoints"] = self.endpoints.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPrivateRequestOrigin into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_private_access is not None:
+            body["all_private_access"] = self.all_private_access
+        if self.all_registered_endpoints is not None:
+            body["all_registered_endpoints"] = self.all_registered_endpoints
+        if self.azure_workspace_private_link is not None:
+            body["azure_workspace_private_link"] = self.azure_workspace_private_link
+        if self.endpoints:
+            body["endpoints"] = self.endpoints
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyPrivateRequestOrigin:
+        """Deserializes the CustomerFacingIngressNetworkPolicyPrivateRequestOrigin from a dictionary."""
+        return cls(
+            all_private_access=d.get("all_private_access", None),
+            all_registered_endpoints=d.get("all_registered_endpoints", None),
+            azure_workspace_private_link=d.get("azure_workspace_private_link", None),
+            endpoints=_from_dict(d, "endpoints", CustomerFacingIngressNetworkPolicyEndpoints),
+        )
 
 
 @dataclass
@@ -1387,6 +1660,12 @@ class CustomerFacingIngressNetworkPolicyPublicRequestOrigin:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyRequestDestination:
+    account_api: Optional[CustomerFacingIngressNetworkPolicyAccountApiDestination] = None
+
+    account_databricks_one: Optional[CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination] = None
+
+    account_ui: Optional[CustomerFacingIngressNetworkPolicyAccountUiDestination] = None
+
     all_destinations: Optional[bool] = None
     """When true, match all destinations, no other destination fields can be set. When not set or
     false, at least one specific destination must be provided."""
@@ -1398,11 +1677,16 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
     workspace_api: Optional[CustomerFacingIngressNetworkPolicyWorkspaceApiDestination] = None
 
     workspace_ui: Optional[CustomerFacingIngressNetworkPolicyWorkspaceUiDestination] = None
-    """Workspace destinations"""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyRequestDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.account_api:
+            body["account_api"] = self.account_api.as_dict()
+        if self.account_databricks_one:
+            body["account_databricks_one"] = self.account_databricks_one.as_dict()
+        if self.account_ui:
+            body["account_ui"] = self.account_ui.as_dict()
         if self.all_destinations is not None:
             body["all_destinations"] = self.all_destinations
         if self.apps_runtime:
@@ -1418,6 +1702,12 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
     def as_shallow_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyRequestDestination into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.account_api:
+            body["account_api"] = self.account_api
+        if self.account_databricks_one:
+            body["account_databricks_one"] = self.account_databricks_one
+        if self.account_ui:
+            body["account_ui"] = self.account_ui
         if self.all_destinations is not None:
             body["all_destinations"] = self.all_destinations
         if self.apps_runtime:
@@ -1434,6 +1724,11 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyRequestDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyRequestDestination from a dictionary."""
         return cls(
+            account_api=_from_dict(d, "account_api", CustomerFacingIngressNetworkPolicyAccountApiDestination),
+            account_databricks_one=_from_dict(
+                d, "account_databricks_one", CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination
+            ),
+            account_ui=_from_dict(d, "account_ui", CustomerFacingIngressNetworkPolicyAccountUiDestination),
             all_destinations=d.get("all_destinations", None),
             apps_runtime=_from_dict(d, "apps_runtime", CustomerFacingIngressNetworkPolicyAppsRuntimeDestination),
             lakebase_runtime=_from_dict(
@@ -1446,11 +1741,16 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
+    scope_qualifier: Optional[CustomerFacingIngressNetworkPolicyApiScopeQualifier] = None
+    """Qualifies the breadth of API access for the listed scopes. See ApiScopeQualifier."""
+
     scopes: Optional[List[str]] = None
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.scope_qualifier is not None:
+            body["scope_qualifier"] = self.scope_qualifier.value
         if self.scopes:
             body["scopes"] = [v for v in self.scopes]
         return body
@@ -1458,6 +1758,8 @@ class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     def as_shallow_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.scope_qualifier is not None:
+            body["scope_qualifier"] = self.scope_qualifier
         if self.scopes:
             body["scopes"] = self.scopes
         return body
@@ -1465,7 +1767,10 @@ class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination from a dictionary."""
-        return cls(scopes=d.get("scopes", None))
+        return cls(
+            scope_qualifier=_enum(d, "scope_qualifier", CustomerFacingIngressNetworkPolicyApiScopeQualifier),
+            scopes=d.get("scopes", None),
+        )
 
 
 @dataclass
