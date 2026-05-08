@@ -31,8 +31,10 @@
 
         :param git_provider: str
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-          `gitLabEnterpriseEdition` and `awsCodeCommit`.
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra
+          ID authentication), `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
+          `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit` (deprecated by AWS, not
+          accepting new customers).
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
           with the remote repository and also sets the author & committer identity for commits. Required for
@@ -154,8 +156,10 @@
           The ID for the corresponding credential to access.
         :param git_provider: str
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-          `gitLabEnterpriseEdition` and `awsCodeCommit`.
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra
+          ID authentication), `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
+          `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit` (deprecated by AWS, not
+          accepting new customers).
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
           with the remote repository and also sets the author & committer identity for commits. Required for

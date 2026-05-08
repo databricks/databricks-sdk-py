@@ -51,6 +51,27 @@
         :returns: :class:`EndpointInfo`
         
 
+    .. py:method:: get_permission_levels(endpoint_id: str) -> GetVectorSearchEndpointPermissionLevelsResponse
+
+        Gets the permission levels that a user can have on an object.
+
+        :param endpoint_id: str
+          The vector search endpoint for which to get or manage permissions.
+
+        :returns: :class:`GetVectorSearchEndpointPermissionLevelsResponse`
+        
+
+    .. py:method:: get_permissions(endpoint_id: str) -> VectorSearchEndpointPermissions
+
+        Gets the permissions of a vector search endpoint. Vector search endpoints can inherit permissions from
+        their root object.
+
+        :param endpoint_id: str
+          The vector search endpoint for which to get or manage permissions.
+
+        :returns: :class:`VectorSearchEndpointPermissions`
+        
+
     .. py:method:: list_endpoints( [, page_token: Optional[str]]) -> Iterator[EndpointInfo]
 
         List all vector search endpoints in the workspace.
@@ -93,6 +114,18 @@
         :returns: :class:`RetrieveUserVisibleMetricsResponse`
         
 
+    .. py:method:: set_permissions(endpoint_id: str [, access_control_list: Optional[List[VectorSearchEndpointAccessControlRequest]]]) -> VectorSearchEndpointPermissions
+
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
+
+        :param endpoint_id: str
+          The vector search endpoint for which to get or manage permissions.
+        :param access_control_list: List[:class:`VectorSearchEndpointAccessControlRequest`] (optional)
+
+        :returns: :class:`VectorSearchEndpointPermissions`
+        
+
     .. py:method:: update_endpoint_budget_policy(endpoint_name: str, budget_policy_id: str) -> PatchEndpointBudgetPolicyResponse
 
         Update the budget policy of an endpoint
@@ -115,6 +148,18 @@
           The new custom tags for the vector search endpoint
 
         :returns: :class:`UpdateEndpointCustomTagsResponse`
+        
+
+    .. py:method:: update_permissions(endpoint_id: str [, access_control_list: Optional[List[VectorSearchEndpointAccessControlRequest]]]) -> VectorSearchEndpointPermissions
+
+        Updates the permissions on a vector search endpoint. Vector search endpoints can inherit permissions
+        from their root object.
+
+        :param endpoint_id: str
+          The vector search endpoint for which to get or manage permissions.
+        :param access_control_list: List[:class:`VectorSearchEndpointAccessControlRequest`] (optional)
+
+        :returns: :class:`VectorSearchEndpointPermissions`
         
 
     .. py:method:: wait_get_endpoint_vector_search_endpoint_online(endpoint_name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[EndpointInfo], None]]) -> EndpointInfo

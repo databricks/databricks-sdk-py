@@ -123,6 +123,25 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ON
       :value: "ON"
 
+.. py:class:: PreviewPhase
+
+   Preview phase for settings that are feature previews. For settings that are not feature previews, the preview_phase field is left unset. Mirrors only the customer-facing phases surfaced in the UI; internal-only phases (DISABLED, DEV, UNDER_MIGRATION, LAUNCHED, etc.) are not exposed here.
+
+   .. py:attribute:: BETA
+      :value: "BETA"
+
+   .. py:attribute:: GA
+      :value: "GA"
+
+   .. py:attribute:: GA_SOON
+      :value: "GA_SOON"
+
+   .. py:attribute:: PRIVATE_PREVIEW
+      :value: "PRIVATE_PREVIEW"
+
+   .. py:attribute:: PUBLIC_PREVIEW
+      :value: "PUBLIC_PREVIEW"
+
 .. autoclass:: RestrictWorkspaceAdminsMessage
    :members:
    :undoc-members:

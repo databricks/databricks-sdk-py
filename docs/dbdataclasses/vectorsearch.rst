@@ -103,6 +103,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: STORAGE_OPTIMIZED
       :value: "STORAGE_OPTIMIZED"
 
+.. autoclass:: GetVectorSearchEndpointPermissionLevelsResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: IndexSubtype
 
    The subtype of the vector search index, determining the indexing and retrieval strategy. - `VECTOR`: Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An index that uses full-text search without vector embeddings. - `HYBRID`: An index that uses vector embeddings for similarity search and hybrid search.
@@ -257,3 +261,36 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DIRECT_ACCESS
       :value: "DIRECT_ACCESS"
+
+.. autoclass:: VectorSearchEndpointAccessControlRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: VectorSearchEndpointAccessControlResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: VectorSearchEndpointPermission
+   :members:
+   :undoc-members:
+
+.. py:class:: VectorSearchEndpointPermissionLevel
+
+   Permission level
+
+   .. py:attribute:: CAN_CREATE
+      :value: "CAN_CREATE"
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_USE
+      :value: "CAN_USE"
+
+.. autoclass:: VectorSearchEndpointPermissions
+   :members:
+   :undoc-members:
+
+.. autoclass:: VectorSearchEndpointPermissionsDescription
+   :members:
+   :undoc-members:
