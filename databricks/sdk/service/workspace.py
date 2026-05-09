@@ -180,7 +180,9 @@ class CreateRepoResponse:
     """Path of the Git folder (repo) in the workspace."""
 
     provider: Optional[str] = None
-    """Git provider of the linked Git repository."""
+    """Git provider of the linked Git repository, e.g. `gitHub`, `azureDevOpsServices`,
+    `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition` (GitLab Self-Managed), or
+    `awsCodeCommit` (deprecated)."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """Sparse checkout settings for the Git folder (repo)."""
@@ -252,7 +254,10 @@ class CredentialInfo:
     https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider"""
 
     git_provider: Optional[str] = None
-    """The Git provider associated with the credential."""
+    """The Git provider associated with the credential. One of `gitHub`, `bitbucketCloud`, `gitLab`,
+    `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra ID authentication),
+    `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition` (GitLab
+    Self-Managed), or `awsCodeCommit` (deprecated)."""
 
     git_username: Optional[str] = None
     """The username provided with your Git provider account and associated with the credential. For
@@ -546,7 +551,9 @@ class GetRepoResponse:
     """Path of the Git folder (repo) in the workspace."""
 
     provider: Optional[str] = None
-    """Git provider of the linked Git repository."""
+    """Git provider of the linked Git repository, e.g. `gitHub`, `azureDevOpsServices`,
+    `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition` (GitLab Self-Managed), or
+    `awsCodeCommit` (deprecated)."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """Sparse checkout settings for the Git folder (repo)."""
@@ -1105,7 +1112,9 @@ class RepoInfo:
     """Root path of the git folder (repo) in the Workspace."""
 
     provider: Optional[str] = None
-    """Git provider of the remote git repository, e.g. `gitHub`."""
+    """Git provider of the remote git repository, e.g. `gitHub`, `azureDevOpsServices`,
+    `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition` (GitLab Self-Managed), or
+    `awsCodeCommit` (deprecated)."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """Sparse checkout config for the git folder (repo)."""
@@ -1727,8 +1736,10 @@ class GitCredentialsAPI:
 
         :param git_provider: str
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-          `gitLabEnterpriseEdition` and `awsCodeCommit`.
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra
+          ID authentication), `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
+          `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit` (deprecated by AWS, not
+          accepting new customers).
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
           with the remote repository and also sets the author & committer identity for commits. Required for
@@ -1876,8 +1887,10 @@ class GitCredentialsAPI:
           The ID for the corresponding credential to access.
         :param git_provider: str
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-          `gitLabEnterpriseEdition` and `awsCodeCommit`.
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra
+          ID authentication), `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
+          `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit` (deprecated by AWS, not
+          accepting new customers).
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
           with the remote repository and also sets the author & committer identity for commits. Required for
@@ -1955,8 +1968,10 @@ class ReposAPI:
           URL of the Git repository to be linked.
         :param provider: str
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-          `gitLabEnterpriseEdition` and `awsCodeCommit`.
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra
+          ID authentication), `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
+          `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit` (deprecated by AWS, not
+          accepting new customers).
         :param path: str (optional)
           Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo
           is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`.

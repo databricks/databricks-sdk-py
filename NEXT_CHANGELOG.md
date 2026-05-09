@@ -34,3 +34,11 @@
 * [Breaking] Remove `min_qps` field for `databricks.sdk.service.vectorsearch.CreateEndpoint`.
 * [Breaking] Remove `requested_min_qps` field for `databricks.sdk.service.vectorsearch.EndpointScalingInfo`.
 * [Breaking] Remove `min_qps` field for `databricks.sdk.service.vectorsearch.PatchEndpointRequest`.
+* Add `get_permission_levels()`, `get_permissions()`, `set_permissions()` and `update_permissions()` methods for [w.vector_search_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vectorsearch/vector_search_endpoints.html) workspace-level service.
+* Add `kafka_options` field for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `private_access` field for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicy`.
+* Add `account_api`, `account_databricks_one` and `account_ui` fields for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicyRequestDestination`.
+* Add `scope_qualifier` field for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicyWorkspaceApiDestination`.
+* Add `display_name` and `preview_phase` fields for `databricks.sdk.service.settingsv2.SettingsMetadata`.
+* Add `columns_to_index` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecRequest`.
+* Add `columns_to_index` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecResponse`.

@@ -129,6 +129,22 @@ class Version:
         return self.bump_minor()
 
 
+def _read_local_head_sha() -> str:
+    """
+    Returns the SHA of the local working tree's HEAD via ``git rev-parse``.
+    """
+    return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+
+
+class MainAdvancedError(Exception):
+    """
+    Raised when ``origin/main`` has advanced since the workflow's
+    checkout — i.e., another commit landed during this run. The local
+    working tree is now stale, so any commit produced from it would
+    silently revert whatever the concurrent push added.
+    """
+
+
 # GitHub does not support signing commits for GitHub Apps directly.
 # This class replaces usages for git commands such as "git add", "git commit", and "git push".
 @dataclass
@@ -137,8 +153,12 @@ class GitHubRepo:
         self.repo = repo
         self.changed_files: list[InputGitTreeElement] = []
         self.ref = "heads/main"
-        head_ref = self.repo.get_git_ref(self.ref)
-        self.sha = head_ref.object.sha
+        # Anchor ``self.sha`` to the **local checkout** rather than a
+        # live API call. ``actions/checkout`` populates the working tree
+        # at this SHA, and every subsequent file read in this run is
+        # against that tree; the API HEAD is only relevant when we go
+        # to push.
+        self.sha = _read_local_head_sha()
 
     # Replaces "git add file"
     def add_file(self, loc: str, content: str):
@@ -151,12 +171,19 @@ class GitHubRepo:
     # Replaces "git commit && git push"
     def commit_and_push(self, message: str):
         head_ref = self.repo.get_git_ref(self.ref)
+        if head_ref.object.sha != self.sha:
+            raise MainAdvancedError(
+                f"origin/main advanced from {self.sha} to {head_ref.object.sha} "
+                f"during this run. Local working tree is stale; aborting before "
+                f"the commit would silently revert the new content. Re-run the "
+                f"workflow."
+            )
         base_tree = self.repo.get_git_tree(sha=head_ref.object.sha)
         new_tree = self.repo.create_git_tree(self.changed_files, base_tree)
         parent_commit = self.repo.get_git_commit(head_ref.object.sha)
 
         new_commit = self.repo.create_git_commit(message=message, tree=new_tree, parents=[parent_commit])
-        # Update branch reference
+        # Update branch reference.
         head_ref.edit(new_commit.sha)
         self.sha = new_commit.sha
 
@@ -165,8 +192,7 @@ class GitHubRepo:
         if sha:
             self.sha = sha
         else:
-            head_ref = self.repo.get_git_ref(self.ref)
-            self.sha = head_ref.object.sha
+            self.sha = _read_local_head_sha()
 
     def tag(self, tag_name: str, tag_message: str):
         # Create a tag pointing to the new commit
@@ -710,20 +736,17 @@ def reset_repository(hash: Optional[str] = None) -> None:
 
     :param hash: The commit hash to reset to. If None, it resets to HEAD.
     """
-    # Fetch the latest changes from the remote repository
+    # Fetch the latest changes from the remote repository.
     subprocess.run(["git", "fetch"])
 
-    # Determine the commit hash (default to origin/main if none is provided)
+    # Determine the commit hash (default to origin/main if none is provided).
     commit_hash = hash or "origin/main"
 
-    # Reset in memory changed files and the commit hash
+    # ``git reset --hard`` must land before ``gh.reset(None)``, since
+    # ``gh.reset(None)`` reads ``git rev-parse HEAD`` to anchor
+    # ``self.sha`` to the local working tree.
+    subprocess.run(["git", "reset", "--hard", commit_hash], check=True)
     gh.reset(hash)
-
-    # Construct the Git reset command
-    command = ["git", "reset", "--hard", commit_hash]
-
-    # Execute the git reset command
-    subprocess.run(command, check=True)
 
 
 def retry_function(
@@ -742,6 +765,12 @@ def retry_function(
     while attempts <= max_attempts:
         try:
             return func()  # Call the function
+        except MainAdvancedError:
+            # Permanent failure: another commit landed on main during
+            # this run, so the local tree is stale. Retrying with the
+            # same stale tree would just hit the same mismatch — only
+            # a fresh workflow run against the new main can recover.
+            raise
         except Exception as e:
             attempts += 1
             print(f"Attempt {attempts} failed: {e}")
@@ -787,9 +816,81 @@ def preview_tag_infos(packages: List[Package]) -> List[TagInfo]:
     return [info for info in (get_next_tag_info(package) for package in packages) if info is not None]
 
 
+def order_tag_infos_by_dependency(tag_infos: List[TagInfo]) -> List[TagInfo]:
+    """
+    Returns ``tag_infos`` in topological order: every package appears
+    after every sibling it depends on.
+    """
+    if not tag_infos:
+        return list(tag_infos)
+
+    if any(not info.package.name for info in tag_infos) and len(tag_infos) > 1:
+        raise Exception("Multiple packages found in legacy mode")
+
+    package_file_path = os.path.join(os.getcwd(), CODEGEN_FILE_NAME)
+    with open(package_file_path, "r") as file:
+        codegen = json.load(file)
+
+    name_template = codegen.get("dependency_name_template", "")
+    dep_patterns = codegen.get("dependency_pattern", {})
+    if not name_template or not dep_patterns:
+        return list(tag_infos)
+
+    by_dep_name: Dict[str, TagInfo] = {
+        name_template.replace("$PACKAGE", info.package.name): info for info in tag_infos if info.package.name
+    }
+
+    # Adjacency: path -> set of paths it depends on (within tag_infos).
+    deps: Dict[str, set] = {info.package.path: set() for info in tag_infos}
+    for info in tag_infos:
+        for filename, pattern in dep_patterns.items():
+            loc = os.path.join(os.getcwd(), info.package.path, filename)
+            if not os.path.exists(loc):
+                continue
+            with open(loc, "r") as f:
+                content = f.read()
+            for dep_name, dep_info in by_dep_name.items():
+                if dep_info.package.path == info.package.path:
+                    continue
+                regex = (
+                    re.escape(pattern)
+                    .replace(re.escape("$DEPENDENCY"), re.escape(dep_name))
+                    .replace(re.escape("$VERSION"), Version.PATTERN)
+                )
+                if re.search(regex, content):
+                    deps[info.package.path].add(dep_info.package.path)
+
+    # Stable topological sort: at each step, emit every node whose deps
+    # are already emitted, alphabetically by package name. Ties broken
+    # alphabetically so the manifest is reproducible across runs.
+    emitted: set = set()
+    ordered: List[TagInfo] = []
+    while len(ordered) < len(tag_infos):
+        ready = sorted(
+            (
+                info
+                for info in tag_infos
+                if info.package.path not in emitted and deps[info.package.path].issubset(emitted)
+            ),
+            key=lambda info: info.package.name,
+        )
+        if not ready:
+            remaining = [info.package.name for info in tag_infos if info.package.path not in emitted]
+            raise Exception(f"Cyclic dependency detected among packages: {remaining}")
+        for info in ready:
+            ordered.append(info)
+            emitted.add(info.package.path)
+    return ordered
+
+
 def push_tags(tag_infos: List[TagInfo]) -> None:
     """
     Creates and pushes tags to the repository.
+
+    Tags are emitted in topological order — dependencies before
+    dependents — so downstream publishing pipelines reading
+    ``created_tags.json`` can walk it sequentially without re-deriving
+    the dependency graph. See ``order_tag_infos_by_dependency``.
 
     As a side effect, writes the names of successfully created tags to
     ``./created_tags.json`` so that workflows triggering this script can
@@ -804,6 +905,7 @@ def push_tags(tag_infos: List[TagInfo]) -> None:
     exception is re-raised, so recovery-mode runs still surface their
     output.
     """
+    tag_infos = order_tag_infos_by_dependency(tag_infos)
     created: List[str] = []
     try:
         for tag_info in tag_infos:

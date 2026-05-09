@@ -321,6 +321,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: JsonTransformerOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: KafkaOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListPipelineEventsResponse
    :members:
    :undoc-members:
@@ -710,6 +718,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: PLAYABLE_AD
       :value: "PLAYABLE_AD"
+
+.. autoclass:: Transformer
+   :members:
+   :undoc-members:
+
+.. py:class:: TransformerFormat
+
+   .. py:attribute:: JSON
+      :value: "JSON"
+
+   .. py:attribute:: STRING
+      :value: "STRING"
 
 .. autoclass:: Truncation
    :members:

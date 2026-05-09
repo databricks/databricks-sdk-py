@@ -489,6 +489,19 @@ class PersonalComputeMessagePersonalComputeMessageEnum(Enum):
     ON = "ON"
 
 
+class PreviewPhase(Enum):
+    """Preview phase for settings that are feature previews. For settings that are not feature
+    previews, the preview_phase field is left unset. Mirrors only the customer-facing phases
+    surfaced in the UI; internal-only phases (DISABLED, DEV, UNDER_MIGRATION, LAUNCHED, etc.) are
+    not exposed here."""
+
+    BETA = "BETA"
+    GA = "GA"
+    GA_SOON = "GA_SOON"
+    PRIVATE_PREVIEW = "PRIVATE_PREVIEW"
+    PUBLIC_PREVIEW = "PUBLIC_PREVIEW"
+
+
 @dataclass
 class RestrictWorkspaceAdminsMessage:
     status: RestrictWorkspaceAdminsMessageStatus
@@ -731,11 +744,18 @@ class SettingsMetadata:
     description: Optional[str] = None
     """Setting description for what this setting controls"""
 
+    display_name: Optional[str] = None
+    """Human-readable display name for the setting or feature preview. This field may be unset if no
+    display name is available."""
+
     docs_link: Optional[str] = None
     """Link to databricks documentation for the setting"""
 
     name: Optional[str] = None
     """Name of the setting."""
+
+    preview_phase: Optional[PreviewPhase] = None
+    """Preview phase for feature preview settings. This field is not set for non-preview settings."""
 
     type: Optional[str] = None
     """Sample message depicting the type of the setting. To set this setting, the value sent must match
@@ -746,10 +766,14 @@ class SettingsMetadata:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
         if self.docs_link is not None:
             body["docs_link"] = self.docs_link
         if self.name is not None:
             body["name"] = self.name
+        if self.preview_phase is not None:
+            body["preview_phase"] = self.preview_phase.value
         if self.type is not None:
             body["type"] = self.type
         return body
@@ -759,10 +783,14 @@ class SettingsMetadata:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
         if self.docs_link is not None:
             body["docs_link"] = self.docs_link
         if self.name is not None:
             body["name"] = self.name
+        if self.preview_phase is not None:
+            body["preview_phase"] = self.preview_phase
         if self.type is not None:
             body["type"] = self.type
         return body
@@ -772,8 +800,10 @@ class SettingsMetadata:
         """Deserializes the SettingsMetadata from a dictionary."""
         return cls(
             description=d.get("description", None),
+            display_name=d.get("display_name", None),
             docs_link=d.get("docs_link", None),
             name=d.get("name", None),
+            preview_phase=_enum(d, "preview_phase", PreviewPhase),
             type=d.get("type", None),
         )
 
