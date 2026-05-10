@@ -9250,7 +9250,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: MODEL_SERVICE_STANDARD = 327; Next id: 328"""
+    """Latest kind: FEATURE_STANDARD = 328; Next id: 329"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -17112,17 +17112,14 @@ class TemporaryPathCredentialsAPI:
     unauthorized access or misuse. To use the temporary path credentials API, a metastore admin needs to
     enable the external_access_enabled flag (off by default) at the metastore level. A user needs to be
     granted the EXTERNAL USE LOCATION permission by external location owner. For requests on existing external
-    tables, user also needs to be granted the EXTERNAL USE SCHEMA permission at the schema level by catalog
-    owner.
+    tables and external volumes, user also needs to be granted the EXTERNAL USE SCHEMA permission at the
+    schema level by catalog owner.
 
     Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by catalog owner
     explicitly and is not included in schema ownership or ALL PRIVILEGES on the schema for security reasons.
     Similarly, EXTERNAL USE LOCATION is an external location level permission that can only be granted by
     external location owner explicitly and is not included in external location ownership or ALL PRIVILEGES on
-    the external location for security reasons.
-
-    This API only supports temporary path credentials for external locations and external tables, and volumes
-    will be supported in the future."""
+    the external location for security reasons."""
 
     def __init__(self, api_client):
         self._api = api_client

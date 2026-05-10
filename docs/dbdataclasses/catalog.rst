@@ -1536,7 +1536,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: MODEL_SERVICE_STANDARD = 327; Next id: 328
+   Latest kind: FEATURE_STANDARD = 328; Next id: 329
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"

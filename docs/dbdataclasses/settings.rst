@@ -206,6 +206,28 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CustomerFacingIngressNetworkPolicyAccountApiDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAccountUiDestination
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyApiScopeQualifier
+
+   Qualifies the breadth of API access permitted by an ingress network policy rule. API_SCOPE_QUALIFIER_READ narrows matching to read-only variants of the listed scopes; API_SCOPE_QUALIFIER_ALL matches any scope. When unset, scopes match exactly as listed.
+
+   .. py:attribute:: API_SCOPE_QUALIFIER_ALL
+      :value: "API_SCOPE_QUALIFIER_ALL"
+
+   .. py:attribute:: API_SCOPE_QUALIFIER_READ
+      :value: "API_SCOPE_QUALIFIER_READ"
+
 .. autoclass:: CustomerFacingIngressNetworkPolicyAppsRuntimeDestination
    :members:
    :undoc-members:
@@ -237,11 +259,35 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: IDENTITY_TYPE_SELECTED_IDENTITIES
       :value: "IDENTITY_TYPE_SELECTED_IDENTITIES"
 
+.. autoclass:: CustomerFacingIngressNetworkPolicyEndpoints
+   :members:
+   :undoc-members:
+
 .. autoclass:: CustomerFacingIngressNetworkPolicyIpRanges
    :members:
    :undoc-members:
 
 .. autoclass:: CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPrivateAccess
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode
+
+   .. py:attribute:: ALLOW_ALL_REGISTERED_ENDPOINTS
+      :value: "ALLOW_ALL_REGISTERED_ENDPOINTS"
+
+   .. py:attribute:: RESTRICTED_ACCESS
+      :value: "RESTRICTED_ACCESS"
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPrivateIngressRule
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPrivateRequestOrigin
    :members:
    :undoc-members:
 
