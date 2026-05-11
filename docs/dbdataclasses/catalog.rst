@@ -297,6 +297,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GA4_RAW_DATA
       :value: "GA4_RAW_DATA"
 
+   .. py:attribute:: GITHUB
+      :value: "GITHUB"
+
    .. py:attribute:: GLUE
       :value: "GLUE"
 
@@ -306,6 +309,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: HTTP
       :value: "HTTP"
 
+   .. py:attribute:: HUBSPOT
+      :value: "HUBSPOT"
+
    .. py:attribute:: META_MARKETING
       :value: "META_MARKETING"
 
@@ -314,6 +320,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: ORACLE
       :value: "ORACLE"
+
+   .. py:attribute:: OUTLOOK
+      :value: "OUTLOOK"
 
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
@@ -332,6 +341,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SERVICENOW
       :value: "SERVICENOW"
+
+   .. py:attribute:: SMARTSHEET
+      :value: "SMARTSHEET"
 
    .. py:attribute:: SNOWFLAKE
       :value: "SNOWFLAKE"

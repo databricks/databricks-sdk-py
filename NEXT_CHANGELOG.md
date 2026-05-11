@@ -42,3 +42,6 @@
 * Add `display_name` and `preview_phase` fields for `databricks.sdk.service.settingsv2.SettingsMetadata`.
 * Add `columns_to_index` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecRequest`.
 * Add `columns_to_index` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecResponse`.
+* Add `disabled` field for `databricks.sdk.service.jobs.RunTask`.
+* Add `disabled` field for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `hubspot`, `github`, `outlook` and `smartsheet` enum values for `databricks.sdk.service.catalog.ConnectionType`.
