@@ -1021,7 +1021,7 @@ class WorkspaceClient:
 
     @property
     def vector_search_endpoints(self) -> pkg_vectorsearch.VectorSearchEndpointsAPI:
-        """**Endpoint**: Represents the compute resources to host vector search indexes."""
+        """**Endpoint**: Represents the compute resources to host AI Search indexes."""
         return self._vector_search_endpoints
 
     @property

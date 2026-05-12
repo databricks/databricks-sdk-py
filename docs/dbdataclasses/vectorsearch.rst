@@ -109,7 +109,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: IndexSubtype
 
-   The subtype of the vector search index, determining the indexing and retrieval strategy. - `VECTOR`: Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An index that uses full-text search without vector embeddings. - `HYBRID`: An index that uses vector embeddings for similarity search and hybrid search.
+   The subtype of the AI Search index, determining the indexing and retrieval strategy. - `VECTOR`: Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An index that uses full-text search without vector embeddings. - `HYBRID`: An index that uses vector embeddings for similarity search and hybrid search.
 
    .. py:attribute:: FULL_TEXT
       :value: "FULL_TEXT"
@@ -254,7 +254,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: VectorIndexType
 
-   There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
+   There are 2 types of AI Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
 
    .. py:attribute:: DELTA_SYNC
       :value: "DELTA_SYNC"

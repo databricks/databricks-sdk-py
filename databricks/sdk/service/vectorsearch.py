@@ -56,10 +56,10 @@ class ColumnInfo:
 @dataclass
 class CustomTag:
     key: str
-    """Key field for a vector search endpoint tag."""
+    """Key field for an AI Search endpoint tag."""
 
     value: Optional[str] = None
-    """[Optional] Value field for a vector search endpoint tag."""
+    """[Optional] Value field for an AI Search endpoint tag."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomTag into a dictionary suitable for use as a JSON request body."""
@@ -523,7 +523,7 @@ class EndpointInfo:
     """User who last updated the endpoint"""
 
     name: Optional[str] = None
-    """Name of the vector search endpoint"""
+    """Name of the AI Search endpoint"""
 
     num_indexes: Optional[int] = None
     """Number of indexes on the endpoint"""
@@ -726,10 +726,10 @@ class GetVectorSearchEndpointPermissionLevelsResponse:
 
 
 class IndexSubtype(Enum):
-    """The subtype of the vector search index, determining the indexing and retrieval strategy. -
-    `VECTOR`: Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An index that uses full-text
-    search without vector embeddings. - `HYBRID`: An index that uses vector embeddings for
-    similarity search and hybrid search."""
+    """The subtype of the AI Search index, determining the indexing and retrieval strategy. - `VECTOR`:
+    Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An index that uses full-text search without
+    vector embeddings. - `HYBRID`: An index that uses vector embeddings for similarity search and
+    hybrid search."""
 
     FULL_TEXT = "FULL_TEXT"
     HYBRID = "HYBRID"
@@ -1083,7 +1083,7 @@ class PatchEndpointBudgetPolicyResponse:
     budget_policy_id: Optional[str] = None
 
     effective_budget_policy_id: Optional[str] = None
-    """The budget policy applied to the vector search endpoint."""
+    """The budget policy applied to the AI Search endpoint."""
 
     def as_dict(self) -> dict:
         """Serializes the PatchEndpointBudgetPolicyResponse into a dictionary suitable for use as a JSON request body."""
@@ -1415,10 +1415,10 @@ class SyncIndexResponse:
 @dataclass
 class UpdateEndpointCustomTagsResponse:
     custom_tags: Optional[List[CustomTag]] = None
-    """All the custom tags that are applied to the vector search endpoint."""
+    """All the custom tags that are applied to the AI Search endpoint."""
 
     name: Optional[str] = None
-    """The name of the vector search endpoint whose custom tags were updated."""
+    """The name of the AI Search endpoint whose custom tags were updated."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateEndpointCustomTagsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1710,10 +1710,10 @@ class VectorIndexStatus:
 
 
 class VectorIndexType(Enum):
-    """There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs
-    with a source Delta Table, automatically and incrementally updating the index as the underlying
-    data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write
-    of vectors and metadata through our REST and SDK APIs. With this model, the user manages index
+    """There are 2 types of AI Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a
+    source Delta Table, automatically and incrementally updating the index as the underlying data in
+    the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of
+    vectors and metadata through our REST and SDK APIs. With this model, the user manages index
     updates."""
 
     DELTA_SYNC = "DELTA_SYNC"
@@ -1951,7 +1951,7 @@ class VectorSearchEndpointPermissionsDescription:
 
 
 class VectorSearchEndpointsAPI:
-    """**Endpoint**: Represents the compute resources to host vector search indexes."""
+    """**Endpoint**: Represents the compute resources to host AI Search indexes."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2002,7 +2002,7 @@ class VectorSearchEndpointsAPI:
         """Create a new endpoint.
 
         :param name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
         :param endpoint_type: :class:`EndpointType`
           Type of endpoint
         :param budget_policy_id: str (optional)
@@ -2065,10 +2065,10 @@ class VectorSearchEndpointsAPI:
         ).result(timeout=timeout)
 
     def delete_endpoint(self, endpoint_name: str):
-        """Delete a vector search endpoint.
+        """Delete an AI Search endpoint.
 
         :param endpoint_name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
 
 
         """
@@ -2084,7 +2084,7 @@ class VectorSearchEndpointsAPI:
         self._api.do("DELETE", f"/api/2.0/vector-search/endpoints/{endpoint_name}", headers=headers)
 
     def get_endpoint(self, endpoint_name: str) -> EndpointInfo:
-        """Get details for a single vector search endpoint.
+        """Get details for a single AI Search endpoint.
 
         :param endpoint_name: str
           Name of the endpoint
@@ -2147,7 +2147,7 @@ class VectorSearchEndpointsAPI:
         return VectorSearchEndpointPermissions.from_dict(res)
 
     def list_endpoints(self, *, page_token: Optional[str] = None) -> Iterator[EndpointInfo]:
-        """List all vector search endpoints in the workspace.
+        """List all AI Search endpoints in the workspace.
 
         :param page_token: str (optional)
           Token for pagination
@@ -2179,7 +2179,7 @@ class VectorSearchEndpointsAPI:
         """Update an endpoint
 
         :param endpoint_name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
         :param target_qps: int (optional)
           Target QPS for the endpoint. Best-effort; the system does not guarantee this QPS will be achieved.
 
@@ -2214,7 +2214,7 @@ class VectorSearchEndpointsAPI:
         """Retrieve user-visible metrics for an endpoint
 
         :param name: str
-          Vector search endpoint name
+          AI Search endpoint name
         :param end_time: str (optional)
           End time for metrics query
         :param granularity_in_seconds: int (optional)
@@ -2288,7 +2288,7 @@ class VectorSearchEndpointsAPI:
         """Update the budget policy of an endpoint
 
         :param endpoint_name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
         :param budget_policy_id: str
           The budget policy id to be applied
 
@@ -2318,9 +2318,9 @@ class VectorSearchEndpointsAPI:
         """Update the custom tags of an endpoint.
 
         :param endpoint_name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
         :param custom_tags: List[:class:`CustomTag`]
-          The new custom tags for the vector search endpoint
+          The new custom tags for the AI Search endpoint
 
         :returns: :class:`UpdateEndpointCustomTagsResponse`
         """
@@ -2377,10 +2377,10 @@ class VectorSearchIndexesAPI:
     """**Index**: An efficient representation of your embedding vectors that supports real-time and efficient
     approximate nearest neighbor (ANN) search queries.
 
-    There are 2 types of Vector Search indexes: - **Delta Sync Index**: An index that automatically syncs with
-    a source Delta Table, automatically and incrementally updating the index as the underlying data in the
-    Delta Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of
-    vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates."""
+    There are 2 types of AI Search indexes: - **Delta Sync Index**: An index that automatically syncs with a
+    source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta
+    Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of vectors
+    and metadata through our REST and SDK APIs. With this model, the user manages index updates."""
 
     def __init__(self, api_client):
         self._api = api_client

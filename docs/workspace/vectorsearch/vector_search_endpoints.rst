@@ -4,14 +4,14 @@
 
 .. py:class:: VectorSearchEndpointsAPI
 
-    **Endpoint**: Represents the compute resources to host vector search indexes.
+    **Endpoint**: Represents the compute resources to host AI Search indexes.
 
     .. py:method:: create_endpoint(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str], target_qps: Optional[int], usage_policy_id: Optional[str]]) -> Wait[EndpointInfo]
 
         Create a new endpoint.
 
         :param name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
         :param endpoint_type: :class:`EndpointType`
           Type of endpoint
         :param budget_policy_id: str (optional)
@@ -33,17 +33,17 @@
 
     .. py:method:: delete_endpoint(endpoint_name: str)
 
-        Delete a vector search endpoint.
+        Delete an AI Search endpoint.
 
         :param endpoint_name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
 
 
         
 
     .. py:method:: get_endpoint(endpoint_name: str) -> EndpointInfo
 
-        Get details for a single vector search endpoint.
+        Get details for a single AI Search endpoint.
 
         :param endpoint_name: str
           Name of the endpoint
@@ -74,7 +74,7 @@
 
     .. py:method:: list_endpoints( [, page_token: Optional[str]]) -> Iterator[EndpointInfo]
 
-        List all vector search endpoints in the workspace.
+        List all AI Search endpoints in the workspace.
 
         :param page_token: str (optional)
           Token for pagination
@@ -87,7 +87,7 @@
         Update an endpoint
 
         :param endpoint_name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
         :param target_qps: int (optional)
           Target QPS for the endpoint. Best-effort; the system does not guarantee this QPS will be achieved.
 
@@ -99,7 +99,7 @@
         Retrieve user-visible metrics for an endpoint
 
         :param name: str
-          Vector search endpoint name
+          AI Search endpoint name
         :param end_time: str (optional)
           End time for metrics query
         :param granularity_in_seconds: int (optional)
@@ -131,7 +131,7 @@
         Update the budget policy of an endpoint
 
         :param endpoint_name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
         :param budget_policy_id: str
           The budget policy id to be applied
 
@@ -143,9 +143,9 @@
         Update the custom tags of an endpoint.
 
         :param endpoint_name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
         :param custom_tags: List[:class:`CustomTag`]
-          The new custom tags for the vector search endpoint
+          The new custom tags for the AI Search endpoint
 
         :returns: :class:`UpdateEndpointCustomTagsResponse`
         

@@ -2182,15 +2182,11 @@ class RequestedResource:
     table_name: Optional[str] = None
     """The full Unity Catalog table name."""
 
-    unspecified_resource_name: Optional[str] = None
-
     def as_dict(self) -> dict:
         """Serializes the RequestedResource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.table_name is not None:
             body["table_name"] = self.table_name
-        if self.unspecified_resource_name is not None:
-            body["unspecified_resource_name"] = self.unspecified_resource_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2198,16 +2194,12 @@ class RequestedResource:
         body = {}
         if self.table_name is not None:
             body["table_name"] = self.table_name
-        if self.unspecified_resource_name is not None:
-            body["unspecified_resource_name"] = self.unspecified_resource_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RequestedResource:
         """Deserializes the RequestedResource from a dictionary."""
-        return cls(
-            table_name=d.get("table_name", None), unspecified_resource_name=d.get("unspecified_resource_name", None)
-        )
+        return cls(table_name=d.get("table_name", None))
 
 
 @dataclass
@@ -3394,7 +3386,7 @@ class PostgresAPI:
         """Generate OAuth credentials for a Postgres database.
 
         :param endpoint: str
-          This field is not yet supported. The endpoint for which this credential will be generated. Format:
+          The endpoint resource name for which this credential will be generated. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param claims: List[:class:`RequestedClaims`] (optional)
           The returned token will be scoped to UC tables with the specified permissions.

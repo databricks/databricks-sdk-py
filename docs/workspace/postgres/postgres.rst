@@ -232,7 +232,7 @@
         Generate OAuth credentials for a Postgres database.
 
         :param endpoint: str
-          This field is not yet supported. The endpoint for which this credential will be generated. Format:
+          The endpoint resource name for which this credential will be generated. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param claims: List[:class:`RequestedClaims`] (optional)
           The returned token will be scoped to UC tables with the specified permissions.

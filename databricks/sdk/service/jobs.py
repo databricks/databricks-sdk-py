@@ -5898,6 +5898,10 @@ class RunTask:
     disable_auto_optimization: Optional[bool] = None
     """An option to disable auto optimization in serverless"""
 
+    disabled: Optional[bool] = None
+    """An optional flag to disable the task. If set to true, the task will not run even if it is part
+    of a job."""
+
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
@@ -6080,6 +6084,8 @@ class RunTask:
             body["description"] = self.description
         if self.disable_auto_optimization is not None:
             body["disable_auto_optimization"] = self.disable_auto_optimization
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
         if self.email_notifications:
@@ -6189,6 +6195,8 @@ class RunTask:
             body["description"] = self.description
         if self.disable_auto_optimization is not None:
             body["disable_auto_optimization"] = self.disable_auto_optimization
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
         if self.email_notifications:
@@ -6285,6 +6293,7 @@ class RunTask:
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
             disable_auto_optimization=d.get("disable_auto_optimization", None),
+            disabled=d.get("disabled", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             end_time=d.get("end_time", None),
@@ -7207,6 +7216,10 @@ class SubmitTask:
     disable_auto_optimization: Optional[bool] = None
     """An option to disable auto optimization in serverless"""
 
+    disabled: Optional[bool] = None
+    """An optional flag to disable the task. If set to true, the task will not run even if it is part
+    of a job."""
+
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
     behavior is to not send any emails."""
@@ -7322,6 +7335,8 @@ class SubmitTask:
             body["description"] = self.description
         if self.disable_auto_optimization is not None:
             body["disable_auto_optimization"] = self.disable_auto_optimization
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.environment_key is not None:
@@ -7399,6 +7414,8 @@ class SubmitTask:
             body["description"] = self.description
         if self.disable_auto_optimization is not None:
             body["disable_auto_optimization"] = self.disable_auto_optimization
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications
         if self.environment_key is not None:
@@ -7466,6 +7483,7 @@ class SubmitTask:
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
             disable_auto_optimization=d.get("disable_auto_optimization", None),
+            disabled=d.get("disabled", None),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             environment_key=d.get("environment_key", None),
             existing_cluster_id=d.get("existing_cluster_id", None),

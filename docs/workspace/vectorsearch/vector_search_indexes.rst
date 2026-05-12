@@ -7,10 +7,10 @@
     **Index**: An efficient representation of your embedding vectors that supports real-time and efficient
     approximate nearest neighbor (ANN) search queries.
 
-    There are 2 types of Vector Search indexes: - **Delta Sync Index**: An index that automatically syncs with
-    a source Delta Table, automatically and incrementally updating the index as the underlying data in the
-    Delta Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of
-    vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
+    There are 2 types of AI Search indexes: - **Delta Sync Index**: An index that automatically syncs with a
+    source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta
+    Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of vectors
+    and metadata through our REST and SDK APIs. With this model, the user manages index updates.
 
     .. py:method:: create_index(name: str, endpoint_name: str, primary_key: str, index_type: VectorIndexType [, delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest], direct_access_index_spec: Optional[DirectAccessVectorIndexSpec], index_subtype: Optional[IndexSubtype]]) -> VectorIndex
 
