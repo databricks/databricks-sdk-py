@@ -3122,6 +3122,7 @@ class ServedModelInputWorkloadType(Enum):
     GPU_LARGE = "GPU_LARGE"
     GPU_MEDIUM = "GPU_MEDIUM"
     GPU_SMALL = "GPU_SMALL"
+    GPU_XLARGE = "GPU_XLARGE"
     MULTIGPU_MEDIUM = "MULTIGPU_MEDIUM"
 
 
@@ -3922,6 +3923,7 @@ class ServingModelWorkloadType(Enum):
     GPU_LARGE = "GPU_LARGE"
     GPU_MEDIUM = "GPU_MEDIUM"
     GPU_SMALL = "GPU_SMALL"
+    GPU_XLARGE = "GPU_XLARGE"
     MULTIGPU_MEDIUM = "MULTIGPU_MEDIUM"
 
 

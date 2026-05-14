@@ -108,10 +108,14 @@
         :returns: :class:`MaterializedFeature`
         
 
-    .. py:method:: list_features( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Feature]
+    .. py:method:: list_features(catalog_name: str, schema_name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Feature]
 
         List Features.
 
+        :param catalog_name: str
+          Name of parent catalog for features of interest.
+        :param schema_name: str
+          Name of parent schema relative to its parent catalog.
         :param page_size: int (optional)
           The maximum number of results to return.
         :param page_token: str (optional)
@@ -154,7 +158,9 @@
         Update a Feature.
 
         :param full_name: str
-          The full three-part name (catalog, schema, name) of the feature.
+          The full three-part name (catalog, schema, name) of the feature. This is the feature's resource
+          identifier; the catalog_name, schema_name, and name fields below are OUTPUT_ONLY decomposed views of
+          this value.
         :param feature: :class:`Feature`
           Feature to update.
         :param update_mask: str

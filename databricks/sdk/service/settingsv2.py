@@ -73,6 +73,30 @@ class AibiDashboardEmbeddingApprovedDomains:
 
 
 @dataclass
+class AllowedAppsUserApiScopesMessage:
+    allowed_scopes: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AllowedAppsUserApiScopesMessage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allowed_scopes:
+            body["allowed_scopes"] = [v for v in self.allowed_scopes]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AllowedAppsUserApiScopesMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allowed_scopes:
+            body["allowed_scopes"] = self.allowed_scopes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AllowedAppsUserApiScopesMessage:
+        """Deserializes the AllowedAppsUserApiScopesMessage from a dictionary."""
+        return cls(allowed_scopes=d.get("allowed_scopes", None))
+
+
+@dataclass
 class BooleanMessage:
     value: Optional[bool] = None
 
@@ -554,6 +578,10 @@ class Setting:
     set by consumers, check effective_aibi_dashboard_embedding_approved_domains for final setting
     value."""
 
+    allowed_apps_user_api_scopes: Optional[AllowedAppsUserApiScopesMessage] = None
+    """Setting value for allowed_apps_user_api_scopes setting. This is the setting value set by
+    consumers, check effective_allowed_apps_user_api_scopes for final setting value."""
+
     automatic_cluster_update_workspace: Optional[ClusterAutoRestartMessage] = None
     """Setting value for automatic_cluster_update_workspace setting. This is the setting value set by
     consumers, check effective_automatic_cluster_update_workspace for final setting value."""
@@ -569,6 +597,10 @@ class Setting:
     effective_aibi_dashboard_embedding_approved_domains: Optional[AibiDashboardEmbeddingApprovedDomains] = None
     """Effective setting value for aibi_dashboard_embedding_approved_domains setting. This is the final
     effective value of setting. To set a value use aibi_dashboard_embedding_approved_domains."""
+
+    effective_allowed_apps_user_api_scopes: Optional[AllowedAppsUserApiScopesMessage] = None
+    """Effective setting value for allowed_apps_user_api_scopes setting. This is the final effective
+    value of setting. To set a value use allowed_apps_user_api_scopes."""
 
     effective_automatic_cluster_update_workspace: Optional[ClusterAutoRestartMessage] = None
     """Effective setting value for automatic_cluster_update_workspace setting. This is the final
@@ -620,6 +652,8 @@ class Setting:
             body["aibi_dashboard_embedding_access_policy"] = self.aibi_dashboard_embedding_access_policy.as_dict()
         if self.aibi_dashboard_embedding_approved_domains:
             body["aibi_dashboard_embedding_approved_domains"] = self.aibi_dashboard_embedding_approved_domains.as_dict()
+        if self.allowed_apps_user_api_scopes:
+            body["allowed_apps_user_api_scopes"] = self.allowed_apps_user_api_scopes.as_dict()
         if self.automatic_cluster_update_workspace:
             body["automatic_cluster_update_workspace"] = self.automatic_cluster_update_workspace.as_dict()
         if self.boolean_val:
@@ -632,6 +666,8 @@ class Setting:
             body["effective_aibi_dashboard_embedding_approved_domains"] = (
                 self.effective_aibi_dashboard_embedding_approved_domains.as_dict()
             )
+        if self.effective_allowed_apps_user_api_scopes:
+            body["effective_allowed_apps_user_api_scopes"] = self.effective_allowed_apps_user_api_scopes.as_dict()
         if self.effective_automatic_cluster_update_workspace:
             body["effective_automatic_cluster_update_workspace"] = (
                 self.effective_automatic_cluster_update_workspace.as_dict()
@@ -665,6 +701,8 @@ class Setting:
             body["aibi_dashboard_embedding_access_policy"] = self.aibi_dashboard_embedding_access_policy
         if self.aibi_dashboard_embedding_approved_domains:
             body["aibi_dashboard_embedding_approved_domains"] = self.aibi_dashboard_embedding_approved_domains
+        if self.allowed_apps_user_api_scopes:
+            body["allowed_apps_user_api_scopes"] = self.allowed_apps_user_api_scopes
         if self.automatic_cluster_update_workspace:
             body["automatic_cluster_update_workspace"] = self.automatic_cluster_update_workspace
         if self.boolean_val:
@@ -677,6 +715,8 @@ class Setting:
             body["effective_aibi_dashboard_embedding_approved_domains"] = (
                 self.effective_aibi_dashboard_embedding_approved_domains
             )
+        if self.effective_allowed_apps_user_api_scopes:
+            body["effective_allowed_apps_user_api_scopes"] = self.effective_allowed_apps_user_api_scopes
         if self.effective_automatic_cluster_update_workspace:
             body["effective_automatic_cluster_update_workspace"] = self.effective_automatic_cluster_update_workspace
         if self.effective_boolean_val:
@@ -711,6 +751,7 @@ class Setting:
             aibi_dashboard_embedding_approved_domains=_from_dict(
                 d, "aibi_dashboard_embedding_approved_domains", AibiDashboardEmbeddingApprovedDomains
             ),
+            allowed_apps_user_api_scopes=_from_dict(d, "allowed_apps_user_api_scopes", AllowedAppsUserApiScopesMessage),
             automatic_cluster_update_workspace=_from_dict(
                 d, "automatic_cluster_update_workspace", ClusterAutoRestartMessage
             ),
@@ -720,6 +761,9 @@ class Setting:
             ),
             effective_aibi_dashboard_embedding_approved_domains=_from_dict(
                 d, "effective_aibi_dashboard_embedding_approved_domains", AibiDashboardEmbeddingApprovedDomains
+            ),
+            effective_allowed_apps_user_api_scopes=_from_dict(
+                d, "effective_allowed_apps_user_api_scopes", AllowedAppsUserApiScopesMessage
             ),
             effective_automatic_cluster_update_workspace=_from_dict(
                 d, "effective_automatic_cluster_update_workspace", ClusterAutoRestartMessage

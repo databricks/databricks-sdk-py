@@ -251,7 +251,7 @@ class KnowledgeAssistant:
     """The MLflow experiment ID."""
 
     id: Optional[str] = None
-    """The universally unique identifier (UUID) of the Knowledge Assistant."""
+    """Deprecated: use knowledge_assistant_id instead."""
 
     instructions: Optional[str] = None
     """Additional global instructions on how the agent should generate answers. Optional on create and

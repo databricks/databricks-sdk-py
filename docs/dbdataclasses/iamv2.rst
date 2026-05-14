@@ -4,7 +4,31 @@ Identity and Access Management
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.iamv2`` module.
 
 .. py:currentmodule:: databricks.sdk.service.iamv2
+.. py:class:: Entitlement
+
+   .. py:attribute:: ALLOW_CLUSTER_CREATE
+      :value: "ALLOW_CLUSTER_CREATE"
+
+   .. py:attribute:: ALLOW_INSTANCE_POOL_CREATE
+      :value: "ALLOW_INSTANCE_POOL_CREATE"
+
+   .. py:attribute:: DATABRICKS_SQL_ACCESS
+      :value: "DATABRICKS_SQL_ACCESS"
+
+   .. py:attribute:: WORKSPACE_ACCESS
+      :value: "WORKSPACE_ACCESS"
+
+   .. py:attribute:: WORKSPACE_ADMIN
+      :value: "WORKSPACE_ADMIN"
+
+   .. py:attribute:: WORKSPACE_CONSUME
+      :value: "WORKSPACE_CONSUME"
+
 .. autoclass:: Group
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListWorkspaceAssignmentDetailsResponse
    :members:
    :undoc-members:
 
@@ -78,6 +102,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: FULL
       :value: "FULL"
+
+.. autoclass:: WorkspaceAssignmentDetail
+   :members:
+   :undoc-members:
 
 .. py:class:: WorkspacePermission
 
