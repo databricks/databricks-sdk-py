@@ -402,6 +402,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GPU_SMALL
       :value: "GPU_SMALL"
 
+   .. py:attribute:: GPU_XLARGE
+      :value: "GPU_XLARGE"
+
    .. py:attribute:: MULTIGPU_MEDIUM
       :value: "MULTIGPU_MEDIUM"
 
@@ -505,6 +508,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: GPU_SMALL
       :value: "GPU_SMALL"
+
+   .. py:attribute:: GPU_XLARGE
+      :value: "GPU_XLARGE"
 
    .. py:attribute:: MULTIGPU_MEDIUM
       :value: "MULTIGPU_MEDIUM"

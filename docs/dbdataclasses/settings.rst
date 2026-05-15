@@ -259,6 +259,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: IDENTITY_TYPE_SELECTED_IDENTITIES
       :value: "IDENTITY_TYPE_SELECTED_IDENTITIES"
 
+.. autoclass:: CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode
+
+   .. py:attribute:: FULL_ACCESS
+      :value: "FULL_ACCESS"
+
+   .. py:attribute:: RESTRICTED_ACCESS
+      :value: "RESTRICTED_ACCESS"
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin
+   :members:
+   :undoc-members:
+
 .. autoclass:: CustomerFacingIngressNetworkPolicyEndpoints
    :members:
    :undoc-members:
@@ -316,6 +336,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CustomerFacingIngressNetworkPolicyWorkspaceApiDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyWorkspaceIdList
    :members:
    :undoc-members:
 

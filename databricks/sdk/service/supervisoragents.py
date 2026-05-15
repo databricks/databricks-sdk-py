@@ -103,7 +103,8 @@ class Example:
 @dataclass
 class GenieSpace:
     id: str
-    """The ID of the genie space."""
+    """Deprecated: use space_id instead. Still REQUIRED for backward compatibility until a future API
+    version removes it."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieSpace into a dictionary suitable for use as a JSON request body."""

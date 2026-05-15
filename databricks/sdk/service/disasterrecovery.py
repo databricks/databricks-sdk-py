@@ -307,6 +307,12 @@ class StableUrl:
     the stable URL with a workspace. Not returned in responses. Mirrors
     FailoverGroup.initial_primary_region semantics."""
 
+    failover_group_name: Optional[str] = None
+    """Fully qualified resource name of the FailoverGroup this stable URL is currently linked to, in
+    the format `accounts/{account_id}/failover-groups/{failover_group_id}`. Empty when the stable
+    URL is not attached to any failover group. Server-controlled: written by CreateFailoverGroup /
+    UpdateFailoverGroup on link, cleared by DeleteFailoverGroup / UpdateFailoverGroup on unlink."""
+
     name: Optional[str] = None
     """Fully qualified resource name. Format: accounts/{account_id}/stable-urls/{stable_url_id}."""
 
@@ -318,6 +324,8 @@ class StableUrl:
     def as_dict(self) -> dict:
         """Serializes the StableUrl into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.failover_group_name is not None:
+            body["failover_group_name"] = self.failover_group_name
         if self.initial_workspace_id is not None:
             body["initial_workspace_id"] = self.initial_workspace_id
         if self.name is not None:
@@ -329,6 +337,8 @@ class StableUrl:
     def as_shallow_dict(self) -> dict:
         """Serializes the StableUrl into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.failover_group_name is not None:
+            body["failover_group_name"] = self.failover_group_name
         if self.initial_workspace_id is not None:
             body["initial_workspace_id"] = self.initial_workspace_id
         if self.name is not None:
@@ -341,7 +351,10 @@ class StableUrl:
     def from_dict(cls, d: Dict[str, Any]) -> StableUrl:
         """Deserializes the StableUrl from a dictionary."""
         return cls(
-            initial_workspace_id=d.get("initial_workspace_id", None), name=d.get("name", None), url=d.get("url", None)
+            failover_group_name=d.get("failover_group_name", None),
+            initial_workspace_id=d.get("initial_workspace_id", None),
+            name=d.get("name", None),
+            url=d.get("url", None),
         )
 
 

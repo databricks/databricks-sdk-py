@@ -1064,6 +1064,8 @@ class CustomerFacingIngressNetworkPolicy:
     """This proto is under development. The network policies applying for ingress traffic. Any changes
     here should also be synced to estore/namespaces/lakehousenetworkmanager/latest.proto."""
 
+    cross_workspace_access: Optional[CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess] = None
+
     private_access: Optional[CustomerFacingIngressNetworkPolicyPrivateAccess] = None
     """The network policy restrictions for private access to the workspace. Configures how registered
     private endpoints are allowed or denied access."""
@@ -1075,6 +1077,8 @@ class CustomerFacingIngressNetworkPolicy:
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.cross_workspace_access:
+            body["cross_workspace_access"] = self.cross_workspace_access.as_dict()
         if self.private_access:
             body["private_access"] = self.private_access.as_dict()
         if self.public_access:
@@ -1084,6 +1088,8 @@ class CustomerFacingIngressNetworkPolicy:
     def as_shallow_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.cross_workspace_access:
+            body["cross_workspace_access"] = self.cross_workspace_access
         if self.private_access:
             body["private_access"] = self.private_access
         if self.public_access:
@@ -1094,6 +1100,9 @@ class CustomerFacingIngressNetworkPolicy:
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicy:
         """Deserializes the CustomerFacingIngressNetworkPolicy from a dictionary."""
         return cls(
+            cross_workspace_access=_from_dict(
+                d, "cross_workspace_access", CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess
+            ),
             private_access=_from_dict(d, "private_access", CustomerFacingIngressNetworkPolicyPrivateAccess),
             public_access=_from_dict(d, "public_access", CustomerFacingIngressNetworkPolicyPublicAccess),
         )
@@ -1297,6 +1306,137 @@ class CustomerFacingIngressNetworkPolicyAuthenticationIdentityType(Enum):
     IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS = "IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS"
     IDENTITY_TYPE_ALL_USERS = "IDENTITY_TYPE_ALL_USERS"
     IDENTITY_TYPE_SELECTED_IDENTITIES = "IDENTITY_TYPE_SELECTED_IDENTITIES"
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess:
+    restriction_mode: CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode
+
+    allow_rules: Optional[List[CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule]] = None
+
+    deny_rules: Optional[List[CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_rules:
+            body["allow_rules"] = [v.as_dict() for v in self.allow_rules]
+        if self.deny_rules:
+            body["deny_rules"] = [v.as_dict() for v in self.deny_rules]
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_rules:
+            body["allow_rules"] = self.allow_rules
+        if self.deny_rules:
+            body["deny_rules"] = self.deny_rules
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess:
+        """Deserializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess from a dictionary."""
+        return cls(
+            allow_rules=_repeated_dict(d, "allow_rules", CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule),
+            deny_rules=_repeated_dict(d, "deny_rules", CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule),
+            restriction_mode=_enum(
+                d, "restriction_mode", CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode
+            ),
+        )
+
+
+class CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode(Enum):
+
+    FULL_ACCESS = "FULL_ACCESS"
+    RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule:
+    authentication: Optional[CustomerFacingIngressNetworkPolicyAuthentication] = None
+
+    destination: Optional[CustomerFacingIngressNetworkPolicyRequestDestination] = None
+
+    label: Optional[str] = None
+    """The label for this ingress rule."""
+
+    origin: Optional[CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.authentication:
+            body["authentication"] = self.authentication.as_dict()
+        if self.destination:
+            body["destination"] = self.destination.as_dict()
+        if self.label is not None:
+            body["label"] = self.label
+        if self.origin:
+            body["origin"] = self.origin.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.authentication:
+            body["authentication"] = self.authentication
+        if self.destination:
+            body["destination"] = self.destination
+        if self.label is not None:
+            body["label"] = self.label
+        if self.origin:
+            body["origin"] = self.origin
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule:
+        """Deserializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule from a dictionary."""
+        return cls(
+            authentication=_from_dict(d, "authentication", CustomerFacingIngressNetworkPolicyAuthentication),
+            destination=_from_dict(d, "destination", CustomerFacingIngressNetworkPolicyRequestDestination),
+            label=d.get("label", None),
+            origin=_from_dict(d, "origin", CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin:
+    all_source_workspaces: Optional[bool] = None
+    """Matches all source workspaces."""
+
+    selected_workspaces: Optional[CustomerFacingIngressNetworkPolicyWorkspaceIdList] = None
+    """Specific source workspace IDs to match."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_source_workspaces is not None:
+            body["all_source_workspaces"] = self.all_source_workspaces
+        if self.selected_workspaces:
+            body["selected_workspaces"] = self.selected_workspaces.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_source_workspaces is not None:
+            body["all_source_workspaces"] = self.all_source_workspaces
+        if self.selected_workspaces:
+            body["selected_workspaces"] = self.selected_workspaces
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin:
+        """Deserializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin from a dictionary."""
+        return cls(
+            all_source_workspaces=d.get("all_source_workspaces", None),
+            selected_workspaces=_from_dict(d, "selected_workspaces", CustomerFacingIngressNetworkPolicyWorkspaceIdList),
+        )
 
 
 @dataclass
@@ -1771,6 +1911,30 @@ class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
             scope_qualifier=_enum(d, "scope_qualifier", CustomerFacingIngressNetworkPolicyApiScopeQualifier),
             scopes=d.get("scopes", None),
         )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyWorkspaceIdList:
+    workspace_ids: Optional[List[int]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceIdList into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.workspace_ids:
+            body["workspace_ids"] = [v for v in self.workspace_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceIdList into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.workspace_ids:
+            body["workspace_ids"] = self.workspace_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyWorkspaceIdList:
+        """Deserializes the CustomerFacingIngressNetworkPolicyWorkspaceIdList from a dictionary."""
+        return cls(workspace_ids=d.get("workspace_ids", None))
 
 
 @dataclass

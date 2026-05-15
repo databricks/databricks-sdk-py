@@ -14670,6 +14670,7 @@ class QualityMonitorsAPI:
 
         headers = {
             "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         cfg = self._api._cfg
@@ -14979,6 +14980,7 @@ class QualityMonitorsAPI:
 
         headers = {
             "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         cfg = self._api._cfg
