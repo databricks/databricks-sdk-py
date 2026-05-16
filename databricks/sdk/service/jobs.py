@@ -4151,6 +4151,69 @@ class PowerBiTask:
 
 
 @dataclass
+class PythonOperatorTask:
+    main: Optional[str] = None
+    """Fully qualified name of the main class or function. For example, `my_project.my_function` or
+    `my_project.MyOperator`."""
+
+    parameters: Optional[List[PythonOperatorTaskParameter]] = None
+    """An ordered list of task parameters. TODO(JOBS-30885): Add limits for parameters."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PythonOperatorTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.main is not None:
+            body["main"] = self.main
+        if self.parameters:
+            body["parameters"] = [v.as_dict() for v in self.parameters]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PythonOperatorTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.main is not None:
+            body["main"] = self.main
+        if self.parameters:
+            body["parameters"] = self.parameters
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PythonOperatorTask:
+        """Deserializes the PythonOperatorTask from a dictionary."""
+        return cls(main=d.get("main", None), parameters=_repeated_dict(d, "parameters", PythonOperatorTaskParameter))
+
+
+@dataclass
+class PythonOperatorTaskParameter:
+    name: Optional[str] = None
+
+    value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the PythonOperatorTaskParameter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PythonOperatorTaskParameter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PythonOperatorTaskParameter:
+        """Deserializes the PythonOperatorTaskParameter from a dictionary."""
+        return cls(name=d.get("name", None), value=d.get("value", None))
+
+
+@dataclass
 class PythonWheelTask:
     package_name: str
     """Name of the package to execute"""
@@ -5984,6 +6047,9 @@ class RunTask:
     power_bi_task: Optional[PowerBiTask] = None
     """The task triggers a Power BI semantic model update when the `power_bi_task` field is present."""
 
+    python_operator_task: Optional[PythonOperatorTask] = None
+    """The task runs a Python operator task."""
+
     python_wheel_task: Optional[PythonWheelTask] = None
     """The task runs a Python wheel when the `python_wheel_task` field is present."""
 
@@ -6122,6 +6188,8 @@ class RunTask:
             body["pipeline_task"] = self.pipeline_task.as_dict()
         if self.power_bi_task:
             body["power_bi_task"] = self.power_bi_task.as_dict()
+        if self.python_operator_task:
+            body["python_operator_task"] = self.python_operator_task.as_dict()
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.queue_duration is not None:
@@ -6233,6 +6301,8 @@ class RunTask:
             body["pipeline_task"] = self.pipeline_task
         if self.power_bi_task:
             body["power_bi_task"] = self.power_bi_task
+        if self.python_operator_task:
+            body["python_operator_task"] = self.python_operator_task
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task
         if self.queue_duration is not None:
@@ -6312,6 +6382,7 @@ class RunTask:
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
             power_bi_task=_from_dict(d, "power_bi_task", PowerBiTask),
+            python_operator_task=_from_dict(d, "python_operator_task", PythonOperatorTask),
             python_wheel_task=_from_dict(d, "python_wheel_task", PythonWheelTask),
             queue_duration=d.get("queue_duration", None),
             resolved_values=_from_dict(d, "resolved_values", ResolvedValues),
@@ -7272,6 +7343,9 @@ class SubmitTask:
     power_bi_task: Optional[PowerBiTask] = None
     """The task triggers a Power BI semantic model update when the `power_bi_task` field is present."""
 
+    python_operator_task: Optional[PythonOperatorTask] = None
+    """The task runs a Python operator task."""
+
     python_wheel_task: Optional[PythonWheelTask] = None
     """The task runs a Python wheel when the `python_wheel_task` field is present."""
 
@@ -7365,6 +7439,8 @@ class SubmitTask:
             body["pipeline_task"] = self.pipeline_task.as_dict()
         if self.power_bi_task:
             body["power_bi_task"] = self.power_bi_task.as_dict()
+        if self.python_operator_task:
+            body["python_operator_task"] = self.python_operator_task.as_dict()
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.retry_on_timeout is not None:
@@ -7444,6 +7520,8 @@ class SubmitTask:
             body["pipeline_task"] = self.pipeline_task
         if self.power_bi_task:
             body["power_bi_task"] = self.power_bi_task
+        if self.python_operator_task:
+            body["python_operator_task"] = self.python_operator_task
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task
         if self.retry_on_timeout is not None:
@@ -7498,6 +7576,7 @@ class SubmitTask:
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
             power_bi_task=_from_dict(d, "power_bi_task", PowerBiTask),
+            python_operator_task=_from_dict(d, "python_operator_task", PythonOperatorTask),
             python_wheel_task=_from_dict(d, "python_wheel_task", PythonWheelTask),
             retry_on_timeout=d.get("retry_on_timeout", None),
             run_if=_enum(d, "run_if", RunIf),
@@ -7819,6 +7898,9 @@ class Task:
     power_bi_task: Optional[PowerBiTask] = None
     """The task triggers a Power BI semantic model update when the `power_bi_task` field is present."""
 
+    python_operator_task: Optional[PythonOperatorTask] = None
+    """The task runs a Python operator task."""
+
     python_wheel_task: Optional[PythonWheelTask] = None
     """The task runs a Python wheel when the `python_wheel_task` field is present."""
 
@@ -7917,6 +7999,8 @@ class Task:
             body["pipeline_task"] = self.pipeline_task.as_dict()
         if self.power_bi_task:
             body["power_bi_task"] = self.power_bi_task.as_dict()
+        if self.python_operator_task:
+            body["python_operator_task"] = self.python_operator_task.as_dict()
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.retry_on_timeout is not None:
@@ -7998,6 +8082,8 @@ class Task:
             body["pipeline_task"] = self.pipeline_task
         if self.power_bi_task:
             body["power_bi_task"] = self.power_bi_task
+        if self.python_operator_task:
+            body["python_operator_task"] = self.python_operator_task
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task
         if self.retry_on_timeout is not None:
@@ -8053,6 +8139,7 @@ class Task:
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
             power_bi_task=_from_dict(d, "power_bi_task", PowerBiTask),
+            python_operator_task=_from_dict(d, "python_operator_task", PythonOperatorTask),
             python_wheel_task=_from_dict(d, "python_wheel_task", PythonWheelTask),
             retry_on_timeout=d.get("retry_on_timeout", None),
             run_if=_enum(d, "run_if", RunIf),

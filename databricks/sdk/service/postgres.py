@@ -1942,7 +1942,8 @@ class ProjectSpec:
     in this project. Value should be between 172800s (2 days) and 3024000s (35 days)."""
 
     pg_version: Optional[int] = None
-    """The major Postgres version number. Supported versions are 16 and 17."""
+    """The major Postgres version number. The set of supported versions may vary; consult the API
+    documentation for currently accepted values."""
 
     def as_dict(self) -> dict:
         """Serializes the ProjectSpec into a dictionary suitable for use as a JSON request body."""

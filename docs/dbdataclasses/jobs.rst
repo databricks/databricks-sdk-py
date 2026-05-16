@@ -599,6 +599,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PythonOperatorTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: PythonOperatorTaskParameter
+   :members:
+   :undoc-members:
+
 .. autoclass:: PythonWheelTask
    :members:
    :undoc-members:

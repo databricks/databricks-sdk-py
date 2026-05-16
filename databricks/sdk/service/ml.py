@@ -10,12 +10,13 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum,
-                                              _timestamp)
+from databricks.sdk.service._internal import (Wait, _duration, _enum,
+                                              _from_dict, _repeated_dict,
+                                              _repeated_enum, _timestamp)
 
 from ..errors import OperationFailed
 
@@ -667,6 +668,8 @@ class CommentObject:
 
 @dataclass
 class ContinuousWindow:
+    """Deprecated: use RollingWindow with `delay` instead."""
+
     window_duration: str
     """The duration of the continuous window (must be positive)."""
 
@@ -5662,6 +5665,43 @@ class RestoreRunsResponse:
 
 
 @dataclass
+class RollingWindow:
+    """A rolling time window with an optional delay. This is the SQL-spec-aligned replacement for
+    ContinuousWindow: `delay` is the non-negative counterpart of the legacy non-positive
+    `ContinuousWindow.offset`."""
+
+    window_duration: Duration
+    """The duration of the rolling window (must be positive)."""
+
+    delay: Optional[Duration] = None
+    """The delay applied to the end of the rolling window (must be non-negative). For example, delay=1d
+    shifts the window end 1 day before the evaluation time."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RollingWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay.ToJsonString()
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RollingWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RollingWindow:
+        """Deserializes the RollingWindow from a dictionary."""
+        return cls(delay=_duration(d, "delay"), window_duration=_duration(d, "window_duration"))
+
+
+@dataclass
 class Run:
     """A single run."""
 
@@ -6429,6 +6469,8 @@ class StddevSampFunction:
 
 @dataclass
 class SubscriptionMode:
+    """Deprecated: Use KafkaSubscriptionMode instead."""
+
     assign: Optional[str] = None
     """A JSON string that contains the specific topic-partitions to consume from. For example, for
     '{"topicA":[0,1],"topicB":[2,4]}', topicA's 0'th and 1st partitions will be consumed from."""
@@ -6538,6 +6580,8 @@ class TestRegistryWebhookResponse:
 class TimeWindow:
     continuous: Optional[ContinuousWindow] = None
 
+    rolling: Optional[RollingWindow] = None
+
     sliding: Optional[SlidingWindow] = None
 
     tumbling: Optional[TumblingWindow] = None
@@ -6547,6 +6591,8 @@ class TimeWindow:
         body = {}
         if self.continuous:
             body["continuous"] = self.continuous.as_dict()
+        if self.rolling:
+            body["rolling"] = self.rolling.as_dict()
         if self.sliding:
             body["sliding"] = self.sliding.as_dict()
         if self.tumbling:
@@ -6558,6 +6604,8 @@ class TimeWindow:
         body = {}
         if self.continuous:
             body["continuous"] = self.continuous
+        if self.rolling:
+            body["rolling"] = self.rolling
         if self.sliding:
             body["sliding"] = self.sliding
         if self.tumbling:
@@ -6569,6 +6617,7 @@ class TimeWindow:
         """Deserializes the TimeWindow from a dictionary."""
         return cls(
             continuous=_from_dict(d, "continuous", ContinuousWindow),
+            rolling=_from_dict(d, "rolling", RollingWindow),
             sliding=_from_dict(d, "sliding", SlidingWindow),
             tumbling=_from_dict(d, "tumbling", TumblingWindow),
         )

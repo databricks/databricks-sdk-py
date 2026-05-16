@@ -25,3 +25,7 @@
 * Add `gpu_xlarge` enum value for `databricks.sdk.service.serving.ServedModelInputWorkloadType`.
 * Add `gpu_xlarge` enum value for `databricks.sdk.service.serving.ServingModelWorkloadType`.
 * [Breaking] Change `list_features()` method for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service with new required argument order.
+* Add `python_operator_task` field for `databricks.sdk.service.jobs.RunTask`.
+* Add `python_operator_task` field for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `python_operator_task` field for `databricks.sdk.service.jobs.Task`.
+* Add `rolling` field for `databricks.sdk.service.ml.TimeWindow`.
