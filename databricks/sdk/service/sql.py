@@ -7581,7 +7581,7 @@ class AlertsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/sql/alerts", body=body, headers=headers)
         return Alert.from_dict(res)
@@ -7602,7 +7602,7 @@ class AlertsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/sql/alerts/{id}", headers=headers)
 
@@ -7620,7 +7620,7 @@ class AlertsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/sql/alerts/{id}", headers=headers)
         return Alert.from_dict(res)
@@ -7648,7 +7648,7 @@ class AlertsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/sql/alerts", query=query, headers=headers)
@@ -7702,7 +7702,7 @@ class AlertsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/sql/alerts/{id}", body=body, headers=headers)
         return Alert.from_dict(res)
@@ -7770,7 +7770,7 @@ class AlertsLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/preview/sql/alerts", body=body, headers=headers)
         return LegacyAlert.from_dict(res)
@@ -7794,7 +7794,7 @@ class AlertsLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/alerts/{alert_id}", headers=headers)
 
@@ -7816,7 +7816,7 @@ class AlertsLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/alerts/{alert_id}", headers=headers)
         return LegacyAlert.from_dict(res)
@@ -7838,7 +7838,7 @@ class AlertsLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/preview/sql/alerts", headers=headers)
         return [LegacyAlert.from_dict(v) for v in res]
@@ -7880,7 +7880,7 @@ class AlertsLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/preview/sql/alerts/{alert_id}", body=body, headers=headers)
 
@@ -7907,7 +7907,7 @@ class AlertsV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/alerts", body=body, headers=headers)
         return AlertV2.from_dict(res)
@@ -7926,7 +7926,7 @@ class AlertsV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/alerts/{id}", headers=headers)
         return AlertV2.from_dict(res)
@@ -7951,7 +7951,7 @@ class AlertsV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/alerts", query=query, headers=headers)
@@ -7983,7 +7983,7 @@ class AlertsV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/alerts/{id}", query=query, headers=headers)
 
@@ -8018,7 +8018,7 @@ class AlertsV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/alerts/{id}", query=query, body=body, headers=headers)
         return AlertV2.from_dict(res)
@@ -8074,7 +8074,7 @@ class DashboardWidgetsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/preview/sql/widgets", body=body, headers=headers)
         return Widget.from_dict(res)
@@ -8094,7 +8094,7 @@ class DashboardWidgetsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/widgets/{id}", headers=headers)
 
@@ -8144,7 +8144,7 @@ class DashboardWidgetsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/widgets/{id}", body=body, headers=headers)
         return Widget.from_dict(res)
@@ -8183,7 +8183,7 @@ class DashboardsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", headers=headers)
 
@@ -8205,7 +8205,7 @@ class DashboardsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", headers=headers)
         return Dashboard.from_dict(res)
@@ -8254,7 +8254,7 @@ class DashboardsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         query["page"] = 1
         while True:
@@ -8284,7 +8284,7 @@ class DashboardsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/preview/sql/dashboards/trash/{dashboard_id}", headers=headers)
 
@@ -8330,7 +8330,7 @@ class DashboardsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", body=body, headers=headers)
         return Dashboard.from_dict(res)
@@ -8371,7 +8371,7 @@ class DataSourcesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/preview/sql/data_sources", headers=headers)
         return [DataSource.from_dict(v) for v in res]
@@ -8418,7 +8418,7 @@ class DbsqlPermissionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}", headers=headers)
         return GetResponse.from_dict(res)
@@ -8456,7 +8456,7 @@ class DbsqlPermissionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", f"/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}", body=body, headers=headers
@@ -8493,7 +8493,7 @@ class DbsqlPermissionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -8537,7 +8537,7 @@ class QueriesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/sql/queries", body=body, headers=headers)
         return Query.from_dict(res)
@@ -8558,7 +8558,7 @@ class QueriesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/sql/queries/{id}", headers=headers)
 
@@ -8576,7 +8576,7 @@ class QueriesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/sql/queries/{id}", headers=headers)
         return Query.from_dict(res)
@@ -8604,7 +8604,7 @@ class QueriesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/sql/queries", query=query, headers=headers)
@@ -8638,7 +8638,7 @@ class QueriesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", f"/api/2.0/sql/queries/{id}/visualizations", query=query, headers=headers)
@@ -8692,7 +8692,7 @@ class QueriesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/sql/queries/{id}", body=body, headers=headers)
         return Query.from_dict(res)
@@ -8784,7 +8784,7 @@ class QueriesLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/preview/sql/queries", body=body, headers=headers)
         return LegacyQuery.from_dict(res)
@@ -8808,7 +8808,7 @@ class QueriesLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/queries/{query_id}", headers=headers)
 
@@ -8831,7 +8831,7 @@ class QueriesLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/queries/{query_id}", headers=headers)
         return LegacyQuery.from_dict(res)
@@ -8892,7 +8892,7 @@ class QueriesLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         query["page"] = 1
         while True:
@@ -8923,7 +8923,7 @@ class QueriesLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/preview/sql/queries/trash/{query_id}", headers=headers)
 
@@ -8993,7 +8993,7 @@ class QueriesLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/queries/{query_id}", body=body, headers=headers)
         return LegacyQuery.from_dict(res)
@@ -9052,7 +9052,7 @@ class QueryHistoryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/sql/history/queries", query=query, headers=headers)
         return ListQueriesResponse.from_dict(res)
@@ -9083,7 +9083,7 @@ class QueryVisualizationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/sql/visualizations", body=body, headers=headers)
         return Visualization.from_dict(res)
@@ -9102,7 +9102,7 @@ class QueryVisualizationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/sql/visualizations/{id}", headers=headers)
 
@@ -9139,7 +9139,7 @@ class QueryVisualizationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/sql/visualizations/{id}", body=body, headers=headers)
         return Visualization.from_dict(res)
@@ -9199,7 +9199,7 @@ class QueryVisualizationsLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/preview/sql/visualizations", body=body, headers=headers)
         return LegacyVisualization.from_dict(res)
@@ -9224,7 +9224,7 @@ class QueryVisualizationsLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/visualizations/{id}", headers=headers)
 
@@ -9289,7 +9289,7 @@ class QueryVisualizationsLegacyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/visualizations/{id}", body=body, headers=headers)
         return LegacyVisualization.from_dict(res)
@@ -9314,7 +9314,7 @@ class RedashConfigAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/redash-v2/config", headers=headers)
         return ClientConfig.from_dict(res)
@@ -9424,7 +9424,7 @@ class StatementExecutionAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/sql/statements/{statement_id}/cancel", headers=headers)
 
@@ -9659,7 +9659,7 @@ class StatementExecutionAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/sql/statements", body=body, headers=headers)
         return StatementResponse.from_dict(res)
@@ -9687,7 +9687,7 @@ class StatementExecutionAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/sql/statements/{statement_id}", headers=headers)
         return StatementResponse.from_dict(res)
@@ -9715,7 +9715,7 @@ class StatementExecutionAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}", headers=headers
@@ -9904,7 +9904,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.0/sql/warehouses", body=body, headers=headers)
         return Wait(
@@ -9973,7 +9973,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", "/api/warehouses/v1/default-warehouse-overrides", query=query, body=body, headers=headers
@@ -9995,7 +9995,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/sql/warehouses/{id}", headers=headers)
 
@@ -10017,7 +10017,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/warehouses/v1/{name}", headers=headers)
 
@@ -10137,7 +10137,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
         return Wait(self.wait_get_warehouse_running, id=id)
@@ -10193,7 +10193,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/sql/warehouses/{id}", headers=headers)
         return GetWarehouseResponse.from_dict(res)
@@ -10217,7 +10217,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/warehouses/v1/{name}", headers=headers)
         return DefaultWarehouseOverride.from_dict(res)
@@ -10237,7 +10237,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels", headers=headers)
         return GetWarehousePermissionLevelsResponse.from_dict(res)
@@ -10258,7 +10258,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/warehouses/{warehouse_id}", headers=headers)
         return WarehousePermissions.from_dict(res)
@@ -10276,7 +10276,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/sql/config/warehouses", headers=headers)
         return GetWorkspaceWarehouseConfigResponse.from_dict(res)
@@ -10314,7 +10314,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/sql/warehouses", query=query, headers=headers)
@@ -10356,7 +10356,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/warehouses/v1/default-warehouse-overrides", query=query, headers=headers)
@@ -10390,7 +10390,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/permissions/warehouses/{warehouse_id}", body=body, headers=headers)
         return WarehousePermissions.from_dict(res)
@@ -10468,7 +10468,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PUT", "/api/2.0/sql/config/warehouses", body=body, headers=headers)
 
@@ -10489,7 +10489,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
         return Wait(self.wait_get_warehouse_running, id=id)
@@ -10514,7 +10514,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
         return Wait(self.wait_get_warehouse_stopped, id=id)
@@ -10564,7 +10564,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/warehouses/v1/{name}", query=query, body=body, headers=headers)
         return DefaultWarehouseOverride.from_dict(res)
@@ -10592,7 +10592,7 @@ class WarehousesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/warehouses/{warehouse_id}", body=body, headers=headers)
         return WarehousePermissions.from_dict(res)

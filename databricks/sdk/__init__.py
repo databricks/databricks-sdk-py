@@ -1103,13 +1103,13 @@ class WorkspaceClient:
         If ``Config.workspace_id`` is already set (from the databrickscfg profile,
         the ``DATABRICKS_WORKSPACE_ID`` env var, host metadata, or a ``?o=`` query
         param), it is returned without an API round-trip. Otherwise the ID is
-        fetched from the ``X-Databricks-Org-Id`` response header on
+        fetched from the ``X-Databricks-Workspace-Id`` response header on
         ``/api/2.0/preview/scim/v2/Me``.
         """
         if self._config.workspace_id:
             return int(self._config.workspace_id)
-        response = self._api_client.do("GET", "/api/2.0/preview/scim/v2/Me", response_headers=["X-Databricks-Org-Id"])
-        return int(response["X-Databricks-Org-Id"])
+        response = self._api_client.do("GET", "/api/2.0/preview/scim/v2/Me", response_headers=["X-Databricks-Workspace-Id"])
+        return int(response["X-Databricks-Workspace-Id"])
 
     def __repr__(self):
         return f"WorkspaceClient(host='{self._config.host}', auth_type='{self._config.auth_type}', ...)"

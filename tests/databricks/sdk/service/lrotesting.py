@@ -300,7 +300,7 @@ class LroTestingAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/lro-testing/operations/{name}/cancel", headers=headers)
 
@@ -321,7 +321,7 @@ class LroTestingAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/lro-testing/resources", body=body, headers=headers)
         operation = Operation.from_dict(res)
@@ -335,7 +335,7 @@ class LroTestingAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("DELETE", f"/api/2.0/lro-testing/resources/{resource_id}", headers=headers)
         operation = Operation.from_dict(res)
@@ -349,7 +349,7 @@ class LroTestingAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/lro-testing/operations/{name}", headers=headers)
         return Operation.from_dict(res)
@@ -369,7 +369,7 @@ class LroTestingAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/lro-testing/resources/{resource_id}", headers=headers)
         return TestResource.from_dict(res)

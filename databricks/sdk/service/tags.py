@@ -253,7 +253,7 @@ class TagPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/tag-policies", body=body, headers=headers)
         return TagPolicy.from_dict(res)
@@ -275,7 +275,7 @@ class TagPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/tag-policies/{tag_key}", headers=headers)
 
@@ -298,7 +298,7 @@ class TagPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/tag-policies/{tag_key}", headers=headers)
         return TagPolicy.from_dict(res)
@@ -334,7 +334,7 @@ class TagPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/tag-policies", query=query, headers=headers)
@@ -380,7 +380,7 @@ class TagPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/tag-policies/{tag_key}", query=query, body=body, headers=headers)
         return TagPolicy.from_dict(res)
@@ -408,7 +408,7 @@ class WorkspaceEntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/entity-tag-assignments", body=body, headers=headers)
         return TagAssignment.from_dict(res)
@@ -433,7 +433,7 @@ class WorkspaceEntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE", f"/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags/{tag_key}", headers=headers
@@ -459,7 +459,7 @@ class WorkspaceEntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags/{tag_key}", headers=headers
@@ -495,7 +495,7 @@ class WorkspaceEntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -546,7 +546,7 @@ class WorkspaceEntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",

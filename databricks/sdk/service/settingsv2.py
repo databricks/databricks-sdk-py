@@ -1202,7 +1202,7 @@ class WorkspaceSettingsV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/settings/{name}", headers=headers)
         return Setting.from_dict(res)
@@ -1239,7 +1239,7 @@ class WorkspaceSettingsV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/settings-metadata", query=query, headers=headers)
@@ -1273,7 +1273,7 @@ class WorkspaceSettingsV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/settings/{name}", body=body, headers=headers)
         return Setting.from_dict(res)

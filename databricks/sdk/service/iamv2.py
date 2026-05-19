@@ -832,7 +832,7 @@ class WorkspaceIamV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/identity/workspaceAssignmentDetails", body=body, headers=headers)
         return WorkspaceAssignmentDetail.from_dict(res)
@@ -855,7 +855,7 @@ class WorkspaceIamV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/identity/workspaceAssignmentDetails/{principal_id}", headers=headers)
 
@@ -886,7 +886,7 @@ class WorkspaceIamV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/identity/workspaceAccessDetails/{principal_id}", query=query, headers=headers
@@ -909,7 +909,7 @@ class WorkspaceIamV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/identity/workspaceAssignmentDetails/{principal_id}", headers=headers)
         return WorkspaceAssignmentDetail.from_dict(res)
@@ -940,7 +940,7 @@ class WorkspaceIamV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/identity/workspaceAssignmentDetails", query=query, headers=headers)
         return ListWorkspaceAssignmentDetailsResponse.from_dict(res)
@@ -966,7 +966,7 @@ class WorkspaceIamV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/identity/groups/resolveByExternalId", body=body, headers=headers)
         return ResolveGroupResponse.from_dict(res)
@@ -992,7 +992,7 @@ class WorkspaceIamV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", "/api/2.0/identity/servicePrincipals/resolveByExternalId", body=body, headers=headers
@@ -1020,7 +1020,7 @@ class WorkspaceIamV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/identity/users/resolveByExternalId", body=body, headers=headers)
         return ResolveUserResponse.from_dict(res)
@@ -1054,7 +1054,7 @@ class WorkspaceIamV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",

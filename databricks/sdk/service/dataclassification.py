@@ -168,7 +168,7 @@ class DataClassificationAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/data-classification/v1/{parent}/config", body=body, headers=headers)
         return CatalogConfig.from_dict(res)
@@ -188,7 +188,7 @@ class DataClassificationAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/data-classification/v1/{name}", headers=headers)
 
@@ -207,7 +207,7 @@ class DataClassificationAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/data-classification/v1/{name}", headers=headers)
         return CatalogConfig.from_dict(res)
@@ -239,7 +239,7 @@ class DataClassificationAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/data-classification/v1/{name}", query=query, body=body, headers=headers)
         return CatalogConfig.from_dict(res)

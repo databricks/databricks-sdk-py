@@ -2961,7 +2961,7 @@ class ConsumerFulfillmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3000,7 +3000,7 @@ class ConsumerFulfillmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3061,7 +3061,7 @@ class ConsumerInstallationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", f"/api/2.1/marketplace-consumer/listings/{listing_id}/installations", body=body, headers=headers
@@ -3083,7 +3083,7 @@ class ConsumerInstallationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE",
@@ -3113,7 +3113,7 @@ class ConsumerInstallationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/marketplace-consumer/installations", query=query, headers=headers)
@@ -3147,7 +3147,7 @@ class ConsumerInstallationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3196,7 +3196,7 @@ class ConsumerInstallationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT",
@@ -3231,7 +3231,7 @@ class ConsumerListingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.1/marketplace-consumer/listings:batchGet", query=query, headers=headers)
         return BatchGetListingsResponse.from_dict(res)
@@ -3250,7 +3250,7 @@ class ConsumerListingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/marketplace-consumer/listings/{id}", headers=headers)
         return GetListingResponse.from_dict(res)
@@ -3315,7 +3315,7 @@ class ConsumerListingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/marketplace-consumer/listings", query=query, headers=headers)
@@ -3380,7 +3380,7 @@ class ConsumerListingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/marketplace-consumer/search-listings", query=query, headers=headers)
@@ -3450,7 +3450,7 @@ class ConsumerPersonalizationRequestsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -3475,7 +3475,7 @@ class ConsumerPersonalizationRequestsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.1/marketplace-consumer/listings/{listing_id}/personalization-requests", headers=headers
@@ -3504,7 +3504,7 @@ class ConsumerPersonalizationRequestsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3541,7 +3541,7 @@ class ConsumerProvidersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.1/marketplace-consumer/providers:batchGet", query=query, headers=headers)
         return BatchGetProvidersResponse.from_dict(res)
@@ -3560,7 +3560,7 @@ class ConsumerProvidersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/marketplace-consumer/providers/{id}", headers=headers)
         return GetProviderResponse.from_dict(res)
@@ -3590,7 +3590,7 @@ class ConsumerProvidersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/marketplace-consumer/providers", query=query, headers=headers)
@@ -3626,7 +3626,7 @@ class ProviderExchangeFiltersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/marketplace-exchange/filters", body=body, headers=headers)
         return CreateExchangeFilterResponse.from_dict(res)
@@ -3645,7 +3645,7 @@ class ProviderExchangeFiltersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/marketplace-exchange/filters/{id}", headers=headers)
 
@@ -3674,7 +3674,7 @@ class ProviderExchangeFiltersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-exchange/filters", query=query, headers=headers)
@@ -3704,7 +3704,7 @@ class ProviderExchangeFiltersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-exchange/filters/{id}", body=body, headers=headers)
         return UpdateExchangeFilterResponse.from_dict(res)
@@ -3737,7 +3737,7 @@ class ProviderExchangesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/marketplace-exchange/exchanges-for-listing", body=body, headers=headers)
         return AddExchangeForListingResponse.from_dict(res)
@@ -3760,7 +3760,7 @@ class ProviderExchangesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/marketplace-exchange/exchanges", body=body, headers=headers)
         return CreateExchangeResponse.from_dict(res)
@@ -3779,7 +3779,7 @@ class ProviderExchangesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/marketplace-exchange/exchanges/{id}", headers=headers)
 
@@ -3797,7 +3797,7 @@ class ProviderExchangesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/marketplace-exchange/exchanges-for-listing/{id}", headers=headers)
 
@@ -3815,7 +3815,7 @@ class ProviderExchangesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/marketplace-exchange/exchanges/{id}", headers=headers)
         return GetExchangeResponse.from_dict(res)
@@ -3840,7 +3840,7 @@ class ProviderExchangesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-exchange/exchanges", query=query, headers=headers)
@@ -3876,7 +3876,7 @@ class ProviderExchangesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3914,7 +3914,7 @@ class ProviderExchangesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3946,7 +3946,7 @@ class ProviderExchangesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-exchange/exchanges/{id}", body=body, headers=headers)
         return UpdateExchangeResponse.from_dict(res)
@@ -3992,7 +3992,7 @@ class ProviderFilesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/marketplace-provider/files", body=body, headers=headers)
         return CreateFileResponse.from_dict(res)
@@ -4011,7 +4011,7 @@ class ProviderFilesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/files/{file_id}", headers=headers)
 
@@ -4029,7 +4029,7 @@ class ProviderFilesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/marketplace-provider/files/{file_id}", headers=headers)
         return GetFileResponse.from_dict(res)
@@ -4059,7 +4059,7 @@ class ProviderFilesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-provider/files", query=query, headers=headers)
@@ -4096,7 +4096,7 @@ class ProviderListingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/marketplace-provider/listing", body=body, headers=headers)
         return CreateListingResponse.from_dict(res)
@@ -4115,7 +4115,7 @@ class ProviderListingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/listings/{id}", headers=headers)
 
@@ -4133,7 +4133,7 @@ class ProviderListingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/marketplace-provider/listings/{id}", headers=headers)
         return GetListingResponse.from_dict(res)
@@ -4158,7 +4158,7 @@ class ProviderListingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-provider/listings", query=query, headers=headers)
@@ -4188,7 +4188,7 @@ class ProviderListingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-provider/listings/{id}", body=body, headers=headers)
         return UpdateListingResponse.from_dict(res)
@@ -4224,7 +4224,7 @@ class ProviderPersonalizationRequestsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -4271,7 +4271,7 @@ class ProviderPersonalizationRequestsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT",
@@ -4302,7 +4302,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/marketplace-provider/analytics_dashboard", headers=headers)
         return ProviderAnalyticsDashboard.from_dict(res)
@@ -4320,7 +4320,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/marketplace-provider/analytics_dashboard", headers=headers)
         return ListProviderAnalyticsDashboardResponse.from_dict(res)
@@ -4338,7 +4338,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/marketplace-provider/analytics_dashboard/latest", headers=headers)
         return GetLatestVersionProviderAnalyticsDashboardResponse.from_dict(res)
@@ -4365,7 +4365,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-provider/analytics_dashboard/{id}", body=body, headers=headers)
         return UpdateProviderAnalyticsDashboardResponse.from_dict(res)
@@ -4395,7 +4395,7 @@ class ProviderProvidersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/marketplace-provider/provider", body=body, headers=headers)
         return CreateProviderResponse.from_dict(res)
@@ -4414,7 +4414,7 @@ class ProviderProvidersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/providers/{id}", headers=headers)
 
@@ -4432,7 +4432,7 @@ class ProviderProvidersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/marketplace-provider/providers/{id}", headers=headers)
         return GetProviderResponse.from_dict(res)
@@ -4457,7 +4457,7 @@ class ProviderProvidersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-provider/providers", query=query, headers=headers)
@@ -4487,7 +4487,7 @@ class ProviderProvidersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-provider/providers/{id}", body=body, headers=headers)
         return UpdateProviderResponse.from_dict(res)

@@ -64,7 +64,7 @@ class IdempotencyTestingAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/idempotency-testing/resources", query=query, body=body, headers=headers)
         return TestResource.from_dict(res)
