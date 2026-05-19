@@ -1108,7 +1108,9 @@ class WorkspaceClient:
         """
         if self._config.workspace_id:
             return int(self._config.workspace_id)
-        response = self._api_client.do("GET", "/api/2.0/preview/scim/v2/Me", response_headers=["X-Databricks-Workspace-Id"])
+        response = self._api_client.do(
+            "GET", "/api/2.0/preview/scim/v2/Me", response_headers=["X-Databricks-Workspace-Id"]
+        )
         return int(response["X-Databricks-Workspace-Id"])
 
     def __repr__(self):

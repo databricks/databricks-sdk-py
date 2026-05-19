@@ -88,7 +88,7 @@ class WorkspaceExt(WorkspaceAPI):
         headers = {}
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
         try:
             return self._api.do(
                 "POST",
@@ -121,6 +121,6 @@ class WorkspaceExt(WorkspaceAPI):
         headers = {}
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
         response = self._api.do("GET", "/api/2.0/workspace/export", query=query, headers=headers, raw=True)
         return response["contents"]

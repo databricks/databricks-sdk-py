@@ -926,7 +926,7 @@ class PresignedUrlDownloadTestCase:
             resp = requests.Response()
             resp.status_code = 200
             resp._content = b"{}"
-            resp.headers["X-Databricks-Org-Id"] = "12345"
+            resp.headers["X-Databricks-Workspace-Id"] = "12345"
             resp.request = request
             resp.url = request.url
             return resp
@@ -1478,7 +1478,7 @@ class UploadTestCase:
                             resp = requests.Response()
                             resp.status_code = 200
                             resp._content = b"{}"
-                            resp.headers["X-Databricks-Org-Id"] = "12345"
+                            resp.headers["X-Databricks-Workspace-Id"] = "12345"
                             resp.request = request
                             resp.url = request.url
                             return resp

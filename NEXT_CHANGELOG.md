@@ -14,6 +14,8 @@
 
 ### Internal Changes
 
+* Switch workspace addressing header on workspace-scoped API calls from `X-Databricks-Org-Id` to `X-Databricks-Workspace-Id`. The value continues to come from `Config.workspace_id` (`DATABRICKS_WORKSPACE_ID`), and now accepts either a classic numeric workspace ID or another workspace identifier format (server disambiguates).
+
 ### API Changes
 * Add `databricks.sdk.service.bundle` package.
 * Add [w.bundle](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/bundle/bundle.html) workspace-level service.

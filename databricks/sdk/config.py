@@ -89,6 +89,9 @@ def with_user_agent_extra(key: str, value: str):
 class Config:
     host: str = ConfigAttribute(env="DATABRICKS_HOST")
     account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")
+    # Workspace identifier sent on workspace-scoped API calls so unified hosts
+    # can route to the right workspace. Accepts a classic numeric workspace ID
+    # or another workspace identifier format that the server understands.
     workspace_id: str = ConfigAttribute(env="DATABRICKS_WORKSPACE_ID")
 
     # Cloud provider. When set, is_aws/is_azure/is_gcp use this value directly
@@ -596,7 +599,7 @@ class Config:
         if self.cluster_id:
             response = requests.get(f"{self.host}/api/2.0/preview/scim/v2/Me", headers=headers)
             # get workspace ID from the response header
-            workspace_id = response.headers.get("x-databricks-org-id")
+            workspace_id = response.headers.get("x-databricks-workspace-id")
             return f"sql/protocolv1/o/{workspace_id}/{self.cluster_id}"
         if self.warehouse_id:
             return f"/sql/1.0/warehouses/{self.warehouse_id}"
