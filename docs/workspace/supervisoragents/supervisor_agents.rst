@@ -31,8 +31,10 @@
     .. py:method:: create_tool(parent: str, tool: Tool, tool_id: str) -> Tool
 
         Creates a Tool under a Supervisor Agent. Specify one of "genie_space", "knowledge_assistant",
-        "uc_function", "uc_connection", "app", "volume", "lakeview_dashboard", "uc_table",
-        "vector_search_index", "catalog", "schema", "supervisor_agent", "web_search" in the request body.
+        "uc_function", "uc_connection", "app", "volume", "dashboard", "table", "vector_search_index",
+        "catalog", "schema", "supervisor_agent", "web_search" in the request body. The legacy values
+        "lakeview_dashboard" and "uc_table" are also accepted and remain equivalent to "dashboard" and "table"
+        respectively.
 
         :param parent: str
           Parent resource where this tool will be created. Format: supervisor-agents/{supervisor_agent_id}

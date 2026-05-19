@@ -479,6 +479,30 @@ class ListWorkspaceSettingsMetadataResponse:
 
 
 @dataclass
+class OperationalEmailCustomRecipientMessage:
+    email: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the OperationalEmailCustomRecipientMessage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.email is not None:
+            body["email"] = self.email
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OperationalEmailCustomRecipientMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.email is not None:
+            body["email"] = self.email
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OperationalEmailCustomRecipientMessage:
+        """Deserializes the OperationalEmailCustomRecipientMessage from a dictionary."""
+        return cls(email=d.get("email", None))
+
+
+@dataclass
 class PersonalComputeMessage:
     value: Optional[PersonalComputeMessagePersonalComputeMessageEnum] = None
 
@@ -614,6 +638,10 @@ class Setting:
     """Effective setting value for integer type setting. This is the final effective value of setting.
     To set a value use integer_val."""
 
+    effective_operational_email_custom_recipient: Optional[OperationalEmailCustomRecipientMessage] = None
+    """Effective setting value for operational_email_custom_recipient setting. This is the final
+    effective value of setting. To set a value use operational_email_custom_recipient."""
+
     effective_personal_compute: Optional[PersonalComputeMessage] = None
     """Effective setting value for personal_compute setting. This is the final effective value of
     setting. To set a value use personal_compute."""
@@ -632,6 +660,10 @@ class Setting:
 
     name: Optional[str] = None
     """Name of the setting."""
+
+    operational_email_custom_recipient: Optional[OperationalEmailCustomRecipientMessage] = None
+    """Setting value for operational_email_custom_recipient setting. This is the setting value set by
+    consumers, check effective_operational_email_custom_recipient for final setting value."""
 
     personal_compute: Optional[PersonalComputeMessage] = None
     """Setting value for personal_compute setting. This is the setting value set by consumers, check
@@ -676,6 +708,10 @@ class Setting:
             body["effective_boolean_val"] = self.effective_boolean_val.as_dict()
         if self.effective_integer_val:
             body["effective_integer_val"] = self.effective_integer_val.as_dict()
+        if self.effective_operational_email_custom_recipient:
+            body["effective_operational_email_custom_recipient"] = (
+                self.effective_operational_email_custom_recipient.as_dict()
+            )
         if self.effective_personal_compute:
             body["effective_personal_compute"] = self.effective_personal_compute.as_dict()
         if self.effective_restrict_workspace_admins:
@@ -686,6 +722,8 @@ class Setting:
             body["integer_val"] = self.integer_val.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.operational_email_custom_recipient:
+            body["operational_email_custom_recipient"] = self.operational_email_custom_recipient.as_dict()
         if self.personal_compute:
             body["personal_compute"] = self.personal_compute.as_dict()
         if self.restrict_workspace_admins:
@@ -723,6 +761,8 @@ class Setting:
             body["effective_boolean_val"] = self.effective_boolean_val
         if self.effective_integer_val:
             body["effective_integer_val"] = self.effective_integer_val
+        if self.effective_operational_email_custom_recipient:
+            body["effective_operational_email_custom_recipient"] = self.effective_operational_email_custom_recipient
         if self.effective_personal_compute:
             body["effective_personal_compute"] = self.effective_personal_compute
         if self.effective_restrict_workspace_admins:
@@ -733,6 +773,8 @@ class Setting:
             body["integer_val"] = self.integer_val
         if self.name is not None:
             body["name"] = self.name
+        if self.operational_email_custom_recipient:
+            body["operational_email_custom_recipient"] = self.operational_email_custom_recipient
         if self.personal_compute:
             body["personal_compute"] = self.personal_compute
         if self.restrict_workspace_admins:
@@ -770,6 +812,9 @@ class Setting:
             ),
             effective_boolean_val=_from_dict(d, "effective_boolean_val", BooleanMessage),
             effective_integer_val=_from_dict(d, "effective_integer_val", IntegerMessage),
+            effective_operational_email_custom_recipient=_from_dict(
+                d, "effective_operational_email_custom_recipient", OperationalEmailCustomRecipientMessage
+            ),
             effective_personal_compute=_from_dict(d, "effective_personal_compute", PersonalComputeMessage),
             effective_restrict_workspace_admins=_from_dict(
                 d, "effective_restrict_workspace_admins", RestrictWorkspaceAdminsMessage
@@ -777,6 +822,9 @@ class Setting:
             effective_string_val=_from_dict(d, "effective_string_val", StringMessage),
             integer_val=_from_dict(d, "integer_val", IntegerMessage),
             name=d.get("name", None),
+            operational_email_custom_recipient=_from_dict(
+                d, "operational_email_custom_recipient", OperationalEmailCustomRecipientMessage
+            ),
             personal_compute=_from_dict(d, "personal_compute", PersonalComputeMessage),
             restrict_workspace_admins=_from_dict(d, "restrict_workspace_admins", RestrictWorkspaceAdminsMessage),
             string_val=_from_dict(d, "string_val", StringMessage),
