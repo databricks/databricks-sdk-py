@@ -3929,11 +3929,32 @@ class PipelineParams:
     full_refresh: Optional[bool] = None
     """If true, triggers a full refresh on the spark declarative pipeline."""
 
+    full_refresh_selection: Optional[List[str]] = None
+    """A list of tables to update with fullRefresh."""
+
+    refresh_flow_selection: Optional[List[str]] = None
+    """Flow names to selectively refresh. These are unioned with other selective refresh options
+    (refresh_selection, full_refresh_selection) to determine the final set of flows to refresh."""
+
+    refresh_selection: Optional[List[str]] = None
+    """A list of tables to update without fullRefresh."""
+
+    reset_checkpoint_selection: Optional[List[str]] = None
+    """A list of streaming flows to reset checkpoints without clearing data."""
+
     def as_dict(self) -> dict:
         """Serializes the PipelineParams into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.full_refresh is not None:
             body["full_refresh"] = self.full_refresh
+        if self.full_refresh_selection:
+            body["full_refresh_selection"] = [v for v in self.full_refresh_selection]
+        if self.refresh_flow_selection:
+            body["refresh_flow_selection"] = [v for v in self.refresh_flow_selection]
+        if self.refresh_selection:
+            body["refresh_selection"] = [v for v in self.refresh_selection]
+        if self.reset_checkpoint_selection:
+            body["reset_checkpoint_selection"] = [v for v in self.reset_checkpoint_selection]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3941,12 +3962,26 @@ class PipelineParams:
         body = {}
         if self.full_refresh is not None:
             body["full_refresh"] = self.full_refresh
+        if self.full_refresh_selection:
+            body["full_refresh_selection"] = self.full_refresh_selection
+        if self.refresh_flow_selection:
+            body["refresh_flow_selection"] = self.refresh_flow_selection
+        if self.refresh_selection:
+            body["refresh_selection"] = self.refresh_selection
+        if self.reset_checkpoint_selection:
+            body["reset_checkpoint_selection"] = self.reset_checkpoint_selection
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineParams:
         """Deserializes the PipelineParams from a dictionary."""
-        return cls(full_refresh=d.get("full_refresh", None))
+        return cls(
+            full_refresh=d.get("full_refresh", None),
+            full_refresh_selection=d.get("full_refresh_selection", None),
+            refresh_flow_selection=d.get("refresh_flow_selection", None),
+            refresh_selection=d.get("refresh_selection", None),
+            reset_checkpoint_selection=d.get("reset_checkpoint_selection", None),
+        )
 
 
 @dataclass
@@ -3957,13 +3992,34 @@ class PipelineTask:
     full_refresh: Optional[bool] = None
     """If true, triggers a full refresh on the spark declarative pipeline."""
 
+    full_refresh_selection: Optional[List[str]] = None
+    """A list of tables to update with fullRefresh."""
+
+    refresh_flow_selection: Optional[List[str]] = None
+    """Flow names to selectively refresh. These are unioned with other selective refresh options
+    (refresh_selection, full_refresh_selection) to determine the final set of flows to refresh."""
+
+    refresh_selection: Optional[List[str]] = None
+    """A list of tables to update without fullRefresh."""
+
+    reset_checkpoint_selection: Optional[List[str]] = None
+    """A list of streaming flows to reset checkpoints without clearing data."""
+
     def as_dict(self) -> dict:
         """Serializes the PipelineTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.full_refresh is not None:
             body["full_refresh"] = self.full_refresh
+        if self.full_refresh_selection:
+            body["full_refresh_selection"] = [v for v in self.full_refresh_selection]
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
+        if self.refresh_flow_selection:
+            body["refresh_flow_selection"] = [v for v in self.refresh_flow_selection]
+        if self.refresh_selection:
+            body["refresh_selection"] = [v for v in self.refresh_selection]
+        if self.reset_checkpoint_selection:
+            body["reset_checkpoint_selection"] = [v for v in self.reset_checkpoint_selection]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3971,14 +4027,29 @@ class PipelineTask:
         body = {}
         if self.full_refresh is not None:
             body["full_refresh"] = self.full_refresh
+        if self.full_refresh_selection:
+            body["full_refresh_selection"] = self.full_refresh_selection
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
+        if self.refresh_flow_selection:
+            body["refresh_flow_selection"] = self.refresh_flow_selection
+        if self.refresh_selection:
+            body["refresh_selection"] = self.refresh_selection
+        if self.reset_checkpoint_selection:
+            body["reset_checkpoint_selection"] = self.reset_checkpoint_selection
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineTask:
         """Deserializes the PipelineTask from a dictionary."""
-        return cls(full_refresh=d.get("full_refresh", None), pipeline_id=d.get("pipeline_id", None))
+        return cls(
+            full_refresh=d.get("full_refresh", None),
+            full_refresh_selection=d.get("full_refresh_selection", None),
+            pipeline_id=d.get("pipeline_id", None),
+            refresh_flow_selection=d.get("refresh_flow_selection", None),
+            refresh_selection=d.get("refresh_selection", None),
+            reset_checkpoint_selection=d.get("reset_checkpoint_selection", None),
+        )
 
 
 @dataclass
