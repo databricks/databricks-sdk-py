@@ -18,6 +18,7 @@ from databricks.sdk.oauth import AuthorizationDetail
 from databricks.sdk.service import agentbricks as pkg_agentbricks
 from databricks.sdk.service import apps as pkg_apps
 from databricks.sdk.service import billing as pkg_billing
+from databricks.sdk.service import bundle as pkg_bundle
 from databricks.sdk.service import catalog as pkg_catalog
 from databricks.sdk.service import cleanrooms as pkg_cleanrooms
 from databricks.sdk.service import compute as pkg_compute
@@ -55,6 +56,7 @@ from databricks.sdk.service.apps import AppsAPI, AppsSettingsAPI
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetPolicyAPI,
                                             BudgetsAPI, LogDeliveryAPI,
                                             UsageDashboardsAPI)
+from databricks.sdk.service.bundle import BundleAPI
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
@@ -292,6 +294,7 @@ class WorkspaceClient:
         self._apps = pkg_apps.AppsAPI(self._api_client)
         self._apps_settings = pkg_apps.AppsSettingsAPI(self._api_client)
         self._artifact_allowlists = pkg_catalog.ArtifactAllowlistsAPI(self._api_client)
+        self._bundle = pkg_bundle.BundleAPI(self._api_client)
         self._catalogs = pkg_catalog.CatalogsAPI(self._api_client)
         self._clean_room_asset_revisions = pkg_cleanrooms.CleanRoomAssetRevisionsAPI(self._api_client)
         self._clean_room_assets = pkg_cleanrooms.CleanRoomAssetsAPI(self._api_client)
@@ -478,6 +481,11 @@ class WorkspaceClient:
     def artifact_allowlists(self) -> pkg_catalog.ArtifactAllowlistsAPI:
         """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode."""
         return self._artifact_allowlists
+
+    @property
+    def bundle(self) -> pkg_bundle.BundleAPI:
+        """Service for managing bundle deployment metadata."""
+        return self._bundle
 
     @property
     def catalogs(self) -> pkg_catalog.CatalogsAPI:

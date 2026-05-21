@@ -9254,7 +9254,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_ONEDRIVE_OAUTH_U2M = 329; Next id: 330"""
+    """Latest kind: MODEL_SERVICE_SYSTEM_DELTASHARING = 330; Next id: 331"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"

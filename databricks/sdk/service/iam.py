@@ -3230,13 +3230,22 @@ class CurrentUserAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def me(self) -> User:
+    def me(self, *, attributes: Optional[str] = None, excluded_attributes: Optional[str] = None) -> User:
         """Get details about the current method caller's identity.
 
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
 
         :returns: :class:`User`
         """
 
+        query = {}
+        if attributes is not None:
+            query["attributes"] = attributes
+        if excluded_attributes is not None:
+            query["excludedAttributes"] = excluded_attributes
         headers = {
             "Accept": "application/json",
         }
@@ -3245,7 +3254,7 @@ class CurrentUserAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", "/api/2.0/preview/scim/v2/Me", headers=headers)
+        res = self._api.do("GET", "/api/2.0/preview/scim/v2/Me", query=query, headers=headers)
         return User.from_dict(res)
 
 
