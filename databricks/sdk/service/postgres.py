@@ -3819,7 +3819,7 @@ class PostgresAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", headers=headers)
         operation = Operation.from_dict(res)

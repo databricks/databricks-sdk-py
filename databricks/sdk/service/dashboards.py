@@ -4076,7 +4076,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/lakeview/dashboards/{dashboard_id}/revert", body=body, headers=headers)
         return RevertDashboardResponse.from_dict(res)
