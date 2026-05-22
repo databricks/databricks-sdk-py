@@ -436,6 +436,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RevertDashboardResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: Schedule
    :members:
    :undoc-members:

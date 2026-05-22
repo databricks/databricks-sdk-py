@@ -3266,7 +3266,7 @@ class ConsumerListingsAPI:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         provider_ids: Optional[List[str]] = None,
-        tags: Optional[List[ListingTag]] = None,
+        tags: Optional[ListingTag] = None,
     ) -> Iterator[Listing]:
         """List all published listings in the Databricks Marketplace that the consumer has access to.
 
@@ -3284,8 +3284,8 @@ class ConsumerListingsAPI:
         :param page_token: str (optional)
         :param provider_ids: List[str] (optional)
           Matches any of the following provider ids
-        :param tags: List[:class:`ListingTag`] (optional)
-          Matches any of the following tags
+        :param tags: :class:`ListingTag` (optional)
+          Matches listings with this tag
 
         :returns: Iterator over :class:`Listing`
         """
@@ -3308,7 +3308,7 @@ class ConsumerListingsAPI:
         if provider_ids is not None:
             query["provider_ids"] = [v for v in provider_ids]
         if tags is not None:
-            query["tags"] = [v.as_dict() for v in tags]
+            query["tags"] = tags.as_dict()
         headers = {
             "Accept": "application/json",
         }

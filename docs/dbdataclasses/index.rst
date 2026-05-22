@@ -8,6 +8,7 @@ Dataclasses
    agentbricks
    apps
    billing
+   bundle
    catalog
    cleanrooms
    compute

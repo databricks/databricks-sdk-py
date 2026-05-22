@@ -210,6 +210,20 @@
         :returns: :class:`PublishedDashboard`
         
 
+    .. py:method:: revert(dashboard_id: str [, etag: Optional[str]]) -> RevertDashboardResponse
+
+        Revert a dashboard's definition in draft mode to the last published version.
+
+        :param dashboard_id: str
+          UUID identifying the dashboard.
+        :param etag: str (optional)
+          The etag for the dashboard. Optionally, it can be provided to verify that the dashboard has not been
+          modified from its last retrieval. TODO(TSE-3937): update to new non-CMK-encrypted label when
+          available
+
+        :returns: :class:`RevertDashboardResponse`
+        
+
     .. py:method:: trash(dashboard_id: str)
 
         Trash a dashboard.

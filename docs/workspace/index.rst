@@ -9,6 +9,7 @@ These APIs are available from WorkspaceClient
 
    agentbricks/index
    apps/index
+   bundle/index
    catalog/index
    cleanrooms/index
    compute/index

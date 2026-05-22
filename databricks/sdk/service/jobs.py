@@ -9220,7 +9220,9 @@ class JobsAPI:
         res = self._api.do("GET", "/api/2.2/jobs/runs/export", query=query, headers=headers)
         return ExportRunOutput.from_dict(res)
 
-    def get(self, job_id: int, *, page_token: Optional[str] = None) -> Job:
+    def get(
+        self, job_id: int, *, include_trigger_state: Optional[bool] = None, page_token: Optional[str] = None
+    ) -> Job:
         """Retrieves the details for a single job.
 
         Large arrays in the results will be paginated when they exceed 100 elements. A request for a single
@@ -9232,6 +9234,8 @@ class JobsAPI:
 
         :param job_id: int
           The canonical identifier of the job to retrieve information about. This field is required.
+        :param include_trigger_state: bool (optional)
+          Flag that indicates that trigger state should be included in the response.
         :param page_token: str (optional)
           Use `next_page_token` returned from the previous GetJob response to request the next page of the
           job's array properties.
@@ -9240,6 +9244,8 @@ class JobsAPI:
         """
 
         query = {}
+        if include_trigger_state is not None:
+            query["include_trigger_state"] = include_trigger_state
         if job_id is not None:
             query["job_id"] = job_id
         if page_token is not None:

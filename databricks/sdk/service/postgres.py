@@ -219,6 +219,9 @@ class BranchStatus:
     default: Optional[bool] = None
     """Whether the branch is the project's default branch."""
 
+    delete_time: Optional[Timestamp] = None
+    """A timestamp indicating when the branch was deleted. Empty if the branch is not deleted."""
+
     expire_time: Optional[Timestamp] = None
     """Absolute expiration time for the branch. Empty if expiration is disabled."""
 
@@ -230,6 +233,10 @@ class BranchStatus:
 
     pending_state: Optional[BranchStatusState] = None
     """The pending state of the branch, if a state transition is in progress."""
+
+    purge_time: Optional[Timestamp] = None
+    """A timestamp indicating when the branch is scheduled to be purged. Empty if the branch is not
+    deleted, otherwise set to a timestamp in the future."""
 
     source_branch: Optional[str] = None
     """The name of the source branch from which this branch was created. Format:
@@ -253,6 +260,8 @@ class BranchStatus:
             body["current_state"] = self.current_state.value
         if self.default is not None:
             body["default"] = self.default
+        if self.delete_time is not None:
+            body["delete_time"] = self.delete_time.ToJsonString()
         if self.expire_time is not None:
             body["expire_time"] = self.expire_time.ToJsonString()
         if self.is_protected is not None:
@@ -261,6 +270,8 @@ class BranchStatus:
             body["logical_size_bytes"] = self.logical_size_bytes
         if self.pending_state is not None:
             body["pending_state"] = self.pending_state.value
+        if self.purge_time is not None:
+            body["purge_time"] = self.purge_time.ToJsonString()
         if self.source_branch is not None:
             body["source_branch"] = self.source_branch
         if self.source_branch_lsn is not None:
@@ -280,6 +291,8 @@ class BranchStatus:
             body["current_state"] = self.current_state
         if self.default is not None:
             body["default"] = self.default
+        if self.delete_time is not None:
+            body["delete_time"] = self.delete_time
         if self.expire_time is not None:
             body["expire_time"] = self.expire_time
         if self.is_protected is not None:
@@ -288,6 +301,8 @@ class BranchStatus:
             body["logical_size_bytes"] = self.logical_size_bytes
         if self.pending_state is not None:
             body["pending_state"] = self.pending_state
+        if self.purge_time is not None:
+            body["purge_time"] = self.purge_time
         if self.source_branch is not None:
             body["source_branch"] = self.source_branch
         if self.source_branch_lsn is not None:
@@ -305,10 +320,12 @@ class BranchStatus:
             branch_id=d.get("branch_id", None),
             current_state=_enum(d, "current_state", BranchStatusState),
             default=d.get("default", None),
+            delete_time=_timestamp(d, "delete_time"),
             expire_time=_timestamp(d, "expire_time"),
             is_protected=d.get("is_protected", None),
             logical_size_bytes=d.get("logical_size_bytes", None),
             pending_state=_enum(d, "pending_state", BranchStatusState),
+            purge_time=_timestamp(d, "purge_time"),
             source_branch=d.get("source_branch", None),
             source_branch_lsn=d.get("source_branch_lsn", None),
             source_branch_time=_timestamp(d, "source_branch_time"),
@@ -320,6 +337,7 @@ class BranchStatusState(Enum):
     """The state of the branch."""
 
     ARCHIVED = "ARCHIVED"
+    DELETED = "DELETED"
     IMPORTING = "IMPORTING"
     INIT = "INIT"
     READY = "READY"
@@ -1935,7 +1953,7 @@ class ProjectSpec:
     """Human-readable project name. Length should be between 1 and 256 characters."""
 
     enable_pg_native_login: Optional[bool] = None
-    """Whether to enable PG native password login on all endpoints in this project. Defaults to true."""
+    """Whether to enable PG native password login on all endpoints in this project. Defaults to false."""
 
     history_retention_duration: Optional[Duration] = None
     """The number of seconds to retain the shared history for point in time recovery for all branches
@@ -3215,15 +3233,20 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateSyncedTableOperation(self, operation)
 
-    def delete_branch(self, name: str) -> DeleteBranchOperation:
+    def delete_branch(self, name: str, *, purge: Optional[bool] = None) -> DeleteBranchOperation:
         """Deletes the specified database branch.
 
         :param name: str
           The full resource path of the branch to delete. Format: projects/{project_id}/branches/{branch_id}
+        :param purge: bool (optional)
+          If true, permanently delete the branch; if false, soft delete.
 
         :returns: :class:`Operation`
         """
 
+        query = {}
+        if purge is not None:
+            query["purge"] = purge
         headers = {
             "Accept": "application/json",
         }
@@ -3232,7 +3255,7 @@ class PostgresAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", query=query, headers=headers)
         operation = Operation.from_dict(res)
         return DeleteBranchOperation(self, operation)
 
@@ -3581,7 +3604,12 @@ class PostgresAPI:
         return SyncedTable.from_dict(res)
 
     def list_branches(
-        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+        self,
+        parent: str,
+        *,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        show_deleted: Optional[bool] = None,
     ) -> Iterator[Branch]:
         """Returns a paginated list of database branches in the project.
 
@@ -3591,6 +3619,9 @@ class PostgresAPI:
           Upper bound for items returned. Cannot be negative.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
+        :param show_deleted: bool (optional)
+          Whether to include soft-deleted branches in the response. When true, deleted branches are included
+          alongside active branches. Purged branches are never returned.
 
         :returns: Iterator over :class:`Branch`
         """
@@ -3600,6 +3631,8 @@ class PostgresAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
+        if show_deleted is not None:
+            query["show_deleted"] = show_deleted
         headers = {
             "Accept": "application/json",
         }
@@ -3769,6 +3802,28 @@ class PostgresAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def undelete_branch(self, name: str) -> UndeleteBranchOperation:
+        """Undeletes the specified database branch.
+
+        :param name: str
+          The full resource path of the branch to undelete. Format: projects/{project_id}/branches/{branch_id}
+
+        :returns: :class:`Operation`
+        """
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{name}/undelete", headers=headers)
+        operation = Operation.from_dict(res)
+        return UndeleteBranchOperation(self, operation)
 
     def undelete_project(self, name: str) -> UndeleteProjectOperation:
         """Undeletes a soft-deleted project.
@@ -5013,6 +5068,81 @@ class DeleteSyncedTableOperation:
             return None
 
         return SyncedTableOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class UndeleteBranchOperation:
+    """Long-running operation for undelete_branch"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> BranchOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`BranchOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return BranchOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

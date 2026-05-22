@@ -144,12 +144,14 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: delete_branch(name: str) -> DeleteBranchOperation
+    .. py:method:: delete_branch(name: str [, purge: Optional[bool]]) -> DeleteBranchOperation
 
         Deletes the specified database branch.
 
         :param name: str
           The full resource path of the branch to delete. Format: projects/{project_id}/branches/{branch_id}
+        :param purge: bool (optional)
+          If true, permanently delete the branch; if false, soft delete.
 
         :returns: :class:`Operation`
         
@@ -328,7 +330,7 @@
         :returns: :class:`SyncedTable`
         
 
-    .. py:method:: list_branches(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Branch]
+    .. py:method:: list_branches(parent: str [, page_size: Optional[int], page_token: Optional[str], show_deleted: Optional[bool]]) -> Iterator[Branch]
 
         Returns a paginated list of database branches in the project.
 
@@ -338,6 +340,9 @@
           Upper bound for items returned. Cannot be negative.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
+        :param show_deleted: bool (optional)
+          Whether to include soft-deleted branches in the response. When true, deleted branches are included
+          alongside active branches. Purged branches are never returned.
 
         :returns: Iterator over :class:`Branch`
         
@@ -399,6 +404,16 @@
           Page token from a previous response. If not provided, returns the first page.
 
         :returns: Iterator over :class:`Role`
+        
+
+    .. py:method:: undelete_branch(name: str) -> UndeleteBranchOperation
+
+        Undeletes the specified database branch.
+
+        :param name: str
+          The full resource path of the branch to undelete. Format: projects/{project_id}/branches/{branch_id}
+
+        :returns: :class:`Operation`
         
 
     .. py:method:: undelete_project(name: str) -> UndeleteProjectOperation

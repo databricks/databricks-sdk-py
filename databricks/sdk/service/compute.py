@@ -3185,7 +3185,9 @@ class Environment:
     Databricks-provided base environment ID (e.g., `workspace-base-environments/databricks_ai_v4`)
     and workspace base environment ID (e.g.,
     `workspace-base-environments/dbe_b849b66e-b31a-4cb5-b161-1f2b10877fb7`) is in Beta. Either
-    `environment_version` or `base_environment` can be provided. For more information, see"""
+    `environment_version` or `base_environment` can be provided. For more information about
+    Databricks-provided base environments, see the [list workspace base
+    environments](:method:Environments/ListWorkspaceBaseEnvironments) API. For more information, see"""
 
     client: Optional[str] = None
     """Use `environment_version` instead."""

@@ -1548,7 +1548,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_ONEDRIVE_OAUTH_U2M = 329; Next id: 330
+   Latest kind: AGENT_SERVICE_STANDARD = 331; Next id: 332
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
