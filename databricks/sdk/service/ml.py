@@ -403,6 +403,9 @@ class ApproxPercentileFunction:
 
 @dataclass
 class AuthConfig:
+    mtls_config: Optional[MtlsConfig] = None
+    """Mutual-TLS authentication. See MtlsConfig."""
+
     uc_service_credential_name: Optional[str] = None
     """Name of the Unity Catalog service credential. This value will be set under the option
     databricks.serviceCredential"""
@@ -410,6 +413,8 @@ class AuthConfig:
     def as_dict(self) -> dict:
         """Serializes the AuthConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.mtls_config:
+            body["mtls_config"] = self.mtls_config.as_dict()
         if self.uc_service_credential_name is not None:
             body["uc_service_credential_name"] = self.uc_service_credential_name
         return body
@@ -417,6 +422,8 @@ class AuthConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the AuthConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.mtls_config:
+            body["mtls_config"] = self.mtls_config
         if self.uc_service_credential_name is not None:
             body["uc_service_credential_name"] = self.uc_service_credential_name
         return body
@@ -424,7 +431,10 @@ class AuthConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AuthConfig:
         """Deserializes the AuthConfig from a dictionary."""
-        return cls(uc_service_credential_name=d.get("uc_service_credential_name", None))
+        return cls(
+            mtls_config=_from_dict(d, "mtls_config", MtlsConfig),
+            uc_service_credential_name=d.get("uc_service_credential_name", None),
+        )
 
 
 @dataclass
@@ -4008,11 +4018,13 @@ class MaterializedFeature:
     pipeline has not run yet, this field will be null."""
 
     materialized_feature_id: Optional[str] = None
-    """Unique identifier for the materialized feature."""
+    """Server-assigned unique identifier for the materialized feature."""
 
     offline_store_config: Optional[OfflineStoreConfig] = None
+    """Destination for writing feature values to an offline Delta table."""
 
     online_store_config: Optional[OnlineStoreConfig] = None
+    """Destination for writing feature values to an online Lakebase table."""
 
     pipeline_schedule_state: Optional[MaterializedFeaturePipelineScheduleState] = None
     """The schedule state of the materialization pipeline."""
@@ -4818,6 +4830,98 @@ class ModelVersionTag:
     def from_dict(cls, d: Dict[str, Any]) -> ModelVersionTag:
         """Deserializes the ModelVersionTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class MtlsConfig:
+    """Mutual-TLS (mTLS) authentication configuration. The keystore (client certificate + private key)
+    and truststore (CAs trusted to verify the broker) live as JKS files on Unity Catalog volumes,
+    with their passwords stored in Databricks secret scopes. This matches the SSL setup pattern
+    documented at
+    https://docs.databricks.com/en/connect/streaming/kafka/authentication#use-ssl-to-connect-databricks-to-kafka.
+
+    At materialization time, the generated PySpark code passes the JKS file paths and resolved
+    passwords through to the Kafka SSL options (kafka.ssl.keystore.location,
+    kafka.ssl.keystore.password, kafka.ssl.key.password, kafka.ssl.truststore.location,
+    kafka.ssl.truststore.password). Passwords are resolved on the Spark cluster via
+    dbutils.secrets.get; this message stores only references, never password values."""
+
+    keystore_location: str
+    """Unity Catalog volume path to the JKS keystore file containing the client certificate and private
+    key. e.g. "/Volumes/<catalog>/<schema>/<volume>/client.jks". The materialization compute must
+    have read permission on this volume."""
+
+    keystore_password_ref: SecretScopeReference
+    """Secret-scope reference for the JKS keystore password."""
+
+    key_password_ref: SecretScopeReference
+    """Secret-scope reference for the private key password. Often the same value as the keystore
+    password (keytool's default), but provided as a separate field because Apache Kafka requires it
+    as a distinct option (kafka.ssl.key.password)."""
+
+    truststore_location: str
+    """Unity Catalog volume path to the JKS truststore file containing the CA certificate(s) trusted to
+    verify the Kafka broker's server certificate. e.g.
+    "/Volumes/<catalog>/<schema>/<volume>/truststore.jks"."""
+
+    truststore_password_ref: SecretScopeReference
+    """Secret-scope reference for the JKS truststore password."""
+
+    disable_hostname_verification: Optional[bool] = None
+    """Set to true only when the broker certificate's SAN intentionally does not match the connection
+    endpoint — for example when reaching the cluster through a PrivateLink endpoint whose DNS name
+    is not in the broker certificate. Skipping the hostname check removes a defense against
+    man-in-the-middle attacks; do not enable casually. mTLS client authentication is unaffected by
+    this option.
+    
+    See the Apache Kafka SSL security guide for background on this check:
+    https://kafka.apache.org/42/security/encryption-and-authentication-using-ssl/#host-name-verification"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MtlsConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disable_hostname_verification is not None:
+            body["disable_hostname_verification"] = self.disable_hostname_verification
+        if self.key_password_ref:
+            body["key_password_ref"] = self.key_password_ref.as_dict()
+        if self.keystore_location is not None:
+            body["keystore_location"] = self.keystore_location
+        if self.keystore_password_ref:
+            body["keystore_password_ref"] = self.keystore_password_ref.as_dict()
+        if self.truststore_location is not None:
+            body["truststore_location"] = self.truststore_location
+        if self.truststore_password_ref:
+            body["truststore_password_ref"] = self.truststore_password_ref.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MtlsConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disable_hostname_verification is not None:
+            body["disable_hostname_verification"] = self.disable_hostname_verification
+        if self.key_password_ref:
+            body["key_password_ref"] = self.key_password_ref
+        if self.keystore_location is not None:
+            body["keystore_location"] = self.keystore_location
+        if self.keystore_password_ref:
+            body["keystore_password_ref"] = self.keystore_password_ref
+        if self.truststore_location is not None:
+            body["truststore_location"] = self.truststore_location
+        if self.truststore_password_ref:
+            body["truststore_password_ref"] = self.truststore_password_ref
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MtlsConfig:
+        """Deserializes the MtlsConfig from a dictionary."""
+        return cls(
+            disable_hostname_verification=d.get("disable_hostname_verification", None),
+            key_password_ref=_from_dict(d, "key_password_ref", SecretScopeReference),
+            keystore_location=d.get("keystore_location", None),
+            keystore_password_ref=_from_dict(d, "keystore_password_ref", SecretScopeReference),
+            truststore_location=d.get("truststore_location", None),
+            truststore_password_ref=_from_dict(d, "truststore_password_ref", SecretScopeReference),
+        )
 
 
 @dataclass
@@ -6273,6 +6377,41 @@ class SearchRunsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> SearchRunsResponse:
         """Deserializes the SearchRunsResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), runs=_repeated_dict(d, "runs", Run))
+
+
+@dataclass
+class SecretScopeReference:
+    """Reference to an entry in a Databricks secret scope. The referenced value is fetched on the Spark
+    cluster at materialization time via dbutils.secrets.get(scope, key)."""
+
+    scope: str
+    """The Databricks secret scope name."""
+
+    key: str
+    """The key within the scope."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SecretScopeReference into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.scope is not None:
+            body["scope"] = self.scope
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SecretScopeReference into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.scope is not None:
+            body["scope"] = self.scope
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SecretScopeReference:
+        """Deserializes the SecretScopeReference from a dictionary."""
+        return cls(key=d.get("key", None), scope=d.get("scope", None))
 
 
 @dataclass
@@ -8863,7 +9002,7 @@ class FeatureEngineeringAPI:
         """Update a materialized feature (pause/resume).
 
         :param materialized_feature_id: str
-          Unique identifier for the materialized feature.
+          Server-assigned unique identifier for the materialized feature.
         :param materialized_feature: :class:`MaterializedFeature`
           The materialized feature to update.
         :param update_mask: str

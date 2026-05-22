@@ -2046,6 +2046,33 @@ class Result:
 
 
 @dataclass
+class RevertDashboardResponse:
+    """Response to revert a dashboard draft to its last published state."""
+
+    dashboard: Optional[Dashboard] = None
+    """The reverted dashboard."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RevertDashboardResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard:
+            body["dashboard"] = self.dashboard.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RevertDashboardResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dashboard:
+            body["dashboard"] = self.dashboard
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RevertDashboardResponse:
+        """Deserializes the RevertDashboardResponse from a dictionary."""
+        return cls(dashboard=_from_dict(d, "dashboard", Dashboard))
+
+
+@dataclass
 class Schedule:
     cron_schedule: CronSchedule
     """The cron expression describing the frequency of the periodic refresh for this schedule."""
@@ -3501,6 +3528,7 @@ class GenieAPI:
         *,
         description: Optional[str] = None,
         etag: Optional[str] = None,
+        parent_path: Optional[str] = None,
         serialized_space: Optional[str] = None,
         title: Optional[str] = None,
         warehouse_id: Optional[str] = None,
@@ -3514,6 +3542,8 @@ class GenieAPI:
         :param etag: str (optional)
           ETag returned by a previous GET or UPDATE. When set, the update will fail if the space has been
           modified since. Omit to apply the update unconditionally.
+        :param parent_path: str (optional)
+          Parent workspace folder path to move this Genie space under.
         :param serialized_space: str (optional)
           The contents of the Genie Space in serialized string form (full replacement). Use the [Get Genie
           Space](:method:genie/getspace) API to retrieve an example response, which includes the
@@ -3532,6 +3562,8 @@ class GenieAPI:
             body["description"] = description
         if etag is not None:
             body["etag"] = etag
+        if parent_path is not None:
+            body["parent_path"] = parent_path
         if serialized_space is not None:
             body["serialized_space"] = serialized_space
         if title is not None:
@@ -4020,6 +4052,34 @@ class LakeviewAPI:
 
         res = self._api.do("POST", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", body=body, headers=headers)
         return PublishedDashboard.from_dict(res)
+
+    def revert(self, dashboard_id: str, *, etag: Optional[str] = None) -> RevertDashboardResponse:
+        """Revert a dashboard's definition in draft mode to the last published version.
+
+        :param dashboard_id: str
+          UUID identifying the dashboard.
+        :param etag: str (optional)
+          The etag for the dashboard. Optionally, it can be provided to verify that the dashboard has not been
+          modified from its last retrieval. TODO(TSE-3937): update to new non-CMK-encrypted label when
+          available
+
+        :returns: :class:`RevertDashboardResponse`
+        """
+
+        body = {}
+        if etag is not None:
+            body["etag"] = etag
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/lakeview/dashboards/{dashboard_id}/revert", body=body, headers=headers)
+        return RevertDashboardResponse.from_dict(res)
 
     def trash(self, dashboard_id: str):
         """Trash a dashboard.

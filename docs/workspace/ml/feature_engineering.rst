@@ -191,7 +191,7 @@
         Update a materialized feature (pause/resume).
 
         :param materialized_feature_id: str
-          Unique identifier for the materialized feature.
+          Server-assigned unique identifier for the materialized feature.
         :param materialized_feature: :class:`MaterializedFeature`
           The materialized feature to update.
         :param update_mask: str

@@ -27,6 +27,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ARCHIVED
       :value: "ARCHIVED"
 
+   .. py:attribute:: DELETED
+      :value: "DELETED"
+
    .. py:attribute:: IMPORTING
       :value: "IMPORTING"
 

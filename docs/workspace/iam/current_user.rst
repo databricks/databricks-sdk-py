@@ -6,7 +6,7 @@
 
     This API allows retrieving information about currently authenticated user or service principal.
 
-    .. py:method:: me() -> User
+    .. py:method:: me( [, attributes: Optional[str], excluded_attributes: Optional[str]]) -> User
 
 
         Usage:
@@ -21,6 +21,10 @@
 
         Get details about the current method caller's identity.
 
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
 
         :returns: :class:`User`
         
