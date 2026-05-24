@@ -29,3 +29,7 @@
 * Add `deleted` enum value for `databricks.sdk.service.postgres.BranchStatusState`.
 * [Breaking] Change `tags` field for `databricks.sdk.service.marketplace.ListListingsRequest` to type `databricks.sdk.service.marketplace.ListingTag` dataclass.
 * [Breaking] Change pagination for [ClustersAPI.events](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/compute/clusters.html#databricks.sdk.service.compute.ClustersAPI.events) method.
+* Add `compute_max_instances` and `compute_min_instances` fields for `databricks.sdk.service.apps.App`.
+* Add `compute_max_instances` and `compute_min_instances` fields for `databricks.sdk.service.apps.AppUpdate`.
+* Add `cron_schedule_trigger`, `streaming_mode` and `table_trigger` fields for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `synced_table_id` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableStatus`.

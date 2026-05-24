@@ -61,6 +61,7 @@ class ActionConfiguration:
 
 
 class ActionConfigurationType(Enum):
+    """Type of action that a budget alert executes when its threshold is crossed."""
 
     EMAIL_NOTIFICATION = "EMAIL_NOTIFICATION"
 
