@@ -178,6 +178,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CronSchedule
+   :members:
+   :undoc-members:
+
 .. autoclass:: DataSource
    :members:
    :undoc-members:
@@ -1054,11 +1058,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: StreamingMode
+   :members:
+   :undoc-members:
+
+.. py:class:: StreamingModeStreamingModeType
+
+   .. py:attribute:: STREAMING_MODE_TYPE_MBM
+      :value: "STREAMING_MODE_TYPE_MBM"
+
+   .. py:attribute:: STREAMING_MODE_TYPE_RTM
+      :value: "STREAMING_MODE_TYPE_RTM"
+
 .. autoclass:: SubscriptionMode
    :members:
    :undoc-members:
 
 .. autoclass:: SumFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: TableTrigger
    :members:
    :undoc-members:
 

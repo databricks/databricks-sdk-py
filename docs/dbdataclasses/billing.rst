@@ -10,6 +10,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ActionConfigurationType
 
+   Type of action that a budget alert executes when its threshold is crossed.
+
    .. py:attribute:: EMAIL_NOTIFICATION
       :value: "EMAIL_NOTIFICATION"
 
