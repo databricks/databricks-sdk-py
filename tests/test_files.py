@@ -1487,9 +1487,9 @@ class UploadTestCase:
                             and request.method == "HEAD"
                         ):
                             probe_query = parse_qs(parsed_url.query)
-                            assert probe_query.get("ew") == ["12345"], (
-                                f"Expected ew=12345 in probe URL, got: {probe_query}"
-                            )
+                            assert probe_query.get("ew") == [
+                                "12345"
+                            ], f"Expected ew=12345 in probe URL, got: {probe_query}"
                             resp = requests.Response()
                             resp.status_code = 200
                             resp._content = b""
@@ -1540,26 +1540,26 @@ class UploadTestCase:
                 if self.expected_exception_type is not None:
                     with pytest.raises(self.expected_exception_type):
                         upload()
-                    assert not single_shot_server_state.get_file_content(), (
-                        "Single-shot upload should not have succeeded"
-                    )
+                    assert (
+                        not single_shot_server_state.get_file_content()
+                    ), "Single-shot upload should not have succeeded"
                     assert not multipart_server_state.get_file_content(), "Multipart upload should not have succeeded"
                 else:
                     upload()
                     if self.expected_single_shot_upload:
-                        assert single_shot_server_state.get_file_content() == FileContent.from_bytes(file_content), (
-                            "Single-shot upload should have succeeded"
-                        )
-                        assert not multipart_server_state.get_file_content(), (
-                            "Multipart upload should not have succeeded"
-                        )
+                        assert single_shot_server_state.get_file_content() == FileContent.from_bytes(
+                            file_content
+                        ), "Single-shot upload should have succeeded"
+                        assert (
+                            not multipart_server_state.get_file_content()
+                        ), "Multipart upload should not have succeeded"
                     else:
-                        assert multipart_server_state.get_file_content() == FileContent.from_bytes(file_content), (
-                            "Multipart upload should have succeeded"
-                        )
-                        assert not single_shot_server_state.get_file_content(), (
-                            "Single-shot upload should not have succeeded"
-                        )
+                        assert multipart_server_state.get_file_content() == FileContent.from_bytes(
+                            file_content
+                        ), "Multipart upload should have succeeded"
+                        assert (
+                            not single_shot_server_state.get_file_content()
+                        ), "Single-shot upload should not have succeeded"
 
             assert (
                 self.expected_multipart_upload_aborted is None
