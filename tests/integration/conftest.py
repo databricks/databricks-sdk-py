@@ -155,7 +155,6 @@ def isolated_env(monkeypatch):
 
 @pytest.fixture(scope="session")
 def env_or_skip():
-
     def inner(var: str) -> str:
         if var not in os.environ:
             pytest.skip(f"Environment variable {var} is missing")

@@ -9,7 +9,11 @@ from enum import Enum
 from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import compute
-from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -137,17 +141,14 @@ class AlertConfiguration:
 
 
 class AlertConfigurationQuantityType(Enum):
-
     LIST_PRICE_DOLLARS_USD = "LIST_PRICE_DOLLARS_USD"
 
 
 class AlertConfigurationTimePeriod(Enum):
-
     MONTH = "MONTH"
 
 
 class AlertConfigurationTriggerType(Enum):
-
     CUMULATIVE_SPENDING_EXCEEDED = "CUMULATIVE_SPENDING_EXCEEDED"
 
 
@@ -297,7 +298,6 @@ class BudgetConfigurationFilterClause:
 
 
 class BudgetConfigurationFilterOperator(Enum):
-
     IN = "IN"
 
 
@@ -1338,7 +1338,6 @@ class SortSpec:
 
 
 class SortSpecField(Enum):
-
     POLICY_NAME = "POLICY_NAME"
 
 
@@ -1430,13 +1429,11 @@ class UpdateBudgetConfigurationResponse:
 
 
 class UsageDashboardMajorVersion(Enum):
-
     USAGE_DASHBOARD_MAJOR_VERSION_1 = "USAGE_DASHBOARD_MAJOR_VERSION_1"
     USAGE_DASHBOARD_MAJOR_VERSION_2 = "USAGE_DASHBOARD_MAJOR_VERSION_2"
 
 
 class UsageDashboardType(Enum):
-
     USAGE_DASHBOARD_TYPE_GLOBAL = "USAGE_DASHBOARD_TYPE_GLOBAL"
     USAGE_DASHBOARD_TYPE_WORKSPACE = "USAGE_DASHBOARD_TYPE_WORKSPACE"
 

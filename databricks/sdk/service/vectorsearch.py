@@ -10,8 +10,12 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+)
 
 from ..errors import OperationFailed
 
@@ -120,7 +124,6 @@ class DeleteDataResult:
 
 
 class DeleteDataStatus(Enum):
-
     FAILURE = "FAILURE"
     PARTIAL_SUCCESS = "PARTIAL_SUCCESS"
     SUCCESS = "SUCCESS"
@@ -1329,7 +1332,6 @@ class RetrieveUserVisibleMetricsResponse:
 
 
 class ScalingChangeState(Enum):
-
     SCALING_CHANGE_APPLIED = "SCALING_CHANGE_APPLIED"
     SCALING_CHANGE_IN_PROGRESS = "SCALING_CHANGE_IN_PROGRESS"
     SCALING_CHANGE_UNSPECIFIED = "SCALING_CHANGE_UNSPECIFIED"
@@ -1479,7 +1481,6 @@ class UpsertDataResult:
 
 
 class UpsertDataStatus(Enum):
-
     FAILURE = "FAILURE"
     PARTIAL_SUCCESS = "PARTIAL_SUCCESS"
     SUCCESS = "SUCCESS"

@@ -1,10 +1,15 @@
 import pytest
 
 from databricks.sdk._base_client import _BaseClient
-from databricks.sdk.oauth import (HostMetadata, OidcEndpoints, TokenCache,
-                                  get_account_endpoints,
-                                  get_endpoints_from_url, get_host_metadata,
-                                  get_workspace_endpoints)
+from databricks.sdk.oauth import (
+    HostMetadata,
+    OidcEndpoints,
+    TokenCache,
+    get_account_endpoints,
+    get_endpoints_from_url,
+    get_host_metadata,
+    get_workspace_endpoints,
+)
 
 from .clock import FakeClock
 
@@ -97,7 +102,6 @@ def test_account_oidc_endpoints_retry_on_429(requests_mock):
     request_count = 0
 
     def nth_request(n):
-
         def observe_request(_request):
             nonlocal request_count
             is_match = request_count == n
@@ -148,7 +152,6 @@ def test_workspace_oidc_endpoints_retry_on_429(requests_mock):
     request_count = 0
 
     def nth_request(n):
-
         def observe_request(_request):
             nonlocal request_count
             is_match = request_count == n

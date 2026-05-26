@@ -8,30 +8,30 @@ from databricks.sdk import WorkspaceClient
 def make_getrun_path_pattern(run_id: int, page_token: Optional[str] = None) -> Pattern[str]:
     if page_token:
         return re.compile(
-            rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/runs/get?page_token={page_token}&run_id={run_id}")}'
+            rf"{re.escape('http://localhost/api/')}2.\d{re.escape(f'/jobs/runs/get?page_token={page_token}&run_id={run_id}')}"
         )
     else:
-        return re.compile(rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/runs/get?run_id={run_id}")}')
+        return re.compile(rf"{re.escape('http://localhost/api/')}2.\d{re.escape(f'/jobs/runs/get?run_id={run_id}')}")
 
 
 def make_getjob_path_pattern(job_id: int, page_token: Optional[str] = None) -> Pattern[str]:
     if page_token:
         return re.compile(
-            rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/get?job_id={job_id}&page_token={page_token}")}'
+            rf"{re.escape('http://localhost/api/')}2.\d{re.escape(f'/jobs/get?job_id={job_id}&page_token={page_token}')}"
         )
     else:
-        return re.compile(rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/get?job_id={job_id}")}')
+        return re.compile(rf"{re.escape('http://localhost/api/')}2.\d{re.escape(f'/jobs/get?job_id={job_id}')}")
 
 
 def make_listjobs_path_pattern(page_token: str) -> Pattern[str]:
     return re.compile(
-        rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/list")}\?(?:expand_tasks=(?:true|false)&)?page_token={re.escape(page_token)}'
+        rf"{re.escape('http://localhost/api/')}2.\d{re.escape('/jobs/list')}\?(?:expand_tasks=(?:true|false)&)?page_token={re.escape(page_token)}"
     )
 
 
 def make_listruns_path_pattern(page_token: str) -> Pattern[str]:
     return re.compile(
-        rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/runs/list")}\?(?:expand_tasks=(?:true|false)&)?page_token={re.escape(page_token)}'
+        rf"{re.escape('http://localhost/api/')}2.\d{re.escape('/jobs/runs/list')}\?(?:expand_tasks=(?:true|false)&)?page_token={re.escape(page_token)}"
     )
 
 

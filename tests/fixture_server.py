@@ -12,7 +12,6 @@ def http_fixture_server(
     from threading import Thread
 
     class _handler(BaseHTTPRequestHandler):
-
         def __init__(
             self,
             handler: typing.Callable[[BaseHTTPRequestHandler], None],

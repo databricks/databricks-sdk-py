@@ -9,7 +9,9 @@ from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import credentials_strategy
 
 from .clock import FakeClock
-from .integration.conftest import restorable_env  # type: ignore
+
+# Side-effect import: ruff would otherwise strip this as unused.
+from .integration.conftest import restorable_env  # noqa: F401
 
 
 @pytest.fixture(autouse=True)
@@ -40,9 +42,7 @@ __tests__ = os.path.dirname(__file__)
 
 
 def raises(msg):
-
     def inner(func):
-
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             with pytest.raises(ValueError) as info:
@@ -65,7 +65,6 @@ def raises(msg):
 @pytest.fixture
 def fake_fs():
     with Patcher() as patcher:
-
         # Include the tests directory in the fake filesystem
         test_data_path = __tests__
         patcher.fs.add_real_directory(test_data_path)
@@ -93,7 +92,6 @@ def set_az_path(monkeypatch):
 
 @pytest.fixture
 def mock_tenant(requests_mock):
-
     def stub_tenant_request(host, tenant_id="test-tenant-id"):
         mock = requests_mock.get(
             f"https://{host}/aad/auth",

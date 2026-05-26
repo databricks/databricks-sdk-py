@@ -11,8 +11,12 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -586,7 +590,6 @@ class DatabaseInstanceRoleAttributes:
 
 
 class DatabaseInstanceRoleIdentityType(Enum):
-
     GROUP = "GROUP"
     PG_ONLY = "PG_ONLY"
     SERVICE_PRINCIPAL = "SERVICE_PRINCIPAL"
@@ -600,7 +603,6 @@ class DatabaseInstanceRoleMembershipRole(Enum):
 
 
 class DatabaseInstanceState(Enum):
-
     AVAILABLE = "AVAILABLE"
     DELETING = "DELETING"
     FAILING_OVER = "FAILING_OVER"
@@ -888,7 +890,6 @@ class NewPipelineSpec:
 
 
 class ProvisioningInfoState(Enum):
-
     ACTIVE = "ACTIVE"
     DEGRADED = "DEGRADED"
     DELETING = "DELETING"
@@ -898,7 +899,6 @@ class ProvisioningInfoState(Enum):
 
 
 class ProvisioningPhase(Enum):
-
     PROVISIONING_PHASE_INDEX_SCAN = "PROVISIONING_PHASE_INDEX_SCAN"
     PROVISIONING_PHASE_INDEX_SORT = "PROVISIONING_PHASE_INDEX_SORT"
     PROVISIONING_PHASE_MAIN = "PROVISIONING_PHASE_MAIN"
@@ -1313,7 +1313,6 @@ class SyncedTableProvisioningStatus:
 
 
 class SyncedTableSchedulingPolicy(Enum):
-
     CONTINUOUS = "CONTINUOUS"
     SNAPSHOT = "SNAPSHOT"
     TRIGGERED = "TRIGGERED"
@@ -1602,6 +1601,7 @@ class DatabaseAPI:
         """
 
         body = catalog.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1626,6 +1626,7 @@ class DatabaseAPI:
         """
 
         body = database_instance.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1691,6 +1692,7 @@ class DatabaseAPI:
         """
 
         body = table.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1712,6 +1714,7 @@ class DatabaseAPI:
         """
 
         body = synced_table.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

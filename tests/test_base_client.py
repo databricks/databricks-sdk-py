@@ -8,8 +8,7 @@ import pytest
 from requests import PreparedRequest, Response, Timeout
 
 from databricks.sdk import errors, useragent
-from databricks.sdk._base_client import (_BaseClient, _RawResponse,
-                                         _StreamingResponse)
+from databricks.sdk._base_client import _BaseClient, _RawResponse, _StreamingResponse
 from databricks.sdk.core import DatabricksError
 
 from .clock import FakeClock
@@ -401,7 +400,6 @@ def test_is_seekable_stream():
 
     # Test custom seekable stream.
     class CustomSeekableStream(io.IOBase):
-
         def seekable(self):
             return True
 
@@ -415,7 +413,6 @@ def test_is_seekable_stream():
 
 
 class RetryTestCase:
-
     def __init__(
         self,
         data_provider: Callable,
@@ -442,7 +439,6 @@ class RetryTestCase:
 
 
 class MockSession:
-
     def __init__(self, failure_count: int, failure_provider: Callable[[], Response]):
         self._failure_count = failure_count
         self._received_requests: List[bytes] = []

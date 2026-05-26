@@ -11,8 +11,13 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 from ..errors import OperationFailed
 
@@ -65,7 +70,6 @@ class AccessControl:
 
 
 class Aggregation(Enum):
-
     AVG = "AVG"
     COUNT = "COUNT"
     COUNT_DISTINCT = "COUNT_DISTINCT"
@@ -333,7 +337,6 @@ class AlertEvaluationState(Enum):
 
 
 class AlertLifecycleState(Enum):
-
     ACTIVE = "ACTIVE"
     DELETED = "DELETED"
 
@@ -403,7 +406,6 @@ class AlertOperandValue:
 
 
 class AlertOperator(Enum):
-
     EQUAL = "EQUAL"
     GREATER_THAN = "GREATER_THAN"
     GREATER_THAN_OR_EQUAL = "GREATER_THAN_OR_EQUAL"
@@ -635,7 +637,6 @@ class AlertQuery:
 
 
 class AlertState(Enum):
-
     OK = "OK"
     TRIGGERED = "TRIGGERED"
     UNKNOWN = "UNKNOWN"
@@ -1211,7 +1212,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-
     CHANNEL_NAME_CURRENT = "CHANNEL_NAME_CURRENT"
     CHANNEL_NAME_CUSTOM = "CHANNEL_NAME_CUSTOM"
     CHANNEL_NAME_PREVIEW = "CHANNEL_NAME_PREVIEW"
@@ -1411,7 +1411,6 @@ class ColumnInfoTypeName(Enum):
 
 
 class ComparisonOperator(Enum):
-
     EQUAL = "EQUAL"
     GREATER_THAN = "GREATER_THAN"
     GREATER_THAN_OR_EQUAL = "GREATER_THAN_OR_EQUAL"
@@ -1679,7 +1678,6 @@ class CreateVisualizationRequestVisualization:
 
 
 class CreateWarehouseRequestWarehouseType(Enum):
-
     CLASSIC = "CLASSIC"
     PRO = "PRO"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
@@ -2041,7 +2039,6 @@ class DataSource:
 
 
 class DatePrecision(Enum):
-
     DAY_PRECISION = "DAY_PRECISION"
     MINUTE_PRECISION = "MINUTE_PRECISION"
     SECOND_PRECISION = "SECOND_PRECISION"
@@ -2129,7 +2126,6 @@ class DateRangeValue:
 
 
 class DateRangeValueDynamicDateRange(Enum):
-
     LAST_12_MONTHS = "LAST_12_MONTHS"
     LAST_14_DAYS = "LAST_14_DAYS"
     LAST_24_HOURS = "LAST_24_HOURS"
@@ -2194,7 +2190,6 @@ class DateValue:
 
 
 class DateValueDynamicDate(Enum):
-
     NOW = "NOW"
     YESTERDAY = "YESTERDAY"
 
@@ -2299,13 +2294,11 @@ class DeleteWarehouseResponse:
 
 
 class Disposition(Enum):
-
     EXTERNAL_LINKS = "EXTERNAL_LINKS"
     INLINE = "INLINE"
 
 
 class EditWarehouseRequestWarehouseType(Enum):
-
     CLASSIC = "CLASSIC"
     PRO = "PRO"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
@@ -2649,7 +2642,6 @@ class EndpointInfo:
 
 
 class EndpointInfoWarehouseType(Enum):
-
     CLASSIC = "CLASSIC"
     PRO = "PRO"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
@@ -2984,7 +2976,6 @@ class ExternalQuerySourceJobInfo:
 
 
 class Format(Enum):
-
     ARROW_STREAM = "ARROW_STREAM"
     CSV = "CSV"
     JSON_ARRAY = "JSON_ARRAY"
@@ -3266,7 +3257,6 @@ class GetWarehouseResponse:
 
 
 class GetWarehouseResponseWarehouseType(Enum):
-
     CLASSIC = "CLASSIC"
     PRO = "PRO"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
@@ -3493,7 +3483,6 @@ class LegacyAlert:
 
 
 class LegacyAlertState(Enum):
-
     OK = "ok"
     TRIGGERED = "triggered"
     UNKNOWN = "unknown"
@@ -3804,7 +3793,6 @@ class LegacyVisualization:
 
 
 class LifecycleState(Enum):
-
     ACTIVE = "ACTIVE"
     TRASHED = "TRASHED"
 
@@ -4049,7 +4037,6 @@ class ListDefaultWarehouseOverridesResponse:
 
 
 class ListOrder(Enum):
-
     CREATED_AT = "created_at"
     NAME = "name"
 
@@ -4520,7 +4507,6 @@ class OdbcParams:
 
 
 class OwnableObjectType(Enum):
-
     ALERT = "alert"
     DASHBOARD = "dashboard"
     QUERY = "query"
@@ -4604,7 +4590,6 @@ class Parameter:
 
 
 class ParameterType(Enum):
-
     DATETIME = "datetime"
     ENUM = "enum"
     NUMBER = "number"
@@ -5588,7 +5573,6 @@ class QueryParameter:
 
 
 class QueryStatementType(Enum):
-
     ALTER = "ALTER"
     ANALYZE = "ANALYZE"
     COPY = "COPY"
@@ -5916,19 +5900,16 @@ class ResultSchema:
 
 
 class RunAsMode(Enum):
-
     OWNER = "OWNER"
     VIEWER = "VIEWER"
 
 
 class RunAsRole(Enum):
-
     OWNER = "owner"
     VIEWER = "viewer"
 
 
 class SchedulePauseStatus(Enum):
-
     PAUSED = "PAUSED"
     UNPAUSED = "UNPAUSED"
 
@@ -5965,7 +5946,6 @@ class ServiceError:
 
 
 class ServiceErrorCode(Enum):
-
     ABORTED = "ABORTED"
     ALREADY_EXISTS = "ALREADY_EXISTS"
     BAD_REQUEST = "BAD_REQUEST"
@@ -6194,7 +6174,6 @@ class StatementResponse:
 
 
 class StatementState(Enum):
-
     CANCELED = "CANCELED"
     CLOSED = "CLOSED"
     FAILED = "FAILED"
@@ -6253,7 +6232,6 @@ class StatementStatus:
 
 
 class Status(Enum):
-
     DEGRADED = "DEGRADED"
     FAILED = "FAILED"
     HEALTHY = "HEALTHY"
@@ -6302,7 +6280,6 @@ class Success:
 
 
 class SuccessMessage(Enum):
-
     SUCCESS = "Success"
 
 
@@ -7349,7 +7326,6 @@ class WarehouseTypePair:
 
 
 class WarehouseTypePairWarehouseType(Enum):
-
     CLASSIC = "CLASSIC"
     PRO = "PRO"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
@@ -7900,6 +7876,7 @@ class AlertsV2API:
         """
 
         body = alert.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -9403,8 +9380,7 @@ class StatementExecutionAPI:
     you cannot use the Jobs API to execute the command, and then the SQL Execution API to cancel it.
 
     [Apache Arrow Columnar]: https://arrow.apache.org/overview/
-    [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
-    """
+    [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html"""
 
     def __init__(self, api_client):
         self._api = api_client

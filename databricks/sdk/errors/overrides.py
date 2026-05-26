@@ -3,7 +3,7 @@
 import re
 
 from .base import _ErrorOverride
-from .platform import ResourceDoesNotExist
+from .platform import *
 
 _ALL_OVERRIDES = [
     _ErrorOverride(

@@ -11,8 +11,13 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import catalog, jobs, settings, sharing
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -126,7 +131,6 @@ class CleanRoom:
 
 
 class CleanRoomAccessRestricted(Enum):
-
     CSP_MISMATCH = "CSP_MISMATCH"
     NO_RESTRICTION = "NO_RESTRICTION"
 
@@ -283,7 +287,6 @@ class CleanRoomAsset:
 
 
 class CleanRoomAssetAssetType(Enum):
-
     FOREIGN_TABLE = "FOREIGN_TABLE"
     NOTEBOOK_FILE = "NOTEBOOK_FILE"
     TABLE = "TABLE"
@@ -403,7 +406,6 @@ class CleanRoomAssetNotebook:
 
 
 class CleanRoomAssetStatusEnum(Enum):
-
     ACTIVE = "ACTIVE"
     PENDING = "PENDING"
     PERMISSION_DENIED = "PERMISSION_DENIED"
@@ -622,7 +624,6 @@ class CleanRoomAutoApprovalRule:
 
 
 class CleanRoomAutoApprovalRuleAuthorScope(Enum):
-
     ANY_AUTHOR = "ANY_AUTHOR"
 
 
@@ -767,14 +768,12 @@ class CleanRoomNotebookReview:
 
 
 class CleanRoomNotebookReviewNotebookReviewState(Enum):
-
     APPROVED = "APPROVED"
     PENDING = "PENDING"
     REJECTED = "REJECTED"
 
 
 class CleanRoomNotebookReviewNotebookReviewSubReason(Enum):
-
     AUTO_APPROVED = "AUTO_APPROVED"
     BACKFILLED = "BACKFILLED"
 
@@ -912,7 +911,6 @@ class CleanRoomOutputCatalog:
 
 
 class CleanRoomOutputCatalogOutputCatalogStatus(Enum):
-
     CREATED = "CREATED"
     NOT_CREATED = "NOT_CREATED"
     NOT_ELIGIBLE = "NOT_ELIGIBLE"
@@ -1000,7 +998,6 @@ class CleanRoomRemoteDetail:
 
 
 class CleanRoomStatusEnum(Enum):
-
     ACTIVE = "ACTIVE"
     DELETED = "DELETED"
     FAILED = "FAILED"
@@ -1505,6 +1502,7 @@ class CleanRoomAssetsAPI:
         """
 
         body = asset.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1667,6 +1665,7 @@ class CleanRoomAssetsAPI:
         """
 
         body = asset.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1814,6 +1813,7 @@ class CleanRoomAutoApprovalRulesAPI:
         """
 
         body = auto_approval_rule.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1932,6 +1932,7 @@ class CleanRoomsAPI:
         """
 
         body = clean_room.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1962,6 +1963,7 @@ class CleanRoomsAPI:
         """
 
         body = output_catalog.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

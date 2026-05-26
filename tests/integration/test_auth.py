@@ -15,8 +15,7 @@ import pytest
 from databricks.sdk import AccountClient, WorkspaceClient
 from databricks.sdk.config import Config
 from databricks.sdk.service import iam, oauth2
-from databricks.sdk.service.compute import (ClusterSpec, DataSecurityMode,
-                                            Library, ResultType, SparkVersion)
+from databricks.sdk.service.compute import ClusterSpec, DataSecurityMode, Library, ResultType, SparkVersion
 from databricks.sdk.service.jobs import NotebookTask, Task, ViewType
 from databricks.sdk.service.workspace import ImportFormat
 
@@ -160,7 +159,7 @@ print(me.user_name)"""
     tasks = []
     for v in dbr_versions:
         t = Task(
-            task_key=f'test_{v.key.replace(".", "_")}',
+            task_key=f"test_{v.key.replace('.', '_')}",
             notebook_task=NotebookTask(notebook_path=notebook_path),
             new_cluster=ClusterSpec(
                 spark_version=v.key,
@@ -205,7 +204,6 @@ def _task_outputs(w, run):
 
 
 def test_wif_account(ucacct, env_or_skip, random):
-
     sp = ucacct.service_principals.create(
         active=True,
         display_name="py-sdk-test-" + random(),
@@ -237,7 +235,6 @@ def test_wif_account(ucacct, env_or_skip, random):
 
 
 def test_wif_workspace(ucacct, env_or_skip, random):
-
     workspace_id = env_or_skip("TEST_WORKSPACE_ID")
     workspace_url = env_or_skip("TEST_WORKSPACE_URL")
 
