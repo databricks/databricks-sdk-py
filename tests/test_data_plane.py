@@ -10,7 +10,6 @@ dp_token = Token(access_token="data plane token", token_type="type", expiry=date
 
 
 def success_callable(token: oauth.Token):
-
     def success() -> oauth.Token:
         return token
 

@@ -71,7 +71,6 @@ def test_oidc_token_filepath_env_constructor_precedence(monkeypatch, mocker):
 
 
 def test_extra_and_upstream_user_agent(monkeypatch):
-
     class MockUname:
         @property
         def system(self):

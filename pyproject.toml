@@ -38,7 +38,7 @@ dev = [
     "pytest-cov",
     "pytest-xdist>=3.6.1,<4.0",
     "pytest-mock",
-    "ruff>=0.6.0",
+    "ruff==0.5.6",
     "pycodestyle",
     "wheel",
     "ipython",

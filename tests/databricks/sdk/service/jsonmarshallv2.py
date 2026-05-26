@@ -479,7 +479,6 @@ class JsonMarshallV2API:
         self._api = api_client
 
     def get_resource(self, name: str, resource: Resource) -> Resource:
-
         query = {}
         if resource is not None:
             query["resource"] = resource.as_dict()

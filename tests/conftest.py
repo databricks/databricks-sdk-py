@@ -42,9 +42,7 @@ __tests__ = os.path.dirname(__file__)
 
 
 def raises(msg):
-
     def inner(func):
-
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             with pytest.raises(ValueError) as info:
@@ -94,7 +92,6 @@ def set_az_path(monkeypatch):
 
 @pytest.fixture
 def mock_tenant(requests_mock):
-
     def stub_tenant_request(host, tenant_id="test-tenant-id"):
         mock = requests_mock.get(
             f"https://{host}/aad/auth",

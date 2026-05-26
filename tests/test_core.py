@@ -264,7 +264,6 @@ def test_databricks_cli_scope_validation_error_message(config, monkeypatch, tmp_
 
 
 def test_extra_and_upstream_user_agent(monkeypatch):
-
     class MockUname:
         @property
         def system(self):
@@ -302,7 +301,6 @@ def test_extra_and_upstream_user_agent(monkeypatch):
 
 
 def test_config_copy_shallow_copies_credential_provider():
-
     class TestCredentialsStrategy(CredentialsStrategy):
         def __init__(self):
             super().__init__()
@@ -348,7 +346,6 @@ def test_config_workspace_is_not_accounts_host(config):
 
 # This test uses the fake file system to avoid interference from local default profile.
 def test_config_can_be_subclassed(fake_fs):
-
     class DatabricksConfig(Config):
         def __init__(self):
             super().__init__()
@@ -459,7 +456,6 @@ def test_error(config, requests_mock, status_code, headers, body, expected_error
 
 
 def test_github_oidc_flow_works_with_azure(monkeypatch):
-
     def inner(h: BaseHTTPRequestHandler):
         if "audience=api://AzureADTokenExchange" in h.path:
             auth = h.headers["Authorization"]

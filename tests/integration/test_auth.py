@@ -204,7 +204,6 @@ def _task_outputs(w, run):
 
 
 def test_wif_account(ucacct, env_or_skip, random):
-
     sp = ucacct.service_principals.create(
         active=True,
         display_name="py-sdk-test-" + random(),
@@ -236,7 +235,6 @@ def test_wif_account(ucacct, env_or_skip, random):
 
 
 def test_wif_workspace(ucacct, env_or_skip, random):
-
     workspace_id = env_or_skip("TEST_WORKSPACE_ID")
     workspace_url = env_or_skip("TEST_WORKSPACE_URL")
 

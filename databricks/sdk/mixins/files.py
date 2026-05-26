@@ -1175,7 +1175,6 @@ class FilesExt(files.FilesAPI):
     def _do_parallel_download(
         self, remote_path: str, destination: str, parallelism: int, download_chunk: Callable
     ) -> None:
-
         file_info = self.get_metadata(remote_path)
         file_size = file_info.content_length
         last_modified = file_info.last_modified
@@ -1534,7 +1533,6 @@ class FilesExt(files.FilesAPI):
         return initiate_upload_response
 
     def _single_thread_multipart_upload(self, ctx: _UploadContext, contents: BinaryIO) -> None:
-
         # Upload empty and small files with one-shot upload.
         pre_read_buffer = contents.read(self._config.files_ext_multipart_upload_min_stream_size)
         if len(pre_read_buffer) < self._config.files_ext_multipart_upload_min_stream_size:
@@ -1762,7 +1760,6 @@ class FilesExt(files.FilesAPI):
         session_token: str,
         content: BinaryIO,
     ) -> None:
-
         task_queue = Queue(maxsize=ctx.parallelism)  # Limit queue size to control memory usage
         etags_result_queue = Queue()
         exception_queue = Queue()

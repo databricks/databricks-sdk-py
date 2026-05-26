@@ -102,7 +102,6 @@ def test_account_oidc_endpoints_retry_on_429(requests_mock):
     request_count = 0
 
     def nth_request(n):
-
         def observe_request(_request):
             nonlocal request_count
             is_match = request_count == n
@@ -153,7 +152,6 @@ def test_workspace_oidc_endpoints_retry_on_429(requests_mock):
     request_count = 0
 
     def nth_request(n):
-
         def observe_request(_request):
             nonlocal request_count
             is_match = request_count == n

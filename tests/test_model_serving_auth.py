@@ -221,7 +221,6 @@ def test_agent_user_credentials(monkeypatch, mocker):
 
 # If this credential strategy is being used in a non model serving environments then use default credential strategy instead
 def test_agent_user_credentials_in_non_model_serving_environments(monkeypatch):
-
     monkeypatch.setenv("DATABRICKS_HOST", "x")
     monkeypatch.setenv("DATABRICKS_TOKEN", "token")
 

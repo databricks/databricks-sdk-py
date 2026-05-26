@@ -296,7 +296,6 @@ class LroTestingAPI:
         self._api = api_client
 
     def cancel_operation(self, name: str):
-
         headers = {
             "Accept": "application/json",
         }
@@ -332,7 +331,6 @@ class LroTestingAPI:
         return CreateTestResourceOperation(self, operation)
 
     def delete_test_resource(self, resource_id: str) -> DeleteTestResourceOperation:
-
         headers = {
             "Accept": "application/json",
         }
@@ -346,7 +344,6 @@ class LroTestingAPI:
         return DeleteTestResourceOperation(self, operation)
 
     def get_operation(self, name: str) -> Operation:
-
         headers = {
             "Accept": "application/json",
         }

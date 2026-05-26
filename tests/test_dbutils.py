@@ -80,7 +80,6 @@ def test_fs_mv(dbutils, mocker):
 
 
 def test_fs_put(dbutils, mocker):
-
     class _MockOpen:
         _written = None
 
