@@ -599,7 +599,7 @@ class Config:
         if self.cluster_id:
             response = requests.get(f"{self.host}/api/2.0/preview/scim/v2/Me", headers=headers)
             # get workspace ID from the response header
-            workspace_id = response.headers.get("x-databricks-workspace-id")
+            workspace_id = response.headers.get("x-databricks-org-id")
             return f"sql/protocolv1/o/{workspace_id}/{self.cluster_id}"
         if self.warehouse_id:
             return f"/sql/1.0/warehouses/{self.warehouse_id}"
