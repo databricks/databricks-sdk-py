@@ -13,9 +13,14 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from databricks.sdk.common import lro
 from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.retries import RetryError, poll
-from databricks.sdk.service._internal import (_duration, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum,
-                                              _timestamp)
+from databricks.sdk.service._internal import (
+    _duration,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+    _timestamp,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -2113,7 +2118,6 @@ class ProjectStatus:
 
 
 class ProvisioningInfoState(Enum):
-
     ACTIVE = "ACTIVE"
     DEGRADED = "DEGRADED"
     DELETING = "DELETING"
@@ -2164,7 +2168,6 @@ class RequestedClaims:
 
 
 class RequestedClaimsPermissionSet(Enum):
-
     READ_ONLY = "READ_ONLY"
 
 

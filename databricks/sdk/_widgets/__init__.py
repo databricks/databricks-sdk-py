@@ -5,7 +5,6 @@ from abc import ABC, abstractmethod
 
 
 class WidgetUtils(ABC):
-
     def get(self, name: str):
         return self._get(name)
 
@@ -76,7 +75,7 @@ try:
         logging.debug(f"{e.msg}. Skipping ipywidgets implementation for dbutils.")
         raise e
 
-except:
+except Exception:
     from .default_widgets_utils import DefaultValueOnlyWidgetUtils
 
     widget_impl = DefaultValueOnlyWidgetUtils

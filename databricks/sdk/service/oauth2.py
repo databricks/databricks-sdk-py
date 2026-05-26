@@ -6,7 +6,10 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import _from_dict, _repeated_dict
+from databricks.sdk.service._internal import (
+    _from_dict,
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1697,8 +1700,7 @@ class ServicePrincipalSecretsAPI:
     authenticate with the service principal. For more information, see [Databricks Terraform Provider].
 
     [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
-    [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
-    """
+    [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1808,8 +1810,7 @@ class ServicePrincipalSecretsProxyAPI:
     authenticate with the service principal. For more information, see [Databricks Terraform Provider].
 
     [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
-    [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
-    """
+    [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal"""
 
     def __init__(self, api_client):
         self._api = api_client

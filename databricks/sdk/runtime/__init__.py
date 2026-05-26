@@ -86,7 +86,7 @@ def init_runtime_legacy_auth():
 
         def inner() -> Dict[str, str]:
             ctx = dbutils.notebook().getContext()
-            return {"Authorization": f'Bearer {getattr(ctx, "apiToken")().get()}'}
+            return {"Authorization": f"Bearer {getattr(ctx, 'apiToken')().get()}"}
 
         return host, inner
     except ImportError:

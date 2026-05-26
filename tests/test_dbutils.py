@@ -46,7 +46,7 @@ def test_fs_ls(dbutils, mocker):
             FileInfo(path="a/c", file_size=30, modification_time=40),
         ],
     )
-    inner2 = mocker.patch(
+    mocker.patch(
         "databricks.sdk.service.files.DbfsAPI.get_status",
         side_effect=[
             FileInfo(path="a", is_dir=True, file_size=5),
@@ -80,7 +80,6 @@ def test_fs_mv(dbutils, mocker):
 
 
 def test_fs_put(dbutils, mocker):
-
     class _MockOpen:
         _written = None
 
@@ -104,7 +103,7 @@ def test_fs_put(dbutils, mocker):
 
 def test_fs_rm(dbutils, mocker):
     inner = mocker.patch("databricks.sdk.service.files.DbfsAPI.delete")
-    inner2 = mocker.patch(
+    mocker.patch(
         "databricks.sdk.service.files.DbfsAPI.get_status",
         return_value=FileInfo(path="a", is_dir=False, file_size=5),
     )
@@ -124,9 +123,15 @@ def dbutils_proxy(mocker):
     from databricks.sdk.core import Config
     from databricks.sdk.dbutils import RemoteDbUtils
     from databricks.sdk.service._internal import Wait
-    from databricks.sdk.service.compute import (ClusterDetails, CommandStatus,
-                                                CommandStatusResponse, Created,
-                                                Language, Results, State)
+    from databricks.sdk.service.compute import (
+        ClusterDetails,
+        CommandStatus,
+        CommandStatusResponse,
+        Created,
+        Language,
+        Results,
+        State,
+    )
 
     from .conftest import noop_credentials
 

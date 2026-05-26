@@ -4,7 +4,6 @@ from databricks.sdk.service.sql import QueryFilter, TimeRange
 
 
 def test_query_history_list_with_filter(w):
-
     def date_to_ms(date):
         return int(datetime.strptime(date, "%Y-%m-%d").timestamp() * 1000)
 

@@ -21,8 +21,7 @@ from queue import Empty, Full, Queue
 from tempfile import mkstemp
 from threading import Event, Lock, Thread
 from types import TracebackType
-from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Callable, Generator,
-                    Iterable, Optional, Type, Union)
+from typing import TYPE_CHECKING, AnyStr, BinaryIO, Callable, Generator, Iterable, Optional, Type, Union
 from urllib import parse
 
 import requests
@@ -38,8 +37,7 @@ from ..retries import retried
 from ..service import files
 from ..service._internal import _escape_multi_segment_path_parameter
 from ..service.files import DownloadResponse
-from .files_utils import (CreateDownloadUrlResponse, _ConcatenatedInputStream,
-                          _PresignedUrlDistributor)
+from .files_utils import CreateDownloadUrlResponse, _ConcatenatedInputStream, _PresignedUrlDistributor
 
 if TYPE_CHECKING:
     from _typeshed import Self
@@ -67,13 +65,13 @@ class _DbfsIO(BinaryIO):
         self._api = api
         self._path = path
         if write and read:
-            raise IOError(f"can open either for reading or writing")
+            raise IOError("can open either for reading or writing")
         if read:
             self._status = api.get_status(path)
         elif write:
             self._created = api.create(path, overwrite=overwrite)
         else:
-            raise IOError(f"need to open either for reading or writing")
+            raise IOError("need to open either for reading or writing")
 
     def __enter__(self) -> Self:
         return self
@@ -204,7 +202,6 @@ class _DbfsIO(BinaryIO):
 
 
 class _VolumesIO(BinaryIO):
-
     def __init__(
         self,
         api: files.FilesAPI,
@@ -314,7 +311,6 @@ class _VolumesIO(BinaryIO):
 
 
 class _Path(ABC):
-
     @abstractmethod
     def __init__(self): ...
 
@@ -366,7 +362,6 @@ class _Path(ABC):
 
 
 class _LocalPath(_Path):
-
     def __init__(self, path: str):
         if platform.system() == "Windows":
             self._path = pathlib.Path(str(path).replace("file:///", "").replace("file:", ""))
@@ -436,7 +431,6 @@ class _LocalPath(_Path):
 
 
 class _VolumesPath(_Path):
-
     def __init__(self, api: files.FilesAPI, src: Union[str, pathlib.Path]):
         self._path = pathlib.PurePosixPath(str(src).replace("dbfs:", "").replace("file:", ""))
         self._api = api
@@ -513,7 +507,6 @@ class _VolumesPath(_Path):
 
 
 class _DbfsPath(_Path):
-
     def __init__(self, api: files.DbfsAPI, src: str):
         self._path = pathlib.PurePosixPath(str(src).replace("dbfs:", "").replace("file:", ""))
         self._api = api
@@ -1184,7 +1177,6 @@ class FilesExt(files.FilesAPI):
     def _do_parallel_download(
         self, remote_path: str, destination: str, parallelism: int, download_chunk: Callable
     ) -> None:
-
         file_info = self.get_metadata(remote_path)
         file_size = file_info.content_length
         last_modified = file_info.last_modified
@@ -1396,7 +1388,7 @@ class FilesExt(files.FilesAPI):
             super().upload(file_path=file_path, contents=contents, overwrite=overwrite)
             return UploadStreamResult()
 
-        _LOG.debug(f"Uploading file from BinaryIO stream")
+        _LOG.debug("Uploading file from BinaryIO stream")
         if parallelism is not None and not use_parallel:
             raise ValueError("parallelism can only be set if use_parallel is True")
         if parallelism is None and use_parallel:
@@ -1405,7 +1397,7 @@ class FilesExt(files.FilesAPI):
         # Determine content length if the stream is seekable
         content_length = None
         if contents.seekable():
-            _LOG.debug(f"Uploading using seekable mode")
+            _LOG.debug("Uploading using seekable mode")
             # If the stream is seekable, we can read its size.
             contents.seek(0, os.SEEK_END)
             content_length = contents.tell()
@@ -1440,7 +1432,7 @@ class FilesExt(files.FilesAPI):
             self._upload_single_thread_with_known_size(ctx, contents)
             return UploadStreamResult()
         else:
-            _LOG.debug(f"Uploading using non-seekable mode")
+            _LOG.debug("Uploading using non-seekable mode")
             # If the stream is not seekable, we cannot determine its size.
             # We will use a multipart upload.
             _LOG.debug(f"Using multipart upload for non-seekable input stream of unknown size for file {file_path}")
@@ -1527,7 +1519,7 @@ class FilesExt(files.FilesAPI):
 
     def _single_thread_single_shot_upload(self, ctx: _UploadContext, contents: BinaryIO) -> None:
         """Upload a file with a known size."""
-        _LOG.debug(f"Using single-shot upload for input stream")
+        _LOG.debug("Using single-shot upload for input stream")
         return super().upload(file_path=ctx.target_path, contents=contents, overwrite=ctx.overwrite)
 
     def _initiate_multipart_upload(self, ctx: _UploadContext) -> dict:
@@ -1543,7 +1535,6 @@ class FilesExt(files.FilesAPI):
         return initiate_upload_response
 
     def _single_thread_multipart_upload(self, ctx: _UploadContext, contents: BinaryIO) -> None:
-
         # Upload empty and small files with one-shot upload.
         pre_read_buffer = contents.read(self._config.files_ext_multipart_upload_min_stream_size)
         if len(pre_read_buffer) < self._config.files_ext_multipart_upload_min_stream_size:
@@ -1771,7 +1762,6 @@ class FilesExt(files.FilesAPI):
         session_token: str,
         content: BinaryIO,
     ) -> None:
-
         task_queue = Queue(maxsize=ctx.parallelism)  # Limit queue size to control memory usage
         etags_result_queue = Queue()
         exception_queue = Queue()
@@ -1837,10 +1827,10 @@ class FilesExt(files.FilesAPI):
             consumer.start()
 
         # Wait for producer to finish
-        _LOG.debug(f"threads started, waiting for producer to finish")
+        _LOG.debug("threads started, waiting for producer to finish")
         producer_thread.join()
         # Wait for all tasks to be processed
-        _LOG.debug(f"producer finished, waiting for consumers to finish")
+        _LOG.debug("producer finished, waiting for consumers to finish")
         # task_queue.join()
         for consumer in consumers:
             consumer.join()
@@ -2119,7 +2109,7 @@ class FilesExt(files.FilesAPI):
                         # Preserve the buffer so we'll upload the current part again using next upload URL.
                     else:
                         # Don't confuse user with unrelated "Permission denied" error.
-                        raise ValueError(f"Unsuccessful chunk upload: upload URL expired")
+                        raise ValueError("Unsuccessful chunk upload: upload URL expired")
 
                 elif upload_response.status_code == 403 and chunk_offset == 0:
                     # We got 403 failure when uploading the very first chunk (we can't tell if it is Azure for sure yet).
@@ -2682,7 +2672,6 @@ class FilesExt(files.FilesAPI):
 
 
 class _ResilientResponse(_RawResponse):
-
     def __init__(
         self,
         api: FilesExt,
@@ -2778,7 +2767,7 @@ class _ResilientIterator(Iterator):
             )
             _LOG.debug("Recover succeeded")
             return True
-        except:
+        except Exception:
             return False  # recover failed, rethrow original exception
 
     def __next__(self) -> bytes:

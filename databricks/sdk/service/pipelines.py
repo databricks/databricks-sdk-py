@@ -11,8 +11,13 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import compute
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 from ..errors import OperationFailed
 
@@ -704,7 +709,6 @@ class FileIngestionOptions:
 
 
 class FileIngestionOptionsFileFormat(Enum):
-
     AVRO = "AVRO"
     BINARYFILE = "BINARYFILE"
     CSV = "CSV"
@@ -717,8 +721,7 @@ class FileIngestionOptionsFileFormat(Enum):
 
 class FileIngestionOptionsSchemaEvolutionMode(Enum):
     """Based on
-    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#how-does-auto-loader-schema-evolution-work
-    """
+    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#how-does-auto-loader-schema-evolution-work"""
 
     ADD_NEW_COLUMNS = "ADD_NEW_COLUMNS"
     ADD_NEW_COLUMNS_WITH_TYPE_WIDENING = "ADD_NEW_COLUMNS_WITH_TYPE_WIDENING"
@@ -1095,7 +1098,6 @@ class GoogleDriveOptions:
 
 
 class GoogleDriveOptionsGoogleDriveEntityType(Enum):
-
     FILE = "FILE"
     FILE_METADATA = "FILE_METADATA"
     PERMISSION = "PERMISSION"
@@ -1485,7 +1487,6 @@ class IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
 
 
 class IngestionSourceType(Enum):
-
     BIGQUERY = "BIGQUERY"
     CONFLUENCE = "CONFLUENCE"
     DYNAMICS365 = "DYNAMICS365"
@@ -4046,7 +4047,6 @@ class SharepointOptions:
 
 
 class SharepointOptionsSharepointEntityType(Enum):
-
     FILE = "FILE"
     FILE_METADATA = "FILE_METADATA"
     LIST = "LIST"
@@ -4610,7 +4610,6 @@ class Transformer:
 
 
 class TransformerFormat(Enum):
-
     JSON = "JSON"
     STRING = "STRING"
 

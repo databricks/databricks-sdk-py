@@ -155,7 +155,6 @@ class HttpCallV2API:
         repeated_complex_query_param: Optional[List[ComplexQueryParam]] = None,
         repeated_query_param: Optional[List[str]] = None,
     ) -> Resource:
-
         query = {}
         if field_mask is not None:
             query["field_mask"] = field_mask.ToJsonString()

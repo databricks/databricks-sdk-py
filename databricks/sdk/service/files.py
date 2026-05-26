@@ -7,7 +7,9 @@ from dataclasses import dataclass
 from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
 from databricks.sdk.service._internal import (
-    _escape_multi_segment_path_parameter, _repeated_dict)
+    _escape_multi_segment_path_parameter,
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 

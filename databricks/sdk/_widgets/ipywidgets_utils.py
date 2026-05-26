@@ -1,14 +1,12 @@
 import typing
 
 from IPython.core.display_functions import display
-from ipywidgets.widgets import (ValueWidget, Widget, widget_box,
-                                widget_selection, widget_string)
+from ipywidgets.widgets import ValueWidget, Widget, widget_box, widget_selection, widget_string
 
 from .default_widgets_utils import WidgetUtils
 
 
 class DbUtilsWidget:
-
     def __init__(self, label: str, value_widget: ValueWidget) -> None:
         self.label_widget = widget_string.Label(label)
         self.value_widget = value_widget
@@ -25,16 +23,15 @@ class DbUtilsWidget:
     @property
     def value(self):
         value = self.value_widget.value
-        if type(value) == str or value is None:
+        if type(value) is str or value is None:
             return value
-        if type(value) == list or type(value) == tuple:
+        if type(value) is list or type(value) is tuple:
             return ",".join(value)
 
         raise ValueError(f"The returned value has invalid type ({type(value)}).")
 
 
 class IPyWidgetUtil(WidgetUtils):
-
     def __init__(self) -> None:
         self._widgets: typing.Dict[str, DbUtilsWidget] = {}
 
