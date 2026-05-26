@@ -8,8 +8,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -18,7 +17,6 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 class Entitlement(Enum):
-
     ALLOW_CLUSTER_CREATE = "ALLOW_CLUSTER_CREATE"
     ALLOW_INSTANCE_POOL_CREATE = "ALLOW_INSTANCE_POOL_CREATE"
     DATABRICKS_SQL_ACCESS = "DATABRICKS_SQL_ACCESS"

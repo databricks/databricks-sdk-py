@@ -24,9 +24,14 @@ from requests import RequestException
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.core import Config
 from databricks.sdk.environments import Cloud, DatabricksEnvironment
-from databricks.sdk.errors.platform import (AlreadyExists, BadRequest,
-                                            InternalError, NotImplemented,
-                                            PermissionDenied, TooManyRequests)
+from databricks.sdk.errors.platform import (
+    AlreadyExists,
+    BadRequest,
+    InternalError,
+    NotImplemented,
+    PermissionDenied,
+    TooManyRequests,
+)
 from databricks.sdk.mixins.files import FallbackToDownloadUsingFilesApi
 from databricks.sdk.mixins.files_utils import CreateDownloadUrlResponse
 from tests.clock import FakeClock
@@ -166,7 +171,6 @@ class DownloadMode(Enum):
 
 
 class FilesApiDownloadTestCase:
-
     def __init__(
         self,
         name: str,
@@ -266,7 +270,6 @@ class FilesApiDownloadTestCase:
 
 
 class MockFilesystemSession:
-
     def __init__(self, test_case: FilesApiDownloadTestCase):
         self.test_case: FilesApiDownloadTestCase = test_case
         self.received_requests: List[RequestData] = []
@@ -341,7 +344,6 @@ class MockFilesystemSession:
 
 # required only for correct logging
 class MockFilesApiDownloadRequest:
-
     def __init__(self, url: str):
         self.url = url
         self.method = "GET"
@@ -350,7 +352,6 @@ class MockFilesApiDownloadRequest:
 
 
 class MockFilesApiDownloadResponse:
-
     def __init__(
         self,
         session: MockFilesystemSession,
@@ -379,7 +380,6 @@ class MockFilesApiDownloadResponse:
 
 
 class MockIterator:
-
     def __init__(self, response: MockFilesApiDownloadResponse, chunk_size: int):
         self.response = response
         self.chunk_size = chunk_size
@@ -1212,7 +1212,6 @@ def test_presigned_url_download(config: Config, test_case: PresignedUrlDownloadT
 
 
 class FileContent:
-
     def __init__(self, length: int, checksum: str):
         self._length = length
         self.checksum = checksum
@@ -1490,9 +1489,9 @@ class UploadTestCase:
                             and request.method == "HEAD"
                         ):
                             probe_query = parse_qs(parsed_url.query)
-                            assert probe_query.get("ew") == [
-                                "12345"
-                            ], f"Expected ew=12345 in probe URL, got: {probe_query}"
+                            assert probe_query.get("ew") == ["12345"], (
+                                f"Expected ew=12345 in probe URL, got: {probe_query}"
+                            )
                             resp = requests.Response()
                             resp.status_code = 200
                             resp._content = b""
@@ -1543,26 +1542,26 @@ class UploadTestCase:
                 if self.expected_exception_type is not None:
                     with pytest.raises(self.expected_exception_type):
                         upload()
-                    assert (
-                        not single_shot_server_state.get_file_content()
-                    ), "Single-shot upload should not have succeeded"
+                    assert not single_shot_server_state.get_file_content(), (
+                        "Single-shot upload should not have succeeded"
+                    )
                     assert not multipart_server_state.get_file_content(), "Multipart upload should not have succeeded"
                 else:
                     upload()
                     if self.expected_single_shot_upload:
-                        assert single_shot_server_state.get_file_content() == FileContent.from_bytes(
-                            file_content
-                        ), "Single-shot upload should have succeeded"
-                        assert (
-                            not multipart_server_state.get_file_content()
-                        ), "Multipart upload should not have succeeded"
+                        assert single_shot_server_state.get_file_content() == FileContent.from_bytes(file_content), (
+                            "Single-shot upload should have succeeded"
+                        )
+                        assert not multipart_server_state.get_file_content(), (
+                            "Multipart upload should not have succeeded"
+                        )
                     else:
-                        assert multipart_server_state.get_file_content() == FileContent.from_bytes(
-                            file_content
-                        ), "Multipart upload should have succeeded"
-                        assert (
-                            not single_shot_server_state.get_file_content()
-                        ), "Single-shot upload should not have succeeded"
+                        assert multipart_server_state.get_file_content() == FileContent.from_bytes(file_content), (
+                            "Multipart upload should have succeeded"
+                        )
+                        assert not single_shot_server_state.get_file_content(), (
+                            "Single-shot upload should not have succeeded"
+                        )
 
             assert (
                 self.expected_multipart_upload_aborted is None
@@ -1788,7 +1787,6 @@ class MultipartUploadTestCase(UploadTestCase):
             and request_query.get("action") == ["initiate-upload"]
             and request.method == "POST"
         ):
-
             assert UploadTestCase.is_auth_header_present(request)
             assert request.text is None
 
@@ -1838,7 +1836,6 @@ class MultipartUploadTestCase(UploadTestCase):
 
         # Multipart upload, uploading part via presigned URL.
         elif request.url.startswith(MultipartUploadServerState.upload_part_url_prefix) and request.method == "PUT":
-
             assert not UploadTestCase.is_auth_header_present(request)
 
             url_path = request.url[len(MultipartUploadServerState.upload_part_url_prefix) :]
@@ -1861,7 +1858,6 @@ class MultipartUploadTestCase(UploadTestCase):
             and request_query.get("upload_type") == ["multipart"]
             and request.method == "POST"
         ):
-
             assert UploadTestCase.is_auth_header_present(request)
             assert [server_state.session_token] == request_query.get("session_token")
 
@@ -2665,7 +2661,6 @@ class ResumableUploadTestCase(UploadTestCase):
             and request_query.get("action") == ["initiate-upload"]
             and request.method == "POST"
         ):
-
             assert UploadTestCase.is_auth_header_present(request)
             assert request.text is None
 
@@ -2707,7 +2702,6 @@ class ResumableUploadTestCase(UploadTestCase):
 
         # Resumable upload, uploading part via presigned URL.
         elif request.url.startswith(ResumableUploadServerState.resumable_upload_url_prefix) and request.method == "PUT":
-
             assert not UploadTestCase.is_auth_header_present(request)
             url_path = request.url[len(ResumableUploadServerState.resumable_upload_url_prefix) :]
             assert url_path == self.path
@@ -2750,7 +2744,6 @@ class ResumableUploadTestCase(UploadTestCase):
             request.url.startswith(ResumableUploadServerState.resumable_upload_url_prefix)
             and request.method == "DELETE"
         ):
-
             assert not UploadTestCase.is_auth_header_present(request)
             h = self.cloud_provider_header
             assert request.headers.get(h["name"]) == h["value"]

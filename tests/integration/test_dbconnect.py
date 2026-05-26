@@ -29,9 +29,9 @@ def reload_modules(name: str):
 @pytest.fixture(params=list(DBCONNECT_DBR_CLIENT.keys()))
 def setup_dbconnect_test(request, env_or_skip, restorable_env):
     dbr = request.param
-    assert (
-        dbr in DBCONNECT_DBR_CLIENT
-    ), f"Unsupported Databricks Runtime version {dbr}. Please update DBCONNECT_DBR_CLIENT."
+    assert dbr in DBCONNECT_DBR_CLIENT, (
+        f"Unsupported Databricks Runtime version {dbr}. Please update DBCONNECT_DBR_CLIENT."
+    )
 
     import os
 

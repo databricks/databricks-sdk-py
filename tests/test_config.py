@@ -10,8 +10,7 @@ from urllib.parse import parse_qs
 import pytest
 
 from databricks.sdk import AccountClient, WorkspaceClient, oauth, useragent
-from databricks.sdk.config import (ClientType, Config, HostType, with_product,
-                                   with_user_agent_extra)
+from databricks.sdk.config import ClientType, Config, HostType, with_product, with_user_agent_extra
 from databricks.sdk.environments import Cloud
 from databricks.sdk.oauth import HostMetadata
 from databricks.sdk.version import __version__
@@ -74,7 +73,6 @@ def test_oidc_token_filepath_env_constructor_precedence(monkeypatch, mocker):
 def test_extra_and_upstream_user_agent(monkeypatch):
 
     class MockUname:
-
         @property
         def system(self):
             return "TestOS"

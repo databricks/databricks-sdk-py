@@ -12,13 +12,14 @@ import pytest
 
 from databricks.sdk import WorkspaceClient, errors, useragent
 from databricks.sdk.core import ApiClient, Config, DatabricksError
-from databricks.sdk.credentials_provider import (CliTokenSource,
-                                                 CredentialsProvider,
-                                                 CredentialsStrategy,
-                                                 DatabricksCliTokenSource,
-                                                 databricks_cli)
-from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
-                                         DatabricksEnvironment)
+from databricks.sdk.credentials_provider import (
+    CliTokenSource,
+    CredentialsProvider,
+    CredentialsStrategy,
+    DatabricksCliTokenSource,
+    databricks_cli,
+)
+from databricks.sdk.environments import ENVIRONMENTS, AzureEnvironment, Cloud, DatabricksEnvironment
 from databricks.sdk.oauth import Token
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
@@ -265,7 +266,6 @@ def test_databricks_cli_scope_validation_error_message(config, monkeypatch, tmp_
 def test_extra_and_upstream_user_agent(monkeypatch):
 
     class MockUname:
-
         @property
         def system(self):
             return "TestOS"
@@ -304,7 +304,6 @@ def test_extra_and_upstream_user_agent(monkeypatch):
 def test_config_copy_shallow_copies_credential_provider():
 
     class TestCredentialsStrategy(CredentialsStrategy):
-
         def __init__(self):
             super().__init__()
             self._token = "token1"
@@ -351,7 +350,6 @@ def test_config_workspace_is_not_accounts_host(config):
 def test_config_can_be_subclassed(fake_fs):
 
     class DatabricksConfig(Config):
-
         def __init__(self):
             super().__init__()
 
@@ -474,7 +472,7 @@ def test_github_oidc_flow_works_with_azure(monkeypatch):
             h.send_response(301)
             h.send_header(
                 "Location",
-                f'http://{h.headers["Host"]}/mocked-tenant-id/irrelevant/part',
+                f"http://{h.headers['Host']}/mocked-tenant-id/irrelevant/part",
             )
             h.end_headers()
             return

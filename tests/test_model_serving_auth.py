@@ -207,7 +207,7 @@ def test_agent_user_credentials(monkeypatch, mocker):
             cfg = Config(credentials_strategy=ModelServingUserCredentials())
             headers = cfg.authenticate()
             assert cfg.host == "x"
-            assert headers.get("Authorization") == f"Bearer databricks_invokers_token_v2"
+            assert headers.get("Authorization") == "Bearer databricks_invokers_token_v2"
             successful_authentication_event.set()
         except Exception:
             successful_authentication_event.clear()

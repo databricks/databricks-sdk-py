@@ -9,7 +9,6 @@ from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import credentials_strategy
 
 from .clock import FakeClock
-from .integration.conftest import restorable_env  # type: ignore
 
 
 @pytest.fixture(autouse=True)
@@ -65,7 +64,6 @@ def raises(msg):
 @pytest.fixture
 def fake_fs():
     with Patcher() as patcher:
-
         # Include the tests directory in the fake filesystem
         test_data_path = __tests__
         patcher.fs.add_real_directory(test_data_path)

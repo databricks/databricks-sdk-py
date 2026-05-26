@@ -10,8 +10,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 from ..errors import OperationFailed
 
@@ -532,7 +531,6 @@ class CustomerFacingGcpCloudResourceContainer:
 
 
 class CustomerFacingStorageMode(Enum):
-
     CUSTOMER_HOSTED = "CUSTOMER_HOSTED"
     DEFAULT_STORAGE = "DEFAULT_STORAGE"
 
@@ -610,7 +608,6 @@ class CustomerManagedKey:
 
 
 class EndpointUseCase(Enum):
-
     DATAPLANE_RELAY_ACCESS = "DATAPLANE_RELAY_ACCESS"
     GENERAL_ACCESS = "GENERAL_ACCESS"
     WORKSPACE_ACCESS = "WORKSPACE_ACCESS"
@@ -982,7 +979,6 @@ class KeyAccessConfiguration:
 
 
 class KeyUseCase(Enum):
-
     MANAGED_SERVICES = "MANAGED_SERVICES"
     STORAGE = "STORAGE"
 
@@ -1206,7 +1202,6 @@ class NetworkWarning:
 
 
 class PricingTier(Enum):
-
     COMMUNITY_EDITION = "COMMUNITY_EDITION"
     DEDICATED = "DEDICATED"
     ENTERPRISE = "ENTERPRISE"
@@ -1216,7 +1211,6 @@ class PricingTier(Enum):
 
 
 class PrivateAccessLevel(Enum):
-
     ACCOUNT = "ACCOUNT"
     ENDPOINT = "ENDPOINT"
 
@@ -1547,7 +1541,6 @@ class VpcEndpoint:
 
 
 class VpcStatus(Enum):
-
     BROKEN = "BROKEN"
     UNATTACHED = "UNATTACHED"
     VALID = "VALID"
@@ -1555,7 +1548,6 @@ class VpcStatus(Enum):
 
 
 class WarningType(Enum):
-
     SECURITY_GROUP = "securityGroup"
     SUBNET = "subnet"
 

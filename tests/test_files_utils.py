@@ -6,8 +6,7 @@ from typing import BinaryIO, Callable, List, Optional, Tuple
 
 import pytest
 
-from databricks.sdk.mixins.files_utils import (_ConcatenatedInputStream,
-                                               _PresignedUrlDistributor)
+from databricks.sdk.mixins.files_utils import _ConcatenatedInputStream, _PresignedUrlDistributor
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +70,6 @@ class NonSeekableBuffer(RawIOBase, BinaryIO):
 
 
 class ConcatenatedInputStreamTestCase(ABC):
-
     @abstractmethod
     def generate(self) -> Tuple[bytes, BinaryIO]:
         pass

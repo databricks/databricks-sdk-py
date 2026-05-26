@@ -365,7 +365,7 @@ def test_files_api_download_benchmark(ucws, files_api, random):
                     total += end - start
                 avg_time = total / count
                 logging.info(
-                    f"[chunk_size=%s] Average time to download: %f seconds",
+                    "[chunk_size=%s] Average time to download: %f seconds",
                     str(chunk_size_kb) + "kb" if chunk_size_kb else "None",
                     avg_time,
                 )
@@ -376,7 +376,7 @@ def test_files_api_download_benchmark(ucws, files_api, random):
                 if best[1] is None or v < best[1]:
                     best = (k, v)
                 logging.info(
-                    f"[chunk_size=%s] Average time to download: %f seconds",
+                    "[chunk_size=%s] Average time to download: %f seconds",
                     str(k) + "kb" if k else "None",
                     v,
                 )

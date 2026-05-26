@@ -7,8 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -41,7 +40,6 @@ class AddExchangeForListingResponse:
 
 
 class AssetType(Enum):
-
     ASSET_TYPE_APP = "ASSET_TYPE_APP"
     ASSET_TYPE_DATA_TABLE = "ASSET_TYPE_DATA_TABLE"
     ASSET_TYPE_GIT_REPO = "ASSET_TYPE_GIT_REPO"
@@ -101,7 +99,6 @@ class BatchGetProvidersResponse:
 
 
 class Category(Enum):
-
     ADVERTISING_AND_MARKETING = "ADVERTISING_AND_MARKETING"
     CLIMATE_AND_ENVIRONMENT = "CLIMATE_AND_ENVIRONMENT"
     COMMERCE = "COMMERCE"
@@ -200,7 +197,6 @@ class ContactInfo:
 
 
 class Cost(Enum):
-
     FREE = "FREE"
     PAID = "PAID"
 
@@ -357,7 +353,6 @@ class CreateProviderResponse:
 
 
 class DataRefresh(Enum):
-
     DAILY = "DAILY"
     HOURLY = "HOURLY"
     MINUTE = "MINUTE"
@@ -508,7 +503,6 @@ class DeleteProviderResponse:
 
 
 class DeltaSharingRecipientType(Enum):
-
     DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS = "DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS"
     DELTA_SHARING_RECIPIENT_TYPE_OPEN = "DELTA_SHARING_RECIPIENT_TYPE_OPEN"
 
@@ -678,7 +672,6 @@ class ExchangeFilter:
 
 
 class ExchangeFilterType(Enum):
-
     GLOBAL_METASTORE_ID = "GLOBAL_METASTORE_ID"
 
 
@@ -873,14 +866,12 @@ class FileParent:
 
 
 class FileParentType(Enum):
-
     LISTING = "LISTING"
     LISTING_RESOURCE = "LISTING_RESOURCE"
     PROVIDER = "PROVIDER"
 
 
 class FileStatus(Enum):
-
     FILE_STATUS_PUBLISHED = "FILE_STATUS_PUBLISHED"
     FILE_STATUS_SANITIZATION_FAILED = "FILE_STATUS_SANITIZATION_FAILED"
     FILE_STATUS_SANITIZING = "FILE_STATUS_SANITIZING"
@@ -888,7 +879,6 @@ class FileStatus(Enum):
 
 
 class FulfillmentType(Enum):
-
     INSTALL = "INSTALL"
     REQUEST_ACCESS = "REQUEST_ACCESS"
 
@@ -1236,7 +1226,6 @@ class InstallationDetail:
 
 
 class InstallationStatus(Enum):
-
     FAILED = "FAILED"
     INSTALLED = "INSTALLED"
 
@@ -1918,7 +1907,6 @@ class ListingSetting:
 
 
 class ListingShareType(Enum):
-
     FULL = "FULL"
     SAMPLE = "SAMPLE"
 
@@ -2119,19 +2107,16 @@ class ListingTag:
 
 
 class ListingTagType(Enum):
-
     LISTING_TAG_TYPE_LANGUAGE = "LISTING_TAG_TYPE_LANGUAGE"
     LISTING_TAG_TYPE_TASK = "LISTING_TAG_TYPE_TASK"
 
 
 class ListingType(Enum):
-
     PERSONALIZED = "PERSONALIZED"
     STANDARD = "STANDARD"
 
 
 class MarketplaceFileType(Enum):
-
     APP = "APP"
     EMBEDDED_NOTEBOOK = "EMBEDDED_NOTEBOOK"
     PROVIDER_ICON = "PROVIDER_ICON"
@@ -2271,7 +2256,6 @@ class PersonalizationRequest:
 
 
 class PersonalizationRequestStatus(Enum):
-
     DENIED = "DENIED"
     FULFILLED = "FULFILLED"
     NEW = "NEW"
@@ -2927,7 +2911,6 @@ class UpdateProviderResponse:
 
 
 class Visibility(Enum):
-
     PRIVATE = "PRIVATE"
     PUBLIC = "PUBLIC"
 

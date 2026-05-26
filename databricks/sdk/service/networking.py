@@ -9,8 +9,7 @@ from typing import Any, Dict, Iterator, List, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _timestamp)
+from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict, _timestamp
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -170,7 +169,6 @@ class Endpoint:
 
 
 class EndpointState(Enum):
-
     APPROVED = "APPROVED"
     DISCONNECTED = "DISCONNECTED"
     FAILED = "FAILED"
@@ -178,7 +176,6 @@ class EndpointState(Enum):
 
 
 class EndpointUseCase(Enum):
-
     SERVICE_DIRECT = "SERVICE_DIRECT"
 
 

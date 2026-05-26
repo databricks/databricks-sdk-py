@@ -10,8 +10,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 from ..errors import OperationFailed
 
@@ -446,7 +445,6 @@ class CloudProviderNodeInfo:
 
 
 class CloudProviderNodeStatus(Enum):
-
     NOT_AVAILABLE_IN_REGION = "NotAvailableInRegion"
     NOT_ENABLED_ON_SUBSCRIPTION = "NotEnabledOnSubscription"
 
@@ -2406,7 +2404,6 @@ class ClusterSpec:
 
 
 class CommandStatus(Enum):
-
     CANCELLED = "Cancelled"
     CANCELLING = "Cancelling"
     ERROR = "Error"
@@ -2464,7 +2461,6 @@ class ConfidentialComputeType(Enum):
 
 
 class ContextStatus(Enum):
-
     ERROR = "Error"
     PENDING = "Pending"
     RUNNING = "Running"
@@ -2705,7 +2701,6 @@ class DataPlaneEventDetails:
 
 
 class DataPlaneEventDetailsEventType(Enum):
-
     NODE_BLACKLISTED = "NODE_BLACKLISTED"
     NODE_EXCLUDED_DECOMMISSIONED = "NODE_EXCLUDED_DECOMMISSIONED"
 
@@ -3442,7 +3437,6 @@ class EventDetailsCause(Enum):
 
 
 class EventType(Enum):
-
     ADD_NODES_FAILED = "ADD_NODES_FAILED"
     AUTOMATIC_CLUSTER_UPDATE = "AUTOMATIC_CLUSTER_UPDATE"
     AUTOSCALING_BACKOFF = "AUTOSCALING_BACKOFF"
@@ -3807,7 +3801,6 @@ class GetEvents:
 
 
 class GetEventsOrder(Enum):
-
     ASC = "ASC"
     DESC = "DESC"
 
@@ -5398,7 +5391,6 @@ class Kind(Enum):
 
 
 class Language(Enum):
-
     PYTHON = "python"
     R = "r"
     SCALA = "scala"
@@ -5792,13 +5784,11 @@ class ListClustersSortBy:
 
 
 class ListClustersSortByDirection(Enum):
-
     ASC = "ASC"
     DESC = "DESC"
 
 
 class ListClustersSortByField(Enum):
-
     CLUSTER_NAME = "CLUSTER_NAME"
     DEFAULT = "DEFAULT"
 
@@ -5963,13 +5953,11 @@ class ListPolicyFamiliesResponse:
 
 
 class ListSortColumn(Enum):
-
     POLICY_CREATION_TIME = "POLICY_CREATION_TIME"
     POLICY_NAME = "POLICY_NAME"
 
 
 class ListSortOrder(Enum):
-
     ASC = "ASC"
     DESC = "DESC"
 
@@ -6760,7 +6748,6 @@ class RestartClusterResponse:
 
 
 class ResultType(Enum):
-
     ERROR = "error"
     IMAGE = "image"
     IMAGES = "images"
@@ -6872,7 +6859,6 @@ class Results:
 
 
 class RuntimeEngine(Enum):
-
     NULL = "NULL"
     PHOTON = "PHOTON"
     STANDARD = "STANDARD"

@@ -11,8 +11,7 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import compute
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict)
+from databricks.sdk.service._internal import Wait, _enum, _from_dict, _repeated_dict
 
 from ..errors import OperationFailed
 
@@ -144,7 +143,6 @@ class AlertTaskSubscriber:
 
 
 class AuthenticationMethod(Enum):
-
     OAUTH = "OAUTH"
     PAT = "PAT"
 
@@ -909,7 +907,6 @@ class ComputeConfig:
 
 
 class Condition(Enum):
-
     ALL_UPDATED = "ALL_UPDATED"
     ANY_UPDATED = "ANY_UPDATED"
 
@@ -2026,7 +2023,6 @@ class ForEachTaskTaskRunStats:
 
 
 class Format(Enum):
-
     MULTI_TASK = "MULTI_TASK"
     SINGLE_TASK = "SINGLE_TASK"
 
@@ -2185,7 +2181,6 @@ class GetPolicyComplianceResponse:
 
 
 class GitProvider(Enum):
-
     AWS_CODE_COMMIT = "awsCodeCommit"
     AZURE_DEV_OPS_SERVICES = "azureDevOpsServices"
     BITBUCKET_CLOUD = "bitbucketCloud"
@@ -3710,7 +3705,6 @@ class ModelTriggerConfiguration:
 
 
 class ModelTriggerConfigurationCondition(Enum):
-
     MODEL_ALIAS_SET = "MODEL_ALIAS_SET"
     MODEL_CREATED = "MODEL_CREATED"
     MODEL_VERSION_READY = "MODEL_VERSION_READY"
@@ -3871,7 +3865,6 @@ class OutputSchemaInfo:
 
 
 class PauseStatus(Enum):
-
     PAUSED = "PAUSED"
     UNPAUSED = "UNPAUSED"
 
@@ -3918,7 +3911,6 @@ class PeriodicTriggerConfiguration:
 
 
 class PeriodicTriggerConfigurationTimeUnit(Enum):
-
     DAYS = "DAYS"
     HOURS = "HOURS"
     WEEKS = "WEEKS"
@@ -6855,7 +6847,6 @@ class SqlDashboardWidgetOutput:
 
 
 class SqlDashboardWidgetOutputStatus(Enum):
-
     CANCELLED = "CANCELLED"
     FAILED = "FAILED"
     PENDING = "PENDING"
@@ -7278,7 +7269,6 @@ class SqlTaskSubscription:
 
 
 class StorageMode(Enum):
-
     DIRECT_QUERY = "DIRECT_QUERY"
     DUAL = "DUAL"
     IMPORT = "IMPORT"

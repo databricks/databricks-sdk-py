@@ -51,7 +51,6 @@ def test_token_source_get_token_not_existing(config):
 
 
 class MockEndpointTokenSource:
-
     def __init__(self, token: oauth.Token):
         self._token = token
 

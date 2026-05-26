@@ -14,9 +14,15 @@ from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (Wait, _duration, _enum,
-                                              _from_dict, _repeated_dict,
-                                              _repeated_enum, _timestamp)
+from databricks.sdk.service._internal import (
+    Wait,
+    _duration,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+    _timestamp,
+)
 
 from ..errors import OperationFailed
 
@@ -2403,7 +2409,6 @@ class ForecastingExperiment:
 
 
 class ForecastingExperimentState(Enum):
-
     CANCELLED = "CANCELLED"
     FAILED = "FAILED"
     PENDING = "PENDING"
@@ -4149,7 +4154,6 @@ class MaterializedFeature:
 
 
 class MaterializedFeaturePipelineScheduleState(Enum):
-
     ACTIVE = "ACTIVE"
     PAUSED = "PAUSED"
     SNAPSHOT = "SNAPSHOT"
@@ -5157,7 +5161,6 @@ class OnlineStoreConfig:
 
 
 class OnlineStoreState(Enum):
-
     AVAILABLE = "AVAILABLE"
     DELETING = "DELETING"
     FAILING_OVER = "FAILING_OVER"
@@ -5256,7 +5259,6 @@ class PublishSpec:
 
 
 class PublishSpecPublishMode(Enum):
-
     CONTINUOUS = "CONTINUOUS"
     SNAPSHOT = "SNAPSHOT"
     TRIGGERED = "TRIGGERED"
@@ -5654,7 +5656,6 @@ class RegistryWebhook:
 
 
 class RegistryWebhookEvent(Enum):
-
     COMMENT_CREATED = "COMMENT_CREATED"
     MODEL_VERSION_CREATED = "MODEL_VERSION_CREATED"
     MODEL_VERSION_TAG_SET = "MODEL_VERSION_TAG_SET"
@@ -6687,7 +6688,6 @@ class StreamingMode:
 
 
 class StreamingModeStreamingModeType(Enum):
-
     STREAMING_MODE_TYPE_MBM = "STREAMING_MODE_TYPE_MBM"
     STREAMING_MODE_TYPE_RTM = "STREAMING_MODE_TYPE_RTM"
 

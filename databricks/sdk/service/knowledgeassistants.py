@@ -10,8 +10,7 @@ from typing import Any, Dict, Iterator, List, Optional
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _timestamp)
+from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict, _timestamp
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -566,7 +565,6 @@ class KnowledgeAssistantPermissionsDescription:
 
 
 class KnowledgeAssistantState(Enum):
-
     ACTIVE = "ACTIVE"
     CREATING = "CREATING"
     FAILED = "FAILED"
@@ -685,7 +683,6 @@ class KnowledgeSource:
 
 
 class KnowledgeSourceState(Enum):
-
     FAILED_UPDATE = "FAILED_UPDATE"
     UPDATED = "UPDATED"
     UPDATING = "UPDATING"

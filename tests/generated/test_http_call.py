@@ -6,8 +6,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 
 import databricks.sdk.core as client
 from databricks.sdk.common.types.fieldmask import FieldMask
-from tests.databricks.sdk.service.httpcallv2 import (ComplexQueryParam,
-                                                     HttpCallV2API, Resource)
+from tests.databricks.sdk.service.httpcallv2 import ComplexQueryParam, HttpCallV2API, Resource
 
 
 # Helper methods for well known types

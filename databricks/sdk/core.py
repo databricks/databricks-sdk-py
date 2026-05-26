@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 
 from ._base_client import _BaseClient
 from .config import *
+
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
 from .errors import DatabricksError, _ErrorCustomizer
@@ -19,7 +20,6 @@ OIDC_TOKEN_PATH = "/oidc/v1/token"
 
 
 class ApiClient:
-
     def __init__(self, cfg: Config):
         self._cfg = cfg
 

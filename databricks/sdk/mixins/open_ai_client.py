@@ -4,20 +4,16 @@ from typing import Dict, Optional
 
 from requests import Response
 
-from databricks.sdk.service.serving import (ExternalFunctionRequestHttpMethod,
-                                            HttpRequestResponse,
-                                            ServingEndpointsAPI)
+from databricks.sdk.service.serving import ExternalFunctionRequestHttpMethod, HttpRequestResponse, ServingEndpointsAPI
 
 
 class ServingEndpointsExt(ServingEndpointsAPI):
-
     # Using the HTTP Client to pass in the databricks authorization
     # This method will be called on every invocation, so when using with model serving will always get the refreshed token
     def _get_authorized_http_client(self):
         import httpx
 
         class BearerAuth(httpx.Auth):
-
             def __init__(self, get_headers_func):
                 self.get_headers_func = get_headers_func
 

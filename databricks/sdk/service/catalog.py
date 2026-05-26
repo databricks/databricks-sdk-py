@@ -13,9 +13,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum,
-                                              _timestamp)
+from databricks.sdk.service._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum, _timestamp
 
 from ..errors import OperationFailed
 
@@ -1313,7 +1311,6 @@ class CatalogInfo:
 
 
 class CatalogIsolationMode(Enum):
-
     ISOLATED = "ISOLATED"
     OPEN = "OPEN"
 
@@ -1615,7 +1612,6 @@ class ColumnRelationship:
 
 
 class ColumnTypeName(Enum):
-
     ARRAY = "ARRAY"
     BINARY = "BINARY"
     BOOLEAN = "BOOLEAN"
@@ -2326,23 +2322,19 @@ class CreateFunction:
 
 
 class CreateFunctionParameterStyle(Enum):
-
     S = "S"
 
 
 class CreateFunctionRoutineBody(Enum):
-
     EXTERNAL = "EXTERNAL"
     SQL = "SQL"
 
 
 class CreateFunctionSecurityType(Enum):
-
     DEFINER = "DEFINER"
 
 
 class CreateFunctionSqlDataAccess(Enum):
-
     CONTAINS_SQL = "CONTAINS_SQL"
     NO_SQL = "NO_SQL"
     READS_SQL_DATA = "READS_SQL_DATA"
@@ -2645,7 +2637,6 @@ class CredentialInfo:
 
 
 class CredentialPurpose(Enum):
-
     SERVICE = "SERVICE"
     STORAGE = "STORAGE"
 
@@ -2999,7 +2990,6 @@ class DeltaRuntimePropertiesKvPairs:
 
 
 class DeltaSharingScopeEnum(Enum):
-
     INTERNAL = "INTERNAL"
     INTERNAL_AND_EXTERNAL = "INTERNAL_AND_EXTERNAL"
 
@@ -3082,7 +3072,6 @@ class DependencyList:
 
 
 class DestinationType(Enum):
-
     EMAIL = "EMAIL"
     GENERIC_WEBHOOK = "GENERIC_WEBHOOK"
     MICROSOFT_TEAMS = "MICROSOFT_TEAMS"
@@ -3190,7 +3179,6 @@ class EffectivePredictiveOptimizationFlag:
 
 
 class EffectivePredictiveOptimizationFlagInheritedFromType(Enum):
-
     CATALOG = "CATALOG"
     SCHEMA = "SCHEMA"
 
@@ -3273,7 +3261,6 @@ class EffectivePrivilegeAssignment:
 
 
 class EnablePredictiveOptimization(Enum):
-
     DISABLE = "DISABLE"
     ENABLE = "ENABLE"
     INHERIT = "INHERIT"
@@ -4787,23 +4774,19 @@ class FunctionInfo:
 
 
 class FunctionInfoParameterStyle(Enum):
-
     S = "S"
 
 
 class FunctionInfoRoutineBody(Enum):
-
     EXTERNAL = "EXTERNAL"
     SQL = "SQL"
 
 
 class FunctionInfoSecurityType(Enum):
-
     DEFINER = "DEFINER"
 
 
 class FunctionInfoSqlDataAccess(Enum):
-
     CONTAINS_SQL = "CONTAINS_SQL"
     NO_SQL = "NO_SQL"
     READS_SQL_DATA = "READS_SQL_DATA"
@@ -4949,12 +4932,10 @@ class FunctionParameterInfos:
 
 
 class FunctionParameterMode(Enum):
-
     IN = "IN"
 
 
 class FunctionParameterType(Enum):
-
     COLUMN = "COLUMN"
     PARAM = "PARAM"
 
@@ -5592,13 +5573,11 @@ class GetWorkspaceBindingsResponse:
 
 
 class IsolationMode(Enum):
-
     ISOLATION_MODE_ISOLATED = "ISOLATION_MODE_ISOLATED"
     ISOLATION_MODE_OPEN = "ISOLATION_MODE_OPEN"
 
 
 class LineageDirection(Enum):
-
     DOWNSTREAM = "DOWNSTREAM"
     UPSTREAM = "UPSTREAM"
 
@@ -6764,7 +6743,6 @@ class ModelVersionInfo:
 
 
 class ModelVersionInfoStatus(Enum):
-
     FAILED_REGISTRATION = "FAILED_REGISTRATION"
     MODEL_VERSION_STATUS_UNKNOWN = "MODEL_VERSION_STATUS_UNKNOWN"
     PENDING_REGISTRATION = "PENDING_REGISTRATION"
@@ -6955,7 +6933,6 @@ class MonitorInferenceLog:
 
 
 class MonitorInferenceLogProblemType(Enum):
-
     PROBLEM_TYPE_CLASSIFICATION = "PROBLEM_TYPE_CLASSIFICATION"
     PROBLEM_TYPE_REGRESSION = "PROBLEM_TYPE_REGRESSION"
 
@@ -7137,7 +7114,6 @@ class MonitorInfo:
 
 
 class MonitorInfoStatus(Enum):
-
     MONITOR_STATUS_ACTIVE = "MONITOR_STATUS_ACTIVE"
     MONITOR_STATUS_DELETE_PENDING = "MONITOR_STATUS_DELETE_PENDING"
     MONITOR_STATUS_ERROR = "MONITOR_STATUS_ERROR"
@@ -7344,7 +7320,6 @@ class MonitorRefreshInfoState(Enum):
 
 
 class MonitorRefreshInfoTrigger(Enum):
-
     MANUAL = "MANUAL"
     SCHEDULE = "SCHEDULE"
     UNKNOWN_TRIGGER = "UNKNOWN_TRIGGER"
@@ -7932,7 +7907,6 @@ class OptionSpecOptionType(Enum):
 
 
 class PathOperation(Enum):
-
     PATH_CREATE_TABLE = "PATH_CREATE_TABLE"
     PATH_READ = "PATH_READ"
     PATH_READ_WRITE = "PATH_READ_WRITE"
@@ -8245,7 +8219,6 @@ class PolicyInfo:
 
 
 class PolicyType(Enum):
-
     POLICY_TYPE_COLUMN_MASK = "POLICY_TYPE_COLUMN_MASK"
     POLICY_TYPE_ROW_FILTER = "POLICY_TYPE_ROW_FILTER"
 
@@ -8333,14 +8306,12 @@ class Principal:
 
 
 class PrincipalType(Enum):
-
     GROUP_PRINCIPAL = "GROUP_PRINCIPAL"
     SERVICE_PRINCIPAL = "SERVICE_PRINCIPAL"
     USER_PRINCIPAL = "USER_PRINCIPAL"
 
 
 class Privilege(Enum):
-
     ACCESS = "ACCESS"
     ALL_PRIVILEGES = "ALL_PRIVILEGES"
     APPLY_TAG = "APPLY_TAG"
@@ -8454,7 +8425,6 @@ class ProvisioningInfo:
 
 
 class ProvisioningInfoState(Enum):
-
     ACTIVE = "ACTIVE"
     DEGRADED = "DEGRADED"
     DELETING = "DELETING"
@@ -9444,7 +9414,6 @@ class SecurableType(Enum):
 
 
 class SpecialDestination(Enum):
-
     SPECIAL_DESTINATION_CATALOG_OWNER = "SPECIAL_DESTINATION_CATALOG_OWNER"
     SPECIAL_DESTINATION_CONNECTION_OWNER = "SPECIAL_DESTINATION_CONNECTION_OWNER"
     SPECIAL_DESTINATION_CREDENTIAL_OWNER = "SPECIAL_DESTINATION_CREDENTIAL_OWNER"
@@ -9491,7 +9460,6 @@ class SseEncryptionDetails:
 
 
 class SseEncryptionDetailsAlgorithm(Enum):
-
     AWS_SSE_KMS = "AWS_SSE_KMS"
     AWS_SSE_S3 = "AWS_SSE_S3"
 
@@ -9699,7 +9667,6 @@ class SystemSchemaInfo:
 
 
 class SystemType(Enum):
-
     AMAZON_REDSHIFT = "AMAZON_REDSHIFT"
     AZURE_SYNAPSE = "AZURE_SYNAPSE"
     CONFLUENT = "CONFLUENT"
@@ -10111,7 +10078,6 @@ class TableInfo:
 
 
 class TableOperation(Enum):
-
     READ = "READ"
     READ_WRITE = "READ_WRITE"
 
@@ -10205,7 +10171,6 @@ class TableSummary:
 
 
 class TableType(Enum):
-
     EXTERNAL = "EXTERNAL"
     EXTERNAL_SHALLOW_CLONE = "EXTERNAL_SHALLOW_CLONE"
     FOREIGN = "FOREIGN"
@@ -11062,13 +11027,11 @@ class VolumeInfo:
 
 
 class VolumeOperation(Enum):
-
     READ_VOLUME = "READ_VOLUME"
     WRITE_VOLUME = "WRITE_VOLUME"
 
 
 class VolumeType(Enum):
-
     EXTERNAL = "EXTERNAL"
     MANAGED = "MANAGED"
 

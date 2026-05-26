@@ -7,8 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -594,7 +593,6 @@ class GetPermissionLevelsResponse:
 
 
 class GetSortOrder(Enum):
-
     ASCENDING = "ascending"
     DESCENDING = "descending"
 
@@ -727,7 +725,6 @@ class Group:
 
 
 class GroupSchema(Enum):
-
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_GROUP = "urn:ietf:params:scim:schemas:core:2.0:Group"
 
 
@@ -944,7 +941,6 @@ class ListGroupsResponse:
 
 
 class ListResponseSchema(Enum):
-
     URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_LIST_RESPONSE = "urn:ietf:params:scim:api:messages:2.0:ListResponse"
 
 
@@ -1008,7 +1004,6 @@ class ListServicePrincipalResponse:
 
 
 class ListSortOrder(Enum):
-
     ASCENDING = "ascending"
     DESCENDING = "descending"
 
@@ -1448,7 +1443,6 @@ class PatchOp(Enum):
 
 
 class PatchSchema(Enum):
-
     URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_PATCH_OP = "urn:ietf:params:scim:api:messages:2.0:PatchOp"
 
 
@@ -2001,7 +1995,6 @@ class ServicePrincipal:
 
 
 class ServicePrincipalSchema(Enum):
-
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL = "urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal"
 
 
@@ -2118,7 +2111,6 @@ class User:
 
 
 class UserSchema(Enum):
-
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_USER = "urn:ietf:params:scim:schemas:core:2.0:User"
     URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER = (
         "urn:ietf:params:scim:schemas:extension:workspace:2.0:User"
@@ -2126,7 +2118,6 @@ class UserSchema(Enum):
 
 
 class WorkspacePermission(Enum):
-
     ADMIN = "ADMIN"
     UNKNOWN = "UNKNOWN"
     USER = "USER"

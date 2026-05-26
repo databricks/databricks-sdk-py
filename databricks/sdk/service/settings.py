@@ -8,8 +8,7 @@ from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -155,7 +154,6 @@ class AibiDashboardEmbeddingAccessPolicy:
 
 
 class AibiDashboardEmbeddingAccessPolicyAccessPolicyType(Enum):
-
     ALLOW_ALL_DOMAINS = "ALLOW_ALL_DOMAINS"
     ALLOW_APPROVED_DOMAINS = "ALLOW_APPROVED_DOMAINS"
     DENY_ALL_DOMAINS = "DENY_ALL_DOMAINS"
@@ -498,7 +496,6 @@ class ClusterAutoRestartMessageMaintenanceWindow:
 
 
 class ClusterAutoRestartMessageMaintenanceWindowDayOfWeek(Enum):
-
     FRIDAY = "FRIDAY"
     MONDAY = "MONDAY"
     SATURDAY = "SATURDAY"
@@ -551,7 +548,6 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
 
 
 class ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency(Enum):
-
     EVERY_WEEK = "EVERY_WEEK"
     FIRST_AND_THIRD_OF_MONTH = "FIRST_AND_THIRD_OF_MONTH"
     FIRST_OF_MONTH = "FIRST_OF_MONTH"
@@ -1296,13 +1292,11 @@ class CustomerFacingIngressNetworkPolicyAuthenticationIdentity:
 
 
 class CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType(Enum):
-
     PRINCIPAL_TYPE_SERVICE_PRINCIPAL = "PRINCIPAL_TYPE_SERVICE_PRINCIPAL"
     PRINCIPAL_TYPE_USER = "PRINCIPAL_TYPE_USER"
 
 
 class CustomerFacingIngressNetworkPolicyAuthenticationIdentityType(Enum):
-
     IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS = "IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS"
     IDENTITY_TYPE_ALL_USERS = "IDENTITY_TYPE_ALL_USERS"
     IDENTITY_TYPE_SELECTED_IDENTITIES = "IDENTITY_TYPE_SELECTED_IDENTITIES"
@@ -1351,7 +1345,6 @@ class CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess:
 
 
 class CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode(Enum):
-
     FULL_ACCESS = "FULL_ACCESS"
     RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
 
@@ -1556,7 +1549,6 @@ class CustomerFacingIngressNetworkPolicyPrivateAccess:
 
 
 class CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode(Enum):
-
     ALLOW_ALL_REGISTERED_ENDPOINTS = "ALLOW_ALL_REGISTERED_ENDPOINTS"
     RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
 
@@ -1699,7 +1691,6 @@ class CustomerFacingIngressNetworkPolicyPublicAccess:
 
 
 class CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode(Enum):
-
     FULL_ACCESS = "FULL_ACCESS"
     RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
 
@@ -2124,7 +2115,6 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
 
 
 class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState(Enum):
-
     CREATE_FAILED = "CREATE_FAILED"
     CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
@@ -2709,7 +2699,6 @@ class DeleteSqlResultsDownloadResponse:
 
 
 class DestinationType(Enum):
-
     EMAIL = "EMAIL"
     MICROSOFT_TEAMS = "MICROSOFT_TEAMS"
     PAGERDUTY = "PAGERDUTY"
@@ -3008,7 +2997,6 @@ class EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinat
 
 
 class EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType(Enum):
-
     FQDN = "FQDN"
 
 
@@ -3048,7 +3036,6 @@ class EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
 
 
 class EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType(Enum):
-
     ALL_SERVICES = "ALL_SERVICES"
     SELECTED_SERVICES = "SELECTED_SERVICES"
 
@@ -3150,7 +3137,6 @@ class EgressNetworkPolicyInternetAccessPolicyStorageDestination:
 
 
 class EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType(Enum):
-
     AWS_S3 = "AWS_S3"
     AZURE_STORAGE = "AZURE_STORAGE"
     CLOUDFLARE_R2 = "CLOUDFLARE_R2"
@@ -3275,7 +3261,6 @@ class EgressNetworkPolicyNetworkAccessPolicyInternetDestination:
 
 
 class EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType(Enum):
-
     DNS_NAME = "DNS_NAME"
 
 
@@ -3332,7 +3317,6 @@ class EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFi
 
 
 class EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode(Enum):
-
     DRY_RUN = "DRY_RUN"
     ENFORCED = "ENFORCED"
 
@@ -3413,7 +3397,6 @@ class EgressNetworkPolicyNetworkAccessPolicyStorageDestination:
 
 
 class EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType(Enum):
-
     AWS_S3 = "AWS_S3"
     AZURE_STORAGE = "AZURE_STORAGE"
     GOOGLE_CLOUD_STORAGE = "GOOGLE_CLOUD_STORAGE"
@@ -4827,7 +4810,6 @@ class NccAzurePrivateEndpointRule:
 
 
 class NccAzurePrivateEndpointRuleConnectionState(Enum):
-
     CREATE_FAILED = "CREATE_FAILED"
     CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
@@ -5184,7 +5166,6 @@ class NccPrivateEndpointRule:
 
 
 class NccPrivateEndpointRulePrivateLinkConnectionState(Enum):
-
     CREATE_FAILED = "CREATE_FAILED"
     CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
@@ -5591,7 +5572,6 @@ class RestrictWorkspaceAdminsMessage:
 
 
 class RestrictWorkspaceAdminsMessageStatus(Enum):
-
     ALLOW_ALL = "ALLOW_ALL"
     RESTRICT_TOKENS_AND_JOB_RUN_AS = "RESTRICT_TOKENS_AND_JOB_RUN_AS"
 

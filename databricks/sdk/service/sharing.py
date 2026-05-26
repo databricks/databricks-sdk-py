@@ -8,8 +8,7 @@ from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import catalog
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -540,14 +539,12 @@ class FunctionParameterInfos:
 
 
 class FunctionParameterMode(Enum):
-
     IN = "IN"
     INOUT = "INOUT"
     OUT = "OUT"
 
 
 class FunctionParameterType(Enum):
-
     COLUMN = "COLUMN"
     PARAM = "PARAM"
 
@@ -1110,7 +1107,6 @@ class PartitionValue:
 
 
 class PartitionValueOp(Enum):
-
     EQUAL = "EQUAL"
     LIKE = "LIKE"
 
@@ -1156,7 +1152,6 @@ class PermissionsChange:
 
 
 class Privilege(Enum):
-
     ACCESS = "ACCESS"
     ALL_PRIVILEGES = "ALL_PRIVILEGES"
     APPLY_TAG = "APPLY_TAG"
@@ -2156,7 +2151,6 @@ class SharedDataObject:
 
 
 class SharedDataObjectDataObjectType(Enum):
-
     FEATURE_SPEC = "FEATURE_SPEC"
     FOREIGN_TABLE = "FOREIGN_TABLE"
     FUNCTION = "FUNCTION"
@@ -2171,13 +2165,11 @@ class SharedDataObjectDataObjectType(Enum):
 
 
 class SharedDataObjectHistoryDataSharingStatus(Enum):
-
     DISABLED = "DISABLED"
     ENABLED = "ENABLED"
 
 
 class SharedDataObjectStatus(Enum):
-
     ACTIVE = "ACTIVE"
     PERMISSION_DENIED = "PERMISSION_DENIED"
 
@@ -2219,7 +2211,6 @@ class SharedDataObjectUpdate:
 
 
 class SharedDataObjectUpdateAction(Enum):
-
     ADD = "ADD"
     REMOVE = "REMOVE"
     UPDATE = "UPDATE"
