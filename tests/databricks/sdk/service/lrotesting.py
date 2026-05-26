@@ -9,7 +9,10 @@ from typing import Any, Dict, List, Optional
 
 from databricks.sdk.common import lro
 from databricks.sdk.retries import RetryError, poll
-from databricks.sdk.service._internal import _enum, _from_dict
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -293,7 +296,6 @@ class LroTestingAPI:
         self._api = api_client
 
     def cancel_operation(self, name: str):
-
         headers = {
             "Accept": "application/json",
         }
@@ -314,6 +316,7 @@ class LroTestingAPI:
         """
 
         body = resource.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -328,7 +331,6 @@ class LroTestingAPI:
         return CreateTestResourceOperation(self, operation)
 
     def delete_test_resource(self, resource_id: str) -> DeleteTestResourceOperation:
-
         headers = {
             "Accept": "application/json",
         }
@@ -342,7 +344,6 @@ class LroTestingAPI:
         return DeleteTestResourceOperation(self, operation)
 
     def get_operation(self, name: str) -> Operation:
-
         headers = {
             "Accept": "application/json",
         }

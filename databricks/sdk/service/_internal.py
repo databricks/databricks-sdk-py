@@ -142,7 +142,6 @@ ReturnType = TypeVar("ReturnType")
 
 
 class Wait(Generic[ReturnType]):
-
     def __init__(self, waiter: Callable, response: any = None, **kwargs) -> None:
         self.response = response
 

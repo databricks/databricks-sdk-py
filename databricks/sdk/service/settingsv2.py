@@ -7,7 +7,11 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -42,7 +46,6 @@ class AibiDashboardEmbeddingAccessPolicy:
 
 
 class AibiDashboardEmbeddingAccessPolicyAccessPolicyType(Enum):
-
     ALLOW_ALL_DOMAINS = "ALLOW_ALL_DOMAINS"
     ALLOW_APPROVED_DOMAINS = "ALLOW_APPROVED_DOMAINS"
     DENY_ALL_DOMAINS = "DENY_ALL_DOMAINS"
@@ -253,7 +256,6 @@ class ClusterAutoRestartMessageMaintenanceWindow:
 
 
 class ClusterAutoRestartMessageMaintenanceWindowDayOfWeek(Enum):
-
     FRIDAY = "FRIDAY"
     MONDAY = "MONDAY"
     SATURDAY = "SATURDAY"
@@ -306,7 +308,6 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
 
 
 class ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency(Enum):
-
     EVERY_WEEK = "EVERY_WEEK"
     FIRST_AND_THIRD_OF_MONTH = "FIRST_AND_THIRD_OF_MONTH"
     FIRST_OF_MONTH = "FIRST_OF_MONTH"
@@ -586,7 +587,6 @@ class RestrictWorkspaceAdminsMessage:
 
 
 class RestrictWorkspaceAdminsMessageStatus(Enum):
-
     ALLOW_ALL = "ALLOW_ALL"
     RESTRICT_TOKENS_AND_JOB_RUN_AS = "RESTRICT_TOKENS_AND_JOB_RUN_AS"
 
@@ -1139,6 +1139,7 @@ class AccountSettingsV2API:
         """
 
         body = setting.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1166,6 +1167,7 @@ class AccountSettingsV2API:
         """
 
         body = setting.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1266,6 +1268,7 @@ class WorkspaceSettingsV2API:
         """
 
         body = setting.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

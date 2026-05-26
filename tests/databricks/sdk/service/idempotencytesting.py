@@ -50,7 +50,6 @@ class IdempotencyTestingAPI:
         self._api = api_client
 
     def create_test_resource(self, test_resource: TestResource, *, request_id: Optional[str] = None) -> TestResource:
-
         if request_id is None or request_id == "":
             request_id = str(uuid.uuid4())
         body = test_resource.as_dict()

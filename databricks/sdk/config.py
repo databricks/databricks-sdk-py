@@ -14,13 +14,15 @@ from . import useragent
 from ._base_client import _fix_host_if_needed
 from .client_types import ClientType, HostType
 from .clock import Clock, RealClock
-from .credentials_provider import (CredentialsStrategy, DefaultCredentials,
-                                   OAuthCredentialsProvider)
-from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
-                           DatabricksEnvironment, get_environment_for_hostname)
-from .oauth import (OidcEndpoints, Token,
-                    get_azure_entra_id_workspace_endpoints,
-                    get_endpoints_from_url, get_host_metadata)
+from .credentials_provider import CredentialsStrategy, DefaultCredentials, OAuthCredentialsProvider
+from .environments import ALL_ENVS, AzureEnvironment, Cloud, DatabricksEnvironment, get_environment_for_hostname
+from .oauth import (
+    OidcEndpoints,
+    Token,
+    get_azure_entra_id_workspace_endpoints,
+    get_endpoints_from_url,
+    get_host_metadata,
+)
 
 logger = logging.getLogger("databricks.sdk")
 
@@ -615,7 +617,7 @@ class Config:
         anno = inspect.get_annotations(cls)
         attrs = []
         for name, v in cls.__dict__.items():
-            if type(v) != ConfigAttribute:
+            if type(v) is not ConfigAttribute:
                 continue
             v.name = name
             v.transform = v._custom_transform if v._custom_transform else anno.get(name, str)
@@ -743,14 +745,14 @@ class Config:
 
         if requested_profile is not None:
             if requested_profile == _SETTINGS_SECTION:
-                raise ValueError(f"{_SETTINGS_SECTION} is a reserved section name" " and cannot be used as a profile")
+                raise ValueError(f"{_SETTINGS_SECTION} is a reserved section name and cannot be used as a profile")
             return requested_profile, False
 
         settings = ini_file._sections.get(_SETTINGS_SECTION, {})
         default_profile = settings.get("default_profile", "").strip()
         if default_profile:
             if default_profile == _SETTINGS_SECTION:
-                raise ValueError(f"{_SETTINGS_SECTION} is a reserved section name" " and cannot be used as a profile")
+                raise ValueError(f"{_SETTINGS_SECTION} is a reserved section name and cannot be used as a profile")
             return default_profile, False
 
         if ini_file.defaults():

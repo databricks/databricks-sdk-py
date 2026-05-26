@@ -11,8 +11,13 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import sql
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 from ..errors import OperationFailed
 
@@ -250,12 +255,10 @@ class Dashboard:
 
 
 class DashboardView(Enum):
-
     DASHBOARD_VIEW_BASIC = "DASHBOARD_VIEW_BASIC"
 
 
 class EvaluationStatusType(Enum):
-
     DONE = "DONE"
     EVALUATION_CANCELLED = "EVALUATION_CANCELLED"
     EVALUATION_FAILED = "EVALUATION_FAILED"
@@ -433,7 +436,6 @@ class GenieConversationSummary:
 
 
 class GenieEvalAssessment(Enum):
-
     BAD = "BAD"
     GOOD = "GOOD"
     NEEDS_REVIEW = "NEEDS_REVIEW"
@@ -483,7 +485,6 @@ class GenieEvalResponse:
 
 
 class GenieEvalResponseType(Enum):
-
     SQL = "SQL"
     TEXT = "TEXT"
 
@@ -1677,7 +1678,6 @@ class GetPublishedDashboardTokenInfoResponse:
 
 
 class LifecycleState(Enum):
-
     ACTIVE = "ACTIVE"
     TRASHED = "TRASHED"
 
@@ -1814,7 +1814,6 @@ class MessageError:
 
 
 class MessageErrorType(Enum):
-
     BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION = "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION"
     CHAT_COMPLETION_CLIENT_EXCEPTION = "CHAT_COMPLETION_CLIENT_EXCEPTION"
     CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION = "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION"
@@ -2166,13 +2165,11 @@ class Schedule:
 
 
 class SchedulePauseStatus(Enum):
-
     PAUSED = "PAUSED"
     UNPAUSED = "UNPAUSED"
 
 
 class ScoreReason(Enum):
-
     COLUMN_TYPE_DIFFERENCE = "COLUMN_TYPE_DIFFERENCE"
     EMPTY_GOOD_SQL = "EMPTY_GOOD_SQL"
     EMPTY_RESULT = "EMPTY_RESULT"
@@ -3638,6 +3635,7 @@ class LakeviewAPI:
         """
 
         body = schedule.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3664,6 +3662,7 @@ class LakeviewAPI:
         """
 
         body = subscription.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -4178,6 +4177,7 @@ class LakeviewAPI:
         """
 
         body = schedule.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

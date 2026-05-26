@@ -6,7 +6,9 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import _repeated_dict
+from databricks.sdk.service._internal import (
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -226,8 +228,7 @@ class TagPoliciesAPI:
     Access Control Proxy API].
 
     [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
-    [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
-    """
+    [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -246,6 +247,7 @@ class TagPoliciesAPI:
         """
 
         body = tag_policy.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -401,6 +403,7 @@ class WorkspaceEntityTagAssignmentsAPI:
         """
 
         body = tag_assignment.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

@@ -15,8 +15,13 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from databricks.sdk.common import lro
 from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.retries import RetryError, poll
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _timestamp)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _timestamp,
+)
 
 from ..errors import OperationFailed
 
@@ -542,13 +547,11 @@ class AppDeploymentArtifacts:
 
 
 class AppDeploymentMode(Enum):
-
     AUTO_SYNC = "AUTO_SYNC"
     SNAPSHOT = "SNAPSHOT"
 
 
 class AppDeploymentState(Enum):
-
     CANCELLED = "CANCELLED"
     FAILED = "FAILED"
     IN_PROGRESS = "IN_PROGRESS"
@@ -664,7 +667,6 @@ class AppManifestAppResourceExperimentSpec:
 
 
 class AppManifestAppResourceExperimentSpecExperimentPermission(Enum):
-
     CAN_EDIT = "CAN_EDIT"
     CAN_MANAGE = "CAN_MANAGE"
     CAN_READ = "CAN_READ"
@@ -697,7 +699,6 @@ class AppManifestAppResourceJobSpec:
 
 
 class AppManifestAppResourceJobSpecJobPermission(Enum):
-
     CAN_MANAGE = "CAN_MANAGE"
     CAN_MANAGE_RUN = "CAN_MANAGE_RUN"
     CAN_VIEW = "CAN_VIEW"
@@ -767,7 +768,6 @@ class AppManifestAppResourceServingEndpointSpec:
 
 
 class AppManifestAppResourceServingEndpointSpecServingEndpointPermission(Enum):
-
     CAN_MANAGE = "CAN_MANAGE"
     CAN_QUERY = "CAN_QUERY"
     CAN_VIEW = "CAN_VIEW"
@@ -880,7 +880,6 @@ class AppManifestAppResourceSqlWarehouseSpec:
 
 
 class AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission(Enum):
-
     CAN_MANAGE = "CAN_MANAGE"
     CAN_USE = "CAN_USE"
     IS_OWNER = "IS_OWNER"
@@ -920,7 +919,6 @@ class AppManifestAppResourceUcSecurableSpec:
 
 
 class AppManifestAppResourceUcSecurableSpecUcSecurablePermission(Enum):
-
     EXECUTE = "EXECUTE"
     MANAGE = "MANAGE"
     READ_VOLUME = "READ_VOLUME"
@@ -930,7 +928,6 @@ class AppManifestAppResourceUcSecurableSpecUcSecurablePermission(Enum):
 
 
 class AppManifestAppResourceUcSecurableSpecUcSecurableType(Enum):
-
     CONNECTION = "CONNECTION"
     FUNCTION = "FUNCTION"
     TABLE = "TABLE"
@@ -1192,7 +1189,6 @@ class AppResourceApp:
 
 
 class AppResourceAppAppPermission(Enum):
-
     CAN_USE = "CAN_USE"
 
 
@@ -1237,7 +1233,6 @@ class AppResourceDatabase:
 
 
 class AppResourceDatabaseDatabasePermission(Enum):
-
     CAN_CONNECT_AND_CREATE = "CAN_CONNECT_AND_CREATE"
 
 
@@ -1275,7 +1270,6 @@ class AppResourceExperiment:
 
 
 class AppResourceExperimentExperimentPermission(Enum):
-
     CAN_EDIT = "CAN_EDIT"
     CAN_MANAGE = "CAN_MANAGE"
     CAN_READ = "CAN_READ"
@@ -1322,7 +1316,6 @@ class AppResourceGenieSpace:
 
 
 class AppResourceGenieSpaceGenieSpacePermission(Enum):
-
     CAN_EDIT = "CAN_EDIT"
     CAN_MANAGE = "CAN_MANAGE"
     CAN_RUN = "CAN_RUN"
@@ -1363,7 +1356,6 @@ class AppResourceJob:
 
 
 class AppResourceJobJobPermission(Enum):
-
     CAN_MANAGE = "CAN_MANAGE"
     CAN_MANAGE_RUN = "CAN_MANAGE_RUN"
     CAN_VIEW = "CAN_VIEW"
@@ -1411,7 +1403,6 @@ class AppResourcePostgres:
 
 
 class AppResourcePostgresPostgresPermission(Enum):
-
     CAN_CONNECT_AND_CREATE = "CAN_CONNECT_AND_CREATE"
 
 
@@ -1504,7 +1495,6 @@ class AppResourceServingEndpoint:
 
 
 class AppResourceServingEndpointServingEndpointPermission(Enum):
-
     CAN_MANAGE = "CAN_MANAGE"
     CAN_QUERY = "CAN_QUERY"
     CAN_VIEW = "CAN_VIEW"
@@ -1546,7 +1536,6 @@ class AppResourceSqlWarehouse:
 
 
 class AppResourceSqlWarehouseSqlWarehousePermission(Enum):
-
     CAN_MANAGE = "CAN_MANAGE"
     CAN_USE = "CAN_USE"
     IS_OWNER = "IS_OWNER"
@@ -1602,7 +1591,6 @@ class AppResourceUcSecurable:
 
 
 class AppResourceUcSecurableUcSecurablePermission(Enum):
-
     EXECUTE = "EXECUTE"
     MODIFY = "MODIFY"
     READ_VOLUME = "READ_VOLUME"
@@ -1612,7 +1600,6 @@ class AppResourceUcSecurableUcSecurablePermission(Enum):
 
 
 class AppResourceUcSecurableUcSecurableType(Enum):
-
     CONNECTION = "CONNECTION"
     FUNCTION = "FUNCTION"
     TABLE = "TABLE"
@@ -1768,7 +1755,6 @@ class AppUpdateUpdateStatus:
 
 
 class AppUpdateUpdateStatusUpdateState(Enum):
-
     FAILED = "FAILED"
     IN_PROGRESS = "IN_PROGRESS"
     NOT_UPDATED = "NOT_UPDATED"
@@ -1776,7 +1762,6 @@ class AppUpdateUpdateStatusUpdateState(Enum):
 
 
 class ApplicationState(Enum):
-
     CRASHED = "CRASHED"
     DEPLOYING = "DEPLOYING"
     RUNNING = "RUNNING"
@@ -1816,13 +1801,11 @@ class ApplicationStatus:
 
 
 class ComputeSize(Enum):
-
     LARGE = "LARGE"
     MEDIUM = "MEDIUM"
 
 
 class ComputeState(Enum):
-
     ACTIVE = "ACTIVE"
     DELETING = "DELETING"
     ERROR = "ERROR"
@@ -2637,7 +2620,6 @@ class SpaceStatus:
 
 
 class SpaceStatusSpaceState(Enum):
-
     SPACE_ACTIVE = "SPACE_ACTIVE"
     SPACE_CREATING = "SPACE_CREATING"
     SPACE_DELETED = "SPACE_DELETED"
@@ -2703,7 +2685,6 @@ class SpaceUpdate:
 
 
 class SpaceUpdateState(Enum):
-
     FAILED = "FAILED"
     IN_PROGRESS = "IN_PROGRESS"
     NOT_UPDATED = "NOT_UPDATED"
@@ -2991,6 +2972,7 @@ class AppsAPI:
         """
 
         body = space.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3122,6 +3104,7 @@ class AppsAPI:
         """
 
         body = app_deployment.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3487,6 +3470,7 @@ class AppsAPI:
         """
 
         body = app.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3836,6 +3820,7 @@ class AppsSettingsAPI:
         """
 
         body = template.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3935,6 +3920,7 @@ class AppsSettingsAPI:
         """
 
         body = template.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

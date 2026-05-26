@@ -13,7 +13,7 @@ import sys
 import threading
 import time
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Union
 
 import google.auth  # type: ignore
 import requests
@@ -25,6 +25,9 @@ from databricks.sdk.oauth import get_azure_entra_id_workspace_endpoints
 
 from . import azure, oauth, oidc, oidc_token_supplier
 from .client_types import ClientType
+
+if TYPE_CHECKING:
+    from .config import Config
 
 CredentialsProvider = Callable[[], Dict[str, str]]
 
@@ -159,10 +162,12 @@ def runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     # This import MUST be after the "DATABRICKS_RUNTIME_VERSION" check
     # above, so that we are not throwing import errors when not in
     # runtime and no config variables are set.
-    from databricks.sdk.runtime import (init_runtime_legacy_auth,
-                                        init_runtime_native_auth,
-                                        init_runtime_native_unified,
-                                        init_runtime_repl_auth)
+    from databricks.sdk.runtime import (
+        init_runtime_legacy_auth,
+        init_runtime_native_auth,
+        init_runtime_native_unified,
+        init_runtime_repl_auth,
+    )
 
     # Try the unified provider first (returns host, account_id, workspace_id, inner).
     if init_runtime_native_unified is not None:
@@ -703,7 +708,6 @@ class CliVersion:
 
 
 class CliTokenSource(oauth.Refreshable):
-
     def __init__(
         self,
         cmd: List[str],
@@ -1281,7 +1285,7 @@ class MetadataServiceTokenSource(oauth.Refreshable):
             raise ValueError("Metadata Service returned invalid expiry")
         try:
             expiry = datetime.fromtimestamp(json_resp["expires_on"])
-        except:
+        except Exception:
             raise ValueError("Metadata Service returned invalid expiry")
 
         return oauth.Token(access_token=access_token, token_type=token_type, expiry=expiry)

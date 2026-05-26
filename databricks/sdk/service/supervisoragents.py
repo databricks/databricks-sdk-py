@@ -10,8 +10,12 @@ from typing import Any, Dict, Iterator, List, Optional
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _timestamp)
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _timestamp,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -809,6 +813,7 @@ class SupervisorAgentsAPI:
         """
 
         body = example.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -831,6 +836,7 @@ class SupervisorAgentsAPI:
         """
 
         body = supervisor_agent.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

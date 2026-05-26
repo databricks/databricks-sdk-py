@@ -13,8 +13,12 @@ from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
 
 import requests
 
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+)
 
 from ..errors import OperationFailed
 
@@ -205,7 +209,6 @@ class AiGatewayGuardrailPiiBehavior:
 
 
 class AiGatewayGuardrailPiiBehaviorBehavior(Enum):
-
     BLOCK = "BLOCK"
     MASK = "MASK"
     NONE = "NONE"
@@ -362,7 +365,6 @@ class AiGatewayRateLimit:
 
 
 class AiGatewayRateLimitKey(Enum):
-
     ENDPOINT = "endpoint"
     SERVICE_PRINCIPAL = "service_principal"
     USER = "user"
@@ -370,7 +372,6 @@ class AiGatewayRateLimitKey(Enum):
 
 
 class AiGatewayRateLimitRenewalPeriod(Enum):
-
     MINUTE = "minute"
 
 
@@ -491,7 +492,6 @@ class AmazonBedrockConfig:
 
 
 class AmazonBedrockConfigBedrockProvider(Enum):
-
     AI21LABS = "ai21labs"
     AMAZON = "amazon"
     ANTHROPIC = "anthropic"
@@ -1398,7 +1398,6 @@ class EndpointState:
 
 
 class EndpointStateConfigUpdate(Enum):
-
     IN_PROGRESS = "IN_PROGRESS"
     NOT_UPDATING = "NOT_UPDATING"
     UPDATE_CANCELED = "UPDATE_CANCELED"
@@ -1406,7 +1405,6 @@ class EndpointStateConfigUpdate(Enum):
 
 
 class EndpointStateReady(Enum):
-
     NOT_READY = "NOT_READY"
     READY = "READY"
 
@@ -1492,7 +1490,6 @@ class ExportMetricsResponse:
 
 
 class ExternalFunctionRequestHttpMethod(Enum):
-
     DELETE = "DELETE"
     GET = "GET"
     PATCH = "PATCH"
@@ -1620,7 +1617,6 @@ class ExternalModel:
 
 
 class ExternalModelProvider(Enum):
-
     AI21LABS = "ai21labs"
     AMAZON_BEDROCK = "amazon-bedrock"
     ANTHROPIC = "anthropic"
@@ -2496,13 +2492,11 @@ class RateLimit:
 
 
 class RateLimitKey(Enum):
-
     ENDPOINT = "endpoint"
     USER = "user"
 
 
 class RateLimitRenewalPeriod(Enum):
-
     MINUTE = "minute"
 
 
@@ -3355,7 +3349,6 @@ class ServedModelState:
 
 
 class ServedModelStateDeployment(Enum):
-
     DEPLOYMENT_ABORTED = "DEPLOYMENT_ABORTED"
     DEPLOYMENT_CREATING = "DEPLOYMENT_CREATING"
     DEPLOYMENT_FAILED = "DEPLOYMENT_FAILED"
@@ -3789,7 +3782,6 @@ class ServingEndpointDetailed:
 
 
 class ServingEndpointDetailedPermissionLevel(Enum):
-
     CAN_MANAGE = "CAN_MANAGE"
     CAN_QUERY = "CAN_QUERY"
     CAN_VIEW = "CAN_VIEW"
