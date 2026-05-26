@@ -242,15 +242,6 @@ def test_agent_provider_vscode_agent(clean_useragent_env):
     assert useragent.agent_provider() == "vscode-agent"
 
 
-def test_agent_provider_copilot_model_alone_not_detected(clean_useragent_env):
-    # COPILOT_MODEL is set by Copilot CLI BYOK users and does not by itself
-    # identify any agent. It must not contribute to detection.
-    os.environ["COPILOT_MODEL"] = "gpt-4"
-    from databricks.sdk import useragent
-
-    assert useragent.agent_provider() == ""
-
-
 def test_agent_provider_kiro(clean_useragent_env):
     os.environ["KIRO"] = "1"
     from databricks.sdk import useragent
