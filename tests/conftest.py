@@ -10,6 +10,9 @@ from databricks.sdk.credentials_provider import credentials_strategy
 
 from .clock import FakeClock
 
+# Side-effect import: ruff would otherwise strip this as unused.
+from .integration.conftest import restorable_env  # noqa: F401
+
 
 @pytest.fixture(autouse=True)
 def stub_host_metadata(mocker):
