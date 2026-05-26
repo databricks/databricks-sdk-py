@@ -156,13 +156,13 @@ def test_databricks_cli_token_source_installed_both(config, monkeypatch, tmp_pat
 
 def test_databricks_cli_credential_provider_not_installed(config, monkeypatch):
     monkeypatch.setenv("PATH", "whatever")
-    assert databricks_cli(config) == None
+    assert databricks_cli(config) is None
 
 
 def test_databricks_cli_credential_provider_installed_legacy(config, monkeypatch, tmp_path):
     write_small_dummy_executable(tmp_path)
     monkeypatch.setenv("PATH", tmp_path.as_posix())
-    assert databricks_cli(config) == None
+    assert databricks_cli(config) is None
 
 
 def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, tmp_path, mocker):
@@ -370,7 +370,7 @@ def test_access_control_list(config, requests_mock):
     )
 
     w = WorkspaceClient(config=config)
-    res = w.jobs.create(access_control_list=[AccessControlRequest(group_name="group")])
+    w.jobs.create(access_control_list=[AccessControlRequest(group_name="group")])
 
     assert requests_mock.call_count == 1
     assert requests_mock.called
@@ -384,7 +384,7 @@ def test_shares(config, requests_mock):
     )
 
     w = WorkspaceClient(config=config)
-    res = w.shares.update_permissions(name="jobId", changes=[PermissionsChange(principal="principal")])
+    w.shares.update_permissions(name="jobId", changes=[PermissionsChange(principal="principal")])
 
     assert requests_mock.call_count == 1
     assert requests_mock.called

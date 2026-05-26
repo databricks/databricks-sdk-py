@@ -81,7 +81,7 @@ def test_azure_cli_does_not_specify_tenant_id_with_msi(monkeypatch, username):
     monkeypatch.setenv("FAIL_IF_TENANT_ID_SET", "true")
     monkeypatch.setenv("AZ_USER_NAME", username)
     monkeypatch.setenv("AZ_USER_TYPE", "servicePrincipal")
-    cfg = Config(
+    Config(
         auth_type="azure-cli",
         host="https://adb-123.4.azuredatabricks.net",
         azure_tenant_id="abc",

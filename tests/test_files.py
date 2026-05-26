@@ -141,7 +141,7 @@ class CustomResponse:
         resp.request = request
         resp.status_code = code
         if stream:
-            if type(body_or_stream) != bytes:
+            if type(body_or_stream) is not bytes:
                 resp.raw = io.BytesIO(body_or_stream.encode())
             else:
                 resp.raw = io.BytesIO(body_or_stream)
@@ -375,7 +375,7 @@ class MockFilesApiDownloadResponse:
         self.url = request.url
 
     def iter_content(self, chunk_size: int, decode_unicode: bool) -> "MockIterator":
-        assert decode_unicode == False
+        assert decode_unicode is False
         return MockIterator(self, chunk_size)
 
 

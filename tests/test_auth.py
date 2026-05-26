@@ -125,7 +125,7 @@ def test_config_config_file_skip_default_profile_if_host_specified(
     monkeypatch,
 ):
     set_home(monkeypatch, "/testdata")
-    cfg = Config(host="x")
+    Config(host="x")
 
 
 @raises(default_auth_base_error_message)
@@ -218,14 +218,14 @@ def test_config_azure_cli_host_fail(monkeypatch):
     monkeypatch.setenv("FAIL", "yes")
     set_home(monkeypatch, "/testdata/azure")
     set_az_path(monkeypatch)
-    cfg = Config(azure_workspace_resource_id="/sub/rg/ws")
+    Config(azure_workspace_resource_id="/sub/rg/ws")
 
 
 @raises(f"{default_auth_base_error_message}. Config: azure_workspace_resource_id=/sub/rg/ws")
 def test_config_azure_cli_host_az_not_installed(monkeypatch):
     set_home(monkeypatch, "/testdata/azure")
     monkeypatch.setenv("PATH", __tests__ + "/whatever")
-    cfg = Config(azure_workspace_resource_id="/sub/rg/ws")
+    Config(azure_workspace_resource_id="/sub/rg/ws")
 
 
 @raises(
@@ -236,7 +236,7 @@ def test_config_azure_cli_host_pat_conflict_with_config_file_present_without_def
 ):
     set_home(monkeypatch, "/testdata/azure")
     set_az_path(monkeypatch)
-    cfg = Config(token="x", azure_workspace_resource_id="/sub/rg/ws")
+    Config(token="x", azure_workspace_resource_id="/sub/rg/ws")
 
 
 def test_config_azure_cli_host_and_resource_id(monkeypatch, mock_tenant):
@@ -275,7 +275,7 @@ def test_config_azure_and_password_conflict(monkeypatch):
     monkeypatch.setenv("DATABRICKS_USERNAME", "x")
     set_home(monkeypatch, "/testdata/azure")
     set_az_path(monkeypatch)
-    cfg = Config(
+    Config(
         host="https://adb-123.4.azuredatabricks.net",
         azure_workspace_resource_id="/sub/rg/ws",
     )

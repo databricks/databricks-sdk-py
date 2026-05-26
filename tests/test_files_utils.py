@@ -265,7 +265,10 @@ def test_seek(config, test_case: ConcatenatedInputStreamTestCase, seeks: List[Tu
 
     assert buffer.tell() == native_buffer.tell()
     for seek in seeks:
-        do_seek = lambda buf: buf.seek(seek[0], seek[1])
+
+        def do_seek(buf):
+            return buf.seek(seek[0], seek[1])
+
         assert safe_call(buffer, do_seek) == safe_call(native_buffer, do_seek)
         assert buffer.tell() == native_buffer.tell()
         assert read_and_restore(buffer) == read_and_restore(native_buffer)

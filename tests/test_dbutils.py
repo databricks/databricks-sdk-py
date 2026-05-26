@@ -46,7 +46,7 @@ def test_fs_ls(dbutils, mocker):
             FileInfo(path="a/c", file_size=30, modification_time=40),
         ],
     )
-    inner2 = mocker.patch(
+    mocker.patch(
         "databricks.sdk.service.files.DbfsAPI.get_status",
         side_effect=[
             FileInfo(path="a", is_dir=True, file_size=5),
@@ -104,7 +104,7 @@ def test_fs_put(dbutils, mocker):
 
 def test_fs_rm(dbutils, mocker):
     inner = mocker.patch("databricks.sdk.service.files.DbfsAPI.delete")
-    inner2 = mocker.patch(
+    mocker.patch(
         "databricks.sdk.service.files.DbfsAPI.get_status",
         return_value=FileInfo(path="a", is_dir=False, file_size=5),
     )
