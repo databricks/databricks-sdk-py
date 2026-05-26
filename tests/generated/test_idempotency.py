@@ -58,12 +58,12 @@ def test_idempotency_retry_with_same_request_id(
     first_request_id = requests_mock.request_history[0].qs.get("request_id", [None])[0]
     second_request_id = requests_mock.request_history[1].qs.get("request_id", [None])[0]
 
-    assert (
-        first_request_id == expected_request_id
-    ), f"First request should use provided request_id, got: {first_request_id}"
-    assert (
-        second_request_id == expected_request_id
-    ), f"Retry should reuse same request_id for idempotency, got: {second_request_id}"
+    assert first_request_id == expected_request_id, (
+        f"First request should use provided request_id, got: {first_request_id}"
+    )
+    assert second_request_id == expected_request_id, (
+        f"Retry should reuse same request_id for idempotency, got: {second_request_id}"
+    )
 
 
 @pytest.mark.parametrize(
@@ -128,6 +128,6 @@ def test_idempotency_auto_generated_request_id(config, requests_mock, make_call,
     assert len(captured_request_ids) == 2, f"Expected 2 captured request IDs, got {len(captured_request_ids)}"
     assert captured_request_ids[0] is not None, "First request should have auto-generated request_id"
     assert captured_request_ids[1] is not None, "Retry request should have auto-generated request_id"
-    assert (
-        captured_request_ids[0] == captured_request_ids[1]
-    ), f"Retry should use same auto-generated request_id. Got: {captured_request_ids}"
+    assert captured_request_ids[0] == captured_request_ids[1], (
+        f"Retry should use same auto-generated request_id. Got: {captured_request_ids}"
+    )

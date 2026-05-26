@@ -439,18 +439,18 @@ def test_stale_after_is_recomputed_after_blocking_refresh():
 
             mock_dt.now.return_value = refresh_time
             result = r.token()
-            assert (
-                result.access_token == "after_expired_refresh"
-            ), f"{tc['name']}: expired refresh should return new token (blocking)"
-            assert (
-                r._refresh_count == 1
-            ), f"{tc['name']}: one blocking refresh for expired token, got {r._refresh_count}"
-            assert (
-                r._token_state() == _TokenState.FRESH
-            ), f"{tc['name']}: state should be FRESH after expired refresh, is {r._token_state()}"
-            assert (
-                r._stale_after == refresh_time + tc["want_stale_after_offset"]
-            ), f"{tc['name']}: _stale_after should be {refresh_time + tc['want_stale_after_offset']}, is {r._stale_after}"
+            assert result.access_token == "after_expired_refresh", (
+                f"{tc['name']}: expired refresh should return new token (blocking)"
+            )
+            assert r._refresh_count == 1, (
+                f"{tc['name']}: one blocking refresh for expired token, got {r._refresh_count}"
+            )
+            assert r._token_state() == _TokenState.FRESH, (
+                f"{tc['name']}: state should be FRESH after expired refresh, is {r._token_state()}"
+            )
+            assert r._stale_after == refresh_time + tc["want_stale_after_offset"], (
+                f"{tc['name']}: _stale_after should be {refresh_time + tc['want_stale_after_offset']}, is {r._stale_after}"
+            )
 
 
 def test_stale_after_computation():
@@ -501,6 +501,6 @@ def test_stale_after_computation():
                 stale_duration=tc.get("stale_duration"),
             )
 
-            assert (
-                r._stale_after == now + tc["want_stale_after_offset"]
-            ), f"{tc['name']}: _stale_after should be {now + tc['want_stale_after_offset']}, is {r._stale_after}"
+            assert r._stale_after == now + tc["want_stale_after_offset"], (
+                f"{tc['name']}: _stale_after should be {now + tc['want_stale_after_offset']}, is {r._stale_after}"
+            )
