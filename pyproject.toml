@@ -73,7 +73,6 @@ include = ["databricks", "databricks.*"]
 "databricks.sdk" = ["py.typed"]
 
 [tool.ruff]
-# Matches Universe's bazel/rules/python/format/ruff.toml.
 line-length = 120
 indent-width = 4
 target-version = "py310"
