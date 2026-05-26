@@ -989,6 +989,33 @@ class CreateWebhookResponse:
 
 
 @dataclass
+class CronSchedule:
+    """A cron-based schedule trigger for the materialization pipeline."""
+
+    cron_expression: Optional[str] = None
+    """The cron expression defining the schedule (e.g., "0 0 * * *" for daily at midnight)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cron_expression is not None:
+            body["cron_expression"] = self.cron_expression
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CronSchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cron_expression is not None:
+            body["cron_expression"] = self.cron_expression
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
+        """Deserializes the CronSchedule from a dictionary."""
+        return cls(cron_expression=d.get("cron_expression", None))
+
+
+@dataclass
 class DataSource:
     """Specifies the data source backing a feature. Exactly one source type must be set."""
 
@@ -4010,6 +4037,9 @@ class MaterializedFeature:
     """The quartz cron expression that defines the schedule of the materialization pipeline. The
     schedule is evaluated in the UTC timezone."""
 
+    cron_schedule_trigger: Optional[CronSchedule] = None
+    """A cron-based schedule trigger for the materialization pipeline."""
+
     is_online: Optional[bool] = None
     """True if this is an online materialized feature. False if it is an offline materialized feature."""
 
@@ -4029,15 +4059,25 @@ class MaterializedFeature:
     pipeline_schedule_state: Optional[MaterializedFeaturePipelineScheduleState] = None
     """The schedule state of the materialization pipeline."""
 
+    streaming_mode: Optional[StreamingMode] = None
+    """The Structured Streaming trigger mode used for materialization. Real-time mode (RTM) targets
+    sub-second latency for operational workloads; micro-batch mode (MBM) favors cost efficiency for
+    ETL and analytics workloads."""
+
     table_name: Optional[str] = None
     """The fully qualified Unity Catalog path to the table containing the materialized feature (Delta
     table or Lakebase table). Output only."""
+
+    table_trigger: Optional[TableTrigger] = None
+    """A trigger that fires when the upstream source table changes."""
 
     def as_dict(self) -> dict:
         """Serializes the MaterializedFeature into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cron_schedule is not None:
             body["cron_schedule"] = self.cron_schedule
+        if self.cron_schedule_trigger:
+            body["cron_schedule_trigger"] = self.cron_schedule_trigger.as_dict()
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
         if self.is_online is not None:
@@ -4052,8 +4092,12 @@ class MaterializedFeature:
             body["online_store_config"] = self.online_store_config.as_dict()
         if self.pipeline_schedule_state is not None:
             body["pipeline_schedule_state"] = self.pipeline_schedule_state.value
+        if self.streaming_mode:
+            body["streaming_mode"] = self.streaming_mode.as_dict()
         if self.table_name is not None:
             body["table_name"] = self.table_name
+        if self.table_trigger:
+            body["table_trigger"] = self.table_trigger.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4061,6 +4105,8 @@ class MaterializedFeature:
         body = {}
         if self.cron_schedule is not None:
             body["cron_schedule"] = self.cron_schedule
+        if self.cron_schedule_trigger:
+            body["cron_schedule_trigger"] = self.cron_schedule_trigger
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
         if self.is_online is not None:
@@ -4075,8 +4121,12 @@ class MaterializedFeature:
             body["online_store_config"] = self.online_store_config
         if self.pipeline_schedule_state is not None:
             body["pipeline_schedule_state"] = self.pipeline_schedule_state
+        if self.streaming_mode:
+            body["streaming_mode"] = self.streaming_mode
         if self.table_name is not None:
             body["table_name"] = self.table_name
+        if self.table_trigger:
+            body["table_trigger"] = self.table_trigger
         return body
 
     @classmethod
@@ -4084,6 +4134,7 @@ class MaterializedFeature:
         """Deserializes the MaterializedFeature from a dictionary."""
         return cls(
             cron_schedule=d.get("cron_schedule", None),
+            cron_schedule_trigger=_from_dict(d, "cron_schedule_trigger", CronSchedule),
             feature_name=d.get("feature_name", None),
             is_online=d.get("is_online", None),
             last_materialization_time=d.get("last_materialization_time", None),
@@ -4091,7 +4142,9 @@ class MaterializedFeature:
             offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
             online_store_config=_from_dict(d, "online_store_config", OnlineStoreConfig),
             pipeline_schedule_state=_enum(d, "pipeline_schedule_state", MaterializedFeaturePipelineScheduleState),
+            streaming_mode=_from_dict(d, "streaming_mode", StreamingMode),
             table_name=d.get("table_name", None),
+            table_trigger=_from_dict(d, "table_trigger", TableTrigger),
         )
 
 
@@ -6607,6 +6660,39 @@ class StddevSampFunction:
 
 
 @dataclass
+class StreamingMode:
+    """The streaming mode configuration for a streaming materialization pipeline."""
+
+    mode: Optional[StreamingModeStreamingModeType] = None
+    """The type of streaming mode used by the materialization pipeline."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamingMode into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.mode is not None:
+            body["mode"] = self.mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamingMode into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.mode is not None:
+            body["mode"] = self.mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamingMode:
+        """Deserializes the StreamingMode from a dictionary."""
+        return cls(mode=_enum(d, "mode", StreamingModeStreamingModeType))
+
+
+class StreamingModeStreamingModeType(Enum):
+
+    STREAMING_MODE_TYPE_MBM = "STREAMING_MODE_TYPE_MBM"
+    STREAMING_MODE_TYPE_RTM = "STREAMING_MODE_TYPE_RTM"
+
+
+@dataclass
 class SubscriptionMode:
     """Deprecated: Use KafkaSubscriptionMode instead."""
 
@@ -6681,6 +6767,26 @@ class SumFunction:
     def from_dict(cls, d: Dict[str, Any]) -> SumFunction:
         """Deserializes the SumFunction from a dictionary."""
         return cls(input=d.get("input", None))
+
+
+@dataclass
+class TableTrigger:
+    """A trigger that fires when the upstream source table changes."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TableTrigger into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TableTrigger into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TableTrigger:
+        """Deserializes the TableTrigger from a dictionary."""
+        return cls()
 
 
 @dataclass

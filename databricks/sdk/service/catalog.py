@@ -1831,7 +1831,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 125"""
+    """Next Id: 126"""
 
     BIGQUERY = "BIGQUERY"
     CONFLUENCE = "CONFLUENCE"
@@ -9254,7 +9254,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: AGENT_SERVICE_STANDARD = 331; Next id: 332"""
+    """Latest kind: CONNECTION_ICEBERG_REST_OAUTH_M2M = 336; Next id: 337"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"

@@ -206,12 +206,7 @@ class BranchSpec:
 @dataclass
 class BranchStatus:
     branch_id: Optional[str] = None
-    """The short identifier of the branch, suitable for showing to the users. For a branch with name
-    `projects/my-project/branches/my-branch`, the branch_id is `my-branch`.
-    
-    Use this field when building UI components that display branches to users (e.g., a drop-down
-    selector). Prefer showing `branch_id` instead of the full resource name from `Branch.name`,
-    which follows the `projects/{project_id}/branches/{branch_id}` format and is not user-friendly."""
+    """Part of the resource name."""
 
     current_state: Optional[BranchStatusState] = None
     """The branch's state, indicating if it is initializing, ready for use, or archived."""
@@ -488,12 +483,7 @@ class CatalogCatalogStatus:
     Format: projects/{project_id}/branches/{branch_id}."""
 
     catalog_id: Optional[str] = None
-    """The short identifier of the catalog, suitable for showing to the users. For a catalog with name
-    `catalogs/my-catalog`, the catalog_id is `my-catalog`.
-    
-    Use this field when building UI components that display catalogs to users (e.g., a drop-down
-    selector). Prefer showing `catalog_id` instead of the full resource name from `Catalog.name`,
-    which follows the `catalogs/{catalog_id}` format and is not user-friendly."""
+    """Part of the resource name."""
 
     postgres_database: Optional[str] = None
     """The name of the Postgres database associated with the catalog."""
@@ -706,13 +696,7 @@ class DatabaseDatabaseSpec:
 @dataclass
 class DatabaseDatabaseStatus:
     database_id: Optional[str] = None
-    """The short identifier of the database, suitable for showing to the users. For a database with
-    name `projects/my-project/branches/my-branch/databases/my-db`, the database_id is `my-db`.
-    
-    Use this field when building UI components that display databases to users (e.g., a drop-down
-    selector). Prefer showing `database_id` instead of the full resource name from `Database.name`,
-    which follows the `projects/{project_id}/branches/{branch_id}/databases/{database_id}` format
-    and is not user-friendly."""
+    """Part of the resource name."""
 
     postgres_database: Optional[str] = None
     """The name of the Postgres database."""
@@ -1220,14 +1204,7 @@ class EndpointStatus:
     console action."""
 
     endpoint_id: Optional[str] = None
-    """The short identifier of the endpoint, suitable for showing to the users. For an endpoint with
-    name `projects/my-project/branches/my-branch/endpoints/my-endpoint`, the endpoint_id is
-    `my-endpoint`.
-    
-    Use this field when building UI components that display endpoints to users (e.g., a drop-down
-    selector). Prefer showing `endpoint_id` instead of the full resource name from `Endpoint.name`,
-    which follows the `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}` format
-    and is not user-friendly."""
+    """Part of the resource name."""
 
     endpoint_type: Optional[EndpointType] = None
     """The endpoint type. A branch can only have one READ_WRITE endpoint."""
@@ -2053,12 +2030,7 @@ class ProjectStatus:
     """The effective major Postgres version number."""
 
     project_id: Optional[str] = None
-    """The short identifier of the project, suitable for showing to the users. For a project with name
-    `projects/my-project`, the project_id is `my-project`.
-    
-    Use this field when building UI components that display projects to users (e.g., a drop-down
-    selector). Prefer showing `project_id` instead of the full resource name from `Project.name`,
-    which follows the `projects/{project_id}` format and is not user-friendly."""
+    """Part of the resource name."""
 
     synthetic_storage_size_bytes: Optional[int] = None
     """The current space occupied by the project in storage."""
@@ -2480,13 +2452,7 @@ class RoleRoleStatus:
     """The name of the Postgres role."""
 
     role_id: Optional[str] = None
-    """The short identifier of the role, suitable for showing to the users. For a role with name
-    `projects/my-project/branches/my-branch/roles/my-role`, the role_id is `my-role`.
-    
-    Use this field when building UI components that display roles to users (e.g., a drop-down
-    selector). Prefer showing `role_id` instead of the full resource name from `Role.name`, which
-    follows the `projects/{project_id}/branches/{branch_id}/roles/{role_id}` format and is not
-    user-friendly."""
+    """Part of the resource name."""
 
     def as_dict(self) -> dict:
         """Serializes the RoleRoleStatus into a dictionary suitable for use as a JSON request body."""
@@ -2897,6 +2863,9 @@ class SyncedTableSyncedTableStatus:
     provisioning_phase: Optional[ProvisioningPhase] = None
     """The current phase of the data synchronization pipeline."""
 
+    synced_table_id: Optional[str] = None
+    """Part of the resource name."""
+
     unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
     """The provisioning state of the synced table entity in Unity Catalog."""
 
@@ -2921,6 +2890,8 @@ class SyncedTableSyncedTableStatus:
             body["project"] = self.project
         if self.provisioning_phase is not None:
             body["provisioning_phase"] = self.provisioning_phase.value
+        if self.synced_table_id is not None:
+            body["synced_table_id"] = self.synced_table_id
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state.value
         return body
@@ -2946,6 +2917,8 @@ class SyncedTableSyncedTableStatus:
             body["project"] = self.project
         if self.provisioning_phase is not None:
             body["provisioning_phase"] = self.provisioning_phase
+        if self.synced_table_id is not None:
+            body["synced_table_id"] = self.synced_table_id
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state
         return body
@@ -2963,6 +2936,7 @@ class SyncedTableSyncedTableStatus:
             pipeline_id=d.get("pipeline_id", None),
             project=d.get("project", None),
             provisioning_phase=_enum(d, "provisioning_phase", ProvisioningPhase),
+            synced_table_id=d.get("synced_table_id", None),
             unity_catalog_provisioning_state=_enum(d, "unity_catalog_provisioning_state", ProvisioningInfoState),
         )
 

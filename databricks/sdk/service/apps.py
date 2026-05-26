@@ -40,6 +40,12 @@ class App:
 
     budget_policy_id: Optional[str] = None
 
+    compute_max_instances: Optional[int] = None
+    """Maximum number of app instances. Must be set together with `compute_min_instances`."""
+
+    compute_min_instances: Optional[int] = None
+    """Minimum number of app instances. Must be set together with `compute_max_instances`."""
+
     compute_size: Optional[ComputeSize] = None
 
     compute_status: Optional[ComputeStatus] = None
@@ -118,6 +124,10 @@ class App:
             body["app_status"] = self.app_status.as_dict()
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_max_instances is not None:
+            body["compute_max_instances"] = self.compute_max_instances
+        if self.compute_min_instances is not None:
+            body["compute_min_instances"] = self.compute_min_instances
         if self.compute_size is not None:
             body["compute_size"] = self.compute_size.value
         if self.compute_status:
@@ -183,6 +193,10 @@ class App:
             body["app_status"] = self.app_status
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_max_instances is not None:
+            body["compute_max_instances"] = self.compute_max_instances
+        if self.compute_min_instances is not None:
+            body["compute_min_instances"] = self.compute_min_instances
         if self.compute_size is not None:
             body["compute_size"] = self.compute_size
         if self.compute_status:
@@ -246,6 +260,8 @@ class App:
             active_deployment=_from_dict(d, "active_deployment", AppDeployment),
             app_status=_from_dict(d, "app_status", ApplicationStatus),
             budget_policy_id=d.get("budget_policy_id", None),
+            compute_max_instances=d.get("compute_max_instances", None),
+            compute_min_instances=d.get("compute_min_instances", None),
             compute_size=_enum(d, "compute_size", ComputeSize),
             compute_status=_from_dict(d, "compute_status", ComputeStatus),
             create_time=d.get("create_time", None),
@@ -1634,6 +1650,12 @@ class AppThumbnail:
 class AppUpdate:
     budget_policy_id: Optional[str] = None
 
+    compute_max_instances: Optional[int] = None
+    """Maximum number of app instances. Must be set together with `compute_min_instances`."""
+
+    compute_min_instances: Optional[int] = None
+    """Minimum number of app instances. Must be set together with `compute_max_instances`."""
+
     compute_size: Optional[ComputeSize] = None
 
     description: Optional[str] = None
@@ -1653,6 +1675,10 @@ class AppUpdate:
         body = {}
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_max_instances is not None:
+            body["compute_max_instances"] = self.compute_max_instances
+        if self.compute_min_instances is not None:
+            body["compute_min_instances"] = self.compute_min_instances
         if self.compute_size is not None:
             body["compute_size"] = self.compute_size.value
         if self.description is not None:
@@ -1674,6 +1700,10 @@ class AppUpdate:
         body = {}
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_max_instances is not None:
+            body["compute_max_instances"] = self.compute_max_instances
+        if self.compute_min_instances is not None:
+            body["compute_min_instances"] = self.compute_min_instances
         if self.compute_size is not None:
             body["compute_size"] = self.compute_size
         if self.description is not None:
@@ -1695,6 +1725,8 @@ class AppUpdate:
         """Deserializes the AppUpdate from a dictionary."""
         return cls(
             budget_policy_id=d.get("budget_policy_id", None),
+            compute_max_instances=d.get("compute_max_instances", None),
+            compute_min_instances=d.get("compute_min_instances", None),
             compute_size=_enum(d, "compute_size", ComputeSize),
             description=d.get("description", None),
             git_repository=_from_dict(d, "git_repository", GitRepository),
