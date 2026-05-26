@@ -15,7 +15,13 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from databricks.sdk.common import lro
 from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.retries import RetryError, poll
-from databricks.sdk.service._internal import Wait, _enum, _from_dict, _repeated_dict, _timestamp
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _timestamp,
+)
 
 from ..errors import OperationFailed
 
@@ -2966,6 +2972,7 @@ class AppsAPI:
         """
 
         body = space.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3097,6 +3104,7 @@ class AppsAPI:
         """
 
         body = app_deployment.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3462,6 +3470,7 @@ class AppsAPI:
         """
 
         body = app.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3811,6 +3820,7 @@ class AppsSettingsAPI:
         """
 
         body = template.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3910,6 +3920,7 @@ class AppsSettingsAPI:
         """
 
         body = template.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

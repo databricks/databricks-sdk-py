@@ -8,7 +8,12 @@ from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -8698,8 +8703,7 @@ class NetworkConnectivityAPI:
     endpoints for Databricks to privately connect serverless compute resources to your Azure resources using
     Azure Private Link. See [configure serverless secure connectivity].
 
-    [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
-    """
+    [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -8725,6 +8729,7 @@ class NetworkConnectivityAPI:
         """
 
         body = network_connectivity_config.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -8756,6 +8761,7 @@ class NetworkConnectivityAPI:
         """
 
         body = private_endpoint_rule.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -8994,6 +9000,7 @@ class NetworkPoliciesAPI:
         """
 
         body = network_policy.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -9080,6 +9087,7 @@ class NetworkPoliciesAPI:
         """
 
         body = network_policy.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -10103,6 +10111,7 @@ class WorkspaceNetworkConfigurationAPI:
         """
 
         body = workspace_network_option.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

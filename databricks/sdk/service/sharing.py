@@ -8,7 +8,12 @@ from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import catalog
-from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -27,8 +32,7 @@ class AuthenticationType(Enum):
 
 class ColumnTypeName(Enum):
     """UC supported column types Copied from
-    https://src.dev.databricks.com/databricks/universe@23a85902bb58695ab9293adc9f327b0714b55e72/-/blob/managed-catalog/api/messages/table.proto?L68
-    """
+    https://src.dev.databricks.com/databricks/universe@23a85902bb58695ab9293adc9f327b0714b55e72/-/blob/managed-catalog/api/messages/table.proto?L68"""
 
     ARRAY = "ARRAY"
     BINARY = "BINARY"
@@ -2821,6 +2825,7 @@ class RecipientFederationPoliciesAPI:
         """
 
         body = policy.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

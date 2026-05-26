@@ -8728,6 +8728,7 @@ class FeatureEngineeringAPI:
         """
 
         body = feature.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -8750,6 +8751,7 @@ class FeatureEngineeringAPI:
         """
 
         body = kafka_config.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -8772,6 +8774,7 @@ class FeatureEngineeringAPI:
         """
 
         body = materialized_feature.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -9162,6 +9165,7 @@ class FeatureStoreAPI:
         """
 
         body = online_store.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -9577,6 +9581,7 @@ class MaterializedFeaturesAPI:
         """
 
         body = feature_tag.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

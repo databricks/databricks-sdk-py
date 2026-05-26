@@ -11,7 +11,13 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import compute
-from databricks.sdk.service._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 from ..errors import OperationFailed
 
@@ -715,8 +721,7 @@ class FileIngestionOptionsFileFormat(Enum):
 
 class FileIngestionOptionsSchemaEvolutionMode(Enum):
     """Based on
-    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#how-does-auto-loader-schema-evolution-work
-    """
+    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#how-does-auto-loader-schema-evolution-work"""
 
     ADD_NEW_COLUMNS = "ADD_NEW_COLUMNS"
     ADD_NEW_COLUMNS_WITH_TYPE_WIDENING = "ADD_NEW_COLUMNS_WITH_TYPE_WIDENING"

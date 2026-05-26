@@ -10,7 +10,13 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 from ..errors import OperationFailed
 
@@ -10587,8 +10593,7 @@ class InstanceProfilesAPI:
     clusters with. Regular users can list the instance profiles available to them. See [Secure access to S3
     buckets] using instance profiles for more information.
 
-    [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html
-    """
+    [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html"""
 
     def __init__(self, api_client):
         self._api = api_client

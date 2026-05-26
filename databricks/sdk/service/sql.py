@@ -11,7 +11,13 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 from ..errors import OperationFailed
 
@@ -7870,6 +7876,7 @@ class AlertsV2API:
         """
 
         body = alert.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -9373,8 +9380,7 @@ class StatementExecutionAPI:
     you cannot use the Jobs API to execute the command, and then the SQL Execution API to cancel it.
 
     [Apache Arrow Columnar]: https://arrow.apache.org/overview/
-    [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
-    """
+    [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html"""
 
     def __init__(self, api_client):
         self._api = api_client

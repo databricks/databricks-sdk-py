@@ -13,7 +13,14 @@ from typing import Any, Callable, Dict, Iterator, List, Optional
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum, _timestamp
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+    _timestamp,
+)
 
 from ..errors import OperationFailed
 
@@ -12440,6 +12447,7 @@ class EntityTagAssignmentsAPI:
         """
 
         body = tag_assignment.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -12645,6 +12653,7 @@ class ExternalLineageAPI:
         """
 
         body = external_lineage_relationship.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -13124,6 +13133,7 @@ class ExternalMetadataAPI:
         """
 
         body = external_metadata.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -14342,6 +14352,7 @@ class OnlineTablesAPI:
         """
 
         body = table.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -14422,6 +14433,7 @@ class PoliciesAPI:
         """
 
         body = policy_info.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -15495,8 +15507,7 @@ class ResourceQuotasAPI:
     metastore or schemas per catalog). The resource quota APIs enable you to monitor your current usage and
     limits. For more information on resource quotas see the [Unity Catalog documentation].
 
-    [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
-    """
+    [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -15948,6 +15959,7 @@ class SecretsUcAPI:
         """
 
         body = secret.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

@@ -8,7 +8,12 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -550,6 +555,7 @@ class AccountIamV2API:
         """
 
         body = workspace_assignment_detail.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -823,6 +829,7 @@ class WorkspaceIamV2API:
         """
 
         body = workspace_assignment_detail.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
