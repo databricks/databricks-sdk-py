@@ -11,7 +11,6 @@
     Azure Private Link. See [configure serverless secure connectivity].
 
     [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
-    
 
     .. py:method:: create_network_connectivity_configuration(network_connectivity_config: CreateNetworkConnectivityConfiguration) -> NetworkConnectivityConfiguration
 

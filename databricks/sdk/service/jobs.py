@@ -3992,6 +3992,10 @@ class PipelineTask:
     full_refresh_selection: Optional[List[str]] = None
     """A list of tables to update with fullRefresh."""
 
+    pipeline_task_parameters: Optional[Dict[str, str]] = None
+    """Key/value-map of parameters passed to the pipeline execution. Limited to 10k characters in
+    total."""
+
     refresh_flow_selection: Optional[List[str]] = None
     """Flow names to selectively refresh. These are unioned with other selective refresh options
     (refresh_selection, full_refresh_selection) to determine the final set of flows to refresh."""
@@ -4011,6 +4015,8 @@ class PipelineTask:
             body["full_refresh_selection"] = [v for v in self.full_refresh_selection]
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
+        if self.pipeline_task_parameters:
+            body["pipeline_task_parameters"] = self.pipeline_task_parameters
         if self.refresh_flow_selection:
             body["refresh_flow_selection"] = [v for v in self.refresh_flow_selection]
         if self.refresh_selection:
@@ -4028,6 +4034,8 @@ class PipelineTask:
             body["full_refresh_selection"] = self.full_refresh_selection
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
+        if self.pipeline_task_parameters:
+            body["pipeline_task_parameters"] = self.pipeline_task_parameters
         if self.refresh_flow_selection:
             body["refresh_flow_selection"] = self.refresh_flow_selection
         if self.refresh_selection:
@@ -4043,6 +4051,7 @@ class PipelineTask:
             full_refresh=d.get("full_refresh", None),
             full_refresh_selection=d.get("full_refresh_selection", None),
             pipeline_id=d.get("pipeline_id", None),
+            pipeline_task_parameters=d.get("pipeline_task_parameters", None),
             refresh_flow_selection=d.get("refresh_flow_selection", None),
             refresh_selection=d.get("refresh_selection", None),
             reset_checkpoint_selection=d.get("reset_checkpoint_selection", None),
@@ -4630,6 +4639,32 @@ class ResolvedParamPairValues:
 
 
 @dataclass
+class ResolvedPipelineTaskValues:
+    pipeline_task_parameters: Optional[Dict[str, str]] = None
+    """Key/value-map of parameters passed to the pipeline execution. Limited to 10k characters in
+    total."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ResolvedPipelineTaskValues into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.pipeline_task_parameters:
+            body["pipeline_task_parameters"] = self.pipeline_task_parameters
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolvedPipelineTaskValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.pipeline_task_parameters:
+            body["pipeline_task_parameters"] = self.pipeline_task_parameters
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedPipelineTaskValues:
+        """Deserializes the ResolvedPipelineTaskValues from a dictionary."""
+        return cls(pipeline_task_parameters=d.get("pipeline_task_parameters", None))
+
+
+@dataclass
 class ResolvedPythonWheelTaskValues:
     named_parameters: Optional[Dict[str, str]] = None
 
@@ -4721,6 +4756,8 @@ class ResolvedValues:
 
     notebook_task: Optional[ResolvedNotebookTaskValues] = None
 
+    pipeline_task: Optional[ResolvedPipelineTaskValues] = None
+
     python_wheel_task: Optional[ResolvedPythonWheelTaskValues] = None
 
     run_job_task: Optional[ResolvedRunJobTaskValues] = None
@@ -4744,6 +4781,8 @@ class ResolvedValues:
             body["dbt_task"] = self.dbt_task.as_dict()
         if self.notebook_task:
             body["notebook_task"] = self.notebook_task.as_dict()
+        if self.pipeline_task:
+            body["pipeline_task"] = self.pipeline_task.as_dict()
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.run_job_task:
@@ -4769,6 +4808,8 @@ class ResolvedValues:
             body["dbt_task"] = self.dbt_task
         if self.notebook_task:
             body["notebook_task"] = self.notebook_task
+        if self.pipeline_task:
+            body["pipeline_task"] = self.pipeline_task
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task
         if self.run_job_task:
@@ -4792,6 +4833,7 @@ class ResolvedValues:
             condition_task=_from_dict(d, "condition_task", ResolvedConditionTaskValues),
             dbt_task=_from_dict(d, "dbt_task", ResolvedDbtTaskValues),
             notebook_task=_from_dict(d, "notebook_task", ResolvedNotebookTaskValues),
+            pipeline_task=_from_dict(d, "pipeline_task", ResolvedPipelineTaskValues),
             python_wheel_task=_from_dict(d, "python_wheel_task", ResolvedPythonWheelTaskValues),
             run_job_task=_from_dict(d, "run_job_task", ResolvedRunJobTaskValues),
             simulation_task=_from_dict(d, "simulation_task", ResolvedParamPairValues),

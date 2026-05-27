@@ -10,7 +10,6 @@
 
     [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
     [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
-    
 
     .. py:method:: create_tag_policy(tag_policy: TagPolicy) -> TagPolicy
 
