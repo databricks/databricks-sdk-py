@@ -15,7 +15,6 @@
 
     [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
     [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
-    
 
     .. py:method:: create(service_principal_id: str [, lifetime: Optional[str]]) -> CreateServicePrincipalSecretResponse
 

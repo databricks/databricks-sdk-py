@@ -9231,7 +9231,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_ICEBERG_REST_OAUTH_M2M = 336; Next id: 337"""
+    """Latest kind: CONNECTION_GOOGLE_CLOUD_LAKEHOUSE_SERVICE_ACCOUNT = 340; Next id: 341"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"

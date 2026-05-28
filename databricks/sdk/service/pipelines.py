@@ -841,6 +841,10 @@ class GetPipelineResponse:
     name: Optional[str] = None
     """A human friendly identifier for the pipeline, taken from the `spec`."""
 
+    parameters: Optional[Dict[str, str]] = None
+    """Key/value map of default parameters to use for pipeline execution. Maximum total size: 10k
+    characters (JSON format)"""
+
     pipeline_id: Optional[str] = None
     """The ID of the pipeline."""
 
@@ -879,6 +883,8 @@ class GetPipelineResponse:
             body["latest_updates"] = [v.as_dict() for v in self.latest_updates]
         if self.name is not None:
             body["name"] = self.name
+        if self.parameters:
+            body["parameters"] = self.parameters
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
         if self.run_as:
@@ -912,6 +918,8 @@ class GetPipelineResponse:
             body["latest_updates"] = self.latest_updates
         if self.name is not None:
             body["name"] = self.name
+        if self.parameters:
+            body["parameters"] = self.parameters
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
         if self.run_as:
@@ -937,6 +945,7 @@ class GetPipelineResponse:
             last_modified=d.get("last_modified", None),
             latest_updates=_repeated_dict(d, "latest_updates", UpdateStateInfo),
             name=d.get("name", None),
+            parameters=d.get("parameters", None),
             pipeline_id=d.get("pipeline_id", None),
             run_as=_from_dict(d, "run_as", RunAs),
             run_as_user_name=d.get("run_as_user_name", None),
@@ -5184,6 +5193,7 @@ class PipelinesAPI:
         libraries: Optional[List[PipelineLibrary]] = None,
         name: Optional[str] = None,
         notifications: Optional[List[Notifications]] = None,
+        parameters: Optional[Dict[str, str]] = None,
         photon: Optional[bool] = None,
         restart_window: Optional[RestartWindow] = None,
         root_path: Optional[str] = None,
@@ -5241,6 +5251,9 @@ class PipelinesAPI:
           Friendly identifier for this pipeline.
         :param notifications: List[:class:`Notifications`] (optional)
           List of notification settings for this pipeline.
+        :param parameters: Dict[str,str] (optional)
+          Key/value map of default parameters to use for pipeline execution. Maximum total size: 10k
+          characters (JSON format)
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
@@ -5312,6 +5325,8 @@ class PipelinesAPI:
             body["name"] = name
         if notifications is not None:
             body["notifications"] = [v.as_dict() for v in notifications]
+        if parameters is not None:
+            body["parameters"] = parameters
         if photon is not None:
             body["photon"] = photon
         if restart_window is not None:
@@ -5771,6 +5786,7 @@ class PipelinesAPI:
         libraries: Optional[List[PipelineLibrary]] = None,
         name: Optional[str] = None,
         notifications: Optional[List[Notifications]] = None,
+        parameters: Optional[Dict[str, str]] = None,
         photon: Optional[bool] = None,
         restart_window: Optional[RestartWindow] = None,
         root_path: Optional[str] = None,
@@ -5831,6 +5847,9 @@ class PipelinesAPI:
           Friendly identifier for this pipeline.
         :param notifications: List[:class:`Notifications`] (optional)
           List of notification settings for this pipeline.
+        :param parameters: Dict[str,str] (optional)
+          Key/value map of default parameters to use for pipeline execution. Maximum total size: 10k
+          characters (JSON format)
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
@@ -5902,6 +5921,8 @@ class PipelinesAPI:
             body["name"] = name
         if notifications is not None:
             body["notifications"] = [v.as_dict() for v in notifications]
+        if parameters is not None:
+            body["parameters"] = parameters
         if photon is not None:
             body["photon"] = photon
         if restart_window is not None:

@@ -487,9 +487,6 @@ class CatalogCatalogStatus:
     
     Format: projects/{project_id}/branches/{branch_id}."""
 
-    catalog_id: Optional[str] = None
-    """Part of the resource name."""
-
     postgres_database: Optional[str] = None
     """The name of the Postgres database associated with the catalog."""
 
@@ -503,8 +500,6 @@ class CatalogCatalogStatus:
         body = {}
         if self.branch is not None:
             body["branch"] = self.branch
-        if self.catalog_id is not None:
-            body["catalog_id"] = self.catalog_id
         if self.postgres_database is not None:
             body["postgres_database"] = self.postgres_database
         if self.project is not None:
@@ -516,8 +511,6 @@ class CatalogCatalogStatus:
         body = {}
         if self.branch is not None:
             body["branch"] = self.branch
-        if self.catalog_id is not None:
-            body["catalog_id"] = self.catalog_id
         if self.postgres_database is not None:
             body["postgres_database"] = self.postgres_database
         if self.project is not None:
@@ -529,7 +522,6 @@ class CatalogCatalogStatus:
         """Deserializes the CatalogCatalogStatus from a dictionary."""
         return cls(
             branch=d.get("branch", None),
-            catalog_id=d.get("catalog_id", None),
             postgres_database=d.get("postgres_database", None),
             project=d.get("project", None),
         )
@@ -2866,9 +2858,6 @@ class SyncedTableSyncedTableStatus:
     provisioning_phase: Optional[ProvisioningPhase] = None
     """The current phase of the data synchronization pipeline."""
 
-    synced_table_id: Optional[str] = None
-    """Part of the resource name."""
-
     unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
     """The provisioning state of the synced table entity in Unity Catalog."""
 
@@ -2893,8 +2882,6 @@ class SyncedTableSyncedTableStatus:
             body["project"] = self.project
         if self.provisioning_phase is not None:
             body["provisioning_phase"] = self.provisioning_phase.value
-        if self.synced_table_id is not None:
-            body["synced_table_id"] = self.synced_table_id
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state.value
         return body
@@ -2920,8 +2907,6 @@ class SyncedTableSyncedTableStatus:
             body["project"] = self.project
         if self.provisioning_phase is not None:
             body["provisioning_phase"] = self.provisioning_phase
-        if self.synced_table_id is not None:
-            body["synced_table_id"] = self.synced_table_id
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state
         return body
@@ -2939,7 +2924,6 @@ class SyncedTableSyncedTableStatus:
             pipeline_id=d.get("pipeline_id", None),
             project=d.get("project", None),
             provisioning_phase=_enum(d, "provisioning_phase", ProvisioningPhase),
-            synced_table_id=d.get("synced_table_id", None),
             unity_catalog_provisioning_state=_enum(d, "unity_catalog_provisioning_state", ProvisioningInfoState),
         )
 

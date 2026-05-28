@@ -1174,8 +1174,11 @@ class QueryVectorIndexResponse:
 @dataclass
 class RerankerConfig:
     model: Optional[str] = None
+    """Reranker identifier: - When model_type=BASE/UNSPECIFIED: must be "databricks_reranker". - When
+    model_type=FINETUNED: the Model Serving endpoint name hosting a finetuned reranker."""
 
     parameters: Optional[RerankerConfigRerankerParameters] = None
+    """Parameters that control how the reranker processes the query results."""
 
     def as_dict(self) -> dict:
         """Serializes the RerankerConfig into a dictionary suitable for use as a JSON request body."""
