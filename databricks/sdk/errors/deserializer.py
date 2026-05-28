@@ -6,6 +6,8 @@ from typing import Optional
 
 import requests
 
+_LOG = logging.getLogger(__name__)
+
 
 class _ErrorDeserializer(abc.ABC):
     """A parser for errors from the Databricks REST API."""
@@ -34,19 +36,19 @@ class _StandardErrorDeserializer(_ErrorDeserializer):
             payload_str = response_body.decode("utf-8")
             resp = json.loads(payload_str)
         except UnicodeDecodeError as e:
-            logging.debug(
+            _LOG.debug(
                 "_StandardErrorParser: unable to decode response using utf-8",
                 exc_info=e,
             )
             return None
         except json.JSONDecodeError as e:
-            logging.debug(
+            _LOG.debug(
                 "_StandardErrorParser: unable to deserialize response as json",
                 exc_info=e,
             )
             return None
         if not isinstance(resp, dict):
-            logging.debug("_StandardErrorParser: response is valid JSON but not a dictionary")
+            _LOG.debug("_StandardErrorParser: response is valid JSON but not a dictionary")
             return None
 
         error_args = {
@@ -84,7 +86,7 @@ class _StringErrorDeserializer(_ErrorDeserializer):
         payload_str = response_body.decode("utf-8")
         match = self.__STRING_ERROR_REGEX.match(payload_str)
         if not match:
-            logging.debug("_StringErrorParser: unable to parse response as string")
+            _LOG.debug("_StringErrorParser: unable to parse response as string")
             return None
         error_code, message = match.groups()
         return {
@@ -115,5 +117,5 @@ class _HtmlErrorDeserializer(_ErrorDeserializer):
                     "message": message,
                     "error_code": response.reason.upper().replace(" ", "_"),
                 }
-        logging.debug("_HtmlErrorParser: no <pre> tag found in error response")
+        _LOG.debug("_HtmlErrorParser: no <pre> tag found in error response")
         return None

@@ -3,6 +3,8 @@ import typing
 import warnings
 from abc import ABC, abstractmethod
 
+_LOG = logging.getLogger(__name__)
+
 
 class WidgetUtils(ABC):
     def get(self, name: str):
@@ -53,7 +55,7 @@ try:
         )
         == 0
     ):
-        logging.debug("Not in an interactive notebook. Skipping ipywidgets implementation for dbutils.")
+        _LOG.debug("Not in an interactive notebook. Skipping ipywidgets implementation for dbutils.")
         raise EnvironmentError("Not in an interactive notebook.")
 
     # For import errors in IPyWidgetUtil, we provide a warning message, prompting users to install the
@@ -62,7 +64,7 @@ try:
         from .ipywidgets_utils import IPyWidgetUtil
 
         widget_impl = IPyWidgetUtil
-        logging.debug("Using ipywidgets implementation for dbutils.")
+        _LOG.debug("Using ipywidgets implementation for dbutils.")
 
     except ImportError as e:
         # Since we are certain that we are in an interactive notebook, we can make assumptions about
@@ -72,11 +74,11 @@ try:
             "\tpip install 'databricks-sdk[notebook]'\n"
             "Falling back to default_value_only implementation for databricks widgets."
         )
-        logging.debug(f"{e.msg}. Skipping ipywidgets implementation for dbutils.")
+        _LOG.debug(f"{e.msg}. Skipping ipywidgets implementation for dbutils.")
         raise e
 
 except Exception:
     from .default_widgets_utils import DefaultValueOnlyWidgetUtils
 
     widget_impl = DefaultValueOnlyWidgetUtils
-    logging.debug("Using default_value_only implementation for dbutils.")
+    _LOG.debug("Using default_value_only implementation for dbutils.")

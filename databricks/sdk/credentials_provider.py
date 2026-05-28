@@ -29,6 +29,8 @@ from .client_types import ClientType
 if TYPE_CHECKING:
     from .config import Config
 
+_LOG = logging.getLogger(__name__)
+
 CredentialsProvider = Callable[[], Dict[str, str]]
 
 logger = logging.getLogger("databricks.sdk")
@@ -769,7 +771,7 @@ def _run_subprocess(
     kwargs["shell"] = sys.platform.startswith("win")
     # windows requires shell=True to be able to execute 'az login' or other commands
     # cannot use shell=True all the time, as it breaks macOS
-    logging.debug(f"Running command: {' '.join(popenargs)}")
+    _LOG.debug(f"Running command: {' '.join(popenargs)}")
     return subprocess.run(
         popenargs,
         input=input,
