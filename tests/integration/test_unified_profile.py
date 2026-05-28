@@ -2,6 +2,7 @@ from urllib.parse import urlparse
 
 import pytest
 from requests.adapters import HTTPAdapter
+from requests.structures import CaseInsensitiveDict
 
 from databricks.sdk import AccountClient, WorkspaceClient
 from databricks.sdk.environments import Cloud
@@ -13,7 +14,9 @@ class _CaptureHeadersAdapter(HTTPAdapter):
     """Snapshots request and response headers for a single matching URL path.
 
     Used to verify wire-level header behavior in integration tests; the request
-    is otherwise let through to the real transport unchanged.
+    is otherwise let through to the real transport unchanged. Headers are kept
+    as CaseInsensitiveDict so assertions don't depend on wire casing (HTTP/2
+    servers typically lowercase header names).
     """
 
     def __init__(self, path, *args, **kwargs):
@@ -25,8 +28,8 @@ class _CaptureHeadersAdapter(HTTPAdapter):
     def send(self, request, **kwargs):
         response = super().send(request, **kwargs)
         if urlparse(request.url).path == self.path:
-            self.req_headers = dict(request.headers)
-            self.resp_headers = dict(response.headers)
+            self.req_headers = CaseInsensitiveDict(request.headers)
+            self.resp_headers = CaseInsensitiveDict(response.headers)
         return response
 
 
