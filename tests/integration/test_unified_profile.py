@@ -87,12 +87,6 @@ def test_spog_workspace_azure_client_secret(isolated_env):
 
 # Environment: gcp-prod-ucacct
 def test_spog_workspace_google_credentials(isolated_env):
-    # google-credentials uses a GCP ID token with target_audience=cfg.host.
-    # On the unified host this produces the same token for both account and workspace
-    # requests (identical OIDC exchange, identical audience). Account-level APIs accept
-    # this token, but workspace-level APIs return 401. The X-Databricks-Org-Id header
-    # is set correctly. This appears to be a server-side limitation on unified hosts.
-    pytest.skip("google-credentials ID token is rejected for workspace operations on unified hosts")
     env = isolated_env("ucacct")
     host = env("UNIFIED_HOST")
     account_id = env("DATABRICKS_ACCOUNT_ID")
