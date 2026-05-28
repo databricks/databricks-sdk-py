@@ -91,6 +91,9 @@ def with_user_agent_extra(key: str, value: str):
 class Config:
     host: str = ConfigAttribute(env="DATABRICKS_HOST")
     account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")
+    # Workspace identifier sent on workspace-scoped API calls so unified hosts
+    # can route to the right workspace. Accepts a classic numeric workspace ID
+    # or another workspace identifier format that the server understands.
     workspace_id: str = ConfigAttribute(env="DATABRICKS_WORKSPACE_ID")
 
     # Cloud provider. When set, is_aws/is_azure/is_gcp use this value directly

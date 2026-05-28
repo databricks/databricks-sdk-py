@@ -450,8 +450,8 @@ def test_oidc_endpoints_falls_back_to_databricks_when_no_azure_client_id(mocker,
     assert "https://adb-123.4.azuredatabricks.net/oidc/v1/token" == endpoints.token_endpoint
 
 
-def test_workspace_org_id_header_on_unified_host(requests_mock):
-    """Test that X-Databricks-Org-Id header is added for workspace clients on unified hosts."""
+def test_workspace_id_header_on_unified_host(requests_mock):
+    """Test that X-Databricks-Workspace-Id header is added for workspace clients on unified hosts."""
 
     requests_mock.get("https://unified.databricks.com/api/2.0/preview/scim/v2/Me", json={"result": "success"})
 
@@ -465,12 +465,12 @@ def test_workspace_org_id_header_on_unified_host(requests_mock):
     workspace_client = WorkspaceClient(config=config)
     workspace_client.current_user.me()
 
-    # Verify the request was made with the X-Databricks-Org-Id header
-    assert requests_mock.last_request.headers.get("X-Databricks-Org-Id") == "test-workspace-123"
+    # Verify the request was made with the X-Databricks-Workspace-Id header
+    assert requests_mock.last_request.headers.get("X-Databricks-Workspace-Id") == "test-workspace-123"
 
 
-def test_not_workspace_org_id_header_on_unified_host_on_account_endpoint(requests_mock):
-    """Test that X-Databricks-Org-Id header is added for workspace clients on unified hosts."""
+def test_not_workspace_id_header_on_unified_host_on_account_endpoint(requests_mock):
+    """Test that X-Databricks-Workspace-Id header is added for workspace clients on unified hosts."""
 
     requests_mock.get(
         "https://unified.databricks.com/api/2.0/accounts/test-account/scim/v2/Groups/test-group-123",
@@ -487,23 +487,32 @@ def test_not_workspace_org_id_header_on_unified_host_on_account_endpoint(request
     account_client = AccountClient(config=config)
     account_client.groups.get("test-group-123")
 
-    # Verify the request was made without the X-Databricks-Org-Id header
-    assert "X-Databricks-Org-Id" not in requests_mock.last_request.headers
+    # Verify the request was made without the X-Databricks-Workspace-Id header
+    assert "X-Databricks-Workspace-Id" not in requests_mock.last_request.headers
 
 
-def test_no_org_id_header_on_regular_workspace(requests_mock):
-    """Test that X-Databricks-Org-Id header is NOT added for regular workspace hosts."""
-    from databricks.sdk.core import ApiClient
+def test_get_workspace_id_reads_org_id_response_header_when_config_missing_workspace_id(requests_mock):
+    """When Config.workspace_id is empty, get_workspace_id() fetches the ID via SCIM /Me.
 
-    requests_mock.get("https://test.databricks.com/api/2.0/test", json={"result": "success"})
+    Verifies both directions of the migration on the workspace-id probe:
+    - request must NOT carry the new X-Databricks-Workspace-Id header (Config.workspace_id is empty)
+    - response is parsed from the legacy X-Databricks-Org-Id header (server-side hasn't migrated)
+    """
+    requests_mock.get(
+        "https://unified.databricks.com/api/2.0/preview/scim/v2/Me",
+        json={},
+        headers={"X-Databricks-Org-Id": "7474644166319138"},
+    )
 
-    config = Config(host="https://test.databricks.com", token="test-token")
+    config = Config(
+        host="https://unified.databricks.com",
+        account_id="test-account",
+        token="test-token",
+    )
 
-    api_client = ApiClient(config)
-    api_client.do("GET", "/api/2.0/test")
-
-    # Verify the X-Databricks-Org-Id header was NOT added
-    assert "X-Databricks-Org-Id" not in requests_mock.last_request.headers
+    workspace_client = WorkspaceClient(config=config)
+    assert workspace_client.get_workspace_id() == 7474644166319138
+    assert "X-Databricks-Workspace-Id" not in requests_mock.last_request.headers
 
 
 def test_disable_oauth_refresh_token_from_env(monkeypatch, mocker):

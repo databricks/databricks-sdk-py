@@ -511,7 +511,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", "/api/environments/v1/workspace-base-environments", query=query, body=body, headers=headers
@@ -537,7 +537,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/environments/v1/{name}", headers=headers)
 
@@ -558,7 +558,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/environments/v1/{name}", headers=headers)
         return DefaultWorkspaceBaseEnvironment.from_dict(res)
@@ -578,7 +578,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/environments/v1/{name}", headers=headers)
         return Operation.from_dict(res)
@@ -599,7 +599,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/environments/v1/{name}", headers=headers)
         return WorkspaceBaseEnvironment.from_dict(res)
@@ -640,7 +640,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/environments/v1/workspace-base-environments", query=query, headers=headers)
@@ -671,7 +671,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/environments/v1/{name}/refresh", headers=headers)
         operation = Operation.from_dict(res)
@@ -710,7 +710,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/environments/v1/{name}", query=query, body=body, headers=headers)
         return DefaultWorkspaceBaseEnvironment.from_dict(res)
@@ -740,7 +740,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/environments/v1/{name}", body=body, headers=headers)
         operation = Operation.from_dict(res)

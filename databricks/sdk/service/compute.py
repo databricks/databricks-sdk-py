@@ -7976,7 +7976,7 @@ class ClusterPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/policies/clusters/create", body=body, headers=headers)
         return CreatePolicyResponse.from_dict(res)
@@ -8000,7 +8000,7 @@ class ClusterPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/policies/clusters/delete", body=body, headers=headers)
 
@@ -8078,7 +8078,7 @@ class ClusterPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/policies/clusters/edit", body=body, headers=headers)
 
@@ -8100,7 +8100,7 @@ class ClusterPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/policies/clusters/get", query=query, headers=headers)
         return Policy.from_dict(res)
@@ -8120,7 +8120,7 @@ class ClusterPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels", headers=headers
@@ -8143,7 +8143,7 @@ class ClusterPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", headers=headers)
         return ClusterPolicyPermissions.from_dict(res)
@@ -8174,7 +8174,7 @@ class ClusterPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/policies/clusters/list", query=query, headers=headers)
         parsed = ListPoliciesResponse.from_dict(json).policies
@@ -8203,7 +8203,7 @@ class ClusterPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", body=body, headers=headers
@@ -8233,7 +8233,7 @@ class ClusterPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", body=body, headers=headers
@@ -8357,7 +8357,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.1/clusters/change-owner", body=body, headers=headers)
 
@@ -8632,7 +8632,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.1/clusters/create", body=body, headers=headers)
         return Wait(
@@ -8742,7 +8742,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.1/clusters/delete", body=body, headers=headers)
         return Wait(self.wait_get_cluster_terminated, cluster_id=cluster_id)
@@ -9018,7 +9018,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.1/clusters/edit", body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
@@ -9175,7 +9175,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("POST", "/api/2.1/clusters/events", body=body, headers=headers)
@@ -9205,7 +9205,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.1/clusters/get", query=query, headers=headers)
         return ClusterDetails.from_dict(res)
@@ -9225,7 +9225,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/clusters/{cluster_id}/permissionLevels", headers=headers)
         return GetClusterPermissionLevelsResponse.from_dict(res)
@@ -9245,7 +9245,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/clusters/{cluster_id}", headers=headers)
         return ClusterPermissions.from_dict(res)
@@ -9290,7 +9290,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/clusters/list", query=query, headers=headers)
@@ -9314,7 +9314,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.1/clusters/list-node-types", headers=headers)
         return ListNodeTypesResponse.from_dict(res)
@@ -9333,7 +9333,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.1/clusters/list-zones", headers=headers)
         return ListAvailableZonesResponse.from_dict(res)
@@ -9361,7 +9361,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.1/clusters/permanent-delete", body=body, headers=headers)
 
@@ -9384,7 +9384,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.1/clusters/pin", body=body, headers=headers)
 
@@ -9428,7 +9428,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.1/clusters/resize", body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
@@ -9468,7 +9468,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.1/clusters/restart", body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
@@ -9501,7 +9501,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/permissions/clusters/{cluster_id}", body=body, headers=headers)
         return ClusterPermissions.from_dict(res)
@@ -9519,7 +9519,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.1/clusters/spark-versions", headers=headers)
         return GetSparkVersionsResponse.from_dict(res)
@@ -9549,7 +9549,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.1/clusters/start", body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
@@ -9577,7 +9577,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.1/clusters/unpin", body=body, headers=headers)
 
@@ -9630,7 +9630,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.1/clusters/update", body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
@@ -9667,7 +9667,7 @@ class ClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/clusters/{cluster_id}", body=body, headers=headers)
         return ClusterPermissions.from_dict(res)
@@ -9819,7 +9819,7 @@ class CommandExecutionAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/1.2/commands/cancel", body=body, headers=headers)
         return Wait(
@@ -9864,7 +9864,7 @@ class CommandExecutionAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/1.2/commands/status", query=query, headers=headers)
         return CommandStatusResponse.from_dict(res)
@@ -9889,7 +9889,7 @@ class CommandExecutionAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/1.2/contexts/status", query=query, headers=headers)
         return ContextStatusResponse.from_dict(res)
@@ -9922,7 +9922,7 @@ class CommandExecutionAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/1.2/contexts/create", body=body, headers=headers)
         return Wait(
@@ -9958,7 +9958,7 @@ class CommandExecutionAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/1.2/contexts/destroy", body=body, headers=headers)
 
@@ -10003,7 +10003,7 @@ class CommandExecutionAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/1.2/commands/execute", body=body, headers=headers)
         return Wait(
@@ -10081,7 +10081,7 @@ class GlobalInitScriptsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/global-init-scripts", body=body, headers=headers)
         return CreateResponse.from_dict(res)
@@ -10101,7 +10101,7 @@ class GlobalInitScriptsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/global-init-scripts/{script_id}", headers=headers)
 
@@ -10120,7 +10120,7 @@ class GlobalInitScriptsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/global-init-scripts/{script_id}", headers=headers)
         return GlobalInitScriptDetailsWithContent.from_dict(res)
@@ -10140,7 +10140,7 @@ class GlobalInitScriptsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/global-init-scripts", headers=headers)
         parsed = ListGlobalInitScriptsResponse.from_dict(json).scripts
@@ -10190,7 +10190,7 @@ class GlobalInitScriptsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/global-init-scripts/{script_id}", body=body, headers=headers)
 
@@ -10334,7 +10334,7 @@ class InstancePoolsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/instance-pools/create", body=body, headers=headers)
         return CreateInstancePoolResponse.from_dict(res)
@@ -10358,7 +10358,7 @@ class InstancePoolsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/instance-pools/delete", body=body, headers=headers)
 
@@ -10440,7 +10440,7 @@ class InstancePoolsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/instance-pools/edit", body=body, headers=headers)
 
@@ -10462,7 +10462,7 @@ class InstancePoolsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/instance-pools/get", query=query, headers=headers)
         return GetInstancePool.from_dict(res)
@@ -10482,7 +10482,7 @@ class InstancePoolsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels", headers=headers
@@ -10505,7 +10505,7 @@ class InstancePoolsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", headers=headers)
         return InstancePoolPermissions.from_dict(res)
@@ -10523,7 +10523,7 @@ class InstancePoolsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/instance-pools/list", headers=headers)
         parsed = ListInstancePools.from_dict(json).instance_pools
@@ -10552,7 +10552,7 @@ class InstancePoolsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", body=body, headers=headers)
         return InstancePoolPermissions.from_dict(res)
@@ -10580,7 +10580,7 @@ class InstancePoolsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", body=body, headers=headers
@@ -10652,7 +10652,7 @@ class InstanceProfilesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/instance-profiles/add", body=body, headers=headers)
 
@@ -10709,7 +10709,7 @@ class InstanceProfilesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/instance-profiles/edit", body=body, headers=headers)
 
@@ -10728,7 +10728,7 @@ class InstanceProfilesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/instance-profiles/list", headers=headers)
         parsed = ListInstanceProfilesResponse.from_dict(json).instance_profiles
@@ -10756,7 +10756,7 @@ class InstanceProfilesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/instance-profiles/remove", body=body, headers=headers)
 
@@ -10793,7 +10793,7 @@ class LibrariesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/libraries/all-cluster-statuses", headers=headers)
         parsed = ListAllClusterLibraryStatusesResponse.from_dict(json).statuses
@@ -10821,7 +10821,7 @@ class LibrariesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/libraries/cluster-status", query=query, headers=headers)
         parsed = ClusterLibraryStatuses.from_dict(json).library_statuses
@@ -10851,7 +10851,7 @@ class LibrariesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/libraries/install", body=body, headers=headers)
 
@@ -10879,7 +10879,7 @@ class LibrariesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/libraries/uninstall", body=body, headers=headers)
 
@@ -10933,7 +10933,7 @@ class PolicyComplianceForClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/policies/clusters/enforce-compliance", body=body, headers=headers)
         return EnforceClusterComplianceResponse.from_dict(res)
@@ -10957,7 +10957,7 @@ class PolicyComplianceForClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/policies/clusters/get-compliance", query=query, headers=headers)
         return GetClusterComplianceResponse.from_dict(res)
@@ -10993,7 +10993,7 @@ class PolicyComplianceForClustersAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/policies/clusters/list-compliance", query=query, headers=headers)
@@ -11039,7 +11039,7 @@ class PolicyFamiliesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/policy-families/{policy_family_id}", query=query, headers=headers)
         return PolicyFamily.from_dict(res)
@@ -11067,7 +11067,7 @@ class PolicyFamiliesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/policy-families", query=query, headers=headers)
