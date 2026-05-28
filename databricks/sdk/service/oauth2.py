@@ -1839,7 +1839,7 @@ class ServicePrincipalSecretsProxyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -1864,7 +1864,7 @@ class ServicePrincipalSecretsProxyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE",
@@ -1903,7 +1903,7 @@ class ServicePrincipalSecretsProxyAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(

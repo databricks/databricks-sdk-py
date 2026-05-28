@@ -215,7 +215,7 @@ class AgentBricksAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize/cancel", headers=headers)
 
@@ -265,7 +265,7 @@ class AgentBricksAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/custom-llms", body=body, headers=headers)
         return CustomLlm.from_dict(res)
@@ -285,7 +285,7 @@ class AgentBricksAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/custom-llms/{id}", headers=headers)
 
@@ -304,7 +304,7 @@ class AgentBricksAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/custom-llms/{id}", headers=headers)
         return CustomLlm.from_dict(res)
@@ -325,7 +325,7 @@ class AgentBricksAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize", headers=headers)
         return CustomLlm.from_dict(res)
@@ -366,7 +366,7 @@ class AgentBricksAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/custom-llms/{id}", body=body, headers=headers)
         return CustomLlm.from_dict(res)

@@ -822,7 +822,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.1/{parent}/examples", body=body, headers=headers)
         return Example.from_dict(res)
@@ -845,7 +845,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/knowledge-assistants", body=body, headers=headers)
         return KnowledgeAssistant.from_dict(res)
@@ -870,7 +870,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.1/{parent}/knowledge-sources", body=body, headers=headers)
         return KnowledgeSource.from_dict(res)
@@ -891,7 +891,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/{name}", headers=headers)
 
@@ -911,7 +911,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/{name}", headers=headers)
 
@@ -931,7 +931,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/{name}", headers=headers)
 
@@ -951,7 +951,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/{name}", headers=headers)
         return Example.from_dict(res)
@@ -971,7 +971,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/{name}", headers=headers)
         return KnowledgeAssistant.from_dict(res)
@@ -992,7 +992,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/{name}", headers=headers)
         return KnowledgeSource.from_dict(res)
@@ -1012,7 +1012,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -1037,7 +1037,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/knowledge-assistants/{knowledge_assistant_id}", headers=headers
@@ -1072,7 +1072,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", f"/api/2.1/{parent}/examples", query=query, headers=headers)
@@ -1109,7 +1109,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/knowledge-assistants", query=query, headers=headers)
@@ -1144,7 +1144,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", f"/api/2.1/{parent}/knowledge-sources", query=query, headers=headers)
@@ -1181,7 +1181,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/permissions/knowledge-assistants/{knowledge_assistant_id}", body=body, headers=headers
@@ -1204,7 +1204,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.1/{name}/knowledge-sources:sync", headers=headers)
 
@@ -1233,7 +1233,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/{name}", query=query, body=body, headers=headers)
         return Example.from_dict(res)
@@ -1267,7 +1267,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/{name}", query=query, body=body, headers=headers)
         return KnowledgeAssistant.from_dict(res)
@@ -1302,7 +1302,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/{name}", query=query, body=body, headers=headers)
         return KnowledgeSource.from_dict(res)
@@ -1333,7 +1333,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/knowledge-assistants/{knowledge_assistant_id}", body=body, headers=headers

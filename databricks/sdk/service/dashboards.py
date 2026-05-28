@@ -2586,7 +2586,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do(
             "POST",
@@ -2636,7 +2636,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -2692,7 +2692,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/genie/spaces", body=body, headers=headers)
         return GenieSpace.from_dict(res)
@@ -2714,7 +2714,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}", headers=headers)
 
@@ -2737,7 +2737,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE",
@@ -2770,7 +2770,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -2802,7 +2802,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -2854,7 +2854,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -2887,7 +2887,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/genie/spaces/{space_id}/eval-runs", body=body, headers=headers)
         return GenieEvalRunResponse.from_dict(res)
@@ -2911,7 +2911,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/genie/spaces/{space_id}/eval-runs/{eval_run_id}/results/{result_id}", headers=headers
@@ -2934,7 +2934,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}/eval-runs/{eval_run_id}", headers=headers)
         return GenieEvalRunResponse.from_dict(res)
@@ -2967,7 +2967,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/genie/spaces/{space_id}/eval-runs/{eval_run_id}/results", query=query, headers=headers
@@ -3000,7 +3000,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}/eval-runs", query=query, headers=headers)
         return GenieListEvalRunsResponse.from_dict(res)
@@ -3062,7 +3062,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -3091,7 +3091,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -3124,7 +3124,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -3155,7 +3155,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -3188,7 +3188,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -3218,7 +3218,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}", query=query, headers=headers)
         return GenieSpace.from_dict(res)
@@ -3251,7 +3251,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -3289,7 +3289,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -3335,7 +3335,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}/conversations", query=query, headers=headers)
         return GenieListConversationsResponse.from_dict(res)
@@ -3376,7 +3376,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -3410,7 +3410,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/genie/spaces", query=query, headers=headers)
         return GenieListSpacesResponse.from_dict(res)
@@ -3452,7 +3452,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "POST",
@@ -3484,7 +3484,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do(
             "POST", f"/api/2.0/genie/spaces/{space_id}/start-conversation", body=body, headers=headers
@@ -3515,7 +3515,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
 
@@ -3574,7 +3574,7 @@ class GenieAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/genie/spaces/{space_id}", body=body, headers=headers)
         return GenieSpace.from_dict(res)
@@ -3618,7 +3618,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/lakeview/dashboards", query=query, body=body, headers=headers)
         return Dashboard.from_dict(res)
@@ -3643,7 +3643,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules", body=body, headers=headers)
         return Schedule.from_dict(res)
@@ -3670,7 +3670,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -3703,7 +3703,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE",
@@ -3739,7 +3739,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE",
@@ -3763,7 +3763,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}", headers=headers)
         return Dashboard.from_dict(res)
@@ -3783,7 +3783,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", headers=headers)
         return PublishedDashboard.from_dict(res)
@@ -3805,7 +3805,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}", headers=headers
@@ -3831,7 +3831,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -3879,7 +3879,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/lakeview/dashboards", query=query, headers=headers)
@@ -3917,7 +3917,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3959,7 +3959,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -4014,7 +4014,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/lakeview/dashboards/migrate", body=body, headers=headers)
         return Dashboard.from_dict(res)
@@ -4047,7 +4047,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", body=body, headers=headers)
         return PublishedDashboard.from_dict(res)
@@ -4075,7 +4075,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/lakeview/dashboards/{dashboard_id}/revert", body=body, headers=headers)
         return RevertDashboardResponse.from_dict(res)
@@ -4095,7 +4095,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/lakeview/dashboards/{dashboard_id}", headers=headers)
 
@@ -4114,7 +4114,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", headers=headers)
 
@@ -4156,7 +4156,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/lakeview/dashboards/{dashboard_id}", query=query, body=body, headers=headers
@@ -4185,7 +4185,7 @@ class LakeviewAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}", body=body, headers=headers
@@ -4225,7 +4225,7 @@ class LakeviewEmbeddedAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/tokeninfo", query=query, headers=headers

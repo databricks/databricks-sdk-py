@@ -4964,7 +4964,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/environment/apply", headers=headers)
         return ApplyEnvironmentRequestResponse.from_dict(res)
@@ -5156,7 +5156,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/clone", body=body, headers=headers)
         return ClonePipelineResponse.from_dict(res)
@@ -5341,7 +5341,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/pipelines", body=body, headers=headers)
         return CreatePipelineResponse.from_dict(res)
@@ -5372,7 +5372,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/pipelines/{pipeline_id}", query=query, headers=headers)
 
@@ -5390,7 +5390,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}", headers=headers)
         return GetPipelineResponse.from_dict(res)
@@ -5410,7 +5410,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels", headers=headers)
         return GetPipelinePermissionLevelsResponse.from_dict(res)
@@ -5430,7 +5430,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/pipelines/{pipeline_id}", headers=headers)
         return PipelinePermissions.from_dict(res)
@@ -5452,7 +5452,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates/{update_id}", headers=headers)
         return GetUpdateResponse.from_dict(res)
@@ -5507,7 +5507,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/events", query=query, headers=headers)
@@ -5565,7 +5565,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/pipelines", query=query, headers=headers)
@@ -5611,7 +5611,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, headers=headers)
         return ListUpdatesResponse.from_dict(res)
@@ -5639,7 +5639,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/permissions/pipelines/{pipeline_id}", body=body, headers=headers)
         return PipelinePermissions.from_dict(res)
@@ -5717,7 +5717,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/updates", body=body, headers=headers)
         return StartUpdateResponse.from_dict(res)
@@ -5739,7 +5739,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", headers=headers)
         return Wait(self.wait_get_pipeline_idle, pipeline_id=pipeline_id)
@@ -5931,7 +5931,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/pipelines/{pipeline_id}", body=body, headers=headers)
 
@@ -5957,7 +5957,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/pipelines/{pipeline_id}", body=body, headers=headers)
         return PipelinePermissions.from_dict(res)

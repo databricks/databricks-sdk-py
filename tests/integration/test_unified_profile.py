@@ -1,9 +1,36 @@
+from urllib.parse import urlparse
+
 import pytest
+from requests.adapters import HTTPAdapter
+from requests.structures import CaseInsensitiveDict
 
 from databricks.sdk import AccountClient, WorkspaceClient
 from databricks.sdk.environments import Cloud
 
 from .conftest import _is_cloud
+
+
+class _CaptureHeadersAdapter(HTTPAdapter):
+    """Snapshots request and response headers for a single matching URL path.
+
+    Used to verify wire-level header behavior in integration tests; the request
+    is otherwise let through to the real transport unchanged. Headers are kept
+    as CaseInsensitiveDict so assertions don't depend on wire casing (HTTP/2
+    servers typically lowercase header names).
+    """
+
+    def __init__(self, path, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.path = path
+        self.req_headers = None
+        self.resp_headers = None
+
+    def send(self, request, **kwargs):
+        response = super().send(request, **kwargs)
+        if urlparse(request.url).path == self.path:
+            self.req_headers = CaseInsensitiveDict(request.headers)
+            self.resp_headers = CaseInsensitiveDict(response.headers)
+        return response
 
 
 def test_workspace_operations(unified_config):
@@ -163,3 +190,59 @@ def test_spog_account_google_credentials(isolated_env):
     )
     sps = ac.service_principals.list()
     next(sps)
+
+
+# Environment: azure-prod-ucws
+def test_spog_unified_host_sends_workspace_id_header(isolated_env):
+    """Verify wire-level header behavior of the workspace-id migration on a real unified host.
+
+    Mirrors the Go SDK's TestAccUnifiedHostSendsWorkspaceIdHeader in
+    internal/unified_host_test.go. Probes the SCIM Me endpoint and inspects the
+    actual headers that cross the wire:
+      1. SDK sends the new X-Databricks-Workspace-Id routing header on
+         workspace-scoped requests
+      2. SDK no longer sends the legacy X-Databricks-Org-Id request header
+      3. Server still echoes the legacy X-Databricks-Org-Id on the response,
+         since the server-side migration has not yet happened (this is why
+         WorkspaceClient.get_workspace_id() still reads the legacy name).
+    """
+    env = isolated_env("ucws")
+    host = env("UNIFIED_HOST")
+    client_id = env("TEST_DATABRICKS_CLIENT_ID")
+    client_secret = env("TEST_DATABRICKS_CLIENT_SECRET")
+    workspace_id = env("THIS_WORKSPACE_ID")
+    account_id = env("TEST_ACCOUNT_ID")
+
+    me_path = "/api/2.0/preview/scim/v2/Me"
+
+    ws = WorkspaceClient(
+        host=host,
+        client_id=client_id,
+        client_secret=client_secret,
+        workspace_id=workspace_id,
+        account_id=account_id,
+        auth_type="oauth-m2m",
+    )
+
+    # Mount a capture adapter on the SDK's session for wire-level header inspection.
+    transport = _CaptureHeadersAdapter(me_path)
+    ws._api_client._api_client._session.mount("https://", transport)
+
+    # (1) Workspace-scoped probe against the unified host must succeed.
+    me = ws.current_user.me()
+    assert me.user_name, "Me should return a non-empty user_name"
+
+    assert transport.req_headers is not None, f"transport did not observe a request to {me_path}"
+
+    # (2) Request side: SDK must send the new header and not the legacy one.
+    assert (
+        transport.req_headers.get("X-Databricks-Workspace-Id") == workspace_id
+    ), "SDK must send X-Databricks-Workspace-Id with Config.workspace_id"
+    assert (
+        "X-Databricks-Org-Id" not in transport.req_headers
+    ), "SDK must no longer send the legacy X-Databricks-Org-Id request header"
+
+    # (3) Response side: server still echoes the legacy header name during the migration.
+    assert (
+        "X-Databricks-Org-Id" in transport.resp_headers
+    ), "server is expected to still echo the legacy X-Databricks-Org-Id response header during the migration"

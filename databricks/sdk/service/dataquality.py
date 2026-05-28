@@ -893,7 +893,7 @@ class DataQualityAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -934,7 +934,7 @@ class DataQualityAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/data-quality/v1/monitors", body=body, headers=headers)
         return Monitor.from_dict(res)
@@ -977,7 +977,7 @@ class DataQualityAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", f"/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes", body=body, headers=headers
@@ -1023,7 +1023,7 @@ class DataQualityAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/data-quality/v1/monitors/{object_type}/{object_id}", headers=headers)
 
@@ -1056,7 +1056,7 @@ class DataQualityAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE", f"/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}", headers=headers
@@ -1102,7 +1102,7 @@ class DataQualityAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/data-quality/v1/monitors/{object_type}/{object_id}", headers=headers)
         return Monitor.from_dict(res)
@@ -1146,7 +1146,7 @@ class DataQualityAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}", headers=headers
@@ -1173,7 +1173,7 @@ class DataQualityAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/data-quality/v1/monitors", query=query, headers=headers)
@@ -1230,7 +1230,7 @@ class DataQualityAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -1292,7 +1292,7 @@ class DataQualityAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/data-quality/v1/monitors/{object_type}/{object_id}", query=query, body=body, headers=headers
@@ -1339,7 +1339,7 @@ class DataQualityAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
