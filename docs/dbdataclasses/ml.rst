@@ -250,6 +250,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DirectMtlsConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: DirectSchemas
+   :members:
+   :undoc-members:
+
 .. autoclass:: EntityColumn
    :members:
    :undoc-members:
@@ -467,6 +475,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: IngestionConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: IngestionDestination
+   :members:
+   :undoc-members:
+
 .. autoclass:: InputTag
    :members:
    :undoc-members:
@@ -488,6 +504,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: KafkaSource
+   :members:
+   :undoc-members:
+
+.. autoclass:: KafkaStreamConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: KafkaSubscriptionMode
    :members:
    :undoc-members:
 
@@ -536,6 +560,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListRegistryWebhooks
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListStreamsResponse
    :members:
    :undoc-members:
 
@@ -1055,6 +1083,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: StddevSampFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: Stream
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamConnectionConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamSchemaConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamSourceConfig
    :members:
    :undoc-members:
 

@@ -4286,6 +4286,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
 
         headers = {
             "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         cfg = self._api._cfg

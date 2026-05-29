@@ -7,7 +7,7 @@
     The Token API allows you to create, list, and revoke tokens that can be used to authenticate and access
     Databricks REST APIs.
 
-    .. py:method:: create( [, comment: Optional[str], lifetime_seconds: Optional[int], scopes: Optional[List[str]]]) -> CreateTokenResponse
+    .. py:method:: create( [, autoscope_enabled: Optional[bool], comment: Optional[str], lifetime_seconds: Optional[int], scopes: Optional[List[str]]]) -> CreateTokenResponse
 
 
         Usage:
@@ -29,6 +29,9 @@
         a token with the same client ID as the authenticated token. If the user's token quota is exceeded,
         this call returns an error **QUOTA_EXCEEDED**.
 
+        :param autoscope_enabled: bool (optional)
+          Whether to enable autoscoping for this token. When true, the token will automatically collect
+          inferred API path scopes as it is used.
         :param comment: str (optional)
           Optional description to attach to the token.
         :param lifetime_seconds: int (optional)
@@ -76,14 +79,13 @@
 
         Updates the comment or scopes of a token.
 
-        If a token with the specified ID is not valid, this call returns an error **RESOURCE_DOES_NOT_EXIST**.
+        If a token with the specified ID is not valid, this call returns an error **NOT_FOUND**.
 
         :param token_id: str
           The SHA-256 hash of the token to be updated.
         :param token: :class:`PublicTokenInfo`
         :param update_mask: FieldMask
-          A list of field name under PublicTokenInfo, For example in request use {"update_mask":
-          "comment,scopes"}
+          A list of field name under token, For example, {"update_mask": "comment,scopes"}
 
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,

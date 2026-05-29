@@ -9396,7 +9396,9 @@ class StatementExecutionAPI:
 
         """
 
-        headers = {}
+        headers = {
+            "Content-Type": "application/json",
+        }
 
         cfg = self._api._cfg
         if cfg.workspace_id:
@@ -10461,6 +10463,7 @@ class WarehousesAPI:
 
         headers = {
             "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         cfg = self._api._cfg
@@ -10486,6 +10489,7 @@ class WarehousesAPI:
 
         headers = {
             "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         cfg = self._api._cfg
