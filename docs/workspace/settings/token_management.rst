@@ -7,7 +7,7 @@
     Enables administrators to get all tokens and delete tokens for other users. Admins can either get every
     token, get a specific token by ID, or get all tokens for a particular user.
 
-    .. py:method:: create_obo_token(application_id: str [, comment: Optional[str], lifetime_seconds: Optional[int], scopes: Optional[List[str]]]) -> CreateOboTokenResponse
+    .. py:method:: create_obo_token(application_id: str [, autoscope_enabled: Optional[bool], comment: Optional[str], lifetime_seconds: Optional[int], scopes: Optional[List[str]]]) -> CreateOboTokenResponse
 
 
         Usage:
@@ -38,6 +38,8 @@
 
         :param application_id: str
           Application ID of the service principal.
+        :param autoscope_enabled: bool (optional)
+          Whether to enable autoscoping for this token.
         :param comment: str (optional)
           Comment that describes the purpose of the token.
         :param lifetime_seconds: int (optional)
@@ -151,4 +153,27 @@
         :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
 
         :returns: :class:`TokenPermissions`
+        
+
+    .. py:method:: update_token_management(token_id: str, token: TokenInfo, update_mask: FieldMask) -> TokenInfo
+
+        Updates a token, specified by its ID.
+
+        :param token_id: str
+          ID of the token.
+        :param token: :class:`TokenInfo`
+        :param update_mask: FieldMask
+          A list of field name under token, For example, {"update_mask": "comment,scopes"}
+
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`TokenInfo`
         

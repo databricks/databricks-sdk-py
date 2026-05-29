@@ -28,6 +28,28 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: AutoscopeState
+
+   State of inferred scope collection (autoscope) for an external PAT. Mirrored in databricks.identity.AutoscopeState in common/principal-context/api/proto/tokendetails.proto. Token store and token management proto can depend on this. Principal context proto should NOT depend on this proto definitions because too many services depend on the principal context proto.
+
+   .. py:attribute:: AUTOSCOPE_STATE_API_NOT_COVERED
+      :value: "AUTOSCOPE_STATE_API_NOT_COVERED"
+
+   .. py:attribute:: AUTOSCOPE_STATE_BACKFILLED
+      :value: "AUTOSCOPE_STATE_BACKFILLED"
+
+   .. py:attribute:: AUTOSCOPE_STATE_COMPLETED
+      :value: "AUTOSCOPE_STATE_COMPLETED"
+
+   .. py:attribute:: AUTOSCOPE_STATE_DISABLED
+      :value: "AUTOSCOPE_STATE_DISABLED"
+
+   .. py:attribute:: AUTOSCOPE_STATE_RUNNING
+      :value: "AUTOSCOPE_STATE_RUNNING"
+
+   .. py:attribute:: AUTOSCOPE_STATE_USER_SELECTED
+      :value: "AUTOSCOPE_STATE_USER_SELECTED"
+
 .. autoclass:: CheckPolicyResponse
    :members:
    :undoc-members:

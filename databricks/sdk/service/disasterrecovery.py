@@ -689,7 +689,10 @@ class DisasterRecoveryAPI:
         :param parent: str
           The parent resource. Format: accounts/{account_id}.
         :param page_size: int (optional)
-          Maximum number of failover groups to return per page. Default: 50, maximum: 100.
+          Maximum number of failover groups to return per page: - when set to a value greater than 0, the page
+          length is the minimum of this value and a server configured value; - when set to 0 or unset, the
+          page length is set to a server configured value (recommended); - when set to a value less than 0, an
+          invalid parameter error is returned.
         :param page_token: str (optional)
           Page token received from a previous ListFailoverGroups call. Provide this to retrieve the subsequent
           page.
@@ -725,7 +728,10 @@ class DisasterRecoveryAPI:
         :param parent: str
           The parent resource. Format: accounts/{account_id}.
         :param page_size: int (optional)
-          Maximum number of stable URLs to return per page. Default: 50, maximum: 100.
+          Maximum number of stable URLs to return per page: - when set to a value greater than 0, the page
+          length is the minimum of this value and a server configured value; - when set to 0 or unset, the
+          page length is set to a server configured value (recommended); - when set to a value less than 0, an
+          invalid parameter error is returned.
         :param page_token: str (optional)
           Page token received from a previous ListStableUrls call. Provide this to retrieve the subsequent
           page.

@@ -87,7 +87,6 @@
 
     [Apache Arrow Columnar]: https://arrow.apache.org/overview/
     [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
-    
 
     .. py:method:: cancel_execution(statement_id: str)
 

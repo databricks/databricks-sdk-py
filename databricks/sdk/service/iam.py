@@ -394,6 +394,21 @@ class Actor:
         return cls(actor_id=d.get("actor_id", None))
 
 
+class AutoscopeState(Enum):
+    """State of inferred scope collection (autoscope) for an external PAT. Mirrored in
+    databricks.identity.AutoscopeState in common/principal-context/api/proto/tokendetails.proto.
+    Token store and token management proto can depend on this. Principal context proto should NOT
+    depend on this proto definitions because too many services depend on the principal context
+    proto."""
+
+    AUTOSCOPE_STATE_API_NOT_COVERED = "AUTOSCOPE_STATE_API_NOT_COVERED"
+    AUTOSCOPE_STATE_BACKFILLED = "AUTOSCOPE_STATE_BACKFILLED"
+    AUTOSCOPE_STATE_COMPLETED = "AUTOSCOPE_STATE_COMPLETED"
+    AUTOSCOPE_STATE_DISABLED = "AUTOSCOPE_STATE_DISABLED"
+    AUTOSCOPE_STATE_RUNNING = "AUTOSCOPE_STATE_RUNNING"
+    AUTOSCOPE_STATE_USER_SELECTED = "AUTOSCOPE_STATE_USER_SELECTED"
+
+
 @dataclass
 class CheckPolicyResponse:
     consistency_token: ConsistencyToken
