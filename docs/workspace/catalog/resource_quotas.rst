@@ -10,7 +10,6 @@
     limits. For more information on resource quotas see the [Unity Catalog documentation].
 
     [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
-    
 
     .. py:method:: get_quota(parent_securable_type: str, parent_full_name: str, quota_name: str) -> GetQuotaResponse
 

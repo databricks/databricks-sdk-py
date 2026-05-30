@@ -8,6 +8,7 @@ from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
 from databricks.sdk.common.types.fieldmask import FieldMask
+from databricks.sdk.service import iam
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
@@ -5492,6 +5493,12 @@ class PersonalComputeSetting:
 
 @dataclass
 class PublicTokenInfo:
+    autoscope_state: Optional[iam.AutoscopeState] = None
+    """Output only. The autoscope state of this token."""
+
+    backfill_scopes: Optional[List[str]] = None
+    """Output only. Scopes inferred from offline backfill processing."""
+
     comment: Optional[str] = None
     """Comment the token was created with, if applicable."""
 
@@ -5501,18 +5508,32 @@ class PublicTokenInfo:
     expiry_time: Optional[int] = None
     """Server time (in epoch milliseconds) when the token will expire, or -1 if not applicable."""
 
+    inferred_scopes: Optional[List[str]] = None
+    """Output only. Inferred API path scopes collected for this token when autoscope is enabled."""
+
+    scopes: Optional[List[str]] = None
+    """Scope of the token was created with, if applicable."""
+
     token_id: Optional[str] = None
     """The ID of this token."""
 
     def as_dict(self) -> dict:
         """Serializes the PublicTokenInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.autoscope_state is not None:
+            body["autoscope_state"] = self.autoscope_state.value
+        if self.backfill_scopes:
+            body["backfill_scopes"] = [v for v in self.backfill_scopes]
         if self.comment is not None:
             body["comment"] = self.comment
         if self.creation_time is not None:
             body["creation_time"] = self.creation_time
         if self.expiry_time is not None:
             body["expiry_time"] = self.expiry_time
+        if self.inferred_scopes:
+            body["inferred_scopes"] = [v for v in self.inferred_scopes]
+        if self.scopes:
+            body["scopes"] = [v for v in self.scopes]
         if self.token_id is not None:
             body["token_id"] = self.token_id
         return body
@@ -5520,12 +5541,20 @@ class PublicTokenInfo:
     def as_shallow_dict(self) -> dict:
         """Serializes the PublicTokenInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.autoscope_state is not None:
+            body["autoscope_state"] = self.autoscope_state
+        if self.backfill_scopes:
+            body["backfill_scopes"] = self.backfill_scopes
         if self.comment is not None:
             body["comment"] = self.comment
         if self.creation_time is not None:
             body["creation_time"] = self.creation_time
         if self.expiry_time is not None:
             body["expiry_time"] = self.expiry_time
+        if self.inferred_scopes:
+            body["inferred_scopes"] = self.inferred_scopes
+        if self.scopes:
+            body["scopes"] = self.scopes
         if self.token_id is not None:
             body["token_id"] = self.token_id
         return body
@@ -5534,9 +5563,13 @@ class PublicTokenInfo:
     def from_dict(cls, d: Dict[str, Any]) -> PublicTokenInfo:
         """Deserializes the PublicTokenInfo from a dictionary."""
         return cls(
+            autoscope_state=_enum(d, "autoscope_state", iam.AutoscopeState),
+            backfill_scopes=d.get("backfill_scopes", None),
             comment=d.get("comment", None),
             creation_time=d.get("creation_time", None),
             expiry_time=d.get("expiry_time", None),
+            inferred_scopes=d.get("inferred_scopes", None),
+            scopes=d.get("scopes", None),
             token_id=d.get("token_id", None),
         )
 
@@ -5902,6 +5935,12 @@ class TokenAccessControlResponse:
 
 @dataclass
 class TokenInfo:
+    autoscope_state: Optional[iam.AutoscopeState] = None
+    """Output only. The autoscope state of this token."""
+
+    backfill_scopes: Optional[List[str]] = None
+    """Output only. Scopes inferred from offline backfill processing."""
+
     comment: Optional[str] = None
     """Comment that describes the purpose of the token, specified by the token creator."""
 
@@ -5917,11 +5956,17 @@ class TokenInfo:
     expiry_time: Optional[int] = None
     """Timestamp when the token expires."""
 
+    inferred_scopes: Optional[List[str]] = None
+    """Output only. Inferred API path scopes collected for this token when autoscope is enabled."""
+
     last_used_day: Optional[int] = None
     """Approximate timestamp for the day the token was last used. Accurate up to 1 day."""
 
     owner_id: Optional[int] = None
     """User ID of the user that owns the token."""
+
+    scopes: Optional[List[str]] = None
+    """Scope of the token was created with, if applicable."""
 
     token_id: Optional[str] = None
     """ID of the token."""
@@ -5932,6 +5977,10 @@ class TokenInfo:
     def as_dict(self) -> dict:
         """Serializes the TokenInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.autoscope_state is not None:
+            body["autoscope_state"] = self.autoscope_state.value
+        if self.backfill_scopes:
+            body["backfill_scopes"] = [v for v in self.backfill_scopes]
         if self.comment is not None:
             body["comment"] = self.comment
         if self.created_by_id is not None:
@@ -5942,10 +5991,14 @@ class TokenInfo:
             body["creation_time"] = self.creation_time
         if self.expiry_time is not None:
             body["expiry_time"] = self.expiry_time
+        if self.inferred_scopes:
+            body["inferred_scopes"] = [v for v in self.inferred_scopes]
         if self.last_used_day is not None:
             body["last_used_day"] = self.last_used_day
         if self.owner_id is not None:
             body["owner_id"] = self.owner_id
+        if self.scopes:
+            body["scopes"] = [v for v in self.scopes]
         if self.token_id is not None:
             body["token_id"] = self.token_id
         if self.workspace_id is not None:
@@ -5955,6 +6008,10 @@ class TokenInfo:
     def as_shallow_dict(self) -> dict:
         """Serializes the TokenInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.autoscope_state is not None:
+            body["autoscope_state"] = self.autoscope_state
+        if self.backfill_scopes:
+            body["backfill_scopes"] = self.backfill_scopes
         if self.comment is not None:
             body["comment"] = self.comment
         if self.created_by_id is not None:
@@ -5965,10 +6022,14 @@ class TokenInfo:
             body["creation_time"] = self.creation_time
         if self.expiry_time is not None:
             body["expiry_time"] = self.expiry_time
+        if self.inferred_scopes:
+            body["inferred_scopes"] = self.inferred_scopes
         if self.last_used_day is not None:
             body["last_used_day"] = self.last_used_day
         if self.owner_id is not None:
             body["owner_id"] = self.owner_id
+        if self.scopes:
+            body["scopes"] = self.scopes
         if self.token_id is not None:
             body["token_id"] = self.token_id
         if self.workspace_id is not None:
@@ -5979,13 +6040,17 @@ class TokenInfo:
     def from_dict(cls, d: Dict[str, Any]) -> TokenInfo:
         """Deserializes the TokenInfo from a dictionary."""
         return cls(
+            autoscope_state=_enum(d, "autoscope_state", iam.AutoscopeState),
+            backfill_scopes=d.get("backfill_scopes", None),
             comment=d.get("comment", None),
             created_by_id=d.get("created_by_id", None),
             created_by_username=d.get("created_by_username", None),
             creation_time=d.get("creation_time", None),
             expiry_time=d.get("expiry_time", None),
+            inferred_scopes=d.get("inferred_scopes", None),
             last_used_day=d.get("last_used_day", None),
             owner_id=d.get("owner_id", None),
+            scopes=d.get("scopes", None),
             token_id=d.get("token_id", None),
             workspace_id=d.get("workspace_id", None),
         )
@@ -9696,6 +9761,7 @@ class TokenManagementAPI:
         self,
         application_id: str,
         *,
+        autoscope_enabled: Optional[bool] = None,
         comment: Optional[str] = None,
         lifetime_seconds: Optional[int] = None,
         scopes: Optional[List[str]] = None,
@@ -9704,6 +9770,8 @@ class TokenManagementAPI:
 
         :param application_id: str
           Application ID of the service principal.
+        :param autoscope_enabled: bool (optional)
+          Whether to enable autoscoping for this token.
         :param comment: str (optional)
           Comment that describes the purpose of the token.
         :param lifetime_seconds: int (optional)
@@ -9716,6 +9784,8 @@ class TokenManagementAPI:
         body = {}
         if application_id is not None:
             body["application_id"] = application_id
+        if autoscope_enabled is not None:
+            body["autoscope_enabled"] = autoscope_enabled
         if comment is not None:
             body["comment"] = comment
         if lifetime_seconds is not None:
@@ -9888,6 +9958,45 @@ class TokenManagementAPI:
         res = self._api.do("PATCH", "/api/2.0/permissions/authorization/tokens", body=body, headers=headers)
         return TokenPermissions.from_dict(res)
 
+    def update_token_management(self, token_id: str, token: TokenInfo, update_mask: FieldMask) -> TokenInfo:
+        """Updates a token, specified by its ID.
+
+        :param token_id: str
+          ID of the token.
+        :param token: :class:`TokenInfo`
+        :param update_mask: FieldMask
+          A list of field name under token, For example, {"update_mask": "comment,scopes"}
+
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`TokenInfo`
+        """
+
+        body = {}
+        if token is not None:
+            body["token"] = token.as_dict()
+        if update_mask is not None:
+            body["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/token-management/tokens/{token_id}", body=body, headers=headers)
+        return TokenInfo.from_dict(res)
+
 
 class TokensAPI:
     """The Token API allows you to create, list, and revoke tokens that can be used to authenticate and access
@@ -9899,6 +10008,7 @@ class TokensAPI:
     def create(
         self,
         *,
+        autoscope_enabled: Optional[bool] = None,
         comment: Optional[str] = None,
         lifetime_seconds: Optional[int] = None,
         scopes: Optional[List[str]] = None,
@@ -9907,6 +10017,9 @@ class TokensAPI:
         a token with the same client ID as the authenticated token. If the user's token quota is exceeded,
         this call returns an error **QUOTA_EXCEEDED**.
 
+        :param autoscope_enabled: bool (optional)
+          Whether to enable autoscoping for this token. When true, the token will automatically collect
+          inferred API path scopes as it is used.
         :param comment: str (optional)
           Optional description to attach to the token.
         :param lifetime_seconds: int (optional)
@@ -9920,6 +10033,8 @@ class TokensAPI:
         """
 
         body = {}
+        if autoscope_enabled is not None:
+            body["autoscope_enabled"] = autoscope_enabled
         if comment is not None:
             body["comment"] = comment
         if lifetime_seconds is not None:
@@ -9985,14 +10100,13 @@ class TokensAPI:
     def update(self, token_id: str, token: PublicTokenInfo, update_mask: FieldMask) -> UpdateTokenResponse:
         """Updates the comment or scopes of a token.
 
-        If a token with the specified ID is not valid, this call returns an error **RESOURCE_DOES_NOT_EXIST**.
+        If a token with the specified ID is not valid, this call returns an error **NOT_FOUND**.
 
         :param token_id: str
           The SHA-256 hash of the token to be updated.
         :param token: :class:`PublicTokenInfo`
         :param update_mask: FieldMask
-          A list of field name under PublicTokenInfo, For example in request use {"update_mask":
-          "comment,scopes"}
+          A list of field name under token, For example, {"update_mask": "comment,scopes"}
 
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
