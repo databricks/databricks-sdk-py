@@ -363,6 +363,10 @@ class Operation:
     "files.<rel-path>"). Can be an arbitrary UTF-8 encoded string key. This key links the operation
     to the corresponding deployment-level Resource."""
 
+    resource_type: Optional[DeploymentResourceType] = None
+    """The type of the deployment resource this operation applies to. Derived from the `resource_key`
+    prefix (e.g. "jobs" → JOB); the caller does not set this field."""
+
     state: Optional[any] = None
     """Serialized local config state after the operation. Should be unset for delete operations."""
 
@@ -381,6 +385,8 @@ class Operation:
             body["resource_id"] = self.resource_id
         if self.resource_key is not None:
             body["resource_key"] = self.resource_key
+        if self.resource_type is not None:
+            body["resource_type"] = self.resource_type.value
         if self.state:
             body["state"] = self.state
         if self.status is not None:
@@ -402,6 +408,8 @@ class Operation:
             body["resource_id"] = self.resource_id
         if self.resource_key is not None:
             body["resource_key"] = self.resource_key
+        if self.resource_type is not None:
+            body["resource_type"] = self.resource_type
         if self.state:
             body["state"] = self.state
         if self.status is not None:
@@ -418,6 +426,7 @@ class Operation:
             name=d.get("name", None),
             resource_id=d.get("resource_id", None),
             resource_key=d.get("resource_key", None),
+            resource_type=_enum(d, "resource_type", DeploymentResourceType),
             state=d.get("state", None),
             status=_enum(d, "status", OperationStatus),
         )
