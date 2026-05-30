@@ -244,9 +244,6 @@ _KNOWN_AGENTS: List[_AgentRecord] = [
     _AgentRecord("CLINE_ACTIVE", "cline"),  # https://github.com/cline/cline (v3.24.0+)
     _AgentRecord("CODEX_CI", "codex"),  # https://github.com/openai/codex
     _AgentRecord("COPILOT_CLI", "copilot-cli"),  # https://github.com/features/copilot
-    _AgentRecord(
-        "COPILOT_MODEL", "copilot-vscode"
-    ),  # VS Code Copilot terminal, best-effort heuristic, not officially identified
     _AgentRecord("CURSOR_AGENT", "cursor"),  # Closed source
     _AgentRecord("GEMINI_CLI", "gemini-cli"),  # https://google-gemini.github.io/gemini-cli
     _AgentRecord(
@@ -255,6 +252,9 @@ _KNOWN_AGENTS: List[_AgentRecord] = [
     _AgentRecord("KIRO", "kiro"),  # https://kiro.dev/ (Amazon)
     _AgentRecord("OPENCLAW_SHELL", "openclaw"),  # https://github.com/anthropics/openclaw
     _AgentRecord("OPENCODE", "opencode"),  # https://github.com/opencode-ai/opencode
+    _AgentRecord(
+        "VSCODE_AGENT", "vscode-agent"
+    ),  # Set by VS Code 1.121+ for agent-initiated terminal commands (https://code.visualstudio.com/updates/v1_121)
     _AgentRecord("WINDSURF_AGENT", "windsurf"),  # https://codeium.com/windsurf (Codeium)
 ]
 
@@ -290,12 +290,6 @@ def agent_provider() -> str:
         return _agent_provider
 
     matches = [a.product for a in _KNOWN_AGENTS if a.env_var in os.environ]
-
-    # Known BYOK false positive: Copilot CLI users often set COPILOT_MODEL
-    # alongside COPILOT_CLI. That pair is a single copilot-cli signal, not a
-    # stacked multi-agent setup.
-    if "copilot-cli" in matches and "copilot-vscode" in matches:
-        matches = [m for m in matches if m != "copilot-vscode"]
 
     if len(matches) == 1:
         _agent_provider = matches[0]
