@@ -32,3 +32,4 @@
 * Add `autoscope_state`, `backfill_scopes`, `inferred_scopes` and `scopes` fields for `databricks.sdk.service.settings.TokenInfo`.
 * [Breaking] Remove `catalog_id` field for `databricks.sdk.service.postgres.CatalogCatalogStatus`.
 * [Breaking] Remove `synced_table_id` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableStatus`.
+* Add `resource_type` field for `databricks.sdk.service.bundle.Operation`.
