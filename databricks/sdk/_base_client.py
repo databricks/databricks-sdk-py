@@ -18,6 +18,8 @@ from .retries import retried
 
 logger = logging.getLogger("databricks.sdk")
 
+_DEFAULT_HTTP_TIMEOUT_SECONDS = 60
+
 
 def _fix_host_if_needed(host: Optional[str]) -> Optional[str]:
     if not host:
@@ -94,8 +96,7 @@ class _BaseClient:
         )
         self._session.mount("https://", http_adapter)
 
-        # Default to 60 seconds
-        self._http_timeout_seconds = http_timeout_seconds or 60
+        self._http_timeout_seconds = http_timeout_seconds or _DEFAULT_HTTP_TIMEOUT_SECONDS
 
         self._error_parser = _Parser(
             extra_error_customizers=extra_error_customizers,
