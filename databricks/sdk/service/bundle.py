@@ -31,6 +31,10 @@ class Deployment:
     created_by: Optional[str] = None
     """The user who created the deployment (email or principal name)."""
 
+    deployment_mode: Optional[DeploymentMode] = None
+    """Bundle target deployment mode (development or production), derived from the most recent
+    version's mode."""
+
     destroy_time: Optional[Timestamp] = None
     """When the deployment was destroyed (i.e. `bundle destroy` completed). Unset if the deployment has
     not been destroyed. Named destroy_time (not delete_time) because this tracks the `databricks
@@ -65,6 +69,8 @@ class Deployment:
             body["create_time"] = self.create_time.ToJsonString()
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.deployment_mode is not None:
+            body["deployment_mode"] = self.deployment_mode.value
         if self.destroy_time is not None:
             body["destroy_time"] = self.destroy_time.ToJsonString()
         if self.destroyed_by is not None:
@@ -90,6 +96,8 @@ class Deployment:
             body["create_time"] = self.create_time
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.deployment_mode is not None:
+            body["deployment_mode"] = self.deployment_mode
         if self.destroy_time is not None:
             body["destroy_time"] = self.destroy_time
         if self.destroyed_by is not None:
@@ -114,6 +122,7 @@ class Deployment:
         return cls(
             create_time=_timestamp(d, "create_time"),
             created_by=d.get("created_by", None),
+            deployment_mode=_enum(d, "deployment_mode", DeploymentMode),
             destroy_time=_timestamp(d, "destroy_time"),
             destroyed_by=d.get("destroyed_by", None),
             display_name=d.get("display_name", None),
@@ -123,6 +132,14 @@ class Deployment:
             target_name=d.get("target_name", None),
             update_time=_timestamp(d, "update_time"),
         )
+
+
+class DeploymentMode(Enum):
+    """Bundle target deployment mode. Mirrors the `mode` field on a bundle target in `databricks.yml`
+    (see https://docs.databricks.com/dev-tools/bundles/deployment-modes)."""
+
+    DEPLOYMENT_MODE_DEVELOPMENT = "DEPLOYMENT_MODE_DEVELOPMENT"
+    DEPLOYMENT_MODE_PRODUCTION = "DEPLOYMENT_MODE_PRODUCTION"
 
 
 class DeploymentResourceType(Enum):
@@ -560,6 +577,9 @@ class Version:
     created_by: Optional[str] = None
     """The user who created the version (email or principal name)."""
 
+    deployment_mode: Optional[DeploymentMode] = None
+    """Bundle target deployment mode (development or production), captured at the time of this version."""
+
     display_name: Optional[str] = None
     """Display name for the deployment, captured at the time of this version."""
 
@@ -591,6 +611,8 @@ class Version:
             body["create_time"] = self.create_time.ToJsonString()
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.deployment_mode is not None:
+            body["deployment_mode"] = self.deployment_mode.value
         if self.display_name is not None:
             body["display_name"] = self.display_name
         if self.name is not None:
@@ -620,6 +642,8 @@ class Version:
             body["create_time"] = self.create_time
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.deployment_mode is not None:
+            body["deployment_mode"] = self.deployment_mode
         if self.display_name is not None:
             body["display_name"] = self.display_name
         if self.name is not None:
@@ -644,6 +668,7 @@ class Version:
             completion_reason=_enum(d, "completion_reason", VersionComplete),
             create_time=_timestamp(d, "create_time"),
             created_by=d.get("created_by", None),
+            deployment_mode=_enum(d, "deployment_mode", DeploymentMode),
             display_name=d.get("display_name", None),
             name=d.get("name", None),
             status=_enum(d, "status", VersionStatus),

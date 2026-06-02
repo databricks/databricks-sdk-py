@@ -1800,6 +1800,8 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
     account_api: Optional[CustomerFacingIngressNetworkPolicyAccountApiDestination] = None
 
     account_databricks_one: Optional[CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination] = None
+    """Account DatabricksOne destination is not supported. DO NOT change the stage of this destination
+    past PRIVATE_PREVIEW."""
 
     account_ui: Optional[CustomerFacingIngressNetworkPolicyAccountUiDestination] = None
 

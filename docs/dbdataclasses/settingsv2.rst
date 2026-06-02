@@ -97,6 +97,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CollaborationPlatformConnectivityMessage
+   :members:
+   :undoc-members:
+
+.. py:class:: CollaborationPlatformConnectivityMessageConnectivity
+
+   .. py:attribute:: ALLOW_ALL
+      :value: "ALLOW_ALL"
+
+   .. py:attribute:: ALLOW_SLACK
+      :value: "ALLOW_SLACK"
+
+   .. py:attribute:: ALLOW_TEAMS
+      :value: "ALLOW_TEAMS"
+
+   .. py:attribute:: DENY_ALL
+      :value: "DENY_ALL"
+
 .. autoclass:: IntegerMessage
    :members:
    :undoc-members:

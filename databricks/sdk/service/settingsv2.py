@@ -348,6 +348,40 @@ class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
 
 
 @dataclass
+class CollaborationPlatformConnectivityMessage:
+    """Controls which external collaboration platforms (Slack, Microsoft Teams) can connect to a
+    workspace. Defaults to ALLOW_ALL."""
+
+    connectivity: CollaborationPlatformConnectivityMessageConnectivity
+
+    def as_dict(self) -> dict:
+        """Serializes the CollaborationPlatformConnectivityMessage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.connectivity is not None:
+            body["connectivity"] = self.connectivity.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CollaborationPlatformConnectivityMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.connectivity is not None:
+            body["connectivity"] = self.connectivity
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CollaborationPlatformConnectivityMessage:
+        """Deserializes the CollaborationPlatformConnectivityMessage from a dictionary."""
+        return cls(connectivity=_enum(d, "connectivity", CollaborationPlatformConnectivityMessageConnectivity))
+
+
+class CollaborationPlatformConnectivityMessageConnectivity(Enum):
+    ALLOW_ALL = "ALLOW_ALL"
+    ALLOW_SLACK = "ALLOW_SLACK"
+    ALLOW_TEAMS = "ALLOW_TEAMS"
+    DENY_ALL = "DENY_ALL"
+
+
+@dataclass
 class IntegerMessage:
     value: Optional[int] = None
 
@@ -614,6 +648,10 @@ class Setting:
     """Setting value for boolean type setting. This is the setting value set by consumers, check
     effective_boolean_val for final setting value."""
 
+    collaboration_platform_connectivity: Optional[CollaborationPlatformConnectivityMessage] = None
+    """Setting value for collaboration_platform_connectivity setting. This is the setting value set by
+    consumers, check effective_collaboration_platform_connectivity for final setting value."""
+
     effective_aibi_dashboard_embedding_access_policy: Optional[AibiDashboardEmbeddingAccessPolicy] = None
     """Effective setting value for aibi_dashboard_embedding_access_policy setting. This is the final
     effective value of setting. To set a value use aibi_dashboard_embedding_access_policy."""
@@ -633,6 +671,10 @@ class Setting:
     effective_boolean_val: Optional[BooleanMessage] = None
     """Effective setting value for boolean type setting. This is the final effective value of setting.
     To set a value use boolean_val."""
+
+    effective_collaboration_platform_connectivity: Optional[CollaborationPlatformConnectivityMessage] = None
+    """Effective setting value for collaboration_platform_connectivity setting. This is the final
+    effective value of setting. To set a value use collaboration_platform_connectivity."""
 
     effective_integer_val: Optional[IntegerMessage] = None
     """Effective setting value for integer type setting. This is the final effective value of setting.
@@ -690,6 +732,8 @@ class Setting:
             body["automatic_cluster_update_workspace"] = self.automatic_cluster_update_workspace.as_dict()
         if self.boolean_val:
             body["boolean_val"] = self.boolean_val.as_dict()
+        if self.collaboration_platform_connectivity:
+            body["collaboration_platform_connectivity"] = self.collaboration_platform_connectivity.as_dict()
         if self.effective_aibi_dashboard_embedding_access_policy:
             body["effective_aibi_dashboard_embedding_access_policy"] = (
                 self.effective_aibi_dashboard_embedding_access_policy.as_dict()
@@ -706,6 +750,10 @@ class Setting:
             )
         if self.effective_boolean_val:
             body["effective_boolean_val"] = self.effective_boolean_val.as_dict()
+        if self.effective_collaboration_platform_connectivity:
+            body["effective_collaboration_platform_connectivity"] = (
+                self.effective_collaboration_platform_connectivity.as_dict()
+            )
         if self.effective_integer_val:
             body["effective_integer_val"] = self.effective_integer_val.as_dict()
         if self.effective_operational_email_custom_recipient:
@@ -745,6 +793,8 @@ class Setting:
             body["automatic_cluster_update_workspace"] = self.automatic_cluster_update_workspace
         if self.boolean_val:
             body["boolean_val"] = self.boolean_val
+        if self.collaboration_platform_connectivity:
+            body["collaboration_platform_connectivity"] = self.collaboration_platform_connectivity
         if self.effective_aibi_dashboard_embedding_access_policy:
             body["effective_aibi_dashboard_embedding_access_policy"] = (
                 self.effective_aibi_dashboard_embedding_access_policy
@@ -759,6 +809,8 @@ class Setting:
             body["effective_automatic_cluster_update_workspace"] = self.effective_automatic_cluster_update_workspace
         if self.effective_boolean_val:
             body["effective_boolean_val"] = self.effective_boolean_val
+        if self.effective_collaboration_platform_connectivity:
+            body["effective_collaboration_platform_connectivity"] = self.effective_collaboration_platform_connectivity
         if self.effective_integer_val:
             body["effective_integer_val"] = self.effective_integer_val
         if self.effective_operational_email_custom_recipient:
@@ -798,6 +850,9 @@ class Setting:
                 d, "automatic_cluster_update_workspace", ClusterAutoRestartMessage
             ),
             boolean_val=_from_dict(d, "boolean_val", BooleanMessage),
+            collaboration_platform_connectivity=_from_dict(
+                d, "collaboration_platform_connectivity", CollaborationPlatformConnectivityMessage
+            ),
             effective_aibi_dashboard_embedding_access_policy=_from_dict(
                 d, "effective_aibi_dashboard_embedding_access_policy", AibiDashboardEmbeddingAccessPolicy
             ),
@@ -811,6 +866,9 @@ class Setting:
                 d, "effective_automatic_cluster_update_workspace", ClusterAutoRestartMessage
             ),
             effective_boolean_val=_from_dict(d, "effective_boolean_val", BooleanMessage),
+            effective_collaboration_platform_connectivity=_from_dict(
+                d, "effective_collaboration_platform_connectivity", CollaborationPlatformConnectivityMessage
+            ),
             effective_integer_val=_from_dict(d, "effective_integer_val", IntegerMessage),
             effective_operational_email_custom_recipient=_from_dict(
                 d, "effective_operational_email_custom_recipient", OperationalEmailCustomRecipientMessage
