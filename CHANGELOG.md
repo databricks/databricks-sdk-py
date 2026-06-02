@@ -1,5 +1,13 @@
 # Version changelog
 
+## Release v0.114.0 (2026-06-02)
+
+### API Changes
+* Add `deployment_mode` field for `databricks.sdk.service.bundle.Deployment`.
+* Add `deployment_mode` field for `databricks.sdk.service.bundle.Version`.
+* Add `collaboration_platform_connectivity` and `effective_collaboration_platform_connectivity` fields for `databricks.sdk.service.settingsv2.Setting`.
+
+
 ## Release v0.113.0 (2026-06-01)
 
 ### Internal Changes
