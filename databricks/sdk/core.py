@@ -1,11 +1,14 @@
+# Star-import re-exports preserve backwards compatibility: config/* and
+# credentials_provider/* used to live in this module and are still imported
+# as `databricks.sdk.core.X` by callers.
+# ruff: noqa: F403, F405
+
 import re
 from typing import BinaryIO
 from urllib.parse import urlencode
 
 from ._base_client import _BaseClient
 from .config import *
-
-# To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
 from .errors import DatabricksError, _ErrorCustomizer
 from .oauth import retrieve_token

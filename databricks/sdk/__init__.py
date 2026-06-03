@@ -1,4 +1,5 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F401, F403, F405, F811
 
 import json
 import logging

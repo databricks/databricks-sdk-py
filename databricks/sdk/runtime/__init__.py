@@ -124,7 +124,7 @@ except ImportError:
         logging.debug(f"Failed to initialize globals 'sqlContext' and 'table', continuing. Cause: {e}")
 
     try:
-        from pyspark.sql.functions import udf  # type: ignore
+        from pyspark.sql.functions import udf  # type: ignore  # noqa: F401
     except ImportError as e:
         logging.debug(f"Failed to initialise udf global: {e}")
 
