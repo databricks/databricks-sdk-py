@@ -10,6 +10,8 @@
 
 ### Bug Fixes
 
+* Fall back to the remote runtime implementation when the legacy user namespace cannot be materialized. On Spark Connect runtimes (e.g. shared-access-mode clusters), importing `databricks.sdk.runtime` — which happens when constructing a `WorkspaceClient` on such a cluster — tried to build a legacy `SparkContext` and raised `CONTEXT_UNAVAILABLE_FOR_REMOTE_CLIENT` at import time. It now logs a warning and falls back to the Spark Connect-compatible remote implementation instead of crashing.
+
 ### Documentation
 
 ### Breaking Changes

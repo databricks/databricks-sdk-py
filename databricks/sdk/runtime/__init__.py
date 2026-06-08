@@ -93,9 +93,10 @@ def init_runtime_legacy_auth():
         return None, None
 
 
+# Internal implementation
+# Separated from above for backward compatibility
+_use_runtime_namespace = False
 try:
-    # Internal implementation
-    # Separated from above for backward compatibility
     from dbruntime import UserNamespaceInitializer
 
     userNamespaceGlobals = UserNamespaceInitializer.getOrCreate().get_namespace_globals()
@@ -105,7 +106,20 @@ try:
             continue
         _globals[var] = userNamespaceGlobals[var]
     is_local_implementation = False
+    _use_runtime_namespace = True
 except ImportError:
+    # Not running inside a classic Databricks runtime; fall back to the OSS implementation below.
+    pass
+except Exception as e:
+    # On Spark Connect runtimes (e.g. shared-access-mode clusters), materializing the
+    # legacy user namespace builds a SparkContext, which is unavailable in remote clients
+    # and raises CONTEXT_UNAVAILABLE_FOR_REMOTE_CLIENT. Treat this like "not in a classic
+    # runtime" and fall back to the OSS/remote implementation below, which is Spark
+    # Connect-compatible. Without this, importing databricks.sdk.runtime (and therefore
+    # constructing a WorkspaceClient on such a cluster) raises at import time.
+    logger.warning(f"Runtime namespace unavailable, falling back to remote implementation: {e}")
+
+if not _use_runtime_namespace:
     # OSS implementation
     is_local_implementation = True
 
