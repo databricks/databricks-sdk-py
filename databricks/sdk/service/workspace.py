@@ -2159,6 +2159,7 @@ class ReposAPI:
         repo_id: int,
         *,
         branch: Optional[str] = None,
+        dangerously_force_discard_all: Optional[bool] = None,
         sparse_checkout: Optional[SparseCheckoutUpdate] = None,
         tag: Optional[str] = None,
     ):
@@ -2169,6 +2170,17 @@ class ReposAPI:
           ID of the Git folder (repo) object in the workspace.
         :param branch: str (optional)
           Branch that the local version of the repo is checked out to.
+        :param dangerously_force_discard_all: bool (optional)
+          WARNING: DESTRUCTIVE AND IRREVERSIBLE. If true, permanently deletes ALL uncommitted changes in the
+          Git folder — staged, unstaged, and untracked files — before updating. Lost data CANNOT be
+          recovered.
+
+          NEVER use this on Git folders where users author or edit files. This flag is intended ONLY for
+          automated jobs that treat the Git folder as a read-only mirror of a remote branch and need to
+          force-sync it. If any user has uncommitted work in the Git folder, that work will be permanently
+          destroyed without warning.
+
+          Local commits that have been made but not yet pushed to the remote are preserved.
         :param sparse_checkout: :class:`SparseCheckoutUpdate` (optional)
           If specified, update the sparse checkout settings. The update will fail if sparse checkout is not
           enabled for the repo.
@@ -2183,6 +2195,8 @@ class ReposAPI:
         body = {}
         if branch is not None:
             body["branch"] = branch
+        if dangerously_force_discard_all is not None:
+            body["dangerously_force_discard_all"] = dangerously_force_discard_all
         if sparse_checkout is not None:
             body["sparse_checkout"] = sparse_checkout.as_dict()
         if tag is not None:

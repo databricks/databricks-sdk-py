@@ -2037,6 +2037,11 @@ class Format(Enum):
 
 @dataclass
 class GenAiComputeTask:
+    """DEPRECATED — use `AiRuntimeTask` for all new BYOT multi-node GPU workloads (see
+    ai_runtime_task.proto). `AiRuntimeTask` is the only supported BYOT task type for new workloads;
+    this proto is retained only for AIR CLI (fka SGCLI) pywheel backwards compatibility and will be
+    removed once the pywheel → databricks-cli migration completes (post- PuPr)."""
+
     dl_runtime_image: str
     """Runtime image"""
 

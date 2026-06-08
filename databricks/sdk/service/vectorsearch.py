@@ -707,6 +707,40 @@ class EndpointType(Enum):
 
 
 @dataclass
+class FacetResultData:
+    """Facet aggregation rows returned by a query."""
+
+    facet_array: Optional[List[List[str]]] = None
+    """Facet rows. Each row is `[facet_column_name, value_or_range, count]`."""
+
+    facet_row_count: Optional[int] = None
+    """Number of facet rows returned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FacetResultData into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.facet_array:
+            body["facet_array"] = [v for v in self.facet_array]
+        if self.facet_row_count is not None:
+            body["facet_row_count"] = self.facet_row_count
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FacetResultData into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.facet_array:
+            body["facet_array"] = self.facet_array
+        if self.facet_row_count is not None:
+            body["facet_row_count"] = self.facet_row_count
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FacetResultData:
+        """Deserializes the FacetResultData from a dictionary."""
+        return cls(facet_array=d.get("facet_array", None), facet_row_count=d.get("facet_row_count", None))
+
+
+@dataclass
 class GetVectorSearchEndpointPermissionLevelsResponse:
     permission_levels: Optional[List[VectorSearchEndpointPermissionsDescription]] = None
     """Specific permission levels"""
@@ -1131,6 +1165,9 @@ class PipelineType(Enum):
 
 @dataclass
 class QueryVectorIndexResponse:
+    facet_result: Optional[FacetResultData] = None
+    """Facet aggregation rows returned by a query."""
+
     manifest: Optional[ResultManifest] = None
     """Metadata about the result set."""
 
@@ -1145,6 +1182,8 @@ class QueryVectorIndexResponse:
     def as_dict(self) -> dict:
         """Serializes the QueryVectorIndexResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.facet_result:
+            body["facet_result"] = self.facet_result.as_dict()
         if self.manifest:
             body["manifest"] = self.manifest.as_dict()
         if self.next_page_token is not None:
@@ -1156,6 +1195,8 @@ class QueryVectorIndexResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryVectorIndexResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.facet_result:
+            body["facet_result"] = self.facet_result
         if self.manifest:
             body["manifest"] = self.manifest
         if self.next_page_token is not None:
@@ -1168,6 +1209,7 @@ class QueryVectorIndexResponse:
     def from_dict(cls, d: Dict[str, Any]) -> QueryVectorIndexResponse:
         """Deserializes the QueryVectorIndexResponse from a dictionary."""
         return cls(
+            facet_result=_from_dict(d, "facet_result", FacetResultData),
             manifest=_from_dict(d, "manifest", ResultManifest),
             next_page_token=d.get("next_page_token", None),
             result=_from_dict(d, "result", ResultData),
@@ -1275,6 +1317,12 @@ class ResultManifest:
     columns: Optional[List[ColumnInfo]] = None
     """Information about each column in the result set."""
 
+    facet_column_count: Optional[int] = None
+    """Number of columns in `facet_result`."""
+
+    facet_columns: Optional[List[ColumnInfo]] = None
+    """Information about each column in `facet_result`."""
+
     def as_dict(self) -> dict:
         """Serializes the ResultManifest into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1282,6 +1330,10 @@ class ResultManifest:
             body["column_count"] = self.column_count
         if self.columns:
             body["columns"] = [v.as_dict() for v in self.columns]
+        if self.facet_column_count is not None:
+            body["facet_column_count"] = self.facet_column_count
+        if self.facet_columns:
+            body["facet_columns"] = [v.as_dict() for v in self.facet_columns]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1291,12 +1343,21 @@ class ResultManifest:
             body["column_count"] = self.column_count
         if self.columns:
             body["columns"] = self.columns
+        if self.facet_column_count is not None:
+            body["facet_column_count"] = self.facet_column_count
+        if self.facet_columns:
+            body["facet_columns"] = self.facet_columns
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultManifest:
         """Deserializes the ResultManifest from a dictionary."""
-        return cls(column_count=d.get("column_count", None), columns=_repeated_dict(d, "columns", ColumnInfo))
+        return cls(
+            column_count=d.get("column_count", None),
+            columns=_repeated_dict(d, "columns", ColumnInfo),
+            facet_column_count=d.get("facet_column_count", None),
+            facet_columns=_repeated_dict(d, "facet_columns", ColumnInfo),
+        )
 
 
 @dataclass
@@ -2561,13 +2622,16 @@ class VectorSearchIndexesAPI:
         columns: List[str],
         *,
         columns_to_rerank: Optional[List[str]] = None,
+        facets: Optional[List[str]] = None,
         filters_json: Optional[str] = None,
         num_results: Optional[int] = None,
+        query_columns: Optional[List[str]] = None,
         query_text: Optional[str] = None,
         query_type: Optional[str] = None,
         query_vector: Optional[List[float]] = None,
         reranker: Optional[RerankerConfig] = None,
         score_threshold: Optional[float] = None,
+        sort_columns: Optional[List[str]] = None,
     ) -> QueryVectorIndexResponse:
         """Query the specified vector index.
 
@@ -2577,6 +2641,11 @@ class VectorSearchIndexesAPI:
           List of column names to include in the response.
         :param columns_to_rerank: List[str] (optional)
           Column names used to retrieve data to send to the reranker.
+        :param facets: List[str] (optional)
+          Facets to compute over the matched results. Each entry has one of these forms: `"<column>"` - top 10
+          distinct values by count `"<column> TOP <n>"` - top n distinct values, where n > 0 `"<column>
+          BUCKETS [[from,to],...]"` - inclusive numeric ranges `TOP` and `BUCKETS` are case-insensitive. A
+          column may appear at most once.
         :param filters_json: str (optional)
           JSON string representing query filters.
 
@@ -2587,6 +2656,8 @@ class VectorSearchIndexesAPI:
           5. - `{"id": 5}`: Filter for id equal to 5.
         :param num_results: int (optional)
           Number of results to return. Defaults to 10.
+        :param query_columns: List[str] (optional)
+          Text columns to search for `query_text`. When empty, all text columns are searched.
         :param query_text: str (optional)
           Query text. Required for Delta Sync Index using model endpoint.
         :param query_type: str (optional)
@@ -2602,6 +2673,9 @@ class VectorSearchIndexesAPI:
           more information.
         :param score_threshold: float (optional)
           Threshold for the approximate nearest neighbor search. Defaults to 0.0.
+        :param sort_columns: List[str] (optional)
+          Sort results by column values instead of the default relevance ordering. Each clause has the form
+          `"<column> ASC"` or `"<column> DESC"`, for example `["rating DESC", "price ASC"]`.
 
         :returns: :class:`QueryVectorIndexResponse`
         """
@@ -2611,10 +2685,14 @@ class VectorSearchIndexesAPI:
             body["columns"] = [v for v in columns]
         if columns_to_rerank is not None:
             body["columns_to_rerank"] = [v for v in columns_to_rerank]
+        if facets is not None:
+            body["facets"] = [v for v in facets]
         if filters_json is not None:
             body["filters_json"] = filters_json
         if num_results is not None:
             body["num_results"] = num_results
+        if query_columns is not None:
+            body["query_columns"] = [v for v in query_columns]
         if query_text is not None:
             body["query_text"] = query_text
         if query_type is not None:
@@ -2625,6 +2703,8 @@ class VectorSearchIndexesAPI:
             body["reranker"] = reranker.as_dict()
         if score_threshold is not None:
             body["score_threshold"] = score_threshold
+        if sort_columns is not None:
+            body["sort_columns"] = [v for v in sort_columns]
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

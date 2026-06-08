@@ -1836,31 +1836,34 @@ class MetaMarketingOptions:
     """Meta Marketing (Meta Ads) specific options for ingestion"""
 
     action_attribution_windows: Optional[List[str]] = None
-    """(Optional) Action attribution windows for insights reporting (e.g. "28d_click", "1d_view")"""
+    """(Optional, DEPRECATED — use custom_report_options.action_attribution_windows) Action
+    attribution windows for insights reporting (e.g. "28d_click", "1d_view")"""
 
     action_breakdowns: Optional[List[str]] = None
-    """(Optional) Action breakdowns to configure for data aggregation"""
+    """(Optional, DEPRECATED — use custom_report_options.action_breakdowns) Action breakdowns"""
 
     action_report_time: Optional[str] = None
-    """(Optional) Timing used to report action statistics (impression, conversion, mixed, or lifetime)"""
+    """(Optional, DEPRECATED — use custom_report_options.action_report_time) Timing used to report
+    action statistics (impression, conversion, mixed, or lifetime)"""
 
     breakdowns: Optional[List[str]] = None
-    """(Optional) Breakdowns to configure for data aggregation"""
+    """(Optional, DEPRECATED — use custom_report_options.breakdowns) Breakdowns to configure"""
 
     custom_insights_lookback_window: Optional[int] = None
     """(Optional) Window in days to revisit data during sync to capture updated conversion data from
-    the API."""
+    the API, shared by prebuilt and custom reports."""
 
     level: Optional[str] = None
-    """(Optional) Granularity of data to pull (account, ad, adset, campaign)"""
+    """(Optional, DEPRECATED — use custom_report_options.level) Granularity of data to pull (account,
+    ad, adset, campaign)"""
 
     start_date: Optional[str] = None
     """(Optional) Start date in yyyy-MM-dd format (e.g. 2025-01-15). Data added after this date will be
-    ingested"""
+    ingested, shared by prebuilt and custom reports."""
 
     time_increment: Optional[str] = None
-    """(Optional) Value in string by which to aggregate statistics (can take all_days, monthly or
-    number of days)"""
+    """(Optional, DEPRECATED — use custom_report_options.time_increment) Value in string by which to
+    aggregate statistics (can take all_days, monthly or number of days)"""
 
     def as_dict(self) -> dict:
         """Serializes the MetaMarketingOptions into a dictionary suitable for use as a JSON request body."""
@@ -4385,6 +4388,20 @@ class TableSpecificConfig:
     "auto_full_refresh_policy": { "enabled": true, "min_interval_hours": 23, } } If unspecified,
     auto full refresh is disabled."""
 
+    clustering_columns: Optional[List[str]] = None
+    """List of column names to use for clustering the destination table. When specified, the
+    destination Delta table will be clustered by these columns. This can improve query performance
+    when filtering on these columns. Note: clustering_columns in table specific configuration will
+    override the pipeline definition. Note: we can only provide enable_auto_clustering or
+    clustering_columns, added as separate fields as we cannot have repeated field in oneof."""
+
+    enable_auto_clustering: Optional[bool] = None
+    """Whether to enable auto clustering on the destination table. When enabled, Delta will
+    automatically optimize the data layout based on the clustering columns for improved query
+    performance. Note: enable_auto_clustering in table specific configuration will override the
+    pipeline definition. Note: we can only provide enable_auto_clustering or clustering_columns,
+    added as separate fields as we cannot have repeated field in oneof."""
+
     exclude_columns: Optional[List[str]] = None
     """A list of column names to be excluded for the ingestion. When not specified, include_columns
     fully controls what columns to be ingested. When specified, all other columns including future
@@ -4418,6 +4435,13 @@ class TableSpecificConfig:
     """The column names specifying the logical order of events in the source data. Spark Declarative
     Pipelines uses this sequencing to handle change events that arrive out of order."""
 
+    table_properties: Optional[Dict[str, str]] = None
+    """Table properties to set on the destination table. These are key-value pairs that configure
+    various Delta table behaviors or any user defined properties. Example:
+    {"delta.feature.variantType": "supported", "delta.enableTypeWidening": "true"} Note:
+    table_properties in table specific configuration will override the table_properties of the
+    pipeline definition."""
+
     workday_report_parameters: Optional[IngestionPipelineDefinitionWorkdayReportParameters] = None
     """(Optional) Additional custom parameters for Workday Report"""
 
@@ -4426,6 +4450,10 @@ class TableSpecificConfig:
         body = {}
         if self.auto_full_refresh_policy:
             body["auto_full_refresh_policy"] = self.auto_full_refresh_policy.as_dict()
+        if self.clustering_columns:
+            body["clustering_columns"] = [v for v in self.clustering_columns]
+        if self.enable_auto_clustering is not None:
+            body["enable_auto_clustering"] = self.enable_auto_clustering
         if self.exclude_columns:
             body["exclude_columns"] = [v for v in self.exclude_columns]
         if self.include_columns:
@@ -4442,6 +4470,8 @@ class TableSpecificConfig:
             body["scd_type"] = self.scd_type.value
         if self.sequence_by:
             body["sequence_by"] = [v for v in self.sequence_by]
+        if self.table_properties:
+            body["table_properties"] = self.table_properties
         if self.workday_report_parameters:
             body["workday_report_parameters"] = self.workday_report_parameters.as_dict()
         return body
@@ -4451,6 +4481,10 @@ class TableSpecificConfig:
         body = {}
         if self.auto_full_refresh_policy:
             body["auto_full_refresh_policy"] = self.auto_full_refresh_policy
+        if self.clustering_columns:
+            body["clustering_columns"] = self.clustering_columns
+        if self.enable_auto_clustering is not None:
+            body["enable_auto_clustering"] = self.enable_auto_clustering
         if self.exclude_columns:
             body["exclude_columns"] = self.exclude_columns
         if self.include_columns:
@@ -4467,6 +4501,8 @@ class TableSpecificConfig:
             body["scd_type"] = self.scd_type
         if self.sequence_by:
             body["sequence_by"] = self.sequence_by
+        if self.table_properties:
+            body["table_properties"] = self.table_properties
         if self.workday_report_parameters:
             body["workday_report_parameters"] = self.workday_report_parameters
         return body
@@ -4476,6 +4512,8 @@ class TableSpecificConfig:
         """Deserializes the TableSpecificConfig from a dictionary."""
         return cls(
             auto_full_refresh_policy=_from_dict(d, "auto_full_refresh_policy", AutoFullRefreshPolicy),
+            clustering_columns=d.get("clustering_columns", None),
+            enable_auto_clustering=d.get("enable_auto_clustering", None),
             exclude_columns=d.get("exclude_columns", None),
             include_columns=d.get("include_columns", None),
             primary_keys=d.get("primary_keys", None),
@@ -4488,6 +4526,7 @@ class TableSpecificConfig:
             salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
             scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
             sequence_by=d.get("sequence_by", None),
+            table_properties=d.get("table_properties", None),
             workday_report_parameters=_from_dict(
                 d, "workday_report_parameters", IngestionPipelineDefinitionWorkdayReportParameters
             ),
@@ -4507,32 +4546,27 @@ class TikTokAdsOptions:
     """TikTok Ads specific options for ingestion"""
 
     data_level: Optional[TikTokAdsOptionsTikTokDataLevel] = None
-    """(Optional) Data level for the report. If not specified, defaults to AUCTION_CAMPAIGN."""
+    """Deprecated. Use custom_report_options.data_level instead."""
 
     dimensions: Optional[List[str]] = None
-    """(Optional) Dimensions to include in the report. Examples: "campaign_id", "adgroup_id", "ad_id",
-    "stat_time_day", "stat_time_hour" If not specified, defaults to campaign_id."""
+    """Deprecated. Use custom_report_options.dimensions instead."""
 
     lookback_window_days: Optional[int] = None
     """(Optional) Number of days to look back for report tables during incremental sync to capture
-    late-arriving conversions and attribution data. If not specified, defaults to 7 days."""
+    late-arriving conversions and attribution data."""
 
     metrics: Optional[List[str]] = None
-    """(Optional) Metrics to include in the report. Examples: "spend", "impressions", "clicks",
-    "conversion", "cpc" If not specified, defaults to basic metrics (spend, impressions, clicks,
-    etc.)"""
+    """Deprecated. Use custom_report_options.metrics instead."""
 
     query_lifetime: Optional[bool] = None
-    """(Optional) Whether to request lifetime metrics (all-time aggregated data). When true, the report
-    returns all-time data. If not specified, defaults to false."""
+    """Deprecated. Use custom_report_options.query_lifetime instead."""
 
     report_type: Optional[TikTokAdsOptionsTikTokReportType] = None
-    """(Optional) Report type for the TikTok Ads API. If not specified, defaults to BASIC."""
+    """Deprecated. Use custom_report_options.report_type instead."""
 
     sync_start_date: Optional[str] = None
     """(Optional) Start date for the initial sync of report tables in YYYY-MM-DD format. This
-    determines the earliest date from which to sync historical data. If not specified, defaults to 1
-    year of historical data for daily reports and 30 days for hourly reports."""
+    determines the earliest date from which to sync historical data."""
 
     def as_dict(self) -> dict:
         """Serializes the TikTokAdsOptions into a dictionary suitable for use as a JSON request body."""

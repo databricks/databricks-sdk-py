@@ -17,9 +17,10 @@ from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.oauth import AuthorizationDetail
 from databricks.sdk.service import agentbricks as pkg_agentbricks
+from databricks.sdk.service import aisearch as pkg_aisearch
 from databricks.sdk.service import apps as pkg_apps
 from databricks.sdk.service import billing as pkg_billing
-from databricks.sdk.service import bundle as pkg_bundle
+from databricks.sdk.service import bundledeployments as pkg_bundledeployments
 from databricks.sdk.service import catalog as pkg_catalog
 from databricks.sdk.service import cleanrooms as pkg_cleanrooms
 from databricks.sdk.service import compute as pkg_compute
@@ -52,6 +53,7 @@ from databricks.sdk.service import tags as pkg_tags
 from databricks.sdk.service import vectorsearch as pkg_vectorsearch
 from databricks.sdk.service import workspace as pkg_workspace
 from databricks.sdk.service.agentbricks import AgentBricksAPI
+from databricks.sdk.service.aisearch import AiSearchAPI
 from databricks.sdk.service.apps import AppsAPI, AppsSettingsAPI
 from databricks.sdk.service.billing import (
     BillableUsageAPI,
@@ -60,7 +62,7 @@ from databricks.sdk.service.billing import (
     LogDeliveryAPI,
     UsageDashboardsAPI,
 )
-from databricks.sdk.service.bundle import BundleAPI
+from databricks.sdk.service.bundledeployments import BundleDeploymentsAPI
 from databricks.sdk.service.catalog import (
     AccountMetastoreAssignmentsAPI,
     AccountMetastoresAPI,
@@ -363,13 +365,14 @@ class WorkspaceClient:
         self._access_control = pkg_iam.AccessControlAPI(self._api_client)
         self._account_access_control_proxy = pkg_iam.AccountAccessControlProxyAPI(self._api_client)
         self._agent_bricks = pkg_agentbricks.AgentBricksAPI(self._api_client)
+        self._ai_search = pkg_aisearch.AiSearchAPI(self._api_client)
         self._alerts = pkg_sql.AlertsAPI(self._api_client)
         self._alerts_legacy = pkg_sql.AlertsLegacyAPI(self._api_client)
         self._alerts_v2 = pkg_sql.AlertsV2API(self._api_client)
         self._apps = pkg_apps.AppsAPI(self._api_client)
         self._apps_settings = pkg_apps.AppsSettingsAPI(self._api_client)
         self._artifact_allowlists = pkg_catalog.ArtifactAllowlistsAPI(self._api_client)
-        self._bundle = pkg_bundle.BundleAPI(self._api_client)
+        self._bundle_deployments = pkg_bundledeployments.BundleDeploymentsAPI(self._api_client)
         self._catalogs = pkg_catalog.CatalogsAPI(self._api_client)
         self._clean_room_asset_revisions = pkg_cleanrooms.CleanRoomAssetRevisionsAPI(self._api_client)
         self._clean_room_assets = pkg_cleanrooms.CleanRoomAssetsAPI(self._api_client)
@@ -528,6 +531,11 @@ class WorkspaceClient:
         return self._agent_bricks
 
     @property
+    def ai_search(self) -> pkg_aisearch.AiSearchAPI:
+        """**AI Search Endpoint**: Represents the compute resources to host AI Search indexes."""
+        return self._ai_search
+
+    @property
     def alerts(self) -> pkg_sql.AlertsAPI:
         """The alerts API can be used to perform CRUD operations on alerts."""
         return self._alerts
@@ -558,9 +566,9 @@ class WorkspaceClient:
         return self._artifact_allowlists
 
     @property
-    def bundle(self) -> pkg_bundle.BundleAPI:
+    def bundle_deployments(self) -> pkg_bundledeployments.BundleDeploymentsAPI:
         """Service for managing bundle deployment metadata."""
-        return self._bundle
+        return self._bundle_deployments
 
     @property
     def catalogs(self) -> pkg_catalog.CatalogsAPI:

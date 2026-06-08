@@ -1037,6 +1037,9 @@ class DataSource:
     request_source: Optional[RequestSource] = None
     """A request-time data source."""
 
+    stream_source: Optional[StreamSource] = None
+    """A Stream data source."""
+
     def as_dict(self) -> dict:
         """Serializes the DataSource into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1046,6 +1049,8 @@ class DataSource:
             body["kafka_source"] = self.kafka_source.as_dict()
         if self.request_source:
             body["request_source"] = self.request_source.as_dict()
+        if self.stream_source:
+            body["stream_source"] = self.stream_source.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1057,6 +1062,8 @@ class DataSource:
             body["kafka_source"] = self.kafka_source
         if self.request_source:
             body["request_source"] = self.request_source
+        if self.stream_source:
+            body["stream_source"] = self.stream_source
         return body
 
     @classmethod
@@ -1066,6 +1073,7 @@ class DataSource:
             delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
             kafka_source=_from_dict(d, "kafka_source", KafkaSource),
             request_source=_from_dict(d, "request_source", RequestSource),
+            stream_source=_from_dict(d, "stream_source", StreamSource),
         )
 
 
@@ -3258,6 +3266,9 @@ class KafkaConfig:
     """Catch-all for miscellaneous options. Keys should be source options or Kafka consumer options
     (kafka.*)"""
 
+    ingestion_config: Optional[IngestionConfig] = None
+    """Configuration for ingesting Kafka data into a Databricks-managed Delta table."""
+
     key_schema: Optional[SchemaConfig] = None
     """Schema configuration for extracting message keys from topics. At least one of key_schema and
     value_schema must be provided."""
@@ -3277,6 +3288,8 @@ class KafkaConfig:
             body["bootstrap_servers"] = self.bootstrap_servers
         if self.extra_options:
             body["extra_options"] = self.extra_options
+        if self.ingestion_config:
+            body["ingestion_config"] = self.ingestion_config.as_dict()
         if self.key_schema:
             body["key_schema"] = self.key_schema.as_dict()
         if self.name is not None:
@@ -3298,6 +3311,8 @@ class KafkaConfig:
             body["bootstrap_servers"] = self.bootstrap_servers
         if self.extra_options:
             body["extra_options"] = self.extra_options
+        if self.ingestion_config:
+            body["ingestion_config"] = self.ingestion_config
         if self.key_schema:
             body["key_schema"] = self.key_schema
         if self.name is not None:
@@ -3316,6 +3331,7 @@ class KafkaConfig:
             backfill_source=_from_dict(d, "backfill_source", BackfillSource),
             bootstrap_servers=d.get("bootstrap_servers", None),
             extra_options=d.get("extra_options", None),
+            ingestion_config=_from_dict(d, "ingestion_config", IngestionConfig),
             key_schema=_from_dict(d, "key_schema", SchemaConfig),
             name=d.get("name", None),
             subscription_mode=_from_dict(d, "subscription_mode", SubscriptionMode),
@@ -4348,7 +4364,8 @@ class MaterializedFeature:
 
     cron_schedule: Optional[str] = None
     """The quartz cron expression that defines the schedule of the materialization pipeline. The
-    schedule is evaluated in the UTC timezone."""
+    schedule is evaluated in the UTC timezone. Hidden from GraphQL: superseded by the `trigger`
+    oneof (cron_schedule_trigger), so not exposed to Catalog Explorer."""
 
     cron_schedule_trigger: Optional[CronSchedule] = None
     """A cron-based schedule trigger for the materialization pipeline."""
@@ -4370,7 +4387,8 @@ class MaterializedFeature:
     """Destination for writing feature values to an online Lakebase table."""
 
     pipeline_schedule_state: Optional[MaterializedFeaturePipelineScheduleState] = None
-    """The schedule state of the materialization pipeline."""
+    """The schedule state of the materialization pipeline. Hidden from GraphQL: being deprecated, so
+    not exposed to Catalog Explorer."""
 
     streaming_mode: Optional[StreamingMode] = None
     """The Structured Streaming trigger mode used for materialization. Real-time mode (RTM) targets
@@ -7147,6 +7165,33 @@ class StreamSchemaConfig:
     def from_dict(cls, d: Dict[str, Any]) -> StreamSchemaConfig:
         """Deserializes the StreamSchemaConfig from a dictionary."""
         return cls(direct_schemas=_from_dict(d, "direct_schemas", DirectSchemas))
+
+
+@dataclass
+class StreamSource:
+    """A Stream entity used as a data source for a feature."""
+
+    full_name: str
+    """Three-part full name of the Stream (catalog.schema.stream)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamSource:
+        """Deserializes the StreamSource from a dictionary."""
+        return cls(full_name=d.get("full_name", None))
 
 
 @dataclass

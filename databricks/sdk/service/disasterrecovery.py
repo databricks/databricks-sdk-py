@@ -397,7 +397,11 @@ class UcReplicationConfig:
     """Unity Catalog replication configuration (top-level, not per-set)."""
 
     catalogs: List[UcCatalog]
-    """UC catalogs to replicate."""
+    """UC catalogs to replicate.
+    
+    Mutable: catalogs may be added or removed on an existing failover group via UpdateFailoverGroup
+    with `unity_catalog_assets.catalogs` in the update_mask (gated by the
+    `databricks.drmanager.enableCatalogMutationOnUpdate` flag)."""
 
     data_replication_workspace_set: str
     """The workspace set whose workspaces will be used for data replication of all UC catalogs'

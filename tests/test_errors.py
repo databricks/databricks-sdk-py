@@ -314,7 +314,7 @@ _test_case_other_errors = [
         want_message=(
             "unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. "
             "Please report this issue with the following debugging information to the SDK issue tracker at "
-            "https://github.com/databricks/databricks-sdk-py/issues. Request log:```GET /api/2.0/service\n"
+            "https://github.com/databricks/databricks-sdk-go/issues. Request log:```GET /api/2.0/service\n"
             "< 400 Bad Request\n"
             "< this is not a real response```"
         ),
@@ -343,7 +343,7 @@ _test_case_other_errors = [
             response_body=json.dumps("This is JSON but not a dictionary"),
         ),
         want_err_type=errors.NotFound,
-        want_message='unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-py/issues. Request log:```GET /api/2.0/service\n< 404 Not Found\n< "This is JSON but not a dictionary"```',
+        want_message='unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:```GET /api/2.0/service\n< 404 Not Found\n< "This is JSON but not a dictionary"```',
     ),
     TestCase(
         name="unable_to_parse_response3",
@@ -353,7 +353,7 @@ _test_case_other_errors = [
             response_body=b"\x80",
         ),
         want_err_type=errors.NotFound,
-        want_message="unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-py/issues. Request log:```GET /api/2.0/service\n< 404 Not Found\n< �```",
+        want_message="unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:```GET /api/2.0/service\n< 404 Not Found\n< �```",
     ),
 ]
 
