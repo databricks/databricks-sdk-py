@@ -26,6 +26,7 @@ def test_local_io(random):
     f.close()
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_dbfs_io(w, random):
     dummy_file = f"/tmp/{random()}"
     to_write = random(1024 * 1024 * 1.5).encode()
@@ -59,6 +60,7 @@ def ls(w):
     return inner
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_recursive_listing(w, random, junk, ls):
     root = f"/tmp/{random()}"
     junk(f"{root}/01")
@@ -71,6 +73,7 @@ def test_recursive_listing(w, random, junk, ls):
     w.dbfs.delete(root, recursive=True)
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_cp_dbfs_folder_to_folder_non_recursive(w, random, junk, ls):
     root = f"/tmp/{random()}"
     junk(f"{root}/01")
@@ -83,6 +86,7 @@ def test_cp_dbfs_folder_to_folder_non_recursive(w, random, junk, ls):
     assert ["/01"] == ls(new_root, recursive=True)
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_cp_dbfs_folder_to_folder_recursive(w, random, junk, ls):
     root = f"/tmp/{random()}"
     junk(f"{root}/01")
@@ -95,6 +99,7 @@ def test_cp_dbfs_folder_to_folder_recursive(w, random, junk, ls):
     assert ["/01", "/a/02", "/a/b/03"] == ls(new_root, recursive=True)
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_cp_dbfs_folder_to_existing_folder_recursive(w, random, junk, ls):
     root = f"/tmp/{random()}"
     junk(f"{root}/01")
@@ -109,6 +114,7 @@ def test_cp_dbfs_folder_to_existing_folder_recursive(w, random, junk, ls):
     assert [f"/{base}/01", f"/{base}/a/02", f"/{base}/a/b/03"] == ls(new_root, recursive=True)
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_cp_dbfs_file_to_non_existing_location(w, random, junk):
     root = f"/tmp/{random()}"
     payload = junk(f"{root}/01")
@@ -120,6 +126,7 @@ def test_cp_dbfs_file_to_non_existing_location(w, random, junk):
         assert f.read() == payload
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_cp_dbfs_file_to_existing_folder(w, random, junk):
     root = f"/tmp/{random()}"
     payload = junk(f"{root}/01")
@@ -130,6 +137,7 @@ def test_cp_dbfs_file_to_existing_folder(w, random, junk):
         assert f.read() == payload
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_cp_dbfs_file_to_existing_location(w, random, junk):
     root = f"/tmp/{random()}"
     junk(f"{root}/01")
@@ -139,6 +147,7 @@ def test_cp_dbfs_file_to_existing_location(w, random, junk):
     assert "A file or directory already exists" in str(ei.value)
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_cp_dbfs_file_to_existing_location_with_overwrite(w, random, junk):
     root = f"/tmp/{random()}"
     payload = junk(f"{root}/01")
@@ -150,6 +159,7 @@ def test_cp_dbfs_file_to_existing_location_with_overwrite(w, random, junk):
         assert f.read() == payload
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_move_within_dbfs(w, random, junk):
     root = f"/tmp/{random()}"
     payload = junk(f"{root}/01")
@@ -161,6 +171,7 @@ def test_move_within_dbfs(w, random, junk):
         assert f.read() == payload
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_move_from_dbfs_to_local(w, random, junk, tmp_path):
     root = pathlib.Path(f"/tmp/{random()}")
     payload_01 = junk(f"{root}/01")
@@ -178,6 +189,7 @@ def test_move_from_dbfs_to_local(w, random, junk, tmp_path):
         assert f.read() == payload_03
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_dbfs_upload_download(w, random, junk, tmp_path):
     root = pathlib.Path(f"/tmp/{random()}")
 

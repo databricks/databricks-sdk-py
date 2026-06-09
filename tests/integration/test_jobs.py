@@ -1,6 +1,8 @@
 import datetime
 import logging
 
+import pytest
+
 
 def test_jobs(w):
     found = 0
@@ -10,6 +12,7 @@ def test_jobs(w):
     assert found > 0
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_submitting_jobs(w, random, env_or_skip):
     from databricks.sdk.service import compute, jobs
 

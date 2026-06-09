@@ -121,6 +121,7 @@ def test_runtime_auth_from_jobs_volumes(ucws, files_api, fresh_wheel_file, env_o
     return _test_runtime_auth_from_jobs_inner(ucws, env_or_skip, random, dbr_versions, lib)
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_runtime_auth_from_jobs_dbfs(w, fresh_wheel_file, env_or_skip, random):
     # Library installation from DBFS is not supported past DBR 14.3.
     # DBR < 13 ships Python < 3.10 which is below our requires-python.

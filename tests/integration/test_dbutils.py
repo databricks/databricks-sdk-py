@@ -8,6 +8,7 @@ from databricks.sdk.core import DatabricksError
 from databricks.sdk.errors import NotFound
 
 
+@pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
 def test_rest_dbfs_ls(w, env_or_skip):
     from databricks.sdk.runtime import dbutils
 
@@ -24,7 +25,15 @@ def test_proxy_dbfs_mounts(w, env_or_skip):
     assert len(x) > 1
 
 
-@pytest.fixture(params=["dbfs", "volumes"])
+@pytest.fixture(
+    params=[
+        # Legacy DBFS is disabled on the test workspace (DBFS deprecation).
+        pytest.param(
+            "dbfs", marks=pytest.mark.skip(reason="Legacy DBFS is disabled on the test workspace (DBFS deprecation)")
+        ),
+        "volumes",
+    ]
+)
 def fs_and_base_path(request, ucws, volume):
     if request.param == "dbfs":
         fs = ucws.dbutils.fs

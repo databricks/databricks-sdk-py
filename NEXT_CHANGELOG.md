@@ -14,4 +14,6 @@
 
 ### Internal Changes
 
+* Skip integration tests that exercise legacy DBFS root, which is disabled on the test workspace (DBFS deprecation).
+
 ### API Changes
