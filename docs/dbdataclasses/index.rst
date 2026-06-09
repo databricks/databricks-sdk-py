@@ -6,9 +6,10 @@ Dataclasses
    :maxdepth: 1
    
    agentbricks
+   aisearch
    apps
    billing
-   bundle
+   bundledeployments
    catalog
    cleanrooms
    compute

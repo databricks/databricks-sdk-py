@@ -548,6 +548,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination
+   :members:
+   :undoc-members:
+
 .. autoclass:: EgressNetworkPolicyNetworkAccessPolicyInternetDestination
    :members:
    :undoc-members:

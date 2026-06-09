@@ -33,6 +33,9 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class Branch:
+    branch_id: Optional[str] = None
+    """The part of the name, chosen by the user when the resource was created."""
+
     create_time: Optional[Timestamp] = None
     """A timestamp indicating when the branch was created."""
 
@@ -61,6 +64,8 @@ class Branch:
     def as_dict(self) -> dict:
         """Serializes the Branch into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.branch_id is not None:
+            body["branch_id"] = self.branch_id
         if self.create_time is not None:
             body["create_time"] = self.create_time.ToJsonString()
         if self.name is not None:
@@ -80,6 +85,8 @@ class Branch:
     def as_shallow_dict(self) -> dict:
         """Serializes the Branch into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.branch_id is not None:
+            body["branch_id"] = self.branch_id
         if self.create_time is not None:
             body["create_time"] = self.create_time
         if self.name is not None:
@@ -100,6 +107,7 @@ class Branch:
     def from_dict(cls, d: Dict[str, Any]) -> Branch:
         """Deserializes the Branch from a dictionary."""
         return cls(
+            branch_id=d.get("branch_id", None),
             create_time=_timestamp(d, "create_time"),
             name=d.get("name", None),
             parent=d.get("parent", None),
@@ -349,6 +357,9 @@ class BranchStatusState(Enum):
 
 @dataclass
 class Catalog:
+    catalog_id: Optional[str] = None
+    """The part of the name, chosen by the user when the resource was created."""
+
     create_time: Optional[Timestamp] = None
     """A timestamp indicating when the catalog was created."""
 
@@ -372,6 +383,8 @@ class Catalog:
     def as_dict(self) -> dict:
         """Serializes the Catalog into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.catalog_id is not None:
+            body["catalog_id"] = self.catalog_id
         if self.create_time is not None:
             body["create_time"] = self.create_time.ToJsonString()
         if self.name is not None:
@@ -389,6 +402,8 @@ class Catalog:
     def as_shallow_dict(self) -> dict:
         """Serializes the Catalog into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.catalog_id is not None:
+            body["catalog_id"] = self.catalog_id
         if self.create_time is not None:
             body["create_time"] = self.create_time
         if self.name is not None:
@@ -407,6 +422,7 @@ class Catalog:
     def from_dict(cls, d: Dict[str, Any]) -> Catalog:
         """Deserializes the Catalog from a dictionary."""
         return cls(
+            catalog_id=d.get("catalog_id", None),
             create_time=_timestamp(d, "create_time"),
             name=d.get("name", None),
             spec=_from_dict(d, "spec", CatalogCatalogSpec),
@@ -555,6 +571,9 @@ class Database:
     create_time: Optional[Timestamp] = None
     """A timestamp indicating when the database was created."""
 
+    database_id: Optional[str] = None
+    """The part of the name, chosen by the user when the resource was created."""
+
     name: Optional[str] = None
     """The resource name of the database. Format:
     projects/{project_id}/branches/{branch_id}/databases/{database_id}"""
@@ -576,6 +595,8 @@ class Database:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time.ToJsonString()
+        if self.database_id is not None:
+            body["database_id"] = self.database_id
         if self.name is not None:
             body["name"] = self.name
         if self.parent is not None:
@@ -593,6 +614,8 @@ class Database:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time
+        if self.database_id is not None:
+            body["database_id"] = self.database_id
         if self.name is not None:
             body["name"] = self.name
         if self.parent is not None:
@@ -610,6 +633,7 @@ class Database:
         """Deserializes the Database from a dictionary."""
         return cls(
             create_time=_timestamp(d, "create_time"),
+            database_id=d.get("database_id", None),
             name=d.get("name", None),
             parent=d.get("parent", None),
             spec=_from_dict(d, "spec", DatabaseDatabaseSpec),
@@ -845,6 +869,9 @@ class Endpoint:
     create_time: Optional[Timestamp] = None
     """A timestamp indicating when the compute endpoint was created."""
 
+    endpoint_id: Optional[str] = None
+    """The part of the name, chosen by the user when the resource was created."""
+
     name: Optional[str] = None
     """Output only. The full resource path of the endpoint. Format:
     projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}"""
@@ -871,6 +898,8 @@ class Endpoint:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time.ToJsonString()
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.name is not None:
             body["name"] = self.name
         if self.parent is not None:
@@ -890,6 +919,8 @@ class Endpoint:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.name is not None:
             body["name"] = self.name
         if self.parent is not None:
@@ -909,6 +940,7 @@ class Endpoint:
         """Deserializes the Endpoint from a dictionary."""
         return cls(
             create_time=_timestamp(d, "create_time"),
+            endpoint_id=d.get("endpoint_id", None),
             name=d.get("name", None),
             parent=d.get("parent", None),
             spec=_from_dict(d, "spec", EndpointSpec),
@@ -1713,6 +1745,9 @@ class Project:
     name: Optional[str] = None
     """Output only. The full resource path of the project. Format: projects/{project_id}"""
 
+    project_id: Optional[str] = None
+    """The part of the name, chosen by the user when the resource was created."""
+
     purge_time: Optional[Timestamp] = None
     """A timestamp indicating when the project is scheduled for permanent deletion. Empty if the
     project is not deleted, otherwise set to a timestamp in the future."""
@@ -1741,6 +1776,8 @@ class Project:
             body["initial_endpoint_spec"] = self.initial_endpoint_spec.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
         if self.purge_time is not None:
             body["purge_time"] = self.purge_time.ToJsonString()
         if self.spec:
@@ -1764,6 +1801,8 @@ class Project:
             body["initial_endpoint_spec"] = self.initial_endpoint_spec
         if self.name is not None:
             body["name"] = self.name
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
         if self.purge_time is not None:
             body["purge_time"] = self.purge_time
         if self.spec:
@@ -1784,6 +1823,7 @@ class Project:
             delete_time=_timestamp(d, "delete_time"),
             initial_endpoint_spec=_from_dict(d, "initial_endpoint_spec", InitialEndpointSpec),
             name=d.get("name", None),
+            project_id=d.get("project_id", None),
             purge_time=_timestamp(d, "purge_time"),
             spec=_from_dict(d, "spec", ProjectSpec),
             status=_from_dict(d, "status", ProjectStatus),
@@ -2204,6 +2244,9 @@ class Role:
     parent: Optional[str] = None
     """The Branch where this Role exists. Format: projects/{project_id}/branches/{branch_id}"""
 
+    role_id: Optional[str] = None
+    """The part of the name, chosen by the user when the resource was created."""
+
     spec: Optional[RoleRoleSpec] = None
     """The spec contains the role configuration, including identity type, authentication method, and
     role attributes."""
@@ -2223,6 +2266,8 @@ class Role:
             body["name"] = self.name
         if self.parent is not None:
             body["parent"] = self.parent
+        if self.role_id is not None:
+            body["role_id"] = self.role_id
         if self.spec:
             body["spec"] = self.spec.as_dict()
         if self.status:
@@ -2240,6 +2285,8 @@ class Role:
             body["name"] = self.name
         if self.parent is not None:
             body["parent"] = self.parent
+        if self.role_id is not None:
+            body["role_id"] = self.role_id
         if self.spec:
             body["spec"] = self.spec
         if self.status:
@@ -2255,6 +2302,7 @@ class Role:
             create_time=_timestamp(d, "create_time"),
             name=d.get("name", None),
             parent=d.get("parent", None),
+            role_id=d.get("role_id", None),
             spec=_from_dict(d, "spec", RoleRoleSpec),
             status=_from_dict(d, "status", RoleRoleStatus),
             update_time=_timestamp(d, "update_time"),
@@ -2520,6 +2568,9 @@ class SyncedTable:
     status: Optional[SyncedTableSyncedTableStatus] = None
     """Synced Table data synchronization status."""
 
+    synced_table_id: Optional[str] = None
+    """The part of the name, chosen by the user when the resource was created."""
+
     uid: Optional[str] = None
     """The Unity Catalog table ID for this synced table."""
 
@@ -2534,6 +2585,8 @@ class SyncedTable:
             body["spec"] = self.spec.as_dict()
         if self.status:
             body["status"] = self.status.as_dict()
+        if self.synced_table_id is not None:
+            body["synced_table_id"] = self.synced_table_id
         if self.uid is not None:
             body["uid"] = self.uid
         return body
@@ -2549,6 +2602,8 @@ class SyncedTable:
             body["spec"] = self.spec
         if self.status:
             body["status"] = self.status
+        if self.synced_table_id is not None:
+            body["synced_table_id"] = self.synced_table_id
         if self.uid is not None:
             body["uid"] = self.uid
         return body
@@ -2561,6 +2616,7 @@ class SyncedTable:
             name=d.get("name", None),
             spec=_from_dict(d, "spec", SyncedTableSyncedTableSpec),
             status=_from_dict(d, "status", SyncedTableSyncedTableStatus),
+            synced_table_id=d.get("synced_table_id", None),
             uid=d.get("uid", None),
         )
 

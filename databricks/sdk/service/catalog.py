@@ -1128,6 +1128,9 @@ class CatalogInfo:
     created_by: Optional[str] = None
     """Username of catalog creator."""
 
+    custom_max_retention_hours: Optional[int] = None
+    """Custom maximum retention period in hours for the catalog"""
+
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
 
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
@@ -1196,6 +1199,8 @@ class CatalogInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = self.custom_max_retention_hours
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag.as_dict()
         if self.enable_predictive_optimization is not None:
@@ -1249,6 +1254,8 @@ class CatalogInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = self.custom_max_retention_hours
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag
         if self.enable_predictive_optimization is not None:
@@ -1297,6 +1304,7 @@ class CatalogInfo:
             connection_name=d.get("connection_name", None),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
+            custom_max_retention_hours=d.get("custom_max_retention_hours", None),
             effective_predictive_optimization_flag=_from_dict(
                 d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
             ),
@@ -1695,6 +1703,9 @@ class ConnectionInfo:
     credential_type: Optional[CredentialType] = None
     """The type of credential."""
 
+    environment_settings: Optional[EnvironmentSettings] = None
+    """[Create,Update:OPT] Connection environment settings as EnvironmentSettings object."""
+
     full_name: Optional[str] = None
     """Full name of connection."""
 
@@ -1744,6 +1755,8 @@ class ConnectionInfo:
             body["created_by"] = self.created_by
         if self.credential_type is not None:
             body["credential_type"] = self.credential_type.value
+        if self.environment_settings:
+            body["environment_settings"] = self.environment_settings.as_dict()
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -1785,6 +1798,8 @@ class ConnectionInfo:
             body["created_by"] = self.created_by
         if self.credential_type is not None:
             body["credential_type"] = self.credential_type
+        if self.environment_settings:
+            body["environment_settings"] = self.environment_settings
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -1821,6 +1836,7 @@ class ConnectionInfo:
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             credential_type=_enum(d, "credential_type", CredentialType),
+            environment_settings=_from_dict(d, "environment_settings", EnvironmentSettings),
             full_name=d.get("full_name", None),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -3441,6 +3457,38 @@ class EntityTagAssignment:
             tag_value=d.get("tag_value", None),
             update_time=_timestamp(d, "update_time"),
             updated_by=d.get("updated_by", None),
+        )
+
+
+@dataclass
+class EnvironmentSettings:
+    environment_version: Optional[str] = None
+
+    java_dependencies: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EnvironmentSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
+        if self.java_dependencies:
+            body["java_dependencies"] = [v for v in self.java_dependencies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnvironmentSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
+        if self.java_dependencies:
+            body["java_dependencies"] = self.java_dependencies
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnvironmentSettings:
+        """Deserializes the EnvironmentSettings from a dictionary."""
+        return cls(
+            environment_version=d.get("environment_version", None), java_dependencies=d.get("java_dependencies", None)
         )
 
 
@@ -8874,6 +8922,9 @@ class SchemaInfo:
     created_by: Optional[str] = None
     """Username of schema creator."""
 
+    custom_max_retention_hours: Optional[int] = None
+    """Custom maximum retention period in hours for the schema."""
+
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
 
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
@@ -8924,6 +8975,8 @@ class SchemaInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = self.custom_max_retention_hours
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag.as_dict()
         if self.enable_predictive_optimization is not None:
@@ -8965,6 +9018,8 @@ class SchemaInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = self.custom_max_retention_hours
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag
         if self.enable_predictive_optimization is not None:
@@ -9001,6 +9056,7 @@ class SchemaInfo:
             comment=d.get("comment", None),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
+            custom_max_retention_hours=d.get("custom_max_retention_hours", None),
             effective_predictive_optimization_flag=_from_dict(
                 d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
             ),
@@ -9234,9 +9290,9 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: MEMORY_STORE_STANDARD = 342; Next id: 343. Reserved numbers: 316, 317, 327, 330,
-    341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING,
-    MCP_SERVICE_STANDARD)."""
+    """Latest kind: CONNECTION_ADOBE_CAMPAIGNS_OAUTH_M2M = 345; Next id: 346. Reserved numbers: 316,
+    317, 327, 330, 341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD,
+    MODEL_SERVICE_SYSTEM_DELTASHARING, MCP_SERVICE_STANDARD)."""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -11591,6 +11647,7 @@ class CatalogsAPI:
         *,
         comment: Optional[str] = None,
         connection_name: Optional[str] = None,
+        custom_max_retention_hours: Optional[int] = None,
         managed_encryption_settings: Optional[EncryptionSettings] = None,
         options: Optional[Dict[str, str]] = None,
         properties: Optional[Dict[str, str]] = None,
@@ -11607,6 +11664,8 @@ class CatalogsAPI:
           User-provided free-form text description.
         :param connection_name: str (optional)
           The name of the connection to an external data source.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the catalog
         :param managed_encryption_settings: :class:`EncryptionSettings` (optional)
           Control CMK encryption for managed catalog data
         :param options: Dict[str,str] (optional)
@@ -11630,6 +11689,8 @@ class CatalogsAPI:
             body["comment"] = comment
         if connection_name is not None:
             body["connection_name"] = connection_name
+        if custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = custom_max_retention_hours
         if managed_encryption_settings is not None:
             body["managed_encryption_settings"] = managed_encryption_settings.as_dict()
         if name is not None:
@@ -11781,6 +11842,7 @@ class CatalogsAPI:
         name: str,
         *,
         comment: Optional[str] = None,
+        custom_max_retention_hours: Optional[int] = None,
         enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
         isolation_mode: Optional[CatalogIsolationMode] = None,
         managed_encryption_settings: Optional[EncryptionSettings] = None,
@@ -11796,6 +11858,8 @@ class CatalogsAPI:
           The name of the catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the catalog
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`CatalogIsolationMode` (optional)
@@ -11817,6 +11881,8 @@ class CatalogsAPI:
         body = {}
         if comment is not None:
             body["comment"] = comment
+        if custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = custom_max_retention_hours
         if enable_predictive_optimization is not None:
             body["enable_predictive_optimization"] = enable_predictive_optimization.value
         if isolation_mode is not None:
@@ -11864,6 +11930,7 @@ class ConnectionsAPI:
         options: Dict[str, str],
         *,
         comment: Optional[str] = None,
+        environment_settings: Optional[EnvironmentSettings] = None,
         properties: Optional[Dict[str, str]] = None,
         read_only: Optional[bool] = None,
     ) -> ConnectionInfo:
@@ -11880,6 +11947,8 @@ class ConnectionsAPI:
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param environment_settings: :class:`EnvironmentSettings` (optional)
+          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
@@ -11893,6 +11962,8 @@ class ConnectionsAPI:
             body["comment"] = comment
         if connection_type is not None:
             body["connection_type"] = connection_type.value
+        if environment_settings is not None:
+            body["environment_settings"] = environment_settings.as_dict()
         if name is not None:
             body["name"] = name
         if options is not None:
@@ -11998,7 +12069,13 @@ class ConnectionsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self, name: str, options: Dict[str, str], *, new_name: Optional[str] = None, owner: Optional[str] = None
+        self,
+        name: str,
+        options: Dict[str, str],
+        *,
+        environment_settings: Optional[EnvironmentSettings] = None,
+        new_name: Optional[str] = None,
+        owner: Optional[str] = None,
     ) -> ConnectionInfo:
         """Updates the connection that matches the supplied name.
 
@@ -12006,6 +12083,8 @@ class ConnectionsAPI:
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
+        :param environment_settings: :class:`EnvironmentSettings` (optional)
+          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param new_name: str (optional)
           New name for the connection.
         :param owner: str (optional)
@@ -12015,6 +12094,8 @@ class ConnectionsAPI:
         """
 
         body = {}
+        if environment_settings is not None:
+            body["environment_settings"] = environment_settings.as_dict()
         if new_name is not None:
             body["new_name"] = new_name
         if options is not None:
@@ -15723,6 +15804,7 @@ class SchemasAPI:
         catalog_name: str,
         *,
         comment: Optional[str] = None,
+        custom_max_retention_hours: Optional[int] = None,
         properties: Optional[Dict[str, str]] = None,
         storage_root: Optional[str] = None,
     ) -> SchemaInfo:
@@ -15735,6 +15817,8 @@ class SchemasAPI:
           Name of parent catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the schema.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param storage_root: str (optional)
@@ -15748,6 +15832,8 @@ class SchemasAPI:
             body["catalog_name"] = catalog_name
         if comment is not None:
             body["comment"] = comment
+        if custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = custom_max_retention_hours
         if name is not None:
             body["name"] = name
         if properties is not None:
@@ -15887,6 +15973,7 @@ class SchemasAPI:
         full_name: str,
         *,
         comment: Optional[str] = None,
+        custom_max_retention_hours: Optional[int] = None,
         enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
@@ -15901,6 +15988,8 @@ class SchemasAPI:
           Full name of the schema.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the schema.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param new_name: str (optional)
@@ -15916,6 +16005,8 @@ class SchemasAPI:
         body = {}
         if comment is not None:
             body["comment"] = comment
+        if custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = custom_max_retention_hours
         if enable_predictive_optimization is not None:
             body["enable_predictive_optimization"] = enable_predictive_optimization.value
         if new_name is not None:
