@@ -81,7 +81,7 @@
         :returns: Iterator over :class:`MiniVectorIndex`
         
 
-    .. py:method:: query_index(index_name: str, columns: List[str] [, columns_to_rerank: Optional[List[str]], filters_json: Optional[str], num_results: Optional[int], query_text: Optional[str], query_type: Optional[str], query_vector: Optional[List[float]], reranker: Optional[RerankerConfig], score_threshold: Optional[float]]) -> QueryVectorIndexResponse
+    .. py:method:: query_index(index_name: str, columns: List[str] [, columns_to_rerank: Optional[List[str]], facets: Optional[List[str]], filters_json: Optional[str], num_results: Optional[int], query_columns: Optional[List[str]], query_text: Optional[str], query_type: Optional[str], query_vector: Optional[List[float]], reranker: Optional[RerankerConfig], score_threshold: Optional[float], sort_columns: Optional[List[str]]]) -> QueryVectorIndexResponse
 
         Query the specified vector index.
 
@@ -91,6 +91,11 @@
           List of column names to include in the response.
         :param columns_to_rerank: List[str] (optional)
           Column names used to retrieve data to send to the reranker.
+        :param facets: List[str] (optional)
+          Facets to compute over the matched results. Each entry has one of these forms: `"<column>"` - top 10
+          distinct values by count `"<column> TOP <n>"` - top n distinct values, where n > 0 `"<column>
+          BUCKETS [[from,to],...]"` - inclusive numeric ranges `TOP` and `BUCKETS` are case-insensitive. A
+          column may appear at most once.
         :param filters_json: str (optional)
           JSON string representing query filters.
 
@@ -101,6 +106,8 @@
           5. - `{"id": 5}`: Filter for id equal to 5.
         :param num_results: int (optional)
           Number of results to return. Defaults to 10.
+        :param query_columns: List[str] (optional)
+          Text columns to search for `query_text`. When empty, all text columns are searched.
         :param query_text: str (optional)
           Query text. Required for Delta Sync Index using model endpoint.
         :param query_type: str (optional)
@@ -116,6 +123,9 @@
           more information.
         :param score_threshold: float (optional)
           Threshold for the approximate nearest neighbor search. Defaults to 0.0.
+        :param sort_columns: List[str] (optional)
+          Sort results by column values instead of the default relevance ordering. Each clause has the form
+          `"<column> ASC"` or `"<column> DESC"`, for example `["rating DESC", "price ASC"]`.
 
         :returns: :class:`QueryVectorIndexResponse`
         
