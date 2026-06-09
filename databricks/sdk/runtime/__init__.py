@@ -116,7 +116,10 @@ except Exception as e:
     # and raises CONTEXT_UNAVAILABLE_FOR_REMOTE_CLIENT. Treat this like "not in a classic
     # runtime" and fall back to the OSS/remote implementation below, which is Spark
     # Connect-compatible. Without this, importing databricks.sdk.runtime (and therefore
-    # constructing a WorkspaceClient on such a cluster) raises at import time.
+    # constructing a WorkspaceClient on such a cluster) raises at import time. The catch
+    # is broad rather than typed on PySparkRuntimeError so the SDK does not need to import
+    # pyspark just to narrow the exception type; any other unexpected failure here is also
+    # safer surfaced as a warning + remote fallback than as a constructor crash.
     logger.warning(f"Runtime namespace unavailable, falling back to remote implementation: {e}")
 
 if not _use_runtime_namespace:
