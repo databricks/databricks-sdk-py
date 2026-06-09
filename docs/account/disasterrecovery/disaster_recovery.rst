@@ -72,7 +72,7 @@
           The fully qualified resource name of the failover group to failover. Format:
           accounts/{account_id}/failover-groups/{failover_group_id}.
         :param target_primary_region: str
-          The target primary region. Must be one of the derived regions and different from the current
+          The target primary region. Must be one of the participating regions and different from the current
           effective_primary_region. Serves as an idempotency check.
         :param failover_type: :class:`FailoverFailoverGroupRequestFailoverType`
           The type of failover to perform.
@@ -107,6 +107,9 @@
     .. py:method:: list_failover_groups(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[FailoverGroup]
 
         List failover groups.
+
+        List entries are abbreviated: `state` and `replication_point` are not populated. Call GetFailoverGroup
+        to retrieve the full resource.
 
         :param parent: str
           The parent resource. Format: accounts/{account_id}.

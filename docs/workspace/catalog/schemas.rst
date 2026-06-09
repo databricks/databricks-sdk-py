@@ -9,7 +9,7 @@
     the USE_SCHEMA data permission on the schema and its parent catalog, and they must have the SELECT
     permission on the table or view.
 
-    .. py:method:: create(name: str, catalog_name: str [, comment: Optional[str], properties: Optional[Dict[str, str]], storage_root: Optional[str]]) -> SchemaInfo
+    .. py:method:: create(name: str, catalog_name: str [, comment: Optional[str], custom_max_retention_hours: Optional[int], properties: Optional[Dict[str, str]], storage_root: Optional[str]]) -> SchemaInfo
 
 
         Usage:
@@ -22,13 +22,13 @@
             
             w = WorkspaceClient()
             
-            created_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
+            new_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
             
-            created_schema = w.schemas.create(name=f"sdk-{time.time_ns()}", catalog_name=created_catalog.name)
+            created = w.schemas.create(name=f"sdk-{time.time_ns()}", catalog_name=new_catalog.name)
             
             # cleanup
-            w.catalogs.delete(name=created_catalog.name, force=True)
-            w.schemas.delete(full_name=created_schema.full_name)
+            w.catalogs.delete(name=new_catalog.name, force=True)
+            w.schemas.delete(full_name=created.full_name)
 
         Creates a new schema for catalog in the Metastore. The caller must be a metastore admin, or have the
         **CREATE_SCHEMA** privilege in the parent catalog.
@@ -39,6 +39,8 @@
           Name of parent catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the schema.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param storage_root: str (optional)
@@ -143,7 +145,7 @@
         :returns: Iterator over :class:`SchemaInfo`
         
 
-    .. py:method:: update(full_name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> SchemaInfo
+    .. py:method:: update(full_name: str [, comment: Optional[str], custom_max_retention_hours: Optional[int], enable_predictive_optimization: Optional[EnablePredictiveOptimization], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> SchemaInfo
 
 
         Usage:
@@ -175,6 +177,8 @@
           Full name of the schema.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the schema.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param new_name: str (optional)

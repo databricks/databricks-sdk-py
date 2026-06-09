@@ -118,9 +118,10 @@ MANUAL_PACKAGES = [
 # into MANUAL_PACKAGES above to override.
 AUTO_PACKAGES = [
     Package("agentbricks", "Agent Bricks Service", "The Custom LLMs service manages state and powers the UI for the Custom LLM product."),
+    Package("aisearch", "AISearch", "**AI Search Endpoint**: Represents the compute resources to host AI Search indexes. AIP-conformant replacement for the legacy VectorSearchEndpoints API; functionally equivalent."),
     Package("apps", "", ""),
     Package("billing", "", ""),
-    Package("bundle", "Bundle", "Service for managing bundle deployment metadata."),
+    Package("bundledeployments", "Bundle Deployments", "Service for managing bundle deployment metadata."),
     Package("catalog", "", ""),
     Package("cleanrooms", "", ""),
     Package("compute", "", ""),

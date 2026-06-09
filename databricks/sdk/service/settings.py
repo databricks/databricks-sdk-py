@@ -3159,6 +3159,10 @@ class EgressNetworkPolicyNetworkAccessPolicy:
     restriction_mode: EgressNetworkPolicyNetworkAccessPolicyRestrictionMode
     """The restriction mode that controls how serverless workloads can access the internet."""
 
+    allowed_databricks_destinations: Optional[List[EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination]] = None
+    """List of Databricks workspace destinations that serverless workloads are allowed to access when
+    in RESTRICTED_ACCESS mode."""
+
     allowed_internet_destinations: Optional[List[EgressNetworkPolicyNetworkAccessPolicyInternetDestination]] = None
     """List of internet destinations that serverless workloads are allowed to access when in
     RESTRICTED_ACCESS mode."""
@@ -3178,6 +3182,8 @@ class EgressNetworkPolicyNetworkAccessPolicy:
     def as_dict(self) -> dict:
         """Serializes the EgressNetworkPolicyNetworkAccessPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.allowed_databricks_destinations:
+            body["allowed_databricks_destinations"] = [v.as_dict() for v in self.allowed_databricks_destinations]
         if self.allowed_internet_destinations:
             body["allowed_internet_destinations"] = [v.as_dict() for v in self.allowed_internet_destinations]
         if self.allowed_storage_destinations:
@@ -3193,6 +3199,8 @@ class EgressNetworkPolicyNetworkAccessPolicy:
     def as_shallow_dict(self) -> dict:
         """Serializes the EgressNetworkPolicyNetworkAccessPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.allowed_databricks_destinations:
+            body["allowed_databricks_destinations"] = self.allowed_databricks_destinations
         if self.allowed_internet_destinations:
             body["allowed_internet_destinations"] = self.allowed_internet_destinations
         if self.allowed_storage_destinations:
@@ -3209,6 +3217,9 @@ class EgressNetworkPolicyNetworkAccessPolicy:
     def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyNetworkAccessPolicy:
         """Deserializes the EgressNetworkPolicyNetworkAccessPolicy from a dictionary."""
         return cls(
+            allowed_databricks_destinations=_repeated_dict(
+                d, "allowed_databricks_destinations", EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination
+            ),
             allowed_internet_destinations=_repeated_dict(
                 d, "allowed_internet_destinations", EgressNetworkPolicyNetworkAccessPolicyInternetDestination
             ),
@@ -3223,6 +3234,31 @@ class EgressNetworkPolicyNetworkAccessPolicy:
             ),
             restriction_mode=_enum(d, "restriction_mode", EgressNetworkPolicyNetworkAccessPolicyRestrictionMode),
         )
+
+
+@dataclass
+class EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination:
+    workspace_ids: Optional[List[int]] = None
+    """The workspace IDs to allow egress traffic to."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.workspace_ids:
+            body["workspace_ids"] = [v for v in self.workspace_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.workspace_ids:
+            body["workspace_ids"] = self.workspace_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination:
+        """Deserializes the EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination from a dictionary."""
+        return cls(workspace_ids=d.get("workspace_ids", None))
 
 
 @dataclass

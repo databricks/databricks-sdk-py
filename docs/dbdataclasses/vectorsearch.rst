@@ -103,6 +103,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: STORAGE_OPTIMIZED
       :value: "STORAGE_OPTIMIZED"
 
+.. autoclass:: FacetResultData
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetVectorSearchEndpointPermissionLevelsResponse
    :members:
    :undoc-members:

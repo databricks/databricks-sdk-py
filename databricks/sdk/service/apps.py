@@ -1776,6 +1776,9 @@ class ApplicationStatus:
     message: Optional[str] = None
     """Application status message"""
 
+    running_instances: Optional[int] = None
+    """The number of running instances of this application."""
+
     state: Optional[ApplicationState] = None
     """State of the application."""
 
@@ -1784,6 +1787,8 @@ class ApplicationStatus:
         body = {}
         if self.message is not None:
             body["message"] = self.message
+        if self.running_instances is not None:
+            body["running_instances"] = self.running_instances
         if self.state is not None:
             body["state"] = self.state.value
         return body
@@ -1793,6 +1798,8 @@ class ApplicationStatus:
         body = {}
         if self.message is not None:
             body["message"] = self.message
+        if self.running_instances is not None:
+            body["running_instances"] = self.running_instances
         if self.state is not None:
             body["state"] = self.state
         return body
@@ -1800,7 +1807,11 @@ class ApplicationStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ApplicationStatus:
         """Deserializes the ApplicationStatus from a dictionary."""
-        return cls(message=d.get("message", None), state=_enum(d, "state", ApplicationState))
+        return cls(
+            message=d.get("message", None),
+            running_instances=d.get("running_instances", None),
+            state=_enum(d, "state", ApplicationState),
+        )
 
 
 class ComputeSize(Enum):
