@@ -1,6 +1,5 @@
 """Tests for the import-time behavior of ``databricks.sdk.runtime``."""
 
-import importlib
 import sys
 import types
 
@@ -36,13 +35,13 @@ def spark_connect_runtime(monkeypatch):
     monkeypatch.setenv("DATABRICKS_HOST", "https://test.cloud.databricks.com")
     monkeypatch.setenv("DATABRICKS_TOKEN", "test-token")
 
-    # Re-execute ``databricks.sdk.runtime``'s module body with the fake ``dbruntime`` in
-    # place, then restore on teardown by reloading once more without it.
-    import databricks.sdk.runtime
-
-    importlib.reload(databricks.sdk.runtime)
-    yield
-    importlib.reload(databricks.sdk.runtime)
+    # Force ``databricks.sdk.runtime`` to re-execute its module body on next import so it
+    # picks up the fake ``dbruntime``. Earlier tests (e.g. test_notebook_oauth.py) cache a
+    # fake module here directly via ``sys.modules`` without going through the import
+    # machinery, which leaves the ``runtime`` attribute on ``databricks.sdk`` unset —
+    # dropping the cached entry repairs that on the next real import. ``monkeypatch``
+    # restores the prior value on teardown.
+    monkeypatch.delitem(sys.modules, "databricks.sdk.runtime", raising=False)
 
 
 def test_runtime_import_falls_back_on_spark_connect(spark_connect_runtime):
