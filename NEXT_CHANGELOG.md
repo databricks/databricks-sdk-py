@@ -45,3 +45,5 @@
 * Add `dangerously_force_discard_all` field for `databricks.sdk.service.workspace.UpdateRepoRequest`.
 * [Breaking] Remove `databricks.sdk.service.bundle` package.
 * [Breaking] Remove [w.bundle](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/bundle/bundle.html) workspace-level service.
+* Add `accelerated_sync` field for `databricks.sdk.service.database.SyncedTableSpec`.
+* Add `accelerated_sync` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableSpec`.

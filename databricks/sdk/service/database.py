@@ -1325,6 +1325,10 @@ class SyncedTableSchedulingPolicy(Enum):
 class SyncedTableSpec:
     """Specification of a synced database table."""
 
+    accelerated_sync: Optional[bool] = None
+    """When true, enables accelerated sync mode for the initial data load. This significantly improves
+    performance for large tables. Requires workspace-level enablement."""
+
     create_database_objects_if_missing: Optional[bool] = None
     """If true, the synced table's logical database and schema resources in PG will be created if they
     do not already exist."""
@@ -1360,6 +1364,8 @@ class SyncedTableSpec:
     def as_dict(self) -> dict:
         """Serializes the SyncedTableSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.accelerated_sync is not None:
+            body["accelerated_sync"] = self.accelerated_sync
         if self.create_database_objects_if_missing is not None:
             body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
         if self.existing_pipeline_id is not None:
@@ -1379,6 +1385,8 @@ class SyncedTableSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the SyncedTableSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.accelerated_sync is not None:
+            body["accelerated_sync"] = self.accelerated_sync
         if self.create_database_objects_if_missing is not None:
             body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
         if self.existing_pipeline_id is not None:
@@ -1399,6 +1407,7 @@ class SyncedTableSpec:
     def from_dict(cls, d: Dict[str, Any]) -> SyncedTableSpec:
         """Deserializes the SyncedTableSpec from a dictionary."""
         return cls(
+            accelerated_sync=d.get("accelerated_sync", None),
             create_database_objects_if_missing=d.get("create_database_objects_if_missing", None),
             existing_pipeline_id=d.get("existing_pipeline_id", None),
             new_pipeline_spec=_from_dict(d, "new_pipeline_spec", NewPipelineSpec),
