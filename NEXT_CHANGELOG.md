@@ -15,5 +15,6 @@
 ### Breaking Changes
 
 ### Internal Changes
+* add capability to read the `product` field from the env variable.
 
 ### API Changes
