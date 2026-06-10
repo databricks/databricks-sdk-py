@@ -4,6 +4,8 @@
 
 ### New Features and Improvements
 
+* Add `include_shared_data` param to `databricks.sdk.service.sharing.SharesAPI.list_shares` so that it's possible to fetch shared_data when listing all shares.
+
 ### Security
 
 ### Bug Fixes

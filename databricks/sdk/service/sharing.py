@@ -3344,7 +3344,7 @@ class SharesAPI:
         return ShareInfo.from_dict(res)
 
     def list_shares(
-        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
+        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None, include_shared_data: Optional[bool]= None
     ) -> Iterator[ShareInfo]:
         """Gets an array of data object shares from the metastore. If the caller has the USE_SHARE privilege on
         the metastore, all shares are returned. Otherwise, only shares owned by the caller are returned. There
@@ -3360,6 +3360,8 @@ class SharesAPI:
           response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
+        :param include_shared_data: bool (optional)
+          Query for data to include in the share.
 
         :returns: Iterator over :class:`ShareInfo`
         """
@@ -3369,6 +3371,8 @@ class SharesAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
+        if include_shared_data is not None:
+            query["include_shared_data"] = include_shared_data
         headers = {
             "Accept": "application/json",
         }
