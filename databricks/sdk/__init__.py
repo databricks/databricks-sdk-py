@@ -3,6 +3,7 @@
 
 import json
 import logging
+from functools import cached_property
 from typing import List, Optional
 
 import databricks.sdk.core as client
@@ -359,7 +360,6 @@ class WorkspaceClient:
                 custom_headers=custom_headers,
             )
         self._config = config.copy()
-        self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
         serving_endpoints = ServingEndpointsExt(self._api_client)
         self._access_control = pkg_iam.AccessControlAPI(self._api_client)
@@ -511,9 +511,12 @@ class WorkspaceClient:
     def api_client(self) -> client.ApiClient:
         return self._api_client
 
-    @property
+    @cached_property
     def dbutils(self) -> dbutils.RemoteDbUtils:
-        return self._dbutils
+        # Lazy so consumers that never touch ``dbutils`` (e.g. dbt-databricks) do not pay
+        # the cost of building it — and, on Spark Connect runtimes, do not hit the legacy
+        # ``SparkContext`` path that ``databricks.sdk.runtime`` materializes on import.
+        return _make_dbutils(self._config)
 
     @property
     def access_control(self) -> pkg_iam.AccessControlAPI:
