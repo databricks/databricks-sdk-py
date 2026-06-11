@@ -2766,6 +2766,11 @@ class SyncedTableState(Enum):
 
 @dataclass
 class SyncedTableSyncedTableSpec:
+    accelerated_sync: Optional[bool] = None
+    """When true, enables accelerated sync mode for the initial data load. This significantly improves
+    performance for large tables. Requires workspace-level enablement through Lakebase Accelerated
+    Sync preview."""
+
     branch: Optional[str] = None
     """The full resource name the branch associated with the table.
     
@@ -2819,6 +2824,8 @@ class SyncedTableSyncedTableSpec:
     def as_dict(self) -> dict:
         """Serializes the SyncedTableSyncedTableSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.accelerated_sync is not None:
+            body["accelerated_sync"] = self.accelerated_sync
         if self.branch is not None:
             body["branch"] = self.branch
         if self.create_database_objects_if_missing is not None:
@@ -2842,6 +2849,8 @@ class SyncedTableSyncedTableSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the SyncedTableSyncedTableSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.accelerated_sync is not None:
+            body["accelerated_sync"] = self.accelerated_sync
         if self.branch is not None:
             body["branch"] = self.branch
         if self.create_database_objects_if_missing is not None:
@@ -2866,6 +2875,7 @@ class SyncedTableSyncedTableSpec:
     def from_dict(cls, d: Dict[str, Any]) -> SyncedTableSyncedTableSpec:
         """Deserializes the SyncedTableSyncedTableSpec from a dictionary."""
         return cls(
+            accelerated_sync=d.get("accelerated_sync", None),
             branch=d.get("branch", None),
             create_database_objects_if_missing=d.get("create_database_objects_if_missing", None),
             existing_pipeline_id=d.get("existing_pipeline_id", None),
