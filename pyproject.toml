@@ -27,6 +27,9 @@ dependencies = [
     # Exclude vulnerable protobuf versions: [,4.25.8), [5.26.0rc1, 5.29.5), [6.30.0rc1, 6.31.1)
     # https://security.snyk.io/vuln/SNYK-PYTHON-PROTOBUF-10364902
     "protobuf>=4.25.8,!=5.26.*,!=5.27.*,!=5.28.*,!=5.29.0,!=5.29.1,!=5.29.2,!=5.29.3,!=5.29.4,!=6.30.0,!=6.30.1,!=6.31.0,<7.0",
+    # Imported directly (databricks/sdk/_base_client.py); declared
+    # explicitly rather than relied on transitively through requests.
+    "urllib3>=1.26,<3",
 ]
 
 [project.urls]

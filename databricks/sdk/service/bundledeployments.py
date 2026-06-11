@@ -422,9 +422,6 @@ class Operation:
     action_type: OperationActionType
     """The type of operation performed on this resource."""
 
-    resource_id: str
-    """ID reference for the actual resource in the workspace (e.g. the job ID, pipeline ID)."""
-
     status: OperationStatus
     """Whether the operation succeeded or failed."""
 
@@ -438,6 +435,11 @@ class Operation:
     name: Optional[str] = None
     """Resource name of the operation. Format:
     deployments/{deployment_id}/versions/{version_id}/operations/{resource_key}"""
+
+    resource_id: Optional[str] = None
+    """ID of the actual resource in the workspace (e.g. the job ID, pipeline ID). Required for every
+    operation except CREATE and RECREATE, which produce a new resource whose ID is not yet known
+    when the operation is recorded."""
 
     resource_key: Optional[str] = None
     """Resource identifier within the bundle (e.g. "jobs.foo", "pipelines.bar", "jobs.foo.permissions",

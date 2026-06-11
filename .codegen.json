@@ -1,8 +1,23 @@
 {
   "mode": "py_v0",
-  "api_changelog": true,  
+  "api_changelog": false,
   "version": {
     "databricks/sdk/version.py": "__version__ = \"$VERSION\""
+  },
+  "sync": {
+    "skip_from_source": [
+      "BUILD.bazel",
+      "CLAUDE.md",
+      ".claude",
+      ".codegen",
+      ".cursor",
+      ".cursorrules",
+      ".nextchanges",
+      "changelog_validate",
+      "next-changelog.yml",
+      "README.universe.md",
+      "tagging.py"
+    ]
   },
   "toolchain": {
     "required": ["python3.12", "uv"],

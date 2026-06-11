@@ -4062,8 +4062,7 @@ class LakeviewAPI:
           UUID identifying the dashboard.
         :param etag: str (optional)
           The etag for the dashboard. Optionally, it can be provided to verify that the dashboard has not been
-          modified from its last retrieval. TODO(TSE-3937): update to new non-CMK-encrypted label when
-          available
+          modified from its last retrieval.
 
         :returns: :class:`RevertDashboardResponse`
         """

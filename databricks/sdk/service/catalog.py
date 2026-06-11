@@ -1853,7 +1853,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 126"""
+    """Next Id: 127"""
 
     BIGQUERY = "BIGQUERY"
     CONFLUENCE = "CONFLUENCE"
@@ -9290,8 +9290,8 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_ADOBE_CAMPAIGNS_OAUTH_M2M = 345; Next id: 346. Reserved numbers: 316,
-    317, 327, 330, 341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD,
+    """Latest kind: CONNECTION_CONFLUENT_SCHEMA_REGISTRY_BASIC = 346; Next id: 347. Reserved numbers:
+    316, 317, 327, 330, 341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD,
     MODEL_SERVICE_SYSTEM_DELTASHARING, MCP_SERVICE_STANDARD)."""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"

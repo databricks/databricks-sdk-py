@@ -1361,6 +1361,10 @@ class SyncedTableSpec:
     timeseries_key: Optional[str] = None
     """Time series key to deduplicate (tie-break) rows with the same primary key."""
 
+    type_overrides: Optional[List[SyncedTableSpecTypeOverride]] = None
+    """Override the default Delta->PG type mapping for specific columns. A TypeOverride with
+    PG_SPECIFIC_TYPE_UNSPECIFIED is rejected; a valid pg_type must be set."""
+
     def as_dict(self) -> dict:
         """Serializes the SyncedTableSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1380,6 +1384,8 @@ class SyncedTableSpec:
             body["source_table_full_name"] = self.source_table_full_name
         if self.timeseries_key is not None:
             body["timeseries_key"] = self.timeseries_key
+        if self.type_overrides:
+            body["type_overrides"] = [v.as_dict() for v in self.type_overrides]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1401,6 +1407,8 @@ class SyncedTableSpec:
             body["source_table_full_name"] = self.source_table_full_name
         if self.timeseries_key is not None:
             body["timeseries_key"] = self.timeseries_key
+        if self.type_overrides:
+            body["type_overrides"] = self.type_overrides
         return body
 
     @classmethod
@@ -1415,6 +1423,59 @@ class SyncedTableSpec:
             scheduling_policy=_enum(d, "scheduling_policy", SyncedTableSchedulingPolicy),
             source_table_full_name=d.get("source_table_full_name", None),
             timeseries_key=d.get("timeseries_key", None),
+            type_overrides=_repeated_dict(d, "type_overrides", SyncedTableSpecTypeOverride),
+        )
+
+
+class SyncedTableSpecPgSpecificType(Enum):
+    """PostgreSQL-specific target types that can override the default Delta-to-PG mapping."""
+
+    PG_SPECIFIC_TYPE_VECTOR = "PG_SPECIFIC_TYPE_VECTOR"
+
+
+@dataclass
+class SyncedTableSpecTypeOverride:
+    """Overrides the default Delta-to-PostgreSQL type mapping for a single column."""
+
+    column_name: str
+    """Name of the source column whose target PostgreSQL type should be overridden."""
+
+    pg_type: SyncedTableSpecPgSpecificType
+    """PostgreSQL-specific target type to use for the column."""
+
+    size: Optional[int] = None
+    """Size parameter for the target type. Required when pg_type is PG_SPECIFIC_TYPE_VECTOR (specifies
+    the vector dimension, e.g., 1024)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTableSpecTypeOverride into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column_name is not None:
+            body["column_name"] = self.column_name
+        if self.pg_type is not None:
+            body["pg_type"] = self.pg_type.value
+        if self.size is not None:
+            body["size"] = self.size
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTableSpecTypeOverride into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column_name is not None:
+            body["column_name"] = self.column_name
+        if self.pg_type is not None:
+            body["pg_type"] = self.pg_type
+        if self.size is not None:
+            body["size"] = self.size
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTableSpecTypeOverride:
+        """Deserializes the SyncedTableSpecTypeOverride from a dictionary."""
+        return cls(
+            column_name=d.get("column_name", None),
+            pg_type=_enum(d, "pg_type", SyncedTableSpecPgSpecificType),
+            size=d.get("size", None),
         )
 
 

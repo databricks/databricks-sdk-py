@@ -847,7 +847,6 @@ class FileParent:
     file_parent_type: Optional[FileParentType] = None
 
     parent_id: Optional[str] = None
-    """TODO make the following fields required"""
 
     def as_dict(self) -> dict:
         """Serializes the FileParent into a dictionary suitable for use as a JSON request body."""
@@ -1702,7 +1701,7 @@ class ListingDetail:
 
     pricing_model: Optional[str] = None
     """What the pricing model is (e.g. paid, subscription, paid upfront); should only be present if
-    cost is paid TODO: Not used yet, should deprecate if we will never use it"""
+    cost is paid"""
 
     privacy_policy_link: Optional[str] = None
 

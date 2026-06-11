@@ -452,9 +452,9 @@ class AvgFunction:
 
     input: str
     """The input column from which the average is computed. For Kafka sources, use dot-prefixed path
-    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. TODO(FS-939):
-    Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility but is
-    deprecated; migrate to dot notation."""
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. Colon-prefixed
+    notation (e.g., "value:amount") is supported for backwards compatibility but is deprecated;
+    migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the AvgFunction into a dictionary suitable for use as a JSON request body."""
@@ -725,9 +725,9 @@ class CountFunction:
 
     input: str
     """The input column from which the count is computed. For Kafka sources, use dot-prefixed path
-    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. TODO(FS-939):
-    Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility but is
-    deprecated; migrate to dot notation."""
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. Colon-prefixed
+    notation (e.g., "value:amount") is supported for backwards compatibility but is deprecated;
+    migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the CountFunction into a dictionary suitable for use as a JSON request body."""
@@ -1510,8 +1510,8 @@ class DeltaTableSource:
 
 @dataclass
 class DirectMtlsConfig:
-    """Direct connection configs for mTLS, as Kafka Connections do not support mTLS yet (XTA-18030).
-    Temporarily used until UC Kafka Connections gain mTLS support."""
+    """Direct connection configs for mTLS, as Kafka Connections do not support mTLS yet . Temporarily
+    used until UC Kafka Connections gain mTLS support."""
 
     bootstrap_servers: str
     """A comma-separated list of host:port pairs for the Kafka bootstrap servers."""
@@ -1591,9 +1591,9 @@ class EntityColumn:
     """The name of the entity column. For Kafka sources, use dot-prefixed path notation to reference
     fields within the key or value schema (e.g., "value.user_id", "key.partition_key"). For nested
     fields, the leaf node name (e.g., "user_id" from "value.trip_details.user_id") is what will be
-    present in materialized tables and expected to match at query time. TODO(FS-939): Colon-prefixed
-    notation (e.g., "value:user_id") is supported for backwards compatibility but is deprecated;
-    migrate to dot notation."""
+    present in materialized tables and expected to match at query time. Colon-prefixed notation
+    (e.g., "value:user_id") is supported for backwards compatibility but is deprecated; migrate to
+    dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the EntityColumn into a dictionary suitable for use as a JSON request body."""
@@ -3545,7 +3545,7 @@ class LineageContext:
 
 @dataclass
 class LinkedFeature:
-    """Feature for model version. ([ML-57150] Renamed from Feature to LinkedFeature)"""
+    """Feature for model version."""
 
     feature_name: Optional[str] = None
     """Feature name"""
@@ -6941,8 +6941,8 @@ class StddevPopFunction:
     input: str
     """The input column from which the population standard deviation is computed. For Kafka sources,
     use dot-prefixed path notation (e.g., "value.amount"). For nested fields, the leaf node name is
-    used. TODO(FS-939): Colon-prefixed notation (e.g., "value:amount") is supported for backwards
-    compatibility but is deprecated; migrate to dot notation."""
+    used. Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility
+    but is deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the StddevPopFunction into a dictionary suitable for use as a JSON request body."""
@@ -7110,8 +7110,8 @@ class StreamConnectionConfig:
 
     direct_mtls_config: Optional[DirectMtlsConfig] = None
     """Direct mTLS configuration for stream platform access. This is only used in the short term until
-    UC Kafka Connections support mTLS (XTA-18030). Once UC Kafka Connections support mTLS, this will
-    be deprecated."""
+    UC Kafka Connections support mTLS . Once UC Kafka Connections support mTLS, this will be
+    deprecated."""
 
     uc_connection_name: Optional[str] = None
     """Name of an existing UC Connection for stream platform access. Must be the correct type for the
@@ -7318,9 +7318,9 @@ class SumFunction:
 
     input: str
     """The input column from which the sum is computed. For Kafka sources, use dot-prefixed path
-    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. TODO(FS-939):
-    Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility but is
-    deprecated; migrate to dot notation."""
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. Colon-prefixed
+    notation (e.g., "value:amount") is supported for backwards compatibility but is deprecated;
+    migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the SumFunction into a dictionary suitable for use as a JSON request body."""
@@ -7448,8 +7448,8 @@ class TimeseriesColumn:
     reference fields within the key or value schema (e.g., "value.event_timestamp"). For nested
     fields, the leaf node name (e.g., "event_timestamp" from "value.event_details.event_timestamp")
     is what will be present in materialized tables and expected to match at query time.
-    TODO(FS-939): Colon-prefixed notation (e.g., "value:event_timestamp") is supported for backwards
-    compatibility but is deprecated; migrate to dot notation."""
+    Colon-prefixed notation (e.g., "value:event_timestamp") is supported for backwards compatibility
+    but is deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the TimeseriesColumn into a dictionary suitable for use as a JSON request body."""

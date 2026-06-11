@@ -283,7 +283,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 126
+   Next Id: 127
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -1552,7 +1552,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_ADOBE_CAMPAIGNS_OAUTH_M2M = 345; Next id: 346. Reserved numbers: 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING, MCP_SERVICE_STANDARD).
+   Latest kind: CONNECTION_CONFLUENT_SCHEMA_REGISTRY_BASIC = 346; Next id: 347. Reserved numbers: 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING, MCP_SERVICE_STANDARD).
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
