@@ -1,5 +1,41 @@
 # Version changelog
 
+## Release v0.117.0 (2026-06-11)
+
+### API Changes
+* Add `type_overrides` field for `databricks.sdk.service.database.SyncedTableSpec`.
+* Add `type_overrides` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableSpec`.
+* Change `resource_id` field for `databricks.sdk.service.bundledeployments.Operation` to no longer be required.
+* [Breaking] Change `resource_id` field for `databricks.sdk.service.bundledeployments.Operation` to no longer be required.
+
+### Bug Fixes
+* Cache tokens minted by `DatabricksOidcTokenSource` (Workload Identity
+Federation / account-wide token federation). Previously a fresh
+`/oidc/v1/token` exchange was performed on every authenticated API
+call, adding latency, amplifying transient federation-policy errors,
+and hitting OIDC token-endpoint rate limits. The token source now
+reuses the cached token until it is stale or expired, fetching a fresh
+ID token on each refresh to support rotation.
+* Make `WorkspaceClient.dbutils` lazy (`functools.cached_property`).
+The constructor no longer imports `databricks.sdk.runtime` eagerly, so
+on Spark Connect (shared-access-mode) clusters, consumers that never
+read `.dbutils` — such as `dbt-databricks` Python models — no longer
+crash with `CONTEXT_UNAVAILABLE_FOR_REMOTE_CLIENT` during client
+construction.
+* Fall back to the remote runtime implementation when the legacy user
+namespace cannot be materialized. On Spark Connect runtimes (e.g.
+shared-access-mode clusters), importing `databricks.sdk.runtime` —
+which happens when constructing a `WorkspaceClient` on such a cluster
+— tried to build a legacy `SparkContext` and raised
+`CONTEXT_UNAVAILABLE_FOR_REMOTE_CLIENT` at import time. It now logs a
+warning and falls back to the Spark Connect-compatible remote
+implementation instead of crashing.
+
+### Internal Changes
+* Declare `urllib3` as an explicit dependency. The SDK imports it
+directly; previously it was only available transitively through
+`requests`. No resolution change for users.
+
 ## Release v0.116.0 (2026-06-10)
 
 ### API Changes

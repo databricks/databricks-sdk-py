@@ -1438,8 +1438,7 @@ class VpcEndpoint:
     """*"""
 
     account_id: Optional[str] = None
-    """The Databricks account ID that hosts the VPC endpoint configuration. TODO - This may signal an
-    OpenAPI diff; it does not show up in the generated spec"""
+    """The Databricks account ID that hosts the VPC endpoint configuration."""
 
     aws_account_id: Optional[str] = None
     """The AWS Account in which the VPC endpoint object exists."""

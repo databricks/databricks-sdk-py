@@ -1017,7 +1017,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    EndpointSpotInstancePolicy configures whether the endpoint should use spot instances.
    The breakdown of how the EndpointSpotInstancePolicy converts to per cloud configurations is:
    +-------+--------------------------------------+--------------------------------+ | Cloud | COST_OPTIMIZED | RELIABILITY_OPTIMIZED | +-------+--------------------------------------+--------------------------------+ | AWS | On Demand Driver with Spot Executors | On Demand Driver and Executors | | AZURE | On Demand Driver and Executors | On Demand Driver and Executors | +-------+--------------------------------------+--------------------------------+
-   While including "spot" in the enum name may limit the the future extensibility of this field because it limits this enum to denoting "spot or not", this is the field that PM recommends after discussion with customers per SC-48783.
 
    .. py:attribute:: COST_OPTIMIZED
       :value: "COST_OPTIMIZED"

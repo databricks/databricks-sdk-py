@@ -2455,7 +2455,7 @@ class EndpointInfo:
     please tune max_num_clusters.
     
     Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large
-    - 4X-Large - 5X-Large"""
+    - 4X-Large - 5X-Large - Auto"""
 
     creator_name: Optional[str] = None
     """warehouse creator name"""
@@ -3070,7 +3070,7 @@ class GetWarehouseResponse:
     please tune max_num_clusters.
     
     Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large
-    - 4X-Large - 5X-Large"""
+    - 4X-Large - 5X-Large - Auto"""
 
     creator_name: Optional[str] = None
     """warehouse creator name"""
@@ -6043,11 +6043,7 @@ class SpotInstancePolicy(Enum):
     +-------+--------------------------------------+--------------------------------+ | AWS | On
     Demand Driver with Spot Executors | On Demand Driver and Executors | | AZURE | On Demand Driver
     and Executors | On Demand Driver and Executors |
-    +-------+--------------------------------------+--------------------------------+
-
-    While including "spot" in the enum name may limit the the future extensibility of this field
-    because it limits this enum to denoting "spot or not", this is the field that PM recommends
-    after discussion with customers per SC-48783."""
+    +-------+--------------------------------------+--------------------------------+"""
 
     COST_OPTIMIZED = "COST_OPTIMIZED"
     POLICY_UNSPECIFIED = "POLICY_UNSPECIFIED"
@@ -9806,7 +9802,7 @@ class WarehousesAPI:
           max_num_clusters.
 
           Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
-          4X-Large - 5X-Large
+          4X-Large - 5X-Large - Auto
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)
@@ -10039,7 +10035,7 @@ class WarehousesAPI:
           max_num_clusters.
 
           Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
-          4X-Large - 5X-Large
+          4X-Large - 5X-Large - Auto
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)
