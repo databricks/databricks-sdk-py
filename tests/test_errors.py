@@ -415,3 +415,26 @@ def test_debug_headers_enabled_shows_headers():
     assert "debug-token-12345" in error_message
     assert "X-Databricks-Azure-SP-Management-Token" in error_message
     assert "debug-azure-token-67890" in error_message
+
+
+def test_unknown_error_with_bytesio_request_body():
+    """Test that _unknown_error handles BytesIO request bodies without crashing.
+
+    Regression test for https://github.com/databricks/databricks-sdk-py/issues/1264
+    """
+    import io
+
+    resp = requests.Response()
+    resp.status_code = 500
+    resp.reason = "Internal Server Error"
+    resp.request = requests.Request("POST", "https://databricks.com/api/2.0/service").prepare()
+    resp.request.body = io.BytesIO(b"binary data")
+    resp._content = b"unparseable response"
+
+    parser = errors._Parser()
+    error = parser.get_api_error(resp)
+
+    # Should not crash and should show [raw stream] for the request body
+    error_message = str(error)
+    assert "[raw stream]" in error_message
+    assert "unparseable response" in error_message

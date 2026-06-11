@@ -44,7 +44,10 @@ class RoundTrip:
             for k, v in request.headers.items():
                 sb.append(f"> * {k}: {self._only_n_bytes(v, self._debug_truncate_bytes)}")
         if request.body:
-            sb.append("> [raw stream]" if self._raw else self._redacted_dump("> ", request.body))
+            if self._raw or not isinstance(request.body, str):
+                sb.append("> [raw stream]")
+            else:
+                sb.append(self._redacted_dump("> ", request.body))
         sb.append(f"< {self._response.status_code} {self._response.reason}")
         if self._raw and self._response.headers.get("Content-Type", None) != "application/json":
             # Raw streams with `Transfer-Encoding: chunked` do not have `Content-Type` header

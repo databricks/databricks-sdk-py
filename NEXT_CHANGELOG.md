@@ -7,6 +7,7 @@
 ### Security
 
 ### Bug Fixes
+* Fixes TypeError in _unknown_error() when API returns unparseable error on streaming request (#1264) 
 
 * Cache tokens minted by `DatabricksOidcTokenSource` (Workload Identity Federation / account-wide token federation). Previously a fresh `/oidc/v1/token` exchange was performed on every authenticated API call, adding latency, amplifying transient federation-policy errors, and hitting OIDC token-endpoint rate limits. The token source now reuses the cached token until it is stale or expired, fetching a fresh ID token on each refresh to support rotation.
 
