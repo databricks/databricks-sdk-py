@@ -11,7 +11,7 @@ This document provides a comprehensive reference for all authentication types (`
 | `oauth-m2m` | OAuth 2.0 Machine-to-Machine (service principal) authentication | `host`, `client_id`, `client_secret` | `scopes`, `authorization_details` | `DATABRICKS_HOST`, `DATABRICKS_CLIENT_ID`, `DATABRICKS_CLIENT_SECRET` |
 | `external-browser` | OAuth 2.0 authentication flow using local browser for user login | `host`, `auth_type='external-browser'` | `client_id`, `client_secret` | `DATABRICKS_HOST`, `DATABRICKS_AUTH_TYPE`, `DATABRICKS_CLIENT_ID` |
 | `databricks-cli` | Uses tokens from the Databricks CLI (`databricks auth login`) | `host` | `account_id` (for account-level), `databricks_cli_path` | `DATABRICKS_HOST`, `DATABRICKS_ACCOUNT_ID`, `DATABRICKS_CLI_PATH` |
-| `azure-client-secret` | Azure Active Directory (AAD) Service Principal authentication | `azure_client_id`, `azure_client_secret`, `azure_tenant_id` | `host`, `azure_workspace_resource_id`, `azure_environment` | `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_TENANT_ID`, `DATABRICKS_HOST`, `DATABRICKS_AZURE_RESOURCE_ID`, `ARM_ENVIRONMENT` |
+| `azure-client-secret` | Azure Active Directory (AAD) Service Principal authentication | `azure_client_id`, `azure_client_secret` | `azure_tenant_id` (auto-detected from `host` if not set), `host`, `azure_workspace_resource_id`, `azure_environment` | `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_TENANT_ID`, `DATABRICKS_HOST`, `DATABRICKS_AZURE_RESOURCE_ID`, `ARM_ENVIRONMENT` |
 | `azure-cli` | Uses credentials from Azure CLI (`az login`) | `host` (or `azure_workspace_resource_id`) | `azure_tenant_id` | `DATABRICKS_HOST`, `DATABRICKS_AZURE_RESOURCE_ID`, `ARM_TENANT_ID` |
 | `github-oidc` | GitHub Actions OIDC authentication (workload identity federation) | `host`, `client_id` | `token_audience`, `account_id` | `DATABRICKS_HOST`, `DATABRICKS_CLIENT_ID`, `DATABRICKS_TOKEN_AUDIENCE`, `DATABRICKS_ACCOUNT_ID` |
 | `github-oidc-azure` | GitHub Actions OIDC for Azure Databricks workspaces | `host`, `azure_client_id` | `azure_tenant_id` | `DATABRICKS_HOST`, `ARM_CLIENT_ID`, `ARM_TENANT_ID` |
@@ -23,7 +23,7 @@ This document provides a comprehensive reference for all authentication types (`
 | `runtime-oauth` | OAuth authentication for Databricks Runtime with fine-grained permissions | `scopes` | `authorization_details` | `DATABRICKS_RUNTIME_VERSION` (auto-set) |
 | `model-serving` | Auto-detected authentication when running in Databricks Model Serving environment | _(auto-detected)_ | - | `IS_IN_DB_MODEL_SERVING_ENV` or `IS_IN_DATABRICKS_MODEL_SERVING_ENV` (auto-set) |
 | `env-oidc` | OIDC token from environment variable | `host` | `oidc_token_env`, `client_id` | `DATABRICKS_HOST`, `DATABRICKS_OIDC_TOKEN`, `DATABRICKS_OIDC_TOKEN_ENV`, `DATABRICKS_CLIENT_ID` |
-| `file-oidc` | OIDC token from file path | `host`, `oidc_token_filepath` | `client_id` | `DATABRICKS_HOST`, `DATABRICKS_OIDC_TOKEN_FILE`, `DATABRICKS_CLIENT_ID` |
+| `file-oidc` | OIDC token from file path | `host`, `oidc_token_filepath` | `client_id` | `DATABRICKS_HOST`, `DATABRICKS_OIDC_TOKEN_FILEPATH` (alias: `DATABRICKS_OIDC_TOKEN_FILE`), `DATABRICKS_CLIENT_ID` |
 
 ## Common Parameters Across All Auth Types
 
