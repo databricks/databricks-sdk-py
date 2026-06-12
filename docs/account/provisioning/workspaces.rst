@@ -82,7 +82,8 @@
 
         :param aws_region: str (optional)
         :param cloud: str (optional)
-          The cloud name. This field always has the value `gcp`.
+          DEPRECATED: This field is being ignored by the server and will be removed in the future. The cloud
+          name. This field always has the value `gcp`.
         :param cloud_resource_container: :class:`CloudResourceContainer` (optional)
         :param compute_mode: :class:`CustomerFacingComputeMode` (optional)
           If the compute mode is `SERVERLESS`, a serverless workspace is created that comes pre-configured

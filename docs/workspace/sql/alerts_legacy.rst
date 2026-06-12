@@ -1,5 +1,5 @@
-``w.alerts_legacy``: Alerts (legacy)
-====================================
+``w.alerts_legacy``: Alerts (deprecated)
+========================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: AlertsLegacyAPI
@@ -9,8 +9,7 @@
     notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
     the Jobs API, e.g. :method:jobs/create.
 
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
-    more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -19,8 +18,7 @@
         Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
         condition of its result, and notifies users or notification destinations if the condition was met.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/create
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/create instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -44,8 +42,7 @@
         Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike
         queries and dashboards, alerts cannot be moved to the trash.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/delete
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/delete instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -58,8 +55,7 @@
 
         Gets an alert.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/get
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/get instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -72,8 +68,7 @@
 
         Gets a list of alerts.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/list
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/list instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -85,8 +80,7 @@
 
         Updates an alert.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/update
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/update instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 

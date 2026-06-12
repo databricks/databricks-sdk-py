@@ -23,6 +23,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AllowedAppsUserApiScopesMessage
+   :members:
+   :undoc-members:
+
 .. autoclass:: BooleanMessage
    :members:
    :undoc-members:
@@ -93,6 +97,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CollaborationPlatformConnectivityMessage
+   :members:
+   :undoc-members:
+
+.. py:class:: CollaborationPlatformConnectivityMessageConnectivity
+
+   .. py:attribute:: ALLOW_ALL
+      :value: "ALLOW_ALL"
+
+   .. py:attribute:: ALLOW_SLACK
+      :value: "ALLOW_SLACK"
+
+   .. py:attribute:: ALLOW_TEAMS
+      :value: "ALLOW_TEAMS"
+
+   .. py:attribute:: DENY_ALL
+      :value: "DENY_ALL"
+
 .. autoclass:: IntegerMessage
    :members:
    :undoc-members:
@@ -101,7 +123,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListAccountUserPreferencesMetadataResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListWorkspaceSettingsMetadataResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: OperationalEmailCustomRecipientMessage
    :members:
    :undoc-members:
 
@@ -118,6 +148,25 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: ON
       :value: "ON"
+
+.. py:class:: PreviewPhase
+
+   Preview phase for settings that are feature previews. For settings that are not feature previews, the preview_phase field is left unset. Mirrors only the customer-facing phases surfaced in the UI; internal-only phases (DISABLED, DEV, UNDER_MIGRATION, LAUNCHED, etc.) are not exposed here.
+
+   .. py:attribute:: BETA
+      :value: "BETA"
+
+   .. py:attribute:: GA
+      :value: "GA"
+
+   .. py:attribute:: GA_SOON
+      :value: "GA_SOON"
+
+   .. py:attribute:: PRIVATE_PREVIEW
+      :value: "PRIVATE_PREVIEW"
+
+   .. py:attribute:: PUBLIC_PREVIEW
+      :value: "PUBLIC_PREVIEW"
 
 .. autoclass:: RestrictWorkspaceAdminsMessage
    :members:
@@ -140,5 +189,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: StringMessage
+   :members:
+   :undoc-members:
+
+.. autoclass:: UserPreference
    :members:
    :undoc-members:

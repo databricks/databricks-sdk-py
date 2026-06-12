@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -13,8 +16,12 @@ from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
 
 import requests
 
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+)
 
 from ..errors import OperationFailed
 
@@ -205,7 +212,6 @@ class AiGatewayGuardrailPiiBehavior:
 
 
 class AiGatewayGuardrailPiiBehaviorBehavior(Enum):
-
     BLOCK = "BLOCK"
     MASK = "MASK"
     NONE = "NONE"
@@ -362,7 +368,6 @@ class AiGatewayRateLimit:
 
 
 class AiGatewayRateLimitKey(Enum):
-
     ENDPOINT = "endpoint"
     SERVICE_PRINCIPAL = "service_principal"
     USER = "user"
@@ -370,7 +375,6 @@ class AiGatewayRateLimitKey(Enum):
 
 
 class AiGatewayRateLimitRenewalPeriod(Enum):
-
     MINUTE = "minute"
 
 
@@ -491,7 +495,6 @@ class AmazonBedrockConfig:
 
 
 class AmazonBedrockConfigBedrockProvider(Enum):
-
     AI21LABS = "ai21labs"
     AMAZON = "amazon"
     ANTHROPIC = "anthropic"
@@ -580,6 +583,9 @@ class ApiKeyAuth:
 
 @dataclass
 class AutoCaptureConfigInput:
+    """Deprecated: legacy inference table configuration. Please use AI Gateway inference tables
+    instead. See https://docs.databricks.com/aws/en/ai-gateway/inference-tables."""
+
     catalog_name: Optional[str] = None
     """The name of the catalog in Unity Catalog. NOTE: On update, you cannot change the catalog name if
     the inference table is already enabled."""
@@ -634,6 +640,9 @@ class AutoCaptureConfigInput:
 
 @dataclass
 class AutoCaptureConfigOutput:
+    """Deprecated: legacy inference table configuration. Please use AI Gateway inference tables
+    instead. See https://docs.databricks.com/aws/en/ai-gateway/inference-tables."""
+
     catalog_name: Optional[str] = None
     """The name of the catalog in Unity Catalog. NOTE: On update, you cannot change the catalog name if
     the inference table is already enabled."""
@@ -1127,10 +1136,9 @@ class EndpointCoreConfigInput:
     """The name of the serving endpoint to update. This field is required."""
 
     auto_capture_config: Optional[AutoCaptureConfigInput] = None
-    """Configuration for Inference Tables which automatically logs requests and responses to Unity
-    Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or
-    updating existing provisioned throughput endpoints that never have inference table configured;
-    in these cases please use AI Gateway to manage inference tables."""
+    """Configuration for legacy Inference Tables which automatically log requests and responses to
+    Unity Catalog. Deprecated: please use AI Gateway inference tables instead. See
+    https://docs.databricks.com/aws/en/ai-gateway/inference-tables."""
 
     served_entities: Optional[List[ServedEntityInput]] = None
     """The list of served entities under the serving endpoint config."""
@@ -1187,10 +1195,9 @@ class EndpointCoreConfigInput:
 @dataclass
 class EndpointCoreConfigOutput:
     auto_capture_config: Optional[AutoCaptureConfigOutput] = None
-    """Configuration for Inference Tables which automatically logs requests and responses to Unity
-    Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or
-    updating existing provisioned throughput endpoints that never have inference table configured;
-    in these cases please use AI Gateway to manage inference tables."""
+    """Configuration for legacy Inference Tables which automatically log requests and responses to
+    Unity Catalog. Deprecated: please use AI Gateway inference tables instead. See
+    https://docs.databricks.com/aws/en/ai-gateway/inference-tables."""
 
     config_version: Optional[int] = None
     """The config version that the serving endpoint is currently serving."""
@@ -1286,10 +1293,9 @@ class EndpointCoreConfigSummary:
 @dataclass
 class EndpointPendingConfig:
     auto_capture_config: Optional[AutoCaptureConfigOutput] = None
-    """Configuration for Inference Tables which automatically logs requests and responses to Unity
-    Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or
-    updating existing provisioned throughput endpoints that never have inference table configured;
-    in these cases please use AI Gateway to manage inference tables."""
+    """Configuration for legacy Inference Tables which automatically log requests and responses to
+    Unity Catalog. Deprecated: please use AI Gateway inference tables instead. See
+    https://docs.databricks.com/aws/en/ai-gateway/inference-tables."""
 
     config_version: Optional[int] = None
     """The config version that the serving endpoint is currently serving."""
@@ -1395,7 +1401,6 @@ class EndpointState:
 
 
 class EndpointStateConfigUpdate(Enum):
-
     IN_PROGRESS = "IN_PROGRESS"
     NOT_UPDATING = "NOT_UPDATING"
     UPDATE_CANCELED = "UPDATE_CANCELED"
@@ -1403,7 +1408,6 @@ class EndpointStateConfigUpdate(Enum):
 
 
 class EndpointStateReady(Enum):
-
     NOT_READY = "NOT_READY"
     READY = "READY"
 
@@ -1489,7 +1493,6 @@ class ExportMetricsResponse:
 
 
 class ExternalFunctionRequestHttpMethod(Enum):
-
     DELETE = "DELETE"
     GET = "GET"
     PATCH = "PATCH"
@@ -1617,7 +1620,6 @@ class ExternalModel:
 
 
 class ExternalModelProvider(Enum):
-
     AI21LABS = "ai21labs"
     AMAZON_BEDROCK = "amazon-bedrock"
     ANTHROPIC = "anthropic"
@@ -2189,6 +2191,11 @@ class PtServedModel:
     provisioned_model_units: int
     """The number of model units to be provisioned."""
 
+    burst_scaling_enabled: Optional[bool] = None
+    """Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale
+    up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains
+    fixed capacity at provisioned_model_units."""
+
     entity_version: Optional[str] = None
 
     name: Optional[str] = None
@@ -2200,6 +2207,8 @@ class PtServedModel:
     def as_dict(self) -> dict:
         """Serializes the PtServedModel into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.entity_name is not None:
             body["entity_name"] = self.entity_name
         if self.entity_version is not None:
@@ -2213,6 +2222,8 @@ class PtServedModel:
     def as_shallow_dict(self) -> dict:
         """Serializes the PtServedModel into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.entity_name is not None:
             body["entity_name"] = self.entity_name
         if self.entity_version is not None:
@@ -2227,6 +2238,7 @@ class PtServedModel:
     def from_dict(cls, d: Dict[str, Any]) -> PtServedModel:
         """Deserializes the PtServedModel from a dictionary."""
         return cls(
+            burst_scaling_enabled=d.get("burst_scaling_enabled", None),
             entity_name=d.get("entity_name", None),
             entity_version=d.get("entity_version", None),
             name=d.get("name", None),
@@ -2348,6 +2360,9 @@ class QueryEndpointResponse:
     """The type of object returned by the __external/foundation model__ serving endpoint, one of
     [text_completion, chat.completion, list (of embeddings)]."""
 
+    outputs: Optional[List[any]] = None
+    """The outputs of the feature serving endpoint."""
+
     predictions: Optional[List[Any]] = None
     """The predictions returned by the serving endpoint."""
 
@@ -2374,6 +2389,8 @@ class QueryEndpointResponse:
             body["model"] = self.model
         if self.object is not None:
             body["object"] = self.object.value
+        if self.outputs:
+            body["outputs"] = [v for v in self.outputs]
         if self.predictions:
             body["predictions"] = [v for v in self.predictions]
         if self.served_model_name is not None:
@@ -2397,6 +2414,8 @@ class QueryEndpointResponse:
             body["model"] = self.model
         if self.object is not None:
             body["object"] = self.object
+        if self.outputs:
+            body["outputs"] = self.outputs
         if self.predictions:
             body["predictions"] = self.predictions
         if self.served_model_name is not None:
@@ -2415,6 +2434,7 @@ class QueryEndpointResponse:
             id=d.get("id", None),
             model=d.get("model", None),
             object=_enum(d, "object", QueryEndpointResponseObject),
+            outputs=d.get("outputs", None),
             predictions=d.get("predictions", None),
             served_model_name=d.get("served-model-name", None),
             usage=_from_dict(d, "usage", ExternalModelUsageElement),
@@ -2475,13 +2495,11 @@ class RateLimit:
 
 
 class RateLimitKey(Enum):
-
     ENDPOINT = "endpoint"
     USER = "user"
 
 
 class RateLimitRenewalPeriod(Enum):
-
     MINUTE = "minute"
 
 
@@ -2530,6 +2548,11 @@ class Route:
 
 @dataclass
 class ServedEntityInput:
+    burst_scaling_enabled: Optional[bool] = None
+    """Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale
+    up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains
+    fixed capacity at provisioned_model_units."""
+
     entity_name: Optional[str] = None
     """The name of the entity to be served. The entity may be a model in the Databricks Model Registry,
     a model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC
@@ -2601,6 +2624,8 @@ class ServedEntityInput:
     def as_dict(self) -> dict:
         """Serializes the ServedEntityInput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.entity_name is not None:
             body["entity_name"] = self.entity_name
         if self.entity_version is not None:
@@ -2634,6 +2659,8 @@ class ServedEntityInput:
     def as_shallow_dict(self) -> dict:
         """Serializes the ServedEntityInput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.entity_name is not None:
             body["entity_name"] = self.entity_name
         if self.entity_version is not None:
@@ -2668,6 +2695,7 @@ class ServedEntityInput:
     def from_dict(cls, d: Dict[str, Any]) -> ServedEntityInput:
         """Deserializes the ServedEntityInput from a dictionary."""
         return cls(
+            burst_scaling_enabled=d.get("burst_scaling_enabled", None),
             entity_name=d.get("entity_name", None),
             entity_version=d.get("entity_version", None),
             environment_vars=d.get("environment_vars", None),
@@ -2687,6 +2715,11 @@ class ServedEntityInput:
 
 @dataclass
 class ServedEntityOutput:
+    burst_scaling_enabled: Optional[bool] = None
+    """Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale
+    up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains
+    fixed capacity at provisioned_model_units."""
+
     creation_timestamp: Optional[int] = None
 
     creator: Optional[str] = None
@@ -2766,6 +2799,8 @@ class ServedEntityOutput:
     def as_dict(self) -> dict:
         """Serializes the ServedEntityOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
@@ -2807,6 +2842,8 @@ class ServedEntityOutput:
     def as_shallow_dict(self) -> dict:
         """Serializes the ServedEntityOutput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
@@ -2849,6 +2886,7 @@ class ServedEntityOutput:
     def from_dict(cls, d: Dict[str, Any]) -> ServedEntityOutput:
         """Deserializes the ServedEntityOutput from a dictionary."""
         return cls(
+            burst_scaling_enabled=d.get("burst_scaling_enabled", None),
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
             entity_name=d.get("entity_name", None),
@@ -2933,6 +2971,11 @@ class ServedModelInput:
 
     model_version: str
 
+    burst_scaling_enabled: Optional[bool] = None
+    """Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale
+    up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains
+    fixed capacity at provisioned_model_units."""
+
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
     for serving this entity. Note: this is an experimental feature and subject to change. Example
@@ -2985,6 +3028,8 @@ class ServedModelInput:
     def as_dict(self) -> dict:
         """Serializes the ServedModelInput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.environment_vars:
             body["environment_vars"] = self.environment_vars
         if self.instance_profile_arn is not None:
@@ -3016,6 +3061,8 @@ class ServedModelInput:
     def as_shallow_dict(self) -> dict:
         """Serializes the ServedModelInput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.environment_vars:
             body["environment_vars"] = self.environment_vars
         if self.instance_profile_arn is not None:
@@ -3048,6 +3095,7 @@ class ServedModelInput:
     def from_dict(cls, d: Dict[str, Any]) -> ServedModelInput:
         """Deserializes the ServedModelInput from a dictionary."""
         return cls(
+            burst_scaling_enabled=d.get("burst_scaling_enabled", None),
             environment_vars=d.get("environment_vars", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
             max_provisioned_concurrency=d.get("max_provisioned_concurrency", None),
@@ -3071,11 +3119,17 @@ class ServedModelInputWorkloadType(Enum):
     GPU_LARGE = "GPU_LARGE"
     GPU_MEDIUM = "GPU_MEDIUM"
     GPU_SMALL = "GPU_SMALL"
+    GPU_XLARGE = "GPU_XLARGE"
     MULTIGPU_MEDIUM = "MULTIGPU_MEDIUM"
 
 
 @dataclass
 class ServedModelOutput:
+    burst_scaling_enabled: Optional[bool] = None
+    """Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale
+    up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains
+    fixed capacity at provisioned_model_units."""
+
     creation_timestamp: Optional[int] = None
 
     creator: Optional[str] = None
@@ -3135,6 +3189,8 @@ class ServedModelOutput:
     def as_dict(self) -> dict:
         """Serializes the ServedModelOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
@@ -3168,6 +3224,8 @@ class ServedModelOutput:
     def as_shallow_dict(self) -> dict:
         """Serializes the ServedModelOutput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
@@ -3202,6 +3260,7 @@ class ServedModelOutput:
     def from_dict(cls, d: Dict[str, Any]) -> ServedModelOutput:
         """Deserializes the ServedModelOutput from a dictionary."""
         return cls(
+            burst_scaling_enabled=d.get("burst_scaling_enabled", None),
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
             environment_vars=d.get("environment_vars", None),
@@ -3293,7 +3352,6 @@ class ServedModelState:
 
 
 class ServedModelStateDeployment(Enum):
-
     DEPLOYMENT_ABORTED = "DEPLOYMENT_ABORTED"
     DEPLOYMENT_CREATING = "DEPLOYMENT_CREATING"
     DEPLOYMENT_FAILED = "DEPLOYMENT_FAILED"
@@ -3727,7 +3785,6 @@ class ServingEndpointDetailed:
 
 
 class ServingEndpointDetailedPermissionLevel(Enum):
-
     CAN_MANAGE = "CAN_MANAGE"
     CAN_QUERY = "CAN_QUERY"
     CAN_VIEW = "CAN_VIEW"
@@ -3861,6 +3918,7 @@ class ServingModelWorkloadType(Enum):
     GPU_LARGE = "GPU_LARGE"
     GPU_MEDIUM = "GPU_MEDIUM"
     GPU_SMALL = "GPU_SMALL"
+    GPU_XLARGE = "GPU_XLARGE"
     MULTIGPU_MEDIUM = "MULTIGPU_MEDIUM"
 
 
@@ -4045,6 +4103,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs", headers=headers
         )
@@ -4115,6 +4177,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.0/serving-endpoints", body=body, headers=headers)
         return Wait(
@@ -4198,6 +4264,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.0/serving-endpoints/pt", body=body, headers=headers)
         return Wait(
             self.wait_get_serving_endpoint_not_updating,
@@ -4235,6 +4305,10 @@ class ServingEndpointsAPI:
 
         headers = {}
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/serving-endpoints/{name}", headers=headers)
 
     def export_metrics(self, name: str) -> ExportMetricsResponse:
@@ -4251,6 +4325,10 @@ class ServingEndpointsAPI:
             "Accept": "text/plain",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}/metrics", headers=headers, raw=True)
         return ExportMetricsResponse.from_dict(res)
 
@@ -4266,6 +4344,10 @@ class ServingEndpointsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}", headers=headers)
         return ServingEndpointDetailed.from_dict(res)
@@ -4284,6 +4366,10 @@ class ServingEndpointsAPI:
             "Accept": "text/plain",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}/openapi", headers=headers, raw=True)
         return GetOpenApiResponse.from_dict(res)
 
@@ -4299,6 +4385,10 @@ class ServingEndpointsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels", headers=headers
@@ -4319,6 +4409,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", headers=headers)
         return ServingEndpointPermissions.from_dict(res)
 
@@ -4331,6 +4425,7 @@ class ServingEndpointsAPI:
         headers: Optional[str] = None,
         json: Optional[str] = None,
         params: Optional[str] = None,
+        sub_domain: Optional[str] = None,
     ) -> HttpRequestResponse:
         """Make external services call using the credentials stored in UC Connection.
 
@@ -4347,6 +4442,11 @@ class ServingEndpointsAPI:
           The JSON payload to send in the request body.
         :param params: str (optional)
           Query parameters for the request.
+        :param sub_domain: str (optional)
+          Optional subdomain to prepend to the connection URL's host. If provided, this will be added as a
+          prefix to the connection URL's host. For example, if the connection URL is
+          `https://api.example.com/v1` and `sub_domain` is `"custom"`, the resulting URL will be
+          `https://custom.api.example.com/v1`.
 
         :returns: :class:`HttpRequestResponse`
         """
@@ -4364,10 +4464,16 @@ class ServingEndpointsAPI:
             body["params"] = params
         if path is not None:
             body["path"] = path
+        if sub_domain is not None:
+            body["sub_domain"] = sub_domain
         headers = {
             "Accept": "text/plain",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/external-function", body=body, headers=headers, raw=True)
         return HttpRequestResponse.from_dict(res)
@@ -4382,6 +4488,10 @@ class ServingEndpointsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/serving-endpoints", headers=headers)
         parsed = ListEndpointsResponse.from_dict(json).endpoints
@@ -4401,6 +4511,10 @@ class ServingEndpointsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs", headers=headers
@@ -4432,6 +4546,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.0/serving-endpoints/{name}/tags", body=body, headers=headers)
         return EndpointTags.from_dict(res)
 
@@ -4453,6 +4571,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/rate-limits", body=body, headers=headers)
         return PutResponse.from_dict(res)
@@ -4504,6 +4626,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/ai-gateway", body=body, headers=headers)
         return PutAiGatewayResponse.from_dict(res)
@@ -4618,6 +4744,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         response_headers = [
             "served-model-name",
         ]
@@ -4654,6 +4784,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PUT", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", body=body, headers=headers
         )
@@ -4675,10 +4809,9 @@ class ServingEndpointsAPI:
         :param name: str
           The name of the serving endpoint to update. This field is required.
         :param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)
-          Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.
-          Note: this field is deprecated for creating new provisioned throughput endpoints, or updating
-          existing provisioned throughput endpoints that never have inference table configured; in these cases
-          please use AI Gateway to manage inference tables.
+          Configuration for legacy Inference Tables which automatically log requests and responses to Unity
+          Catalog. Deprecated: please use AI Gateway inference tables instead. See
+          https://docs.databricks.com/aws/en/ai-gateway/inference-tables.
         :param served_entities: List[:class:`ServedEntityInput`] (optional)
           The list of served entities under the serving endpoint config.
         :param served_models: List[:class:`ServedModelInput`] (optional)
@@ -4705,6 +4838,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/config", body=body, headers=headers)
         return Wait(
@@ -4753,6 +4890,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.0/serving-endpoints/{name}/notifications", body=body, headers=headers)
         return UpdateInferenceEndpointNotificationsResponse.from_dict(res)
 
@@ -4779,6 +4920,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", body=body, headers=headers
@@ -4808,6 +4953,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("PUT", f"/api/2.0/serving-endpoints/pt/{name}/config", body=body, headers=headers)
         return Wait(
@@ -4971,6 +5120,10 @@ class ServingEndpointsDataPlaneAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         response_headers = [
             "served-model-name",

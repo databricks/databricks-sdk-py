@@ -40,6 +40,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PercentNullValidityCheck
+   :members:
+   :undoc-members:
+
 .. autoclass:: QualityMonitor
+   :members:
+   :undoc-members:
+
+.. autoclass:: RangeValidityCheck
+   :members:
+   :undoc-members:
+
+.. autoclass:: UniquenessValidityCheck
+   :members:
+   :undoc-members:
+
+.. autoclass:: ValidityCheckConfiguration
    :members:
    :undoc-members:

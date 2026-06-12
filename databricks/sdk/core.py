@@ -1,10 +1,14 @@
+# Star-import re-exports preserve backwards compatibility: config/* and
+# credentials_provider/* used to live in this module and are still imported
+# as `databricks.sdk.core.X` by callers.
+# ruff: noqa: F403, F405
+
 import re
 from typing import BinaryIO
 from urllib.parse import urlencode
 
 from ._base_client import _BaseClient
 from .config import *
-# To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
 from .errors import DatabricksError, _ErrorCustomizer
 from .oauth import retrieve_token
@@ -19,9 +23,9 @@ OIDC_TOKEN_PATH = "/oidc/v1/token"
 
 
 class ApiClient:
-
     def __init__(self, cfg: Config):
         self._cfg = cfg
+
         self._api_client = _BaseClient(
             debug_truncate_bytes=cfg.debug_truncate_bytes,
             retry_timeout_seconds=cfg.retry_timeout_seconds,
@@ -41,6 +45,7 @@ class ApiClient:
 
     @property
     def is_account_client(self) -> bool:
+        """[Deprecated] Host type and client type are deprecated. Clients can now support both workspace and account APIs."""
         return self._cfg.is_account_client
 
     def get_oauth_token(self, auth_details: str) -> Token:
@@ -82,11 +87,16 @@ class ApiClient:
             # Once we've fixed the OpenAPI spec, we can remove this
             path = re.sub("^/api/2.0/fs/files//", "/api/2.0/fs/files/", path)
             url = f"{self._cfg.host}{path}"
+
+        # Merge custom headers with request-specific headers
+        # Request-specific headers take precedence
+        merged_headers = {**self._cfg._custom_headers, **(headers or {})}
+
         return self._api_client.do(
             method=method,
             url=url,
             query=query,
-            headers=headers,
+            headers=merged_headers,
             body=body,
             raw=raw,
             files=files,

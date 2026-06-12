@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -50,7 +53,6 @@ class IdempotencyTestingAPI:
         self._api = api_client
 
     def create_test_resource(self, test_resource: TestResource, *, request_id: Optional[str] = None) -> TestResource:
-
         if request_id is None or request_id == "":
             request_id = str(uuid.uuid4())
         body = test_resource.as_dict()
@@ -61,6 +63,10 @@ class IdempotencyTestingAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/idempotency-testing/resources", query=query, body=body, headers=headers)
         return TestResource.from_dict(res)

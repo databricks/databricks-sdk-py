@@ -109,6 +109,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AzureEncryptionSettings
+   :members:
+   :undoc-members:
+
 .. autoclass:: AzureManagedIdentity
    :members:
    :undoc-members:
@@ -279,16 +283,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 47
+   Next Id: 127
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
+
+   .. py:attribute:: CONFLUENCE
+      :value: "CONFLUENCE"
 
    .. py:attribute:: DATABRICKS
       :value: "DATABRICKS"
 
    .. py:attribute:: GA4_RAW_DATA
       :value: "GA4_RAW_DATA"
+
+   .. py:attribute:: GITHUB
+      :value: "GITHUB"
 
    .. py:attribute:: GLUE
       :value: "GLUE"
@@ -299,14 +309,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: HTTP
       :value: "HTTP"
 
+   .. py:attribute:: HUBSPOT
+      :value: "HUBSPOT"
+
+   .. py:attribute:: META_MARKETING
+      :value: "META_MARKETING"
+
    .. py:attribute:: MYSQL
       :value: "MYSQL"
 
    .. py:attribute:: ORACLE
       :value: "ORACLE"
 
-   .. py:attribute:: PALANTIR
-      :value: "PALANTIR"
+   .. py:attribute:: OUTLOOK
+      :value: "OUTLOOK"
 
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
@@ -326,6 +342,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SERVICENOW
       :value: "SERVICENOW"
 
+   .. py:attribute:: SMARTSHEET
+      :value: "SMARTSHEET"
+
    .. py:attribute:: SNOWFLAKE
       :value: "SNOWFLAKE"
 
@@ -343,6 +362,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
+
+   .. py:attribute:: ZENDESK
+      :value: "ZENDESK"
 
 .. autoclass:: ContinuousUpdateStatus
    :members:
@@ -423,13 +445,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CredentialType
 
-   Next Id: 14
+   Next Id: 19
 
    .. py:attribute:: ANY_STATIC_CREDENTIAL
       :value: "ANY_STATIC_CREDENTIAL"
 
    .. py:attribute:: BEARER_TOKEN
       :value: "BEARER_TOKEN"
+
+   .. py:attribute:: EDGEGRID_AKAMAI
+      :value: "EDGEGRID_AKAMAI"
 
    .. py:attribute:: OAUTH_ACCESS_TOKEN
       :value: "OAUTH_ACCESS_TOKEN"
@@ -460,6 +485,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SERVICE_CREDENTIAL
       :value: "SERVICE_CREDENTIAL"
+
+   .. py:attribute:: SSWS_TOKEN
+      :value: "SSWS_TOKEN"
 
    .. py:attribute:: UNKNOWN_CREDENTIAL_TYPE
       :value: "UNKNOWN_CREDENTIAL_TYPE"
@@ -685,7 +713,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EncryptionSettings
+   :members:
+   :undoc-members:
+
 .. autoclass:: EntityTagAssignment
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnvironmentSettings
    :members:
    :undoc-members:
 
@@ -843,6 +879,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenerateTemporaryVolumeCredentialResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetCatalogWorkspaceBindingsResponse
    :members:
    :undoc-members:
@@ -940,6 +980,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListSchemasResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListSecretsResponse
    :members:
    :undoc-members:
 
@@ -1251,6 +1295,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PolicyFunctionArgument
+   :members:
+   :undoc-members:
+
 .. autoclass:: PolicyInfo
    :members:
    :undoc-members:
@@ -1494,13 +1542,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Secret
+   :members:
+   :undoc-members:
+
 .. autoclass:: Securable
    :members:
    :undoc-members:
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271
+   Latest kind: CONNECTION_CONFLUENT_SCHEMA_REGISTRY_BASIC = 346; Next id: 347. Reserved numbers: 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING, MCP_SERVICE_STANDARD).
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
@@ -1513,6 +1565,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_DELTASHARING_MUTABLE
       :value: "TABLE_DELTASHARING_MUTABLE"
+
+   .. py:attribute:: TABLE_DELTASHARING_OPEN_DIR_BASED
+      :value: "TABLE_DELTASHARING_OPEN_DIR_BASED"
 
    .. py:attribute:: TABLE_DELTA_EXTERNAL
       :value: "TABLE_DELTA_EXTERNAL"
@@ -1528,6 +1583,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL
       :value: "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL"
+
+   .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING
+      :value: "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL_DELTASHARING"
 
    .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING
       :value: "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING"
@@ -1603,9 +1661,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_FOREIGN_ORACLE
       :value: "TABLE_FOREIGN_ORACLE"
-
-   .. py:attribute:: TABLE_FOREIGN_PALANTIR
-      :value: "TABLE_FOREIGN_PALANTIR"
 
    .. py:attribute:: TABLE_FOREIGN_POSTGRESQL
       :value: "TABLE_FOREIGN_POSTGRESQL"
@@ -1923,6 +1978,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: VIEW
       :value: "VIEW"
 
+.. py:class:: TagAssignmentSourceType
+
+   Enum representing the source type of a tag assignment
+
+   .. py:attribute:: TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION
+      :value: "TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION"
+
 .. autoclass:: TagKeyValue
    :members:
    :undoc-members:
@@ -2035,6 +2097,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: VolumeInfo
    :members:
    :undoc-members:
+
+.. py:class:: VolumeOperation
+
+   .. py:attribute:: READ_VOLUME
+      :value: "READ_VOLUME"
+
+   .. py:attribute:: WRITE_VOLUME
+      :value: "WRITE_VOLUME"
 
 .. py:class:: VolumeType
 

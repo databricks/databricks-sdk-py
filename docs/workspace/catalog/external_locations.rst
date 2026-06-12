@@ -15,7 +15,7 @@
     To create external locations, you must be a metastore admin or a user with the
     **CREATE_EXTERNAL_LOCATION** privilege.
 
-    .. py:method:: create(name: str, url: str, credential_name: str [, comment: Optional[str], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], read_only: Optional[bool], skip_validation: Optional[bool]]) -> ExternalLocationInfo
+    .. py:method:: create(name: str, url: str, credential_name: str [, comment: Optional[str], effective_enable_file_events: Optional[bool], effective_file_event_queue: Optional[FileEventQueue], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], read_only: Optional[bool], skip_validation: Optional[bool]]) -> ExternalLocationInfo
 
 
         Usage:
@@ -57,16 +57,24 @@
           Name of the storage credential used with this location.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param effective_enable_file_events: bool (optional)
+          The effective value of `enable_file_events` after applying server-side defaults.
+        :param effective_file_event_queue: :class:`FileEventQueue` (optional)
+          The effective file event queue configuration after applying server-side defaults. Always populated
+          when a queue is provisioned, regardless of whether the user explicitly set `enable_file_events`. Use
+          this field instead of `file_event_queue` for reading the actual queue state.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location.
+          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          disable file events. The actual applied value may differ due to server-side defaults; check
+          `effective_enable_file_events` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
-          of the documented properties.
+          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
+          one of the documented properties.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -140,10 +148,11 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
-            all = w.external_locations.list()
+            all = w.external_locations.list(catalog.ListExternalLocationsRequest())
 
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
@@ -173,7 +182,7 @@
         :returns: Iterator over :class:`ExternalLocationInfo`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], credential_name: Optional[str], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
+    .. py:method:: update(name: str [, comment: Optional[str], credential_name: Optional[str], effective_enable_file_events: Optional[bool], effective_file_event_queue: Optional[FileEventQueue], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
 
 
         Usage:
@@ -190,24 +199,24 @@
             
             credential = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
-                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
             )
             
             created = w.external_locations.create(
                 name=f"sdk-{time.time_ns()}",
                 credential_name=credential.name,
-                url="s3://%s/%s" % (os.environ["TEST_BUCKET"], f"sdk-{time.time_ns()}"),
+                url=f's3://{os.environ["TEST_BUCKET"]}/sdk-{time.time_ns()}',
             )
             
             _ = w.external_locations.update(
                 name=created.name,
                 credential_name=credential.name,
-                url="s3://%s/%s" % (os.environ["TEST_BUCKET"], f"sdk-{time.time_ns()}"),
+                url=f's3://{os.environ["TEST_BUCKET"]}/sdk-{time.time_ns()}',
             )
             
             # cleanup
-            w.storage_credentials.delete(name=credential.name)
-            w.external_locations.delete(name=created.name)
+            w.storage_credentials.delete(delete=credential.name)
+            w.external_locations.delete(delete=created.name)
 
         Updates an external location in the metastore. The caller must be the owner of the external location,
         or be a metastore admin. In the second case, the admin can only update the name of the external
@@ -219,16 +228,24 @@
           User-provided free-form text description.
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
+        :param effective_enable_file_events: bool (optional)
+          The effective value of `enable_file_events` after applying server-side defaults.
+        :param effective_file_event_queue: :class:`FileEventQueue` (optional)
+          The effective file event queue configuration after applying server-side defaults. Always populated
+          when a queue is provisioned, regardless of whether the user explicitly set `enable_file_events`. Use
+          this field instead of `file_event_queue` for reading the actual queue state.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location.
+          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          disable file events. The actual applied value may differ due to server-side defaults; check
+          `effective_enable_file_events` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
-          of the documented properties.
+          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
+          one of the documented properties.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)

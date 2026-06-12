@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -7,7 +10,11 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -180,7 +187,9 @@ class CreateRepoResponse:
     """Path of the Git folder (repo) in the workspace."""
 
     provider: Optional[str] = None
-    """Git provider of the linked Git repository."""
+    """Git provider of the linked Git repository, e.g. `gitHub`, `azureDevOpsServices`,
+    `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition` (GitLab Self-Managed), or
+    `awsCodeCommit` (deprecated)."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """Sparse checkout settings for the Git folder (repo)."""
@@ -252,7 +261,10 @@ class CredentialInfo:
     https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider"""
 
     git_provider: Optional[str] = None
-    """The Git provider associated with the credential."""
+    """The Git provider associated with the credential. One of `gitHub`, `bitbucketCloud`, `gitLab`,
+    `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra ID authentication),
+    `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition` (GitLab
+    Self-Managed), or `awsCodeCommit` (deprecated)."""
 
     git_username: Optional[str] = None
     """The username provided with your Git provider account and associated with the credential. For
@@ -546,7 +558,9 @@ class GetRepoResponse:
     """Path of the Git folder (repo) in the workspace."""
 
     provider: Optional[str] = None
-    """Git provider of the linked Git repository."""
+    """Git provider of the linked Git repository, e.g. `gitHub`, `azureDevOpsServices`,
+    `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition` (GitLab Self-Managed), or
+    `awsCodeCommit` (deprecated)."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """Sparse checkout settings for the Git folder (repo)."""
@@ -886,7 +900,8 @@ class ObjectInfo:
     """Only applicable to files. The creation UTC timestamp."""
 
     language: Optional[Language] = None
-    """The language of the object. This value is set only if the object type is ``NOTEBOOK``."""
+    """The language of the object. This value is set only if the object type is ``NOTEBOOK``. For
+    Jupyter (.ipynb) notebooks, this is always ``PYTHON``."""
 
     modified_at: Optional[int] = None
     """Only applicable to files, the last modified UTC timestamp."""
@@ -1104,7 +1119,9 @@ class RepoInfo:
     """Root path of the git folder (repo) in the Workspace."""
 
     provider: Optional[str] = None
-    """Git provider of the remote git repository, e.g. `gitHub`."""
+    """Git provider of the remote git repository, e.g. `gitHub`, `azureDevOpsServices`,
+    `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition` (GitLab Self-Managed), or
+    `awsCodeCommit` (deprecated)."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """Sparse checkout config for the git folder (repo)."""
@@ -1719,15 +1736,17 @@ class GitCredentialsAPI:
         is_default_for_provider: Optional[bool] = None,
         name: Optional[str] = None,
         personal_access_token: Optional[str] = None,
+        principal_id: Optional[int] = None,
     ) -> CreateCredentialsResponse:
-        """Creates a Git credential entry for the user. Only one Git credential per user is supported, so any
-        attempts to create credentials if an entry already exists will fail. Use the PATCH endpoint to update
-        existing credentials, or the DELETE endpoint to delete existing credentials.
+        """Creates a Git credential entry for the user. Use the PATCH endpoint to update existing credentials, or
+        the DELETE endpoint to delete existing credentials.
 
         :param git_provider: str
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-          `gitLabEnterpriseEdition` and `awsCodeCommit`.
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra
+          ID authentication), `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
+          `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit` (deprecated by AWS, not
+          accepting new customers).
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
           with the remote repository and also sets the author & committer identity for commits. Required for
@@ -1747,6 +1766,9 @@ class GitCredentialsAPI:
           providers, support may exist for other types of scoped access tokens. [Learn more].
 
           [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
         :returns: :class:`CreateCredentialsResponse`
         """
@@ -1764,57 +1786,93 @@ class GitCredentialsAPI:
             body["name"] = name
         if personal_access_token is not None:
             body["personal_access_token"] = personal_access_token
+        if principal_id is not None:
+            body["principal_id"] = principal_id
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/git-credentials", body=body, headers=headers)
         return CreateCredentialsResponse.from_dict(res)
 
-    def delete(self, credential_id: int):
+    def delete(self, credential_id: int, *, principal_id: Optional[int] = None):
         """Deletes the specified Git credential.
 
         :param credential_id: int
           The ID for the corresponding credential to access.
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
 
         """
 
+        query = {}
+        if principal_id is not None:
+            query["principal_id"] = principal_id
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/git-credentials/{credential_id}", headers=headers)
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-    def get(self, credential_id: int) -> GetCredentialsResponse:
+        self._api.do("DELETE", f"/api/2.0/git-credentials/{credential_id}", query=query, headers=headers)
+
+    def get(self, credential_id: int, *, principal_id: Optional[int] = None) -> GetCredentialsResponse:
         """Gets the Git credential with the specified credential ID.
 
         :param credential_id: int
           The ID for the corresponding credential to access.
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
         :returns: :class:`GetCredentialsResponse`
         """
 
+        query = {}
+        if principal_id is not None:
+            query["principal_id"] = principal_id
         headers = {
             "Accept": "application/json",
         }
 
-        res = self._api.do("GET", f"/api/2.0/git-credentials/{credential_id}", headers=headers)
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/git-credentials/{credential_id}", query=query, headers=headers)
         return GetCredentialsResponse.from_dict(res)
 
-    def list(self) -> Iterator[CredentialInfo]:
-        """Lists the calling user's Git credentials. One credential per user is supported.
+    def list(self, *, principal_id: Optional[int] = None) -> Iterator[CredentialInfo]:
+        """Lists the calling user's Git credentials.
 
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be listed. Only service principal managers
+          can perform this action.
 
         :returns: Iterator over :class:`CredentialInfo`
         """
 
+        query = {}
+        if principal_id is not None:
+            query["principal_id"] = principal_id
         headers = {
             "Accept": "application/json",
         }
 
-        json = self._api.do("GET", "/api/2.0/git-credentials", headers=headers)
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        json = self._api.do("GET", "/api/2.0/git-credentials", query=query, headers=headers)
         parsed = ListCredentialsResponse.from_dict(json).credentials
         return parsed if parsed is not None else []
 
@@ -1828,6 +1886,7 @@ class GitCredentialsAPI:
         is_default_for_provider: Optional[bool] = None,
         name: Optional[str] = None,
         personal_access_token: Optional[str] = None,
+        principal_id: Optional[int] = None,
     ):
         """Updates the specified Git credential.
 
@@ -1835,8 +1894,10 @@ class GitCredentialsAPI:
           The ID for the corresponding credential to access.
         :param git_provider: str
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-          `gitLabEnterpriseEdition` and `awsCodeCommit`.
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra
+          ID authentication), `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
+          `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit` (deprecated by AWS, not
+          accepting new customers).
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
           with the remote repository and also sets the author & committer identity for commits. Required for
@@ -1856,6 +1917,9 @@ class GitCredentialsAPI:
           providers, support may exist for other types of scoped access tokens. [Learn more].
 
           [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
 
         """
@@ -1873,10 +1937,16 @@ class GitCredentialsAPI:
             body["name"] = name
         if personal_access_token is not None:
             body["personal_access_token"] = personal_access_token
+        if principal_id is not None:
+            body["principal_id"] = principal_id
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/git-credentials/{credential_id}", body=body, headers=headers)
 
@@ -1905,8 +1975,10 @@ class ReposAPI:
           URL of the Git repository to be linked.
         :param provider: str
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-          `gitLabEnterpriseEdition` and `awsCodeCommit`.
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra
+          ID authentication), `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
+          `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit` (deprecated by AWS, not
+          accepting new customers).
         :param path: str (optional)
           Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo
           is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`.
@@ -1931,6 +2003,10 @@ class ReposAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/repos", body=body, headers=headers)
         return CreateRepoResponse.from_dict(res)
 
@@ -1947,6 +2023,10 @@ class ReposAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/repos/{repo_id}", headers=headers)
 
     def get(self, repo_id: int) -> GetRepoResponse:
@@ -1961,6 +2041,10 @@ class ReposAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/repos/{repo_id}", headers=headers)
         return GetRepoResponse.from_dict(res)
@@ -1978,6 +2062,10 @@ class ReposAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/permissions/repos/{repo_id}/permissionLevels", headers=headers)
         return GetRepoPermissionLevelsResponse.from_dict(res)
 
@@ -1993,6 +2081,10 @@ class ReposAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/repos/{repo_id}", headers=headers)
         return RepoPermissions.from_dict(res)
@@ -2020,6 +2112,10 @@ class ReposAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/repos", query=query, headers=headers)
@@ -2051,6 +2147,10 @@ class ReposAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("PUT", f"/api/2.0/permissions/repos/{repo_id}", body=body, headers=headers)
         return RepoPermissions.from_dict(res)
 
@@ -2059,6 +2159,7 @@ class ReposAPI:
         repo_id: int,
         *,
         branch: Optional[str] = None,
+        dangerously_force_discard_all: Optional[bool] = None,
         sparse_checkout: Optional[SparseCheckoutUpdate] = None,
         tag: Optional[str] = None,
     ):
@@ -2069,6 +2170,17 @@ class ReposAPI:
           ID of the Git folder (repo) object in the workspace.
         :param branch: str (optional)
           Branch that the local version of the repo is checked out to.
+        :param dangerously_force_discard_all: bool (optional)
+          WARNING: DESTRUCTIVE AND IRREVERSIBLE. If true, permanently deletes ALL uncommitted changes in the
+          Git folder — staged, unstaged, and untracked files — before updating. Lost data CANNOT be
+          recovered.
+
+          NEVER use this on Git folders where users author or edit files. This flag is intended ONLY for
+          automated jobs that treat the Git folder as a read-only mirror of a remote branch and need to
+          force-sync it. If any user has uncommitted work in the Git folder, that work will be permanently
+          destroyed without warning.
+
+          Local commits that have been made but not yet pushed to the remote are preserved.
         :param sparse_checkout: :class:`SparseCheckoutUpdate` (optional)
           If specified, update the sparse checkout settings. The update will fail if sparse checkout is not
           enabled for the repo.
@@ -2083,6 +2195,8 @@ class ReposAPI:
         body = {}
         if branch is not None:
             body["branch"] = branch
+        if dangerously_force_discard_all is not None:
+            body["dangerously_force_discard_all"] = dangerously_force_discard_all
         if sparse_checkout is not None:
             body["sparse_checkout"] = sparse_checkout.as_dict()
         if tag is not None:
@@ -2091,6 +2205,10 @@ class ReposAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/repos/{repo_id}", body=body, headers=headers)
 
@@ -2113,6 +2231,10 @@ class ReposAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/repos/{repo_id}", body=body, headers=headers)
         return RepoPermissions.from_dict(res)
@@ -2198,6 +2320,10 @@ class SecretsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/secrets/scopes/create", body=body, headers=headers)
 
     def delete_acl(self, scope: str, principal: str):
@@ -2232,6 +2358,10 @@ class SecretsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/secrets/acls/delete", body=body, headers=headers)
 
     def delete_scope(self, scope: str):
@@ -2259,6 +2389,10 @@ class SecretsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/secrets/scopes/delete", body=body, headers=headers)
 
@@ -2295,6 +2429,10 @@ class SecretsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/secrets/delete", body=body, headers=headers)
 
     def get_acl(self, scope: str, principal: str) -> AclItem:
@@ -2328,6 +2466,10 @@ class SecretsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/secrets/acls/get", query=query, headers=headers)
         return AclItem.from_dict(res)
@@ -2375,6 +2517,10 @@ class SecretsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/secrets/get", query=query, headers=headers)
         return GetSecretResponse.from_dict(res)
 
@@ -2406,6 +2552,10 @@ class SecretsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         json = self._api.do("GET", "/api/2.0/secrets/acls/list", query=query, headers=headers)
         parsed = ListAclsResponse.from_dict(json).items
         return parsed if parsed is not None else []
@@ -2429,6 +2579,10 @@ class SecretsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/secrets/scopes/list", headers=headers)
         parsed = ListScopesResponse.from_dict(json).scopes
@@ -2462,6 +2616,10 @@ class SecretsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/secrets/list", query=query, headers=headers)
         parsed = ListSecretsResponse.from_dict(json).secrets
@@ -2518,6 +2676,10 @@ class SecretsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/secrets/acls/put", body=body, headers=headers)
 
     def put_secret(
@@ -2572,11 +2734,17 @@ class SecretsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/secrets/put", body=body, headers=headers)
 
 
 class WorkspaceAPI:
-    """The Workspace API allows you to list, import, export, and delete notebooks and folders.
+    """The Workspace API allows you to list, import, export, and delete workspace objects such as notebooks,
+    files, folders, and dashboards. Additionally, it provides endpoints to manage permissions for any
+    workspace object.
 
     A notebook is a web-based interface to a document that contains runnable code, visualizations, and
     explanatory text."""
@@ -2611,6 +2779,10 @@ class WorkspaceAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/workspace/delete", body=body, headers=headers)
 
@@ -2649,6 +2821,10 @@ class WorkspaceAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/workspace/export", query=query, headers=headers)
         return ExportResponse.from_dict(res)
 
@@ -2658,7 +2834,9 @@ class WorkspaceAPI:
         """Gets the permission levels that a user can have on an object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
 
@@ -2668,6 +2846,10 @@ class WorkspaceAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -2681,7 +2863,9 @@ class WorkspaceAPI:
         parent objects or root object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
 
@@ -2691,6 +2875,10 @@ class WorkspaceAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}", headers=headers
@@ -2713,6 +2901,10 @@ class WorkspaceAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/workspace/get-status", query=query, headers=headers)
         return ObjectInfo.from_dict(res)
@@ -2776,6 +2968,10 @@ class WorkspaceAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/workspace/import", body=body, headers=headers)
 
     def list(self, path: str, *, notebooks_modified_after: Optional[int] = None) -> Iterator[ObjectInfo]:
@@ -2798,6 +2994,10 @@ class WorkspaceAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/workspace/list", query=query, headers=headers)
         parsed = ListResponse.from_dict(json).objects
@@ -2826,6 +3026,10 @@ class WorkspaceAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/workspace/mkdirs", body=body, headers=headers)
 
     def set_permissions(
@@ -2840,7 +3044,9 @@ class WorkspaceAPI:
         object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
@@ -2855,6 +3061,10 @@ class WorkspaceAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}", body=body, headers=headers
@@ -2872,7 +3082,9 @@ class WorkspaceAPI:
         parent objects or root object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
@@ -2887,6 +3099,10 @@ class WorkspaceAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}", body=body, headers=headers

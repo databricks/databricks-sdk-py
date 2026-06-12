@@ -24,6 +24,13 @@ dbruntime_objects = [
 
 # DO NOT MOVE THE TRY-CATCH BLOCK BELOW AND DO NOT ADD THINGS BEFORE IT! WILL MAKE TEST FAIL.
 try:
+    from dbruntime.sdk_credential_provider import init_runtime_native_unified
+
+    logger.debug("runtime SDK credential provider (unified) available")
+except ImportError:
+    init_runtime_native_unified = None
+
+try:
     # We don't want to expose additional entity to user namespace, so
     # a workaround here for exposing required information in notebook environment
     from dbruntime.sdk_credential_provider import init_runtime_native_auth
@@ -34,6 +41,7 @@ except ImportError:
     init_runtime_native_auth = None
 
 globals()["init_runtime_native_auth"] = init_runtime_native_auth
+globals()["init_runtime_native_unified"] = init_runtime_native_unified
 
 
 def init_runtime_repl_auth():
@@ -78,16 +86,17 @@ def init_runtime_legacy_auth():
 
         def inner() -> Dict[str, str]:
             ctx = dbutils.notebook().getContext()
-            return {"Authorization": f'Bearer {getattr(ctx, "apiToken")().get()}'}
+            return {"Authorization": f"Bearer {getattr(ctx, 'apiToken')().get()}"}
 
         return host, inner
     except ImportError:
         return None, None
 
 
+# Internal implementation
+# Separated from above for backward compatibility
+_use_runtime_namespace = False
 try:
-    # Internal implementation
-    # Separated from above for backward compatibility
     from dbruntime import UserNamespaceInitializer
 
     userNamespaceGlobals = UserNamespaceInitializer.getOrCreate().get_namespace_globals()
@@ -97,7 +106,23 @@ try:
             continue
         _globals[var] = userNamespaceGlobals[var]
     is_local_implementation = False
+    _use_runtime_namespace = True
 except ImportError:
+    # Not running inside a classic Databricks runtime; fall back to the OSS implementation below.
+    pass
+except Exception as e:
+    # On Spark Connect runtimes (e.g. shared-access-mode clusters), materializing the
+    # legacy user namespace builds a SparkContext, which is unavailable in remote clients
+    # and raises CONTEXT_UNAVAILABLE_FOR_REMOTE_CLIENT. Treat this like "not in a classic
+    # runtime" and fall back to the OSS/remote implementation below, which is Spark
+    # Connect-compatible. Without this, importing databricks.sdk.runtime (and therefore
+    # constructing a WorkspaceClient on such a cluster) raises at import time. The catch
+    # is broad rather than typed on PySparkRuntimeError so the SDK does not need to import
+    # pyspark just to narrow the exception type; any other unexpected failure here is also
+    # safer surfaced as a warning + remote fallback than as a constructor crash.
+    logger.warning(f"Runtime namespace unavailable, falling back to remote implementation: {e}")
+
+if not _use_runtime_namespace:
     # OSS implementation
     is_local_implementation = True
 
@@ -116,7 +141,7 @@ except ImportError:
         logging.debug(f"Failed to initialize globals 'sqlContext' and 'table', continuing. Cause: {e}")
 
     try:
-        from pyspark.sql.functions import udf  # type: ignore
+        from pyspark.sql.functions import udf  # type: ignore  # noqa: F401
     except ImportError as e:
         logging.debug(f"Failed to initialise udf global: {e}")
 

@@ -1,9 +1,10 @@
 from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
 
 import pytest
 
-from databricks.sdk import oidc
+from databricks.sdk import oauth, oidc
 
 
 @dataclass
@@ -107,3 +108,82 @@ def test_file_id_token_source(test_case: FileTestCase, tmp_path):
             source.id_token()
     else:
         assert source.id_token() == test_case.want
+
+
+class _CountingIdTokenSource(oidc.IdTokenSource):
+    """An IdTokenSource that counts how many times it is invoked and returns a
+    fresh jwt each time, so we can assert ID-token rotation on refresh."""
+
+    def __init__(self):
+        self.calls = 0
+
+    def id_token(self) -> oidc.IdToken:
+        self.calls += 1
+        return oidc.IdToken(jwt=f"id-token-{self.calls}")
+
+
+def _make_token_source(id_token_source, exchanges, expiry):
+    """Build a DatabricksOidcTokenSource whose exchange step is stubbed to record
+    the ID token it received and return a token with the given expiry."""
+    ts = oidc.DatabricksOidcTokenSource(
+        host="https://test.cloud.databricks.com",
+        token_endpoint="https://test.cloud.databricks.com/oidc/v1/token",
+        id_token_source=id_token_source,
+        client_id="test-client-id",
+    )
+
+    def _exchange(id_token: oidc.IdToken) -> oauth.Token:
+        exchanges.append(id_token.jwt)
+        return oauth.Token(access_token=f"exchanged-{id_token.jwt}", token_type="Bearer", expiry=expiry)
+
+    ts._exchange_id_token = _exchange
+    return ts
+
+
+def test_databricks_oidc_token_source_caches_token():
+    # A valid token (1h TTL) should be minted once and reused across calls,
+    # rather than exchanging the ID token on every token() call.
+    id_token_source = _CountingIdTokenSource()
+    exchanges = []
+    ts = _make_token_source(
+        id_token_source,
+        exchanges,
+        expiry=datetime.now(tz=timezone.utc) + timedelta(hours=1),
+    )
+
+    first = ts.token()
+    for _ in range(5):
+        again = ts.token()
+        assert again.access_token == first.access_token
+
+    assert exchanges == ["id-token-1"]
+    assert id_token_source.calls == 1
+
+
+def test_databricks_oidc_token_source_refreshes_when_expired():
+    # An already-expired token must trigger a re-exchange, and the refresh must
+    # fetch a *fresh* ID token (rotation), not reuse the original jwt.
+    id_token_source = _CountingIdTokenSource()
+    exchanges = []
+    ts = _make_token_source(
+        id_token_source,
+        exchanges,
+        expiry=datetime.now(tz=timezone.utc) - timedelta(seconds=1),
+    )
+
+    ts.token()
+    ts.token()
+
+    assert exchanges == ["id-token-1", "id-token-2"]
+    assert id_token_source.calls == 2
+
+
+def test_databricks_oidc_token_source_missing_host_raises():
+    ts = oidc.DatabricksOidcTokenSource(
+        host="",
+        token_endpoint="https://test.cloud.databricks.com/oidc/v1/token",
+        id_token_source=_CountingIdTokenSource(),
+        client_id="test-client-id",
+    )
+    with pytest.raises(ValueError, match="missing Host"):
+        ts.token()

@@ -1,3 +1,5 @@
+import base64
+import json
 import os
 import pathlib
 import platform
@@ -10,13 +12,14 @@ import pytest
 
 from databricks.sdk import WorkspaceClient, errors, useragent
 from databricks.sdk.core import ApiClient, Config, DatabricksError
-from databricks.sdk.credentials_provider import (CliTokenSource,
-                                                 CredentialsProvider,
-                                                 CredentialsStrategy,
-                                                 DatabricksCliTokenSource,
-                                                 databricks_cli)
-from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
-                                         DatabricksEnvironment)
+from databricks.sdk.credentials_provider import (
+    CliTokenSource,
+    CredentialsProvider,
+    CredentialsStrategy,
+    DatabricksCliTokenSource,
+    databricks_cli,
+)
+from databricks.sdk.environments import ENVIRONMENTS, AzureEnvironment, Cloud, DatabricksEnvironment
 from databricks.sdk.oauth import Token
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
@@ -153,13 +156,13 @@ def test_databricks_cli_token_source_installed_both(config, monkeypatch, tmp_pat
 
 def test_databricks_cli_credential_provider_not_installed(config, monkeypatch):
     monkeypatch.setenv("PATH", "whatever")
-    assert databricks_cli(config) == None
+    assert databricks_cli(config) is None
 
 
 def test_databricks_cli_credential_provider_installed_legacy(config, monkeypatch, tmp_path):
     write_small_dummy_executable(tmp_path)
     monkeypatch.setenv("PATH", tmp_path.as_posix())
-    assert databricks_cli(config) == None
+    assert databricks_cli(config) is None
 
 
 def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, tmp_path, mocker):
@@ -181,18 +184,97 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
     assert get_mock.call_count == 1
 
 
+def _make_jwt(claims: dict) -> str:
+    """Build a fake JWT (header.payload.signature) with the given claims."""
+    header = base64.urlsafe_b64encode(json.dumps({"alg": "none"}).encode()).rstrip(b"=").decode()
+    payload = base64.urlsafe_b64encode(json.dumps(claims).encode()).rstrip(b"=").decode()
+    return f"{header}.{payload}.sig"
+
+
+@pytest.mark.parametrize(
+    "token_claims, configured_scopes, auth_type, expect",
+    [
+        # Exact match (offline_access filtered out)
+        ({"scope": "sql offline_access"}, ["sql"], None, "credentials"),
+        # Mismatch with explicit auth → hard error
+        ({"scope": "all-apis offline_access"}, ["sql"], "databricks-cli", "error"),
+        # Mismatch in default chain → falls through so other providers get a chance
+        ({"scope": "all-apis offline_access"}, ["sql"], None, "fallthrough"),
+        # offline_access on token only — still equivalent
+        ({"scope": "all-apis offline_access"}, ["all-apis"], None, "credentials"),
+        # offline_access in config only — still equivalent
+        ({"scope": "all-apis"}, ["all-apis", "offline_access"], None, "credentials"),
+        # No scopes configured — skip validation
+        ({"scope": "all-apis"}, None, None, "credentials"),
+        # scope claim as list instead of string
+        ({"scope": ["sql", "offline_access"]}, ["sql"], None, "credentials"),
+    ],
+    ids=[
+        "match",
+        "mismatch_explicit_auth",
+        "mismatch_default_chain_fallthrough",
+        "offline_access_on_token_only",
+        "offline_access_in_config_only",
+        "no_scopes_configured",
+        "scope_as_list",
+    ],
+)
+def test_databricks_cli_scope_validation(
+    config, monkeypatch, tmp_path, mocker, token_claims, configured_scopes, auth_type, expect
+):
+    mocker.patch(
+        "databricks.sdk.credentials_provider.CliTokenSource.refresh",
+        return_value=Token(access_token=_make_jwt(token_claims), token_type="Bearer", expiry=datetime(2023, 5, 22)),
+    )
+    write_large_dummy_executable(tmp_path)
+    monkeypatch.setenv("PATH", str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]]))
+    if configured_scopes is not None:
+        # sorted() to match _parse_scopes transform applied during real Config construction
+        config.scopes = sorted(configured_scopes)
+    if auth_type is not None:
+        config.auth_type = auth_type
+
+    if expect == "error":
+        with pytest.raises(ValueError, match="do not match the configured scopes"):
+            databricks_cli(config)
+    elif expect == "fallthrough":
+        assert databricks_cli(config) is None
+    else:
+        assert databricks_cli(config) is not None
+
+
+def test_databricks_cli_scope_validation_error_message(config, monkeypatch, tmp_path, mocker):
+    mocker.patch(
+        "databricks.sdk.credentials_provider.CliTokenSource.refresh",
+        return_value=Token(
+            access_token=_make_jwt({"scope": "all-apis"}), token_type="Bearer", expiry=datetime(2023, 5, 22)
+        ),
+    )
+    write_large_dummy_executable(tmp_path)
+    monkeypatch.setenv("PATH", str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]]))
+    # sorted() to match _parse_scopes transform applied during real Config construction
+    config.scopes = sorted(["sql", "offline_access"])
+    config.auth_type = "databricks-cli"
+
+    with pytest.raises(
+        ValueError,
+        match=r"Please re-authenticate with the desired scopes by running `databricks auth login` with the --scopes flag",
+    ):
+        databricks_cli(config)
+
+
 def test_extra_and_upstream_user_agent(monkeypatch):
-
     class MockUname:
-
         @property
         def system(self):
             return "TestOS"
 
-    # Clear all environment variables and cached CICD provider.
+    # Clear all environment variables and cached providers.
     for k in os.environ:
         monkeypatch.delenv(k, raising=False)
-    useragent._cicd_provider = None
+    monkeypatch.setattr(useragent, "_extra", [])
+    monkeypatch.setattr(useragent, "_cicd_provider", None)
+    monkeypatch.setattr(useragent, "_agent_provider", None)
 
     monkeypatch.setattr(platform, "python_version", lambda: "3.0.0")
     monkeypatch.setattr(platform, "uname", MockUname)
@@ -219,9 +301,7 @@ def test_extra_and_upstream_user_agent(monkeypatch):
 
 
 def test_config_copy_shallow_copies_credential_provider():
-
     class TestCredentialsStrategy(CredentialsStrategy):
-
         def __init__(self):
             super().__init__()
             self._token = "token1"
@@ -266,9 +346,7 @@ def test_config_workspace_is_not_accounts_host(config):
 
 # This test uses the fake file system to avoid interference from local default profile.
 def test_config_can_be_subclassed(fake_fs):
-
     class DatabricksConfig(Config):
-
         def __init__(self):
             super().__init__()
 
@@ -289,7 +367,7 @@ def test_access_control_list(config, requests_mock):
     )
 
     w = WorkspaceClient(config=config)
-    res = w.jobs.create(access_control_list=[AccessControlRequest(group_name="group")])
+    w.jobs.create(access_control_list=[AccessControlRequest(group_name="group")])
 
     assert requests_mock.call_count == 1
     assert requests_mock.called
@@ -303,7 +381,7 @@ def test_shares(config, requests_mock):
     )
 
     w = WorkspaceClient(config=config)
-    res = w.shares.update_permissions(name="jobId", changes=[PermissionsChange(principal="principal")])
+    w.shares.update_permissions(name="jobId", changes=[PermissionsChange(principal="principal")])
 
     assert requests_mock.call_count == 1
     assert requests_mock.called
@@ -378,7 +456,6 @@ def test_error(config, requests_mock, status_code, headers, body, expected_error
 
 
 def test_github_oidc_flow_works_with_azure(monkeypatch):
-
     def inner(h: BaseHTTPRequestHandler):
         if "audience=api://AzureADTokenExchange" in h.path:
             auth = h.headers["Authorization"]
@@ -391,7 +468,7 @@ def test_github_oidc_flow_works_with_azure(monkeypatch):
             h.send_response(301)
             h.send_header(
                 "Location",
-                f'http://{h.headers["Host"]}/mocked-tenant-id/irrelevant/part',
+                f"http://{h.headers['Host']}/mocked-tenant-id/irrelevant/part",
             )
             h.end_headers()
             return

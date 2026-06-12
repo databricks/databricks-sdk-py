@@ -1,40 +1,40 @@
 dev:
-	python3 -m venv .venv
-ifeq ($(OS), Windows_NT)
-	.venv\Scripts\activate
-else
-	. .venv/bin/activate
-endif
-	pip install '.[dev]'
+	uv sync --locked --extra dev
 
 install:
-	pip install .
+	uv sync --locked
 
 fmt:
-	black databricks tests
-	autoflake -ri databricks tests
-	isort databricks tests
+	uv run ruff format databricks tests
+	uv run ruff check --fix-only databricks tests
 
 fmte:
-	black examples
-	autoflake -ri examples
-	isort examples
+	uv run ruff format examples
+	uv run ruff check --fix-only examples
 
 lint:
-	pycodestyle databricks
-	autoflake --check-diff --quiet --recursive databricks
+	uv run ruff check databricks tests
+	uv run ruff format --check databricks tests
 
 test:
-	pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
+	uv run pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
 
 integration:
-	pytest -n auto -m 'integration and not benchmark' --reruns 2 --dist loadgroup --cov=databricks --cov-report html tests
+	uv run pytest -n auto -m 'integration and not benchmark' --reruns 4 --dist loadgroup --cov=databricks --cov-report html tests
 
 benchmark:
-	pytest -m 'benchmark' tests
+	uv run pytest -m 'benchmark' tests
 
 coverage: test
 	open htmlcov/index.html
 
+fix-lockfile:
+	@# Replace JFrog proxy URLs with public equivalents in lockfiles.
+	@# Prevents proxy URLs from being accidentally committed.
+	find . -type f -name '*.lock' -not -path './.github/*' \
+	  -exec sed -i 's|databricks\.jfrog\.io/artifactory/api/pypi/db-pypi/simple|pypi.org/simple|g' {} +
+	find . -type f -name '*.lock' -not -path './.github/*' \
+	  -exec sed -i 's|databricks\.jfrog\.io/artifactory/api/pypi/db-pypi/packages|files.pythonhosted.org|g' {} +
+
 clean:
-	rm -fr dist *.egg-info .pytest_cache build htmlcov
+	rm -fr dist *.egg-info .pytest_cache build htmlcov .venv

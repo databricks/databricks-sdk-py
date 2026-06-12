@@ -1,5 +1,5 @@
-``w.dbsql_permissions``: ACL / Permissions
-==========================================
+``w.dbsql_permissions``: Permissions (deprecated)
+=================================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: DbsqlPermissionsAPI
@@ -16,7 +16,7 @@
 
     - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify permissions (superset of `CAN_RUN`)
 
-    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -24,8 +24,7 @@
 
         Gets a JSON representation of the access control list (ACL) for a specified object.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:workspace/getpermissions instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:workspace/getpermissions instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -42,8 +41,7 @@
         Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
         ACL.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:workspace/setpermissions instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:workspace/setpermissions instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -60,8 +58,8 @@
 
         Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
 
-        **Note**: A new version of the Databricks SQL API is now available. For queries and alerts, please use
-        :method:queries/update and :method:alerts/update respectively instead. [Learn more]
+        **Warning**: This API is deprecated. For queries and alerts, please use :method:queries/update and
+        :method:alerts/update respectively instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 

@@ -119,10 +119,22 @@
 
     .. py:method:: get_langchain_chat_open_ai_client(model)
 
+        Create a LangChain ChatOpenAI client configured for Databricks Model Serving.
+
+        .. deprecated::
+            This method is deprecated. Please install the `databricks-langchain` package
+            and use `from databricks_langchain import ChatDatabricks` instead.
+            See https://api-docs.databricks.com/python/databricks-ai-bridge/latest/databricks_langchain.html for more information.
+        
 
     .. py:method:: get_open_ai_client()
 
         Create an OpenAI client configured for Databricks Model Serving.
+
+        .. deprecated::
+            This method is deprecated. Please install the `databricks-openai` package
+            and use `from databricks_openai import DatabricksOpenAI` instead.
+            See https://api-docs.databricks.com/python/databricks-ai-bridge/latest/databricks_openai.html for more information.
 
         Returns an OpenAI client instance that is pre-configured to send requests to
         Databricks Model Serving endpoints. The client uses Databricks authentication
@@ -356,10 +368,9 @@
         :param name: str
           The name of the serving endpoint to update. This field is required.
         :param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)
-          Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.
-          Note: this field is deprecated for creating new provisioned throughput endpoints, or updating
-          existing provisioned throughput endpoints that never have inference table configured; in these cases
-          please use AI Gateway to manage inference tables.
+          Configuration for legacy Inference Tables which automatically log requests and responses to Unity
+          Catalog. Deprecated: please use AI Gateway inference tables instead. See
+          https://docs.databricks.com/aws/en/ai-gateway/inference-tables.
         :param served_entities: List[:class:`ServedEntityInput`] (optional)
           The list of served entities under the serving endpoint config.
         :param served_models: List[:class:`ServedModelInput`] (optional)

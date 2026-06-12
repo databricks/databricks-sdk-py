@@ -40,6 +40,16 @@ class Cloud(Enum):
     AZURE = "AZURE"
     GCP = "GCP"
 
+    @classmethod
+    def parse(cls, value: str) -> Optional["Cloud"]:
+        """Case-insensitive parse. Returns None for empty or unrecognized values."""
+        if not value:
+            return None
+        try:
+            return cls(value.upper())
+        except ValueError:
+            return None
+
 
 @dataclass
 class DatabricksEnvironment:

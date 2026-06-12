@@ -1,22 +1,19 @@
 import json as js
+import warnings
 from typing import Dict, Optional
 
 from requests import Response
 
-from databricks.sdk.service.serving import (ExternalFunctionRequestHttpMethod,
-                                            HttpRequestResponse,
-                                            ServingEndpointsAPI)
+from databricks.sdk.service.serving import ExternalFunctionRequestHttpMethod, HttpRequestResponse, ServingEndpointsAPI
 
 
 class ServingEndpointsExt(ServingEndpointsAPI):
-
     # Using the HTTP Client to pass in the databricks authorization
     # This method will be called on every invocation, so when using with model serving will always get the refreshed token
     def _get_authorized_http_client(self):
         import httpx
 
         class BearerAuth(httpx.Auth):
-
             def __init__(self, get_headers_func):
                 self.get_headers_func = get_headers_func
 
@@ -33,6 +30,11 @@ class ServingEndpointsExt(ServingEndpointsAPI):
 
     def get_open_ai_client(self, **kwargs):
         """Create an OpenAI client configured for Databricks Model Serving.
+
+        .. deprecated::
+            This method is deprecated. Please install the `databricks-openai` package
+            and use `from databricks_openai import DatabricksOpenAI` instead.
+            See https://api-docs.databricks.com/python/databricks-ai-bridge/latest/databricks_openai.html for more information.
 
         Returns an OpenAI client instance that is pre-configured to send requests to
         Databricks Model Serving endpoints. The client uses Databricks authentication
@@ -66,6 +68,13 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             ...     max_retries=5
             ... )
         """
+        warnings.warn(
+            "get_open_ai_client() is deprecated. Please install the databricks-openai package "
+            "and use 'from databricks_openai import DatabricksOpenAI' instead. "
+            "See https://api-docs.databricks.com/python/databricks-ai-bridge/latest/databricks_openai.html for more information.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         try:
             from openai import OpenAI
         except Exception:
@@ -95,6 +104,20 @@ class ServingEndpointsExt(ServingEndpointsAPI):
         return OpenAI(**client_params)
 
     def get_langchain_chat_open_ai_client(self, model):
+        """Create a LangChain ChatOpenAI client configured for Databricks Model Serving.
+
+        .. deprecated::
+            This method is deprecated. Please install the `databricks-langchain` package
+            and use `from databricks_langchain import ChatDatabricks` instead.
+            See https://api-docs.databricks.com/python/databricks-ai-bridge/latest/databricks_langchain.html for more information.
+        """
+        warnings.warn(
+            "get_langchain_chat_open_ai_client() is deprecated. Please install the databricks-langchain package "
+            "and use 'from databricks_langchain import ChatDatabricks' instead. "
+            "See https://pypi.org/project/databricks-langchain/ for more information.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         try:
             from langchain_openai import ChatOpenAI
         except Exception:

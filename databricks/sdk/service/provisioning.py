@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -10,8 +13,13 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 from ..errors import OperationFailed
 
@@ -277,6 +285,75 @@ class CreateAwsKeyInfo:
 
 
 @dataclass
+class CreateAzureKeyInfo:
+    disk_encryption_set_id: Optional[str] = None
+    """The Disk Encryption Set id that is used to represent the key info used for Managed Disk BYOK use
+    case"""
+
+    key_access_configuration: Optional[KeyAccessConfiguration] = None
+    """The structure to store key access credential This is set if the Managed Identity is being used
+    to access the Azure Key Vault key."""
+
+    key_name: Optional[str] = None
+    """The name of the key in KeyVault."""
+
+    key_vault_uri: Optional[str] = None
+    """The base URI of the KeyVault."""
+
+    tenant_id: Optional[str] = None
+    """The tenant id where the KeyVault lives."""
+
+    version: Optional[str] = None
+    """The current key version."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateAzureKeyInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disk_encryption_set_id is not None:
+            body["disk_encryption_set_id"] = self.disk_encryption_set_id
+        if self.key_access_configuration:
+            body["key_access_configuration"] = self.key_access_configuration.as_dict()
+        if self.key_name is not None:
+            body["key_name"] = self.key_name
+        if self.key_vault_uri is not None:
+            body["key_vault_uri"] = self.key_vault_uri
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateAzureKeyInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disk_encryption_set_id is not None:
+            body["disk_encryption_set_id"] = self.disk_encryption_set_id
+        if self.key_access_configuration:
+            body["key_access_configuration"] = self.key_access_configuration
+        if self.key_name is not None:
+            body["key_name"] = self.key_name
+        if self.key_vault_uri is not None:
+            body["key_vault_uri"] = self.key_vault_uri
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateAzureKeyInfo:
+        """Deserializes the CreateAzureKeyInfo from a dictionary."""
+        return cls(
+            disk_encryption_set_id=d.get("disk_encryption_set_id", None),
+            key_access_configuration=_from_dict(d, "key_access_configuration", KeyAccessConfiguration),
+            key_name=d.get("key_name", None),
+            key_vault_uri=d.get("key_vault_uri", None),
+            tenant_id=d.get("tenant_id", None),
+            version=d.get("version", None),
+        )
+
+
+@dataclass
 class CreateCredentialAwsCredentials:
     sts_role: Optional[CreateCredentialStsRole] = None
 
@@ -331,24 +408,44 @@ class CreateGcpKeyInfo:
     """Globally unique kms key resource id of the form
     projects/testProjectId/locations/us-east4/keyRings/gcpCmkKeyRing/cryptoKeys/cmk-eastus4"""
 
+    gcp_service_account: Optional[GcpServiceAccount] = None
+    """Globally unique service account email that has access to the KMS key. The service account exists
+    within the Databricks CP project."""
+
+    manual: Optional[bool] = None
+    """When true, Databricks will not use OAuth to grant the service account access to the KMS key. The
+    customer is responsible for granting access manually."""
+
     def as_dict(self) -> dict:
         """Serializes the CreateGcpKeyInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.gcp_service_account:
+            body["gcp_service_account"] = self.gcp_service_account.as_dict()
         if self.kms_key_id is not None:
             body["kms_key_id"] = self.kms_key_id
+        if self.manual is not None:
+            body["manual"] = self.manual
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateGcpKeyInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.gcp_service_account:
+            body["gcp_service_account"] = self.gcp_service_account
         if self.kms_key_id is not None:
             body["kms_key_id"] = self.kms_key_id
+        if self.manual is not None:
+            body["manual"] = self.manual
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateGcpKeyInfo:
         """Deserializes the CreateGcpKeyInfo from a dictionary."""
-        return cls(kms_key_id=d.get("kms_key_id", None))
+        return cls(
+            gcp_service_account=_from_dict(d, "gcp_service_account", GcpServiceAccount),
+            kms_key_id=d.get("kms_key_id", None),
+            manual=d.get("manual", None),
+        )
 
 
 @dataclass
@@ -411,8 +508,7 @@ class Credential:
 
 class CustomerFacingComputeMode(Enum):
     """Corresponds to compute mode defined here:
-    https://src.dev.databricks.com/databricks/universe@9076536b18479afd639d1c1f9dd5a59f72215e69/-/blob/central/api/common.proto?L872
-    """
+    https://src.dev.databricks.com/databricks/universe@9076536b18479afd639d1c1f9dd5a59f72215e69/-/blob/central/api/common.proto?L872"""
 
     HYBRID = "HYBRID"
     SERVERLESS = "SERVERLESS"
@@ -443,7 +539,6 @@ class CustomerFacingGcpCloudResourceContainer:
 
 
 class CustomerFacingStorageMode(Enum):
-
     CUSTOMER_HOSTED = "CUSTOMER_HOSTED"
     DEFAULT_STORAGE = "DEFAULT_STORAGE"
 
@@ -521,8 +616,8 @@ class CustomerManagedKey:
 
 
 class EndpointUseCase(Enum):
-
     DATAPLANE_RELAY_ACCESS = "DATAPLANE_RELAY_ACCESS"
+    GENERAL_ACCESS = "GENERAL_ACCESS"
     WORKSPACE_ACCESS = "WORKSPACE_ACCESS"
 
 
@@ -582,24 +677,44 @@ class GcpKeyInfo:
     """Globally unique kms key resource id of the form
     projects/testProjectId/locations/us-east4/keyRings/gcpCmkKeyRing/cryptoKeys/cmk-eastus4"""
 
+    gcp_service_account: Optional[GcpServiceAccount] = None
+    """Globally unique service account email that has access to the KMS key. The service account exists
+    within the Databricks CP project."""
+
+    manual: Optional[bool] = None
+    """When true, Databricks will not use OAuth to grant the service account access to the KMS key. The
+    customer is responsible for granting access manually."""
+
     def as_dict(self) -> dict:
         """Serializes the GcpKeyInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.gcp_service_account:
+            body["gcp_service_account"] = self.gcp_service_account.as_dict()
         if self.kms_key_id is not None:
             body["kms_key_id"] = self.kms_key_id
+        if self.manual is not None:
+            body["manual"] = self.manual
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GcpKeyInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.gcp_service_account:
+            body["gcp_service_account"] = self.gcp_service_account
         if self.kms_key_id is not None:
             body["kms_key_id"] = self.kms_key_id
+        if self.manual is not None:
+            body["manual"] = self.manual
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GcpKeyInfo:
         """Deserializes the GcpKeyInfo from a dictionary."""
-        return cls(kms_key_id=d.get("kms_key_id", None))
+        return cls(
+            gcp_service_account=_from_dict(d, "gcp_service_account", GcpServiceAccount),
+            kms_key_id=d.get("kms_key_id", None),
+            manual=d.get("manual", None),
+        )
 
 
 @dataclass
@@ -714,6 +829,30 @@ class GcpNetworkInfo:
             subnet_region=d.get("subnet_region", None),
             vpc_id=d.get("vpc_id", None),
         )
+
+
+@dataclass
+class GcpServiceAccount:
+    service_account_email: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the GcpServiceAccount into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.service_account_email is not None:
+            body["service_account_email"] = self.service_account_email
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpServiceAccount into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.service_account_email is not None:
+            body["service_account_email"] = self.service_account_email
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GcpServiceAccount:
+        """Deserializes the GcpServiceAccount from a dictionary."""
+        return cls(service_account_email=d.get("service_account_email", None))
 
 
 @dataclass
@@ -848,7 +987,6 @@ class KeyAccessConfiguration:
 
 
 class KeyUseCase(Enum):
-
     MANAGED_SERVICES = "MANAGED_SERVICES"
     STORAGE = "STORAGE"
 
@@ -1072,7 +1210,6 @@ class NetworkWarning:
 
 
 class PricingTier(Enum):
-
     COMMUNITY_EDITION = "COMMUNITY_EDITION"
     DEDICATED = "DEDICATED"
     ENTERPRISE = "ENTERPRISE"
@@ -1082,7 +1219,6 @@ class PricingTier(Enum):
 
 
 class PrivateAccessLevel(Enum):
-
     ACCOUNT = "ACCOUNT"
     ENDPOINT = "ENDPOINT"
 
@@ -1302,8 +1438,7 @@ class VpcEndpoint:
     """*"""
 
     account_id: Optional[str] = None
-    """The Databricks account ID that hosts the VPC endpoint configuration. TODO - This may signal an
-    OpenAPI diff; it does not show up in the generated spec"""
+    """The Databricks account ID that hosts the VPC endpoint configuration."""
 
     aws_account_id: Optional[str] = None
     """The AWS Account in which the VPC endpoint object exists."""
@@ -1335,8 +1470,8 @@ class VpcEndpoint:
     """This enumeration represents the type of Databricks VPC endpoint service that was used when
     creating this VPC endpoint. If the VPC endpoint connects to the Databricks control plane for
     either the front-end connection or the back-end REST API connection, the value is
-    WORKSPACE_ACCESS. If the VPC endpoint connects to the Databricks workspace for the back-end
-    secure cluster connectivity relay, the value is DATAPLANE_RELAY_ACCESS."""
+    GENERAL_ACCESS. If the VPC endpoint connects to the Databricks workspace for the back-end secure
+    cluster connectivity relay, the value is DATAPLANE_RELAY_ACCESS."""
 
     vpc_endpoint_id: Optional[str] = None
     """Databricks VPC endpoint ID. This is the Databricks-specific name of the VPC endpoint. Do not
@@ -1413,7 +1548,6 @@ class VpcEndpoint:
 
 
 class VpcStatus(Enum):
-
     BROKEN = "BROKEN"
     UNATTACHED = "UNATTACHED"
     VALID = "VALID"
@@ -1421,7 +1555,6 @@ class VpcStatus(Enum):
 
 
 class WarningType(Enum):
-
     SECURITY_GROUP = "securityGroup"
     SUBNET = "subnet"
 
@@ -1854,6 +1987,7 @@ class EncryptionKeysAPI:
         use_cases: List[KeyUseCase],
         *,
         aws_key_info: Optional[CreateAwsKeyInfo] = None,
+        azure_key_info: Optional[CreateAzureKeyInfo] = None,
         gcp_key_info: Optional[CreateGcpKeyInfo] = None,
     ) -> CustomerManagedKey:
         """Creates a customer-managed key configuration object for an account, specified by ID. This operation
@@ -1870,9 +2004,18 @@ class EncryptionKeysAPI:
         This operation is available only if your account is on the E2 version of the platform or on a select
         custom plan that allows multiple workspaces per account.
 
+        **GCP only**: To create a customer-managed key on GCP, you must include the
+        `X-Databricks-GCP-SA-Access-Token` HTTP header in your request. This header must contain a Google
+        Cloud OAuth access token with the `cloud-platform` scope. The Google identity associated with the
+        token must also have the `setIamPermissions` and `getIamPermissions` IAM permissions on the key
+        resource. For details on obtaining this token, see [Authenticate with Google ID tokens].
+
+        [Authenticate with Google ID tokens]: https://docs.databricks.com/gcp/en/dev-tools/auth/authentication-google-id.html
+
         :param use_cases: List[:class:`KeyUseCase`]
           The cases that the key can be used for.
         :param aws_key_info: :class:`CreateAwsKeyInfo` (optional)
+        :param azure_key_info: :class:`CreateAzureKeyInfo` (optional)
         :param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)
 
         :returns: :class:`CustomerManagedKey`
@@ -1881,6 +2024,8 @@ class EncryptionKeysAPI:
         body = {}
         if aws_key_info is not None:
             body["aws_key_info"] = aws_key_info.as_dict()
+        if azure_key_info is not None:
+            body["azure_key_info"] = azure_key_info.as_dict()
         if gcp_key_info is not None:
             body["gcp_key_info"] = gcp_key_info.as_dict()
         if use_cases is not None:
@@ -2211,6 +2356,7 @@ class PrivateAccessAPI:
         """
 
         body = customer_facing_private_access_settings.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -2534,7 +2680,8 @@ class WorkspacesAPI:
 
         :param aws_region: str (optional)
         :param cloud: str (optional)
-          The cloud name. This field always has the value `gcp`.
+          DEPRECATED: This field is being ignored by the server and will be removed in the future. The cloud
+          name. This field always has the value `gcp`.
         :param cloud_resource_container: :class:`CloudResourceContainer` (optional)
         :param compute_mode: :class:`CustomerFacingComputeMode` (optional)
           If the compute mode is `SERVERLESS`, a serverless workspace is created that comes pre-configured

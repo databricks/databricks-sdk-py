@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -7,8 +10,12 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -390,6 +397,21 @@ class Actor:
         return cls(actor_id=d.get("actor_id", None))
 
 
+class AutoscopeState(Enum):
+    """State of inferred scope collection (autoscope) for an external PAT. Mirrored in
+    databricks.identity.AutoscopeState in common/principal-context/api/proto/tokendetails.proto.
+    Token store and token management proto can depend on this. Principal context proto should NOT
+    depend on this proto definitions because too many services depend on the principal context
+    proto."""
+
+    AUTOSCOPE_STATE_API_NOT_COVERED = "AUTOSCOPE_STATE_API_NOT_COVERED"
+    AUTOSCOPE_STATE_BACKFILLED = "AUTOSCOPE_STATE_BACKFILLED"
+    AUTOSCOPE_STATE_COMPLETED = "AUTOSCOPE_STATE_COMPLETED"
+    AUTOSCOPE_STATE_DISABLED = "AUTOSCOPE_STATE_DISABLED"
+    AUTOSCOPE_STATE_RUNNING = "AUTOSCOPE_STATE_RUNNING"
+    AUTOSCOPE_STATE_USER_SELECTED = "AUTOSCOPE_STATE_USER_SELECTED"
+
+
 @dataclass
 class CheckPolicyResponse:
     consistency_token: ConsistencyToken
@@ -594,7 +616,6 @@ class GetPermissionLevelsResponse:
 
 
 class GetSortOrder(Enum):
-
     ASCENDING = "ascending"
     DESCENDING = "descending"
 
@@ -727,7 +748,6 @@ class Group:
 
 
 class GroupSchema(Enum):
-
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_GROUP = "urn:ietf:params:scim:schemas:core:2.0:Group"
 
 
@@ -944,7 +964,6 @@ class ListGroupsResponse:
 
 
 class ListResponseSchema(Enum):
-
     URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_LIST_RESPONSE = "urn:ietf:params:scim:api:messages:2.0:ListResponse"
 
 
@@ -1008,7 +1027,6 @@ class ListServicePrincipalResponse:
 
 
 class ListSortOrder(Enum):
-
     ASCENDING = "ascending"
     DESCENDING = "descending"
 
@@ -1448,7 +1466,6 @@ class PatchOp(Enum):
 
 
 class PatchSchema(Enum):
-
     URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_PATCH_OP = "urn:ietf:params:scim:api:messages:2.0:PatchOp"
 
 
@@ -1569,6 +1586,7 @@ class PermissionLevel(Enum):
     CAN_ATTACH_TO = "CAN_ATTACH_TO"
     CAN_BIND = "CAN_BIND"
     CAN_CREATE = "CAN_CREATE"
+    CAN_CREATE_APP = "CAN_CREATE_APP"
     CAN_EDIT = "CAN_EDIT"
     CAN_EDIT_METADATA = "CAN_EDIT_METADATA"
     CAN_MANAGE = "CAN_MANAGE"
@@ -2000,7 +2018,6 @@ class ServicePrincipal:
 
 
 class ServicePrincipalSchema(Enum):
-
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL = "urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal"
 
 
@@ -2117,7 +2134,6 @@ class User:
 
 
 class UserSchema(Enum):
-
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_USER = "urn:ietf:params:scim:schemas:core:2.0:User"
     URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER = (
         "urn:ietf:params:scim:schemas:extension:workspace:2.0:User"
@@ -2125,7 +2141,6 @@ class UserSchema(Enum):
 
 
 class WorkspacePermission(Enum):
-
     ADMIN = "ADMIN"
     UNKNOWN = "UNKNOWN"
     USER = "USER"
@@ -2202,6 +2217,10 @@ class AccessControlAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/access-control/check-policy-v2", query=query, headers=headers)
         return CheckPolicyResponse.from_dict(res)
@@ -2353,6 +2372,10 @@ class AccountAccessControlProxyAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", "/api/2.0/preview/accounts/access-control/assignable-roles", query=query, headers=headers
         )
@@ -2396,6 +2419,10 @@ class AccountAccessControlProxyAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/preview/accounts/access-control/rule-sets", query=query, headers=headers)
         return RuleSetResponse.from_dict(res)
 
@@ -2419,6 +2446,10 @@ class AccountAccessControlProxyAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", "/api/2.0/preview/accounts/access-control/rule-sets", body=body, headers=headers)
         return RuleSetResponse.from_dict(res)
@@ -2525,8 +2556,9 @@ class AccountGroupsV2API:
         start_index: Optional[int] = None,
     ) -> Iterator[AccountGroup]:
         """Gets all details of the groups associated with the Databricks account. As of 08/22/2025, this endpoint
-        will not return members. Instead, members should be retrieved by iterating through `Get group
-        details`.
+        will no longer return members. Instead, members should be retrieved by iterating through `Get group
+        details`. Existing accounts that rely on this attribute will not be impacted and will continue
+        receiving member data as before.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -3212,18 +3244,31 @@ class CurrentUserAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def me(self) -> User:
+    def me(self, *, attributes: Optional[str] = None, excluded_attributes: Optional[str] = None) -> User:
         """Get details about the current method caller's identity.
 
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
 
         :returns: :class:`User`
         """
 
+        query = {}
+        if attributes is not None:
+            query["attributes"] = attributes
+        if excluded_attributes is not None:
+            query["excludedAttributes"] = excluded_attributes
         headers = {
             "Accept": "application/json",
         }
 
-        res = self._api.do("GET", "/api/2.0/preview/scim/v2/Me", headers=headers)
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", "/api/2.0/preview/scim/v2/Me", query=query, headers=headers)
         return User.from_dict(res)
 
 
@@ -3299,6 +3344,10 @@ class GroupsV2API:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/Groups", body=body, headers=headers)
         return Group.from_dict(res)
 
@@ -3312,6 +3361,10 @@ class GroupsV2API:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Groups/{id}", headers=headers)
 
@@ -3327,6 +3380,10 @@ class GroupsV2API:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/Groups/{id}", headers=headers)
         return Group.from_dict(res)
@@ -3386,6 +3443,10 @@ class GroupsV2API:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         query["startIndex"] = 1
         if "count" not in query:
             query["count"] = 10000
@@ -3419,6 +3480,10 @@ class GroupsV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body, headers=headers)
 
@@ -3481,6 +3546,10 @@ class GroupsV2API:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body, headers=headers)
 
 
@@ -3526,6 +3595,10 @@ class PermissionMigrationAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/permissionmigration", body=body, headers=headers)
         return MigratePermissionsResponse.from_dict(res)
 
@@ -3535,8 +3608,8 @@ class PermissionsAPI:
     different objects and endpoints. * **[Apps permissions](:service:apps)** — Manage which users can manage
     or use apps. * **[Cluster permissions](:service:clusters)** — Manage which users can manage, restart, or
     attach to clusters. * **[Cluster policy permissions](:service:clusterpolicies)** — Manage which users
-    can use cluster policies. * **[Delta Live Tables pipeline permissions](:service:pipelines)** — Manage
-    which users can view, manage, run, cancel, or own a Delta Live Tables pipeline. * **[Job
+    can use cluster policies. * **[Spark Declarative Pipelines permissions](:service:pipelines)** — Manage
+    which users can view, manage, run, cancel, or own a Spark Declarative Pipeline. * **[Job
     permissions](:service:jobs)** — Manage which users can view, manage, trigger, cancel, or own a job. *
     **[MLflow experiment permissions](:service:experiments)** — Manage which users can read, edit, or manage
     MLflow experiments. * **[MLflow registered model permissions](:service:modelregistry)** — Manage which
@@ -3563,8 +3636,9 @@ class PermissionsAPI:
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
-          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
+          clusters, cluster-policies, dashboards, database-projects, dbsql-dashboards, directories,
+          experiments, files, genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
+          queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
           warehouses.
         :param request_object_id: str
           The id of the request object.
@@ -3576,6 +3650,10 @@ class PermissionsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/permissions/{request_object_type}/{request_object_id}", headers=headers)
         return ObjectPermissions.from_dict(res)
 
@@ -3584,8 +3662,9 @@ class PermissionsAPI:
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
-          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
+          clusters, cluster-policies, dashboards, database-projects, dbsql-dashboards, directories,
+          experiments, files, genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
+          queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
           warehouses.
         :param request_object_id: str
 
@@ -3595,6 +3674,10 @@ class PermissionsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/{request_object_type}/{request_object_id}/permissionLevels", headers=headers
@@ -3614,8 +3697,9 @@ class PermissionsAPI:
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
-          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
+          clusters, cluster-policies, dashboards, database-projects, dbsql-dashboards, directories,
+          experiments, files, genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
+          queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
           warehouses.
         :param request_object_id: str
           The id of the request object.
@@ -3631,6 +3715,10 @@ class PermissionsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/permissions/{request_object_type}/{request_object_id}", body=body, headers=headers
@@ -3649,8 +3737,9 @@ class PermissionsAPI:
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
-          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
+          clusters, cluster-policies, dashboards, database-projects, dbsql-dashboards, directories,
+          experiments, files, genie, instance-pools, jobs, knowledge-assistants, notebooks, pipelines,
+          queries, registered-models, repos, serving-endpoints, supervisor-agents, vector-search-endpoints, or
           warehouses.
         :param request_object_id: str
           The id of the request object.
@@ -3666,6 +3755,10 @@ class PermissionsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/{request_object_type}/{request_object_id}", body=body, headers=headers
@@ -3745,6 +3838,10 @@ class ServicePrincipalsV2API:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/ServicePrincipals", body=body, headers=headers)
         return ServicePrincipal.from_dict(res)
 
@@ -3758,6 +3855,10 @@ class ServicePrincipalsV2API:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", headers=headers)
 
@@ -3773,6 +3874,10 @@ class ServicePrincipalsV2API:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", headers=headers)
         return ServicePrincipal.from_dict(res)
@@ -3832,6 +3937,10 @@ class ServicePrincipalsV2API:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         query["startIndex"] = 1
         if "count" not in query:
             query["count"] = 10000
@@ -3865,6 +3974,10 @@ class ServicePrincipalsV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body, headers=headers)
 
@@ -3929,6 +4042,10 @@ class ServicePrincipalsV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body, headers=headers)
 
@@ -4023,6 +4140,10 @@ class UsersV2API:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/Users", body=body, headers=headers)
         return User.from_dict(res)
 
@@ -4037,6 +4158,10 @@ class UsersV2API:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Users/{id}", headers=headers)
 
@@ -4099,6 +4224,10 @@ class UsersV2API:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, headers=headers)
         return User.from_dict(res)
 
@@ -4113,6 +4242,10 @@ class UsersV2API:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/permissions/authorization/passwords/permissionLevels", headers=headers)
         return GetPasswordPermissionLevelsResponse.from_dict(res)
 
@@ -4126,6 +4259,10 @@ class UsersV2API:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/passwords", headers=headers)
         return PasswordPermissions.from_dict(res)
@@ -4186,6 +4323,10 @@ class UsersV2API:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         query["startIndex"] = 1
         if "count" not in query:
             query["count"] = 10000
@@ -4220,6 +4361,10 @@ class UsersV2API:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Users/{id}", body=body, headers=headers)
 
     def set_permissions(
@@ -4240,6 +4385,10 @@ class UsersV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", "/api/2.0/permissions/authorization/passwords", body=body, headers=headers)
         return PasswordPermissions.from_dict(res)
@@ -4317,6 +4466,10 @@ class UsersV2API:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/Users/{id}", body=body, headers=headers)
 
     def update_permissions(
@@ -4336,6 +4489,10 @@ class UsersV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/2.0/permissions/authorization/passwords", body=body, headers=headers)
         return PasswordPermissions.from_dict(res)
@@ -5410,6 +5567,9 @@ class GroupsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/Groups", body=body, headers=headers)
         return Group.from_dict(res)
@@ -5424,6 +5584,9 @@ class GroupsAPI:
         """
 
         headers = {}
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Groups/{id}", headers=headers)
 
@@ -5439,6 +5602,9 @@ class GroupsAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/Groups/{id}", headers=headers)
         return Group.from_dict(res)
@@ -5497,6 +5663,9 @@ class GroupsAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         # deduplicate items that may have been added during iteration
         seen = set()
@@ -5535,6 +5704,9 @@ class GroupsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body, headers=headers)
 
@@ -5594,6 +5766,9 @@ class GroupsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body, headers=headers)
 
@@ -5668,6 +5843,9 @@ class ServicePrincipalsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/ServicePrincipals", body=body, headers=headers)
         return ServicePrincipal.from_dict(res)
@@ -5682,6 +5860,9 @@ class ServicePrincipalsAPI:
         """
 
         headers = {}
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", headers=headers)
 
@@ -5697,6 +5878,9 @@ class ServicePrincipalsAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", headers=headers)
         return ServicePrincipal.from_dict(res)
@@ -5755,6 +5939,9 @@ class ServicePrincipalsAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         # deduplicate items that may have been added during iteration
         seen = set()
@@ -5793,6 +5980,9 @@ class ServicePrincipalsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body, headers=headers)
 
@@ -5855,6 +6045,9 @@ class ServicePrincipalsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body, headers=headers)
 
@@ -5947,6 +6140,9 @@ class UsersAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/Users", body=body, headers=headers)
         return User.from_dict(res)
@@ -5962,6 +6158,9 @@ class UsersAPI:
         """
 
         headers = {}
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Users/{id}", headers=headers)
 
@@ -6023,6 +6222,9 @@ class UsersAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, headers=headers)
         return User.from_dict(res)
@@ -6037,6 +6239,9 @@ class UsersAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/passwords/permissionLevels", headers=headers)
         return GetPasswordPermissionLevelsResponse.from_dict(res)
@@ -6051,6 +6256,9 @@ class UsersAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/passwords", headers=headers)
         return PasswordPermissions.from_dict(res)
@@ -6110,6 +6318,9 @@ class UsersAPI:
         headers = {
             "Accept": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         # deduplicate items that may have been added during iteration
         seen = set()
@@ -6148,6 +6359,9 @@ class UsersAPI:
         headers = {
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Users/{id}", body=body, headers=headers)
 
@@ -6168,6 +6382,9 @@ class UsersAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", "/api/2.0/permissions/authorization/passwords", body=body, headers=headers)
         return PasswordPermissions.from_dict(res)
@@ -6242,6 +6459,9 @@ class UsersAPI:
         headers = {
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/Users/{id}", body=body, headers=headers)
 
@@ -6261,6 +6481,9 @@ class UsersAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/2.0/permissions/authorization/passwords", body=body, headers=headers)
         return PasswordPermissions.from_dict(res)

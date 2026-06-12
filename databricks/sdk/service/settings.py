@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -7,8 +10,14 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.common.types.fieldmask import FieldMask
+from databricks.sdk.service import iam
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -74,6 +83,14 @@ class AccountNetworkPolicy:
     egress: Optional[NetworkPolicyEgress] = None
     """The network policies applying for egress traffic."""
 
+    ingress: Optional[CustomerFacingIngressNetworkPolicy] = None
+    """The network policies applying for ingress traffic."""
+
+    ingress_dry_run: Optional[CustomerFacingIngressNetworkPolicy] = None
+    """The ingress policy for dry run mode. Dry run will always run even if the request is allowed by
+    the ingress policy. When this field is set, the policy will be evaluated and emit logs only
+    without blocking requests."""
+
     network_policy_id: Optional[str] = None
     """The unique identifier for the network policy."""
 
@@ -84,6 +101,10 @@ class AccountNetworkPolicy:
             body["account_id"] = self.account_id
         if self.egress:
             body["egress"] = self.egress.as_dict()
+        if self.ingress:
+            body["ingress"] = self.ingress.as_dict()
+        if self.ingress_dry_run:
+            body["ingress_dry_run"] = self.ingress_dry_run.as_dict()
         if self.network_policy_id is not None:
             body["network_policy_id"] = self.network_policy_id
         return body
@@ -95,6 +116,10 @@ class AccountNetworkPolicy:
             body["account_id"] = self.account_id
         if self.egress:
             body["egress"] = self.egress
+        if self.ingress:
+            body["ingress"] = self.ingress
+        if self.ingress_dry_run:
+            body["ingress_dry_run"] = self.ingress_dry_run
         if self.network_policy_id is not None:
             body["network_policy_id"] = self.network_policy_id
         return body
@@ -105,6 +130,8 @@ class AccountNetworkPolicy:
         return cls(
             account_id=d.get("account_id", None),
             egress=_from_dict(d, "egress", NetworkPolicyEgress),
+            ingress=_from_dict(d, "ingress", CustomerFacingIngressNetworkPolicy),
+            ingress_dry_run=_from_dict(d, "ingress_dry_run", CustomerFacingIngressNetworkPolicy),
             network_policy_id=d.get("network_policy_id", None),
         )
 
@@ -136,7 +163,6 @@ class AibiDashboardEmbeddingAccessPolicy:
 
 
 class AibiDashboardEmbeddingAccessPolicyAccessPolicyType(Enum):
-
     ALLOW_ALL_DOMAINS = "ALLOW_ALL_DOMAINS"
     ALLOW_APPROVED_DOMAINS = "ALLOW_APPROVED_DOMAINS"
     DENY_ALL_DOMAINS = "DENY_ALL_DOMAINS"
@@ -479,7 +505,6 @@ class ClusterAutoRestartMessageMaintenanceWindow:
 
 
 class ClusterAutoRestartMessageMaintenanceWindowDayOfWeek(Enum):
-
     FRIDAY = "FRIDAY"
     MONDAY = "MONDAY"
     SATURDAY = "SATURDAY"
@@ -532,7 +557,6 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
 
 
 class ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency(Enum):
-
     EVERY_WEEK = "EVERY_WEEK"
     FIRST_AND_THIRD_OF_MONTH = "FIRST_AND_THIRD_OF_MONTH"
     FIRST_OF_MONTH = "FIRST_OF_MONTH"
@@ -574,12 +598,14 @@ class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
 
 @dataclass
 class ComplianceSecurityProfile:
-    """SHIELD feature: CSP"""
+    """SHIELD feature: CSP Compliance Security Profile (CSP) enables enhanced compliance controls on
+    the workspace."""
 
     compliance_standards: Optional[List[ComplianceStandard]] = None
-    """Set by customers when they request Compliance Security Profile (CSP)"""
+    """Compliance standards selected by the customer for this Compliance Security Profile."""
 
     is_enabled: Optional[bool] = None
+    """Whether Compliance Security Profile (CSP) is enabled on the workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the ComplianceSecurityProfile into a dictionary suitable for use as a JSON request body."""
@@ -846,6 +872,10 @@ class CreatePrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
+    gcp_endpoint: Optional[GcpEndpoint] = None
+
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
     
@@ -869,6 +899,10 @@ class CreatePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint.as_dict()
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -884,6 +918,10 @@ class CreatePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -898,6 +936,8 @@ class CreatePrivateEndpointRule:
         return cls(
             domain_names=d.get("domain_names", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
+            gcp_endpoint=_from_dict(d, "gcp_endpoint", GcpEndpoint),
             group_id=d.get("group_id", None),
             resource_id=d.get("resource_id", None),
             resource_names=d.get("resource_names", None),
@@ -1025,6 +1065,906 @@ class CspEnablementAccountSetting:
 
 
 @dataclass
+class CustomerFacingIngressNetworkPolicy:
+    """This proto is under development. The network policies applying for ingress traffic. Any changes
+    here should also be synced to estore/namespaces/lakehousenetworkmanager/latest.proto."""
+
+    cross_workspace_access: Optional[CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess] = None
+
+    private_access: Optional[CustomerFacingIngressNetworkPolicyPrivateAccess] = None
+    """The network policy restrictions for private access to the workspace. Configures how registered
+    private endpoints are allowed or denied access."""
+
+    public_access: Optional[CustomerFacingIngressNetworkPolicyPublicAccess] = None
+    """The network policy restrictions for public access to the workspace. Configures how public
+    internet traffic is allowed or denied access."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cross_workspace_access:
+            body["cross_workspace_access"] = self.cross_workspace_access.as_dict()
+        if self.private_access:
+            body["private_access"] = self.private_access.as_dict()
+        if self.public_access:
+            body["public_access"] = self.public_access.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cross_workspace_access:
+            body["cross_workspace_access"] = self.cross_workspace_access
+        if self.private_access:
+            body["private_access"] = self.private_access
+        if self.public_access:
+            body["public_access"] = self.public_access
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicy:
+        """Deserializes the CustomerFacingIngressNetworkPolicy from a dictionary."""
+        return cls(
+            cross_workspace_access=_from_dict(
+                d, "cross_workspace_access", CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess
+            ),
+            private_access=_from_dict(d, "private_access", CustomerFacingIngressNetworkPolicyPrivateAccess),
+            public_access=_from_dict(d, "public_access", CustomerFacingIngressNetworkPolicyPublicAccess),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyAccountApiDestination:
+    scope_qualifier: Optional[CustomerFacingIngressNetworkPolicyApiScopeQualifier] = None
+    """Qualifies the breadth of API access for the listed scopes. See ApiScopeQualifier."""
+
+    scopes: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAccountApiDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.scope_qualifier is not None:
+            body["scope_qualifier"] = self.scope_qualifier.value
+        if self.scopes:
+            body["scopes"] = [v for v in self.scopes]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAccountApiDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.scope_qualifier is not None:
+            body["scope_qualifier"] = self.scope_qualifier
+        if self.scopes:
+            body["scopes"] = self.scopes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAccountApiDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyAccountApiDestination from a dictionary."""
+        return cls(
+            scope_qualifier=_enum(d, "scope_qualifier", CustomerFacingIngressNetworkPolicyApiScopeQualifier),
+            scopes=d.get("scopes", None),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination:
+    all_destinations: Optional[bool] = None
+    """Must be set to true."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination from a dictionary."""
+        return cls(all_destinations=d.get("all_destinations", None))
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyAccountUiDestination:
+    all_destinations: Optional[bool] = None
+    """Must be set to true."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAccountUiDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAccountUiDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAccountUiDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyAccountUiDestination from a dictionary."""
+        return cls(all_destinations=d.get("all_destinations", None))
+
+
+class CustomerFacingIngressNetworkPolicyApiScopeQualifier(Enum):
+    """Qualifies the breadth of API access permitted by an ingress network policy rule.
+    API_SCOPE_QUALIFIER_READ narrows matching to read-only variants of the listed scopes;
+    API_SCOPE_QUALIFIER_ALL matches any scope. When unset, scopes match exactly as listed."""
+
+    API_SCOPE_QUALIFIER_ALL = "API_SCOPE_QUALIFIER_ALL"
+    API_SCOPE_QUALIFIER_READ = "API_SCOPE_QUALIFIER_READ"
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyAppsRuntimeDestination:
+    all_destinations: Optional[bool] = None
+    """Must be set to true."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAppsRuntimeDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAppsRuntimeDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAppsRuntimeDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyAppsRuntimeDestination from a dictionary."""
+        return cls(all_destinations=d.get("all_destinations", None))
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyAuthentication:
+    identities: Optional[List[CustomerFacingIngressNetworkPolicyAuthenticationIdentity]] = None
+    """Valid only when IdentityType is IDENTITY_TYPE_SELECTED_IDENTITIES."""
+
+    identity_type: Optional[CustomerFacingIngressNetworkPolicyAuthenticationIdentityType] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAuthentication into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.identities:
+            body["identities"] = [v.as_dict() for v in self.identities]
+        if self.identity_type is not None:
+            body["identity_type"] = self.identity_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAuthentication into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.identities:
+            body["identities"] = self.identities
+        if self.identity_type is not None:
+            body["identity_type"] = self.identity_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAuthentication:
+        """Deserializes the CustomerFacingIngressNetworkPolicyAuthentication from a dictionary."""
+        return cls(
+            identities=_repeated_dict(d, "identities", CustomerFacingIngressNetworkPolicyAuthenticationIdentity),
+            identity_type=_enum(d, "identity_type", CustomerFacingIngressNetworkPolicyAuthenticationIdentityType),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyAuthenticationIdentity:
+    principal_id: Optional[int] = None
+
+    principal_type: Optional[CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAuthenticationIdentity into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
+        if self.principal_type is not None:
+            body["principal_type"] = self.principal_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyAuthenticationIdentity into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
+        if self.principal_type is not None:
+            body["principal_type"] = self.principal_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAuthenticationIdentity:
+        """Deserializes the CustomerFacingIngressNetworkPolicyAuthenticationIdentity from a dictionary."""
+        return cls(
+            principal_id=d.get("principal_id", None),
+            principal_type=_enum(
+                d, "principal_type", CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType
+            ),
+        )
+
+
+class CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType(Enum):
+    PRINCIPAL_TYPE_SERVICE_PRINCIPAL = "PRINCIPAL_TYPE_SERVICE_PRINCIPAL"
+    PRINCIPAL_TYPE_USER = "PRINCIPAL_TYPE_USER"
+
+
+class CustomerFacingIngressNetworkPolicyAuthenticationIdentityType(Enum):
+    IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS = "IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS"
+    IDENTITY_TYPE_ALL_USERS = "IDENTITY_TYPE_ALL_USERS"
+    IDENTITY_TYPE_SELECTED_IDENTITIES = "IDENTITY_TYPE_SELECTED_IDENTITIES"
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess:
+    restriction_mode: CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode
+
+    allow_rules: Optional[List[CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule]] = None
+
+    deny_rules: Optional[List[CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_rules:
+            body["allow_rules"] = [v.as_dict() for v in self.allow_rules]
+        if self.deny_rules:
+            body["deny_rules"] = [v.as_dict() for v in self.deny_rules]
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_rules:
+            body["allow_rules"] = self.allow_rules
+        if self.deny_rules:
+            body["deny_rules"] = self.deny_rules
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess:
+        """Deserializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess from a dictionary."""
+        return cls(
+            allow_rules=_repeated_dict(d, "allow_rules", CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule),
+            deny_rules=_repeated_dict(d, "deny_rules", CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule),
+            restriction_mode=_enum(
+                d, "restriction_mode", CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode
+            ),
+        )
+
+
+class CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode(Enum):
+    FULL_ACCESS = "FULL_ACCESS"
+    RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule:
+    authentication: Optional[CustomerFacingIngressNetworkPolicyAuthentication] = None
+
+    destination: Optional[CustomerFacingIngressNetworkPolicyRequestDestination] = None
+
+    label: Optional[str] = None
+    """The label for this ingress rule."""
+
+    origin: Optional[CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.authentication:
+            body["authentication"] = self.authentication.as_dict()
+        if self.destination:
+            body["destination"] = self.destination.as_dict()
+        if self.label is not None:
+            body["label"] = self.label
+        if self.origin:
+            body["origin"] = self.origin.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.authentication:
+            body["authentication"] = self.authentication
+        if self.destination:
+            body["destination"] = self.destination
+        if self.label is not None:
+            body["label"] = self.label
+        if self.origin:
+            body["origin"] = self.origin
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule:
+        """Deserializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule from a dictionary."""
+        return cls(
+            authentication=_from_dict(d, "authentication", CustomerFacingIngressNetworkPolicyAuthentication),
+            destination=_from_dict(d, "destination", CustomerFacingIngressNetworkPolicyRequestDestination),
+            label=d.get("label", None),
+            origin=_from_dict(d, "origin", CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin:
+    all_source_workspaces: Optional[bool] = None
+    """Matches all source workspaces."""
+
+    selected_workspaces: Optional[CustomerFacingIngressNetworkPolicyWorkspaceIdList] = None
+    """Specific source workspace IDs to match."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_source_workspaces is not None:
+            body["all_source_workspaces"] = self.all_source_workspaces
+        if self.selected_workspaces:
+            body["selected_workspaces"] = self.selected_workspaces.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_source_workspaces is not None:
+            body["all_source_workspaces"] = self.all_source_workspaces
+        if self.selected_workspaces:
+            body["selected_workspaces"] = self.selected_workspaces
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin:
+        """Deserializes the CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin from a dictionary."""
+        return cls(
+            all_source_workspaces=d.get("all_source_workspaces", None),
+            selected_workspaces=_from_dict(d, "selected_workspaces", CustomerFacingIngressNetworkPolicyWorkspaceIdList),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyEndpoints:
+    endpoint_ids: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyEndpoints into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.endpoint_ids:
+            body["endpoint_ids"] = [v for v in self.endpoint_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyEndpoints into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.endpoint_ids:
+            body["endpoint_ids"] = self.endpoint_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyEndpoints:
+        """Deserializes the CustomerFacingIngressNetworkPolicyEndpoints from a dictionary."""
+        return cls(endpoint_ids=d.get("endpoint_ids", None))
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyIpRanges:
+    ip_ranges: Optional[List[str]] = None
+    """We only support IPv4 and IPv4 CIDR notation for now."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyIpRanges into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.ip_ranges:
+            body["ip_ranges"] = [v for v in self.ip_ranges]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyIpRanges into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ip_ranges:
+            body["ip_ranges"] = self.ip_ranges
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyIpRanges:
+        """Deserializes the CustomerFacingIngressNetworkPolicyIpRanges from a dictionary."""
+        return cls(ip_ranges=d.get("ip_ranges", None))
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination:
+    all_destinations: Optional[bool] = None
+    """Must be set to true."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination from a dictionary."""
+        return cls(all_destinations=d.get("all_destinations", None))
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyPrivateAccess:
+    restriction_mode: CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode
+
+    allow_rules: Optional[List[CustomerFacingIngressNetworkPolicyPrivateIngressRule]] = None
+
+    deny_rules: Optional[List[CustomerFacingIngressNetworkPolicyPrivateIngressRule]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPrivateAccess into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_rules:
+            body["allow_rules"] = [v.as_dict() for v in self.allow_rules]
+        if self.deny_rules:
+            body["deny_rules"] = [v.as_dict() for v in self.deny_rules]
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPrivateAccess into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_rules:
+            body["allow_rules"] = self.allow_rules
+        if self.deny_rules:
+            body["deny_rules"] = self.deny_rules
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyPrivateAccess:
+        """Deserializes the CustomerFacingIngressNetworkPolicyPrivateAccess from a dictionary."""
+        return cls(
+            allow_rules=_repeated_dict(d, "allow_rules", CustomerFacingIngressNetworkPolicyPrivateIngressRule),
+            deny_rules=_repeated_dict(d, "deny_rules", CustomerFacingIngressNetworkPolicyPrivateIngressRule),
+            restriction_mode=_enum(
+                d, "restriction_mode", CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode
+            ),
+        )
+
+
+class CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode(Enum):
+    ALLOW_ALL_REGISTERED_ENDPOINTS = "ALLOW_ALL_REGISTERED_ENDPOINTS"
+    RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyPrivateIngressRule:
+    authentication: Optional[CustomerFacingIngressNetworkPolicyAuthentication] = None
+
+    destination: Optional[CustomerFacingIngressNetworkPolicyRequestDestination] = None
+
+    label: Optional[str] = None
+    """The label for this ingress rule."""
+
+    origin: Optional[CustomerFacingIngressNetworkPolicyPrivateRequestOrigin] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPrivateIngressRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.authentication:
+            body["authentication"] = self.authentication.as_dict()
+        if self.destination:
+            body["destination"] = self.destination.as_dict()
+        if self.label is not None:
+            body["label"] = self.label
+        if self.origin:
+            body["origin"] = self.origin.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPrivateIngressRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.authentication:
+            body["authentication"] = self.authentication
+        if self.destination:
+            body["destination"] = self.destination
+        if self.label is not None:
+            body["label"] = self.label
+        if self.origin:
+            body["origin"] = self.origin
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyPrivateIngressRule:
+        """Deserializes the CustomerFacingIngressNetworkPolicyPrivateIngressRule from a dictionary."""
+        return cls(
+            authentication=_from_dict(d, "authentication", CustomerFacingIngressNetworkPolicyAuthentication),
+            destination=_from_dict(d, "destination", CustomerFacingIngressNetworkPolicyRequestDestination),
+            label=d.get("label", None),
+            origin=_from_dict(d, "origin", CustomerFacingIngressNetworkPolicyPrivateRequestOrigin),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyPrivateRequestOrigin:
+    all_private_access: Optional[bool] = None
+
+    all_registered_endpoints: Optional[bool] = None
+
+    azure_workspace_private_link: Optional[bool] = None
+
+    endpoints: Optional[CustomerFacingIngressNetworkPolicyEndpoints] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPrivateRequestOrigin into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_private_access is not None:
+            body["all_private_access"] = self.all_private_access
+        if self.all_registered_endpoints is not None:
+            body["all_registered_endpoints"] = self.all_registered_endpoints
+        if self.azure_workspace_private_link is not None:
+            body["azure_workspace_private_link"] = self.azure_workspace_private_link
+        if self.endpoints:
+            body["endpoints"] = self.endpoints.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPrivateRequestOrigin into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_private_access is not None:
+            body["all_private_access"] = self.all_private_access
+        if self.all_registered_endpoints is not None:
+            body["all_registered_endpoints"] = self.all_registered_endpoints
+        if self.azure_workspace_private_link is not None:
+            body["azure_workspace_private_link"] = self.azure_workspace_private_link
+        if self.endpoints:
+            body["endpoints"] = self.endpoints
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyPrivateRequestOrigin:
+        """Deserializes the CustomerFacingIngressNetworkPolicyPrivateRequestOrigin from a dictionary."""
+        return cls(
+            all_private_access=d.get("all_private_access", None),
+            all_registered_endpoints=d.get("all_registered_endpoints", None),
+            azure_workspace_private_link=d.get("azure_workspace_private_link", None),
+            endpoints=_from_dict(d, "endpoints", CustomerFacingIngressNetworkPolicyEndpoints),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyPublicAccess:
+    restriction_mode: CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode
+
+    allow_rules: Optional[List[CustomerFacingIngressNetworkPolicyPublicIngressRule]] = None
+
+    deny_rules: Optional[List[CustomerFacingIngressNetworkPolicyPublicIngressRule]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPublicAccess into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_rules:
+            body["allow_rules"] = [v.as_dict() for v in self.allow_rules]
+        if self.deny_rules:
+            body["deny_rules"] = [v.as_dict() for v in self.deny_rules]
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPublicAccess into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_rules:
+            body["allow_rules"] = self.allow_rules
+        if self.deny_rules:
+            body["deny_rules"] = self.deny_rules
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyPublicAccess:
+        """Deserializes the CustomerFacingIngressNetworkPolicyPublicAccess from a dictionary."""
+        return cls(
+            allow_rules=_repeated_dict(d, "allow_rules", CustomerFacingIngressNetworkPolicyPublicIngressRule),
+            deny_rules=_repeated_dict(d, "deny_rules", CustomerFacingIngressNetworkPolicyPublicIngressRule),
+            restriction_mode=_enum(
+                d, "restriction_mode", CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode
+            ),
+        )
+
+
+class CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode(Enum):
+    FULL_ACCESS = "FULL_ACCESS"
+    RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyPublicIngressRule:
+    """An ingress rule is enforced when a request satisfies all specified attributes — including
+    request origin, destination, and authentication."""
+
+    authentication: Optional[CustomerFacingIngressNetworkPolicyAuthentication] = None
+
+    destination: Optional[CustomerFacingIngressNetworkPolicyRequestDestination] = None
+
+    label: Optional[str] = None
+    """The label for this ingress rule."""
+
+    origin: Optional[CustomerFacingIngressNetworkPolicyPublicRequestOrigin] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPublicIngressRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.authentication:
+            body["authentication"] = self.authentication.as_dict()
+        if self.destination:
+            body["destination"] = self.destination.as_dict()
+        if self.label is not None:
+            body["label"] = self.label
+        if self.origin:
+            body["origin"] = self.origin.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPublicIngressRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.authentication:
+            body["authentication"] = self.authentication
+        if self.destination:
+            body["destination"] = self.destination
+        if self.label is not None:
+            body["label"] = self.label
+        if self.origin:
+            body["origin"] = self.origin
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyPublicIngressRule:
+        """Deserializes the CustomerFacingIngressNetworkPolicyPublicIngressRule from a dictionary."""
+        return cls(
+            authentication=_from_dict(d, "authentication", CustomerFacingIngressNetworkPolicyAuthentication),
+            destination=_from_dict(d, "destination", CustomerFacingIngressNetworkPolicyRequestDestination),
+            label=d.get("label", None),
+            origin=_from_dict(d, "origin", CustomerFacingIngressNetworkPolicyPublicRequestOrigin),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyPublicRequestOrigin:
+    all_ip_ranges: Optional[bool] = None
+    """Matches all IPv4 and IPv6 ranges (both public and private)."""
+
+    excluded_ip_ranges: Optional[CustomerFacingIngressNetworkPolicyIpRanges] = None
+    """Excluded means: all public IP ranges except this one."""
+
+    included_ip_ranges: Optional[CustomerFacingIngressNetworkPolicyIpRanges] = None
+    """Will not allow IP ranges with private IPs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPublicRequestOrigin into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_ip_ranges is not None:
+            body["all_ip_ranges"] = self.all_ip_ranges
+        if self.excluded_ip_ranges:
+            body["excluded_ip_ranges"] = self.excluded_ip_ranges.as_dict()
+        if self.included_ip_ranges:
+            body["included_ip_ranges"] = self.included_ip_ranges.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyPublicRequestOrigin into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_ip_ranges is not None:
+            body["all_ip_ranges"] = self.all_ip_ranges
+        if self.excluded_ip_ranges:
+            body["excluded_ip_ranges"] = self.excluded_ip_ranges
+        if self.included_ip_ranges:
+            body["included_ip_ranges"] = self.included_ip_ranges
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyPublicRequestOrigin:
+        """Deserializes the CustomerFacingIngressNetworkPolicyPublicRequestOrigin from a dictionary."""
+        return cls(
+            all_ip_ranges=d.get("all_ip_ranges", None),
+            excluded_ip_ranges=_from_dict(d, "excluded_ip_ranges", CustomerFacingIngressNetworkPolicyIpRanges),
+            included_ip_ranges=_from_dict(d, "included_ip_ranges", CustomerFacingIngressNetworkPolicyIpRanges),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyRequestDestination:
+    account_api: Optional[CustomerFacingIngressNetworkPolicyAccountApiDestination] = None
+
+    account_databricks_one: Optional[CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination] = None
+    """Account DatabricksOne destination is not supported. DO NOT change the stage of this destination
+    past PRIVATE_PREVIEW."""
+
+    account_ui: Optional[CustomerFacingIngressNetworkPolicyAccountUiDestination] = None
+
+    all_destinations: Optional[bool] = None
+    """When true, match all destinations, no other destination fields can be set. When not set or
+    false, at least one specific destination must be provided."""
+
+    apps_runtime: Optional[CustomerFacingIngressNetworkPolicyAppsRuntimeDestination] = None
+
+    lakebase_runtime: Optional[CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination] = None
+
+    workspace_api: Optional[CustomerFacingIngressNetworkPolicyWorkspaceApiDestination] = None
+
+    workspace_ui: Optional[CustomerFacingIngressNetworkPolicyWorkspaceUiDestination] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyRequestDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.account_api:
+            body["account_api"] = self.account_api.as_dict()
+        if self.account_databricks_one:
+            body["account_databricks_one"] = self.account_databricks_one.as_dict()
+        if self.account_ui:
+            body["account_ui"] = self.account_ui.as_dict()
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        if self.apps_runtime:
+            body["apps_runtime"] = self.apps_runtime.as_dict()
+        if self.lakebase_runtime:
+            body["lakebase_runtime"] = self.lakebase_runtime.as_dict()
+        if self.workspace_api:
+            body["workspace_api"] = self.workspace_api.as_dict()
+        if self.workspace_ui:
+            body["workspace_ui"] = self.workspace_ui.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyRequestDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_api:
+            body["account_api"] = self.account_api
+        if self.account_databricks_one:
+            body["account_databricks_one"] = self.account_databricks_one
+        if self.account_ui:
+            body["account_ui"] = self.account_ui
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        if self.apps_runtime:
+            body["apps_runtime"] = self.apps_runtime
+        if self.lakebase_runtime:
+            body["lakebase_runtime"] = self.lakebase_runtime
+        if self.workspace_api:
+            body["workspace_api"] = self.workspace_api
+        if self.workspace_ui:
+            body["workspace_ui"] = self.workspace_ui
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyRequestDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyRequestDestination from a dictionary."""
+        return cls(
+            account_api=_from_dict(d, "account_api", CustomerFacingIngressNetworkPolicyAccountApiDestination),
+            account_databricks_one=_from_dict(
+                d, "account_databricks_one", CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination
+            ),
+            account_ui=_from_dict(d, "account_ui", CustomerFacingIngressNetworkPolicyAccountUiDestination),
+            all_destinations=d.get("all_destinations", None),
+            apps_runtime=_from_dict(d, "apps_runtime", CustomerFacingIngressNetworkPolicyAppsRuntimeDestination),
+            lakebase_runtime=_from_dict(
+                d, "lakebase_runtime", CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination
+            ),
+            workspace_api=_from_dict(d, "workspace_api", CustomerFacingIngressNetworkPolicyWorkspaceApiDestination),
+            workspace_ui=_from_dict(d, "workspace_ui", CustomerFacingIngressNetworkPolicyWorkspaceUiDestination),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
+    scope_qualifier: Optional[CustomerFacingIngressNetworkPolicyApiScopeQualifier] = None
+    """Qualifies the breadth of API access for the listed scopes. See ApiScopeQualifier."""
+
+    scopes: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.scope_qualifier is not None:
+            body["scope_qualifier"] = self.scope_qualifier.value
+        if self.scopes:
+            body["scopes"] = [v for v in self.scopes]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.scope_qualifier is not None:
+            body["scope_qualifier"] = self.scope_qualifier
+        if self.scopes:
+            body["scopes"] = self.scopes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination from a dictionary."""
+        return cls(
+            scope_qualifier=_enum(d, "scope_qualifier", CustomerFacingIngressNetworkPolicyApiScopeQualifier),
+            scopes=d.get("scopes", None),
+        )
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyWorkspaceIdList:
+    workspace_ids: Optional[List[int]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceIdList into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.workspace_ids:
+            body["workspace_ids"] = [v for v in self.workspace_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceIdList into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.workspace_ids:
+            body["workspace_ids"] = self.workspace_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyWorkspaceIdList:
+        """Deserializes the CustomerFacingIngressNetworkPolicyWorkspaceIdList from a dictionary."""
+        return cls(workspace_ids=d.get("workspace_ids", None))
+
+
+@dataclass
+class CustomerFacingIngressNetworkPolicyWorkspaceUiDestination:
+    all_destinations: Optional[bool] = None
+    """Must be set to true."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceUiDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceUiDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_destinations is not None:
+            body["all_destinations"] = self.all_destinations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyWorkspaceUiDestination:
+        """Deserializes the CustomerFacingIngressNetworkPolicyWorkspaceUiDestination from a dictionary."""
+        return cls(all_destinations=d.get("all_destinations", None))
+
+
+@dataclass
 class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
     """Properties of the new private endpoint rule. Note that for private endpoints towards a VPC
     endpoint service behind a customer-managed NLB, you must approve the endpoint in AWS console
@@ -1072,6 +2012,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
     network_connectivity_config_id: Optional[str] = None
     """The ID of a network connectivity configuration, which is the parent resource of this private
     endpoint rule object."""
@@ -1111,6 +2053,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
             body["enabled"] = self.enabled
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.network_connectivity_config_id is not None:
             body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.resource_names:
@@ -1142,6 +2086,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
             body["enabled"] = self.enabled
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.network_connectivity_config_id is not None:
             body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.resource_names:
@@ -1170,6 +2116,7 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_names=d.get("resource_names", None),
             rule_id=d.get("rule_id", None),
@@ -1179,7 +2126,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
 
 
 class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState(Enum):
-
+    CREATE_FAILED = "CREATE_FAILED"
+    CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
     EXPIRED = "EXPIRED"
@@ -1762,7 +2710,6 @@ class DeleteSqlResultsDownloadResponse:
 
 
 class DestinationType(Enum):
-
     EMAIL = "EMAIL"
     MICROSOFT_TEAMS = "MICROSOFT_TEAMS"
     PAGERDUTY = "PAGERDUTY"
@@ -2061,7 +3008,6 @@ class EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinat
 
 
 class EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType(Enum):
-
     FQDN = "FQDN"
 
 
@@ -2101,7 +3047,6 @@ class EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
 
 
 class EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType(Enum):
-
     ALL_SERVICES = "ALL_SERVICES"
     SELECTED_SERVICES = "SELECTED_SERVICES"
 
@@ -2203,7 +3148,6 @@ class EgressNetworkPolicyInternetAccessPolicyStorageDestination:
 
 
 class EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType(Enum):
-
     AWS_S3 = "AWS_S3"
     AZURE_STORAGE = "AZURE_STORAGE"
     CLOUDFLARE_R2 = "CLOUDFLARE_R2"
@@ -2215,6 +3159,10 @@ class EgressNetworkPolicyNetworkAccessPolicy:
     restriction_mode: EgressNetworkPolicyNetworkAccessPolicyRestrictionMode
     """The restriction mode that controls how serverless workloads can access the internet."""
 
+    allowed_databricks_destinations: Optional[List[EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination]] = None
+    """List of Databricks workspace destinations that serverless workloads are allowed to access when
+    in RESTRICTED_ACCESS mode."""
+
     allowed_internet_destinations: Optional[List[EgressNetworkPolicyNetworkAccessPolicyInternetDestination]] = None
     """List of internet destinations that serverless workloads are allowed to access when in
     RESTRICTED_ACCESS mode."""
@@ -2223,16 +3171,25 @@ class EgressNetworkPolicyNetworkAccessPolicy:
     """List of storage destinations that serverless workloads are allowed to access when in
     RESTRICTED_ACCESS mode."""
 
+    blocked_internet_destinations: Optional[List[EgressNetworkPolicyNetworkAccessPolicyInternetDestination]] = None
+    """List of internet destinations that serverless workloads are blocked from accessing. These
+    destinations are enforced when restriction mode is RESTRICTED_ACCESS or DRY_RUN. Currently
+    supports DNS_NAME type only; IP_RANGE support is planned."""
+
     policy_enforcement: Optional[EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement] = None
     """Optional. When policy_enforcement is not provided, we default to ENFORCE_MODE_ALL_SERVICES"""
 
     def as_dict(self) -> dict:
         """Serializes the EgressNetworkPolicyNetworkAccessPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.allowed_databricks_destinations:
+            body["allowed_databricks_destinations"] = [v.as_dict() for v in self.allowed_databricks_destinations]
         if self.allowed_internet_destinations:
             body["allowed_internet_destinations"] = [v.as_dict() for v in self.allowed_internet_destinations]
         if self.allowed_storage_destinations:
             body["allowed_storage_destinations"] = [v.as_dict() for v in self.allowed_storage_destinations]
+        if self.blocked_internet_destinations:
+            body["blocked_internet_destinations"] = [v.as_dict() for v in self.blocked_internet_destinations]
         if self.policy_enforcement:
             body["policy_enforcement"] = self.policy_enforcement.as_dict()
         if self.restriction_mode is not None:
@@ -2242,10 +3199,14 @@ class EgressNetworkPolicyNetworkAccessPolicy:
     def as_shallow_dict(self) -> dict:
         """Serializes the EgressNetworkPolicyNetworkAccessPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.allowed_databricks_destinations:
+            body["allowed_databricks_destinations"] = self.allowed_databricks_destinations
         if self.allowed_internet_destinations:
             body["allowed_internet_destinations"] = self.allowed_internet_destinations
         if self.allowed_storage_destinations:
             body["allowed_storage_destinations"] = self.allowed_storage_destinations
+        if self.blocked_internet_destinations:
+            body["blocked_internet_destinations"] = self.blocked_internet_destinations
         if self.policy_enforcement:
             body["policy_enforcement"] = self.policy_enforcement
         if self.restriction_mode is not None:
@@ -2256,17 +3217,48 @@ class EgressNetworkPolicyNetworkAccessPolicy:
     def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyNetworkAccessPolicy:
         """Deserializes the EgressNetworkPolicyNetworkAccessPolicy from a dictionary."""
         return cls(
+            allowed_databricks_destinations=_repeated_dict(
+                d, "allowed_databricks_destinations", EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination
+            ),
             allowed_internet_destinations=_repeated_dict(
                 d, "allowed_internet_destinations", EgressNetworkPolicyNetworkAccessPolicyInternetDestination
             ),
             allowed_storage_destinations=_repeated_dict(
                 d, "allowed_storage_destinations", EgressNetworkPolicyNetworkAccessPolicyStorageDestination
             ),
+            blocked_internet_destinations=_repeated_dict(
+                d, "blocked_internet_destinations", EgressNetworkPolicyNetworkAccessPolicyInternetDestination
+            ),
             policy_enforcement=_from_dict(
                 d, "policy_enforcement", EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement
             ),
             restriction_mode=_enum(d, "restriction_mode", EgressNetworkPolicyNetworkAccessPolicyRestrictionMode),
         )
+
+
+@dataclass
+class EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination:
+    workspace_ids: Optional[List[int]] = None
+    """The workspace IDs to allow egress traffic to."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.workspace_ids:
+            body["workspace_ids"] = [v for v in self.workspace_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.workspace_ids:
+            body["workspace_ids"] = self.workspace_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination:
+        """Deserializes the EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination from a dictionary."""
+        return cls(workspace_ids=d.get("workspace_ids", None))
 
 
 @dataclass
@@ -2316,7 +3308,6 @@ class EgressNetworkPolicyNetworkAccessPolicyInternetDestination:
 
 
 class EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType(Enum):
-
     DNS_NAME = "DNS_NAME"
 
 
@@ -2373,7 +3364,6 @@ class EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFi
 
 
 class EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode(Enum):
-
     DRY_RUN = "DRY_RUN"
     ENFORCED = "ENFORCED"
 
@@ -2454,7 +3444,6 @@ class EgressNetworkPolicyNetworkAccessPolicyStorageDestination:
 
 
 class EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType(Enum):
-
     AWS_S3 = "AWS_S3"
     AZURE_STORAGE = "AZURE_STORAGE"
     GOOGLE_CLOUD_STORAGE = "GOOGLE_CLOUD_STORAGE"
@@ -2615,9 +3604,11 @@ class EnableResultsDownloading:
 
 @dataclass
 class EnhancedSecurityMonitoring:
-    """SHIELD feature: ESM"""
+    """SHIELD feature: ESM Enhanced Security Monitoring (ESM) enables additional security monitoring on
+    the workspace."""
 
     is_enabled: Optional[bool] = None
+    """Whether Enhanced Security Monitoring (ESM) is enabled on the workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the EnhancedSecurityMonitoring into a dictionary suitable for use as a JSON request body."""
@@ -2878,6 +3869,41 @@ class FetchIpAccessListResponse:
     def from_dict(cls, d: Dict[str, Any]) -> FetchIpAccessListResponse:
         """Deserializes the FetchIpAccessListResponse from a dictionary."""
         return cls(ip_access_list=_from_dict(d, "ip_access_list", IpAccessListInfo))
+
+
+@dataclass
+class GcpEndpoint:
+    psc_endpoint_uri: Optional[str] = None
+    """Output only. The URI of the created PSC endpoint."""
+
+    service_attachment: Optional[str] = None
+    """The full url of the target service attachment. Example:
+    projects/my-gcp-project/regions/us-east4/serviceAttachments/my-service-attachment"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GcpEndpoint into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.psc_endpoint_uri is not None:
+            body["psc_endpoint_uri"] = self.psc_endpoint_uri
+        if self.service_attachment is not None:
+            body["service_attachment"] = self.service_attachment
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpEndpoint into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.psc_endpoint_uri is not None:
+            body["psc_endpoint_uri"] = self.psc_endpoint_uri
+        if self.service_attachment is not None:
+            body["service_attachment"] = self.service_attachment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GcpEndpoint:
+        """Deserializes the GcpEndpoint from a dictionary."""
+        return cls(
+            psc_endpoint_uri=d.get("psc_endpoint_uri", None), service_attachment=d.get("service_attachment", None)
+        )
 
 
 @dataclass
@@ -3732,6 +4758,8 @@ class NccAzurePrivateEndpointRule:
     endpoint_name: Optional[str] = None
     """The name of the Azure private endpoint resource."""
 
+    error_message: Optional[str] = None
+
     group_id: Optional[str] = None
     """Only used by private endpoints to Azure first-party services.
     
@@ -3766,6 +4794,8 @@ class NccAzurePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -3793,6 +4823,8 @@ class NccAzurePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -3815,6 +4847,7 @@ class NccAzurePrivateEndpointRule:
             deactivated_at=d.get("deactivated_at", None),
             domain_names=d.get("domain_names", None),
             endpoint_name=d.get("endpoint_name", None),
+            error_message=d.get("error_message", None),
             group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),
@@ -3824,7 +4857,8 @@ class NccAzurePrivateEndpointRule:
 
 
 class NccAzurePrivateEndpointRuleConnectionState(Enum):
-
+    CREATE_FAILED = "CREATE_FAILED"
+    CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
     EXPIRED = "EXPIRED"
@@ -4007,7 +5041,10 @@ class NccPrivateEndpointRule:
     and is ready to use in your serverless compute resources. - REJECTED: Connection was rejected by
     the private link resource owner. - DISCONNECTED: Connection was removed by the private link
     resource owner, the private endpoint becomes informative and should be deleted for clean-up. -
-    EXPIRED: If the endpoint was created but not approved in 14 days, it will be EXPIRED."""
+    EXPIRED: If the endpoint was created but not approved in 14 days, it will be EXPIRED. -
+    CREATING: The endpoint creation is in progress. Once successfully created, the state will
+    transition to PENDING. - CREATE_FAILED: The endpoint creation failed. You can check the
+    error_message field for more details."""
 
     creation_time: Optional[int] = None
     """Time in epoch milliseconds when this object was created."""
@@ -4025,10 +5062,8 @@ class NccPrivateEndpointRule:
     domain_names must be specified."""
 
     enabled: Optional[bool] = None
-    """Only used by private endpoints towards an AWS S3 service.
-    
-    Update this field to activate/deactivate this private endpoint to allow egress access from
-    serverless compute resources."""
+    """Update this field to activate/deactivate this private endpoint to allow egress access from
+    serverless compute resources. Only honored for first-party services on each cloud (e.g. AWS S3)."""
 
     endpoint_name: Optional[str] = None
     """The name of the Azure private endpoint resource."""
@@ -4036,6 +5071,10 @@ class NccPrivateEndpointRule:
     endpoint_service: Optional[str] = None
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
+
+    error_message: Optional[str] = None
+
+    gcp_endpoint: Optional[GcpEndpoint] = None
 
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
@@ -4087,6 +5126,10 @@ class NccPrivateEndpointRule:
             body["endpoint_name"] = self.endpoint_name
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint.as_dict()
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4124,6 +5167,10 @@ class NccPrivateEndpointRule:
             body["endpoint_name"] = self.endpoint_name
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4153,6 +5200,8 @@ class NccPrivateEndpointRule:
             enabled=d.get("enabled", None),
             endpoint_name=d.get("endpoint_name", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
+            gcp_endpoint=_from_dict(d, "gcp_endpoint", GcpEndpoint),
             group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),
@@ -4164,7 +5213,6 @@ class NccPrivateEndpointRule:
 
 
 class NccPrivateEndpointRulePrivateLinkConnectionState(Enum):
-
     CREATE_FAILED = "CREATE_FAILED"
     CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
@@ -4257,11 +5305,7 @@ class NetworkConnectivityConfiguration:
 
 @dataclass
 class NetworkPolicyEgress:
-    """The network policies applying for egress traffic. This message is used by the UI/REST API. We
-    translate this message to the format expected by the dataplane in Lakehouse Network Manager (for
-    the format expected by the dataplane, see networkconfig.textproto). This policy should be
-    consistent with [[com.databricks.api.proto.settingspolicy.EgressNetworkPolicy]]. Details see
-    API-design: https://docs.google.com/document/d/1DKWO_FpZMCY4cF2O62LpwII1lx8gsnDGG-qgE3t3TOA/"""
+    """The network policies applying for egress traffic."""
 
     network_access: Optional[EgressNetworkPolicyNetworkAccessPolicy] = None
     """The access policy enforced for egress traffic to the internet."""
@@ -4486,6 +5530,12 @@ class PersonalComputeSetting:
 
 @dataclass
 class PublicTokenInfo:
+    autoscope_state: Optional[iam.AutoscopeState] = None
+    """Output only. The autoscope state of this token."""
+
+    backfill_scopes: Optional[List[str]] = None
+    """Output only. Scopes inferred from offline backfill processing."""
+
     comment: Optional[str] = None
     """Comment the token was created with, if applicable."""
 
@@ -4495,18 +5545,32 @@ class PublicTokenInfo:
     expiry_time: Optional[int] = None
     """Server time (in epoch milliseconds) when the token will expire, or -1 if not applicable."""
 
+    inferred_scopes: Optional[List[str]] = None
+    """Output only. Inferred API path scopes collected for this token when autoscope is enabled."""
+
+    scopes: Optional[List[str]] = None
+    """Scope of the token was created with, if applicable."""
+
     token_id: Optional[str] = None
     """The ID of this token."""
 
     def as_dict(self) -> dict:
         """Serializes the PublicTokenInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.autoscope_state is not None:
+            body["autoscope_state"] = self.autoscope_state.value
+        if self.backfill_scopes:
+            body["backfill_scopes"] = [v for v in self.backfill_scopes]
         if self.comment is not None:
             body["comment"] = self.comment
         if self.creation_time is not None:
             body["creation_time"] = self.creation_time
         if self.expiry_time is not None:
             body["expiry_time"] = self.expiry_time
+        if self.inferred_scopes:
+            body["inferred_scopes"] = [v for v in self.inferred_scopes]
+        if self.scopes:
+            body["scopes"] = [v for v in self.scopes]
         if self.token_id is not None:
             body["token_id"] = self.token_id
         return body
@@ -4514,12 +5578,20 @@ class PublicTokenInfo:
     def as_shallow_dict(self) -> dict:
         """Serializes the PublicTokenInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.autoscope_state is not None:
+            body["autoscope_state"] = self.autoscope_state
+        if self.backfill_scopes:
+            body["backfill_scopes"] = self.backfill_scopes
         if self.comment is not None:
             body["comment"] = self.comment
         if self.creation_time is not None:
             body["creation_time"] = self.creation_time
         if self.expiry_time is not None:
             body["expiry_time"] = self.expiry_time
+        if self.inferred_scopes:
+            body["inferred_scopes"] = self.inferred_scopes
+        if self.scopes:
+            body["scopes"] = self.scopes
         if self.token_id is not None:
             body["token_id"] = self.token_id
         return body
@@ -4528,9 +5600,13 @@ class PublicTokenInfo:
     def from_dict(cls, d: Dict[str, Any]) -> PublicTokenInfo:
         """Deserializes the PublicTokenInfo from a dictionary."""
         return cls(
+            autoscope_state=_enum(d, "autoscope_state", iam.AutoscopeState),
+            backfill_scopes=d.get("backfill_scopes", None),
             comment=d.get("comment", None),
             creation_time=d.get("creation_time", None),
             expiry_time=d.get("expiry_time", None),
+            inferred_scopes=d.get("inferred_scopes", None),
+            scopes=d.get("scopes", None),
             token_id=d.get("token_id", None),
         )
 
@@ -4539,9 +5615,15 @@ class PublicTokenInfo:
 class RestrictWorkspaceAdminsMessage:
     status: RestrictWorkspaceAdminsMessageStatus
 
+    disable_gov_tag_creation: Optional[bool] = None
+    """When true, workspace admins cannot create governance tags. ALLOW_ALL status does not override
+    this; they are independent."""
+
     def as_dict(self) -> dict:
         """Serializes the RestrictWorkspaceAdminsMessage into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.disable_gov_tag_creation is not None:
+            body["disable_gov_tag_creation"] = self.disable_gov_tag_creation
         if self.status is not None:
             body["status"] = self.status.value
         return body
@@ -4549,6 +5631,8 @@ class RestrictWorkspaceAdminsMessage:
     def as_shallow_dict(self) -> dict:
         """Serializes the RestrictWorkspaceAdminsMessage into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.disable_gov_tag_creation is not None:
+            body["disable_gov_tag_creation"] = self.disable_gov_tag_creation
         if self.status is not None:
             body["status"] = self.status
         return body
@@ -4556,11 +5640,13 @@ class RestrictWorkspaceAdminsMessage:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RestrictWorkspaceAdminsMessage:
         """Deserializes the RestrictWorkspaceAdminsMessage from a dictionary."""
-        return cls(status=_enum(d, "status", RestrictWorkspaceAdminsMessageStatus))
+        return cls(
+            disable_gov_tag_creation=d.get("disable_gov_tag_creation", None),
+            status=_enum(d, "status", RestrictWorkspaceAdminsMessageStatus),
+        )
 
 
 class RestrictWorkspaceAdminsMessageStatus(Enum):
-
     ALLOW_ALL = "ALLOW_ALL"
     RESTRICT_TOKENS_AND_JOB_RUN_AS = "RESTRICT_TOKENS_AND_JOB_RUN_AS"
 
@@ -4886,6 +5972,12 @@ class TokenAccessControlResponse:
 
 @dataclass
 class TokenInfo:
+    autoscope_state: Optional[iam.AutoscopeState] = None
+    """Output only. The autoscope state of this token."""
+
+    backfill_scopes: Optional[List[str]] = None
+    """Output only. Scopes inferred from offline backfill processing."""
+
     comment: Optional[str] = None
     """Comment that describes the purpose of the token, specified by the token creator."""
 
@@ -4901,11 +5993,17 @@ class TokenInfo:
     expiry_time: Optional[int] = None
     """Timestamp when the token expires."""
 
+    inferred_scopes: Optional[List[str]] = None
+    """Output only. Inferred API path scopes collected for this token when autoscope is enabled."""
+
     last_used_day: Optional[int] = None
     """Approximate timestamp for the day the token was last used. Accurate up to 1 day."""
 
     owner_id: Optional[int] = None
     """User ID of the user that owns the token."""
+
+    scopes: Optional[List[str]] = None
+    """Scope of the token was created with, if applicable."""
 
     token_id: Optional[str] = None
     """ID of the token."""
@@ -4916,6 +6014,10 @@ class TokenInfo:
     def as_dict(self) -> dict:
         """Serializes the TokenInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.autoscope_state is not None:
+            body["autoscope_state"] = self.autoscope_state.value
+        if self.backfill_scopes:
+            body["backfill_scopes"] = [v for v in self.backfill_scopes]
         if self.comment is not None:
             body["comment"] = self.comment
         if self.created_by_id is not None:
@@ -4926,10 +6028,14 @@ class TokenInfo:
             body["creation_time"] = self.creation_time
         if self.expiry_time is not None:
             body["expiry_time"] = self.expiry_time
+        if self.inferred_scopes:
+            body["inferred_scopes"] = [v for v in self.inferred_scopes]
         if self.last_used_day is not None:
             body["last_used_day"] = self.last_used_day
         if self.owner_id is not None:
             body["owner_id"] = self.owner_id
+        if self.scopes:
+            body["scopes"] = [v for v in self.scopes]
         if self.token_id is not None:
             body["token_id"] = self.token_id
         if self.workspace_id is not None:
@@ -4939,6 +6045,10 @@ class TokenInfo:
     def as_shallow_dict(self) -> dict:
         """Serializes the TokenInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.autoscope_state is not None:
+            body["autoscope_state"] = self.autoscope_state
+        if self.backfill_scopes:
+            body["backfill_scopes"] = self.backfill_scopes
         if self.comment is not None:
             body["comment"] = self.comment
         if self.created_by_id is not None:
@@ -4949,10 +6059,14 @@ class TokenInfo:
             body["creation_time"] = self.creation_time
         if self.expiry_time is not None:
             body["expiry_time"] = self.expiry_time
+        if self.inferred_scopes:
+            body["inferred_scopes"] = self.inferred_scopes
         if self.last_used_day is not None:
             body["last_used_day"] = self.last_used_day
         if self.owner_id is not None:
             body["owner_id"] = self.owner_id
+        if self.scopes:
+            body["scopes"] = self.scopes
         if self.token_id is not None:
             body["token_id"] = self.token_id
         if self.workspace_id is not None:
@@ -4963,13 +6077,17 @@ class TokenInfo:
     def from_dict(cls, d: Dict[str, Any]) -> TokenInfo:
         """Deserializes the TokenInfo from a dictionary."""
         return cls(
+            autoscope_state=_enum(d, "autoscope_state", iam.AutoscopeState),
+            backfill_scopes=d.get("backfill_scopes", None),
             comment=d.get("comment", None),
             created_by_id=d.get("created_by_id", None),
             created_by_username=d.get("created_by_username", None),
             creation_time=d.get("creation_time", None),
             expiry_time=d.get("expiry_time", None),
+            inferred_scopes=d.get("inferred_scopes", None),
             last_used_day=d.get("last_used_day", None),
             owner_id=d.get("owner_id", None),
+            scopes=d.get("scopes", None),
             token_id=d.get("token_id", None),
             workspace_id=d.get("workspace_id", None),
         )
@@ -5117,10 +6235,12 @@ class UpdatePrivateEndpointRule:
     domain_names must be specified."""
 
     enabled: Optional[bool] = None
-    """Only used by private endpoints towards an AWS S3 service.
-    
-    Update this field to activate/deactivate this private endpoint to allow egress access from
-    serverless compute resources."""
+    """Update this field to activate/deactivate this private endpoint to allow egress access from
+    serverless compute resources. Only honored for first-party services on each cloud (e.g. AWS S3)."""
+
+    error_message: Optional[str] = None
+
+    gcp_endpoint: Optional[GcpEndpoint] = None
 
     resource_names: Optional[List[str]] = None
     """Only used by private endpoints towards AWS S3 service.
@@ -5136,6 +6256,10 @@ class UpdatePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.enabled is not None:
             body["enabled"] = self.enabled
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint.as_dict()
         if self.resource_names:
             body["resource_names"] = [v for v in self.resource_names]
         return body
@@ -5147,6 +6271,10 @@ class UpdatePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.enabled is not None:
             body["enabled"] = self.enabled
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint:
+            body["gcp_endpoint"] = self.gcp_endpoint
         if self.resource_names:
             body["resource_names"] = self.resource_names
         return body
@@ -5157,8 +6285,28 @@ class UpdatePrivateEndpointRule:
         return cls(
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
+            error_message=d.get("error_message", None),
+            gcp_endpoint=_from_dict(d, "gcp_endpoint", GcpEndpoint),
             resource_names=d.get("resource_names", None),
         )
+
+
+@dataclass
+class UpdateTokenResponse:
+    def as_dict(self) -> dict:
+        """Serializes the UpdateTokenResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateTokenResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateTokenResponse:
+        """Deserializes the UpdateTokenResponse from a dictionary."""
+        return cls()
 
 
 WorkspaceConf = Dict[str, str]
@@ -5495,6 +6643,10 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE",
             "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default",
@@ -5523,6 +6675,10 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default", query=query, headers=headers
@@ -5563,6 +6719,10 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default", body=body, headers=headers
         )
@@ -5597,6 +6757,10 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE",
             "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default",
@@ -5624,6 +6788,10 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -5668,6 +6836,10 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH",
             "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default",
@@ -5703,6 +6875,10 @@ class AutomaticClusterUpdateAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/automatic_cluster_update/names/default", query=query, headers=headers
@@ -5746,6 +6922,10 @@ class AutomaticClusterUpdateAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/automatic_cluster_update/names/default", body=body, headers=headers
         )
@@ -5780,6 +6960,10 @@ class ComplianceSecurityProfileAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default", query=query, headers=headers
@@ -5823,6 +7007,10 @@ class ComplianceSecurityProfileAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default", body=body, headers=headers
         )
@@ -5841,6 +7029,15 @@ class CredentialsManagerAPI:
     ) -> ExchangeTokenResponse:
         """Exchange tokens with an Identity Provider to get a new access token. It allows specifying scopes to
         determine token permissions.
+
+        POST /exchange-tokens/token is the documented public form, expressed via `google.api.http` below. GET
+        /exchange-tokens/$exchange is a legacy alias used by the Spark driver's OAuth refresh path
+        (DBHttpClient#get sends a body via HttpGetWithEntity) and stays on the legacy `option (rpc).endpoints`
+        annotation: its path contains a literal `$`, which `google.api.http`'s LITERAL grammar does not allow,
+        and `HttpPathParser` does not percent-decode template segments (so encoding as `%24exchange` would not
+        match the literal `$exchange` path the Spark driver sends). Per-endpoint `visibility:
+        PUBLIC_UNDOCUMENTED` preserves the DECO-7732 intent of suppressing the GET alias from the public API
+        spec.
 
         :param partition_id: :class:`PartitionId`
           The partition of Credentials store
@@ -5863,6 +7060,10 @@ class CredentialsManagerAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/credentials-manager/exchange-tokens/token", body=body, headers=headers)
         return ExchangeTokenResponse.from_dict(res)
@@ -5978,6 +7179,10 @@ class DashboardEmailSubscriptionsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE",
             "/api/2.0/settings/types/dashboard_email_subscriptions/names/default",
@@ -6005,6 +7210,10 @@ class DashboardEmailSubscriptionsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/dashboard_email_subscriptions/names/default", query=query, headers=headers
@@ -6044,6 +7253,10 @@ class DashboardEmailSubscriptionsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/dashboard_email_subscriptions/names/default", body=body, headers=headers
@@ -6089,6 +7302,10 @@ class DefaultNamespaceAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/default_namespace_ws/names/default", query=query, headers=headers
         )
@@ -6113,6 +7330,10 @@ class DefaultNamespaceAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/default_namespace_ws/names/default", query=query, headers=headers
@@ -6156,6 +7377,10 @@ class DefaultNamespaceAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/default_namespace_ws/names/default", body=body, headers=headers
         )
@@ -6189,6 +7414,10 @@ class DefaultWarehouseIdAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/default_warehouse_id/names/default", query=query, headers=headers
         )
@@ -6213,6 +7442,10 @@ class DefaultWarehouseIdAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/default_warehouse_id/names/default", query=query, headers=headers
@@ -6251,6 +7484,10 @@ class DefaultWarehouseIdAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/default_warehouse_id/names/default", body=body, headers=headers
         )
@@ -6287,6 +7524,10 @@ class DisableLegacyAccessAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/disable_legacy_access/names/default", query=query, headers=headers
         )
@@ -6311,6 +7552,10 @@ class DisableLegacyAccessAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/disable_legacy_access/names/default", query=query, headers=headers
@@ -6348,6 +7593,10 @@ class DisableLegacyAccessAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/disable_legacy_access/names/default", body=body, headers=headers
@@ -6388,6 +7637,10 @@ class DisableLegacyDbfsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/disable_legacy_dbfs/names/default", query=query, headers=headers
         )
@@ -6412,6 +7665,10 @@ class DisableLegacyDbfsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/disable_legacy_dbfs/names/default", query=query, headers=headers
@@ -6449,6 +7706,10 @@ class DisableLegacyDbfsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/disable_legacy_dbfs/names/default", body=body, headers=headers
@@ -6581,6 +7842,10 @@ class EnableExportNotebookAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/settings/types/enable-export-notebook/names/default", headers=headers)
         return EnableExportNotebook.from_dict(res)
 
@@ -6618,6 +7883,10 @@ class EnableExportNotebookAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/enable-export-notebook/names/default", body=body, headers=headers
@@ -6747,6 +8016,10 @@ class EnableNotebookTableClipboardAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default", headers=headers
         )
@@ -6787,6 +8060,10 @@ class EnableNotebookTableClipboardAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default", body=body, headers=headers
         )
@@ -6809,6 +8086,10 @@ class EnableResultsDownloadingAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/settings/types/enable-results-downloading/names/default", headers=headers)
         return EnableResultsDownloading.from_dict(res)
@@ -6848,6 +8129,10 @@ class EnableResultsDownloadingAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/enable-results-downloading/names/default", body=body, headers=headers
         )
@@ -6884,6 +8169,10 @@ class EnhancedSecurityMonitoringAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default", query=query, headers=headers
@@ -6926,6 +8215,10 @@ class EnhancedSecurityMonitoringAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default", body=body, headers=headers
@@ -7072,6 +8365,10 @@ class IpAccessListsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/ip-access-lists", body=body, headers=headers)
         return CreateIpAccessListResponse.from_dict(res)
 
@@ -7085,6 +8382,10 @@ class IpAccessListsAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/ip-access-lists/{ip_access_list_id}", headers=headers)
 
@@ -7101,6 +8402,10 @@ class IpAccessListsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/ip-access-lists/{ip_access_list_id}", headers=headers)
         return FetchIpAccessListResponse.from_dict(res)
 
@@ -7114,6 +8419,10 @@ class IpAccessListsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/ip-access-lists", headers=headers)
         parsed = ListIpAccessListResponse.from_dict(json).ip_access_lists
@@ -7163,6 +8472,10 @@ class IpAccessListsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body, headers=headers)
 
@@ -7214,6 +8527,10 @@ class IpAccessListsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body, headers=headers)
 
@@ -7399,6 +8716,10 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/llm_proxy_partner_powered/names/default", query=query, headers=headers
         )
@@ -7423,6 +8744,10 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/llm_proxy_partner_powered/names/default", query=query, headers=headers
@@ -7463,6 +8788,10 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/llm_proxy_partner_powered/names/default", body=body, headers=headers
         )
@@ -7476,8 +8805,7 @@ class NetworkConnectivityAPI:
     endpoints for Databricks to privately connect serverless compute resources to your Azure resources using
     Azure Private Link. See [configure serverless secure connectivity].
 
-    [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
-    """
+    [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -7503,6 +8831,7 @@ class NetworkConnectivityAPI:
         """
 
         body = network_connectivity_config.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -7534,6 +8863,7 @@ class NetworkConnectivityAPI:
         """
 
         body = private_endpoint_rule.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -7571,8 +8901,8 @@ class NetworkConnectivityAPI:
     ) -> NccPrivateEndpointRule:
         """Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private
         endpoint is immediately deleted. Otherwise, the private endpoint is deactivated and will be deleted
-        after seven days of deactivation. When a private endpoint is deactivated, the `deactivated` field is
-        set to `true` and the private endpoint is not available to your serverless compute resources.
+        after one day of deactivation. When a private endpoint is deactivated, the `deactivated` field is set
+        to `true` and the private endpoint is not available to your serverless compute resources.
 
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
@@ -7772,6 +9102,7 @@ class NetworkPoliciesAPI:
         """
 
         body = network_policy.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -7858,6 +9189,7 @@ class NetworkPoliciesAPI:
         """
 
         body = network_policy.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -7902,6 +9234,10 @@ class NotificationDestinationsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/notification-destinations", body=body, headers=headers)
         return NotificationDestination.from_dict(res)
 
@@ -7917,6 +9253,10 @@ class NotificationDestinationsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/notification-destinations/{id}", headers=headers)
 
     def get(self, id: str) -> NotificationDestination:
@@ -7930,6 +9270,10 @@ class NotificationDestinationsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/notification-destinations/{id}", headers=headers)
         return NotificationDestination.from_dict(res)
@@ -7953,6 +9297,10 @@ class NotificationDestinationsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/notification-destinations", query=query, headers=headers)
@@ -7988,6 +9336,10 @@ class NotificationDestinationsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/notification-destinations/{id}", body=body, headers=headers)
         return NotificationDestination.from_dict(res)
@@ -8139,6 +9491,10 @@ class RestrictWorkspaceAdminsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/restrict_workspace_admins/names/default", query=query, headers=headers
         )
@@ -8163,6 +9519,10 @@ class RestrictWorkspaceAdminsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/restrict_workspace_admins/names/default", query=query, headers=headers
@@ -8205,6 +9565,10 @@ class RestrictWorkspaceAdminsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/restrict_workspace_admins/names/default", body=body, headers=headers
@@ -8343,6 +9707,10 @@ class SqlResultsDownloadAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/sql_results_download/names/default", query=query, headers=headers
         )
@@ -8367,6 +9735,10 @@ class SqlResultsDownloadAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/sql_results_download/names/default", query=query, headers=headers
@@ -8405,6 +9777,10 @@ class SqlResultsDownloadAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/sql_results_download/names/default", body=body, headers=headers
         )
@@ -8419,16 +9795,25 @@ class TokenManagementAPI:
         self._api = api_client
 
     def create_obo_token(
-        self, application_id: str, *, comment: Optional[str] = None, lifetime_seconds: Optional[int] = None
+        self,
+        application_id: str,
+        *,
+        autoscope_enabled: Optional[bool] = None,
+        comment: Optional[str] = None,
+        lifetime_seconds: Optional[int] = None,
+        scopes: Optional[List[str]] = None,
     ) -> CreateOboTokenResponse:
         """Creates a token on behalf of a service principal.
 
         :param application_id: str
           Application ID of the service principal.
+        :param autoscope_enabled: bool (optional)
+          Whether to enable autoscoping for this token.
         :param comment: str (optional)
           Comment that describes the purpose of the token.
         :param lifetime_seconds: int (optional)
           The number of seconds before the token expires.
+        :param scopes: List[str] (optional)
 
         :returns: :class:`CreateOboTokenResponse`
         """
@@ -8436,14 +9821,22 @@ class TokenManagementAPI:
         body = {}
         if application_id is not None:
             body["application_id"] = application_id
+        if autoscope_enabled is not None:
+            body["autoscope_enabled"] = autoscope_enabled
         if comment is not None:
             body["comment"] = comment
         if lifetime_seconds is not None:
             body["lifetime_seconds"] = lifetime_seconds
+        if scopes is not None:
+            body["scopes"] = [v for v in scopes]
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/token-management/on-behalf-of/tokens", body=body, headers=headers)
         return CreateOboTokenResponse.from_dict(res)
@@ -8458,6 +9851,10 @@ class TokenManagementAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/token-management/tokens/{token_id}", headers=headers)
 
@@ -8474,6 +9871,10 @@ class TokenManagementAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/token-management/tokens/{token_id}", headers=headers)
         return GetTokenResponse.from_dict(res)
 
@@ -8488,6 +9889,10 @@ class TokenManagementAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/permissions/authorization/tokens/permissionLevels", headers=headers)
         return GetTokenPermissionLevelsResponse.from_dict(res)
 
@@ -8501,6 +9906,10 @@ class TokenManagementAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/tokens", headers=headers)
         return TokenPermissions.from_dict(res)
@@ -8527,6 +9936,10 @@ class TokenManagementAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         json = self._api.do("GET", "/api/2.0/token-management/tokens", query=query, headers=headers)
         parsed = ListTokensResponse.from_dict(json).token_infos
         return parsed if parsed is not None else []
@@ -8550,6 +9963,10 @@ class TokenManagementAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("PUT", "/api/2.0/permissions/authorization/tokens", body=body, headers=headers)
         return TokenPermissions.from_dict(res)
 
@@ -8571,8 +9988,51 @@ class TokenManagementAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", "/api/2.0/permissions/authorization/tokens", body=body, headers=headers)
         return TokenPermissions.from_dict(res)
+
+    def update_token_management(self, token_id: str, token: TokenInfo, update_mask: FieldMask) -> TokenInfo:
+        """Updates a token, specified by its ID.
+
+        :param token_id: str
+          ID of the token.
+        :param token: :class:`TokenInfo`
+        :param update_mask: FieldMask
+          A list of field name under token, For example, {"update_mask": "comment,scopes"}
+
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`TokenInfo`
+        """
+
+        body = {}
+        if token is not None:
+            body["token"] = token.as_dict()
+        if update_mask is not None:
+            body["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/token-management/tokens/{token_id}", body=body, headers=headers)
+        return TokenInfo.from_dict(res)
 
 
 class TokensAPI:
@@ -8582,30 +10042,50 @@ class TokensAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, comment: Optional[str] = None, lifetime_seconds: Optional[int] = None) -> CreateTokenResponse:
+    def create(
+        self,
+        *,
+        autoscope_enabled: Optional[bool] = None,
+        comment: Optional[str] = None,
+        lifetime_seconds: Optional[int] = None,
+        scopes: Optional[List[str]] = None,
+    ) -> CreateTokenResponse:
         """Creates and returns a token for a user. If this call is made through token authentication, it creates
         a token with the same client ID as the authenticated token. If the user's token quota is exceeded,
         this call returns an error **QUOTA_EXCEEDED**.
 
+        :param autoscope_enabled: bool (optional)
+          Whether to enable autoscoping for this token. When true, the token will automatically collect
+          inferred API path scopes as it is used.
         :param comment: str (optional)
           Optional description to attach to the token.
         :param lifetime_seconds: int (optional)
           The lifetime of the token, in seconds.
 
-          If the lifetime is not specified, this token remains valid indefinitely.
+          If the lifetime is not specified, this token remains valid for 2 years.
+        :param scopes: List[str] (optional)
+          Optional scopes of the token.
 
         :returns: :class:`CreateTokenResponse`
         """
 
         body = {}
+        if autoscope_enabled is not None:
+            body["autoscope_enabled"] = autoscope_enabled
         if comment is not None:
             body["comment"] = comment
         if lifetime_seconds is not None:
             body["lifetime_seconds"] = lifetime_seconds
+        if scopes is not None:
+            body["scopes"] = [v for v in scopes]
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/token/create", body=body, headers=headers)
         return CreateTokenResponse.from_dict(res)
@@ -8629,6 +10109,10 @@ class TokensAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/token/delete", body=body, headers=headers)
 
     def list(self) -> Iterator[PublicTokenInfo]:
@@ -8642,9 +10126,54 @@ class TokensAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         json = self._api.do("GET", "/api/2.0/token/list", headers=headers)
         parsed = ListPublicTokensResponse.from_dict(json).token_infos
         return parsed if parsed is not None else []
+
+    def update(self, token_id: str, token: PublicTokenInfo, update_mask: FieldMask) -> UpdateTokenResponse:
+        """Updates the comment or scopes of a token.
+
+        If a token with the specified ID is not valid, this call returns an error **NOT_FOUND**.
+
+        :param token_id: str
+          The SHA-256 hash of the token to be updated.
+        :param token: :class:`PublicTokenInfo`
+        :param update_mask: FieldMask
+          A list of field name under token, For example, {"update_mask": "comment,scopes"}
+
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`UpdateTokenResponse`
+        """
+
+        body = {}
+        if token is not None:
+            body["token"] = token.as_dict()
+        if update_mask is not None:
+            body["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/token/{token_id}", body=body, headers=headers)
+        return UpdateTokenResponse.from_dict(res)
 
 
 class WorkspaceConfAPI:
@@ -8668,6 +10197,10 @@ class WorkspaceConfAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/workspace-conf", query=query, headers=headers)
         return res
 
@@ -8677,6 +10210,10 @@ class WorkspaceConfAPI:
         headers = {
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", "/api/2.0/workspace-conf", body=contents, headers=headers)
 
@@ -8725,6 +10262,7 @@ class WorkspaceNetworkConfigurationAPI:
         """
 
         body = workspace_network_option.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

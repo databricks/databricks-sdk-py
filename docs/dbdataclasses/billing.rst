@@ -10,6 +10,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ActionConfigurationType
 
+   Type of action that a budget alert executes when its threshold is crossed.
+
    .. py:attribute:: EMAIL_NOTIFICATION
       :value: "EMAIL_NOTIFICATION"
 
@@ -199,6 +201,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: UpdateBudgetConfigurationResponse
    :members:
    :undoc-members:
+
+.. py:class:: UsageDashboardMajorVersion
+
+   .. py:attribute:: USAGE_DASHBOARD_MAJOR_VERSION_1
+      :value: "USAGE_DASHBOARD_MAJOR_VERSION_1"
+
+   .. py:attribute:: USAGE_DASHBOARD_MAJOR_VERSION_2
+      :value: "USAGE_DASHBOARD_MAJOR_VERSION_2"
 
 .. py:class:: UsageDashboardType
 

@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -129,6 +132,10 @@ class HttpCallV2API:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST",
             f"/api/2.0/http-call/{path_param_string}/{path_param_int}/{path_param_bool}",
@@ -151,7 +158,6 @@ class HttpCallV2API:
         repeated_complex_query_param: Optional[List[ComplexQueryParam]] = None,
         repeated_query_param: Optional[List[str]] = None,
     ) -> Resource:
-
         query = {}
         if field_mask is not None:
             query["field_mask"] = field_mask.ToJsonString()
@@ -170,6 +176,10 @@ class HttpCallV2API:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -237,6 +247,10 @@ class HttpCallV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",

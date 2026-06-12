@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -7,8 +10,12 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -35,20 +42,27 @@ class AggregationGranularity(Enum):
 class AnomalyDetectionConfig:
     """Anomaly Detection Configurations."""
 
+    excluded_table_full_names: Optional[List[str]] = None
+    """List of fully qualified table names to exclude from anomaly detection."""
+
     def as_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.excluded_table_full_names:
+            body["excluded_table_full_names"] = [v for v in self.excluded_table_full_names]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.excluded_table_full_names:
+            body["excluded_table_full_names"] = self.excluded_table_full_names
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AnomalyDetectionConfig:
         """Deserializes the AnomalyDetectionConfig from a dictionary."""
-        return cls()
+        return cls(excluded_table_full_names=d.get("excluded_table_full_names", None))
 
 
 @dataclass
@@ -880,6 +894,10 @@ class DataQualityAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST",
             f"/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}/cancel",
@@ -911,10 +929,15 @@ class DataQualityAPI:
         """
 
         body = monitor.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/data-quality/v1/monitors", body=body, headers=headers)
         return Monitor.from_dict(res)
@@ -949,10 +972,15 @@ class DataQualityAPI:
         """
 
         body = refresh.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", f"/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes", body=body, headers=headers
@@ -996,6 +1024,10 @@ class DataQualityAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/data-quality/v1/monitors/{object_type}/{object_id}", headers=headers)
 
     def delete_refresh(self, object_type: str, object_id: str, refresh_id: int):
@@ -1024,6 +1056,10 @@ class DataQualityAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE", f"/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}", headers=headers
@@ -1067,6 +1103,10 @@ class DataQualityAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/data-quality/v1/monitors/{object_type}/{object_id}", headers=headers)
         return Monitor.from_dict(res)
 
@@ -1107,6 +1147,10 @@ class DataQualityAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}", headers=headers
         )
@@ -1129,6 +1173,10 @@ class DataQualityAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/data-quality/v1/monitors", query=query, headers=headers)
@@ -1182,6 +1230,10 @@ class DataQualityAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -1241,6 +1293,10 @@ class DataQualityAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", f"/api/data-quality/v1/monitors/{object_type}/{object_id}", query=query, body=body, headers=headers
         )
@@ -1283,6 +1339,10 @@ class DataQualityAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",

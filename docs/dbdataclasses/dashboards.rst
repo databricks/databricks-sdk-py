@@ -25,6 +25,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DASHBOARD_VIEW_BASIC
       :value: "DASHBOARD_VIEW_BASIC"
 
+.. py:class:: EvaluationStatusType
+
+   .. py:attribute:: DONE
+      :value: "DONE"
+
+   .. py:attribute:: EVALUATION_CANCELLED
+      :value: "EVALUATION_CANCELLED"
+
+   .. py:attribute:: EVALUATION_FAILED
+      :value: "EVALUATION_FAILED"
+
+   .. py:attribute:: EVALUATION_TIMEOUT
+      :value: "EVALUATION_TIMEOUT"
+
+   .. py:attribute:: NOT_STARTED
+      :value: "NOT_STARTED"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
 .. autoclass:: GenieAttachment
    :members:
    :undoc-members:
@@ -34,6 +54,41 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieConversationSummary
+   :members:
+   :undoc-members:
+
+.. py:class:: GenieEvalAssessment
+
+   .. py:attribute:: BAD
+      :value: "BAD"
+
+   .. py:attribute:: GOOD
+      :value: "GOOD"
+
+   .. py:attribute:: NEEDS_REVIEW
+      :value: "NEEDS_REVIEW"
+
+.. autoclass:: GenieEvalResponse
+   :members:
+   :undoc-members:
+
+.. py:class:: GenieEvalResponseType
+
+   .. py:attribute:: SQL
+      :value: "SQL"
+
+   .. py:attribute:: TEXT
+      :value: "TEXT"
+
+.. autoclass:: GenieEvalResult
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieEvalResultDetails
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieEvalRunResponse
    :members:
    :undoc-members:
 
@@ -54,7 +109,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: POSITIVE
       :value: "POSITIVE"
 
+.. autoclass:: GenieGenerateDownloadFullQueryResultResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieGetDownloadFullQueryResultResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenieGetMessageQueryResultResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieListConversationCommentsResponse
    :members:
    :undoc-members:
 
@@ -66,11 +133,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenieListEvalResultsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieListEvalRunsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieListMessageCommentsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenieListSpacesResponse
    :members:
    :undoc-members:
 
 .. autoclass:: GenieMessage
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieMessageComment
    :members:
    :undoc-members:
 
@@ -141,6 +224,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CONTEXT_EXCEEDED_EXCEPTION
       :value: "CONTEXT_EXCEEDED_EXCEPTION"
+
+   .. py:attribute:: COULD_NOT_GET_DASHBOARD_SCHEMA_EXCEPTION
+      :value: "COULD_NOT_GET_DASHBOARD_SCHEMA_EXCEPTION"
 
    .. py:attribute:: COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION
       :value: "COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION"
@@ -213,9 +299,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION
       :value: "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION"
-
-   .. py:attribute:: INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION
-      :value: "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION"
 
    .. py:attribute:: INVALID_CHAT_COMPLETION_JSON_EXCEPTION
       :value: "INVALID_CHAT_COMPLETION_JSON_EXCEPTION"
@@ -353,6 +436,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RevertDashboardResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: Schedule
    :members:
    :undoc-members:
@@ -364,6 +451,83 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: UNPAUSED
       :value: "UNPAUSED"
+
+.. py:class:: ScoreReason
+
+   .. py:attribute:: COLUMN_TYPE_DIFFERENCE
+      :value: "COLUMN_TYPE_DIFFERENCE"
+
+   .. py:attribute:: EMPTY_GOOD_SQL
+      :value: "EMPTY_GOOD_SQL"
+
+   .. py:attribute:: EMPTY_RESULT
+      :value: "EMPTY_RESULT"
+
+   .. py:attribute:: LLM_JUDGE_FORMATTING_ERROR
+      :value: "LLM_JUDGE_FORMATTING_ERROR"
+
+   .. py:attribute:: LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT
+      :value: "LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT"
+
+   .. py:attribute:: LLM_JUDGE_INCORRECT_FUNCTION_USAGE
+      :value: "LLM_JUDGE_INCORRECT_FUNCTION_USAGE"
+
+   .. py:attribute:: LLM_JUDGE_INCORRECT_METRIC_CALCULATION
+      :value: "LLM_JUDGE_INCORRECT_METRIC_CALCULATION"
+
+   .. py:attribute:: LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE
+      :value: "LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE"
+
+   .. py:attribute:: LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC
+      :value: "LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC"
+
+   .. py:attribute:: LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST
+      :value: "LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST"
+
+   .. py:attribute:: LLM_JUDGE_MISSING_JOIN
+      :value: "LLM_JUDGE_MISSING_JOIN"
+
+   .. py:attribute:: LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION
+      :value: "LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION"
+
+   .. py:attribute:: LLM_JUDGE_MISSING_OR_INCORRECT_FILTER
+      :value: "LLM_JUDGE_MISSING_OR_INCORRECT_FILTER"
+
+   .. py:attribute:: LLM_JUDGE_MISSING_OR_INCORRECT_JOIN
+      :value: "LLM_JUDGE_MISSING_OR_INCORRECT_JOIN"
+
+   .. py:attribute:: LLM_JUDGE_OTHER
+      :value: "LLM_JUDGE_OTHER"
+
+   .. py:attribute:: LLM_JUDGE_SEMANTIC_ERROR
+      :value: "LLM_JUDGE_SEMANTIC_ERROR"
+
+   .. py:attribute:: LLM_JUDGE_SYNTAX_ERROR
+      :value: "LLM_JUDGE_SYNTAX_ERROR"
+
+   .. py:attribute:: LLM_JUDGE_WRONG_AGGREGATION
+      :value: "LLM_JUDGE_WRONG_AGGREGATION"
+
+   .. py:attribute:: LLM_JUDGE_WRONG_COLUMNS
+      :value: "LLM_JUDGE_WRONG_COLUMNS"
+
+   .. py:attribute:: LLM_JUDGE_WRONG_FILTER
+      :value: "LLM_JUDGE_WRONG_FILTER"
+
+   .. py:attribute:: RESULT_EXTRA_COLUMNS
+      :value: "RESULT_EXTRA_COLUMNS"
+
+   .. py:attribute:: RESULT_EXTRA_ROWS
+      :value: "RESULT_EXTRA_ROWS"
+
+   .. py:attribute:: RESULT_MISSING_COLUMNS
+      :value: "RESULT_MISSING_COLUMNS"
+
+   .. py:attribute:: RESULT_MISSING_ROWS
+      :value: "RESULT_MISSING_ROWS"
+
+   .. py:attribute:: SINGLE_CELL_DIFFERENCE
+      :value: "SINGLE_CELL_DIFFERENCE"
 
 .. autoclass:: Subscriber
    :members:
@@ -384,6 +548,36 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: TextAttachment
    :members:
    :undoc-members:
+
+.. py:class:: TextAttachmentPurpose
+
+   Purpose/intent of a text attachment
+
+   .. py:attribute:: FOLLOW_UP_QUESTION
+      :value: "FOLLOW_UP_QUESTION"
+
+.. autoclass:: Thought
+   :members:
+   :undoc-members:
+
+.. py:class:: ThoughtType
+
+   ThoughtType. The possible values are: * `THOUGHT_TYPE_UNSPECIFIED`: Default value that should not be used. * `THOUGHT_TYPE_DESCRIPTION`: A high-level description of how the question was interpreted. * `THOUGHT_TYPE_UNDERSTANDING`: How ambiguous parts of the question were resolved. * `THOUGHT_TYPE_DATA_SOURCING`: Which tables or datasets were identified as relevant. * `THOUGHT_TYPE_INSTRUCTIONS`: Which author-defined instructions were referenced. * `THOUGHT_TYPE_STEPS`: The logical steps taken to compute the answer. The category of a Thought. Additional values may be added in the future.
+
+   .. py:attribute:: THOUGHT_TYPE_DATA_SOURCING
+      :value: "THOUGHT_TYPE_DATA_SOURCING"
+
+   .. py:attribute:: THOUGHT_TYPE_DESCRIPTION
+      :value: "THOUGHT_TYPE_DESCRIPTION"
+
+   .. py:attribute:: THOUGHT_TYPE_INSTRUCTIONS
+      :value: "THOUGHT_TYPE_INSTRUCTIONS"
+
+   .. py:attribute:: THOUGHT_TYPE_STEPS
+      :value: "THOUGHT_TYPE_STEPS"
+
+   .. py:attribute:: THOUGHT_TYPE_UNDERSTANDING
+      :value: "THOUGHT_TYPE_UNDERSTANDING"
 
 .. autoclass:: TrashDashboardResponse
    :members:

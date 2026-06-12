@@ -28,6 +28,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateAzureKeyInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateCredentialAwsCredentials
    :members:
    :undoc-members:
@@ -75,6 +79,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DATAPLANE_RELAY_ACCESS
       :value: "DATAPLANE_RELAY_ACCESS"
 
+   .. py:attribute:: GENERAL_ACCESS
+      :value: "GENERAL_ACCESS"
+
    .. py:attribute:: WORKSPACE_ACCESS
       :value: "WORKSPACE_ACCESS"
 
@@ -110,6 +117,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GcpNetworkInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: GcpServiceAccount
    :members:
    :undoc-members:
 

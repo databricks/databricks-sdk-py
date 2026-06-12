@@ -6,12 +6,15 @@ import requests
 from ..logger import RoundTrip
 from .base import DatabricksError
 from .customizer import _ErrorCustomizer, _RetryAfterCustomizer
-from .deserializer import (_EmptyDeserializer, _ErrorDeserializer,
-                           _HtmlErrorDeserializer, _StandardErrorDeserializer,
-                           _StringErrorDeserializer)
+from .deserializer import (
+    _EmptyDeserializer,
+    _ErrorDeserializer,
+    _HtmlErrorDeserializer,
+    _StandardErrorDeserializer,
+    _StringErrorDeserializer,
+)
 from .mapper import _error_mapper
-from .private_link import (_get_private_link_validation_error,
-                           _is_private_link_redirect)
+from .private_link import _get_private_link_validation_error, _is_private_link_redirect
 
 # A list of _ErrorDeserializers that are tried in order to parse an API error from a response body. Most errors should
 # be parsable by the _StandardErrorDeserializer, but additional parsers can be added here for specific error formats.
@@ -43,7 +46,7 @@ def _unknown_error(response: requests.Response, debug_headers: bool = False) -> 
     return (
         "This is likely a bug in the Databricks SDK for Python or the underlying "
         "API. Please report this issue with the following debugging information to the SDK issue tracker at "
-        f"https://github.com/databricks/databricks-sdk-go/issues. Request log:```{request_log}```"
+        f"https://github.com/databricks/databricks-sdk-py/issues. Request log:```{request_log}```"
     )
 
 

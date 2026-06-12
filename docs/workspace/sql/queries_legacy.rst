@@ -1,5 +1,5 @@
-``w.queries_legacy``: Queries (legacy)
-======================================
+``w.queries_legacy``: Queries (deprecated)
+==========================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: QueriesLegacyAPI
@@ -8,8 +8,7 @@
     SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
     scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
-    more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -24,8 +23,7 @@
 
         **Note**: You cannot add a visualization until you create the query.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/create
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/create instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -59,8 +57,7 @@
         Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
         they cannot be used for alerts. The trash is deleted after 30 days.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/delete
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/delete instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -74,8 +71,7 @@
         Retrieve a query object definition along with contextual permissions information about the currently
         authenticated user.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/get
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/get instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -91,8 +87,7 @@
         **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
         degradation, or a temporary ban.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/list
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/list instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -125,8 +120,7 @@
         Restore a query that has been moved to the trash. A restored query appears in list views and searches.
         You can use restored queries for alerts.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please see the latest version.
-        [Learn more]
+        **Warning**: This API is deprecated. Please see the latest version. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -141,8 +135,7 @@
 
         **Note**: You cannot undo this operation.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/update
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/update instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 

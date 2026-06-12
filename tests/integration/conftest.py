@@ -8,7 +8,15 @@ import sys
 import pytest
 
 from databricks.sdk import AccountClient, FilesAPI, FilesExt, WorkspaceClient
+from databricks.sdk.config import ConfigAttribute
+from databricks.sdk.core import Config
+from databricks.sdk.environments import Cloud
 from databricks.sdk.service.catalog import VolumeType
+
+
+@pytest.fixture(autouse=True)
+def stub_host_metadata():
+    """Override root conftest stub — integration tests hit real endpoints."""
 
 
 def pytest_addoption(parser):
@@ -39,7 +47,7 @@ def pytest_configure(config):
 
 def pytest_collection_modifyitems(items):
     # safer to refer to fixture fns instead of strings
-    client_fixtures = [x.__name__ for x in [a, w, ucws, ucacct]]
+    client_fixtures = [x.__name__ for x in [a, w, ucws, ucacct, unified_config, isolated_env]]
     for item in items:
         current_fixtures = getattr(item, "fixturenames", ())
         for requires_client in client_fixtures:
@@ -63,8 +71,8 @@ def a(env_or_skip) -> AccountClient:
     _load_debug_env_if_runs_from_ide("account")
     env_or_skip("CLOUD_ENV")
     account_client = AccountClient()
-    if not account_client.config.is_account_client:
-        pytest.skip("not Databricks Account client")
+    if env_or_skip("TEST_ENVIRONMENT_TYPE") not in ["ACCOUNT", "UC_ACCOUNT"]:
+        pytest.skip("not Databricks Account environment")
     return account_client
 
 
@@ -73,19 +81,31 @@ def ucacct(env_or_skip) -> AccountClient:
     _load_debug_env_if_runs_from_ide("ucacct")
     env_or_skip("CLOUD_ENV")
     account_client = AccountClient()
-    if not account_client.config.is_account_client:
-        pytest.skip("not Databricks Account client")
+    if env_or_skip("TEST_ENVIRONMENT_TYPE") not in ["UC_ACCOUNT"]:
+        pytest.skip("not Databricks UC Account environment")
     if "TEST_METASTORE_ID" not in os.environ:
         pytest.skip("not in Unity Catalog Workspace test env")
     return account_client
 
 
 @pytest.fixture(scope="session")
+def unified_config(env_or_skip) -> Config:
+    _load_debug_env_if_runs_from_ide("account")
+    env_or_skip("CLOUD_ENV")
+    config = Config()
+    config.host = env_or_skip("UNIFIED_HOST")
+    config.workspace_id = env_or_skip("TEST_WORKSPACE_ID")
+
+    config._fix_host_if_needed()
+    return config
+
+
+@pytest.fixture(scope="session")
 def w(env_or_skip) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide("workspace")
     env_or_skip("CLOUD_ENV")
-    if "DATABRICKS_ACCOUNT_ID" in os.environ:
-        pytest.skip("Skipping workspace test on account level")
+    if env_or_skip("TEST_ENVIRONMENT_TYPE") not in ["WORKSPACE", "UC_WORKSPACE"]:
+        pytest.skip("not Databricks Workspace environment")
     return WorkspaceClient()
 
 
@@ -93,16 +113,48 @@ def w(env_or_skip) -> WorkspaceClient:
 def ucws(env_or_skip) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide("ucws")
     env_or_skip("CLOUD_ENV")
-    if "DATABRICKS_ACCOUNT_ID" in os.environ:
-        pytest.skip("Skipping workspace test on account level")
+    if env_or_skip("TEST_ENVIRONMENT_TYPE") not in ["UC_WORKSPACE"]:
+        pytest.skip("not Databricks UC Workspace environment")
     if "TEST_METASTORE_ID" not in os.environ:
-        pytest.skip("not in Unity Catalog Workspace test env")
+        pytest.skip("not Databricks UC Workspace environment")
     return WorkspaceClient()
+
+
+@pytest.fixture
+def isolated_env(monkeypatch):
+    """Fixture for tests that need to construct a client with explicit parameters
+    only, without Config picking up env vars automatically.
+
+    Usage:
+        def test_something(isolated_env):
+            env = isolated_env("workspace")  # loads debug-env key when running from IDE
+            host = env("UNIFIED_HOST")
+
+    The first call takes a debug-env key (used only when running from an IDE).
+    Returns a callable that looks up vars from the original environment snapshot
+    (skipping the test if missing). All Config-related env vars are removed so
+    the client only sees explicitly passed parameters."""
+
+    def init(debug_env_key: str):
+        _load_debug_env_if_runs_from_ide(debug_env_key)
+        original_env = os.environ.copy()
+
+        for attr in vars(Config).values():
+            if isinstance(attr, ConfigAttribute) and attr.env:
+                monkeypatch.delenv(attr.env, raising=False)
+
+        def get(var: str) -> str:
+            if var not in original_env:
+                pytest.skip(f"Environment variable {var} is missing")
+            return original_env[var]
+
+        return get
+
+    return init
 
 
 @pytest.fixture(scope="session")
 def env_or_skip():
-
     def inner(var: str) -> str:
         if var not in os.environ:
             pytest.skip(f"Environment variable {var} is missing")
@@ -163,6 +215,13 @@ def _is_in_debug() -> bool:
         "_jb_pytest_runner.py",
         "testlauncher.py",
     ]
+
+
+def _is_cloud(cloud: Cloud) -> bool:
+    """Check if the CLOUD_PROVIDER environment variable matches the specified cloud provider."""
+    cloud_provider = os.getenv("CLOUD_PROVIDER", "").upper()
+    cloud_upper = cloud.value.upper()
+    return cloud_provider == cloud_upper
 
 
 @pytest.fixture(scope="function")

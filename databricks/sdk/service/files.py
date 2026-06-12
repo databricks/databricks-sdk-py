@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -7,7 +10,9 @@ from dataclasses import dataclass
 from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
 from databricks.sdk.service._internal import (
-    _escape_multi_segment_path_parameter, _repeated_dict)
+    _escape_multi_segment_path_parameter,
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -473,6 +478,10 @@ class DbfsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/dbfs/add-block", body=body, headers=headers)
 
     def close(self, handle: int):
@@ -492,6 +501,10 @@ class DbfsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/dbfs/close", body=body, headers=headers)
 
@@ -522,6 +535,10 @@ class DbfsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/dbfs/create", body=body, headers=headers)
         return CreateResponse.from_dict(res)
@@ -561,6 +578,10 @@ class DbfsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/dbfs/delete", body=body, headers=headers)
 
     def get_status(self, path: str) -> FileInfo:
@@ -579,6 +600,10 @@ class DbfsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/dbfs/get-status", query=query, headers=headers)
         return FileInfo.from_dict(res)
@@ -607,6 +632,10 @@ class DbfsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         json = self._api.do("GET", "/api/2.0/dbfs/list", query=query, headers=headers)
         parsed = ListStatusResponse.from_dict(json).files
         return parsed if parsed is not None else []
@@ -630,6 +659,10 @@ class DbfsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/dbfs/mkdirs", body=body, headers=headers)
 
@@ -656,6 +689,10 @@ class DbfsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/dbfs/move", body=body, headers=headers)
 
@@ -693,6 +730,10 @@ class DbfsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/dbfs/put", body=body, headers=headers)
 
     def read(self, path: str, *, length: Optional[int] = None, offset: Optional[int] = None) -> ReadResponse:
@@ -726,6 +767,10 @@ class DbfsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/dbfs/read", query=query, headers=headers)
         return ReadResponse.from_dict(res)
 
@@ -742,10 +787,6 @@ class FilesAPI:
     The Files API has two distinct endpoints, one for working with files (`/fs/files`) and another one for
     working with directories (`/fs/directories`). Both endpoints use the standard HTTP methods GET, HEAD, PUT,
     and DELETE to manage files and directories specified using their URI path. The path is always absolute.
-
-    Some Files API client features are currently experimental. To enable them, set
-    `enable_experimental_files_api_client = True` in your configuration profile or use the environment
-    variable `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
 
     Use of Files API may incur Databricks data transfer charges.
 
@@ -767,6 +808,10 @@ class FilesAPI:
 
         headers = {}
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do(
             "PUT", f"/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}", headers=headers
         )
@@ -781,6 +826,10 @@ class FilesAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}", headers=headers)
 
@@ -797,6 +846,10 @@ class FilesAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE", f"/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}", headers=headers
@@ -815,6 +868,10 @@ class FilesAPI:
         headers = {
             "Accept": "application/octet-stream",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         response_headers = [
             "content-length",
@@ -847,6 +904,10 @@ class FilesAPI:
 
         headers = {}
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do(
             "HEAD", f"/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}", headers=headers
         )
@@ -861,6 +922,10 @@ class FilesAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         response_headers = [
             "content-length",
@@ -913,6 +978,10 @@ class FilesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do(
                 "GET",
@@ -949,6 +1018,10 @@ class FilesAPI:
         headers = {
             "Content-Type": "application/octet-stream",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "PUT",

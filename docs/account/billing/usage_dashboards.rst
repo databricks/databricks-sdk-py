@@ -8,13 +8,15 @@
     your usage with pre-built dashboards: visualize breakdowns, analyze tag attributions, and identify cost
     drivers.
 
-    .. py:method:: create( [, dashboard_type: Optional[UsageDashboardType], workspace_id: Optional[int]]) -> CreateBillingUsageDashboardResponse
+    .. py:method:: create( [, dashboard_type: Optional[UsageDashboardType], major_version: Optional[UsageDashboardMajorVersion], workspace_id: Optional[int]]) -> CreateBillingUsageDashboardResponse
 
         Create a usage dashboard specified by workspaceId, accountId, and dashboard type.
 
         :param dashboard_type: :class:`UsageDashboardType` (optional)
           Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage
           dashboard shows usage data for all workspaces in the account.
+        :param major_version: :class:`UsageDashboardMajorVersion` (optional)
+          The major version of the usage dashboard template to use. Defaults to VERSION_1.
         :param workspace_id: int (optional)
           The workspace ID of the workspace in which the usage dashboard is created.
 

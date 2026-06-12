@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -7,7 +10,11 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -42,7 +49,6 @@ class AibiDashboardEmbeddingAccessPolicy:
 
 
 class AibiDashboardEmbeddingAccessPolicyAccessPolicyType(Enum):
-
     ALLOW_ALL_DOMAINS = "ALLOW_ALL_DOMAINS"
     ALLOW_APPROVED_DOMAINS = "ALLOW_APPROVED_DOMAINS"
     DENY_ALL_DOMAINS = "DENY_ALL_DOMAINS"
@@ -70,6 +76,30 @@ class AibiDashboardEmbeddingApprovedDomains:
     def from_dict(cls, d: Dict[str, Any]) -> AibiDashboardEmbeddingApprovedDomains:
         """Deserializes the AibiDashboardEmbeddingApprovedDomains from a dictionary."""
         return cls(approved_domains=d.get("approved_domains", None))
+
+
+@dataclass
+class AllowedAppsUserApiScopesMessage:
+    allowed_scopes: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AllowedAppsUserApiScopesMessage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allowed_scopes:
+            body["allowed_scopes"] = [v for v in self.allowed_scopes]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AllowedAppsUserApiScopesMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allowed_scopes:
+            body["allowed_scopes"] = self.allowed_scopes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AllowedAppsUserApiScopesMessage:
+        """Deserializes the AllowedAppsUserApiScopesMessage from a dictionary."""
+        return cls(allowed_scopes=d.get("allowed_scopes", None))
 
 
 @dataclass
@@ -229,7 +259,6 @@ class ClusterAutoRestartMessageMaintenanceWindow:
 
 
 class ClusterAutoRestartMessageMaintenanceWindowDayOfWeek(Enum):
-
     FRIDAY = "FRIDAY"
     MONDAY = "MONDAY"
     SATURDAY = "SATURDAY"
@@ -282,7 +311,6 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
 
 
 class ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency(Enum):
-
     EVERY_WEEK = "EVERY_WEEK"
     FIRST_AND_THIRD_OF_MONTH = "FIRST_AND_THIRD_OF_MONTH"
     FIRST_OF_MONTH = "FIRST_OF_MONTH"
@@ -320,6 +348,40 @@ class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
     def from_dict(cls, d: Dict[str, Any]) -> ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
         """Deserializes the ClusterAutoRestartMessageMaintenanceWindowWindowStartTime from a dictionary."""
         return cls(hours=d.get("hours", None), minutes=d.get("minutes", None))
+
+
+@dataclass
+class CollaborationPlatformConnectivityMessage:
+    """Controls which external collaboration platforms (Slack, Microsoft Teams) can connect to a
+    workspace. Defaults to ALLOW_ALL."""
+
+    connectivity: CollaborationPlatformConnectivityMessageConnectivity
+
+    def as_dict(self) -> dict:
+        """Serializes the CollaborationPlatformConnectivityMessage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.connectivity is not None:
+            body["connectivity"] = self.connectivity.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CollaborationPlatformConnectivityMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.connectivity is not None:
+            body["connectivity"] = self.connectivity
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CollaborationPlatformConnectivityMessage:
+        """Deserializes the CollaborationPlatformConnectivityMessage from a dictionary."""
+        return cls(connectivity=_enum(d, "connectivity", CollaborationPlatformConnectivityMessageConnectivity))
+
+
+class CollaborationPlatformConnectivityMessageConnectivity(Enum):
+    ALLOW_ALL = "ALLOW_ALL"
+    ALLOW_SLACK = "ALLOW_SLACK"
+    ALLOW_TEAMS = "ALLOW_TEAMS"
+    DENY_ALL = "DENY_ALL"
 
 
 @dataclass
@@ -383,6 +445,42 @@ class ListAccountSettingsMetadataResponse:
 
 
 @dataclass
+class ListAccountUserPreferencesMetadataResponse:
+    next_page_token: Optional[str] = None
+    """A token that can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
+    settings_metadata: Optional[List[SettingsMetadata]] = None
+    """List of all settings available via public APIs and their metadata"""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAccountUserPreferencesMetadataResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.settings_metadata:
+            body["settings_metadata"] = [v.as_dict() for v in self.settings_metadata]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListAccountUserPreferencesMetadataResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.settings_metadata:
+            body["settings_metadata"] = self.settings_metadata
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListAccountUserPreferencesMetadataResponse:
+        """Deserializes the ListAccountUserPreferencesMetadataResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            settings_metadata=_repeated_dict(d, "settings_metadata", SettingsMetadata),
+        )
+
+
+@dataclass
 class ListWorkspaceSettingsMetadataResponse:
     next_page_token: Optional[str] = None
     """A token that can be sent as `page_token` to retrieve the next page. If this field is omitted,
@@ -416,6 +514,30 @@ class ListWorkspaceSettingsMetadataResponse:
             next_page_token=d.get("next_page_token", None),
             settings_metadata=_repeated_dict(d, "settings_metadata", SettingsMetadata),
         )
+
+
+@dataclass
+class OperationalEmailCustomRecipientMessage:
+    email: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the OperationalEmailCustomRecipientMessage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.email is not None:
+            body["email"] = self.email
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OperationalEmailCustomRecipientMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.email is not None:
+            body["email"] = self.email
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OperationalEmailCustomRecipientMessage:
+        """Deserializes the OperationalEmailCustomRecipientMessage from a dictionary."""
+        return cls(email=d.get("email", None))
 
 
 @dataclass
@@ -453,13 +575,32 @@ class PersonalComputeMessagePersonalComputeMessageEnum(Enum):
     ON = "ON"
 
 
+class PreviewPhase(Enum):
+    """Preview phase for settings that are feature previews. For settings that are not feature
+    previews, the preview_phase field is left unset. Mirrors only the customer-facing phases
+    surfaced in the UI; internal-only phases (DISABLED, DEV, UNDER_MIGRATION, LAUNCHED, etc.) are
+    not exposed here."""
+
+    BETA = "BETA"
+    GA = "GA"
+    GA_SOON = "GA_SOON"
+    PRIVATE_PREVIEW = "PRIVATE_PREVIEW"
+    PUBLIC_PREVIEW = "PUBLIC_PREVIEW"
+
+
 @dataclass
 class RestrictWorkspaceAdminsMessage:
     status: RestrictWorkspaceAdminsMessageStatus
 
+    disable_gov_tag_creation: Optional[bool] = None
+    """When true, workspace admins cannot create governance tags. ALLOW_ALL status does not override
+    this; they are independent."""
+
     def as_dict(self) -> dict:
         """Serializes the RestrictWorkspaceAdminsMessage into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.disable_gov_tag_creation is not None:
+            body["disable_gov_tag_creation"] = self.disable_gov_tag_creation
         if self.status is not None:
             body["status"] = self.status.value
         return body
@@ -467,6 +608,8 @@ class RestrictWorkspaceAdminsMessage:
     def as_shallow_dict(self) -> dict:
         """Serializes the RestrictWorkspaceAdminsMessage into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.disable_gov_tag_creation is not None:
+            body["disable_gov_tag_creation"] = self.disable_gov_tag_creation
         if self.status is not None:
             body["status"] = self.status
         return body
@@ -474,11 +617,13 @@ class RestrictWorkspaceAdminsMessage:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RestrictWorkspaceAdminsMessage:
         """Deserializes the RestrictWorkspaceAdminsMessage from a dictionary."""
-        return cls(status=_enum(d, "status", RestrictWorkspaceAdminsMessageStatus))
+        return cls(
+            disable_gov_tag_creation=d.get("disable_gov_tag_creation", None),
+            status=_enum(d, "status", RestrictWorkspaceAdminsMessageStatus),
+        )
 
 
 class RestrictWorkspaceAdminsMessageStatus(Enum):
-
     ALLOW_ALL = "ALLOW_ALL"
     RESTRICT_TOKENS_AND_JOB_RUN_AS = "RESTRICT_TOKENS_AND_JOB_RUN_AS"
 
@@ -486,39 +631,96 @@ class RestrictWorkspaceAdminsMessageStatus(Enum):
 @dataclass
 class Setting:
     aibi_dashboard_embedding_access_policy: Optional[AibiDashboardEmbeddingAccessPolicy] = None
+    """Setting value for aibi_dashboard_embedding_access_policy setting. This is the setting value set
+    by consumers, check effective_aibi_dashboard_embedding_access_policy for final setting value."""
 
     aibi_dashboard_embedding_approved_domains: Optional[AibiDashboardEmbeddingApprovedDomains] = None
+    """Setting value for aibi_dashboard_embedding_approved_domains setting. This is the setting value
+    set by consumers, check effective_aibi_dashboard_embedding_approved_domains for final setting
+    value."""
+
+    allowed_apps_user_api_scopes: Optional[AllowedAppsUserApiScopesMessage] = None
+    """Setting value for allowed_apps_user_api_scopes setting. This is the setting value set by
+    consumers, check effective_allowed_apps_user_api_scopes for final setting value."""
 
     automatic_cluster_update_workspace: Optional[ClusterAutoRestartMessage] = None
+    """Setting value for automatic_cluster_update_workspace setting. This is the setting value set by
+    consumers, check effective_automatic_cluster_update_workspace for final setting value."""
 
     boolean_val: Optional[BooleanMessage] = None
+    """Setting value for boolean type setting. This is the setting value set by consumers, check
+    effective_boolean_val for final setting value."""
+
+    collaboration_platform_connectivity: Optional[CollaborationPlatformConnectivityMessage] = None
+    """Setting value for collaboration_platform_connectivity setting. This is the setting value set by
+    consumers, check effective_collaboration_platform_connectivity for final setting value."""
 
     effective_aibi_dashboard_embedding_access_policy: Optional[AibiDashboardEmbeddingAccessPolicy] = None
+    """Effective setting value for aibi_dashboard_embedding_access_policy setting. This is the final
+    effective value of setting. To set a value use aibi_dashboard_embedding_access_policy."""
 
     effective_aibi_dashboard_embedding_approved_domains: Optional[AibiDashboardEmbeddingApprovedDomains] = None
+    """Effective setting value for aibi_dashboard_embedding_approved_domains setting. This is the final
+    effective value of setting. To set a value use aibi_dashboard_embedding_approved_domains."""
+
+    effective_allowed_apps_user_api_scopes: Optional[AllowedAppsUserApiScopesMessage] = None
+    """Effective setting value for allowed_apps_user_api_scopes setting. This is the final effective
+    value of setting. To set a value use allowed_apps_user_api_scopes."""
 
     effective_automatic_cluster_update_workspace: Optional[ClusterAutoRestartMessage] = None
+    """Effective setting value for automatic_cluster_update_workspace setting. This is the final
+    effective value of setting. To set a value use automatic_cluster_update_workspace."""
 
     effective_boolean_val: Optional[BooleanMessage] = None
+    """Effective setting value for boolean type setting. This is the final effective value of setting.
+    To set a value use boolean_val."""
+
+    effective_collaboration_platform_connectivity: Optional[CollaborationPlatformConnectivityMessage] = None
+    """Effective setting value for collaboration_platform_connectivity setting. This is the final
+    effective value of setting. To set a value use collaboration_platform_connectivity."""
 
     effective_integer_val: Optional[IntegerMessage] = None
+    """Effective setting value for integer type setting. This is the final effective value of setting.
+    To set a value use integer_val."""
+
+    effective_operational_email_custom_recipient: Optional[OperationalEmailCustomRecipientMessage] = None
+    """Effective setting value for operational_email_custom_recipient setting. This is the final
+    effective value of setting. To set a value use operational_email_custom_recipient."""
 
     effective_personal_compute: Optional[PersonalComputeMessage] = None
+    """Effective setting value for personal_compute setting. This is the final effective value of
+    setting. To set a value use personal_compute."""
 
     effective_restrict_workspace_admins: Optional[RestrictWorkspaceAdminsMessage] = None
+    """Effective setting value for restrict_workspace_admins setting. This is the final effective value
+    of setting. To set a value use restrict_workspace_admins."""
 
     effective_string_val: Optional[StringMessage] = None
+    """Effective setting value for string type setting. This is the final effective value of setting.
+    To set a value use string_val."""
 
     integer_val: Optional[IntegerMessage] = None
+    """Setting value for integer type setting. This is the setting value set by consumers, check
+    effective_integer_val for final setting value."""
 
     name: Optional[str] = None
     """Name of the setting."""
 
+    operational_email_custom_recipient: Optional[OperationalEmailCustomRecipientMessage] = None
+    """Setting value for operational_email_custom_recipient setting. This is the setting value set by
+    consumers, check effective_operational_email_custom_recipient for final setting value."""
+
     personal_compute: Optional[PersonalComputeMessage] = None
+    """Setting value for personal_compute setting. This is the setting value set by consumers, check
+    effective_personal_compute for final setting value."""
 
     restrict_workspace_admins: Optional[RestrictWorkspaceAdminsMessage] = None
+    """Setting value for restrict_workspace_admins setting. This is the setting value set by consumers,
+    check effective_restrict_workspace_admins for final setting value."""
 
     string_val: Optional[StringMessage] = None
+    """Setting value for string type setting. This is the setting value set by consumers, check
+    effective_string_val for final setting value."""
 
     def as_dict(self) -> dict:
         """Serializes the Setting into a dictionary suitable for use as a JSON request body."""
@@ -527,10 +729,14 @@ class Setting:
             body["aibi_dashboard_embedding_access_policy"] = self.aibi_dashboard_embedding_access_policy.as_dict()
         if self.aibi_dashboard_embedding_approved_domains:
             body["aibi_dashboard_embedding_approved_domains"] = self.aibi_dashboard_embedding_approved_domains.as_dict()
+        if self.allowed_apps_user_api_scopes:
+            body["allowed_apps_user_api_scopes"] = self.allowed_apps_user_api_scopes.as_dict()
         if self.automatic_cluster_update_workspace:
             body["automatic_cluster_update_workspace"] = self.automatic_cluster_update_workspace.as_dict()
         if self.boolean_val:
             body["boolean_val"] = self.boolean_val.as_dict()
+        if self.collaboration_platform_connectivity:
+            body["collaboration_platform_connectivity"] = self.collaboration_platform_connectivity.as_dict()
         if self.effective_aibi_dashboard_embedding_access_policy:
             body["effective_aibi_dashboard_embedding_access_policy"] = (
                 self.effective_aibi_dashboard_embedding_access_policy.as_dict()
@@ -539,14 +745,24 @@ class Setting:
             body["effective_aibi_dashboard_embedding_approved_domains"] = (
                 self.effective_aibi_dashboard_embedding_approved_domains.as_dict()
             )
+        if self.effective_allowed_apps_user_api_scopes:
+            body["effective_allowed_apps_user_api_scopes"] = self.effective_allowed_apps_user_api_scopes.as_dict()
         if self.effective_automatic_cluster_update_workspace:
             body["effective_automatic_cluster_update_workspace"] = (
                 self.effective_automatic_cluster_update_workspace.as_dict()
             )
         if self.effective_boolean_val:
             body["effective_boolean_val"] = self.effective_boolean_val.as_dict()
+        if self.effective_collaboration_platform_connectivity:
+            body["effective_collaboration_platform_connectivity"] = (
+                self.effective_collaboration_platform_connectivity.as_dict()
+            )
         if self.effective_integer_val:
             body["effective_integer_val"] = self.effective_integer_val.as_dict()
+        if self.effective_operational_email_custom_recipient:
+            body["effective_operational_email_custom_recipient"] = (
+                self.effective_operational_email_custom_recipient.as_dict()
+            )
         if self.effective_personal_compute:
             body["effective_personal_compute"] = self.effective_personal_compute.as_dict()
         if self.effective_restrict_workspace_admins:
@@ -557,6 +773,8 @@ class Setting:
             body["integer_val"] = self.integer_val.as_dict()
         if self.name is not None:
             body["name"] = self.name
+        if self.operational_email_custom_recipient:
+            body["operational_email_custom_recipient"] = self.operational_email_custom_recipient.as_dict()
         if self.personal_compute:
             body["personal_compute"] = self.personal_compute.as_dict()
         if self.restrict_workspace_admins:
@@ -572,10 +790,14 @@ class Setting:
             body["aibi_dashboard_embedding_access_policy"] = self.aibi_dashboard_embedding_access_policy
         if self.aibi_dashboard_embedding_approved_domains:
             body["aibi_dashboard_embedding_approved_domains"] = self.aibi_dashboard_embedding_approved_domains
+        if self.allowed_apps_user_api_scopes:
+            body["allowed_apps_user_api_scopes"] = self.allowed_apps_user_api_scopes
         if self.automatic_cluster_update_workspace:
             body["automatic_cluster_update_workspace"] = self.automatic_cluster_update_workspace
         if self.boolean_val:
             body["boolean_val"] = self.boolean_val
+        if self.collaboration_platform_connectivity:
+            body["collaboration_platform_connectivity"] = self.collaboration_platform_connectivity
         if self.effective_aibi_dashboard_embedding_access_policy:
             body["effective_aibi_dashboard_embedding_access_policy"] = (
                 self.effective_aibi_dashboard_embedding_access_policy
@@ -584,12 +806,18 @@ class Setting:
             body["effective_aibi_dashboard_embedding_approved_domains"] = (
                 self.effective_aibi_dashboard_embedding_approved_domains
             )
+        if self.effective_allowed_apps_user_api_scopes:
+            body["effective_allowed_apps_user_api_scopes"] = self.effective_allowed_apps_user_api_scopes
         if self.effective_automatic_cluster_update_workspace:
             body["effective_automatic_cluster_update_workspace"] = self.effective_automatic_cluster_update_workspace
         if self.effective_boolean_val:
             body["effective_boolean_val"] = self.effective_boolean_val
+        if self.effective_collaboration_platform_connectivity:
+            body["effective_collaboration_platform_connectivity"] = self.effective_collaboration_platform_connectivity
         if self.effective_integer_val:
             body["effective_integer_val"] = self.effective_integer_val
+        if self.effective_operational_email_custom_recipient:
+            body["effective_operational_email_custom_recipient"] = self.effective_operational_email_custom_recipient
         if self.effective_personal_compute:
             body["effective_personal_compute"] = self.effective_personal_compute
         if self.effective_restrict_workspace_admins:
@@ -600,6 +828,8 @@ class Setting:
             body["integer_val"] = self.integer_val
         if self.name is not None:
             body["name"] = self.name
+        if self.operational_email_custom_recipient:
+            body["operational_email_custom_recipient"] = self.operational_email_custom_recipient
         if self.personal_compute:
             body["personal_compute"] = self.personal_compute
         if self.restrict_workspace_admins:
@@ -618,21 +848,34 @@ class Setting:
             aibi_dashboard_embedding_approved_domains=_from_dict(
                 d, "aibi_dashboard_embedding_approved_domains", AibiDashboardEmbeddingApprovedDomains
             ),
+            allowed_apps_user_api_scopes=_from_dict(d, "allowed_apps_user_api_scopes", AllowedAppsUserApiScopesMessage),
             automatic_cluster_update_workspace=_from_dict(
                 d, "automatic_cluster_update_workspace", ClusterAutoRestartMessage
             ),
             boolean_val=_from_dict(d, "boolean_val", BooleanMessage),
+            collaboration_platform_connectivity=_from_dict(
+                d, "collaboration_platform_connectivity", CollaborationPlatformConnectivityMessage
+            ),
             effective_aibi_dashboard_embedding_access_policy=_from_dict(
                 d, "effective_aibi_dashboard_embedding_access_policy", AibiDashboardEmbeddingAccessPolicy
             ),
             effective_aibi_dashboard_embedding_approved_domains=_from_dict(
                 d, "effective_aibi_dashboard_embedding_approved_domains", AibiDashboardEmbeddingApprovedDomains
             ),
+            effective_allowed_apps_user_api_scopes=_from_dict(
+                d, "effective_allowed_apps_user_api_scopes", AllowedAppsUserApiScopesMessage
+            ),
             effective_automatic_cluster_update_workspace=_from_dict(
                 d, "effective_automatic_cluster_update_workspace", ClusterAutoRestartMessage
             ),
             effective_boolean_val=_from_dict(d, "effective_boolean_val", BooleanMessage),
+            effective_collaboration_platform_connectivity=_from_dict(
+                d, "effective_collaboration_platform_connectivity", CollaborationPlatformConnectivityMessage
+            ),
             effective_integer_val=_from_dict(d, "effective_integer_val", IntegerMessage),
+            effective_operational_email_custom_recipient=_from_dict(
+                d, "effective_operational_email_custom_recipient", OperationalEmailCustomRecipientMessage
+            ),
             effective_personal_compute=_from_dict(d, "effective_personal_compute", PersonalComputeMessage),
             effective_restrict_workspace_admins=_from_dict(
                 d, "effective_restrict_workspace_admins", RestrictWorkspaceAdminsMessage
@@ -640,6 +883,9 @@ class Setting:
             effective_string_val=_from_dict(d, "effective_string_val", StringMessage),
             integer_val=_from_dict(d, "integer_val", IntegerMessage),
             name=d.get("name", None),
+            operational_email_custom_recipient=_from_dict(
+                d, "operational_email_custom_recipient", OperationalEmailCustomRecipientMessage
+            ),
             personal_compute=_from_dict(d, "personal_compute", PersonalComputeMessage),
             restrict_workspace_admins=_from_dict(d, "restrict_workspace_admins", RestrictWorkspaceAdminsMessage),
             string_val=_from_dict(d, "string_val", StringMessage),
@@ -651,24 +897,36 @@ class SettingsMetadata:
     description: Optional[str] = None
     """Setting description for what this setting controls"""
 
+    display_name: Optional[str] = None
+    """Human-readable display name for the setting or feature preview. This field may be unset if no
+    display name is available."""
+
     docs_link: Optional[str] = None
     """Link to databricks documentation for the setting"""
 
     name: Optional[str] = None
     """Name of the setting."""
 
+    preview_phase: Optional[PreviewPhase] = None
+    """Preview phase for feature preview settings. This field is not set for non-preview settings."""
+
     type: Optional[str] = None
-    """Type of the setting. To set this setting, the value sent must match this type."""
+    """Sample message depicting the type of the setting. To set this setting, the value sent must match
+    this type."""
 
     def as_dict(self) -> dict:
         """Serializes the SettingsMetadata into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
         if self.docs_link is not None:
             body["docs_link"] = self.docs_link
         if self.name is not None:
             body["name"] = self.name
+        if self.preview_phase is not None:
+            body["preview_phase"] = self.preview_phase.value
         if self.type is not None:
             body["type"] = self.type
         return body
@@ -678,10 +936,14 @@ class SettingsMetadata:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
         if self.docs_link is not None:
             body["docs_link"] = self.docs_link
         if self.name is not None:
             body["name"] = self.name
+        if self.preview_phase is not None:
+            body["preview_phase"] = self.preview_phase
         if self.type is not None:
             body["type"] = self.type
         return body
@@ -691,8 +953,10 @@ class SettingsMetadata:
         """Deserializes the SettingsMetadata from a dictionary."""
         return cls(
             description=d.get("description", None),
+            display_name=d.get("display_name", None),
             docs_link=d.get("docs_link", None),
             name=d.get("name", None),
+            preview_phase=_enum(d, "preview_phase", PreviewPhase),
             type=d.get("type", None),
         )
 
@@ -722,6 +986,73 @@ class StringMessage:
         return cls(value=d.get("value", None))
 
 
+@dataclass
+class UserPreference:
+    """User Preference represents a user-specific setting scoped to an individual user within an
+    account. Unlike workspace or account settings that apply to all users, user preferences allow
+    personal customization (e.g., UI theme, editor preferences) without affecting other users."""
+
+    boolean_val: Optional[BooleanMessage] = None
+
+    effective_boolean_val: Optional[BooleanMessage] = None
+
+    effective_string_val: Optional[StringMessage] = None
+
+    name: Optional[str] = None
+    """Name of the setting."""
+
+    string_val: Optional[StringMessage] = None
+
+    user_id: Optional[str] = None
+    """User ID of the user."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UserPreference into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val.as_dict()
+        if self.effective_boolean_val:
+            body["effective_boolean_val"] = self.effective_boolean_val.as_dict()
+        if self.effective_string_val:
+            body["effective_string_val"] = self.effective_string_val.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.string_val:
+            body["string_val"] = self.string_val.as_dict()
+        if self.user_id is not None:
+            body["user_id"] = self.user_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UserPreference into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val
+        if self.effective_boolean_val:
+            body["effective_boolean_val"] = self.effective_boolean_val
+        if self.effective_string_val:
+            body["effective_string_val"] = self.effective_string_val
+        if self.name is not None:
+            body["name"] = self.name
+        if self.string_val:
+            body["string_val"] = self.string_val
+        if self.user_id is not None:
+            body["user_id"] = self.user_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UserPreference:
+        """Deserializes the UserPreference from a dictionary."""
+        return cls(
+            boolean_val=_from_dict(d, "boolean_val", BooleanMessage),
+            effective_boolean_val=_from_dict(d, "effective_boolean_val", BooleanMessage),
+            effective_string_val=_from_dict(d, "effective_string_val", StringMessage),
+            name=d.get("name", None),
+            string_val=_from_dict(d, "string_val", StringMessage),
+            user_id=d.get("user_id", None),
+        )
+
+
 class AccountSettingsV2API:
     """APIs to manage account level settings"""
 
@@ -743,6 +1074,29 @@ class AccountSettingsV2API:
 
         res = self._api.do("GET", f"/api/2.1/accounts/{self._api.account_id}/settings/{name}", headers=headers)
         return Setting.from_dict(res)
+
+    def get_public_account_user_preference(self, user_id: str, name: str) -> UserPreference:
+        """Get a user preference for a specific user. User preferences are personal settings that allow
+        individual customization without affecting other users. See
+        :method:settingsv2/listaccountuserpreferencesmetadata for list of user preferences available via
+        public APIs.
+
+        :param user_id: str
+          User ID of the user whose setting is being retrieved.
+        :param name: str
+          User Setting name.
+
+        :returns: :class:`UserPreference`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.1/accounts/{self._api.account_id}/users/{user_id}/settings/{name}", headers=headers
+        )
+        return UserPreference.from_dict(res)
 
     def list_account_settings_metadata(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -784,9 +1138,60 @@ class AccountSettingsV2API:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def list_account_user_preferences_metadata(
+        self, user_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[SettingsMetadata]:
+        """List valid user preferences and their metadata for a specific user. User preferences are personal
+        settings that allow individual customization without affecting other users. These settings are
+        available to be referenced via GET :method:settingsv2/getpublicaccountuserpreference and PATCH
+        :method:settingsv2/patchpublicaccountuserpreference APIs
+
+        :param user_id: str
+          User ID of the user whose settings metadata is being retrieved.
+        :param page_size: int (optional)
+          The maximum number of settings to return. The service may return fewer than this value. If
+          unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000
+          will be coerced to 1000.
+        :param page_token: str (optional)
+          A page token, received from a previous `ListAccountUserPreferencesMetadataRequest` call. Provide
+          this to retrieve the subsequent page.
+
+          When paginating, all other parameters provided to `ListAccountUserPreferencesMetadataRequest` must
+          match the call that provided the page token.
+
+        :returns: Iterator over :class:`SettingsMetadata`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/accounts/{self._api.account_id}/users/{user_id}/settings-metadata",
+                query=query,
+                headers=headers,
+            )
+            if "settings_metadata" in json:
+                for v in json["settings_metadata"]:
+                    yield SettingsMetadata.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def patch_public_account_setting(self, name: str, setting: Setting) -> Setting:
         """Patch a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of
-        setting available via public APIs at account level.
+        setting available via public APIs at account level. To determine the correct field to include in a
+        patch request, refer to the type field of the setting returned in the
+        :method:settingsv2/listaccountsettingsmetadata response.
+
+        Note: Page refresh is required for changes to take effect in UI.
 
         :param name: str
         :param setting: :class:`Setting`
@@ -795,6 +1200,7 @@ class AccountSettingsV2API:
         """
 
         body = setting.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -804,6 +1210,37 @@ class AccountSettingsV2API:
             "PATCH", f"/api/2.1/accounts/{self._api.account_id}/settings/{name}", body=body, headers=headers
         )
         return Setting.from_dict(res)
+
+    def patch_public_account_user_preference(self, user_id: str, name: str, setting: UserPreference) -> UserPreference:
+        """Update a user preference for a specific user. User preferences are personal settings that allow
+        individual customization without affecting other users. See
+        :method:settingsv2/listaccountuserpreferencesmetadata for list of user preferences available via
+        public APIs.
+
+        Note: Page refresh is required for changes to take effect in UI.
+
+        :param user_id: str
+          User ID of the user whose setting is being updated.
+        :param name: str
+        :param setting: :class:`UserPreference`
+
+        :returns: :class:`UserPreference`
+        """
+
+        body = setting.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.1/accounts/{self._api.account_id}/users/{user_id}/settings/{name}",
+            body=body,
+            headers=headers,
+        )
+        return UserPreference.from_dict(res)
 
 
 class WorkspaceSettingsV2API:
@@ -817,6 +1254,7 @@ class WorkspaceSettingsV2API:
         of setting available via public APIs.
 
         :param name: str
+          Name of the setting
 
         :returns: :class:`Setting`
         """
@@ -824,6 +1262,10 @@ class WorkspaceSettingsV2API:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/settings/{name}", headers=headers)
         return Setting.from_dict(res)
@@ -858,6 +1300,10 @@ class WorkspaceSettingsV2API:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.1/settings-metadata", query=query, headers=headers)
             if "settings_metadata" in json:
@@ -869,19 +1315,29 @@ class WorkspaceSettingsV2API:
 
     def patch_public_workspace_setting(self, name: str, setting: Setting) -> Setting:
         """Patch a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for
-        list of setting available via public APIs at workspace level.
+        list of setting available via public APIs at workspace level. To determine the correct field to
+        include in a patch request, refer to the type field of the setting returned in the
+        :method:settingsv2/listworkspacesettingsmetadata response.
+
+        Note: Page refresh is required for changes to take effect in UI.
 
         :param name: str
+          Name of the setting
         :param setting: :class:`Setting`
 
         :returns: :class:`Setting`
         """
 
         body = setting.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/settings/{name}", body=body, headers=headers)
         return Setting.from_dict(res)

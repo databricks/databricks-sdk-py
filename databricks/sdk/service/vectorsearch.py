@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -10,8 +13,12 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+)
 
 from ..errors import OperationFailed
 
@@ -26,11 +33,16 @@ class ColumnInfo:
     name: Optional[str] = None
     """Name of the column."""
 
+    type_text: Optional[str] = None
+    """Data type of the column (e.g., "string", "int", "array<float>")"""
+
     def as_dict(self) -> dict:
         """Serializes the ColumnInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
             body["name"] = self.name
+        if self.type_text is not None:
+            body["type_text"] = self.type_text
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -38,21 +50,23 @@ class ColumnInfo:
         body = {}
         if self.name is not None:
             body["name"] = self.name
+        if self.type_text is not None:
+            body["type_text"] = self.type_text
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
         """Deserializes the ColumnInfo from a dictionary."""
-        return cls(name=d.get("name", None))
+        return cls(name=d.get("name", None), type_text=d.get("type_text", None))
 
 
 @dataclass
 class CustomTag:
     key: str
-    """Key field for a vector search endpoint tag."""
+    """Key field for an AI Search endpoint tag."""
 
     value: Optional[str] = None
-    """[Optional] Value field for a vector search endpoint tag."""
+    """[Optional] Value field for an AI Search endpoint tag."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomTag into a dictionary suitable for use as a JSON request body."""
@@ -113,7 +127,6 @@ class DeleteDataResult:
 
 
 class DeleteDataStatus(Enum):
-
     FAILURE = "FAILURE"
     PARTIAL_SUCCESS = "PARTIAL_SUCCESS"
     SUCCESS = "SUCCESS"
@@ -189,6 +202,12 @@ class DeleteIndexResponse:
 
 @dataclass
 class DeltaSyncVectorIndexSpecRequest:
+    columns_to_index: Optional[List[str]] = None
+    """[Optional] Alias for columns_to_sync. Select the columns to include in the vector index. If you
+    leave this field blank, all columns from the source table are included. The primary key column
+    and embedding source column or embedding vector column are always included. Only one of
+    columns_to_sync or columns_to_index may be specified."""
+
     columns_to_sync: Optional[List[str]] = None
     """[Optional] Select the columns to sync with the vector index. If you leave this field blank, all
     columns from the source table are synced with the index. The primary key column and embedding
@@ -216,6 +235,8 @@ class DeltaSyncVectorIndexSpecRequest:
     def as_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.columns_to_index:
+            body["columns_to_index"] = [v for v in self.columns_to_index]
         if self.columns_to_sync:
             body["columns_to_sync"] = [v for v in self.columns_to_sync]
         if self.embedding_source_columns:
@@ -233,6 +254,8 @@ class DeltaSyncVectorIndexSpecRequest:
     def as_shallow_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecRequest into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.columns_to_index:
+            body["columns_to_index"] = self.columns_to_index
         if self.columns_to_sync:
             body["columns_to_sync"] = self.columns_to_sync
         if self.embedding_source_columns:
@@ -251,6 +274,7 @@ class DeltaSyncVectorIndexSpecRequest:
     def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecRequest:
         """Deserializes the DeltaSyncVectorIndexSpecRequest from a dictionary."""
         return cls(
+            columns_to_index=d.get("columns_to_index", None),
             columns_to_sync=d.get("columns_to_sync", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
@@ -262,6 +286,17 @@ class DeltaSyncVectorIndexSpecRequest:
 
 @dataclass
 class DeltaSyncVectorIndexSpecResponse:
+    columns_to_index: Optional[List[str]] = None
+    """[Optional] Alias for columns_to_sync. Select the columns to include in the vector index. If you
+    leave this field blank, all columns from the source table are included. The primary key column
+    and embedding source column or embedding vector column are always included. Only one of
+    columns_to_sync or columns_to_index may be specified."""
+
+    columns_to_sync: Optional[List[str]] = None
+    """[Optional] Select the columns to sync with the vector index. If you leave this field blank, all
+    columns from the source table are synced with the index. The primary key column and embedding
+    source column or embedding vector column are always synced."""
+
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
 
@@ -287,6 +322,10 @@ class DeltaSyncVectorIndexSpecResponse:
     def as_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.columns_to_index:
+            body["columns_to_index"] = [v for v in self.columns_to_index]
+        if self.columns_to_sync:
+            body["columns_to_sync"] = [v for v in self.columns_to_sync]
         if self.embedding_source_columns:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -304,6 +343,10 @@ class DeltaSyncVectorIndexSpecResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.columns_to_index:
+            body["columns_to_index"] = self.columns_to_index
+        if self.columns_to_sync:
+            body["columns_to_sync"] = self.columns_to_sync
         if self.embedding_source_columns:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
@@ -322,6 +365,8 @@ class DeltaSyncVectorIndexSpecResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecResponse:
         """Deserializes the DeltaSyncVectorIndexSpecResponse from a dictionary."""
         return cls(
+            columns_to_index=d.get("columns_to_index", None),
+            columns_to_sync=d.get("columns_to_sync", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
             embedding_writeback_table=d.get("embedding_writeback_table", None),
@@ -453,6 +498,9 @@ class EmbeddingVectorColumn:
 
 @dataclass
 class EndpointInfo:
+    budget_policy_id: Optional[str] = None
+    """The user-selected budget policy id for the endpoint."""
+
     creation_timestamp: Optional[int] = None
     """Timestamp of endpoint creation"""
 
@@ -481,14 +529,19 @@ class EndpointInfo:
     """User who last updated the endpoint"""
 
     name: Optional[str] = None
-    """Name of the vector search endpoint"""
+    """Name of the AI Search endpoint"""
 
     num_indexes: Optional[int] = None
     """Number of indexes on the endpoint"""
 
+    scaling_info: Optional[EndpointScalingInfo] = None
+    """Scaling information for the endpoint"""
+
     def as_dict(self) -> dict:
         """Serializes the EndpointInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
@@ -511,11 +564,15 @@ class EndpointInfo:
             body["name"] = self.name
         if self.num_indexes is not None:
             body["num_indexes"] = self.num_indexes
+        if self.scaling_info:
+            body["scaling_info"] = self.scaling_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the EndpointInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
@@ -538,12 +595,15 @@ class EndpointInfo:
             body["name"] = self.name
         if self.num_indexes is not None:
             body["num_indexes"] = self.num_indexes
+        if self.scaling_info:
+            body["scaling_info"] = self.scaling_info
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointInfo:
         """Deserializes the EndpointInfo from a dictionary."""
         return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
             custom_tags=_repeated_dict(d, "custom_tags", CustomTag),
@@ -555,6 +615,42 @@ class EndpointInfo:
             last_updated_user=d.get("last_updated_user", None),
             name=d.get("name", None),
             num_indexes=d.get("num_indexes", None),
+            scaling_info=_from_dict(d, "scaling_info", EndpointScalingInfo),
+        )
+
+
+@dataclass
+class EndpointScalingInfo:
+    requested_target_qps: Optional[int] = None
+    """The requested QPS target for the endpoint. Best-effort; the system does not guarantee this QPS
+    will be achieved."""
+
+    state: Optional[ScalingChangeState] = None
+    """The current state of the scaling change request."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EndpointScalingInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.requested_target_qps is not None:
+            body["requested_target_qps"] = self.requested_target_qps
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointScalingInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.requested_target_qps is not None:
+            body["requested_target_qps"] = self.requested_target_qps
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointScalingInfo:
+        """Deserializes the EndpointScalingInfo from a dictionary."""
+        return cls(
+            requested_target_qps=d.get("requested_target_qps", None), state=_enum(d, "state", ScalingChangeState)
         )
 
 
@@ -595,6 +691,7 @@ class EndpointStatus:
 class EndpointStatusState(Enum):
     """Current state of the endpoint"""
 
+    DELETED = "DELETED"
     OFFLINE = "OFFLINE"
     ONLINE = "ONLINE"
     PROVISIONING = "PROVISIONING"
@@ -606,6 +703,77 @@ class EndpointType(Enum):
     """Type of endpoint."""
 
     STANDARD = "STANDARD"
+    STORAGE_OPTIMIZED = "STORAGE_OPTIMIZED"
+
+
+@dataclass
+class FacetResultData:
+    """Facet aggregation rows returned by a query."""
+
+    facet_array: Optional[List[List[str]]] = None
+    """Facet rows. Each row is `[facet_column_name, value_or_range, count]`."""
+
+    facet_row_count: Optional[int] = None
+    """Number of facet rows returned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FacetResultData into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.facet_array:
+            body["facet_array"] = [v for v in self.facet_array]
+        if self.facet_row_count is not None:
+            body["facet_row_count"] = self.facet_row_count
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FacetResultData into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.facet_array:
+            body["facet_array"] = self.facet_array
+        if self.facet_row_count is not None:
+            body["facet_row_count"] = self.facet_row_count
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FacetResultData:
+        """Deserializes the FacetResultData from a dictionary."""
+        return cls(facet_array=d.get("facet_array", None), facet_row_count=d.get("facet_row_count", None))
+
+
+@dataclass
+class GetVectorSearchEndpointPermissionLevelsResponse:
+    permission_levels: Optional[List[VectorSearchEndpointPermissionsDescription]] = None
+    """Specific permission levels"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetVectorSearchEndpointPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission_levels:
+            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetVectorSearchEndpointPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_levels:
+            body["permission_levels"] = self.permission_levels
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetVectorSearchEndpointPermissionLevelsResponse:
+        """Deserializes the GetVectorSearchEndpointPermissionLevelsResponse from a dictionary."""
+        return cls(permission_levels=_repeated_dict(d, "permission_levels", VectorSearchEndpointPermissionsDescription))
+
+
+class IndexSubtype(Enum):
+    """The subtype of the AI Search index, determining the indexing and retrieval strategy. - `VECTOR`:
+    Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An index that uses full-text search without
+    vector embeddings. - `HYBRID`: An index that uses vector embeddings for similarity search and
+    hybrid search."""
+
+    FULL_TEXT = "FULL_TEXT"
+    HYBRID = "HYBRID"
+    VECTOR = "VECTOR"
 
 
 @dataclass
@@ -738,12 +906,162 @@ class MapStringValueEntry:
 
 
 @dataclass
+class Metric:
+    """Metric specification"""
+
+    labels: Optional[List[MetricLabel]] = None
+    """Metric labels"""
+
+    name: Optional[str] = None
+    """Metric name"""
+
+    percentile: Optional[float] = None
+    """Percentile for the metric"""
+
+    def as_dict(self) -> dict:
+        """Serializes the Metric into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.labels:
+            body["labels"] = [v.as_dict() for v in self.labels]
+        if self.name is not None:
+            body["name"] = self.name
+        if self.percentile is not None:
+            body["percentile"] = self.percentile
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Metric into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.labels:
+            body["labels"] = self.labels
+        if self.name is not None:
+            body["name"] = self.name
+        if self.percentile is not None:
+            body["percentile"] = self.percentile
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Metric:
+        """Deserializes the Metric from a dictionary."""
+        return cls(
+            labels=_repeated_dict(d, "labels", MetricLabel),
+            name=d.get("name", None),
+            percentile=d.get("percentile", None),
+        )
+
+
+@dataclass
+class MetricLabel:
+    """Label for a metric"""
+
+    name: Optional[str] = None
+    """Label name"""
+
+    value: Optional[str] = None
+    """Label value"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetricLabel into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetricLabel into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetricLabel:
+        """Deserializes the MetricLabel from a dictionary."""
+        return cls(name=d.get("name", None), value=d.get("value", None))
+
+
+@dataclass
+class MetricValue:
+    """Single metric value at a specific timestamp"""
+
+    timestamp: Optional[int] = None
+    """Timestamp of the metric value (milliseconds since epoch)"""
+
+    value: Optional[float] = None
+    """Metric value"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetricValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetricValue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetricValue:
+        """Deserializes the MetricValue from a dictionary."""
+        return cls(timestamp=d.get("timestamp", None), value=d.get("value", None))
+
+
+@dataclass
+class MetricValues:
+    """Collection of metric values for a specific metric"""
+
+    metric: Optional[Metric] = None
+    """Metric specification"""
+
+    values: Optional[List[MetricValue]] = None
+    """Time series of metric values"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetricValues into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metric:
+            body["metric"] = self.metric.as_dict()
+        if self.values:
+            body["values"] = [v.as_dict() for v in self.values]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetricValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metric:
+            body["metric"] = self.metric
+        if self.values:
+            body["values"] = self.values
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetricValues:
+        """Deserializes the MetricValues from a dictionary."""
+        return cls(metric=_from_dict(d, "metric", Metric), values=_repeated_dict(d, "values", MetricValue))
+
+
+@dataclass
 class MiniVectorIndex:
     creator: Optional[str] = None
     """The user who created the index."""
 
     endpoint_name: Optional[str] = None
     """Name of the endpoint associated with the index"""
+
+    index_subtype: Optional[IndexSubtype] = None
+    """The subtype of the index."""
 
     index_type: Optional[VectorIndexType] = None
 
@@ -760,6 +1078,8 @@ class MiniVectorIndex:
             body["creator"] = self.creator
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.index_subtype is not None:
+            body["index_subtype"] = self.index_subtype.value
         if self.index_type is not None:
             body["index_type"] = self.index_type.value
         if self.name is not None:
@@ -775,6 +1095,8 @@ class MiniVectorIndex:
             body["creator"] = self.creator
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.index_subtype is not None:
+            body["index_subtype"] = self.index_subtype
         if self.index_type is not None:
             body["index_type"] = self.index_type
         if self.name is not None:
@@ -789,6 +1111,7 @@ class MiniVectorIndex:
         return cls(
             creator=d.get("creator", None),
             endpoint_name=d.get("endpoint_name", None),
+            index_subtype=_enum(d, "index_subtype", IndexSubtype),
             index_type=_enum(d, "index_type", VectorIndexType),
             name=d.get("name", None),
             primary_key=d.get("primary_key", None),
@@ -797,12 +1120,16 @@ class MiniVectorIndex:
 
 @dataclass
 class PatchEndpointBudgetPolicyResponse:
+    budget_policy_id: Optional[str] = None
+
     effective_budget_policy_id: Optional[str] = None
-    """The budget policy applied to the vector search endpoint."""
+    """The budget policy applied to the AI Search endpoint."""
 
     def as_dict(self) -> dict:
         """Serializes the PatchEndpointBudgetPolicyResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
         return body
@@ -810,6 +1137,8 @@ class PatchEndpointBudgetPolicyResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the PatchEndpointBudgetPolicyResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
         return body
@@ -817,7 +1146,10 @@ class PatchEndpointBudgetPolicyResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PatchEndpointBudgetPolicyResponse:
         """Deserializes the PatchEndpointBudgetPolicyResponse from a dictionary."""
-        return cls(effective_budget_policy_id=d.get("effective_budget_policy_id", None))
+        return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+        )
 
 
 class PipelineType(Enum):
@@ -833,6 +1165,9 @@ class PipelineType(Enum):
 
 @dataclass
 class QueryVectorIndexResponse:
+    facet_result: Optional[FacetResultData] = None
+    """Facet aggregation rows returned by a query."""
+
     manifest: Optional[ResultManifest] = None
     """Metadata about the result set."""
 
@@ -847,6 +1182,8 @@ class QueryVectorIndexResponse:
     def as_dict(self) -> dict:
         """Serializes the QueryVectorIndexResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.facet_result:
+            body["facet_result"] = self.facet_result.as_dict()
         if self.manifest:
             body["manifest"] = self.manifest.as_dict()
         if self.next_page_token is not None:
@@ -858,6 +1195,8 @@ class QueryVectorIndexResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryVectorIndexResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.facet_result:
+            body["facet_result"] = self.facet_result
         if self.manifest:
             body["manifest"] = self.manifest
         if self.next_page_token is not None:
@@ -870,6 +1209,7 @@ class QueryVectorIndexResponse:
     def from_dict(cls, d: Dict[str, Any]) -> QueryVectorIndexResponse:
         """Deserializes the QueryVectorIndexResponse from a dictionary."""
         return cls(
+            facet_result=_from_dict(d, "facet_result", FacetResultData),
             manifest=_from_dict(d, "manifest", ResultManifest),
             next_page_token=d.get("next_page_token", None),
             result=_from_dict(d, "result", ResultData),
@@ -879,8 +1219,11 @@ class QueryVectorIndexResponse:
 @dataclass
 class RerankerConfig:
     model: Optional[str] = None
+    """Reranker identifier: - When model_type=BASE/UNSPECIFIED: must be "databricks_reranker". - When
+    model_type=FINETUNED: the Model Serving endpoint name hosting a finetuned reranker."""
 
     parameters: Optional[RerankerConfigRerankerParameters] = None
+    """Parameters that control how the reranker processes the query results."""
 
     def as_dict(self) -> dict:
         """Serializes the RerankerConfig into a dictionary suitable for use as a JSON request body."""
@@ -974,6 +1317,12 @@ class ResultManifest:
     columns: Optional[List[ColumnInfo]] = None
     """Information about each column in the result set."""
 
+    facet_column_count: Optional[int] = None
+    """Number of columns in `facet_result`."""
+
+    facet_columns: Optional[List[ColumnInfo]] = None
+    """Information about each column in `facet_result`."""
+
     def as_dict(self) -> dict:
         """Serializes the ResultManifest into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -981,6 +1330,10 @@ class ResultManifest:
             body["column_count"] = self.column_count
         if self.columns:
             body["columns"] = [v.as_dict() for v in self.columns]
+        if self.facet_column_count is not None:
+            body["facet_column_count"] = self.facet_column_count
+        if self.facet_columns:
+            body["facet_columns"] = [v.as_dict() for v in self.facet_columns]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -990,12 +1343,65 @@ class ResultManifest:
             body["column_count"] = self.column_count
         if self.columns:
             body["columns"] = self.columns
+        if self.facet_column_count is not None:
+            body["facet_column_count"] = self.facet_column_count
+        if self.facet_columns:
+            body["facet_columns"] = self.facet_columns
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultManifest:
         """Deserializes the ResultManifest from a dictionary."""
-        return cls(column_count=d.get("column_count", None), columns=_repeated_dict(d, "columns", ColumnInfo))
+        return cls(
+            column_count=d.get("column_count", None),
+            columns=_repeated_dict(d, "columns", ColumnInfo),
+            facet_column_count=d.get("facet_column_count", None),
+            facet_columns=_repeated_dict(d, "facet_columns", ColumnInfo),
+        )
+
+
+@dataclass
+class RetrieveUserVisibleMetricsResponse:
+    """Response containing user-visible metrics"""
+
+    metric_values: Optional[List[MetricValues]] = None
+    """Collection of metric values"""
+
+    next_page_token: Optional[str] = None
+    """A token that can be used to get the next page of results. If not present, there are no more
+    results to show."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RetrieveUserVisibleMetricsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metric_values:
+            body["metric_values"] = [v.as_dict() for v in self.metric_values]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RetrieveUserVisibleMetricsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metric_values:
+            body["metric_values"] = self.metric_values
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RetrieveUserVisibleMetricsResponse:
+        """Deserializes the RetrieveUserVisibleMetricsResponse from a dictionary."""
+        return cls(
+            metric_values=_repeated_dict(d, "metric_values", MetricValues),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+class ScalingChangeState(Enum):
+    SCALING_CHANGE_APPLIED = "SCALING_CHANGE_APPLIED"
+    SCALING_CHANGE_IN_PROGRESS = "SCALING_CHANGE_IN_PROGRESS"
+    SCALING_CHANGE_UNSPECIFIED = "SCALING_CHANGE_UNSPECIFIED"
 
 
 @dataclass
@@ -1078,10 +1484,10 @@ class SyncIndexResponse:
 @dataclass
 class UpdateEndpointCustomTagsResponse:
     custom_tags: Optional[List[CustomTag]] = None
-    """All the custom tags that are applied to the vector search endpoint."""
+    """All the custom tags that are applied to the AI Search endpoint."""
 
     name: Optional[str] = None
-    """The name of the vector search endpoint whose custom tags were updated."""
+    """The name of the AI Search endpoint whose custom tags were updated."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateEndpointCustomTagsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1142,7 +1548,6 @@ class UpsertDataResult:
 
 
 class UpsertDataStatus(Enum):
-
     FAILURE = "FAILURE"
     PARTIAL_SUCCESS = "PARTIAL_SUCCESS"
     SUCCESS = "SUCCESS"
@@ -1246,6 +1651,9 @@ class VectorIndex:
     endpoint_name: Optional[str] = None
     """Name of the endpoint associated with the index"""
 
+    index_subtype: Optional[IndexSubtype] = None
+    """The subtype of the index."""
+
     index_type: Optional[VectorIndexType] = None
 
     name: Optional[str] = None
@@ -1267,6 +1675,8 @@ class VectorIndex:
             body["direct_access_index_spec"] = self.direct_access_index_spec.as_dict()
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.index_subtype is not None:
+            body["index_subtype"] = self.index_subtype.value
         if self.index_type is not None:
             body["index_type"] = self.index_type.value
         if self.name is not None:
@@ -1288,6 +1698,8 @@ class VectorIndex:
             body["direct_access_index_spec"] = self.direct_access_index_spec
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.index_subtype is not None:
+            body["index_subtype"] = self.index_subtype
         if self.index_type is not None:
             body["index_type"] = self.index_type
         if self.name is not None:
@@ -1306,6 +1718,7 @@ class VectorIndex:
             delta_sync_index_spec=_from_dict(d, "delta_sync_index_spec", DeltaSyncVectorIndexSpecResponse),
             direct_access_index_spec=_from_dict(d, "direct_access_index_spec", DirectAccessVectorIndexSpec),
             endpoint_name=d.get("endpoint_name", None),
+            index_subtype=_enum(d, "index_subtype", IndexSubtype),
             index_type=_enum(d, "index_type", VectorIndexType),
             name=d.get("name", None),
             primary_key=d.get("primary_key", None),
@@ -1365,18 +1778,248 @@ class VectorIndexStatus:
 
 
 class VectorIndexType(Enum):
-    """There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs
-    with a source Delta Table, automatically and incrementally updating the index as the underlying
-    data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write
-    of vectors and metadata through our REST and SDK APIs. With this model, the user manages index
+    """There are 2 types of AI Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a
+    source Delta Table, automatically and incrementally updating the index as the underlying data in
+    the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of
+    vectors and metadata through our REST and SDK APIs. With this model, the user manages index
     updates."""
 
     DELTA_SYNC = "DELTA_SYNC"
     DIRECT_ACCESS = "DIRECT_ACCESS"
 
 
+@dataclass
+class VectorSearchEndpointAccessControlRequest:
+    group_name: Optional[str] = None
+    """name of the group"""
+
+    permission_level: Optional[VectorSearchEndpointPermissionLevel] = None
+
+    service_principal_name: Optional[str] = None
+    """application ID of a service principal"""
+
+    user_name: Optional[str] = None
+    """name of the user"""
+
+    def as_dict(self) -> dict:
+        """Serializes the VectorSearchEndpointAccessControlRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.group_name is not None:
+            body["group_name"] = self.group_name
+        if self.permission_level is not None:
+            body["permission_level"] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body["service_principal_name"] = self.service_principal_name
+        if self.user_name is not None:
+            body["user_name"] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VectorSearchEndpointAccessControlRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group_name is not None:
+            body["group_name"] = self.group_name
+        if self.permission_level is not None:
+            body["permission_level"] = self.permission_level
+        if self.service_principal_name is not None:
+            body["service_principal_name"] = self.service_principal_name
+        if self.user_name is not None:
+            body["user_name"] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VectorSearchEndpointAccessControlRequest:
+        """Deserializes the VectorSearchEndpointAccessControlRequest from a dictionary."""
+        return cls(
+            group_name=d.get("group_name", None),
+            permission_level=_enum(d, "permission_level", VectorSearchEndpointPermissionLevel),
+            service_principal_name=d.get("service_principal_name", None),
+            user_name=d.get("user_name", None),
+        )
+
+
+@dataclass
+class VectorSearchEndpointAccessControlResponse:
+    all_permissions: Optional[List[VectorSearchEndpointPermission]] = None
+    """All permissions."""
+
+    display_name: Optional[str] = None
+    """Display name of the user or service principal."""
+
+    group_name: Optional[str] = None
+    """name of the group"""
+
+    service_principal_name: Optional[str] = None
+    """Name of the service principal."""
+
+    user_name: Optional[str] = None
+    """name of the user"""
+
+    def as_dict(self) -> dict:
+        """Serializes the VectorSearchEndpointAccessControlResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.all_permissions:
+            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.group_name is not None:
+            body["group_name"] = self.group_name
+        if self.service_principal_name is not None:
+            body["service_principal_name"] = self.service_principal_name
+        if self.user_name is not None:
+            body["user_name"] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VectorSearchEndpointAccessControlResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_permissions:
+            body["all_permissions"] = self.all_permissions
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.group_name is not None:
+            body["group_name"] = self.group_name
+        if self.service_principal_name is not None:
+            body["service_principal_name"] = self.service_principal_name
+        if self.user_name is not None:
+            body["user_name"] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VectorSearchEndpointAccessControlResponse:
+        """Deserializes the VectorSearchEndpointAccessControlResponse from a dictionary."""
+        return cls(
+            all_permissions=_repeated_dict(d, "all_permissions", VectorSearchEndpointPermission),
+            display_name=d.get("display_name", None),
+            group_name=d.get("group_name", None),
+            service_principal_name=d.get("service_principal_name", None),
+            user_name=d.get("user_name", None),
+        )
+
+
+@dataclass
+class VectorSearchEndpointPermission:
+    inherited: Optional[bool] = None
+
+    inherited_from_object: Optional[List[str]] = None
+
+    permission_level: Optional[VectorSearchEndpointPermissionLevel] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the VectorSearchEndpointPermission into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.inherited is not None:
+            body["inherited"] = self.inherited
+        if self.inherited_from_object:
+            body["inherited_from_object"] = [v for v in self.inherited_from_object]
+        if self.permission_level is not None:
+            body["permission_level"] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VectorSearchEndpointPermission into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.inherited is not None:
+            body["inherited"] = self.inherited
+        if self.inherited_from_object:
+            body["inherited_from_object"] = self.inherited_from_object
+        if self.permission_level is not None:
+            body["permission_level"] = self.permission_level
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VectorSearchEndpointPermission:
+        """Deserializes the VectorSearchEndpointPermission from a dictionary."""
+        return cls(
+            inherited=d.get("inherited", None),
+            inherited_from_object=d.get("inherited_from_object", None),
+            permission_level=_enum(d, "permission_level", VectorSearchEndpointPermissionLevel),
+        )
+
+
+class VectorSearchEndpointPermissionLevel(Enum):
+    """Permission level"""
+
+    CAN_CREATE = "CAN_CREATE"
+    CAN_MANAGE = "CAN_MANAGE"
+    CAN_USE = "CAN_USE"
+
+
+@dataclass
+class VectorSearchEndpointPermissions:
+    access_control_list: Optional[List[VectorSearchEndpointAccessControlResponse]] = None
+
+    object_id: Optional[str] = None
+
+    object_type: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the VectorSearchEndpointPermissions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_control_list:
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None:
+            body["object_id"] = self.object_id
+        if self.object_type is not None:
+            body["object_type"] = self.object_type
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VectorSearchEndpointPermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list:
+            body["access_control_list"] = self.access_control_list
+        if self.object_id is not None:
+            body["object_id"] = self.object_id
+        if self.object_type is not None:
+            body["object_type"] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VectorSearchEndpointPermissions:
+        """Deserializes the VectorSearchEndpointPermissions from a dictionary."""
+        return cls(
+            access_control_list=_repeated_dict(d, "access_control_list", VectorSearchEndpointAccessControlResponse),
+            object_id=d.get("object_id", None),
+            object_type=d.get("object_type", None),
+        )
+
+
+@dataclass
+class VectorSearchEndpointPermissionsDescription:
+    description: Optional[str] = None
+
+    permission_level: Optional[VectorSearchEndpointPermissionLevel] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the VectorSearchEndpointPermissionsDescription into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.permission_level is not None:
+            body["permission_level"] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VectorSearchEndpointPermissionsDescription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.permission_level is not None:
+            body["permission_level"] = self.permission_level
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VectorSearchEndpointPermissionsDescription:
+        """Deserializes the VectorSearchEndpointPermissionsDescription from a dictionary."""
+        return cls(
+            description=d.get("description", None),
+            permission_level=_enum(d, "permission_level", VectorSearchEndpointPermissionLevel),
+        )
+
+
 class VectorSearchEndpointsAPI:
-    """**Endpoint**: Represents the compute resources to host vector search indexes."""
+    """**Endpoint**: Represents the compute resources to host AI Search indexes."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1416,16 +2059,28 @@ class VectorSearchEndpointsAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def create_endpoint(
-        self, name: str, endpoint_type: EndpointType, *, budget_policy_id: Optional[str] = None
+        self,
+        name: str,
+        endpoint_type: EndpointType,
+        *,
+        budget_policy_id: Optional[str] = None,
+        target_qps: Optional[int] = None,
+        usage_policy_id: Optional[str] = None,
     ) -> Wait[EndpointInfo]:
         """Create a new endpoint.
 
         :param name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
         :param endpoint_type: :class:`EndpointType`
           Type of endpoint
         :param budget_policy_id: str (optional)
           The budget policy id to be applied
+        :param target_qps: int (optional)
+          Target QPS for the endpoint. Mutually exclusive with num_replicas. The actual replica count is
+          calculated at index creation/sync time based on this value. Best-effort target; the system does not
+          guarantee this QPS will be achieved.
+        :param usage_policy_id: str (optional)
+          The usage policy id to be applied once we've migrated to usage policies
 
         :returns:
           Long-running operation waiter for :class:`EndpointInfo`.
@@ -1439,10 +2094,18 @@ class VectorSearchEndpointsAPI:
             body["endpoint_type"] = endpoint_type.value
         if name is not None:
             body["name"] = name
+        if target_qps is not None:
+            body["target_qps"] = target_qps
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.0/vector-search/endpoints", body=body, headers=headers)
         return Wait(
@@ -1457,17 +2120,23 @@ class VectorSearchEndpointsAPI:
         endpoint_type: EndpointType,
         *,
         budget_policy_id: Optional[str] = None,
+        target_qps: Optional[int] = None,
+        usage_policy_id: Optional[str] = None,
         timeout=timedelta(minutes=20),
     ) -> EndpointInfo:
-        return self.create_endpoint(budget_policy_id=budget_policy_id, endpoint_type=endpoint_type, name=name).result(
-            timeout=timeout
-        )
+        return self.create_endpoint(
+            budget_policy_id=budget_policy_id,
+            endpoint_type=endpoint_type,
+            name=name,
+            target_qps=target_qps,
+            usage_policy_id=usage_policy_id,
+        ).result(timeout=timeout)
 
     def delete_endpoint(self, endpoint_name: str):
-        """Delete a vector search endpoint.
+        """Delete an AI Search endpoint.
 
         :param endpoint_name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
 
 
         """
@@ -1476,10 +2145,14 @@ class VectorSearchEndpointsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/vector-search/endpoints/{endpoint_name}", headers=headers)
 
     def get_endpoint(self, endpoint_name: str) -> EndpointInfo:
-        """Get details for a single vector search endpoint.
+        """Get details for a single AI Search endpoint.
 
         :param endpoint_name: str
           Name of the endpoint
@@ -1491,11 +2164,58 @@ class VectorSearchEndpointsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/vector-search/endpoints/{endpoint_name}", headers=headers)
         return EndpointInfo.from_dict(res)
 
+    def get_permission_levels(self, endpoint_id: str) -> GetVectorSearchEndpointPermissionLevelsResponse:
+        """Gets the permission levels that a user can have on an object.
+
+        :param endpoint_id: str
+          The vector search endpoint for which to get or manage permissions.
+
+        :returns: :class:`GetVectorSearchEndpointPermissionLevelsResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "GET", f"/api/2.0/permissions/vector-search-endpoints/{endpoint_id}/permissionLevels", headers=headers
+        )
+        return GetVectorSearchEndpointPermissionLevelsResponse.from_dict(res)
+
+    def get_permissions(self, endpoint_id: str) -> VectorSearchEndpointPermissions:
+        """Gets the permissions of a vector search endpoint. Vector search endpoints can inherit permissions from
+        their root object.
+
+        :param endpoint_id: str
+          The vector search endpoint for which to get or manage permissions.
+
+        :returns: :class:`VectorSearchEndpointPermissions`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/permissions/vector-search-endpoints/{endpoint_id}", headers=headers)
+        return VectorSearchEndpointPermissions.from_dict(res)
+
     def list_endpoints(self, *, page_token: Optional[str] = None) -> Iterator[EndpointInfo]:
-        """List all vector search endpoints in the workspace.
+        """List all AI Search endpoints in the workspace.
 
         :param page_token: str (optional)
           Token for pagination
@@ -1510,6 +2230,10 @@ class VectorSearchEndpointsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/vector-search/endpoints", query=query, headers=headers)
             if "endpoints" in json:
@@ -1519,16 +2243,122 @@ class VectorSearchEndpointsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def patch_endpoint(self, endpoint_name: str, *, target_qps: Optional[int] = None) -> EndpointInfo:
+        """Update an endpoint
+
+        :param endpoint_name: str
+          Name of the AI Search endpoint
+        :param target_qps: int (optional)
+          Target QPS for the endpoint. Best-effort; the system does not guarantee this QPS will be achieved.
+
+        :returns: :class:`EndpointInfo`
+        """
+
+        body = {}
+        if target_qps is not None:
+            body["target_qps"] = target_qps
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/vector-search/endpoints/{endpoint_name}", body=body, headers=headers)
+        return EndpointInfo.from_dict(res)
+
+    def retrieve_user_visible_metrics(
+        self,
+        name: str,
+        *,
+        end_time: Optional[str] = None,
+        granularity_in_seconds: Optional[int] = None,
+        metrics: Optional[List[Metric]] = None,
+        page_token: Optional[str] = None,
+        start_time: Optional[str] = None,
+    ) -> RetrieveUserVisibleMetricsResponse:
+        """Retrieve user-visible metrics for an endpoint
+
+        :param name: str
+          AI Search endpoint name
+        :param end_time: str (optional)
+          End time for metrics query
+        :param granularity_in_seconds: int (optional)
+          Granularity in seconds
+        :param metrics: List[:class:`Metric`] (optional)
+          List of metrics to retrieve
+        :param page_token: str (optional)
+          Token for pagination
+        :param start_time: str (optional)
+          Start time for metrics query
+
+        :returns: :class:`RetrieveUserVisibleMetricsResponse`
+        """
+
+        body = {}
+        if end_time is not None:
+            body["end_time"] = end_time
+        if granularity_in_seconds is not None:
+            body["granularity_in_seconds"] = granularity_in_seconds
+        if metrics is not None:
+            body["metrics"] = [v.as_dict() for v in metrics]
+        if page_token is not None:
+            body["page_token"] = page_token
+        if start_time is not None:
+            body["start_time"] = start_time
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/vector-search/endpoints/{name}/metrics", body=body, headers=headers)
+        return RetrieveUserVisibleMetricsResponse.from_dict(res)
+
+    def set_permissions(
+        self, endpoint_id: str, *, access_control_list: Optional[List[VectorSearchEndpointAccessControlRequest]] = None
+    ) -> VectorSearchEndpointPermissions:
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
+
+        :param endpoint_id: str
+          The vector search endpoint for which to get or manage permissions.
+        :param access_control_list: List[:class:`VectorSearchEndpointAccessControlRequest`] (optional)
+
+        :returns: :class:`VectorSearchEndpointPermissions`
+        """
+
+        body = {}
+        if access_control_list is not None:
+            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PUT", f"/api/2.0/permissions/vector-search-endpoints/{endpoint_id}", body=body, headers=headers
+        )
+        return VectorSearchEndpointPermissions.from_dict(res)
+
     def update_endpoint_budget_policy(
         self, endpoint_name: str, budget_policy_id: str
     ) -> PatchEndpointBudgetPolicyResponse:
         """Update the budget policy of an endpoint
 
         :param endpoint_name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
         :param budget_policy_id: str
-          The budget policy id to be applied (hima-sheth) TODO: remove this once we've migrated to usage
-          policies
+          The budget policy id to be applied
 
         :returns: :class:`PatchEndpointBudgetPolicyResponse`
         """
@@ -1541,6 +2371,10 @@ class VectorSearchEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", f"/api/2.0/vector-search/endpoints/{endpoint_name}/budget-policy", body=body, headers=headers
         )
@@ -1552,9 +2386,9 @@ class VectorSearchEndpointsAPI:
         """Update the custom tags of an endpoint.
 
         :param endpoint_name: str
-          Name of the vector search endpoint
+          Name of the AI Search endpoint
         :param custom_tags: List[:class:`CustomTag`]
-          The new custom tags for the vector search endpoint
+          The new custom tags for the AI Search endpoint
 
         :returns: :class:`UpdateEndpointCustomTagsResponse`
         """
@@ -1567,20 +2401,54 @@ class VectorSearchEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", f"/api/2.0/vector-search/endpoints/{endpoint_name}/tags", body=body, headers=headers
         )
         return UpdateEndpointCustomTagsResponse.from_dict(res)
+
+    def update_permissions(
+        self, endpoint_id: str, *, access_control_list: Optional[List[VectorSearchEndpointAccessControlRequest]] = None
+    ) -> VectorSearchEndpointPermissions:
+        """Updates the permissions on a vector search endpoint. Vector search endpoints can inherit permissions
+        from their root object.
+
+        :param endpoint_id: str
+          The vector search endpoint for which to get or manage permissions.
+        :param access_control_list: List[:class:`VectorSearchEndpointAccessControlRequest`] (optional)
+
+        :returns: :class:`VectorSearchEndpointPermissions`
+        """
+
+        body = {}
+        if access_control_list is not None:
+            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/permissions/vector-search-endpoints/{endpoint_id}", body=body, headers=headers
+        )
+        return VectorSearchEndpointPermissions.from_dict(res)
 
 
 class VectorSearchIndexesAPI:
     """**Index**: An efficient representation of your embedding vectors that supports real-time and efficient
     approximate nearest neighbor (ANN) search queries.
 
-    There are 2 types of Vector Search indexes: - **Delta Sync Index**: An index that automatically syncs with
-    a source Delta Table, automatically and incrementally updating the index as the underlying data in the
-    Delta Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of
-    vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates."""
+    There are 2 types of AI Search indexes: - **Delta Sync Index**: An index that automatically syncs with a
+    source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta
+    Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of vectors
+    and metadata through our REST and SDK APIs. With this model, the user manages index updates."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1594,6 +2462,7 @@ class VectorSearchIndexesAPI:
         *,
         delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest] = None,
         direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None,
+        index_subtype: Optional[IndexSubtype] = None,
     ) -> VectorIndex:
         """Create a new index.
 
@@ -1608,6 +2477,8 @@ class VectorSearchIndexesAPI:
           Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
           Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
+        :param index_subtype: :class:`IndexSubtype` (optional)
+          The subtype of the index. Use `HYBRID` or `FULL_TEXT`. `VECTOR` is not supported.
 
         :returns: :class:`VectorIndex`
         """
@@ -1619,6 +2490,8 @@ class VectorSearchIndexesAPI:
             body["direct_access_index_spec"] = direct_access_index_spec.as_dict()
         if endpoint_name is not None:
             body["endpoint_name"] = endpoint_name
+        if index_subtype is not None:
+            body["index_subtype"] = index_subtype.value
         if index_type is not None:
             body["index_type"] = index_type.value
         if name is not None:
@@ -1629,6 +2502,10 @@ class VectorSearchIndexesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/vector-search/indexes", body=body, headers=headers)
         return VectorIndex.from_dict(res)
@@ -1651,6 +2528,10 @@ class VectorSearchIndexesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", f"/api/2.0/vector-search/indexes/{index_name}/delete-data", query=query, headers=headers
         )
@@ -1668,6 +2549,10 @@ class VectorSearchIndexesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/vector-search/indexes/{index_name}", headers=headers)
 
@@ -1690,6 +2575,10 @@ class VectorSearchIndexesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/vector-search/indexes/{index_name}", query=query, headers=headers)
         return VectorIndex.from_dict(res)
@@ -1714,6 +2603,10 @@ class VectorSearchIndexesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/vector-search/indexes", query=query, headers=headers)
             if "vector_indexes" in json:
@@ -1729,13 +2622,16 @@ class VectorSearchIndexesAPI:
         columns: List[str],
         *,
         columns_to_rerank: Optional[List[str]] = None,
+        facets: Optional[List[str]] = None,
         filters_json: Optional[str] = None,
         num_results: Optional[int] = None,
+        query_columns: Optional[List[str]] = None,
         query_text: Optional[str] = None,
         query_type: Optional[str] = None,
         query_vector: Optional[List[float]] = None,
         reranker: Optional[RerankerConfig] = None,
         score_threshold: Optional[float] = None,
+        sort_columns: Optional[List[str]] = None,
     ) -> QueryVectorIndexResponse:
         """Query the specified vector index.
 
@@ -1745,6 +2641,11 @@ class VectorSearchIndexesAPI:
           List of column names to include in the response.
         :param columns_to_rerank: List[str] (optional)
           Column names used to retrieve data to send to the reranker.
+        :param facets: List[str] (optional)
+          Facets to compute over the matched results. Each entry has one of these forms: `"<column>"` - top 10
+          distinct values by count `"<column> TOP <n>"` - top n distinct values, where n > 0 `"<column>
+          BUCKETS [[from,to],...]"` - inclusive numeric ranges `TOP` and `BUCKETS` are case-insensitive. A
+          column may appear at most once.
         :param filters_json: str (optional)
           JSON string representing query filters.
 
@@ -1755,6 +2656,8 @@ class VectorSearchIndexesAPI:
           5. - `{"id": 5}`: Filter for id equal to 5.
         :param num_results: int (optional)
           Number of results to return. Defaults to 10.
+        :param query_columns: List[str] (optional)
+          Text columns to search for `query_text`. When empty, all text columns are searched.
         :param query_text: str (optional)
           Query text. Required for Delta Sync Index using model endpoint.
         :param query_type: str (optional)
@@ -1763,8 +2666,16 @@ class VectorSearchIndexesAPI:
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
         :param reranker: :class:`RerankerConfig` (optional)
+          If set, the top 50 results are reranked with the Databricks Reranker model before returning the
+          `num_results` results to the user. The setting `columns_to_rerank` selects which columns are used
+          for reranking. For each datapoint, the columns selected are concatenated before being sent to the
+          reranking model. See https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank for
+          more information.
         :param score_threshold: float (optional)
           Threshold for the approximate nearest neighbor search. Defaults to 0.0.
+        :param sort_columns: List[str] (optional)
+          Sort results by column values instead of the default relevance ordering. Each clause has the form
+          `"<column> ASC"` or `"<column> DESC"`, for example `["rating DESC", "price ASC"]`.
 
         :returns: :class:`QueryVectorIndexResponse`
         """
@@ -1774,10 +2685,14 @@ class VectorSearchIndexesAPI:
             body["columns"] = [v for v in columns]
         if columns_to_rerank is not None:
             body["columns_to_rerank"] = [v for v in columns_to_rerank]
+        if facets is not None:
+            body["facets"] = [v for v in facets]
         if filters_json is not None:
             body["filters_json"] = filters_json
         if num_results is not None:
             body["num_results"] = num_results
+        if query_columns is not None:
+            body["query_columns"] = [v for v in query_columns]
         if query_text is not None:
             body["query_text"] = query_text
         if query_type is not None:
@@ -1788,10 +2703,16 @@ class VectorSearchIndexesAPI:
             body["reranker"] = reranker.as_dict()
         if score_threshold is not None:
             body["score_threshold"] = score_threshold
+        if sort_columns is not None:
+            body["sort_columns"] = [v for v in sort_columns]
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/query", body=body, headers=headers)
         return QueryVectorIndexResponse.from_dict(res)
@@ -1821,6 +2742,10 @@ class VectorSearchIndexesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", f"/api/2.0/vector-search/indexes/{index_name}/query-next-page", body=body, headers=headers
@@ -1853,6 +2778,10 @@ class VectorSearchIndexesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/scan", body=body, headers=headers)
         return ScanVectorIndexResponse.from_dict(res)
 
@@ -1867,7 +2796,12 @@ class VectorSearchIndexesAPI:
 
         headers = {
             "Accept": "application/json",
+            "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", headers=headers)
 
@@ -1889,6 +2823,10 @@ class VectorSearchIndexesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", f"/api/2.0/vector-search/indexes/{index_name}/upsert-data", body=body, headers=headers

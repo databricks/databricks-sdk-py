@@ -1,7 +1,10 @@
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
 from .oauth import TokenSource
 from .service.provisioning import Workspace
+
+if TYPE_CHECKING:
+    from .config import Config
 
 
 def add_workspace_id_header(cfg: "Config", headers: Dict[str, str]):

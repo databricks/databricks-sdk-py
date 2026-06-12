@@ -1,3 +1,4 @@
+import pathlib
 import threading
 import time
 
@@ -7,6 +8,12 @@ from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import ModelServingUserCredentials
 
 from .conftest import raises
+
+# Test fixture files live next to this test, regardless of where pytest
+# was invoked from.
+_TESTDATA = pathlib.Path(__file__).parent / "testdata"
+_MODEL_SERVING_TEST_TOKEN = str(_TESTDATA / "model-serving-test-token")
+_MODEL_SERVING_TEST_TOKEN_V2 = str(_TESTDATA / "model-serving-test-token-v2")
 
 default_auth_base_error_message = (
     "default auth: cannot configure default credentials, "
@@ -24,7 +31,7 @@ default_auth_base_error_message = (
                 ("DB_MODEL_SERVING_HOST_URL", "x"),
             ],
             ["DATABRICKS_MODEL_SERVING_HOST_URL"],
-            "tests/testdata/model-serving-test-token",
+            _MODEL_SERVING_TEST_TOKEN,
         ),
         (
             [
@@ -32,7 +39,7 @@ default_auth_base_error_message = (
                 ("DB_MODEL_SERVING_HOST_URL", "x"),
             ],
             ["DATABRICKS_MODEL_SERVING_HOST_URL"],
-            "tests/testdata/model-serving-test-token",
+            _MODEL_SERVING_TEST_TOKEN,
         ),
         (
             [
@@ -40,7 +47,7 @@ default_auth_base_error_message = (
                 ("DATABRICKS_MODEL_SERVING_HOST_URL", "x"),
             ],
             ["DB_MODEL_SERVING_HOST_URL"],
-            "tests/testdata/model-serving-test-token",
+            _MODEL_SERVING_TEST_TOKEN,
         ),
         (
             [
@@ -48,7 +55,7 @@ default_auth_base_error_message = (
                 ("DATABRICKS_MODEL_SERVING_HOST_URL", "x"),
             ],
             ["DB_MODEL_SERVING_HOST_URL"],
-            "tests/testdata/model-serving-test-token",
+            _MODEL_SERVING_TEST_TOKEN,
         ),
     ],
 )
@@ -92,7 +99,7 @@ def test_model_serving_auth(env_values, del_env_values, oauth_file_name, monkeyp
         ),  # In Model Serving and Invalid File Name
         (
             [],
-            "tests/testdata/model-serving-test-token",
+            _MODEL_SERVING_TEST_TOKEN,
         ),  # Not in Model Serving and Valid File Name
     ],
 )
@@ -122,7 +129,7 @@ def test_model_serving_auth_refresh(monkeypatch, mocker):
     # patch mlflow to read the file from the test directory
     monkeypatch.setattr(
         "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
-        "tests/testdata/model-serving-test-token",
+        _MODEL_SERVING_TEST_TOKEN,
     )
     mocker.patch("databricks.sdk.config.Config._known_file_config_loader")
 
@@ -136,7 +143,7 @@ def test_model_serving_auth_refresh(monkeypatch, mocker):
     # Simulate refreshing the token by patching to to a new file
     monkeypatch.setattr(
         "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
-        "tests/testdata/model-serving-test-token-v2",
+        _MODEL_SERVING_TEST_TOKEN_V2,
     )
 
     monkeypatch.setattr(
@@ -172,7 +179,7 @@ def test_agent_user_credentials(monkeypatch, mocker):
     monkeypatch.setenv("DB_MODEL_SERVING_HOST_URL", "x")
     monkeypatch.setattr(
         "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
-        "tests/testdata/model-serving-test-token",
+        _MODEL_SERVING_TEST_TOKEN,
     )
 
     invokers_token_val = "databricks_invokers_token"
@@ -207,7 +214,7 @@ def test_agent_user_credentials(monkeypatch, mocker):
             cfg = Config(credentials_strategy=ModelServingUserCredentials())
             headers = cfg.authenticate()
             assert cfg.host == "x"
-            assert headers.get("Authorization") == f"Bearer databricks_invokers_token_v2"
+            assert headers.get("Authorization") == "Bearer databricks_invokers_token_v2"
             successful_authentication_event.set()
         except Exception:
             successful_authentication_event.clear()
@@ -221,7 +228,6 @@ def test_agent_user_credentials(monkeypatch, mocker):
 
 # If this credential strategy is being used in a non model serving environments then use default credential strategy instead
 def test_agent_user_credentials_in_non_model_serving_environments(monkeypatch):
-
     monkeypatch.setenv("DATABRICKS_HOST", "x")
     monkeypatch.setenv("DATABRICKS_TOKEN", "token")
 

@@ -224,6 +224,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: ConfidentialComputeType
+
+   Confidential computing technology for GCP instances. Aligns with gcloud's --confidential-compute-type flag and the REST API's confidentialInstanceConfig.confidentialInstanceType field. See: https://cloud.google.com/confidential-computing/confidential-vm/docs/create-a-confidential-vm-instance
+
+   .. py:attribute:: CONFIDENTIAL_COMPUTE_TYPE_NONE
+      :value: "CONFIDENTIAL_COMPUTE_TYPE_NONE"
+
+   .. py:attribute:: SEV_SNP
+      :value: "SEV_SNP"
+
 .. py:class:: ContextStatus
 
    .. py:attribute:: ERROR
@@ -278,8 +288,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: DataSecurityMode
 
    Data security mode decides what data governance model to use when accessing data from a cluster.
-   The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate access mode depending on your compute configuration. * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
-   The following modes can be used regardless of `kind`. * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in `single_user_name`. Most programming languages, cluster features and data governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data and credentials. Most data governance features are supported in this mode. But programming languages and cluster features might be limited.
+   * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate access mode depending on your compute configuration. * `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be shared by multiple users. Cluster users are fully isolated so that they cannot see each other’s data and credentials. Most data governance features are supported in this mode. But programming languages and cluster features might be limited. * `DATA_SECURITY_MODE_DEDICATED`: A secure cluster that can only be exclusively used by a single user specified in `single_user_name`. Most programming languages, cluster features and data governance features are available in this mode.
+   The following modes are legacy aliases for the above modes:
+   * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. * `SINGLE_USER`: Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for future Databricks Runtime versions:
    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC nor passthrough enabled.
 
@@ -424,6 +435,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: AUTOSCALE_V2
       :value: "AUTOSCALE_V2"
 
+   .. py:attribute:: DBR_AUTOSCALE
+      :value: "DBR_AUTOSCALE"
+
    .. py:attribute:: REPLACE_BAD_NODES
       :value: "REPLACE_BAD_NODES"
 
@@ -522,6 +536,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TERMINATING
       :value: "TERMINATING"
 
+   .. py:attribute:: UC_VOLUME_MISCONFIGURED
+      :value: "UC_VOLUME_MISCONFIGURED"
+
    .. py:attribute:: UNPINNED
       :value: "UNPINNED"
 
@@ -596,6 +613,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: GlobalInitScriptDetailsWithContent
    :members:
    :undoc-members:
+
+.. py:class:: HardwareAcceleratorType
+
+   HardwareAcceleratorType: The type of hardware accelerator to use for compute workloads. NOTE: This enum is referenced and is intended to be used by other Databricks services that need to specify hardware accelerator requirements for AI compute workloads.
+
+   .. py:attribute:: GPU_1X_A10
+      :value: "GPU_1X_A10"
+
+   .. py:attribute:: GPU_8X_H100
+      :value: "GPU_8X_H100"
 
 .. autoclass:: InitScriptEventDetails
    :members:
@@ -734,7 +761,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    The kind of compute described by this compute specification.
    Depending on `kind`, different validations and default values will be applied.
-   Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) * [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) * [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+   Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) * [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime)
    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
    [simple form]: https://docs.databricks.com/compute/simple-form.html
 
@@ -892,6 +919,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: NodeType
+   :members:
+   :undoc-members:
+
+.. autoclass:: NodeTypeFlexibility
    :members:
    :undoc-members:
 
@@ -1180,6 +1211,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CONTAINER_LAUNCH_FAILURE
       :value: "CONTAINER_LAUNCH_FAILURE"
 
+   .. py:attribute:: CONTROL_PLANE_CONNECTION_FAILURE
+      :value: "CONTROL_PLANE_CONNECTION_FAILURE"
+
+   .. py:attribute:: CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG
+      :value: "CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG"
+
    .. py:attribute:: CONTROL_PLANE_REQUEST_FAILURE
       :value: "CONTROL_PLANE_REQUEST_FAILURE"
 
@@ -1215,9 +1252,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DOCKER_INVALID_OS_EXCEPTION
       :value: "DOCKER_INVALID_OS_EXCEPTION"
-
-   .. py:attribute:: DRIVER_DNS_RESOLUTION_FAILURE
-      :value: "DRIVER_DNS_RESOLUTION_FAILURE"
 
    .. py:attribute:: DRIVER_EVICTION
       :value: "DRIVER_EVICTION"
@@ -1315,6 +1349,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GLOBAL_INIT_SCRIPT_FAILURE
       :value: "GLOBAL_INIT_SCRIPT_FAILURE"
 
+   .. py:attribute:: HIVEMETASTORE_CONNECTIVITY_FAILURE
+      :value: "HIVEMETASTORE_CONNECTIVITY_FAILURE"
+
    .. py:attribute:: HIVE_METASTORE_PROVISIONING_FAILURE
       :value: "HIVE_METASTORE_PROVISIONING_FAILURE"
 
@@ -1393,6 +1430,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: METASTORE_COMPONENT_UNHEALTHY
       :value: "METASTORE_COMPONENT_UNHEALTHY"
 
+   .. py:attribute:: MTLS_PORT_CONNECTIVITY_FAILURE
+      :value: "MTLS_PORT_CONNECTIVITY_FAILURE"
+
    .. py:attribute:: NEPHOS_RESOURCE_MANAGEMENT
       :value: "NEPHOS_RESOURCE_MANAGEMENT"
 
@@ -1441,12 +1481,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NFS_MOUNT_FAILURE
       :value: "NFS_MOUNT_FAILURE"
 
-   .. py:attribute:: NO_ACTIVATED_K8S
-      :value: "NO_ACTIVATED_K8S"
-
-   .. py:attribute:: NO_ACTIVATED_K8S_TESTING_TAG
-      :value: "NO_ACTIVATED_K8S_TESTING_TAG"
-
    .. py:attribute:: NO_MATCHED_K8S
       :value: "NO_MATCHED_K8S"
 
@@ -1465,6 +1499,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: POD_SCHEDULING_FAILURE
       :value: "POD_SCHEDULING_FAILURE"
 
+   .. py:attribute:: RATE_LIMITED
+      :value: "RATE_LIMITED"
+
    .. py:attribute:: REQUEST_REJECTED
       :value: "REQUEST_REJECTED"
 
@@ -1482,9 +1519,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SECRET_RESOLUTION_ERROR
       :value: "SECRET_RESOLUTION_ERROR"
-
-   .. py:attribute:: SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION
-      :value: "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
 
    .. py:attribute:: SECURITY_DAEMON_REGISTRATION_EXCEPTION
       :value: "SECURITY_DAEMON_REGISTRATION_EXCEPTION"

@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -10,8 +13,19 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from google.protobuf.duration_pb2 import Duration
+from google.protobuf.timestamp_pb2 import Timestamp
+
+from databricks.sdk.common.types.fieldmask import FieldMask
+from databricks.sdk.service._internal import (
+    Wait,
+    _duration,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+    _timestamp,
+)
 
 from ..errors import OperationFailed
 
@@ -177,6 +191,126 @@ class ActivityType(Enum):
 
 
 @dataclass
+class AggregationFunction:
+    """An aggregation function applied over a time window."""
+
+    approx_count_distinct: Optional[ApproxCountDistinctFunction] = None
+
+    approx_percentile: Optional[ApproxPercentileFunction] = None
+
+    avg: Optional[AvgFunction] = None
+
+    count_function: Optional[CountFunction] = None
+
+    first: Optional[FirstFunction] = None
+
+    last: Optional[LastFunction] = None
+
+    max: Optional[MaxFunction] = None
+
+    min: Optional[MinFunction] = None
+
+    stddev_pop: Optional[StddevPopFunction] = None
+
+    stddev_samp: Optional[StddevSampFunction] = None
+
+    sum: Optional[SumFunction] = None
+
+    time_window: Optional[TimeWindow] = None
+    """The time window over which the aggregation is computed."""
+
+    var_pop: Optional[VarPopFunction] = None
+
+    var_samp: Optional[VarSampFunction] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AggregationFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.approx_count_distinct:
+            body["approx_count_distinct"] = self.approx_count_distinct.as_dict()
+        if self.approx_percentile:
+            body["approx_percentile"] = self.approx_percentile.as_dict()
+        if self.avg:
+            body["avg"] = self.avg.as_dict()
+        if self.count_function:
+            body["count_function"] = self.count_function.as_dict()
+        if self.first:
+            body["first"] = self.first.as_dict()
+        if self.last:
+            body["last"] = self.last.as_dict()
+        if self.max:
+            body["max"] = self.max.as_dict()
+        if self.min:
+            body["min"] = self.min.as_dict()
+        if self.stddev_pop:
+            body["stddev_pop"] = self.stddev_pop.as_dict()
+        if self.stddev_samp:
+            body["stddev_samp"] = self.stddev_samp.as_dict()
+        if self.sum:
+            body["sum"] = self.sum.as_dict()
+        if self.time_window:
+            body["time_window"] = self.time_window.as_dict()
+        if self.var_pop:
+            body["var_pop"] = self.var_pop.as_dict()
+        if self.var_samp:
+            body["var_samp"] = self.var_samp.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AggregationFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.approx_count_distinct:
+            body["approx_count_distinct"] = self.approx_count_distinct
+        if self.approx_percentile:
+            body["approx_percentile"] = self.approx_percentile
+        if self.avg:
+            body["avg"] = self.avg
+        if self.count_function:
+            body["count_function"] = self.count_function
+        if self.first:
+            body["first"] = self.first
+        if self.last:
+            body["last"] = self.last
+        if self.max:
+            body["max"] = self.max
+        if self.min:
+            body["min"] = self.min
+        if self.stddev_pop:
+            body["stddev_pop"] = self.stddev_pop
+        if self.stddev_samp:
+            body["stddev_samp"] = self.stddev_samp
+        if self.sum:
+            body["sum"] = self.sum
+        if self.time_window:
+            body["time_window"] = self.time_window
+        if self.var_pop:
+            body["var_pop"] = self.var_pop
+        if self.var_samp:
+            body["var_samp"] = self.var_samp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AggregationFunction:
+        """Deserializes the AggregationFunction from a dictionary."""
+        return cls(
+            approx_count_distinct=_from_dict(d, "approx_count_distinct", ApproxCountDistinctFunction),
+            approx_percentile=_from_dict(d, "approx_percentile", ApproxPercentileFunction),
+            avg=_from_dict(d, "avg", AvgFunction),
+            count_function=_from_dict(d, "count_function", CountFunction),
+            first=_from_dict(d, "first", FirstFunction),
+            last=_from_dict(d, "last", LastFunction),
+            max=_from_dict(d, "max", MaxFunction),
+            min=_from_dict(d, "min", MinFunction),
+            stddev_pop=_from_dict(d, "stddev_pop", StddevPopFunction),
+            stddev_samp=_from_dict(d, "stddev_samp", StddevSampFunction),
+            sum=_from_dict(d, "sum", SumFunction),
+            time_window=_from_dict(d, "time_window", TimeWindow),
+            var_pop=_from_dict(d, "var_pop", VarPopFunction),
+            var_samp=_from_dict(d, "var_samp", VarSampFunction),
+        )
+
+
+@dataclass
 class ApproveTransitionRequestResponse:
     activity: Optional[Activity] = None
     """New activity generated as a result of this operation."""
@@ -202,6 +336,185 @@ class ApproveTransitionRequestResponse:
 
 
 @dataclass
+class ApproxCountDistinctFunction:
+    """Computes the approximate count of distinct values."""
+
+    input: str
+    """The input column from which the approximate count of distinct values is computed."""
+
+    relative_sd: Optional[float] = None
+    """The maximum relative standard deviation allowed (default defined by Spark)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ApproxCountDistinctFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        if self.relative_sd is not None:
+            body["relative_sd"] = self.relative_sd
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ApproxCountDistinctFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        if self.relative_sd is not None:
+            body["relative_sd"] = self.relative_sd
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ApproxCountDistinctFunction:
+        """Deserializes the ApproxCountDistinctFunction from a dictionary."""
+        return cls(input=d.get("input", None), relative_sd=d.get("relative_sd", None))
+
+
+@dataclass
+class ApproxPercentileFunction:
+    """Computes the approximate percentile of values."""
+
+    input: str
+    """The input column from which the approximate percentile is computed."""
+
+    percentile: float
+    """The percentile value to compute (between 0 and 1)."""
+
+    accuracy: Optional[int] = None
+    """The accuracy parameter (higher is more accurate but slower)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ApproxPercentileFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.accuracy is not None:
+            body["accuracy"] = self.accuracy
+        if self.input is not None:
+            body["input"] = self.input
+        if self.percentile is not None:
+            body["percentile"] = self.percentile
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ApproxPercentileFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.accuracy is not None:
+            body["accuracy"] = self.accuracy
+        if self.input is not None:
+            body["input"] = self.input
+        if self.percentile is not None:
+            body["percentile"] = self.percentile
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ApproxPercentileFunction:
+        """Deserializes the ApproxPercentileFunction from a dictionary."""
+        return cls(accuracy=d.get("accuracy", None), input=d.get("input", None), percentile=d.get("percentile", None))
+
+
+@dataclass
+class AuthConfig:
+    mtls_config: Optional[MtlsConfig] = None
+    """Mutual-TLS authentication. See MtlsConfig."""
+
+    uc_service_credential_name: Optional[str] = None
+    """Name of the Unity Catalog service credential. This value will be set under the option
+    databricks.serviceCredential"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AuthConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.mtls_config:
+            body["mtls_config"] = self.mtls_config.as_dict()
+        if self.uc_service_credential_name is not None:
+            body["uc_service_credential_name"] = self.uc_service_credential_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AuthConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.mtls_config:
+            body["mtls_config"] = self.mtls_config
+        if self.uc_service_credential_name is not None:
+            body["uc_service_credential_name"] = self.uc_service_credential_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AuthConfig:
+        """Deserializes the AuthConfig from a dictionary."""
+        return cls(
+            mtls_config=_from_dict(d, "mtls_config", MtlsConfig),
+            uc_service_credential_name=d.get("uc_service_credential_name", None),
+        )
+
+
+@dataclass
+class AvgFunction:
+    """Computes the average of values."""
+
+    input: str
+    """The input column from which the average is computed. For Kafka sources, use dot-prefixed path
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. Colon-prefixed
+    notation (e.g., "value:amount") is supported for backwards compatibility but is deprecated;
+    migrate to dot notation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AvgFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AvgFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AvgFunction:
+        """Deserializes the AvgFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
+@dataclass
+class BackfillSource:
+    delta_table_name: Optional[str] = None
+    """The full three-part name (catalog, schema, name) of the Delta table containing the historical
+    data to backfill."""
+
+    delta_table_source: Optional[DeltaTableSource] = None
+    """Deprecated: Use delta_table_name instead. Kept for backwards compatibility. The Delta table
+    source containing the historical data to backfill. Only the delta table name is used for
+    backfill, other fields are ignored."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BackfillSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delta_table_name is not None:
+            body["delta_table_name"] = self.delta_table_name
+        if self.delta_table_source:
+            body["delta_table_source"] = self.delta_table_source.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BackfillSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delta_table_name is not None:
+            body["delta_table_name"] = self.delta_table_name
+        if self.delta_table_source:
+            body["delta_table_source"] = self.delta_table_source
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BackfillSource:
+        """Deserializes the BackfillSource from a dictionary."""
+        return cls(
+            delta_table_name=d.get("delta_table_name", None),
+            delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
+        )
+
+
+@dataclass
 class BatchCreateMaterializedFeaturesResponse:
     materialized_features: Optional[List[MaterializedFeature]] = None
     """The created materialized features with assigned IDs."""
@@ -224,6 +537,62 @@ class BatchCreateMaterializedFeaturesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> BatchCreateMaterializedFeaturesResponse:
         """Deserializes the BatchCreateMaterializedFeaturesResponse from a dictionary."""
         return cls(materialized_features=_repeated_dict(d, "materialized_features", MaterializedFeature))
+
+
+@dataclass
+class ColumnIdentifier:
+    variant_expr_path: str
+    """String representation of the column name using dot-prefixed path notation. For nested fields,
+    the leaf value is what will be present in materialized tables and expected to match at query
+    time. For example, the leaf node of value.trip_details.location_details.pickup_zip is
+    pickup_zip."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnIdentifier into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.variant_expr_path is not None:
+            body["variant_expr_path"] = self.variant_expr_path
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnIdentifier into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.variant_expr_path is not None:
+            body["variant_expr_path"] = self.variant_expr_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnIdentifier:
+        """Deserializes the ColumnIdentifier from a dictionary."""
+        return cls(variant_expr_path=d.get("variant_expr_path", None))
+
+
+@dataclass
+class ColumnSelection:
+    """A ColumnSelection function, equivalent to the LAST() record of an entity over a lifetime
+    ContinuousWindow"""
+
+    column: str
+    """Column name from source to select as the feature value."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnSelection into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column is not None:
+            body["column"] = self.column
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnSelection into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column is not None:
+            body["column"] = self.column
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnSelection:
+        """Deserializes the ColumnSelection from a dictionary."""
+        return cls(column=d.get("column", None))
 
 
 class CommentActivityAction(Enum):
@@ -318,6 +687,8 @@ class CommentObject:
 
 @dataclass
 class ContinuousWindow:
+    """Deprecated: use RollingWindow with `delay` instead."""
+
     window_duration: str
     """The duration of the continuous window (must be positive)."""
 
@@ -346,6 +717,36 @@ class ContinuousWindow:
     def from_dict(cls, d: Dict[str, Any]) -> ContinuousWindow:
         """Deserializes the ContinuousWindow from a dictionary."""
         return cls(offset=d.get("offset", None), window_duration=d.get("window_duration", None))
+
+
+@dataclass
+class CountFunction:
+    """Computes the count of values."""
+
+    input: str
+    """The input column from which the count is computed. For Kafka sources, use dot-prefixed path
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. Colon-prefixed
+    notation (e.g., "value:amount") is supported for backwards compatibility but is deprecated;
+    migrate to dot notation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CountFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CountFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CountFunction:
+        """Deserializes the CountFunction from a dictionary."""
+        return cls(input=d.get("input", None))
 
 
 @dataclass
@@ -597,14 +998,59 @@ class CreateWebhookResponse:
 
 
 @dataclass
+class CronSchedule:
+    """A cron-based schedule trigger for the materialization pipeline."""
+
+    cron_expression: Optional[str] = None
+    """The cron expression defining the schedule (e.g., "0 0 * * *" for daily at midnight)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cron_expression is not None:
+            body["cron_expression"] = self.cron_expression
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CronSchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cron_expression is not None:
+            body["cron_expression"] = self.cron_expression
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
+        """Deserializes the CronSchedule from a dictionary."""
+        return cls(cron_expression=d.get("cron_expression", None))
+
+
+@dataclass
 class DataSource:
+    """Specifies the data source backing a feature. Exactly one source type must be set."""
+
     delta_table_source: Optional[DeltaTableSource] = None
+    """A Delta table data source."""
+
+    kafka_source: Optional[KafkaSource] = None
+    """A Kafka stream data source."""
+
+    request_source: Optional[RequestSource] = None
+    """A request-time data source."""
+
+    stream_source: Optional[StreamSource] = None
+    """A Stream data source."""
 
     def as_dict(self) -> dict:
         """Serializes the DataSource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source.as_dict()
+        if self.kafka_source:
+            body["kafka_source"] = self.kafka_source.as_dict()
+        if self.request_source:
+            body["request_source"] = self.request_source.as_dict()
+        if self.stream_source:
+            body["stream_source"] = self.stream_source.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -612,12 +1058,23 @@ class DataSource:
         body = {}
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source
+        if self.kafka_source:
+            body["kafka_source"] = self.kafka_source
+        if self.request_source:
+            body["request_source"] = self.request_source
+        if self.stream_source:
+            body["stream_source"] = self.stream_source
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DataSource:
         """Deserializes the DataSource from a dictionary."""
-        return cls(delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource))
+        return cls(
+            delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
+            kafka_source=_from_dict(d, "kafka_source", KafkaSource),
+            request_source=_from_dict(d, "request_source", RequestSource),
+            stream_source=_from_dict(d, "stream_source", StreamSource),
+        )
 
 
 @dataclass
@@ -981,42 +1438,181 @@ class DeltaTableSource:
     full_name: str
     """The full three-part (catalog, schema, table) name of the Delta table."""
 
-    entity_columns: List[str]
-    """The entity columns of the Delta table."""
+    dataframe_schema: Optional[str] = None
+    """Schema of the resulting dataframe after transformations, in Spark StructType JSON format (from
+    df.schema.json()). Required if transformation_sql is specified. Example:
+    {"type":"struct","fields":[{"name":"col_a","type":"integer","nullable":true,"metadata":{}},{"name":"col_c","type":"integer","nullable":true,"metadata":{}}]}"""
 
-    timeseries_column: str
-    """The timeseries column of the Delta table."""
+    entity_columns: Optional[List[str]] = None
+    """Deprecated: Use Feature.entity instead. Kept for backwards compatibility. The entity columns of
+    the Delta table."""
+
+    filter_condition: Optional[str] = None
+    """Single WHERE clause to filter delta table before applying transformations. Will be row-wise
+    evaluated, so should only include conditionals and projections."""
+
+    timeseries_column: Optional[str] = None
+    """Deprecated: Use Feature.timeseries_column instead. Kept for backwards compatibility. The
+    timeseries column of the Delta table."""
+
+    transformation_sql: Optional[str] = None
+    """A single SQL SELECT expression applied after filter_condition. Should contains all the columns
+    needed (eg. "SELECT *, col_a + col_b AS col_c FROM x.y.z WHERE col_a > 0" would have
+    `transformation_sql` "*, col_a + col_b AS col_c") If transformation_sql is not provided, all
+    columns of the delta table are present in the DataSource dataframe."""
 
     def as_dict(self) -> dict:
         """Serializes the DeltaTableSource into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
         if self.entity_columns:
             body["entity_columns"] = [v for v in self.entity_columns]
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.timeseries_column is not None:
             body["timeseries_column"] = self.timeseries_column
+        if self.transformation_sql is not None:
+            body["transformation_sql"] = self.transformation_sql
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DeltaTableSource into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
         if self.entity_columns:
             body["entity_columns"] = self.entity_columns
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.timeseries_column is not None:
             body["timeseries_column"] = self.timeseries_column
+        if self.transformation_sql is not None:
+            body["transformation_sql"] = self.transformation_sql
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeltaTableSource:
         """Deserializes the DeltaTableSource from a dictionary."""
         return cls(
+            dataframe_schema=d.get("dataframe_schema", None),
             entity_columns=d.get("entity_columns", None),
+            filter_condition=d.get("filter_condition", None),
             full_name=d.get("full_name", None),
             timeseries_column=d.get("timeseries_column", None),
+            transformation_sql=d.get("transformation_sql", None),
         )
+
+
+@dataclass
+class DirectMtlsConfig:
+    """Direct connection configs for mTLS, as Kafka Connections do not support mTLS yet . Temporarily
+    used until UC Kafka Connections gain mTLS support."""
+
+    bootstrap_servers: str
+    """A comma-separated list of host:port pairs for the Kafka bootstrap servers."""
+
+    mtls_config: MtlsConfig
+    """Mutual-TLS authentication configuration."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DirectMtlsConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bootstrap_servers is not None:
+            body["bootstrap_servers"] = self.bootstrap_servers
+        if self.mtls_config:
+            body["mtls_config"] = self.mtls_config.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DirectMtlsConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.bootstrap_servers is not None:
+            body["bootstrap_servers"] = self.bootstrap_servers
+        if self.mtls_config:
+            body["mtls_config"] = self.mtls_config
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DirectMtlsConfig:
+        """Deserializes the DirectMtlsConfig from a dictionary."""
+        return cls(
+            bootstrap_servers=d.get("bootstrap_servers", None), mtls_config=_from_dict(d, "mtls_config", MtlsConfig)
+        )
+
+
+@dataclass
+class DirectSchemas:
+    """Schema definitions provided directly on the Stream, as opposed to referencing a schema registry.
+    In a future milestone, we will support schema registries through a UC Connection."""
+
+    key_schema: Optional[SchemaConfig] = None
+    """Schema for the message key. This is only used for Kafka streams. For Kafka, at least one of
+    payload_schema or key_schema must be specified."""
+
+    payload_schema: Optional[SchemaConfig] = None
+    """Schema for the message payload. For Kafka, this is the value schema. Unless the platform
+    supports another schema (e.g. keys for Kafka), this must be specified."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DirectSchemas into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key_schema:
+            body["key_schema"] = self.key_schema.as_dict()
+        if self.payload_schema:
+            body["payload_schema"] = self.payload_schema.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DirectSchemas into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key_schema:
+            body["key_schema"] = self.key_schema
+        if self.payload_schema:
+            body["payload_schema"] = self.payload_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DirectSchemas:
+        """Deserializes the DirectSchemas from a dictionary."""
+        return cls(
+            key_schema=_from_dict(d, "key_schema", SchemaConfig),
+            payload_schema=_from_dict(d, "payload_schema", SchemaConfig),
+        )
+
+
+@dataclass
+class EntityColumn:
+    name: str
+    """The name of the entity column. For Kafka sources, use dot-prefixed path notation to reference
+    fields within the key or value schema (e.g., "value.user_id", "key.partition_key"). For nested
+    fields, the leaf node name (e.g., "user_id" from "value.trip_details.user_id") is what will be
+    present in materialized tables and expected to match at query time. Colon-prefixed notation
+    (e.g., "value:user_id") is supported for backwards compatibility but is deprecated; migrate to
+    dot notation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EntityColumn into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EntityColumn into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EntityColumn:
+        """Deserializes the EntityColumn from a dictionary."""
+        return cls(name=d.get("name", None))
 
 
 @dataclass
@@ -1364,34 +1960,72 @@ class ExperimentTag:
 @dataclass
 class Feature:
     full_name: str
-    """The full three-part name (catalog, schema, name) of the feature."""
+    """The full three-part name (catalog, schema, name) of the feature. This is the feature's resource
+    identifier; the catalog_name, schema_name, and name fields below are OUTPUT_ONLY decomposed
+    views of this value."""
 
     source: DataSource
     """The data source of the feature."""
 
-    inputs: List[str]
-    """The input columns from which the feature is computed."""
-
     function: Function
     """The function by which the feature is computed."""
 
-    time_window: TimeWindow
-    """The time window in which the feature is computed."""
+    catalog_name: Optional[str] = None
+    """Name of parent catalog."""
+
+    created_at: Optional[Timestamp] = None
+    """Time at which this feature was created."""
+
+    created_by: Optional[str] = None
+    """Username of the feature creator."""
 
     description: Optional[str] = None
     """The description of the feature."""
 
+    entities: Optional[List[EntityColumn]] = None
+    """The entity columns for the feature, used as aggregation keys and for query-time lookup."""
+
     filter_condition: Optional[str] = None
-    """The filter condition applied to the source data before aggregation."""
+    """Deprecated: Use DeltaTableSource.filter_condition or KafkaSource.filter_condition instead. Kept
+    for backwards compatibility. The filter condition applied to the source data before aggregation."""
+
+    inputs: Optional[List[str]] = None
+    """Deprecated: Use AggregationFunction.inputs instead. Kept for backwards compatibility. The input
+    columns from which the feature is computed."""
 
     lineage_context: Optional[LineageContext] = None
-    """Lineage context information for this feature."""
+    """Lineage context information for this feature. WARNING: This field is primarily intended for
+    internal use by Databricks systems and is automatically populated when features are created
+    through Databricks notebooks or jobs. Users should not manually set this field as incorrect
+    values may lead to inaccurate lineage tracking or unexpected behavior. This field will be set by
+    feature-engineering client and should be left unset by SDK and terraform users."""
+
+    name: Optional[str] = None
+    """Name of the feature, extracted from the full three-part name (catalog.schema.name)."""
+
+    schema_name: Optional[str] = None
+    """Name of parent schema relative to its parent catalog."""
+
+    time_window: Optional[TimeWindow] = None
+    """Deprecated: Use Function.aggregation_function.time_window instead. Kept for backwards
+    compatibility. The time window in which the feature is computed."""
+
+    timeseries_column: Optional[TimeseriesColumn] = None
+    """Column recording time, used for point-in-time joins, backfills, and aggregations."""
 
     def as_dict(self) -> dict:
         """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.created_at is not None:
+            body["created_at"] = self.created_at.ToJsonString()
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
         if self.description is not None:
             body["description"] = self.description
+        if self.entities:
+            body["entities"] = [v.as_dict() for v in self.entities]
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
@@ -1402,17 +2036,31 @@ class Feature:
             body["inputs"] = [v for v in self.inputs]
         if self.lineage_context:
             body["lineage_context"] = self.lineage_context.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
         if self.source:
             body["source"] = self.source.as_dict()
         if self.time_window:
             body["time_window"] = self.time_window.as_dict()
+        if self.timeseries_column:
+            body["timeseries_column"] = self.timeseries_column.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Feature into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
         if self.description is not None:
             body["description"] = self.description
+        if self.entities:
+            body["entities"] = self.entities
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
@@ -1423,24 +2071,37 @@ class Feature:
             body["inputs"] = self.inputs
         if self.lineage_context:
             body["lineage_context"] = self.lineage_context
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
         if self.source:
             body["source"] = self.source
         if self.time_window:
             body["time_window"] = self.time_window
+        if self.timeseries_column:
+            body["timeseries_column"] = self.timeseries_column
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Feature:
         """Deserializes the Feature from a dictionary."""
         return cls(
+            catalog_name=d.get("catalog_name", None),
+            created_at=_timestamp(d, "created_at"),
+            created_by=d.get("created_by", None),
             description=d.get("description", None),
+            entities=_repeated_dict(d, "entities", EntityColumn),
             filter_condition=d.get("filter_condition", None),
             full_name=d.get("full_name", None),
             function=_from_dict(d, "function", Function),
             inputs=d.get("inputs", None),
             lineage_context=_from_dict(d, "lineage_context", LineageContext),
+            name=d.get("name", None),
+            schema_name=d.get("schema_name", None),
             source=_from_dict(d, "source", DataSource),
             time_window=_from_dict(d, "time_window", TimeWindow),
+            timeseries_column=_from_dict(d, "timeseries_column", TimeseriesColumn),
         )
 
 
@@ -1635,6 +2296,41 @@ class FeatureTag:
 
 
 @dataclass
+class FieldDefinition:
+    """A single field definition within a FlatSchema, specifying the field name and its scalar data
+    type. Does not support nested or complex types (arrays, maps, structs)."""
+
+    name: str
+    """The name of the field."""
+
+    data_type: ScalarDataType
+    """The scalar data type of the field."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FieldDefinition into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_type is not None:
+            body["data_type"] = self.data_type.value
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FieldDefinition into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_type is not None:
+            body["data_type"] = self.data_type
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FieldDefinition:
+        """Deserializes the FieldDefinition from a dictionary."""
+        return cls(data_type=_enum(d, "data_type", ScalarDataType), name=d.get("name", None))
+
+
+@dataclass
 class FileInfo:
     """Metadata of a single artifact file or directory."""
 
@@ -1701,6 +2397,61 @@ class FinalizeLoggedModelResponse:
 
 
 @dataclass
+class FirstFunction:
+    """Returns the first value."""
+
+    input: str
+    """The input column from which the first value is returned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FirstFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FirstFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FirstFunction:
+        """Deserializes the FirstFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
+@dataclass
+class FlatSchema:
+    """A flat (non-nested) schema for request-time fields, defined as an ordered list of field
+    definitions. This schema only supports scalar types."""
+
+    fields: List[FieldDefinition]
+    """The list of fields in this schema."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FlatSchema into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.fields:
+            body["fields"] = [v.as_dict() for v in self.fields]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FlatSchema into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.fields:
+            body["fields"] = self.fields
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FlatSchema:
+        """Deserializes the FlatSchema from a dictionary."""
+        return cls(fields=_repeated_dict(d, "fields", FieldDefinition))
+
+
+@dataclass
 class ForecastingExperiment:
     """Represents a forecasting experiment with its unique identifier, URL, and state."""
 
@@ -1746,7 +2497,6 @@ class ForecastingExperiment:
 
 
 class ForecastingExperimentState(Enum):
-
     CANCELLED = "CANCELLED"
     FAILED = "FAILED"
     PENDING = "PENDING"
@@ -1756,15 +2506,27 @@ class ForecastingExperimentState(Enum):
 
 @dataclass
 class Function:
-    function_type: FunctionFunctionType
-    """The type of the function."""
+    aggregation_function: Optional[AggregationFunction] = None
+    """An aggregation function applied over a time window."""
+
+    column_selection: Optional[ColumnSelection] = None
+    """Selects the latest value of a single column in a data source"""
 
     extra_parameters: Optional[List[FunctionExtraParameter]] = None
-    """Extra parameters for parameterized functions."""
+    """Deprecated: Use the function oneof with AggregationFunction instead. Kept for backwards
+    compatibility. Extra parameters for parameterized functions."""
+
+    function_type: Optional[FunctionFunctionType] = None
+    """Deprecated: Use the function oneof with AggregationFunction instead. Kept for backwards
+    compatibility. The type of the function."""
 
     def as_dict(self) -> dict:
         """Serializes the Function into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.aggregation_function:
+            body["aggregation_function"] = self.aggregation_function.as_dict()
+        if self.column_selection:
+            body["column_selection"] = self.column_selection.as_dict()
         if self.extra_parameters:
             body["extra_parameters"] = [v.as_dict() for v in self.extra_parameters]
         if self.function_type is not None:
@@ -1774,6 +2536,10 @@ class Function:
     def as_shallow_dict(self) -> dict:
         """Serializes the Function into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.aggregation_function:
+            body["aggregation_function"] = self.aggregation_function
+        if self.column_selection:
+            body["column_selection"] = self.column_selection
         if self.extra_parameters:
             body["extra_parameters"] = self.extra_parameters
         if self.function_type is not None:
@@ -1784,6 +2550,8 @@ class Function:
     def from_dict(cls, d: Dict[str, Any]) -> Function:
         """Deserializes the Function from a dictionary."""
         return cls(
+            aggregation_function=_from_dict(d, "aggregation_function", AggregationFunction),
+            column_selection=_from_dict(d, "column_selection", ColumnSelection),
             extra_parameters=_repeated_dict(d, "extra_parameters", FunctionExtraParameter),
             function_type=_enum(d, "function_type", FunctionFunctionType),
         )
@@ -1791,6 +2559,10 @@ class Function:
 
 @dataclass
 class FunctionExtraParameter:
+    """Deprecated: Use typed fields on function-specific messages (e.g.
+    ApproxPercentileFunction.percentile) or AggregationFunction.ExtraParameter instead. Kept for
+    backwards compatibility."""
+
     key: str
     """The name of the parameter."""
 
@@ -1822,6 +2594,8 @@ class FunctionExtraParameter:
 
 
 class FunctionFunctionType(Enum):
+    """Deprecated: Use the function-specific messages in AggregationFunction.function_type oneof
+    instead. Kept for backwards compatibility."""
 
     APPROX_COUNT_DISTINCT = "APPROX_COUNT_DISTINCT"
     APPROX_PERCENTILE = "APPROX_PERCENTILE"
@@ -2217,6 +2991,113 @@ class HttpUrlSpecWithoutSecret:
 
 
 @dataclass
+class IngestionConfig:
+    """Configuration for the Databricks-managed ingestion pipeline. Groups the ingestion destination
+    (required) and optional backfill source."""
+
+    ingestion_destination: IngestionDestination
+    """Destination for the Databricks-managed Delta table that holds an offline copy of the streaming
+    data for querying and training. This table contains both 1) forward-filled data from the Stream
+    and 2) backfilled data from the BackfillSource (if provided). This table is created and managed
+    by Databricks and is deleted when the Stream is deleted."""
+
+    backfill_job_id: Optional[int] = None
+    """The ID of the Databricks Job that performs the historical backfill of the ingestion Delta table."""
+
+    backfill_source: Optional[BackfillSource] = None
+    """A user-provided source for backfilling data. Historical data is used when creating a training
+    set from streaming features linked to this Stream. The backfill data stored in this location
+    will be copied into the ingestion table for offline querying and training. The schema for this
+    source must match exactly that of the key and payload schemas specified for this Stream."""
+
+    deduplication_columns: Optional[List[str]] = None
+    """Column paths used to identify duplicate rows during ingestion; only one row per distinct
+    combination of these values is kept. Use dot notation for nested fields (e.g. `value.user_id`).
+    Empty list means every column is compared."""
+
+    ingestion_job_id: Optional[int] = None
+    """The ID of the Databricks Job that performs the forward-fill ingestion."""
+
+    ingestion_pipeline_id: Optional[str] = None
+    """The ID of the SDP pipeline that continuously copies new events from the streaming source into
+    the ingestion Delta table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the IngestionConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.backfill_job_id is not None:
+            body["backfill_job_id"] = self.backfill_job_id
+        if self.backfill_source:
+            body["backfill_source"] = self.backfill_source.as_dict()
+        if self.deduplication_columns:
+            body["deduplication_columns"] = [v for v in self.deduplication_columns]
+        if self.ingestion_destination:
+            body["ingestion_destination"] = self.ingestion_destination.as_dict()
+        if self.ingestion_job_id is not None:
+            body["ingestion_job_id"] = self.ingestion_job_id
+        if self.ingestion_pipeline_id is not None:
+            body["ingestion_pipeline_id"] = self.ingestion_pipeline_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IngestionConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.backfill_job_id is not None:
+            body["backfill_job_id"] = self.backfill_job_id
+        if self.backfill_source:
+            body["backfill_source"] = self.backfill_source
+        if self.deduplication_columns:
+            body["deduplication_columns"] = self.deduplication_columns
+        if self.ingestion_destination:
+            body["ingestion_destination"] = self.ingestion_destination
+        if self.ingestion_job_id is not None:
+            body["ingestion_job_id"] = self.ingestion_job_id
+        if self.ingestion_pipeline_id is not None:
+            body["ingestion_pipeline_id"] = self.ingestion_pipeline_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> IngestionConfig:
+        """Deserializes the IngestionConfig from a dictionary."""
+        return cls(
+            backfill_job_id=d.get("backfill_job_id", None),
+            backfill_source=_from_dict(d, "backfill_source", BackfillSource),
+            deduplication_columns=d.get("deduplication_columns", None),
+            ingestion_destination=_from_dict(d, "ingestion_destination", IngestionDestination),
+            ingestion_job_id=d.get("ingestion_job_id", None),
+            ingestion_pipeline_id=d.get("ingestion_pipeline_id", None),
+        )
+
+
+@dataclass
+class IngestionDestination:
+    """Destination for the Databricks-managed Delta table that holds an offline copy of the streaming
+    data for querying and training."""
+
+    delta_table_name: Optional[str] = None
+    """The full three-part name (catalog, schema, name) of the Delta table to be created for ingestion."""
+
+    def as_dict(self) -> dict:
+        """Serializes the IngestionDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delta_table_name is not None:
+            body["delta_table_name"] = self.delta_table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IngestionDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delta_table_name is not None:
+            body["delta_table_name"] = self.delta_table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> IngestionDestination:
+        """Deserializes the IngestionDestination from a dictionary."""
+        return cls(delta_table_name=d.get("delta_table_name", None))
+
+
+@dataclass
 class InputTag:
     """Tag for a dataset input."""
 
@@ -2360,6 +3241,273 @@ class JobSpecWithoutSecret:
 
 
 @dataclass
+class KafkaConfig:
+    name: str
+    """Name that uniquely identifies this Kafka config within the metastore. This will be the
+    identifier used from the Feature object to reference these configs for a feature. Can be
+    distinct from topic name."""
+
+    bootstrap_servers: str
+    """A comma-separated list of host/port pairs pointing to Kafka cluster."""
+
+    subscription_mode: SubscriptionMode
+    """Options to configure which Kafka topics to pull data from."""
+
+    auth_config: AuthConfig
+    """Authentication configuration for connection to topics."""
+
+    backfill_source: Optional[BackfillSource] = None
+    """A user-provided and managed source for backfilling data. Historical data is used when creating a
+    training set from streaming features linked to this Kafka config. In the future, a separate
+    table will be maintained by Databricks for forward filling data. The schema for this source must
+    match exactly that of the key and value schemas specified for this Kafka config."""
+
+    extra_options: Optional[Dict[str, str]] = None
+    """Catch-all for miscellaneous options. Keys should be source options or Kafka consumer options
+    (kafka.*)"""
+
+    ingestion_config: Optional[IngestionConfig] = None
+    """Configuration for ingesting Kafka data into a Databricks-managed Delta table."""
+
+    key_schema: Optional[SchemaConfig] = None
+    """Schema configuration for extracting message keys from topics. At least one of key_schema and
+    value_schema must be provided."""
+
+    value_schema: Optional[SchemaConfig] = None
+    """Schema configuration for extracting message values from topics. At least one of key_schema and
+    value_schema must be provided."""
+
+    def as_dict(self) -> dict:
+        """Serializes the KafkaConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.auth_config:
+            body["auth_config"] = self.auth_config.as_dict()
+        if self.backfill_source:
+            body["backfill_source"] = self.backfill_source.as_dict()
+        if self.bootstrap_servers is not None:
+            body["bootstrap_servers"] = self.bootstrap_servers
+        if self.extra_options:
+            body["extra_options"] = self.extra_options
+        if self.ingestion_config:
+            body["ingestion_config"] = self.ingestion_config.as_dict()
+        if self.key_schema:
+            body["key_schema"] = self.key_schema.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.subscription_mode:
+            body["subscription_mode"] = self.subscription_mode.as_dict()
+        if self.value_schema:
+            body["value_schema"] = self.value_schema.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the KafkaConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.auth_config:
+            body["auth_config"] = self.auth_config
+        if self.backfill_source:
+            body["backfill_source"] = self.backfill_source
+        if self.bootstrap_servers is not None:
+            body["bootstrap_servers"] = self.bootstrap_servers
+        if self.extra_options:
+            body["extra_options"] = self.extra_options
+        if self.ingestion_config:
+            body["ingestion_config"] = self.ingestion_config
+        if self.key_schema:
+            body["key_schema"] = self.key_schema
+        if self.name is not None:
+            body["name"] = self.name
+        if self.subscription_mode:
+            body["subscription_mode"] = self.subscription_mode
+        if self.value_schema:
+            body["value_schema"] = self.value_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> KafkaConfig:
+        """Deserializes the KafkaConfig from a dictionary."""
+        return cls(
+            auth_config=_from_dict(d, "auth_config", AuthConfig),
+            backfill_source=_from_dict(d, "backfill_source", BackfillSource),
+            bootstrap_servers=d.get("bootstrap_servers", None),
+            extra_options=d.get("extra_options", None),
+            ingestion_config=_from_dict(d, "ingestion_config", IngestionConfig),
+            key_schema=_from_dict(d, "key_schema", SchemaConfig),
+            name=d.get("name", None),
+            subscription_mode=_from_dict(d, "subscription_mode", SubscriptionMode),
+            value_schema=_from_dict(d, "value_schema", SchemaConfig),
+        )
+
+
+@dataclass
+class KafkaSource:
+    name: str
+    """Name of the Kafka source, used to identify it. This is used to look up the corresponding
+    KafkaConfig object. Can be distinct from topic name."""
+
+    entity_column_identifiers: Optional[List[ColumnIdentifier]] = None
+    """Deprecated: Use Feature.entity instead. Kept for backwards compatibility. The entity column
+    identifiers of the Kafka source."""
+
+    filter_condition: Optional[str] = None
+    """The filter condition applied to the source data before aggregation."""
+
+    timeseries_column_identifier: Optional[ColumnIdentifier] = None
+    """Deprecated: Use Feature.timeseries_column instead. Kept for backwards compatibility. The
+    timeseries column identifier of the Kafka source."""
+
+    def as_dict(self) -> dict:
+        """Serializes the KafkaSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entity_column_identifiers:
+            body["entity_column_identifiers"] = [v.as_dict() for v in self.entity_column_identifiers]
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
+        if self.name is not None:
+            body["name"] = self.name
+        if self.timeseries_column_identifier:
+            body["timeseries_column_identifier"] = self.timeseries_column_identifier.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the KafkaSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_column_identifiers:
+            body["entity_column_identifiers"] = self.entity_column_identifiers
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
+        if self.name is not None:
+            body["name"] = self.name
+        if self.timeseries_column_identifier:
+            body["timeseries_column_identifier"] = self.timeseries_column_identifier
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> KafkaSource:
+        """Deserializes the KafkaSource from a dictionary."""
+        return cls(
+            entity_column_identifiers=_repeated_dict(d, "entity_column_identifiers", ColumnIdentifier),
+            filter_condition=d.get("filter_condition", None),
+            name=d.get("name", None),
+            timeseries_column_identifier=_from_dict(d, "timeseries_column_identifier", ColumnIdentifier),
+        )
+
+
+@dataclass
+class KafkaStreamConfig:
+    """Kafka-specific configuration for a Stream."""
+
+    subscription_mode: KafkaSubscriptionMode
+    """Options to configure which Kafka topics to pull data from."""
+
+    extra_options: Optional[Dict[str, str]] = None
+    """Miscellaneous source options. Accepted keys are source options or Kafka consumer options
+    (kafka.*), validated against an allow-list at request time. All auth configuration goes through
+    the underlying UC Connection(s) or configs and should not be stored here."""
+
+    def as_dict(self) -> dict:
+        """Serializes the KafkaStreamConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.extra_options:
+            body["extra_options"] = self.extra_options
+        if self.subscription_mode:
+            body["subscription_mode"] = self.subscription_mode.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the KafkaStreamConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.extra_options:
+            body["extra_options"] = self.extra_options
+        if self.subscription_mode:
+            body["subscription_mode"] = self.subscription_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> KafkaStreamConfig:
+        """Deserializes the KafkaStreamConfig from a dictionary."""
+        return cls(
+            extra_options=d.get("extra_options", None),
+            subscription_mode=_from_dict(d, "subscription_mode", KafkaSubscriptionMode),
+        )
+
+
+@dataclass
+class KafkaSubscriptionMode:
+    """Subscription mode for Kafka topic selection, matching standard Spark Structured Streaming
+    options."""
+
+    assign: Optional[str] = None
+    """A JSON string that contains the specific topic-partitions to consume from. For example, for
+    '{"topicA":[0,1],"topicB":[2,4]}', topicA's 0'th and 1st partitions will be consumed from."""
+
+    subscribe: Optional[str] = None
+    """A comma-separated list of Kafka topics to read from. For example, 'topicA,topicB,topicC'."""
+
+    subscribe_pattern: Optional[str] = None
+    """A regular expression matching topics to subscribe to. For example, 'topic.*' will subscribe to
+    all topics starting with 'topic'."""
+
+    def as_dict(self) -> dict:
+        """Serializes the KafkaSubscriptionMode into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.assign is not None:
+            body["assign"] = self.assign
+        if self.subscribe is not None:
+            body["subscribe"] = self.subscribe
+        if self.subscribe_pattern is not None:
+            body["subscribe_pattern"] = self.subscribe_pattern
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the KafkaSubscriptionMode into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.assign is not None:
+            body["assign"] = self.assign
+        if self.subscribe is not None:
+            body["subscribe"] = self.subscribe
+        if self.subscribe_pattern is not None:
+            body["subscribe_pattern"] = self.subscribe_pattern
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> KafkaSubscriptionMode:
+        """Deserializes the KafkaSubscriptionMode from a dictionary."""
+        return cls(
+            assign=d.get("assign", None),
+            subscribe=d.get("subscribe", None),
+            subscribe_pattern=d.get("subscribe_pattern", None),
+        )
+
+
+@dataclass
+class LastFunction:
+    """Returns the last value."""
+
+    input: str
+    """The input column from which the last value is returned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LastFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LastFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LastFunction:
+        """Deserializes the LastFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
+@dataclass
 class LineageContext:
     """Lineage context information for tracking where an API was invoked. This will allow us to track
     lineage, which currently uses caller entity information for use across the Lineage Client and
@@ -2397,7 +3545,7 @@ class LineageContext:
 
 @dataclass
 class LinkedFeature:
-    """Feature for model version. ([ML-57150] Renamed from Feature to LinkedFeature)"""
+    """Feature for model version."""
 
     feature_name: Optional[str] = None
     """Feature name"""
@@ -2586,6 +3734,41 @@ class ListFeaturesResponse:
 
 
 @dataclass
+class ListKafkaConfigsResponse:
+    kafka_configs: List[KafkaConfig]
+    """List of Kafka configs. Schemas are not included in the response."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of results for this query."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListKafkaConfigsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.kafka_configs:
+            body["kafka_configs"] = [v.as_dict() for v in self.kafka_configs]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListKafkaConfigsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.kafka_configs:
+            body["kafka_configs"] = self.kafka_configs
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListKafkaConfigsResponse:
+        """Deserializes the ListKafkaConfigsResponse from a dictionary."""
+        return cls(
+            kafka_configs=_repeated_dict(d, "kafka_configs", KafkaConfig),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListMaterializedFeaturesResponse:
     materialized_features: Optional[List[MaterializedFeature]] = None
     """List of materialized features."""
@@ -2721,6 +3904,45 @@ class ListRegistryWebhooks:
         return cls(
             next_page_token=d.get("next_page_token", None), webhooks=_repeated_dict(d, "webhooks", RegistryWebhook)
         )
+
+
+@dataclass
+class ListStreamsResponse:
+    """Response to a ListStreamsRequest.
+
+    NOTE: Results are post-filtered by access permission on each stream's ingestion table. This
+    means: - Returned results may be fewer than page_size (including zero) - Page token points to
+    next unfiltered batch, not next filtered batch, and may point to an item that will be filtered
+    out Callers should paginate until next_page_token is empty to retrieve all accessible streams."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of results for this query."""
+
+    streams: Optional[List[Stream]] = None
+    """List of Streams."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListStreamsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.streams:
+            body["streams"] = [v.as_dict() for v in self.streams]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListStreamsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.streams:
+            body["streams"] = self.streams
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListStreamsResponse:
+        """Deserializes the ListStreamsResponse from a dictionary."""
+        return cls(next_page_token=d.get("next_page_token", None), streams=_repeated_dict(d, "streams", Stream))
 
 
 @dataclass
@@ -3145,29 +4367,57 @@ class MaterializedFeature:
     feature_name: str
     """The full name of the feature in Unity Catalog."""
 
+    cron_schedule: Optional[str] = None
+    """The quartz cron expression that defines the schedule of the materialization pipeline. The
+    schedule is evaluated in the UTC timezone. Hidden from GraphQL: superseded by the `trigger`
+    oneof (cron_schedule_trigger), so not exposed to Catalog Explorer."""
+
+    cron_schedule_trigger: Optional[CronSchedule] = None
+    """A cron-based schedule trigger for the materialization pipeline."""
+
+    is_online: Optional[bool] = None
+    """True if this is an online materialized feature. False if it is an offline materialized feature."""
+
     last_materialization_time: Optional[str] = None
     """The timestamp when the pipeline last ran and updated the materialized feature values. If the
     pipeline has not run yet, this field will be null."""
 
     materialized_feature_id: Optional[str] = None
-    """Unique identifier for the materialized feature."""
+    """Server-assigned unique identifier for the materialized feature."""
 
     offline_store_config: Optional[OfflineStoreConfig] = None
+    """Destination for writing feature values to an offline Delta table."""
 
-    online_store_config: Optional[OnlineStore] = None
+    online_store_config: Optional[OnlineStoreConfig] = None
+    """Destination for writing feature values to an online Lakebase table."""
 
     pipeline_schedule_state: Optional[MaterializedFeaturePipelineScheduleState] = None
-    """The schedule state of the materialization pipeline."""
+    """The schedule state of the materialization pipeline. Hidden from GraphQL: being deprecated, so
+    not exposed to Catalog Explorer."""
+
+    streaming_mode: Optional[StreamingMode] = None
+    """The Structured Streaming trigger mode used for materialization. Real-time mode (RTM) targets
+    sub-second latency for operational workloads; micro-batch mode (MBM) favors cost efficiency for
+    ETL and analytics workloads."""
 
     table_name: Optional[str] = None
     """The fully qualified Unity Catalog path to the table containing the materialized feature (Delta
     table or Lakebase table). Output only."""
 
+    table_trigger: Optional[TableTrigger] = None
+    """A trigger that fires when the upstream source table changes."""
+
     def as_dict(self) -> dict:
         """Serializes the MaterializedFeature into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.cron_schedule is not None:
+            body["cron_schedule"] = self.cron_schedule
+        if self.cron_schedule_trigger:
+            body["cron_schedule_trigger"] = self.cron_schedule_trigger.as_dict()
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
+        if self.is_online is not None:
+            body["is_online"] = self.is_online
         if self.last_materialization_time is not None:
             body["last_materialization_time"] = self.last_materialization_time
         if self.materialized_feature_id is not None:
@@ -3178,15 +4428,25 @@ class MaterializedFeature:
             body["online_store_config"] = self.online_store_config.as_dict()
         if self.pipeline_schedule_state is not None:
             body["pipeline_schedule_state"] = self.pipeline_schedule_state.value
+        if self.streaming_mode:
+            body["streaming_mode"] = self.streaming_mode.as_dict()
         if self.table_name is not None:
             body["table_name"] = self.table_name
+        if self.table_trigger:
+            body["table_trigger"] = self.table_trigger.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the MaterializedFeature into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.cron_schedule is not None:
+            body["cron_schedule"] = self.cron_schedule
+        if self.cron_schedule_trigger:
+            body["cron_schedule_trigger"] = self.cron_schedule_trigger
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
+        if self.is_online is not None:
+            body["is_online"] = self.is_online
         if self.last_materialization_time is not None:
             body["last_materialization_time"] = self.last_materialization_time
         if self.materialized_feature_id is not None:
@@ -3197,29 +4457,64 @@ class MaterializedFeature:
             body["online_store_config"] = self.online_store_config
         if self.pipeline_schedule_state is not None:
             body["pipeline_schedule_state"] = self.pipeline_schedule_state
+        if self.streaming_mode:
+            body["streaming_mode"] = self.streaming_mode
         if self.table_name is not None:
             body["table_name"] = self.table_name
+        if self.table_trigger:
+            body["table_trigger"] = self.table_trigger
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MaterializedFeature:
         """Deserializes the MaterializedFeature from a dictionary."""
         return cls(
+            cron_schedule=d.get("cron_schedule", None),
+            cron_schedule_trigger=_from_dict(d, "cron_schedule_trigger", CronSchedule),
             feature_name=d.get("feature_name", None),
+            is_online=d.get("is_online", None),
             last_materialization_time=d.get("last_materialization_time", None),
             materialized_feature_id=d.get("materialized_feature_id", None),
             offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
-            online_store_config=_from_dict(d, "online_store_config", OnlineStore),
+            online_store_config=_from_dict(d, "online_store_config", OnlineStoreConfig),
             pipeline_schedule_state=_enum(d, "pipeline_schedule_state", MaterializedFeaturePipelineScheduleState),
+            streaming_mode=_from_dict(d, "streaming_mode", StreamingMode),
             table_name=d.get("table_name", None),
+            table_trigger=_from_dict(d, "table_trigger", TableTrigger),
         )
 
 
 class MaterializedFeaturePipelineScheduleState(Enum):
-
     ACTIVE = "ACTIVE"
     PAUSED = "PAUSED"
     SNAPSHOT = "SNAPSHOT"
+
+
+@dataclass
+class MaxFunction:
+    """Computes the maximum value."""
+
+    input: str
+    """The input column from which the maximum is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaxFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaxFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaxFunction:
+        """Deserializes the MaxFunction from a dictionary."""
+        return cls(input=d.get("input", None))
 
 
 @dataclass
@@ -3308,6 +4603,33 @@ class Metric:
             timestamp=d.get("timestamp", None),
             value=d.get("value", None),
         )
+
+
+@dataclass
+class MinFunction:
+    """Computes the minimum value."""
+
+    input: str
+    """The input column from which the minimum is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MinFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MinFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MinFunction:
+        """Deserializes the MinFunction from a dictionary."""
+        return cls(input=d.get("input", None))
 
 
 @dataclass
@@ -3899,6 +5221,98 @@ class ModelVersionTag:
 
 
 @dataclass
+class MtlsConfig:
+    """Mutual-TLS (mTLS) authentication configuration. The keystore (client certificate + private key)
+    and truststore (CAs trusted to verify the broker) live as JKS files on Unity Catalog volumes,
+    with their passwords stored in Databricks secret scopes. This matches the SSL setup pattern
+    documented at
+    https://docs.databricks.com/en/connect/streaming/kafka/authentication#use-ssl-to-connect-databricks-to-kafka.
+
+    At materialization time, the generated PySpark code passes the JKS file paths and resolved
+    passwords through to the Kafka SSL options (kafka.ssl.keystore.location,
+    kafka.ssl.keystore.password, kafka.ssl.key.password, kafka.ssl.truststore.location,
+    kafka.ssl.truststore.password). Passwords are resolved on the Spark cluster via
+    dbutils.secrets.get; this message stores only references, never password values."""
+
+    keystore_location: str
+    """Unity Catalog volume path to the JKS keystore file containing the client certificate and private
+    key. e.g. "/Volumes/<catalog>/<schema>/<volume>/client.jks". The materialization compute must
+    have read permission on this volume."""
+
+    keystore_password_ref: SecretScopeReference
+    """Secret-scope reference for the JKS keystore password."""
+
+    key_password_ref: SecretScopeReference
+    """Secret-scope reference for the private key password. Often the same value as the keystore
+    password (keytool's default), but provided as a separate field because Apache Kafka requires it
+    as a distinct option (kafka.ssl.key.password)."""
+
+    truststore_location: str
+    """Unity Catalog volume path to the JKS truststore file containing the CA certificate(s) trusted to
+    verify the Kafka broker's server certificate. e.g.
+    "/Volumes/<catalog>/<schema>/<volume>/truststore.jks"."""
+
+    truststore_password_ref: SecretScopeReference
+    """Secret-scope reference for the JKS truststore password."""
+
+    disable_hostname_verification: Optional[bool] = None
+    """Set to true only when the broker certificate's SAN intentionally does not match the connection
+    endpoint — for example when reaching the cluster through a PrivateLink endpoint whose DNS name
+    is not in the broker certificate. Skipping the hostname check removes a defense against
+    man-in-the-middle attacks; do not enable casually. mTLS client authentication is unaffected by
+    this option.
+    
+    See the Apache Kafka SSL security guide for background on this check:
+    https://kafka.apache.org/42/security/encryption-and-authentication-using-ssl/#host-name-verification"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MtlsConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disable_hostname_verification is not None:
+            body["disable_hostname_verification"] = self.disable_hostname_verification
+        if self.key_password_ref:
+            body["key_password_ref"] = self.key_password_ref.as_dict()
+        if self.keystore_location is not None:
+            body["keystore_location"] = self.keystore_location
+        if self.keystore_password_ref:
+            body["keystore_password_ref"] = self.keystore_password_ref.as_dict()
+        if self.truststore_location is not None:
+            body["truststore_location"] = self.truststore_location
+        if self.truststore_password_ref:
+            body["truststore_password_ref"] = self.truststore_password_ref.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MtlsConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disable_hostname_verification is not None:
+            body["disable_hostname_verification"] = self.disable_hostname_verification
+        if self.key_password_ref:
+            body["key_password_ref"] = self.key_password_ref
+        if self.keystore_location is not None:
+            body["keystore_location"] = self.keystore_location
+        if self.keystore_password_ref:
+            body["keystore_password_ref"] = self.keystore_password_ref
+        if self.truststore_location is not None:
+            body["truststore_location"] = self.truststore_location
+        if self.truststore_password_ref:
+            body["truststore_password_ref"] = self.truststore_password_ref
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MtlsConfig:
+        """Deserializes the MtlsConfig from a dictionary."""
+        return cls(
+            disable_hostname_verification=d.get("disable_hostname_verification", None),
+            key_password_ref=_from_dict(d, "key_password_ref", SecretScopeReference),
+            keystore_location=d.get("keystore_location", None),
+            keystore_password_ref=_from_dict(d, "keystore_password_ref", SecretScopeReference),
+            truststore_location=d.get("truststore_location", None),
+            truststore_password_ref=_from_dict(d, "truststore_password_ref", SecretScopeReference),
+        )
+
+
+@dataclass
 class OfflineStoreConfig:
     """Configuration for offline store destination."""
 
@@ -3966,6 +5380,9 @@ class OnlineStore:
     state: Optional[OnlineStoreState] = None
     """The current state of the online store."""
 
+    usage_policy_id: Optional[str] = None
+    """The usage policy applied to the online store to track billing."""
+
     def as_dict(self) -> dict:
         """Serializes the OnlineStore into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3981,6 +5398,8 @@ class OnlineStore:
             body["read_replica_count"] = self.read_replica_count
         if self.state is not None:
             body["state"] = self.state.value
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3998,6 +5417,8 @@ class OnlineStore:
             body["read_replica_count"] = self.read_replica_count
         if self.state is not None:
             body["state"] = self.state
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     @classmethod
@@ -4010,11 +5431,67 @@ class OnlineStore:
             name=d.get("name", None),
             read_replica_count=d.get("read_replica_count", None),
             state=_enum(d, "state", OnlineStoreState),
+            usage_policy_id=d.get("usage_policy_id", None),
+        )
+
+
+@dataclass
+class OnlineStoreConfig:
+    """Configuration for online store destination."""
+
+    catalog_name: str
+    """The Unity Catalog catalog name. This name is also used as the Lakebase logical database name.
+    Quoting is handled by the backend where needed, do not pre-quote it."""
+
+    schema_name: str
+    """The Unity Catalog schema name. This name is also used as the Lakebase schema name under the
+    database. Quoting is handled by the backend where needed, do not pre-quote it."""
+
+    table_name_prefix: str
+    """Prefix for Unity Catalog table name. The materialized feature will be stored in a Lakebase table
+    with this prefix and a generated postfix."""
+
+    online_store_name: str
+    """The name of the target online store."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OnlineStoreConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.online_store_name is not None:
+            body["online_store_name"] = self.online_store_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.table_name_prefix is not None:
+            body["table_name_prefix"] = self.table_name_prefix
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OnlineStoreConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.online_store_name is not None:
+            body["online_store_name"] = self.online_store_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.table_name_prefix is not None:
+            body["table_name_prefix"] = self.table_name_prefix
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineStoreConfig:
+        """Deserializes the OnlineStoreConfig from a dictionary."""
+        return cls(
+            catalog_name=d.get("catalog_name", None),
+            online_store_name=d.get("online_store_name", None),
+            schema_name=d.get("schema_name", None),
+            table_name_prefix=d.get("table_name_prefix", None),
         )
 
 
 class OnlineStoreState(Enum):
-
     AVAILABLE = "AVAILABLE"
     DELETING = "DELETING"
     FAILING_OVER = "FAILING_OVER"
@@ -4113,7 +5590,6 @@ class PublishSpec:
 
 
 class PublishSpecPublishMode(Enum):
-
     CONTINUOUS = "CONTINUOUS"
     SNAPSHOT = "SNAPSHOT"
     TRIGGERED = "TRIGGERED"
@@ -4511,7 +5987,6 @@ class RegistryWebhook:
 
 
 class RegistryWebhookEvent(Enum):
-
     COMMENT_CREATED = "COMMENT_CREATED"
     MODEL_VERSION_CREATED = "MODEL_VERSION_CREATED"
     MODEL_VERSION_TAG_SET = "MODEL_VERSION_TAG_SET"
@@ -4590,6 +6065,34 @@ class RenameModelResponse:
 
 
 @dataclass
+class RequestSource:
+    """A request-time data source whose value is provided at inference time: offline batch scoring or
+    online serving endpoint"""
+
+    flat_schema: Optional[FlatSchema] = None
+    """A flat schema with scalar-typed fields only."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RequestSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.flat_schema:
+            body["flat_schema"] = self.flat_schema.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RequestSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.flat_schema:
+            body["flat_schema"] = self.flat_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RequestSource:
+        """Deserializes the RequestSource from a dictionary."""
+        return cls(flat_schema=_from_dict(d, "flat_schema", FlatSchema))
+
+
+@dataclass
 class RestoreExperimentResponse:
     def as_dict(self) -> dict:
         """Serializes the RestoreExperimentResponse into a dictionary suitable for use as a JSON request body."""
@@ -4648,6 +6151,43 @@ class RestoreRunsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> RestoreRunsResponse:
         """Deserializes the RestoreRunsResponse from a dictionary."""
         return cls(runs_restored=d.get("runs_restored", None))
+
+
+@dataclass
+class RollingWindow:
+    """A rolling time window with an optional delay. This is the SQL-spec-aligned replacement for
+    ContinuousWindow: `delay` is the non-negative counterpart of the legacy non-positive
+    `ContinuousWindow.offset`."""
+
+    window_duration: Duration
+    """The duration of the rolling window (must be positive)."""
+
+    delay: Optional[Duration] = None
+    """The delay applied to the end of the rolling window (must be non-negative). For example, delay=1d
+    shifts the window end 1 day before the evaluation time."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RollingWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay.ToJsonString()
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RollingWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RollingWindow:
+        """Deserializes the RollingWindow from a dictionary."""
+        return cls(delay=_duration(d, "delay"), window_duration=_duration(d, "window_duration"))
 
 
 @dataclass
@@ -4926,6 +6466,48 @@ class RunTag:
         return cls(key=d.get("key", None), value=d.get("value", None))
 
 
+class ScalarDataType(Enum):
+    """Scalar data types for request-time field definitions. Only flat (non-nested) types are
+    supported."""
+
+    BINARY = "BINARY"
+    BOOLEAN = "BOOLEAN"
+    DATE = "DATE"
+    DECIMAL = "DECIMAL"
+    DOUBLE = "DOUBLE"
+    FLOAT = "FLOAT"
+    INTEGER = "INTEGER"
+    LONG = "LONG"
+    SHORT = "SHORT"
+    STRING = "STRING"
+    TIMESTAMP = "TIMESTAMP"
+
+
+@dataclass
+class SchemaConfig:
+    json_schema: Optional[str] = None
+    """Schema of the JSON object in standard IETF JSON schema format (https://json-schema.org/)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SchemaConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.json_schema is not None:
+            body["json_schema"] = self.json_schema
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SchemaConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.json_schema is not None:
+            body["json_schema"] = self.json_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SchemaConfig:
+        """Deserializes the SchemaConfig from a dictionary."""
+        return cls(json_schema=d.get("json_schema", None))
+
+
 @dataclass
 class SearchExperimentsResponse:
     experiments: Optional[List[Experiment]] = None
@@ -5183,6 +6765,41 @@ class SearchRunsResponse:
 
 
 @dataclass
+class SecretScopeReference:
+    """Reference to an entry in a Databricks secret scope. The referenced value is fetched on the Spark
+    cluster at materialization time via dbutils.secrets.get(scope, key)."""
+
+    scope: str
+    """The Databricks secret scope name."""
+
+    key: str
+    """The key within the scope."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SecretScopeReference into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.scope is not None:
+            body["scope"] = self.scope
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SecretScopeReference into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.scope is not None:
+            body["scope"] = self.scope
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SecretScopeReference:
+        """Deserializes the SecretScopeReference from a dictionary."""
+        return cls(key=d.get("key", None), scope=d.get("scope", None))
+
+
+@dataclass
 class SetExperimentTagResponse:
     def as_dict(self) -> dict:
         """Serializes the SetExperimentTagResponse into a dictionary suitable for use as a JSON request body."""
@@ -5318,6 +6935,434 @@ class Status(Enum):
 
 
 @dataclass
+class StddevPopFunction:
+    """Computes the population standard deviation."""
+
+    input: str
+    """The input column from which the population standard deviation is computed. For Kafka sources,
+    use dot-prefixed path notation (e.g., "value.amount"). For nested fields, the leaf node name is
+    used. Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility
+    but is deprecated; migrate to dot notation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StddevPopFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StddevPopFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StddevPopFunction:
+        """Deserializes the StddevPopFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
+@dataclass
+class StddevSampFunction:
+    """Computes the sample standard deviation."""
+
+    input: str
+    """The input column from which the sample standard deviation is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StddevSampFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StddevSampFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StddevSampFunction:
+        """Deserializes the StddevSampFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
+@dataclass
+class Stream:
+    """A Stream is a governed UC entity representing an external streaming data source. The
+    source_config oneof determines the streaming platform source (e.g. Kafka, Kinesis, etc.)."""
+
+    name: str
+    """Full three-part (catalog.schema.stream) name of the stream."""
+
+    source_config: StreamSourceConfig
+    """Source-specific configuration. Determines the streaming platform source."""
+
+    connection_config: StreamConnectionConfig
+    """Specifies how to connect and authenticate to the stream platform."""
+
+    schema_config: StreamSchemaConfig
+    """Schema definitions for the stream. Currently only direct schemas are supported. In a future
+    milestone, we will support schema registries through a UC Connection."""
+
+    ingestion_config: IngestionConfig
+    """Configuration for streaming data ingestion: the managed table storing an offline copy of forward
+    fill data and optional historical backfill."""
+
+    browse_only: Optional[bool] = None
+    """Indicates whether the principal is limited to retrieving metadata for the associated object
+    through the BROWSE privilege when include_browse is enabled in the request."""
+
+    create_time: Optional[Timestamp] = None
+    """Time at which this Stream was created."""
+
+    created_by: Optional[str] = None
+    """Username of the Stream creator."""
+
+    description: Optional[str] = None
+    """User-provided description."""
+
+    update_time: Optional[Timestamp] = None
+    """Time at which this Stream was last modified."""
+
+    updated_by: Optional[str] = None
+    """Username of user who last modified the Stream."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Stream into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.connection_config:
+            body["connection_config"] = self.connection_config.as_dict()
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.description is not None:
+            body["description"] = self.description
+        if self.ingestion_config:
+            body["ingestion_config"] = self.ingestion_config.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema_config:
+            body["schema_config"] = self.schema_config.as_dict()
+        if self.source_config:
+            body["source_config"] = self.source_config.as_dict()
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Stream into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.connection_config:
+            body["connection_config"] = self.connection_config
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.description is not None:
+            body["description"] = self.description
+        if self.ingestion_config:
+            body["ingestion_config"] = self.ingestion_config
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema_config:
+            body["schema_config"] = self.schema_config
+        if self.source_config:
+            body["source_config"] = self.source_config
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Stream:
+        """Deserializes the Stream from a dictionary."""
+        return cls(
+            browse_only=d.get("browse_only", None),
+            connection_config=_from_dict(d, "connection_config", StreamConnectionConfig),
+            create_time=_timestamp(d, "create_time"),
+            created_by=d.get("created_by", None),
+            description=d.get("description", None),
+            ingestion_config=_from_dict(d, "ingestion_config", IngestionConfig),
+            name=d.get("name", None),
+            schema_config=_from_dict(d, "schema_config", StreamSchemaConfig),
+            source_config=_from_dict(d, "source_config", StreamSourceConfig),
+            update_time=_timestamp(d, "update_time"),
+            updated_by=d.get("updated_by", None),
+        )
+
+
+@dataclass
+class StreamConnectionConfig:
+    """Specifies how to connect and authenticate to the stream platform."""
+
+    direct_mtls_config: Optional[DirectMtlsConfig] = None
+    """Direct mTLS configuration for stream platform access. This is only used in the short term until
+    UC Kafka Connections support mTLS . Once UC Kafka Connections support mTLS, this will be
+    deprecated."""
+
+    uc_connection_name: Optional[str] = None
+    """Name of an existing UC Connection for stream platform access. Must be the correct type for the
+    streaming platform (e.g. a Kafka Connection for a Kafka Stream)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamConnectionConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direct_mtls_config:
+            body["direct_mtls_config"] = self.direct_mtls_config.as_dict()
+        if self.uc_connection_name is not None:
+            body["uc_connection_name"] = self.uc_connection_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamConnectionConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.direct_mtls_config:
+            body["direct_mtls_config"] = self.direct_mtls_config
+        if self.uc_connection_name is not None:
+            body["uc_connection_name"] = self.uc_connection_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamConnectionConfig:
+        """Deserializes the StreamConnectionConfig from a dictionary."""
+        return cls(
+            direct_mtls_config=_from_dict(d, "direct_mtls_config", DirectMtlsConfig),
+            uc_connection_name=d.get("uc_connection_name", None),
+        )
+
+
+@dataclass
+class StreamSchemaConfig:
+    """Schema definitions for the stream. Currently only direct schemas are supported. In a future
+    milestone, we will support schema registries through a UC Connection."""
+
+    direct_schemas: Optional[DirectSchemas] = None
+    """Schema definitions provided directly on the Stream."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamSchemaConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direct_schemas:
+            body["direct_schemas"] = self.direct_schemas.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamSchemaConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.direct_schemas:
+            body["direct_schemas"] = self.direct_schemas
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamSchemaConfig:
+        """Deserializes the StreamSchemaConfig from a dictionary."""
+        return cls(direct_schemas=_from_dict(d, "direct_schemas", DirectSchemas))
+
+
+@dataclass
+class StreamSource:
+    """A Stream entity used as a data source for a feature."""
+
+    full_name: str
+    """Three-part full name of the Stream (catalog.schema.stream)."""
+
+    filter_condition: Optional[str] = None
+    """The filter condition applied to the source data before aggregation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamSource:
+        """Deserializes the StreamSource from a dictionary."""
+        return cls(filter_condition=d.get("filter_condition", None), full_name=d.get("full_name", None))
+
+
+@dataclass
+class StreamSourceConfig:
+    """Source-specific configuration. Determines the streaming platform source."""
+
+    kafka_stream_config: Optional[KafkaStreamConfig] = None
+    """Configuration for Apache Kafka streams."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamSourceConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.kafka_stream_config:
+            body["kafka_stream_config"] = self.kafka_stream_config.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamSourceConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.kafka_stream_config:
+            body["kafka_stream_config"] = self.kafka_stream_config
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamSourceConfig:
+        """Deserializes the StreamSourceConfig from a dictionary."""
+        return cls(kafka_stream_config=_from_dict(d, "kafka_stream_config", KafkaStreamConfig))
+
+
+@dataclass
+class StreamingMode:
+    """The streaming mode configuration for a streaming materialization pipeline."""
+
+    mode: Optional[StreamingModeStreamingModeType] = None
+    """The type of streaming mode used by the materialization pipeline."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamingMode into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.mode is not None:
+            body["mode"] = self.mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamingMode into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.mode is not None:
+            body["mode"] = self.mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamingMode:
+        """Deserializes the StreamingMode from a dictionary."""
+        return cls(mode=_enum(d, "mode", StreamingModeStreamingModeType))
+
+
+class StreamingModeStreamingModeType(Enum):
+    STREAMING_MODE_TYPE_MBM = "STREAMING_MODE_TYPE_MBM"
+    STREAMING_MODE_TYPE_RTM = "STREAMING_MODE_TYPE_RTM"
+
+
+@dataclass
+class SubscriptionMode:
+    """Deprecated: Use KafkaSubscriptionMode instead."""
+
+    assign: Optional[str] = None
+    """A JSON string that contains the specific topic-partitions to consume from. For example, for
+    '{"topicA":[0,1],"topicB":[2,4]}', topicA's 0'th and 1st partitions will be consumed from."""
+
+    subscribe: Optional[str] = None
+    """A comma-separated list of Kafka topics to read from. For example, 'topicA,topicB,topicC'."""
+
+    subscribe_pattern: Optional[str] = None
+    """A regular expression matching topics to subscribe to. For example, 'topic.*' will subscribe to
+    all topics starting with 'topic'."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SubscriptionMode into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.assign is not None:
+            body["assign"] = self.assign
+        if self.subscribe is not None:
+            body["subscribe"] = self.subscribe
+        if self.subscribe_pattern is not None:
+            body["subscribe_pattern"] = self.subscribe_pattern
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionMode into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.assign is not None:
+            body["assign"] = self.assign
+        if self.subscribe is not None:
+            body["subscribe"] = self.subscribe
+        if self.subscribe_pattern is not None:
+            body["subscribe_pattern"] = self.subscribe_pattern
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionMode:
+        """Deserializes the SubscriptionMode from a dictionary."""
+        return cls(
+            assign=d.get("assign", None),
+            subscribe=d.get("subscribe", None),
+            subscribe_pattern=d.get("subscribe_pattern", None),
+        )
+
+
+@dataclass
+class SumFunction:
+    """Computes the sum of values."""
+
+    input: str
+    """The input column from which the sum is computed. For Kafka sources, use dot-prefixed path
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. Colon-prefixed
+    notation (e.g., "value:amount") is supported for backwards compatibility but is deprecated;
+    migrate to dot notation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SumFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SumFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SumFunction:
+        """Deserializes the SumFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
+@dataclass
+class TableTrigger:
+    """A trigger that fires when the upstream source table changes."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TableTrigger into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TableTrigger into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TableTrigger:
+        """Deserializes the TableTrigger from a dictionary."""
+        return cls()
+
+
+@dataclass
 class TestRegistryWebhookResponse:
     body: Optional[str] = None
     """Body of the response from the webhook URL"""
@@ -5353,6 +7398,8 @@ class TestRegistryWebhookResponse:
 class TimeWindow:
     continuous: Optional[ContinuousWindow] = None
 
+    rolling: Optional[RollingWindow] = None
+
     sliding: Optional[SlidingWindow] = None
 
     tumbling: Optional[TumblingWindow] = None
@@ -5362,6 +7409,8 @@ class TimeWindow:
         body = {}
         if self.continuous:
             body["continuous"] = self.continuous.as_dict()
+        if self.rolling:
+            body["rolling"] = self.rolling.as_dict()
         if self.sliding:
             body["sliding"] = self.sliding.as_dict()
         if self.tumbling:
@@ -5373,6 +7422,8 @@ class TimeWindow:
         body = {}
         if self.continuous:
             body["continuous"] = self.continuous
+        if self.rolling:
+            body["rolling"] = self.rolling
         if self.sliding:
             body["sliding"] = self.sliding
         if self.tumbling:
@@ -5384,9 +7435,40 @@ class TimeWindow:
         """Deserializes the TimeWindow from a dictionary."""
         return cls(
             continuous=_from_dict(d, "continuous", ContinuousWindow),
+            rolling=_from_dict(d, "rolling", RollingWindow),
             sliding=_from_dict(d, "sliding", SlidingWindow),
             tumbling=_from_dict(d, "tumbling", TumblingWindow),
         )
+
+
+@dataclass
+class TimeseriesColumn:
+    name: str
+    """The name of the timeseries column. For Kafka sources, use dot-prefixed path notation to
+    reference fields within the key or value schema (e.g., "value.event_timestamp"). For nested
+    fields, the leaf node name (e.g., "event_timestamp" from "value.event_details.event_timestamp")
+    is what will be present in materialized tables and expected to match at query time.
+    Colon-prefixed notation (e.g., "value:event_timestamp") is supported for backwards compatibility
+    but is deprecated; migrate to dot notation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TimeseriesColumn into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TimeseriesColumn into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TimeseriesColumn:
+        """Deserializes the TimeseriesColumn from a dictionary."""
+        return cls(name=d.get("name", None))
 
 
 @dataclass
@@ -5660,6 +7742,60 @@ class UpdateWebhookResponse:
         return cls(webhook=_from_dict(d, "webhook", RegistryWebhook))
 
 
+@dataclass
+class VarPopFunction:
+    """Computes the population variance."""
+
+    input: str
+    """The input column from which the population variance is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the VarPopFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VarPopFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VarPopFunction:
+        """Deserializes the VarPopFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
+@dataclass
+class VarSampFunction:
+    """Computes the sample variance."""
+
+    input: str
+    """The input column from which the sample variance is computed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the VarSampFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VarSampFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VarSampFunction:
+        """Deserializes the VarSampFunction from a dictionary."""
+        return cls(input=d.get("input", None))
+
+
 class ViewType(Enum):
     """Qualifier for the view type."""
 
@@ -5686,7 +7822,8 @@ class ExperimentsAPI:
         another experiment with the same name does not already exist and fails if another experiment with the
         same name already exists.
 
-        Throws `RESOURCE_ALREADY_EXISTS` if an experiment with the given name exists.
+        Throws `RESOURCE_ALREADY_EXISTS` if an experiment with the given name exists. Note: In some contexts,
+        this error may be remapped to `ALREADY_EXISTS`. To be safe, clients should check for both error codes.
 
         :param name: str
           Experiment name.
@@ -5713,6 +7850,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/experiments/create", body=body, headers=headers)
         return CreateExperimentResponse.from_dict(res)
@@ -5763,6 +7904,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/logged-models", body=body, headers=headers)
         return CreateLoggedModelResponse.from_dict(res)
 
@@ -5810,6 +7955,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/runs/create", body=body, headers=headers)
         return CreateRunResponse.from_dict(res)
 
@@ -5831,6 +7980,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/experiments/delete", body=body, headers=headers)
 
     def delete_logged_model(self, model_id: str):
@@ -5845,6 +7998,10 @@ class ExperimentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
 
@@ -5862,6 +8019,10 @@ class ExperimentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/mlflow/logged-models/{model_id}/tags/{tag_key}", headers=headers)
 
@@ -5881,6 +8042,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/delete", body=body, headers=headers)
 
@@ -5915,6 +8080,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/databricks/runs/delete-runs", body=body, headers=headers)
         return DeleteRunsResponse.from_dict(res)
 
@@ -5940,6 +8109,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/delete-tag", body=body, headers=headers)
 
     def finalize_logged_model(self, model_id: str, status: LoggedModelStatus) -> FinalizeLoggedModelResponse:
@@ -5961,6 +8134,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/mlflow/logged-models/{model_id}", body=body, headers=headers)
         return FinalizeLoggedModelResponse.from_dict(res)
@@ -5987,6 +8164,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/mlflow/experiments/get-by-name", query=query, headers=headers)
         return GetExperimentByNameResponse.from_dict(res)
 
@@ -6005,6 +8186,10 @@ class ExperimentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/mlflow/experiments/get", query=query, headers=headers)
         return GetExperimentResponse.from_dict(res)
@@ -6051,6 +8236,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/metrics/get-history", query=query, headers=headers)
             if "metrics" in json:
@@ -6073,6 +8262,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
         return GetLoggedModelResponse.from_dict(res)
 
@@ -6089,6 +8282,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/permissions/experiments/{experiment_id}/permissionLevels", headers=headers)
         return GetExperimentPermissionLevelsResponse.from_dict(res)
 
@@ -6104,6 +8301,10 @@ class ExperimentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/experiments/{experiment_id}", headers=headers)
         return ExperimentPermissions.from_dict(res)
@@ -6131,6 +8332,10 @@ class ExperimentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/mlflow/runs/get", query=query, headers=headers)
         return GetRunResponse.from_dict(res)
@@ -6179,6 +8384,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/artifacts/list", query=query, headers=headers)
             if "files" in json:
@@ -6219,6 +8428,10 @@ class ExperimentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/experiments/list", query=query, headers=headers)
@@ -6307,6 +8520,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-batch", body=body, headers=headers)
 
     def log_inputs(
@@ -6336,6 +8553,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-inputs", body=body, headers=headers)
 
     def log_logged_model_params(self, model_id: str, *, params: Optional[List[LoggedModelParameter]] = None):
@@ -6358,6 +8579,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/mlflow/logged-models/{model_id}/params", body=body, headers=headers)
 
@@ -6427,6 +8652,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-metric", body=body, headers=headers)
 
     def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None):
@@ -6453,6 +8682,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-model", body=body, headers=headers)
 
     def log_outputs(self, run_id: str, *, models: Optional[List[ModelOutput]] = None):
@@ -6475,6 +8708,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/outputs", body=body, headers=headers)
 
@@ -6510,6 +8747,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-parameter", body=body, headers=headers)
 
     def restore_experiment(self, experiment_id: str):
@@ -6533,6 +8774,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/experiments/restore", body=body, headers=headers)
 
     def restore_run(self, run_id: str):
@@ -6553,6 +8798,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/restore", body=body, headers=headers)
 
@@ -6586,6 +8835,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/databricks/runs/restore-runs", body=body, headers=headers)
         return RestoreRunsResponse.from_dict(res)
@@ -6632,6 +8885,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("POST", "/api/2.0/mlflow/experiments/search", body=body, headers=headers)
@@ -6694,6 +8951,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/logged-models/search", body=body, headers=headers)
         return SearchLoggedModelsResponse.from_dict(res)
@@ -6759,6 +9020,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("POST", "/api/2.0/mlflow/runs/search", body=body, headers=headers)
             if "runs" in json:
@@ -6793,6 +9058,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/experiments/set-experiment-tag", body=body, headers=headers)
 
     def set_logged_model_tags(self, model_id: str, *, tags: Optional[List[LoggedModelTag]] = None):
@@ -6813,6 +9082,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/mlflow/logged-models/{model_id}/tags", body=body, headers=headers)
 
@@ -6836,6 +9109,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/permissions/experiments/{experiment_id}", body=body, headers=headers)
         return ExperimentPermissions.from_dict(res)
@@ -6870,6 +9147,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/set-tag", body=body, headers=headers)
 
     def update_experiment(self, experiment_id: str, *, new_name: Optional[str] = None):
@@ -6893,6 +9174,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/experiments/update", body=body, headers=headers)
 
     def update_permissions(
@@ -6914,6 +9199,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/experiments/{experiment_id}", body=body, headers=headers)
         return ExperimentPermissions.from_dict(res)
@@ -6960,6 +9249,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/runs/update", body=body, headers=headers)
         return UpdateRunResponse.from_dict(res)
 
@@ -6989,6 +9282,10 @@ class FeatureEngineeringAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST", "/api/2.0/feature-engineering/materialized-features:batchCreate", body=body, headers=headers
         )
@@ -7004,13 +9301,41 @@ class FeatureEngineeringAPI:
         """
 
         body = feature.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/feature-engineering/features", body=body, headers=headers)
         return Feature.from_dict(res)
+
+    def create_kafka_config(self, kafka_config: KafkaConfig) -> KafkaConfig:
+        """Create a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
+        the entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param kafka_config: :class:`KafkaConfig`
+
+        :returns: :class:`KafkaConfig`
+        """
+
+        body = kafka_config.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/feature-engineering/features/kafka-configs", body=body, headers=headers)
+        return KafkaConfig.from_dict(res)
 
     def create_materialized_feature(self, materialized_feature: MaterializedFeature) -> MaterializedFeature:
         """Create a materialized feature.
@@ -7022,13 +9347,41 @@ class FeatureEngineeringAPI:
         """
 
         body = materialized_feature.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/feature-engineering/materialized-features", body=body, headers=headers)
         return MaterializedFeature.from_dict(res)
+
+    def create_stream(self, stream: Stream) -> Stream:
+        """Create a Stream, a governed UC entity representing an external streaming data source.
+
+        :param stream: :class:`Stream`
+          The Stream to create.
+
+        :returns: :class:`Stream`
+        """
+
+        body = stream.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/feature-engineering/streams", body=body, headers=headers)
+        return Stream.from_dict(res)
 
     def delete_feature(self, full_name: str):
         """Delete a Feature.
@@ -7043,7 +9396,31 @@ class FeatureEngineeringAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
+
+    def delete_kafka_config(self, name: str):
+        """Delete a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
+        the entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param name: str
+          Name of the Kafka config to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/feature-engineering/features/kafka-configs/{name}", headers=headers)
 
     def delete_materialized_feature(self, materialized_feature_id: str):
         """Delete a materialized feature.
@@ -7058,9 +9435,32 @@ class FeatureEngineeringAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do(
             "DELETE", f"/api/2.0/feature-engineering/materialized-features/{materialized_feature_id}", headers=headers
         )
+
+    def delete_stream(self, name: str):
+        """Delete a Stream by its full three-part name (catalog.schema.stream).
+
+        :param name: str
+          Full three-part name (catalog.schema.stream) of the Stream to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/feature-engineering/streams/{name}", headers=headers)
 
     def get_feature(self, full_name: str) -> Feature:
         """Get a Feature.
@@ -7075,8 +9475,33 @@ class FeatureEngineeringAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
         return Feature.from_dict(res)
+
+    def get_kafka_config(self, name: str) -> KafkaConfig:
+        """Get a Kafka config. During PrPr, Kafka configs can be read and used when creating features under the
+        entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param name: str
+          Name of the Kafka config to get.
+
+        :returns: :class:`KafkaConfig`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/feature-engineering/features/kafka-configs/{name}", headers=headers)
+        return KafkaConfig.from_dict(res)
 
     def get_materialized_feature(self, materialized_feature_id: str) -> MaterializedFeature:
         """Get a materialized feature.
@@ -7091,20 +9516,90 @@ class FeatureEngineeringAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.0/feature-engineering/materialized-features/{materialized_feature_id}", headers=headers
         )
         return MaterializedFeature.from_dict(res)
 
-    def list_features(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Feature]:
+    def get_stream(self, name: str) -> Stream:
+        """Get a Stream by its full three-part name (catalog.schema.stream).
+
+        :param name: str
+          Full three-part name (catalog.schema.stream) of the Stream to get.
+
+        :returns: :class:`Stream`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/feature-engineering/streams/{name}", headers=headers)
+        return Stream.from_dict(res)
+
+    def list_features(
+        self, catalog_name: str, schema_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[Feature]:
         """List Features.
 
+        :param catalog_name: str
+          Name of parent catalog for features of interest.
+        :param schema_name: str
+          Name of parent schema relative to its parent catalog.
         :param page_size: int (optional)
           The maximum number of results to return.
         :param page_token: str (optional)
           Pagination token to go to the next page based on a previous query.
 
         :returns: Iterator over :class:`Feature`
+        """
+
+        query = {}
+        if catalog_name is not None:
+            query["catalog_name"] = catalog_name
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if schema_name is not None:
+            query["schema_name"] = schema_name
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/feature-engineering/features", query=query, headers=headers)
+            if "features" in json:
+                for v in json["features"]:
+                    yield Feature.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_kafka_configs(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[KafkaConfig]:
+        """List Kafka configs. During PrPr, Kafka configs can be read and used when creating features under the
+        entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param page_size: int (optional)
+          The maximum number of results to return.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+
+        :returns: Iterator over :class:`KafkaConfig`
         """
 
         query = {}
@@ -7116,11 +9611,17 @@ class FeatureEngineeringAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
-            json = self._api.do("GET", "/api/2.0/feature-engineering/features", query=query, headers=headers)
-            if "features" in json:
-                for v in json["features"]:
-                    yield Feature.from_dict(v)
+            json = self._api.do(
+                "GET", "/api/2.0/feature-engineering/features/kafka-configs", query=query, headers=headers
+            )
+            if "kafka_configs" in json:
+                for v in json["kafka_configs"]:
+                    yield KafkaConfig.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -7153,6 +9654,10 @@ class FeatureEngineeringAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do(
                 "GET", "/api/2.0/feature-engineering/materialized-features", query=query, headers=headers
@@ -7164,11 +9669,52 @@ class FeatureEngineeringAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def list_streams(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None, parent: Optional[str] = None
+    ) -> Iterator[Stream]:
+        """List Streams under a given catalog.schema parent.
+
+        :param page_size: int (optional)
+          The maximum number of results to return.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+        :param parent: str (optional)
+          Two-part name (catalog.schema) of the parent under which to list Streams.
+
+        :returns: Iterator over :class:`Stream`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if parent is not None:
+            query["parent"] = parent
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/feature-engineering/streams", query=query, headers=headers)
+            if "streams" in json:
+                for v in json["streams"]:
+                    yield Stream.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def update_feature(self, full_name: str, feature: Feature, update_mask: str) -> Feature:
         """Update a Feature.
 
         :param full_name: str
-          The full three-part name (catalog, schema, name) of the feature.
+          The full three-part name (catalog, schema, name) of the feature. This is the feature's resource
+          identifier; the catalog_name, schema_name, and name fields below are OUTPUT_ONLY decomposed views of
+          this value.
         :param feature: :class:`Feature`
           Feature to update.
         :param update_mask: str
@@ -7186,10 +9732,52 @@ class FeatureEngineeringAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", f"/api/2.0/feature-engineering/features/{full_name}", query=query, body=body, headers=headers
         )
         return Feature.from_dict(res)
+
+    def update_kafka_config(self, name: str, kafka_config: KafkaConfig, update_mask: FieldMask) -> KafkaConfig:
+        """Update a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
+        the entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param name: str
+          Name that uniquely identifies this Kafka config within the metastore. This will be the identifier
+          used from the Feature object to reference these configs for a feature. Can be distinct from topic
+          name.
+        :param kafka_config: :class:`KafkaConfig`
+          The Kafka config to update.
+        :param update_mask: FieldMask
+          The list of fields to update.
+
+        :returns: :class:`KafkaConfig`
+        """
+
+        body = kafka_config.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/feature-engineering/features/kafka-configs/{name}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return KafkaConfig.from_dict(res)
 
     def update_materialized_feature(
         self, materialized_feature_id: str, materialized_feature: MaterializedFeature, update_mask: str
@@ -7197,7 +9785,7 @@ class FeatureEngineeringAPI:
         """Update a materialized feature (pause/resume).
 
         :param materialized_feature_id: str
-          Unique identifier for the materialized feature.
+          Server-assigned unique identifier for the materialized feature.
         :param materialized_feature: :class:`MaterializedFeature`
           The materialized feature to update.
         :param update_mask: str
@@ -7216,6 +9804,10 @@ class FeatureEngineeringAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH",
             f"/api/2.0/feature-engineering/materialized-features/{materialized_feature_id}",
@@ -7224,6 +9816,37 @@ class FeatureEngineeringAPI:
             headers=headers,
         )
         return MaterializedFeature.from_dict(res)
+
+    def update_stream(self, name: str, stream: Stream, update_mask: FieldMask) -> Stream:
+        """Update a Stream. Only fields listed in `update_mask` are mutated.
+
+        :param name: str
+          Full three-part (catalog.schema.stream) name of the stream.
+        :param stream: :class:`Stream`
+          The Stream to update.
+        :param update_mask: FieldMask
+          The list of fields to update.
+
+        :returns: :class:`Stream`
+        """
+
+        body = stream.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/feature-engineering/streams/{name}", query=query, body=body, headers=headers
+        )
+        return Stream.from_dict(res)
 
 
 class FeatureStoreAPI:
@@ -7247,10 +9870,15 @@ class FeatureStoreAPI:
         """
 
         body = online_store.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/feature-store/online-stores", body=body, headers=headers)
         return OnlineStore.from_dict(res)
@@ -7268,7 +9896,30 @@ class FeatureStoreAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/feature-store/online-stores/{name}", headers=headers)
+
+    def delete_online_table(self, online_table_name: str):
+        """Delete online table.
+
+        :param online_table_name: str
+          The full three-part (catalog, schema, table) name of the online table.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/feature-store/online-tables/{online_table_name}", headers=headers)
 
     def get_online_store(self, name: str) -> OnlineStore:
         """Get an Online Feature Store.
@@ -7282,6 +9933,10 @@ class FeatureStoreAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/feature-store/online-stores/{name}", headers=headers)
         return OnlineStore.from_dict(res)
@@ -7307,6 +9962,10 @@ class FeatureStoreAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/feature-store/online-stores", query=query, headers=headers)
@@ -7336,6 +9995,10 @@ class FeatureStoreAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST", f"/api/2.0/feature-store/tables/{source_table_name}/publish", body=body, headers=headers
         )
@@ -7362,6 +10025,10 @@ class FeatureStoreAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/feature-store/online-stores/{name}", query=query, body=body, headers=headers
@@ -7527,6 +10194,10 @@ class ForecastingAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.0/automl/create-forecasting-experiment", body=body, headers=headers)
         return Wait(
             self.wait_get_experiment_forecasting_succeeded,
@@ -7589,6 +10260,10 @@ class ForecastingAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/automl/get-forecasting-experiment/{experiment_id}", headers=headers)
         return ForecastingExperiment.from_dict(res)
 
@@ -7611,10 +10286,15 @@ class MaterializedFeaturesAPI:
         """
 
         body = feature_tag.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -7641,6 +10321,10 @@ class MaterializedFeaturesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do(
             "DELETE",
             f"/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags/{key}",
@@ -7662,6 +10346,10 @@ class MaterializedFeaturesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET",
             f"/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/lineage",
@@ -7682,6 +10370,10 @@ class MaterializedFeaturesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -7713,6 +10405,10 @@ class MaterializedFeaturesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -7757,6 +10453,10 @@ class MaterializedFeaturesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -7823,6 +10523,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/transition-requests/approve", body=body, headers=headers)
         return ApproveTransitionRequestResponse.from_dict(res)
 
@@ -7851,6 +10555,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/comments/create", body=body, headers=headers)
         return CreateCommentResponse.from_dict(res)
@@ -7882,6 +10590,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/registered-models/create", body=body, headers=headers)
         return CreateModelResponse.from_dict(res)
@@ -7934,6 +10646,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/model-versions/create", body=body, headers=headers)
         return CreateModelVersionResponse.from_dict(res)
 
@@ -7975,6 +10691,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/transition-requests/create", body=body, headers=headers)
         return CreateTransitionRequestResponse.from_dict(res)
@@ -8059,6 +10779,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/registry-webhooks/create", body=body, headers=headers)
         return CreateWebhookResponse.from_dict(res)
 
@@ -8078,6 +10802,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", "/api/2.0/mlflow/comments/delete", query=query, headers=headers)
 
     def delete_model(self, name: str):
@@ -8095,6 +10823,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/registered-models/delete", query=query, headers=headers)
 
@@ -8119,6 +10851,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", "/api/2.0/mlflow/registered-models/delete-tag", query=query, headers=headers)
 
     def delete_model_version(self, name: str, version: str):
@@ -8140,6 +10876,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/model-versions/delete", query=query, headers=headers)
 
@@ -8167,6 +10907,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/model-versions/delete-tag", query=query, headers=headers)
 
@@ -8213,6 +10957,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("DELETE", "/api/2.0/mlflow/transition-requests/delete", query=query, headers=headers)
         return DeleteTransitionRequestResponse.from_dict(res)
 
@@ -8231,6 +10979,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/registry-webhooks/delete", query=query, headers=headers)
 
@@ -8254,6 +11006,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("POST", "/api/2.0/mlflow/registered-models/get-latest-versions", body=body, headers=headers)
         parsed = GetLatestVersionsResponse.from_dict(json).model_versions
@@ -8279,6 +11035,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/mlflow/databricks/registered-models/get", query=query, headers=headers)
         return GetModelResponse.from_dict(res)
 
@@ -8301,6 +11061,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/mlflow/model-versions/get", query=query, headers=headers)
         return GetModelVersionResponse.from_dict(res)
@@ -8325,6 +11089,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/mlflow/model-versions/get-download-uri", query=query, headers=headers)
         return GetModelVersionDownloadUriResponse.from_dict(res)
 
@@ -8340,6 +11108,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/registered-models/{registered_model_id}/permissionLevels", headers=headers
@@ -8359,6 +11131,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/registered-models/{registered_model_id}", headers=headers)
         return RegisteredModelPermissions.from_dict(res)
@@ -8382,6 +11158,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/registered-models/list", query=query, headers=headers)
@@ -8411,6 +11191,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/mlflow/transition-requests/list", query=query, headers=headers)
         parsed = ListTransitionRequestsResponse.from_dict(json).requests
@@ -8481,6 +11265,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/registry-webhooks/list", query=query, headers=headers)
             if "webhooks" in json:
@@ -8529,6 +11317,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/transition-requests/reject", body=body, headers=headers)
         return RejectTransitionRequestResponse.from_dict(res)
 
@@ -8552,6 +11344,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/registered-models/rename", body=body, headers=headers)
         return RenameModelResponse.from_dict(res)
@@ -8593,6 +11389,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/model-versions/search", query=query, headers=headers)
@@ -8642,6 +11442,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/registered-models/search", query=query, headers=headers)
             if "registered_models" in json:
@@ -8679,6 +11483,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/registered-models/set-tag", body=body, headers=headers)
 
     def set_model_version_tag(self, name: str, version: str, key: str, value: str):
@@ -8713,6 +11521,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/model-versions/set-tag", body=body, headers=headers)
 
     def set_permissions(
@@ -8738,6 +11550,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/permissions/registered-models/{registered_model_id}", body=body, headers=headers
@@ -8767,6 +11583,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/registry-webhooks/test", body=body, headers=headers)
         return TestRegistryWebhookResponse.from_dict(res)
@@ -8817,6 +11637,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST", "/api/2.0/mlflow/databricks/model-versions/transition-stage", body=body, headers=headers
         )
@@ -8843,6 +11667,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", "/api/2.0/mlflow/comments/update", body=body, headers=headers)
         return UpdateCommentResponse.from_dict(res)
 
@@ -8866,6 +11694,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/2.0/mlflow/registered-models/update", body=body, headers=headers)
         return UpdateModelResponse.from_dict(res)
@@ -8897,6 +11729,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", "/api/2.0/mlflow/model-versions/update", body=body, headers=headers)
         return UpdateModelVersionResponse.from_dict(res)
 
@@ -8923,6 +11759,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/registered-models/{registered_model_id}", body=body, headers=headers
@@ -8998,6 +11838,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/2.0/mlflow/registry-webhooks/update", body=body, headers=headers)
         return UpdateWebhookResponse.from_dict(res)

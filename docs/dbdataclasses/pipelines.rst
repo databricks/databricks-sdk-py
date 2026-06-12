@@ -1,9 +1,50 @@
-Delta Live Tables
-=================
+Spark Declarative Pipelines
+===========================
 
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.pipelines`` module.
 
 .. py:currentmodule:: databricks.sdk.service.pipelines
+.. autoclass:: ApplyEnvironmentRequestResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AutoFullRefreshPolicy
+   :members:
+   :undoc-members:
+
+.. py:class:: CloneMode
+
+   Enum to specify which mode of clone to execute
+
+   .. py:attribute:: MIGRATE_TO_UC
+      :value: "MIGRATE_TO_UC"
+
+.. autoclass:: ClonePipelineResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ConfluenceConnectorOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: ConnectionParameters
+   :members:
+   :undoc-members:
+
+.. autoclass:: ConnectorOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: ConnectorType
+
+   For certain database sources LakeFlow Connect offers both query based and cdc ingestion, ConnectorType can bse used to convey the type of ingestion. If connection_name is provided for database sources, we default to Query Based ingestion
+
+   .. py:attribute:: CDC
+      :value: "CDC"
+
+   .. py:attribute:: QUERY_BASED
+      :value: "QUERY_BASED"
+
 .. autoclass:: CreatePipelineResponse
    :members:
    :undoc-members:
@@ -13,6 +54,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DataPlaneId
+   :members:
+   :undoc-members:
+
+.. autoclass:: DataStagingOptions
    :members:
    :undoc-members:
 
@@ -80,6 +125,59 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: FileFilter
+   :members:
+   :undoc-members:
+
+.. autoclass:: FileIngestionOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: FileIngestionOptionsFileFormat
+
+   .. py:attribute:: AVRO
+      :value: "AVRO"
+
+   .. py:attribute:: BINARYFILE
+      :value: "BINARYFILE"
+
+   .. py:attribute:: CSV
+      :value: "CSV"
+
+   .. py:attribute:: EXCEL
+      :value: "EXCEL"
+
+   .. py:attribute:: JSON
+      :value: "JSON"
+
+   .. py:attribute:: ORC
+      :value: "ORC"
+
+   .. py:attribute:: PARQUET
+      :value: "PARQUET"
+
+   .. py:attribute:: XML
+      :value: "XML"
+
+.. py:class:: FileIngestionOptionsSchemaEvolutionMode
+
+   Based on https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#how-does-auto-loader-schema-evolution-work
+
+   .. py:attribute:: ADD_NEW_COLUMNS
+      :value: "ADD_NEW_COLUMNS"
+
+   .. py:attribute:: ADD_NEW_COLUMNS_WITH_TYPE_WIDENING
+      :value: "ADD_NEW_COLUMNS_WITH_TYPE_WIDENING"
+
+   .. py:attribute:: FAIL_ON_NEW_COLUMNS
+      :value: "FAIL_ON_NEW_COLUMNS"
+
+   .. py:attribute:: NONE
+      :value: "NONE"
+
+   .. py:attribute:: RESCUE
+      :value: "RESCUE"
+
 .. autoclass:: FileLibrary
    :members:
    :undoc-members:
@@ -109,6 +207,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: GetUpdateResponse
    :members:
    :undoc-members:
+
+.. autoclass:: GoogleAdsConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: GoogleAdsOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: GoogleDriveOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: GoogleDriveOptionsGoogleDriveEntityType
+
+   .. py:attribute:: FILE
+      :value: "FILE"
+
+   .. py:attribute:: FILE_METADATA
+      :value: "FILE_METADATA"
+
+   .. py:attribute:: PERMISSION
+      :value: "PERMISSION"
 
 .. autoclass:: IngestionConfig
    :members:
@@ -151,14 +272,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GA4_RAW_DATA
       :value: "GA4_RAW_DATA"
 
-   .. py:attribute:: GOOGLE_ADS
-      :value: "GOOGLE_ADS"
+   .. py:attribute:: GOOGLE_DRIVE
+      :value: "GOOGLE_DRIVE"
 
-   .. py:attribute:: GUIDEWIRE
-      :value: "GUIDEWIRE"
-
-   .. py:attribute:: HUBSPOT
-      :value: "HUBSPOT"
+   .. py:attribute:: JIRA
+      :value: "JIRA"
 
    .. py:attribute:: MANAGED_POSTGRESQL
       :value: "MANAGED_POSTGRESQL"
@@ -178,14 +296,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
 
-   .. py:attribute:: REDSHIFT
-      :value: "REDSHIFT"
-
    .. py:attribute:: SALESFORCE
       :value: "SALESFORCE"
-
-   .. py:attribute:: SALESFORCE_MARKETING_CLOUD
-      :value: "SALESFORCE_MARKETING_CLOUD"
 
    .. py:attribute:: SERVICENOW
       :value: "SERVICENOW"
@@ -193,26 +305,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SHAREPOINT
       :value: "SHAREPOINT"
 
-   .. py:attribute:: SQLDW
-      :value: "SQLDW"
-
    .. py:attribute:: SQLSERVER
       :value: "SQLSERVER"
 
    .. py:attribute:: TERADATA
       :value: "TERADATA"
 
-   .. py:attribute:: TIKTOK_ADS
-      :value: "TIKTOK_ADS"
-
-   .. py:attribute:: WORKDAY_HCM
-      :value: "WORKDAY_HCM"
-
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
 
    .. py:attribute:: ZENDESK
       :value: "ZENDESK"
+
+.. autoclass:: JiraConnectorOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: JsonTransformerOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: KafkaOptions
+   :members:
+   :undoc-members:
 
 .. autoclass:: ListPipelineEventsResponse
    :members:
@@ -243,6 +358,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: STABLE
       :value: "STABLE"
 
+.. autoclass:: MetaMarketingOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: NotebookLibrary
    :members:
    :undoc-members:
@@ -251,7 +370,41 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: OperationTimeWindow
+   :members:
+   :undoc-members:
+
 .. autoclass:: Origin
+   :members:
+   :undoc-members:
+
+.. py:class:: OutlookAttachmentMode
+
+   Attachment behavior mode for Outlook ingestion
+
+   .. py:attribute:: ALL
+      :value: "ALL"
+
+   .. py:attribute:: INLINE_ONLY
+      :value: "INLINE_ONLY"
+
+   .. py:attribute:: NONE
+      :value: "NONE"
+
+   .. py:attribute:: NON_INLINE_ONLY
+      :value: "NON_INLINE_ONLY"
+
+.. py:class:: OutlookBodyFormat
+
+   Body format for Outlook email content
+
+   .. py:attribute:: TEXT_HTML
+      :value: "TEXT_HTML"
+
+   .. py:attribute:: TEXT_PLAIN
+      :value: "TEXT_PLAIN"
+
+.. autoclass:: OutlookOptions
    :members:
    :undoc-members:
 
@@ -390,11 +543,33 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: PublishingMode
+
+   Enum representing the publishing mode of a pipeline.
+
+   .. py:attribute:: DEFAULT_PUBLISHING_MODE
+      :value: "DEFAULT_PUBLISHING_MODE"
+
+   .. py:attribute:: LEGACY_PUBLISHING_MODE
+      :value: "LEGACY_PUBLISHING_MODE"
+
+.. autoclass:: ReplaceWhereOverride
+   :members:
+   :undoc-members:
+
 .. autoclass:: ReportSpec
    :members:
    :undoc-members:
 
 .. autoclass:: RestartWindow
+   :members:
+   :undoc-members:
+
+.. autoclass:: RewindDatasetSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: RewindSpec
    :members:
    :undoc-members:
 
@@ -411,6 +586,28 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SerializedException
+   :members:
+   :undoc-members:
+
+.. autoclass:: SharepointOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: SharepointOptionsSharepointEntityType
+
+   .. py:attribute:: FILE
+      :value: "FILE"
+
+   .. py:attribute:: FILE_METADATA
+      :value: "FILE_METADATA"
+
+   .. py:attribute:: LIST
+      :value: "LIST"
+
+   .. py:attribute:: PERMISSION
+      :value: "PERMISSION"
+
+.. autoclass:: SmartsheetOptions
    :members:
    :undoc-members:
 
@@ -479,6 +676,68 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SCD_TYPE_2
       :value: "SCD_TYPE_2"
+
+.. autoclass:: TikTokAdsOptions
+   :members:
+   :undoc-members:
+
+.. py:class:: TikTokAdsOptionsTikTokDataLevel
+
+   Data level for TikTok Ads report aggregation.
+
+   .. py:attribute:: AUCTION_AD
+      :value: "AUCTION_AD"
+
+   .. py:attribute:: AUCTION_ADGROUP
+      :value: "AUCTION_ADGROUP"
+
+   .. py:attribute:: AUCTION_ADVERTISER
+      :value: "AUCTION_ADVERTISER"
+
+   .. py:attribute:: AUCTION_CAMPAIGN
+      :value: "AUCTION_CAMPAIGN"
+
+.. py:class:: TikTokAdsOptionsTikTokReportType
+
+   Report type for TikTok Ads API.
+
+   .. py:attribute:: AUDIENCE
+      :value: "AUDIENCE"
+
+   .. py:attribute:: BASIC
+      :value: "BASIC"
+
+   .. py:attribute:: BUSINESS_CENTER
+      :value: "BUSINESS_CENTER"
+
+   .. py:attribute:: DSA
+      :value: "DSA"
+
+   .. py:attribute:: GMV_MAX
+      :value: "GMV_MAX"
+
+   .. py:attribute:: PLAYABLE_AD
+      :value: "PLAYABLE_AD"
+
+.. autoclass:: Transformer
+   :members:
+   :undoc-members:
+
+.. py:class:: TransformerFormat
+
+   .. py:attribute:: JSON
+      :value: "JSON"
+
+   .. py:attribute:: STRING
+      :value: "STRING"
+
+.. autoclass:: Truncation
+   :members:
+   :undoc-members:
+
+.. autoclass:: TruncationTruncationDetail
+   :members:
+   :undoc-members:
 
 .. autoclass:: UpdateInfo
    :members:
@@ -586,3 +845,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WAITING_FOR_RESOURCES
       :value: "WAITING_FOR_RESOURCES"
+
+.. autoclass:: ZendeskSupportOptions
+   :members:
+   :undoc-members:

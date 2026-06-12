@@ -63,6 +63,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EndpointScalingInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: EndpointStatus
    :members:
    :undoc-members:
@@ -70,6 +74,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: EndpointStatusState
 
    Current state of the endpoint
+
+   .. py:attribute:: DELETED
+      :value: "DELETED"
 
    .. py:attribute:: OFFLINE
       :value: "OFFLINE"
@@ -93,6 +100,30 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: STANDARD
       :value: "STANDARD"
 
+   .. py:attribute:: STORAGE_OPTIMIZED
+      :value: "STORAGE_OPTIMIZED"
+
+.. autoclass:: FacetResultData
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetVectorSearchEndpointPermissionLevelsResponse
+   :members:
+   :undoc-members:
+
+.. py:class:: IndexSubtype
+
+   The subtype of the AI Search index, determining the indexing and retrieval strategy. - `VECTOR`: Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An index that uses full-text search without vector embeddings. - `HYBRID`: An index that uses vector embeddings for similarity search and hybrid search.
+
+   .. py:attribute:: FULL_TEXT
+      :value: "FULL_TEXT"
+
+   .. py:attribute:: HYBRID
+      :value: "HYBRID"
+
+   .. py:attribute:: VECTOR
+      :value: "VECTOR"
+
 .. autoclass:: ListEndpointResponse
    :members:
    :undoc-members:
@@ -106,6 +137,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: MapStringValueEntry
+   :members:
+   :undoc-members:
+
+.. autoclass:: Metric
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetricLabel
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetricValue
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetricValues
    :members:
    :undoc-members:
 
@@ -146,6 +193,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ResultManifest
    :members:
    :undoc-members:
+
+.. autoclass:: RetrieveUserVisibleMetricsResponse
+   :members:
+   :undoc-members:
+
+.. py:class:: ScalingChangeState
+
+   .. py:attribute:: SCALING_CHANGE_APPLIED
+      :value: "SCALING_CHANGE_APPLIED"
+
+   .. py:attribute:: SCALING_CHANGE_IN_PROGRESS
+      :value: "SCALING_CHANGE_IN_PROGRESS"
+
+   .. py:attribute:: SCALING_CHANGE_UNSPECIFIED
+      :value: "SCALING_CHANGE_UNSPECIFIED"
 
 .. autoclass:: ScanVectorIndexResponse
    :members:
@@ -196,10 +258,43 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: VectorIndexType
 
-   There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
+   There are 2 types of AI Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
 
    .. py:attribute:: DELTA_SYNC
       :value: "DELTA_SYNC"
 
    .. py:attribute:: DIRECT_ACCESS
       :value: "DIRECT_ACCESS"
+
+.. autoclass:: VectorSearchEndpointAccessControlRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: VectorSearchEndpointAccessControlResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: VectorSearchEndpointPermission
+   :members:
+   :undoc-members:
+
+.. py:class:: VectorSearchEndpointPermissionLevel
+
+   Permission level
+
+   .. py:attribute:: CAN_CREATE
+      :value: "CAN_CREATE"
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_USE
+      :value: "CAN_USE"
+
+.. autoclass:: VectorSearchEndpointPermissions
+   :members:
+   :undoc-members:
+
+.. autoclass:: VectorSearchEndpointPermissionsDescription
+   :members:
+   :undoc-members:

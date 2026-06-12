@@ -417,6 +417,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: YESTERDAY
       :value: "YESTERDAY"
 
+.. autoclass:: DefaultWarehouseOverride
+   :members:
+   :undoc-members:
+
+.. py:class:: DefaultWarehouseOverrideType
+
+   Type of default warehouse override behavior.
+
+   .. py:attribute:: CUSTOM
+      :value: "CUSTOM"
+
+   .. py:attribute:: LAST_SELECTED
+      :value: "LAST_SELECTED"
+
 .. autoclass:: DeleteResponse
    :members:
    :undoc-members:
@@ -600,6 +614,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListAlertsV2Response
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListDefaultWarehouseOverridesResponse
    :members:
    :undoc-members:
 
@@ -851,7 +869,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: QueryStatus
 
-   Statuses which are also used by OperationStatus in runtime
+   Statuses which are also used by OperationStatus in runtime. When adding a new QueryStatus, make sure to update com.databricks.sqlgateway.history.QueryStatusOrdering
 
    .. py:attribute:: CANCELED
       :value: "CANCELED"
@@ -876,6 +894,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: STARTED
       :value: "STARTED"
+
+.. autoclass:: QueryTag
+   :members:
+   :undoc-members:
 
 .. autoclass:: RepeatedEndpointConfPairs
    :members:
@@ -995,7 +1017,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    EndpointSpotInstancePolicy configures whether the endpoint should use spot instances.
    The breakdown of how the EndpointSpotInstancePolicy converts to per cloud configurations is:
    +-------+--------------------------------------+--------------------------------+ | Cloud | COST_OPTIMIZED | RELIABILITY_OPTIMIZED | +-------+--------------------------------------+--------------------------------+ | AWS | On Demand Driver with Spot Executors | On Demand Driver and Executors | | AZURE | On Demand Driver and Executors | On Demand Driver and Executors | +-------+--------------------------------------+--------------------------------+
-   While including "spot" in the enum name may limit the the future extensibility of this field because it limits this enum to denoting "spot or not", this is the field that PM recommends after discussion with customers per SC-48783.
 
    .. py:attribute:: COST_OPTIMIZED
       :value: "COST_OPTIMIZED"
@@ -1260,6 +1281,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CONTAINER_LAUNCH_FAILURE
       :value: "CONTAINER_LAUNCH_FAILURE"
 
+   .. py:attribute:: CONTROL_PLANE_CONNECTION_FAILURE
+      :value: "CONTROL_PLANE_CONNECTION_FAILURE"
+
+   .. py:attribute:: CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG
+      :value: "CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG"
+
    .. py:attribute:: CONTROL_PLANE_REQUEST_FAILURE
       :value: "CONTROL_PLANE_REQUEST_FAILURE"
 
@@ -1295,9 +1322,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DOCKER_INVALID_OS_EXCEPTION
       :value: "DOCKER_INVALID_OS_EXCEPTION"
-
-   .. py:attribute:: DRIVER_DNS_RESOLUTION_FAILURE
-      :value: "DRIVER_DNS_RESOLUTION_FAILURE"
 
    .. py:attribute:: DRIVER_EVICTION
       :value: "DRIVER_EVICTION"
@@ -1395,6 +1419,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GLOBAL_INIT_SCRIPT_FAILURE
       :value: "GLOBAL_INIT_SCRIPT_FAILURE"
 
+   .. py:attribute:: HIVEMETASTORE_CONNECTIVITY_FAILURE
+      :value: "HIVEMETASTORE_CONNECTIVITY_FAILURE"
+
    .. py:attribute:: HIVE_METASTORE_PROVISIONING_FAILURE
       :value: "HIVE_METASTORE_PROVISIONING_FAILURE"
 
@@ -1473,6 +1500,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: METASTORE_COMPONENT_UNHEALTHY
       :value: "METASTORE_COMPONENT_UNHEALTHY"
 
+   .. py:attribute:: MTLS_PORT_CONNECTIVITY_FAILURE
+      :value: "MTLS_PORT_CONNECTIVITY_FAILURE"
+
    .. py:attribute:: NEPHOS_RESOURCE_MANAGEMENT
       :value: "NEPHOS_RESOURCE_MANAGEMENT"
 
@@ -1521,12 +1551,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NFS_MOUNT_FAILURE
       :value: "NFS_MOUNT_FAILURE"
 
-   .. py:attribute:: NO_ACTIVATED_K8S
-      :value: "NO_ACTIVATED_K8S"
-
-   .. py:attribute:: NO_ACTIVATED_K8S_TESTING_TAG
-      :value: "NO_ACTIVATED_K8S_TESTING_TAG"
-
    .. py:attribute:: NO_MATCHED_K8S
       :value: "NO_MATCHED_K8S"
 
@@ -1545,6 +1569,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: POD_SCHEDULING_FAILURE
       :value: "POD_SCHEDULING_FAILURE"
 
+   .. py:attribute:: RATE_LIMITED
+      :value: "RATE_LIMITED"
+
    .. py:attribute:: REQUEST_REJECTED
       :value: "REQUEST_REJECTED"
 
@@ -1562,9 +1589,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SECRET_RESOLUTION_ERROR
       :value: "SECRET_RESOLUTION_ERROR"
-
-   .. py:attribute:: SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION
-      :value: "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
 
    .. py:attribute:: SECURITY_DAEMON_REGISTRATION_EXCEPTION
       :value: "SECURITY_DAEMON_REGISTRATION_EXCEPTION"

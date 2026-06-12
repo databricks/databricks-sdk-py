@@ -202,11 +202,162 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CustomerFacingIngressNetworkPolicy
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAccountApiDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAccountUiDestination
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyApiScopeQualifier
+
+   Qualifies the breadth of API access permitted by an ingress network policy rule. API_SCOPE_QUALIFIER_READ narrows matching to read-only variants of the listed scopes; API_SCOPE_QUALIFIER_ALL matches any scope. When unset, scopes match exactly as listed.
+
+   .. py:attribute:: API_SCOPE_QUALIFIER_ALL
+      :value: "API_SCOPE_QUALIFIER_ALL"
+
+   .. py:attribute:: API_SCOPE_QUALIFIER_READ
+      :value: "API_SCOPE_QUALIFIER_READ"
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAppsRuntimeDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAuthentication
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAuthenticationIdentity
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyAuthenticationIdentityPrincipalType
+
+   .. py:attribute:: PRINCIPAL_TYPE_SERVICE_PRINCIPAL
+      :value: "PRINCIPAL_TYPE_SERVICE_PRINCIPAL"
+
+   .. py:attribute:: PRINCIPAL_TYPE_USER
+      :value: "PRINCIPAL_TYPE_USER"
+
+.. py:class:: CustomerFacingIngressNetworkPolicyAuthenticationIdentityType
+
+   .. py:attribute:: IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS
+      :value: "IDENTITY_TYPE_ALL_SERVICE_PRINCIPALS"
+
+   .. py:attribute:: IDENTITY_TYPE_ALL_USERS
+      :value: "IDENTITY_TYPE_ALL_USERS"
+
+   .. py:attribute:: IDENTITY_TYPE_SELECTED_IDENTITIES
+      :value: "IDENTITY_TYPE_SELECTED_IDENTITIES"
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode
+
+   .. py:attribute:: FULL_ACCESS
+      :value: "FULL_ACCESS"
+
+   .. py:attribute:: RESTRICTED_ACCESS
+      :value: "RESTRICTED_ACCESS"
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyEndpoints
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyIpRanges
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPrivateAccess
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode
+
+   .. py:attribute:: ALLOW_ALL_REGISTERED_ENDPOINTS
+      :value: "ALLOW_ALL_REGISTERED_ENDPOINTS"
+
+   .. py:attribute:: RESTRICTED_ACCESS
+      :value: "RESTRICTED_ACCESS"
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPrivateIngressRule
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPrivateRequestOrigin
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPublicAccess
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyPublicAccessRestrictionMode
+
+   .. py:attribute:: FULL_ACCESS
+      :value: "FULL_ACCESS"
+
+   .. py:attribute:: RESTRICTED_ACCESS
+      :value: "RESTRICTED_ACCESS"
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPublicIngressRule
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPublicRequestOrigin
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyRequestDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyWorkspaceApiDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyWorkspaceIdList
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyWorkspaceUiDestination
+   :members:
+   :undoc-members:
+
 .. autoclass:: CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule
    :members:
    :undoc-members:
 
 .. py:class:: CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState
+
+   .. py:attribute:: CREATE_FAILED
+      :value: "CREATE_FAILED"
+
+   .. py:attribute:: CREATING
+      :value: "CREATING"
 
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"
@@ -397,6 +548,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination
+   :members:
+   :undoc-members:
+
 .. autoclass:: EgressNetworkPolicyNetworkAccessPolicyInternetDestination
    :members:
    :undoc-members:
@@ -508,6 +663,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GcpEndpoint
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenericWebhookConfig
    :members:
    :undoc-members:
@@ -600,6 +759,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: NccAzurePrivateEndpointRuleConnectionState
+
+   .. py:attribute:: CREATE_FAILED
+      :value: "CREATE_FAILED"
+
+   .. py:attribute:: CREATING
+      :value: "CREATING"
 
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"
@@ -787,6 +952,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "AZURE_ACTIVE_DIRECTORY_TOKEN"
 
 .. autoclass:: UpdatePrivateEndpointRule
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateTokenResponse
    :members:
    :undoc-members:
 

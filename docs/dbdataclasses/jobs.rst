@@ -4,6 +4,34 @@ Jobs
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.jobs`` module.
 
 .. py:currentmodule:: databricks.sdk.service.jobs
+.. py:class:: AlertEvaluationState
+
+   Same alert evaluation state as in redash-v2/api/proto/alertsv2/alerts.proto
+
+   .. py:attribute:: ERROR
+      :value: "ERROR"
+
+   .. py:attribute:: OK
+      :value: "OK"
+
+   .. py:attribute:: TRIGGERED
+      :value: "TRIGGERED"
+
+   .. py:attribute:: UNKNOWN
+      :value: "UNKNOWN"
+
+.. autoclass:: AlertTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: AlertTaskOutput
+   :members:
+   :undoc-members:
+
+.. autoclass:: AlertTaskSubscriber
+   :members:
+   :undoc-members:
+
 .. py:class:: AuthenticationMethod
 
    .. py:attribute:: OAUTH
@@ -114,6 +142,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ClusterSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: Compute
    :members:
    :undoc-members:
 
@@ -350,10 +382,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: JobDeploymentKind
 
-   * `BUNDLE`: The job is managed by Databricks Asset Bundle.
+   * `BUNDLE`: The job is managed by Databricks Asset Bundle. * `SYSTEM_MANAGED`: The job is managed by Databricks and is read-only.
 
    .. py:attribute:: BUNDLE
       :value: "BUNDLE"
+
+   .. py:attribute:: SYSTEM_MANAGED
+      :value: "SYSTEM_MANAGED"
 
 .. py:class:: JobEditMode
 
@@ -484,6 +519,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ModelTriggerConfiguration
+   :members:
+   :undoc-members:
+
+.. py:class:: ModelTriggerConfigurationCondition
+
+   .. py:attribute:: MODEL_ALIAS_SET
+      :value: "MODEL_ALIAS_SET"
+
+   .. py:attribute:: MODEL_CREATED
+      :value: "MODEL_CREATED"
+
+   .. py:attribute:: MODEL_VERSION_READY
+      :value: "MODEL_VERSION_READY"
+
 .. autoclass:: NotebookOutput
    :members:
    :undoc-members:
@@ -549,6 +599,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PythonOperatorTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: PythonOperatorTaskParameter
+   :members:
+   :undoc-members:
+
 .. autoclass:: PythonWheelTask
    :members:
    :undoc-members:
@@ -605,6 +663,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ResolvedParamPairValues
+   :members:
+   :undoc-members:
+
+.. autoclass:: ResolvedPipelineTaskValues
    :members:
    :undoc-members:
 
@@ -818,6 +880,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SparseCheckout
+   :members:
+   :undoc-members:
+
 .. autoclass:: SqlAlertOutput
    :members:
    :undoc-members:
@@ -968,8 +1034,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TerminationCodeCode
 
-   The code indicates why the run was terminated. Additional codes might be introduced in future releases. * `SUCCESS`: The run was completed successfully. * `SUCCESS_WITH_FAILURES`: The run was completed successfully but some child runs failed. * `USER_CANCELED`: The run was successfully canceled during execution by a user. * `CANCELED`: The run was canceled during execution by the Databricks platform; for example, if the maximum run duration was exceeded. * `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency type condition was not met, or there were no material tasks to execute. * `INTERNAL_ERROR`: The run encountered an unexpected error. Refer to the state message for further details. * `DRIVER_ERROR`: The run encountered an error while communicating with the Spark Driver. * `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state message for further details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error when communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because it issued an invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The workspace has reached the quota for the maximum number of concurrent active runs. Consider scheduling the runs over a larger time frame. * `FEATURE_DISABLED`: The run failed because it tried to access a feature unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number of cluster creation, start, and upsize requests have exceeded the allotted rate limit. Consider spreading the run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run failed due to an error when accessing the customer blob storage. Refer to the state message for further details. * `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`: The run failed due to a permission issue while accessing a resource. Refer to the state message for further details. * `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the user-requested library. Refer to the state message for further details. The causes might include, but are not limited to: The provided library is invalid, there are insufficient permissions to install the library, and so forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a cluster that has already reached the maximum number of contexts it is configured to create. See: [Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to the state message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The run failed due to a cloud provider issue. Refer to the state message for further details. * `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user. * `BREAKING_CHANGE`: Run failed because of an intentional breaking change in Spark, but it will be retried with a mitigation config.
+   The code indicates why the run was terminated. Additional codes might be introduced in future releases. * `SUCCESS`: The run was completed successfully. * `SUCCESS_WITH_FAILURES`: The run was completed successfully but some child runs failed. * `USER_CANCELED`: The run was successfully canceled during execution by a user. * `CANCELED`: The run was canceled during execution by the Databricks platform; for example, if the maximum run duration was exceeded. * `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency type condition was not met, or there were no material tasks to execute. * `INTERNAL_ERROR`: The run encountered an unexpected error. Refer to the state message for further details. * `DRIVER_ERROR`: The run encountered an error while communicating with the Spark Driver. * `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state message for further details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error when communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because it issued an invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The workspace has reached the quota for the maximum number of concurrent active runs. Consider scheduling the runs over a larger time frame. * `FEATURE_DISABLED`: The run failed because it tried to access a feature unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number of cluster creation, start, and upsize requests have exceeded the allotted rate limit. Consider spreading the run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run failed due to an error when accessing the customer blob storage. Refer to the state message for further details. * `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`: The run failed due to a permission issue while accessing a resource. Refer to the state message for further details. * `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the user-requested library. Refer to the state message for further details. The causes might include, but are not limited to: The provided library is invalid, there are insufficient permissions to install the library, and so forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a cluster that has already reached the maximum number of contexts it is configured to create. See: [Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to the state message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The run failed due to a cloud provider issue. Refer to the state message for further details. * `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user. * `BREAKING_CHANGE`: Run failed because of an intentional breaking change in Spark, but it will be retried with a mitigation config. * `CLUSTER_TERMINATED_BY_USER`: The run failed because the externally managed cluster entered an unusable state, likely due to the user terminating or restarting it outside the jobs service.
    [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
+
+   .. py:attribute:: BREAKING_CHANGE
+      :value: "BREAKING_CHANGE"
 
    .. py:attribute:: BUDGET_POLICY_LIMIT_EXCEEDED
       :value: "BUDGET_POLICY_LIMIT_EXCEEDED"

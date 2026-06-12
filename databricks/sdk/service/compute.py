@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -10,8 +13,13 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 from ..errors import OperationFailed
 
@@ -171,7 +179,7 @@ class AwsAttributes:
     be of a form like "us-west-2a". The provided availability zone must be in the same region as the
     Databricks deployment. For example, "us-west-2a" is not a valid zone id if the Databricks
     deployment resides in the "us-east-1" region. This is an optional field at cluster creation, and
-    if not specified, a default zone will be used. If the zone specified is "auto", will try to
+    if not specified, the zone "auto" will be used. If the zone specified is "auto", will try to
     place cluster in a zone with high availability, and will retry placement in a different AZ if
     there is not enough capacity.
     
@@ -446,7 +454,6 @@ class CloudProviderNodeInfo:
 
 
 class CloudProviderNodeStatus(Enum):
-
     NOT_AVAILABLE_IN_REGION = "NotAvailableInRegion"
     NOT_ENABLED_ON_SUBSCRIPTION = "NotEnabledOnSubscription"
 
@@ -613,6 +620,9 @@ class ClusterAttributes:
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
     uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
 
+    driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the driver node."""
+
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
     type will be set as the same value as `node_type_id` defined above.
@@ -623,8 +633,7 @@ class ClusterAttributes:
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
-    space when its Spark workers are running low on disk space. This feature requires specific AWS
-    permissions to function correctly - refer to the User Guide for more details."""
+    space when its Spark workers are running low on disk space."""
 
     enable_local_disk_encryption: Optional[bool] = None
     """Whether to enable LUKS on cluster VMs' local disks"""
@@ -707,6 +716,9 @@ class ClusterAttributes:
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
+    worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for worker nodes."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -730,6 +742,8 @@ class ClusterAttributes:
             body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility.as_dict()
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -768,6 +782,8 @@ class ClusterAttributes:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility.as_dict()
         if self.workload_type:
             body["workload_type"] = self.workload_type.as_dict()
         return body
@@ -793,6 +809,8 @@ class ClusterAttributes:
             body["docker_image"] = self.docker_image
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -831,6 +849,8 @@ class ClusterAttributes:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility
         if self.workload_type:
             body["workload_type"] = self.workload_type
         return body
@@ -848,6 +868,7 @@ class ClusterAttributes:
             data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
             docker_image=_from_dict(d, "docker_image", DockerImage),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
+            driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
             driver_node_type_id=d.get("driver_node_type_id", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
@@ -867,6 +888,7 @@ class ClusterAttributes:
             ssh_public_keys=d.get("ssh_public_keys", None),
             total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
+            worker_node_type_flexibility=_from_dict(d, "worker_node_type_flexibility", NodeTypeFlexibility),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
 
@@ -1008,6 +1030,9 @@ class ClusterDetails:
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
     uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
 
+    driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the driver node."""
+
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
     type will be set as the same value as `node_type_id` defined above.
@@ -1018,8 +1043,7 @@ class ClusterDetails:
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
-    space when its Spark workers are running low on disk space. This feature requires specific AWS
-    permissions to function correctly - refer to the User Guide for more details."""
+    space when its Spark workers are running low on disk space."""
 
     enable_local_disk_encryption: Optional[bool] = None
     """Whether to enable LUKS on cluster VMs' local disks"""
@@ -1156,6 +1180,9 @@ class ClusterDetails:
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
+    worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for worker nodes."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -1197,6 +1224,8 @@ class ClusterDetails:
             body["driver"] = self.driver.as_dict()
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility.as_dict()
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -1259,6 +1288,8 @@ class ClusterDetails:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility.as_dict()
         if self.workload_type:
             body["workload_type"] = self.workload_type.as_dict()
         return body
@@ -1302,6 +1333,8 @@ class ClusterDetails:
             body["driver"] = self.driver
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -1364,6 +1397,8 @@ class ClusterDetails:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility
         if self.workload_type:
             body["workload_type"] = self.workload_type
         return body
@@ -1390,6 +1425,7 @@ class ClusterDetails:
             docker_image=_from_dict(d, "docker_image", DockerImage),
             driver=_from_dict(d, "driver", SparkNode),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
+            driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
             driver_node_type_id=d.get("driver_node_type_id", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
@@ -1421,6 +1457,7 @@ class ClusterDetails:
             termination_reason=_from_dict(d, "termination_reason", TerminationReason),
             total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
+            worker_node_type_flexibility=_from_dict(d, "worker_node_type_flexibility", NodeTypeFlexibility),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
 
@@ -2073,6 +2110,9 @@ class ClusterSpec:
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
     uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
 
+    driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the driver node."""
+
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
     type will be set as the same value as `node_type_id` defined above.
@@ -2083,8 +2123,7 @@ class ClusterSpec:
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
-    space when its Spark workers are running low on disk space. This feature requires specific AWS
-    permissions to function correctly - refer to the User Guide for more details."""
+    space when its Spark workers are running low on disk space."""
 
     enable_local_disk_encryption: Optional[bool] = None
     """Whether to enable LUKS on cluster VMs' local disks"""
@@ -2181,6 +2220,9 @@ class ClusterSpec:
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
+    worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for worker nodes."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -2208,6 +2250,8 @@ class ClusterSpec:
             body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility.as_dict()
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -2248,6 +2292,8 @@ class ClusterSpec:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility.as_dict()
         if self.workload_type:
             body["workload_type"] = self.workload_type.as_dict()
         return body
@@ -2277,6 +2323,8 @@ class ClusterSpec:
             body["docker_image"] = self.docker_image
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -2317,6 +2365,8 @@ class ClusterSpec:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility
         if self.workload_type:
             body["workload_type"] = self.workload_type
         return body
@@ -2336,6 +2386,7 @@ class ClusterSpec:
             data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
             docker_image=_from_dict(d, "docker_image", DockerImage),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
+            driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
             driver_node_type_id=d.get("driver_node_type_id", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
@@ -2356,12 +2407,12 @@ class ClusterSpec:
             ssh_public_keys=d.get("ssh_public_keys", None),
             total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
+            worker_node_type_flexibility=_from_dict(d, "worker_node_type_flexibility", NodeTypeFlexibility),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
 
 
 class CommandStatus(Enum):
-
     CANCELLED = "Cancelled"
     CANCELLING = "Cancelling"
     ERROR = "Error"
@@ -2408,8 +2459,17 @@ class CommandStatusResponse:
         )
 
 
-class ContextStatus(Enum):
+class ConfidentialComputeType(Enum):
+    """Confidential computing technology for GCP instances. Aligns with gcloud's
+    --confidential-compute-type flag and the REST API's
+    confidentialInstanceConfig.confidentialInstanceType field. See:
+    https://cloud.google.com/confidential-computing/confidential-vm/docs/create-a-confidential-vm-instance"""
 
+    CONFIDENTIAL_COMPUTE_TYPE_NONE = "CONFIDENTIAL_COMPUTE_TYPE_NONE"
+    SEV_SNP = "SEV_SNP"
+
+
+class ContextStatus(Enum):
     ERROR = "Error"
     PENDING = "Pending"
     RUNNING = "Running"
@@ -2650,7 +2710,6 @@ class DataPlaneEventDetails:
 
 
 class DataPlaneEventDetailsEventType(Enum):
-
     NODE_BLACKLISTED = "NODE_BLACKLISTED"
     NODE_EXCLUDED_DECOMMISSIONED = "NODE_EXCLUDED_DECOMMISSIONED"
 
@@ -2658,19 +2717,19 @@ class DataPlaneEventDetailsEventType(Enum):
 class DataSecurityMode(Enum):
     """Data security mode decides what data governance model to use when accessing data from a cluster.
 
-    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
-    Databricks will choose the most appropriate access mode depending on your compute configuration.
-    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
-    Alias for `SINGLE_USER`.
-
-    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
-    multiple users sharing the cluster. Data governance features are not available in this mode. *
-    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate access mode depending
+    on your compute configuration. * `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be
+    shared by multiple users. Cluster users are fully isolated so that they cannot see each
+    other’s data and credentials. Most data governance features are supported in this mode. But
+    programming languages and cluster features might be limited. * `DATA_SECURITY_MODE_DEDICATED`: A
+    secure cluster that can only be exclusively used by a single user specified in
     `single_user_name`. Most programming languages, cluster features and data governance features
-    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
-    users. Cluster users are fully isolated so that they cannot see each other's data and
-    credentials. Most data governance features are supported in this mode. But programming languages
-    and cluster features might be limited.
+    are available in this mode.
+
+    The following modes are legacy aliases for the above modes:
+
+    * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. * `SINGLE_USER`: Legacy
+    alias for `DATA_SECURITY_MODE_DEDICATED`.
 
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -3120,8 +3179,19 @@ class EnforceClusterComplianceResponse:
 @dataclass
 class Environment:
     """The environment entity used to preserve serverless environment side panel, jobs' environment for
-    non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
-    environment spec, only pip dependencies are supported."""
+    non-notebook task, and SDP's environment for classic and serverless pipelines. In this minimal
+    environment spec, only pip and java dependencies are supported."""
+
+    base_environment: Optional[str] = None
+    """The base environment this environment is built on top of. A base environment defines the
+    environment version and a list of dependencies for serverless compute. The value can be a file
+    path to a custom `env.yaml` file (e.g., `/Workspace/path/to/env.yaml`). Support for a
+    Databricks-provided base environment ID (e.g., `workspace-base-environments/databricks_ai_v4`)
+    and workspace base environment ID (e.g.,
+    `workspace-base-environments/dbe_b849b66e-b31a-4cb5-b161-1f2b10877fb7`) is in Beta. Either
+    `environment_version` or `base_environment` can be provided. For more information about
+    Databricks-provided base environments, see the [list workspace base
+    environments](:method:Environments/ListWorkspaceBaseEnvironments) API. For more information, see"""
 
     client: Optional[str] = None
     """Use `environment_version` instead."""
@@ -3134,8 +3204,9 @@ class Environment:
     Databricks), or a VCS project URL."""
 
     environment_version: Optional[str] = None
-    """Required. Environment version used by the environment. Each version comes with a specific Python
-    version and a set of Python packages. The version is a string, consisting of an integer."""
+    """Either `environment_version` or `base_environment` needs to be provided. Environment version
+    used by the environment. Each version comes with a specific Python version and a set of Python
+    packages. The version is a string, consisting of an integer."""
 
     java_dependencies: Optional[List[str]] = None
     """List of java dependencies. Each dependency is a string representing a java library path. For
@@ -3144,6 +3215,8 @@ class Environment:
     def as_dict(self) -> dict:
         """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.base_environment is not None:
+            body["base_environment"] = self.base_environment
         if self.client is not None:
             body["client"] = self.client
         if self.dependencies:
@@ -3157,6 +3230,8 @@ class Environment:
     def as_shallow_dict(self) -> dict:
         """Serializes the Environment into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.base_environment is not None:
+            body["base_environment"] = self.base_environment
         if self.client is not None:
             body["client"] = self.client
         if self.dependencies:
@@ -3171,6 +3246,7 @@ class Environment:
     def from_dict(cls, d: Dict[str, Any]) -> Environment:
         """Deserializes the Environment from a dictionary."""
         return cls(
+            base_environment=d.get("base_environment", None),
             client=d.get("client", None),
             dependencies=d.get("dependencies", None),
             environment_version=d.get("environment_version", None),
@@ -3364,12 +3440,12 @@ class EventDetailsCause(Enum):
     AUTORECOVERY = "AUTORECOVERY"
     AUTOSCALE = "AUTOSCALE"
     AUTOSCALE_V2 = "AUTOSCALE_V2"
+    DBR_AUTOSCALE = "DBR_AUTOSCALE"
     REPLACE_BAD_NODES = "REPLACE_BAD_NODES"
     USER_REQUEST = "USER_REQUEST"
 
 
 class EventType(Enum):
-
     ADD_NODES_FAILED = "ADD_NODES_FAILED"
     AUTOMATIC_CLUSTER_UPDATE = "AUTOMATIC_CLUSTER_UPDATE"
     AUTOSCALING_BACKOFF = "AUTOSCALING_BACKOFF"
@@ -3400,6 +3476,7 @@ class EventType(Enum):
     SPARK_EXCEPTION = "SPARK_EXCEPTION"
     STARTING = "STARTING"
     TERMINATING = "TERMINATING"
+    UC_VOLUME_MISCONFIGURED = "UC_VOLUME_MISCONFIGURED"
     UNPINNED = "UNPINNED"
     UPSIZE_COMPLETED = "UPSIZE_COMPLETED"
 
@@ -3414,6 +3491,10 @@ class GcpAttributes:
 
     boot_disk_size: Optional[int] = None
     """Boot disk size in GB"""
+
+    confidential_compute_type: Optional[ConfidentialComputeType] = None
+    """The confidential computing technology for this cluster's instances. Currently only SEV_SNP is
+    supported, and only on N2D instance types. When not set, no confidential computing is applied."""
 
     first_on_demand: Optional[int] = None
     """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This
@@ -3455,6 +3536,8 @@ class GcpAttributes:
             body["availability"] = self.availability.value
         if self.boot_disk_size is not None:
             body["boot_disk_size"] = self.boot_disk_size
+        if self.confidential_compute_type is not None:
+            body["confidential_compute_type"] = self.confidential_compute_type.value
         if self.first_on_demand is not None:
             body["first_on_demand"] = self.first_on_demand
         if self.google_service_account is not None:
@@ -3474,6 +3557,8 @@ class GcpAttributes:
             body["availability"] = self.availability
         if self.boot_disk_size is not None:
             body["boot_disk_size"] = self.boot_disk_size
+        if self.confidential_compute_type is not None:
+            body["confidential_compute_type"] = self.confidential_compute_type
         if self.first_on_demand is not None:
             body["first_on_demand"] = self.first_on_demand
         if self.google_service_account is not None:
@@ -3492,6 +3577,7 @@ class GcpAttributes:
         return cls(
             availability=_enum(d, "availability", GcpAvailability),
             boot_disk_size=d.get("boot_disk_size", None),
+            confidential_compute_type=_enum(d, "confidential_compute_type", ConfidentialComputeType),
             first_on_demand=d.get("first_on_demand", None),
             google_service_account=d.get("google_service_account", None),
             local_ssd_count=d.get("local_ssd_count", None),
@@ -3724,7 +3810,6 @@ class GetEvents:
 
 
 class GetEventsOrder(Enum):
-
     ASC = "ASC"
     DESC = "DESC"
 
@@ -3857,6 +3942,9 @@ class GetInstancePool:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
+    node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the pool."""
+
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
@@ -3915,6 +4003,8 @@ class GetInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -3960,6 +4050,8 @@ class GetInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -3994,6 +4086,7 @@ class GetInstancePool:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
+            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
@@ -4231,6 +4324,15 @@ class GlobalInitScriptDetailsWithContent:
         )
 
 
+class HardwareAcceleratorType(Enum):
+    """HardwareAcceleratorType: The type of hardware accelerator to use for compute workloads. NOTE:
+    This enum is referenced and is intended to be used by other Databricks services that need to
+    specify hardware accelerator requirements for AI compute workloads."""
+
+    GPU_1X_A10 = "GPU_1xA10"
+    GPU_8X_H100 = "GPU_8xH100"
+
+
 @dataclass
 class InitScriptEventDetails:
     cluster: Optional[List[InitScriptInfoAndExecutionDetails]] = None
@@ -4407,6 +4509,10 @@ class InitScriptInfoAndExecutionDetails:
     status: Optional[InitScriptExecutionDetailsInitScriptExecutionStatus] = None
     """The current status of the script"""
 
+    stderr: Optional[str] = None
+    """The stderr output from the init script execution. Only populated when init scripts debug is
+    enabled and script execution fails."""
+
     volumes: Optional[VolumesStorageInfo] = None
     """destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\" :
     \"/Volumes/my-init.sh\" } }`"""
@@ -4434,6 +4540,8 @@ class InitScriptInfoAndExecutionDetails:
             body["s3"] = self.s3.as_dict()
         if self.status is not None:
             body["status"] = self.status.value
+        if self.stderr is not None:
+            body["stderr"] = self.stderr
         if self.volumes:
             body["volumes"] = self.volumes.as_dict()
         if self.workspace:
@@ -4459,6 +4567,8 @@ class InitScriptInfoAndExecutionDetails:
             body["s3"] = self.s3
         if self.status is not None:
             body["status"] = self.status
+        if self.stderr is not None:
+            body["stderr"] = self.stderr
         if self.volumes:
             body["volumes"] = self.volumes
         if self.workspace:
@@ -4477,6 +4587,7 @@ class InitScriptInfoAndExecutionDetails:
             gcs=_from_dict(d, "gcs", GcsStorageInfo),
             s3=_from_dict(d, "s3", S3StorageInfo),
             status=_enum(d, "status", InitScriptExecutionDetailsInitScriptExecutionStatus),
+            stderr=d.get("stderr", None),
             volumes=_from_dict(d, "volumes", VolumesStorageInfo),
             workspace=_from_dict(d, "workspace", WorkspaceStorageInfo),
         )
@@ -4671,6 +4782,9 @@ class InstancePoolAndStats:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
+    node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the pool."""
+
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
@@ -4729,6 +4843,8 @@ class InstancePoolAndStats:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -4774,6 +4890,8 @@ class InstancePoolAndStats:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -4808,6 +4926,7 @@ class InstancePoolAndStats:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
+            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
@@ -5271,9 +5390,7 @@ class Kind(Enum):
 
     Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
     specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
-    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
-    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime)
 
     By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
 
@@ -5283,7 +5400,6 @@ class Kind(Enum):
 
 
 class Language(Enum):
-
     PYTHON = "python"
     R = "r"
     SCALA = "scala"
@@ -5677,13 +5793,11 @@ class ListClustersSortBy:
 
 
 class ListClustersSortByDirection(Enum):
-
     ASC = "ASC"
     DESC = "DESC"
 
 
 class ListClustersSortByField(Enum):
-
     CLUSTER_NAME = "CLUSTER_NAME"
     DEFAULT = "DEFAULT"
 
@@ -5848,13 +5962,11 @@ class ListPolicyFamiliesResponse:
 
 
 class ListSortColumn(Enum):
-
     POLICY_CREATION_TIME = "POLICY_CREATION_TIME"
     POLICY_NAME = "POLICY_NAME"
 
 
 class ListSortOrder(Enum):
-
     ASC = "ASC"
     DESC = "DESC"
 
@@ -6251,6 +6363,34 @@ class NodeType:
 
 
 @dataclass
+class NodeTypeFlexibility:
+    """Configuration for flexible node types, allowing fallback to alternate node types during cluster
+    launch and upscale."""
+
+    alternate_node_type_ids: Optional[List[str]] = None
+    """A list of node type IDs to use as fallbacks when the primary node type is unavailable."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NodeTypeFlexibility into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alternate_node_type_ids:
+            body["alternate_node_type_ids"] = [v for v in self.alternate_node_type_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NodeTypeFlexibility into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alternate_node_type_ids:
+            body["alternate_node_type_ids"] = self.alternate_node_type_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NodeTypeFlexibility:
+        """Deserializes the NodeTypeFlexibility from a dictionary."""
+        return cls(alternate_node_type_ids=d.get("alternate_node_type_ids", None))
+
+
+@dataclass
 class PendingInstanceError:
     """Error message of a failed pending instances"""
 
@@ -6617,7 +6757,6 @@ class RestartClusterResponse:
 
 
 class ResultType(Enum):
-
     ERROR = "error"
     IMAGE = "image"
     IMAGES = "images"
@@ -6729,7 +6868,6 @@ class Results:
 
 
 class RuntimeEngine(Enum):
-
     NULL = "NULL"
     PHOTON = "PHOTON"
     STANDARD = "STANDARD"
@@ -7100,6 +7238,8 @@ class TerminationReasonCode(Enum):
     CLUSTER_OPERATION_TIMEOUT = "CLUSTER_OPERATION_TIMEOUT"
     COMMUNICATION_LOST = "COMMUNICATION_LOST"
     CONTAINER_LAUNCH_FAILURE = "CONTAINER_LAUNCH_FAILURE"
+    CONTROL_PLANE_CONNECTION_FAILURE = "CONTROL_PLANE_CONNECTION_FAILURE"
+    CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG"
     CONTROL_PLANE_REQUEST_FAILURE = "CONTROL_PLANE_REQUEST_FAILURE"
     CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG"
     DATABASE_CONNECTION_FAILURE = "DATABASE_CONNECTION_FAILURE"
@@ -7112,7 +7252,6 @@ class TerminationReasonCode(Enum):
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
     DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
     DOCKER_INVALID_OS_EXCEPTION = "DOCKER_INVALID_OS_EXCEPTION"
-    DRIVER_DNS_RESOLUTION_FAILURE = "DRIVER_DNS_RESOLUTION_FAILURE"
     DRIVER_EVICTION = "DRIVER_EVICTION"
     DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
     DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
@@ -7145,6 +7284,7 @@ class TerminationReasonCode(Enum):
     GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED = "GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED"
     GKE_BASED_CLUSTER_TERMINATION = "GKE_BASED_CLUSTER_TERMINATION"
     GLOBAL_INIT_SCRIPT_FAILURE = "GLOBAL_INIT_SCRIPT_FAILURE"
+    HIVEMETASTORE_CONNECTIVITY_FAILURE = "HIVEMETASTORE_CONNECTIVITY_FAILURE"
     HIVE_METASTORE_PROVISIONING_FAILURE = "HIVE_METASTORE_PROVISIONING_FAILURE"
     IMAGE_PULL_PERMISSION_DENIED = "IMAGE_PULL_PERMISSION_DENIED"
     INACTIVITY = "INACTIVITY"
@@ -7171,6 +7311,7 @@ class TerminationReasonCode(Enum):
     LAZY_ALLOCATION_TIMEOUT = "LAZY_ALLOCATION_TIMEOUT"
     MAINTENANCE_MODE = "MAINTENANCE_MODE"
     METASTORE_COMPONENT_UNHEALTHY = "METASTORE_COMPONENT_UNHEALTHY"
+    MTLS_PORT_CONNECTIVITY_FAILURE = "MTLS_PORT_CONNECTIVITY_FAILURE"
     NEPHOS_RESOURCE_MANAGEMENT = "NEPHOS_RESOURCE_MANAGEMENT"
     NETVISOR_SETUP_TIMEOUT = "NETVISOR_SETUP_TIMEOUT"
     NETWORK_CHECK_CONTROL_PLANE_FAILURE = "NETWORK_CHECK_CONTROL_PLANE_FAILURE"
@@ -7191,21 +7332,19 @@ class TerminationReasonCode(Enum):
     NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
-    NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
-    NO_ACTIVATED_K8S_TESTING_TAG = "NO_ACTIVATED_K8S_TESTING_TAG"
     NO_MATCHED_K8S = "NO_MATCHED_K8S"
     NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
     NPIP_TUNNEL_TOKEN_FAILURE = "NPIP_TUNNEL_TOKEN_FAILURE"
     POD_ASSIGNMENT_FAILURE = "POD_ASSIGNMENT_FAILURE"
     POD_SCHEDULING_FAILURE = "POD_SCHEDULING_FAILURE"
+    RATE_LIMITED = "RATE_LIMITED"
     REQUEST_REJECTED = "REQUEST_REJECTED"
     REQUEST_THROTTLED = "REQUEST_THROTTLED"
     RESOURCE_USAGE_BLOCKED = "RESOURCE_USAGE_BLOCKED"
     SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
     SECRET_PERMISSION_DENIED = "SECRET_PERMISSION_DENIED"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
-    SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION = "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
     SERVERLESS_LONG_RUNNING_TERMINATED = "SERVERLESS_LONG_RUNNING_TERMINATED"
@@ -7335,6 +7474,9 @@ class UpdateClusterResource:
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
     uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
 
+    driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the driver node."""
+
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
     type will be set as the same value as `node_type_id` defined above.
@@ -7345,8 +7487,7 @@ class UpdateClusterResource:
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
-    space when its Spark workers are running low on disk space. This feature requires specific AWS
-    permissions to function correctly - refer to the User Guide for more details."""
+    space when its Spark workers are running low on disk space."""
 
     enable_local_disk_encryption: Optional[bool] = None
     """Whether to enable LUKS on cluster VMs' local disks"""
@@ -7443,6 +7584,9 @@ class UpdateClusterResource:
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
+    worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for worker nodes."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -7468,6 +7612,8 @@ class UpdateClusterResource:
             body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility.as_dict()
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -7508,6 +7654,8 @@ class UpdateClusterResource:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility.as_dict()
         if self.workload_type:
             body["workload_type"] = self.workload_type.as_dict()
         return body
@@ -7535,6 +7683,8 @@ class UpdateClusterResource:
             body["docker_image"] = self.docker_image
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -7575,6 +7725,8 @@ class UpdateClusterResource:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility
         if self.workload_type:
             body["workload_type"] = self.workload_type
         return body
@@ -7593,6 +7745,7 @@ class UpdateClusterResource:
             data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
             docker_image=_from_dict(d, "docker_image", DockerImage),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
+            driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
             driver_node_type_id=d.get("driver_node_type_id", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
@@ -7613,6 +7766,7 @@ class UpdateClusterResource:
             ssh_public_keys=d.get("ssh_public_keys", None),
             total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
+            worker_node_type_flexibility=_from_dict(d, "worker_node_type_flexibility", NodeTypeFlexibility),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
 
@@ -7823,6 +7977,10 @@ class ClusterPoliciesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/policies/clusters/create", body=body, headers=headers)
         return CreatePolicyResponse.from_dict(res)
 
@@ -7842,6 +8000,10 @@ class ClusterPoliciesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/policies/clusters/delete", body=body, headers=headers)
 
@@ -7917,6 +8079,10 @@ class ClusterPoliciesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/policies/clusters/edit", body=body, headers=headers)
 
     def get(self, policy_id: str) -> Policy:
@@ -7935,6 +8101,10 @@ class ClusterPoliciesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/policies/clusters/get", query=query, headers=headers)
         return Policy.from_dict(res)
 
@@ -7950,6 +8120,10 @@ class ClusterPoliciesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels", headers=headers
@@ -7969,6 +8143,10 @@ class ClusterPoliciesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", headers=headers)
         return ClusterPolicyPermissions.from_dict(res)
@@ -7997,6 +8175,10 @@ class ClusterPoliciesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         json = self._api.do("GET", "/api/2.0/policies/clusters/list", query=query, headers=headers)
         parsed = ListPoliciesResponse.from_dict(json).policies
         return parsed if parsed is not None else []
@@ -8021,6 +8203,10 @@ class ClusterPoliciesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", body=body, headers=headers
@@ -8047,6 +8233,10 @@ class ClusterPoliciesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", body=body, headers=headers
@@ -8168,6 +8358,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.1/clusters/change-owner", body=body, headers=headers)
 
     def create(
@@ -8186,6 +8380,7 @@ class ClustersAPI:
         data_security_mode: Optional[DataSecurityMode] = None,
         docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
+        driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         driver_node_type_id: Optional[str] = None,
         enable_elastic_disk: Optional[bool] = None,
         enable_local_disk_encryption: Optional[bool] = None,
@@ -8205,6 +8400,7 @@ class ClustersAPI:
         ssh_public_keys: Optional[List[str]] = None,
         total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
+        worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         workload_type: Optional[WorkloadType] = None,
     ) -> Wait[ClusterDetails]:
         """Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
@@ -8266,6 +8462,8 @@ class ClustersAPI:
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
+        :param driver_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for the driver node.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
           will be set as the same value as `node_type_id` defined above.
@@ -8275,8 +8473,7 @@ class ClustersAPI:
           node_type_id take precedence.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
-          when its Spark workers are running low on disk space. This feature requires specific AWS permissions
-          to function correctly - refer to the User Guide for more details.
+          when its Spark workers are running low on disk space.
         :param enable_local_disk_encryption: bool (optional)
           Whether to enable LUKS on cluster VMs' local disks
         :param gcp_attributes: :class:`GcpAttributes` (optional)
@@ -8351,6 +8548,8 @@ class ClustersAPI:
 
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
+        :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
 
         :returns:
@@ -8383,6 +8582,8 @@ class ClustersAPI:
             body["docker_image"] = docker_image.as_dict()
         if driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = driver_instance_pool_id
+        if driver_node_type_flexibility is not None:
+            body["driver_node_type_flexibility"] = driver_node_type_flexibility.as_dict()
         if driver_node_type_id is not None:
             body["driver_node_type_id"] = driver_node_type_id
         if enable_elastic_disk is not None:
@@ -8423,12 +8624,18 @@ class ClustersAPI:
             body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
         if use_ml_runtime is not None:
             body["use_ml_runtime"] = use_ml_runtime
+        if worker_node_type_flexibility is not None:
+            body["worker_node_type_flexibility"] = worker_node_type_flexibility.as_dict()
         if workload_type is not None:
             body["workload_type"] = workload_type.as_dict()
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.1/clusters/create", body=body, headers=headers)
         return Wait(
@@ -8453,6 +8660,7 @@ class ClustersAPI:
         data_security_mode: Optional[DataSecurityMode] = None,
         docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
+        driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         driver_node_type_id: Optional[str] = None,
         enable_elastic_disk: Optional[bool] = None,
         enable_local_disk_encryption: Optional[bool] = None,
@@ -8472,6 +8680,7 @@ class ClustersAPI:
         ssh_public_keys: Optional[List[str]] = None,
         total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
+        worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         workload_type: Optional[WorkloadType] = None,
         timeout=timedelta(minutes=20),
     ) -> ClusterDetails:
@@ -8488,6 +8697,7 @@ class ClustersAPI:
             data_security_mode=data_security_mode,
             docker_image=docker_image,
             driver_instance_pool_id=driver_instance_pool_id,
+            driver_node_type_flexibility=driver_node_type_flexibility,
             driver_node_type_id=driver_node_type_id,
             enable_elastic_disk=enable_elastic_disk,
             enable_local_disk_encryption=enable_local_disk_encryption,
@@ -8508,6 +8718,7 @@ class ClustersAPI:
             ssh_public_keys=ssh_public_keys,
             total_initial_remote_disk_size=total_initial_remote_disk_size,
             use_ml_runtime=use_ml_runtime,
+            worker_node_type_flexibility=worker_node_type_flexibility,
             workload_type=workload_type,
         ).result(timeout=timeout)
 
@@ -8532,6 +8743,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.1/clusters/delete", body=body, headers=headers)
         return Wait(self.wait_get_cluster_terminated, cluster_id=cluster_id)
 
@@ -8554,6 +8769,7 @@ class ClustersAPI:
         data_security_mode: Optional[DataSecurityMode] = None,
         docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
+        driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         driver_node_type_id: Optional[str] = None,
         enable_elastic_disk: Optional[bool] = None,
         enable_local_disk_encryption: Optional[bool] = None,
@@ -8573,6 +8789,7 @@ class ClustersAPI:
         ssh_public_keys: Optional[List[str]] = None,
         total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
+        worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         workload_type: Optional[WorkloadType] = None,
     ) -> Wait[ClusterDetails]:
         """Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
@@ -8631,6 +8848,8 @@ class ClustersAPI:
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
+        :param driver_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for the driver node.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
           will be set as the same value as `node_type_id` defined above.
@@ -8640,8 +8859,7 @@ class ClustersAPI:
           node_type_id take precedence.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
-          when its Spark workers are running low on disk space. This feature requires specific AWS permissions
-          to function correctly - refer to the User Guide for more details.
+          when its Spark workers are running low on disk space.
         :param enable_local_disk_encryption: bool (optional)
           Whether to enable LUKS on cluster VMs' local disks
         :param gcp_attributes: :class:`GcpAttributes` (optional)
@@ -8716,6 +8934,8 @@ class ClustersAPI:
 
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
+        :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
 
         :returns:
@@ -8748,6 +8968,8 @@ class ClustersAPI:
             body["docker_image"] = docker_image.as_dict()
         if driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = driver_instance_pool_id
+        if driver_node_type_flexibility is not None:
+            body["driver_node_type_flexibility"] = driver_node_type_flexibility.as_dict()
         if driver_node_type_id is not None:
             body["driver_node_type_id"] = driver_node_type_id
         if enable_elastic_disk is not None:
@@ -8788,12 +9010,18 @@ class ClustersAPI:
             body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
         if use_ml_runtime is not None:
             body["use_ml_runtime"] = use_ml_runtime
+        if worker_node_type_flexibility is not None:
+            body["worker_node_type_flexibility"] = worker_node_type_flexibility.as_dict()
         if workload_type is not None:
             body["workload_type"] = workload_type.as_dict()
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.1/clusters/edit", body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
@@ -8814,6 +9042,7 @@ class ClustersAPI:
         data_security_mode: Optional[DataSecurityMode] = None,
         docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
+        driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         driver_node_type_id: Optional[str] = None,
         enable_elastic_disk: Optional[bool] = None,
         enable_local_disk_encryption: Optional[bool] = None,
@@ -8833,6 +9062,7 @@ class ClustersAPI:
         ssh_public_keys: Optional[List[str]] = None,
         total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
+        worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         workload_type: Optional[WorkloadType] = None,
         timeout=timedelta(minutes=20),
     ) -> ClusterDetails:
@@ -8849,6 +9079,7 @@ class ClustersAPI:
             data_security_mode=data_security_mode,
             docker_image=docker_image,
             driver_instance_pool_id=driver_instance_pool_id,
+            driver_node_type_flexibility=driver_node_type_flexibility,
             driver_node_type_id=driver_node_type_id,
             enable_elastic_disk=enable_elastic_disk,
             enable_local_disk_encryption=enable_local_disk_encryption,
@@ -8869,6 +9100,7 @@ class ClustersAPI:
             ssh_public_keys=ssh_public_keys,
             total_initial_remote_disk_size=total_initial_remote_disk_size,
             use_ml_runtime=use_ml_runtime,
+            worker_node_type_flexibility=worker_node_type_flexibility,
             workload_type=workload_type,
         ).result(timeout=timeout)
 
@@ -8944,6 +9176,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("POST", "/api/2.1/clusters/events", body=body, headers=headers)
             if "events" in json:
@@ -8970,6 +9206,10 @@ class ClustersAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.1/clusters/get", query=query, headers=headers)
         return ClusterDetails.from_dict(res)
 
@@ -8986,6 +9226,10 @@ class ClustersAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/permissions/clusters/{cluster_id}/permissionLevels", headers=headers)
         return GetClusterPermissionLevelsResponse.from_dict(res)
 
@@ -9001,6 +9245,10 @@ class ClustersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/clusters/{cluster_id}", headers=headers)
         return ClusterPermissions.from_dict(res)
@@ -9043,6 +9291,10 @@ class ClustersAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.1/clusters/list", query=query, headers=headers)
             if "clusters" in json:
@@ -9063,6 +9315,10 @@ class ClustersAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.1/clusters/list-node-types", headers=headers)
         return ListNodeTypesResponse.from_dict(res)
 
@@ -9077,6 +9333,10 @@ class ClustersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.1/clusters/list-zones", headers=headers)
         return ListAvailableZonesResponse.from_dict(res)
@@ -9102,6 +9362,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.1/clusters/permanent-delete", body=body, headers=headers)
 
     def pin(self, cluster_id: str):
@@ -9120,6 +9384,10 @@ class ClustersAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.1/clusters/pin", body=body, headers=headers)
 
@@ -9161,6 +9429,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.1/clusters/resize", body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
@@ -9197,6 +9469,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.1/clusters/restart", body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
@@ -9226,6 +9502,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("PUT", f"/api/2.0/permissions/clusters/{cluster_id}", body=body, headers=headers)
         return ClusterPermissions.from_dict(res)
 
@@ -9239,6 +9519,10 @@ class ClustersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.1/clusters/spark-versions", headers=headers)
         return GetSparkVersionsResponse.from_dict(res)
@@ -9266,6 +9550,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.1/clusters/start", body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
@@ -9289,6 +9577,10 @@ class ClustersAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.1/clusters/unpin", body=body, headers=headers)
 
@@ -9339,6 +9631,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.1/clusters/update", body=body, headers=headers)
         return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
@@ -9371,6 +9667,10 @@ class ClustersAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/clusters/{cluster_id}", body=body, headers=headers)
         return ClusterPermissions.from_dict(res)
@@ -9520,6 +9820,10 @@ class CommandExecutionAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/1.2/commands/cancel", body=body, headers=headers)
         return Wait(
             self.wait_command_status_command_execution_cancelled,
@@ -9561,6 +9865,10 @@ class CommandExecutionAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/1.2/commands/status", query=query, headers=headers)
         return CommandStatusResponse.from_dict(res)
 
@@ -9581,6 +9889,10 @@ class CommandExecutionAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/1.2/contexts/status", query=query, headers=headers)
         return ContextStatusResponse.from_dict(res)
@@ -9610,6 +9922,10 @@ class CommandExecutionAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/1.2/contexts/create", body=body, headers=headers)
         return Wait(
@@ -9642,6 +9958,10 @@ class CommandExecutionAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/1.2/contexts/destroy", body=body, headers=headers)
 
@@ -9683,6 +10003,10 @@ class CommandExecutionAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/1.2/commands/execute", body=body, headers=headers)
         return Wait(
@@ -9758,6 +10082,10 @@ class GlobalInitScriptsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/global-init-scripts", body=body, headers=headers)
         return CreateResponse.from_dict(res)
 
@@ -9774,6 +10102,10 @@ class GlobalInitScriptsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/global-init-scripts/{script_id}", headers=headers)
 
     def get(self, script_id: str) -> GlobalInitScriptDetailsWithContent:
@@ -9788,6 +10120,10 @@ class GlobalInitScriptsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/global-init-scripts/{script_id}", headers=headers)
         return GlobalInitScriptDetailsWithContent.from_dict(res)
@@ -9804,6 +10140,10 @@ class GlobalInitScriptsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/global-init-scripts", headers=headers)
         parsed = ListGlobalInitScriptsResponse.from_dict(json).scripts
@@ -9851,6 +10191,10 @@ class GlobalInitScriptsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("PATCH", f"/api/2.0/global-init-scripts/{script_id}", body=body, headers=headers)
 
 
@@ -9887,6 +10231,7 @@ class InstancePoolsAPI:
         idle_instance_autotermination_minutes: Optional[int] = None,
         max_capacity: Optional[int] = None,
         min_idle_instances: Optional[int] = None,
+        node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         preloaded_docker_images: Optional[List[DockerImage]] = None,
         preloaded_spark_versions: Optional[List[str]] = None,
         remote_disk_throughput: Optional[int] = None,
@@ -9934,6 +10279,8 @@ class InstancePoolsAPI:
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
+        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for the pool.
         :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
           Custom Docker Image BYOC
         :param preloaded_spark_versions: List[str] (optional)
@@ -9971,6 +10318,8 @@ class InstancePoolsAPI:
             body["max_capacity"] = max_capacity
         if min_idle_instances is not None:
             body["min_idle_instances"] = min_idle_instances
+        if node_type_flexibility is not None:
+            body["node_type_flexibility"] = node_type_flexibility.as_dict()
         if node_type_id is not None:
             body["node_type_id"] = node_type_id
         if preloaded_docker_images is not None:
@@ -9985,6 +10334,10 @@ class InstancePoolsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/instance-pools/create", body=body, headers=headers)
         return CreateInstancePoolResponse.from_dict(res)
@@ -10005,6 +10358,10 @@ class InstancePoolsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/instance-pools/delete", body=body, headers=headers)
 
@@ -10084,6 +10441,10 @@ class InstancePoolsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/instance-pools/edit", body=body, headers=headers)
 
     def get(self, instance_pool_id: str) -> GetInstancePool:
@@ -10102,6 +10463,10 @@ class InstancePoolsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/instance-pools/get", query=query, headers=headers)
         return GetInstancePool.from_dict(res)
 
@@ -10117,6 +10482,10 @@ class InstancePoolsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels", headers=headers
@@ -10137,6 +10506,10 @@ class InstancePoolsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", headers=headers)
         return InstancePoolPermissions.from_dict(res)
 
@@ -10150,6 +10523,10 @@ class InstancePoolsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/instance-pools/list", headers=headers)
         parsed = ListInstancePools.from_dict(json).instance_pools
@@ -10176,6 +10553,10 @@ class InstancePoolsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("PUT", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", body=body, headers=headers)
         return InstancePoolPermissions.from_dict(res)
 
@@ -10200,6 +10581,10 @@ class InstancePoolsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", body=body, headers=headers
         )
@@ -10211,8 +10596,7 @@ class InstanceProfilesAPI:
     clusters with. Regular users can list the instance profiles available to them. See [Secure access to S3
     buckets] using instance profiles for more information.
 
-    [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html
-    """
+    [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -10269,6 +10653,10 @@ class InstanceProfilesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/instance-profiles/add", body=body, headers=headers)
 
     def edit(
@@ -10322,6 +10710,10 @@ class InstanceProfilesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/instance-profiles/edit", body=body, headers=headers)
 
     def list(self) -> Iterator[InstanceProfile]:
@@ -10336,6 +10728,10 @@ class InstanceProfilesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/instance-profiles/list", headers=headers)
         parsed = ListInstanceProfilesResponse.from_dict(json).instance_profiles
@@ -10360,6 +10756,10 @@ class InstanceProfilesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/instance-profiles/remove", body=body, headers=headers)
 
@@ -10394,6 +10794,10 @@ class LibrariesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         json = self._api.do("GET", "/api/2.0/libraries/all-cluster-statuses", headers=headers)
         parsed = ListAllClusterLibraryStatusesResponse.from_dict(json).statuses
         return parsed if parsed is not None else []
@@ -10417,6 +10821,10 @@ class LibrariesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/libraries/cluster-status", query=query, headers=headers)
         parsed = ClusterLibraryStatuses.from_dict(json).library_statuses
@@ -10444,6 +10852,10 @@ class LibrariesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/libraries/install", body=body, headers=headers)
 
     def uninstall(self, cluster_id: str, libraries: List[Library]):
@@ -10467,6 +10879,10 @@ class LibrariesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/libraries/uninstall", body=body, headers=headers)
 
@@ -10496,7 +10912,7 @@ class PolicyComplianceForClustersAPI:
         If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time the
         cluster is started, the new attributes will take effect.
 
-        Clusters created by the Databricks Jobs, DLT, or Models services cannot be enforced by this API.
+        Clusters created by the Databricks Jobs, SDP, or Models services cannot be enforced by this API.
         Instead, use the "Enforce job policy compliance" API to enforce policy compliance on jobs.
 
         :param cluster_id: str
@@ -10518,6 +10934,10 @@ class PolicyComplianceForClustersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/policies/clusters/enforce-compliance", body=body, headers=headers)
         return EnforceClusterComplianceResponse.from_dict(res)
 
@@ -10537,6 +10957,10 @@ class PolicyComplianceForClustersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/policies/clusters/get-compliance", query=query, headers=headers)
         return GetClusterComplianceResponse.from_dict(res)
@@ -10569,6 +10993,10 @@ class PolicyComplianceForClustersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/policies/clusters/list-compliance", query=query, headers=headers)
@@ -10612,6 +11040,10 @@ class PolicyFamiliesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/policy-families/{policy_family_id}", query=query, headers=headers)
         return PolicyFamily.from_dict(res)
 
@@ -10635,6 +11067,10 @@ class PolicyFamiliesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/policy-families", query=query, headers=headers)

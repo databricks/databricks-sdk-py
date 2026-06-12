@@ -13,9 +13,9 @@ from pathlib import Path
 import pytest
 
 from databricks.sdk import AccountClient, WorkspaceClient
+from databricks.sdk.config import Config
 from databricks.sdk.service import iam, oauth2
-from databricks.sdk.service.compute import (ClusterSpec, DataSecurityMode,
-                                            Library, ResultType, SparkVersion)
+from databricks.sdk.service.compute import ClusterSpec, DataSecurityMode, Library, ResultType, SparkVersion
 from databricks.sdk.service.jobs import NotebookTask, Task, ViewType
 from databricks.sdk.service.workspace import ImportFormat
 
@@ -122,8 +122,9 @@ def test_runtime_auth_from_jobs_volumes(ucws, files_api, fresh_wheel_file, env_o
 
 
 def test_runtime_auth_from_jobs_dbfs(w, fresh_wheel_file, env_or_skip, random):
-    # Library installation from DBFS is not supported past DBR 14.3
-    dbr_versions = [v for v in _get_lts_versions(w) if int(v.key.split(".")[0]) < 15]
+    # Library installation from DBFS is not supported past DBR 14.3.
+    # DBR < 13 ships Python < 3.10 which is below our requires-python.
+    dbr_versions = [v for v in _get_lts_versions(w) if 13 <= int(v.key.split(".")[0]) < 15]
 
     dbfs_wheel = f"/tmp/wheels/{random(10)}/{fresh_wheel_file.name}"
     with fresh_wheel_file.open("rb") as f:
@@ -158,7 +159,7 @@ print(me.user_name)"""
     tasks = []
     for v in dbr_versions:
         t = Task(
-            task_key=f'test_{v.key.replace(".", "_")}',
+            task_key=f"test_{v.key.replace('.', '_')}",
             notebook_task=NotebookTask(notebook_path=notebook_path),
             new_cluster=ClusterSpec(
                 spark_version=v.key,
@@ -203,7 +204,6 @@ def _task_outputs(w, run):
 
 
 def test_wif_account(ucacct, env_or_skip, random):
-
     sp = ucacct.service_principals.create(
         active=True,
         display_name="py-sdk-test-" + random(),
@@ -235,7 +235,6 @@ def test_wif_account(ucacct, env_or_skip, random):
 
 
 def test_wif_workspace(ucacct, env_or_skip, random):
-
     workspace_id = env_or_skip("TEST_WORKSPACE_ID")
     workspace_url = env_or_skip("TEST_WORKSPACE_URL")
 
@@ -269,3 +268,108 @@ def test_wif_workspace(ucacct, env_or_skip, random):
     )
 
     ws.current_user.me()
+
+
+def test_workspace_config_resolves_account_and_workspace_id(w, env_or_skip):
+    """Test that Config resolves account_id and workspace_id from host metadata."""
+    env_or_skip("CLOUD_ENV")
+
+    config = Config()
+
+    assert config.account_id, "expected account_id to be resolved from host metadata"
+    assert config.workspace_id, "expected workspace_id to be resolved from host metadata"
+
+
+def test_workspace_oauth_m2m_auth(w, env_or_skip):
+    env_or_skip("CLOUD_ENV")
+
+    # Get environment variables
+    host = env_or_skip("DATABRICKS_HOST")
+    client_id = env_or_skip("TEST_DATABRICKS_CLIENT_ID")
+    client_secret = env_or_skip("TEST_DATABRICKS_CLIENT_SECRET")
+
+    # Create workspace client with OAuth M2M authentication
+    ws = WorkspaceClient(
+        host=host,
+        client_id=client_id,
+        client_secret=client_secret,
+        auth_type="oauth-m2m",
+    )
+
+    # Call the "me" API
+    me = ws.current_user.me()
+
+    # Verify we got a valid response
+    assert me.user_name, "expected non-empty user_name"
+
+
+def test_workspace_azure_client_secret_auth(w, env_or_skip):
+    env_or_skip("CLOUD_ENV")
+
+    host = env_or_skip("DATABRICKS_HOST")
+    azure_client_id = env_or_skip("ARM_CLIENT_ID")
+    azure_client_secret = env_or_skip("ARM_CLIENT_SECRET")
+    azure_tenant_id = env_or_skip("ARM_TENANT_ID")
+
+    # Create workspace client with Azure client secret authentication
+    ws = WorkspaceClient(
+        host=host,
+        azure_client_id=azure_client_id,
+        azure_client_secret=azure_client_secret,
+        azure_tenant_id=azure_tenant_id,
+        auth_type="azure-client-secret",
+    )
+
+    # Call the "me" API
+    me = ws.current_user.me()
+
+    # Verify we got a valid response
+    assert me.user_name, "expected non-empty user_name"
+
+
+def test_account_oauth_m2m_auth(a, env_or_skip):
+    env_or_skip("CLOUD_ENV")
+
+    # Get environment variables
+    host = env_or_skip("DATABRICKS_HOST")
+    account_id = env_or_skip("DATABRICKS_ACCOUNT_ID")
+    client_id = env_or_skip("TEST_DATABRICKS_CLIENT_ID")
+    client_secret = env_or_skip("TEST_DATABRICKS_CLIENT_SECRET")
+
+    # Create account client with OAuth M2M authentication
+    ac = AccountClient(
+        host=host,
+        account_id=account_id,
+        client_id=client_id,
+        client_secret=client_secret,
+        auth_type="oauth-m2m",
+    )
+
+    # List service principals to verify authentication works
+    sps = ac.service_principals.list()
+    next(sps)
+
+
+def test_account_azure_client_secret_auth(a, env_or_skip):
+    env_or_skip("CLOUD_ENV")
+
+    # Get environment variables
+    host = env_or_skip("DATABRICKS_HOST")
+    account_id = env_or_skip("DATABRICKS_ACCOUNT_ID")
+    azure_client_id = env_or_skip("ARM_CLIENT_ID")
+    azure_client_secret = env_or_skip("ARM_CLIENT_SECRET")
+    azure_tenant_id = env_or_skip("ARM_TENANT_ID")
+
+    # Create account client with Azure client secret authentication
+    ac = AccountClient(
+        host=host,
+        account_id=account_id,
+        azure_client_id=azure_client_id,
+        azure_client_secret=azure_client_secret,
+        azure_tenant_id=azure_tenant_id,
+        auth_type="azure-client-secret",
+    )
+
+    # List service principals to verify authentication works
+    sps = ac.service_principals.list()
+    next(sps)

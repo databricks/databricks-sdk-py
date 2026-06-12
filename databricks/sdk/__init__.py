@@ -1,7 +1,9 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F401, F403, F405, F811
 
 import json
 import logging
+from functools import cached_property
 from typing import List, Optional
 
 import databricks.sdk.core as client
@@ -16,22 +18,30 @@ from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.oauth import AuthorizationDetail
 from databricks.sdk.service import agentbricks as pkg_agentbricks
+from databricks.sdk.service import aisearch as pkg_aisearch
 from databricks.sdk.service import apps as pkg_apps
 from databricks.sdk.service import billing as pkg_billing
+from databricks.sdk.service import bundledeployments as pkg_bundledeployments
 from databricks.sdk.service import catalog as pkg_catalog
 from databricks.sdk.service import cleanrooms as pkg_cleanrooms
 from databricks.sdk.service import compute as pkg_compute
 from databricks.sdk.service import dashboards as pkg_dashboards
 from databricks.sdk.service import database as pkg_database
+from databricks.sdk.service import dataclassification as pkg_dataclassification
 from databricks.sdk.service import dataquality as pkg_dataquality
+from databricks.sdk.service import disasterrecovery as pkg_disasterrecovery
+from databricks.sdk.service import environments as pkg_environments
 from databricks.sdk.service import files as pkg_files
 from databricks.sdk.service import iam as pkg_iam
 from databricks.sdk.service import iamv2 as pkg_iamv2
 from databricks.sdk.service import jobs as pkg_jobs
+from databricks.sdk.service import knowledgeassistants as pkg_knowledgeassistants
 from databricks.sdk.service import marketplace as pkg_marketplace
 from databricks.sdk.service import ml as pkg_ml
+from databricks.sdk.service import networking as pkg_networking
 from databricks.sdk.service import oauth2 as pkg_oauth2
 from databricks.sdk.service import pipelines as pkg_pipelines
+from databricks.sdk.service import postgres as pkg_postgres
 from databricks.sdk.service import provisioning as pkg_provisioning
 from databricks.sdk.service import qualitymonitorv2 as pkg_qualitymonitorv2
 from databricks.sdk.service import serving as pkg_serving
@@ -39,128 +49,216 @@ from databricks.sdk.service import settings as pkg_settings
 from databricks.sdk.service import settingsv2 as pkg_settingsv2
 from databricks.sdk.service import sharing as pkg_sharing
 from databricks.sdk.service import sql as pkg_sql
+from databricks.sdk.service import supervisoragents as pkg_supervisoragents
 from databricks.sdk.service import tags as pkg_tags
 from databricks.sdk.service import vectorsearch as pkg_vectorsearch
 from databricks.sdk.service import workspace as pkg_workspace
 from databricks.sdk.service.agentbricks import AgentBricksAPI
+from databricks.sdk.service.aisearch import AiSearchAPI
 from databricks.sdk.service.apps import AppsAPI, AppsSettingsAPI
-from databricks.sdk.service.billing import (BillableUsageAPI, BudgetPolicyAPI,
-                                            BudgetsAPI, LogDeliveryAPI,
-                                            UsageDashboardsAPI)
-from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
-                                            AccountMetastoresAPI,
-                                            AccountStorageCredentialsAPI,
-                                            ArtifactAllowlistsAPI, CatalogsAPI,
-                                            ConnectionsAPI, CredentialsAPI,
-                                            EntityTagAssignmentsAPI,
-                                            ExternalLineageAPI,
-                                            ExternalLocationsAPI,
-                                            ExternalMetadataAPI, FunctionsAPI,
-                                            GrantsAPI, MetastoresAPI,
-                                            ModelVersionsAPI, OnlineTablesAPI,
-                                            PoliciesAPI, QualityMonitorsAPI,
-                                            RegisteredModelsAPI,
-                                            ResourceQuotasAPI, RfaAPI,
-                                            SchemasAPI, StorageCredentialsAPI,
-                                            SystemSchemasAPI,
-                                            TableConstraintsAPI, TablesAPI,
-                                            TemporaryPathCredentialsAPI,
-                                            TemporaryTableCredentialsAPI,
-                                            VolumesAPI, WorkspaceBindingsAPI)
-from databricks.sdk.service.cleanrooms import (CleanRoomAssetRevisionsAPI,
-                                               CleanRoomAssetsAPI,
-                                               CleanRoomAutoApprovalRulesAPI,
-                                               CleanRoomsAPI,
-                                               CleanRoomTaskRunsAPI)
-from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
-                                            CommandExecutionAPI,
-                                            GlobalInitScriptsAPI,
-                                            InstancePoolsAPI,
-                                            InstanceProfilesAPI, LibrariesAPI,
-                                            PolicyComplianceForClustersAPI,
-                                            PolicyFamiliesAPI)
-from databricks.sdk.service.dashboards import (GenieAPI, LakeviewAPI,
-                                               LakeviewEmbeddedAPI)
+from databricks.sdk.service.billing import (
+    BillableUsageAPI,
+    BudgetPolicyAPI,
+    BudgetsAPI,
+    LogDeliveryAPI,
+    UsageDashboardsAPI,
+)
+from databricks.sdk.service.bundledeployments import BundleDeploymentsAPI
+from databricks.sdk.service.catalog import (
+    AccountMetastoreAssignmentsAPI,
+    AccountMetastoresAPI,
+    AccountStorageCredentialsAPI,
+    ArtifactAllowlistsAPI,
+    CatalogsAPI,
+    ConnectionsAPI,
+    CredentialsAPI,
+    EntityTagAssignmentsAPI,
+    ExternalLineageAPI,
+    ExternalLocationsAPI,
+    ExternalMetadataAPI,
+    FunctionsAPI,
+    GrantsAPI,
+    MetastoresAPI,
+    ModelVersionsAPI,
+    OnlineTablesAPI,
+    PoliciesAPI,
+    QualityMonitorsAPI,
+    RegisteredModelsAPI,
+    ResourceQuotasAPI,
+    RfaAPI,
+    SchemasAPI,
+    SecretsUcAPI,
+    StorageCredentialsAPI,
+    SystemSchemasAPI,
+    TableConstraintsAPI,
+    TablesAPI,
+    TemporaryPathCredentialsAPI,
+    TemporaryTableCredentialsAPI,
+    TemporaryVolumeCredentialsAPI,
+    VolumesAPI,
+    WorkspaceBindingsAPI,
+)
+from databricks.sdk.service.cleanrooms import (
+    CleanRoomAssetRevisionsAPI,
+    CleanRoomAssetsAPI,
+    CleanRoomAutoApprovalRulesAPI,
+    CleanRoomsAPI,
+    CleanRoomTaskRunsAPI,
+)
+from databricks.sdk.service.compute import (
+    ClusterPoliciesAPI,
+    ClustersAPI,
+    CommandExecutionAPI,
+    GlobalInitScriptsAPI,
+    InstancePoolsAPI,
+    InstanceProfilesAPI,
+    LibrariesAPI,
+    PolicyComplianceForClustersAPI,
+    PolicyFamiliesAPI,
+)
+from databricks.sdk.service.dashboards import GenieAPI, LakeviewAPI, LakeviewEmbeddedAPI
 from databricks.sdk.service.database import DatabaseAPI
+from databricks.sdk.service.dataclassification import DataClassificationAPI
 from databricks.sdk.service.dataquality import DataQualityAPI
+from databricks.sdk.service.disasterrecovery import DisasterRecoveryAPI
+from databricks.sdk.service.environments import EnvironmentsAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
-from databricks.sdk.service.iam import (AccessControlAPI,
-                                        AccountAccessControlAPI,
-                                        AccountAccessControlProxyAPI,
-                                        AccountGroupsAPI, AccountGroupsV2API,
-                                        AccountServicePrincipalsAPI,
-                                        AccountServicePrincipalsV2API,
-                                        AccountUsersAPI, AccountUsersV2API,
-                                        CurrentUserAPI, GroupsAPI, GroupsV2API,
-                                        PermissionMigrationAPI, PermissionsAPI,
-                                        ServicePrincipalsAPI,
-                                        ServicePrincipalsV2API, UsersAPI,
-                                        UsersV2API, WorkspaceAssignmentAPI)
+from databricks.sdk.service.iam import (
+    AccessControlAPI,
+    AccountAccessControlAPI,
+    AccountAccessControlProxyAPI,
+    AccountGroupsAPI,
+    AccountGroupsV2API,
+    AccountServicePrincipalsAPI,
+    AccountServicePrincipalsV2API,
+    AccountUsersAPI,
+    AccountUsersV2API,
+    CurrentUserAPI,
+    GroupsAPI,
+    GroupsV2API,
+    PermissionMigrationAPI,
+    PermissionsAPI,
+    ServicePrincipalsAPI,
+    ServicePrincipalsV2API,
+    UsersAPI,
+    UsersV2API,
+    WorkspaceAssignmentAPI,
+)
 from databricks.sdk.service.iamv2 import AccountIamV2API, WorkspaceIamV2API
 from databricks.sdk.service.jobs import JobsAPI, PolicyComplianceForJobsAPI
+from databricks.sdk.service.knowledgeassistants import KnowledgeAssistantsAPI
 from databricks.sdk.service.marketplace import (
-    ConsumerFulfillmentsAPI, ConsumerInstallationsAPI, ConsumerListingsAPI,
-    ConsumerPersonalizationRequestsAPI, ConsumerProvidersAPI,
-    ProviderExchangeFiltersAPI, ProviderExchangesAPI, ProviderFilesAPI,
-    ProviderListingsAPI, ProviderPersonalizationRequestsAPI,
-    ProviderProviderAnalyticsDashboardsAPI, ProviderProvidersAPI)
-from databricks.sdk.service.ml import (ExperimentsAPI, FeatureEngineeringAPI,
-                                       FeatureStoreAPI, ForecastingAPI,
-                                       MaterializedFeaturesAPI,
-                                       ModelRegistryAPI)
-from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
-                                           CustomAppIntegrationAPI,
-                                           OAuthPublishedAppsAPI,
-                                           PublishedAppIntegrationAPI,
-                                           ServicePrincipalFederationPolicyAPI,
-                                           ServicePrincipalSecretsAPI,
-                                           ServicePrincipalSecretsProxyAPI)
+    ConsumerFulfillmentsAPI,
+    ConsumerInstallationsAPI,
+    ConsumerListingsAPI,
+    ConsumerPersonalizationRequestsAPI,
+    ConsumerProvidersAPI,
+    ProviderExchangeFiltersAPI,
+    ProviderExchangesAPI,
+    ProviderFilesAPI,
+    ProviderListingsAPI,
+    ProviderPersonalizationRequestsAPI,
+    ProviderProviderAnalyticsDashboardsAPI,
+    ProviderProvidersAPI,
+)
+from databricks.sdk.service.ml import (
+    ExperimentsAPI,
+    FeatureEngineeringAPI,
+    FeatureStoreAPI,
+    ForecastingAPI,
+    MaterializedFeaturesAPI,
+    ModelRegistryAPI,
+)
+from databricks.sdk.service.networking import EndpointsAPI
+from databricks.sdk.service.oauth2 import (
+    AccountFederationPolicyAPI,
+    CustomAppIntegrationAPI,
+    OAuthPublishedAppsAPI,
+    PublishedAppIntegrationAPI,
+    ServicePrincipalFederationPolicyAPI,
+    ServicePrincipalSecretsAPI,
+    ServicePrincipalSecretsProxyAPI,
+)
 from databricks.sdk.service.pipelines import PipelinesAPI
-from databricks.sdk.service.provisioning import (CredentialsAPI,
-                                                 EncryptionKeysAPI,
-                                                 NetworksAPI, PrivateAccessAPI,
-                                                 StorageAPI, VpcEndpointsAPI,
-                                                 Workspace, WorkspacesAPI)
+from databricks.sdk.service.postgres import PostgresAPI
+from databricks.sdk.service.provisioning import (
+    CredentialsAPI,
+    EncryptionKeysAPI,
+    NetworksAPI,
+    PrivateAccessAPI,
+    StorageAPI,
+    VpcEndpointsAPI,
+    Workspace,
+    WorkspacesAPI,
+)
 from databricks.sdk.service.qualitymonitorv2 import QualityMonitorV2API
-from databricks.sdk.service.serving import (ServingEndpointsAPI,
-                                            ServingEndpointsDataPlaneAPI)
+from databricks.sdk.service.serving import ServingEndpointsAPI, ServingEndpointsDataPlaneAPI
 from databricks.sdk.service.settings import (
-    AccountIpAccessListsAPI, AccountSettingsAPI,
+    AccountIpAccessListsAPI,
+    AccountSettingsAPI,
     AibiDashboardEmbeddingAccessPolicyAPI,
-    AibiDashboardEmbeddingApprovedDomainsAPI, AutomaticClusterUpdateAPI,
-    ComplianceSecurityProfileAPI, CredentialsManagerAPI,
-    CspEnablementAccountAPI, DashboardEmailSubscriptionsAPI,
-    DefaultNamespaceAPI, DefaultWarehouseIdAPI, DisableLegacyAccessAPI,
-    DisableLegacyDbfsAPI, DisableLegacyFeaturesAPI, EnableExportNotebookAPI,
-    EnableIpAccessListsAPI, EnableNotebookTableClipboardAPI,
-    EnableResultsDownloadingAPI, EnhancedSecurityMonitoringAPI,
-    EsmEnablementAccountAPI, IpAccessListsAPI,
-    LlmProxyPartnerPoweredAccountAPI, LlmProxyPartnerPoweredEnforceAPI,
-    LlmProxyPartnerPoweredWorkspaceAPI, NetworkConnectivityAPI,
-    NetworkPoliciesAPI, NotificationDestinationsAPI, PersonalComputeAPI,
-    RestrictWorkspaceAdminsAPI, SettingsAPI, SqlResultsDownloadAPI,
-    TokenManagementAPI, TokensAPI, WorkspaceConfAPI,
-    WorkspaceNetworkConfigurationAPI)
-from databricks.sdk.service.settingsv2 import (AccountSettingsV2API,
-                                               WorkspaceSettingsV2API)
-from databricks.sdk.service.sharing import (ProvidersAPI,
-                                            RecipientActivationAPI,
-                                            RecipientFederationPoliciesAPI,
-                                            RecipientsAPI, SharesAPI)
-from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
-                                        AlertsV2API, DashboardsAPI,
-                                        DashboardWidgetsAPI, DataSourcesAPI,
-                                        DbsqlPermissionsAPI, QueriesAPI,
-                                        QueriesLegacyAPI, QueryHistoryAPI,
-                                        QueryVisualizationsAPI,
-                                        QueryVisualizationsLegacyAPI,
-                                        RedashConfigAPI, StatementExecutionAPI,
-                                        WarehousesAPI)
-from databricks.sdk.service.tags import TagPoliciesAPI
-from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
-                                                 VectorSearchIndexesAPI)
-from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
-                                              SecretsAPI, WorkspaceAPI)
+    AibiDashboardEmbeddingApprovedDomainsAPI,
+    AutomaticClusterUpdateAPI,
+    ComplianceSecurityProfileAPI,
+    CredentialsManagerAPI,
+    CspEnablementAccountAPI,
+    DashboardEmailSubscriptionsAPI,
+    DefaultNamespaceAPI,
+    DefaultWarehouseIdAPI,
+    DisableLegacyAccessAPI,
+    DisableLegacyDbfsAPI,
+    DisableLegacyFeaturesAPI,
+    EnableExportNotebookAPI,
+    EnableIpAccessListsAPI,
+    EnableNotebookTableClipboardAPI,
+    EnableResultsDownloadingAPI,
+    EnhancedSecurityMonitoringAPI,
+    EsmEnablementAccountAPI,
+    IpAccessListsAPI,
+    LlmProxyPartnerPoweredAccountAPI,
+    LlmProxyPartnerPoweredEnforceAPI,
+    LlmProxyPartnerPoweredWorkspaceAPI,
+    NetworkConnectivityAPI,
+    NetworkPoliciesAPI,
+    NotificationDestinationsAPI,
+    PersonalComputeAPI,
+    RestrictWorkspaceAdminsAPI,
+    SettingsAPI,
+    SqlResultsDownloadAPI,
+    TokenManagementAPI,
+    TokensAPI,
+    WorkspaceConfAPI,
+    WorkspaceNetworkConfigurationAPI,
+)
+from databricks.sdk.service.settingsv2 import AccountSettingsV2API, WorkspaceSettingsV2API
+from databricks.sdk.service.sharing import (
+    ProvidersAPI,
+    RecipientActivationAPI,
+    RecipientFederationPoliciesAPI,
+    RecipientsAPI,
+    SharesAPI,
+)
+from databricks.sdk.service.sql import (
+    AlertsAPI,
+    AlertsLegacyAPI,
+    AlertsV2API,
+    DashboardsAPI,
+    DashboardWidgetsAPI,
+    DataSourcesAPI,
+    DbsqlPermissionsAPI,
+    QueriesAPI,
+    QueriesLegacyAPI,
+    QueryHistoryAPI,
+    QueryVisualizationsAPI,
+    QueryVisualizationsLegacyAPI,
+    RedashConfigAPI,
+    StatementExecutionAPI,
+    WarehousesAPI,
+)
+from databricks.sdk.service.supervisoragents import SupervisorAgentsAPI
+from databricks.sdk.service.tags import TagPoliciesAPI, WorkspaceEntityTagAssignmentsAPI
+from databricks.sdk.service.vectorsearch import VectorSearchEndpointsAPI, VectorSearchIndexesAPI
+from databricks.sdk.service.workspace import GitCredentialsAPI, ReposAPI, SecretsAPI, WorkspaceAPI
 
 _LOG = logging.getLogger(__name__)
 
@@ -212,6 +310,7 @@ class WorkspaceClient:
         cluster_id: Optional[str] = None,
         google_credentials: Optional[str] = None,
         google_service_account: Optional[str] = None,
+        workspace_id: Optional[int] = None,
         debug_truncate_bytes: Optional[int] = None,
         debug_headers: Optional[bool] = None,
         product="unknown",
@@ -222,6 +321,7 @@ class WorkspaceClient:
         config: Optional[client.Config] = None,
         scopes: Optional[List[str]] = None,
         authorization_details: Optional[List[AuthorizationDetail]] = None,
+        custom_headers: Optional[dict] = None,
     ):
         if not config:
             config = client.Config(
@@ -243,6 +343,7 @@ class WorkspaceClient:
                 cluster_id=cluster_id,
                 google_credentials=google_credentials,
                 google_service_account=google_service_account,
+                workspace_id=workspace_id,
                 credentials_strategy=credentials_strategy,
                 credentials_provider=credentials_provider,
                 debug_truncate_bytes=debug_truncate_bytes,
@@ -250,26 +351,28 @@ class WorkspaceClient:
                 product=product,
                 product_version=product_version,
                 token_audience=token_audience,
-                scopes=" ".join(scopes) if scopes else None,
+                scopes=scopes,
                 authorization_details=(
                     json.dumps([detail.as_dict() for detail in authorization_details])
                     if authorization_details
                     else None
                 ),
+                custom_headers=custom_headers,
             )
         self._config = config.copy()
-        self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
         serving_endpoints = ServingEndpointsExt(self._api_client)
         self._access_control = pkg_iam.AccessControlAPI(self._api_client)
         self._account_access_control_proxy = pkg_iam.AccountAccessControlProxyAPI(self._api_client)
         self._agent_bricks = pkg_agentbricks.AgentBricksAPI(self._api_client)
+        self._ai_search = pkg_aisearch.AiSearchAPI(self._api_client)
         self._alerts = pkg_sql.AlertsAPI(self._api_client)
         self._alerts_legacy = pkg_sql.AlertsLegacyAPI(self._api_client)
         self._alerts_v2 = pkg_sql.AlertsV2API(self._api_client)
         self._apps = pkg_apps.AppsAPI(self._api_client)
         self._apps_settings = pkg_apps.AppsSettingsAPI(self._api_client)
         self._artifact_allowlists = pkg_catalog.ArtifactAllowlistsAPI(self._api_client)
+        self._bundle_deployments = pkg_bundledeployments.BundleDeploymentsAPI(self._api_client)
         self._catalogs = pkg_catalog.CatalogsAPI(self._api_client)
         self._clean_room_asset_revisions = pkg_cleanrooms.CleanRoomAssetRevisionsAPI(self._api_client)
         self._clean_room_assets = pkg_cleanrooms.CleanRoomAssetsAPI(self._api_client)
@@ -290,12 +393,14 @@ class WorkspaceClient:
         self._current_user = pkg_iam.CurrentUserAPI(self._api_client)
         self._dashboard_widgets = pkg_sql.DashboardWidgetsAPI(self._api_client)
         self._dashboards = pkg_sql.DashboardsAPI(self._api_client)
+        self._data_classification = pkg_dataclassification.DataClassificationAPI(self._api_client)
         self._data_quality = pkg_dataquality.DataQualityAPI(self._api_client)
         self._data_sources = pkg_sql.DataSourcesAPI(self._api_client)
         self._database = pkg_database.DatabaseAPI(self._api_client)
         self._dbfs = DbfsExt(self._api_client)
         self._dbsql_permissions = pkg_sql.DbsqlPermissionsAPI(self._api_client)
         self._entity_tag_assignments = pkg_catalog.EntityTagAssignmentsAPI(self._api_client)
+        self._environments = pkg_environments.EnvironmentsAPI(self._api_client)
         self._experiments = pkg_ml.ExperimentsAPI(self._api_client)
         self._external_lineage = pkg_catalog.ExternalLineageAPI(self._api_client)
         self._external_locations = pkg_catalog.ExternalLocationsAPI(self._api_client)
@@ -314,6 +419,7 @@ class WorkspaceClient:
         self._instance_profiles = pkg_compute.InstanceProfilesAPI(self._api_client)
         self._ip_access_lists = pkg_settings.IpAccessListsAPI(self._api_client)
         self._jobs = JobsExt(self._api_client)
+        self._knowledge_assistants = pkg_knowledgeassistants.KnowledgeAssistantsAPI(self._api_client)
         self._lakeview = pkg_dashboards.LakeviewAPI(self._api_client)
         self._lakeview_embedded = pkg_dashboards.LakeviewEmbeddedAPI(self._api_client)
         self._libraries = pkg_compute.LibrariesAPI(self._api_client)
@@ -330,6 +436,7 @@ class WorkspaceClient:
         self._policy_compliance_for_clusters = pkg_compute.PolicyComplianceForClustersAPI(self._api_client)
         self._policy_compliance_for_jobs = pkg_jobs.PolicyComplianceForJobsAPI(self._api_client)
         self._policy_families = pkg_compute.PolicyFamiliesAPI(self._api_client)
+        self._postgres = pkg_postgres.PostgresAPI(self._api_client)
         self._provider_exchange_filters = pkg_marketplace.ProviderExchangeFiltersAPI(self._api_client)
         self._provider_exchanges = pkg_marketplace.ProviderExchangesAPI(self._api_client)
         self._provider_files = pkg_marketplace.ProviderFilesAPI(self._api_client)
@@ -357,6 +464,7 @@ class WorkspaceClient:
         self._rfa = pkg_catalog.RfaAPI(self._api_client)
         self._schemas = pkg_catalog.SchemasAPI(self._api_client)
         self._secrets = pkg_workspace.SecretsAPI(self._api_client)
+        self._secrets_uc = pkg_catalog.SecretsUcAPI(self._api_client)
         self._service_principal_secrets_proxy = pkg_oauth2.ServicePrincipalSecretsProxyAPI(self._api_client)
         self._service_principals_v2 = pkg_iam.ServicePrincipalsV2API(self._api_client)
         self._serving_endpoints = serving_endpoints
@@ -370,12 +478,14 @@ class WorkspaceClient:
         self._shares = pkg_sharing.SharesAPI(self._api_client)
         self._statement_execution = pkg_sql.StatementExecutionAPI(self._api_client)
         self._storage_credentials = pkg_catalog.StorageCredentialsAPI(self._api_client)
+        self._supervisor_agents = pkg_supervisoragents.SupervisorAgentsAPI(self._api_client)
         self._system_schemas = pkg_catalog.SystemSchemasAPI(self._api_client)
         self._table_constraints = pkg_catalog.TableConstraintsAPI(self._api_client)
         self._tables = pkg_catalog.TablesAPI(self._api_client)
         self._tag_policies = pkg_tags.TagPoliciesAPI(self._api_client)
         self._temporary_path_credentials = pkg_catalog.TemporaryPathCredentialsAPI(self._api_client)
         self._temporary_table_credentials = pkg_catalog.TemporaryTableCredentialsAPI(self._api_client)
+        self._temporary_volume_credentials = pkg_catalog.TemporaryVolumeCredentialsAPI(self._api_client)
         self._token_management = pkg_settings.TokenManagementAPI(self._api_client)
         self._tokens = pkg_settings.TokensAPI(self._api_client)
         self._users_v2 = pkg_iam.UsersV2API(self._api_client)
@@ -386,6 +496,7 @@ class WorkspaceClient:
         self._workspace = WorkspaceExt(self._api_client)
         self._workspace_bindings = pkg_catalog.WorkspaceBindingsAPI(self._api_client)
         self._workspace_conf = pkg_settings.WorkspaceConfAPI(self._api_client)
+        self._workspace_entity_tag_assignments = pkg_tags.WorkspaceEntityTagAssignmentsAPI(self._api_client)
         self._workspace_iam_v2 = pkg_iamv2.WorkspaceIamV2API(self._api_client)
         self._workspace_settings_v2 = pkg_settingsv2.WorkspaceSettingsV2API(self._api_client)
         self._groups = pkg_iam.GroupsAPI(self._api_client)
@@ -400,9 +511,12 @@ class WorkspaceClient:
     def api_client(self) -> client.ApiClient:
         return self._api_client
 
-    @property
+    @cached_property
     def dbutils(self) -> dbutils.RemoteDbUtils:
-        return self._dbutils
+        # Lazy so consumers that never touch ``dbutils`` (e.g. dbt-databricks) do not pay
+        # the cost of building it — and, on Spark Connect runtimes, do not hit the legacy
+        # ``SparkContext`` path that ``databricks.sdk.runtime`` materializes on import.
+        return _make_dbutils(self._config)
 
     @property
     def access_control(self) -> pkg_iam.AccessControlAPI:
@@ -418,6 +532,11 @@ class WorkspaceClient:
     def agent_bricks(self) -> pkg_agentbricks.AgentBricksAPI:
         """The Custom LLMs service manages state and powers the UI for the Custom LLM product."""
         return self._agent_bricks
+
+    @property
+    def ai_search(self) -> pkg_aisearch.AiSearchAPI:
+        """**AI Search Endpoint**: Represents the compute resources to host AI Search indexes."""
+        return self._ai_search
 
     @property
     def alerts(self) -> pkg_sql.AlertsAPI:
@@ -436,7 +555,7 @@ class WorkspaceClient:
 
     @property
     def apps(self) -> pkg_apps.AppsAPI:
-        """Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on."""
+        """Apps run directly on a customer's Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on."""
         return self._apps
 
     @property
@@ -448,6 +567,11 @@ class WorkspaceClient:
     def artifact_allowlists(self) -> pkg_catalog.ArtifactAllowlistsAPI:
         """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode."""
         return self._artifact_allowlists
+
+    @property
+    def bundle_deployments(self) -> pkg_bundledeployments.BundleDeploymentsAPI:
+        """Service for managing bundle deployment metadata."""
+        return self._bundle_deployments
 
     @property
     def catalogs(self) -> pkg_catalog.CatalogsAPI:
@@ -550,6 +674,11 @@ class WorkspaceClient:
         return self._dashboards
 
     @property
+    def data_classification(self) -> pkg_dataclassification.DataClassificationAPI:
+        """Manage data classification for Unity Catalog catalogs."""
+        return self._data_classification
+
+    @property
     def data_quality(self) -> pkg_dataquality.DataQualityAPI:
         """Manage the data quality of Unity Catalog objects (currently support `schema` and `table`)."""
         return self._data_quality
@@ -578,6 +707,11 @@ class WorkspaceClient:
     def entity_tag_assignments(self) -> pkg_catalog.EntityTagAssignmentsAPI:
         """Tags are attributes that include keys and optional values that you can use to organize and categorize entities in Unity Catalog."""
         return self._entity_tag_assignments
+
+    @property
+    def environments(self) -> pkg_environments.EnvironmentsAPI:
+        """APIs to manage environment resources."""
+        return self._environments
 
     @property
     def experiments(self) -> pkg_ml.ExperimentsAPI:
@@ -665,6 +799,11 @@ class WorkspaceClient:
         return self._jobs
 
     @property
+    def knowledge_assistants(self) -> pkg_knowledgeassistants.KnowledgeAssistantsAPI:
+        """Manage Knowledge Assistants and related resources."""
+        return self._knowledge_assistants
+
+    @property
     def lakeview(self) -> pkg_dashboards.LakeviewAPI:
         """These APIs provide specific management operations for Lakeview dashboards."""
         return self._lakeview
@@ -745,6 +884,11 @@ class WorkspaceClient:
         return self._policy_families
 
     @property
+    def postgres(self) -> pkg_postgres.PostgresAPI:
+        """Use the Postgres API to create and manage Lakebase Autoscaling Postgres infrastructure, including projects, branches, compute endpoints, and roles."""
+        return self._postgres
+
+    @property
     def provider_exchange_filters(self) -> pkg_marketplace.ProviderExchangeFiltersAPI:
         """Marketplace exchanges filters curate which groups can access an exchange."""
         return self._provider_exchange_filters
@@ -786,12 +930,12 @@ class WorkspaceClient:
 
     @property
     def quality_monitor_v2(self) -> pkg_qualitymonitorv2.QualityMonitorV2API:
-        """Manage data quality of UC objects (currently support `schema`)."""
+        """Deprecated: Please use the Data Quality Monitoring API instead (REST: /api/data-quality/v1/monitors)."""
         return self._quality_monitor_v2
 
     @property
     def quality_monitors(self) -> pkg_catalog.QualityMonitorsAPI:
-        """A monitor computes and monitors data or model quality metrics for a table over time."""
+        """Deprecated: Please use the Data Quality Monitors API instead (REST: /api/data-quality/v1/monitors), which manages both Data Profiling and Anomaly Detection."""
         return self._quality_monitors
 
     @property
@@ -856,7 +1000,7 @@ class WorkspaceClient:
 
     @property
     def rfa(self) -> pkg_catalog.RfaAPI:
-        """Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables."""
+        """Request for Access enables users to request access for Unity Catalog securables."""
         return self._rfa
 
     @property
@@ -868,6 +1012,11 @@ class WorkspaceClient:
     def secrets(self) -> pkg_workspace.SecretsAPI:
         """The Secrets API allows you to manage secrets, secret scopes, and access permissions."""
         return self._secrets
+
+    @property
+    def secrets_uc(self) -> pkg_catalog.SecretsUcAPI:
+        """A secret is a Unity Catalog securable object that stores sensitive credential data (such as passwords, tokens, and keys) within a three-level namespace (**catalog_name.schema_name.secret_name**)."""
+        return self._secrets_uc
 
     @property
     def service_principal_secrets_proxy(self) -> pkg_oauth2.ServicePrincipalSecretsProxyAPI:
@@ -910,6 +1059,11 @@ class WorkspaceClient:
         return self._storage_credentials
 
     @property
+    def supervisor_agents(self) -> pkg_supervisoragents.SupervisorAgentsAPI:
+        """Manage Supervisor Agents and related resources."""
+        return self._supervisor_agents
+
+    @property
     def system_schemas(self) -> pkg_catalog.SystemSchemasAPI:
         """A system schema is a schema that lives within the system catalog."""
         return self._system_schemas
@@ -940,6 +1094,11 @@ class WorkspaceClient:
         return self._temporary_table_credentials
 
     @property
+    def temporary_volume_credentials(self) -> pkg_catalog.TemporaryVolumeCredentialsAPI:
+        """Temporary Volume Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where volume data is stored in Databricks."""
+        return self._temporary_volume_credentials
+
+    @property
     def token_management(self) -> pkg_settings.TokenManagementAPI:
         """Enables administrators to get all tokens and delete tokens for other users."""
         return self._token_management
@@ -956,7 +1115,7 @@ class WorkspaceClient:
 
     @property
     def vector_search_endpoints(self) -> pkg_vectorsearch.VectorSearchEndpointsAPI:
-        """**Endpoint**: Represents the compute resources to host vector search indexes."""
+        """**Endpoint**: Represents the compute resources to host AI Search indexes."""
         return self._vector_search_endpoints
 
     @property
@@ -976,7 +1135,7 @@ class WorkspaceClient:
 
     @property
     def workspace(self) -> WorkspaceExt:
-        """The Workspace API allows you to list, import, export, and delete notebooks and folders."""
+        """The Workspace API allows you to list, import, export, and delete workspace objects such as notebooks, files, folders, and dashboards."""
         return self._workspace
 
     @property
@@ -988,6 +1147,11 @@ class WorkspaceClient:
     def workspace_conf(self) -> pkg_settings.WorkspaceConfAPI:
         """This API allows updating known workspace settings for advanced users."""
         return self._workspace_conf
+
+    @property
+    def workspace_entity_tag_assignments(self) -> pkg_tags.WorkspaceEntityTagAssignmentsAPI:
+        """Manage tag assignments on workspace-scoped objects."""
+        return self._workspace_entity_tag_assignments
 
     @property
     def workspace_iam_v2(self) -> pkg_iamv2.WorkspaceIamV2API:
@@ -1020,7 +1184,16 @@ class WorkspaceClient:
         return self._files
 
     def get_workspace_id(self) -> int:
-        """Get the workspace ID of the workspace that this client is connected to."""
+        """Get the workspace ID of the workspace that this client is connected to.
+
+        If ``Config.workspace_id`` is already set (from the databrickscfg profile,
+        the ``DATABRICKS_WORKSPACE_ID`` env var, host metadata, or a ``?o=`` query
+        param), it is returned without an API round-trip. Otherwise the ID is
+        fetched from the ``X-Databricks-Org-Id`` response header on
+        ``/api/2.0/preview/scim/v2/Me``.
+        """
+        if self._config.workspace_id:
+            return int(self._config.workspace_id)
         response = self._api_client.do("GET", "/api/2.0/preview/scim/v2/Me", response_headers=["X-Databricks-Org-Id"])
         return int(response["X-Databricks-Org-Id"])
 
@@ -1062,6 +1235,7 @@ class AccountClient:
         credentials_provider: Optional[CredentialsStrategy] = None,
         token_audience: Optional[str] = None,
         config: Optional[client.Config] = None,
+        custom_headers: Optional[dict] = None,
     ):
         if not config:
             config = client.Config(
@@ -1090,6 +1264,7 @@ class AccountClient:
                 product=product,
                 product_version=product_version,
                 token_audience=token_audience,
+                custom_headers=custom_headers,
             )
         self._config = config.copy()
         self._api_client = client.ApiClient(self._config)
@@ -1099,7 +1274,9 @@ class AccountClient:
         self._budgets = pkg_billing.BudgetsAPI(self._api_client)
         self._credentials = pkg_provisioning.CredentialsAPI(self._api_client)
         self._custom_app_integration = pkg_oauth2.CustomAppIntegrationAPI(self._api_client)
+        self._disaster_recovery = pkg_disasterrecovery.DisasterRecoveryAPI(self._api_client)
         self._encryption_keys = pkg_provisioning.EncryptionKeysAPI(self._api_client)
+        self._endpoints = pkg_networking.EndpointsAPI(self._api_client)
         self._federation_policy = pkg_oauth2.AccountFederationPolicyAPI(self._api_client)
         self._groups_v2 = pkg_iam.AccountGroupsV2API(self._api_client)
         self._iam_v2 = pkg_iamv2.AccountIamV2API(self._api_client)
@@ -1169,9 +1346,19 @@ class AccountClient:
         return self._custom_app_integration
 
     @property
+    def disaster_recovery(self) -> pkg_disasterrecovery.DisasterRecoveryAPI:
+        """Manage disaster recovery configurations and execute failover operations."""
+        return self._disaster_recovery
+
+    @property
     def encryption_keys(self) -> pkg_provisioning.EncryptionKeysAPI:
         """These APIs manage encryption key configurations for this workspace (optional)."""
         return self._encryption_keys
+
+    @property
+    def endpoints(self) -> pkg_networking.EndpointsAPI:
+        """These APIs manage endpoint configurations for this account."""
+        return self._endpoints
 
     @property
     def federation_policy(self) -> pkg_oauth2.AccountFederationPolicyAPI:
@@ -1344,6 +1531,7 @@ class AccountClient:
         config.host = config.environment.deployment_url(workspace.deployment_name)
         config.azure_workspace_resource_id = azure.get_azure_resource_id(workspace)
         config.account_id = None
+        config.workspace_id = workspace.workspace_id
         config.init_auth()
         return WorkspaceClient(config=config)
 

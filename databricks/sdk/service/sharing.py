@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -8,8 +11,12 @@ from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import catalog
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -28,8 +35,7 @@ class AuthenticationType(Enum):
 
 class ColumnTypeName(Enum):
     """UC supported column types Copied from
-    https://src.dev.databricks.com/databricks/universe@23a85902bb58695ab9293adc9f327b0714b55e72/-/blob/managed-catalog/api/messages/table.proto?L68
-    """
+    https://src.dev.databricks.com/databricks/universe@23a85902bb58695ab9293adc9f327b0714b55e72/-/blob/managed-catalog/api/messages/table.proto?L68"""
 
     ARRAY = "ARRAY"
     BINARY = "BINARY"
@@ -540,14 +546,12 @@ class FunctionParameterInfos:
 
 
 class FunctionParameterMode(Enum):
-
     IN = "IN"
     INOUT = "INOUT"
     OUT = "OUT"
 
 
 class FunctionParameterType(Enum):
-
     COLUMN = "COLUMN"
     PARAM = "PARAM"
 
@@ -1110,7 +1114,6 @@ class PartitionValue:
 
 
 class PartitionValueOp(Enum):
-
     EQUAL = "EQUAL"
     LIKE = "LIKE"
 
@@ -1156,7 +1159,6 @@ class PermissionsChange:
 
 
 class Privilege(Enum):
-
     ACCESS = "ACCESS"
     ALL_PRIVILEGES = "ALL_PRIVILEGES"
     APPLY_TAG = "APPLY_TAG"
@@ -1431,6 +1433,9 @@ class RecipientInfo:
     expiration_time: Optional[int] = None
     """Expiration timestamp of the token, in epoch milliseconds."""
 
+    id: Optional[str] = None
+    """[Create,Update:IGN] common - id of the recipient"""
+
     ip_access_list: Optional[IpAccessList] = None
     """IP Access List"""
 
@@ -1487,6 +1492,8 @@ class RecipientInfo:
             body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
         if self.expiration_time is not None:
             body["expiration_time"] = self.expiration_time
+        if self.id is not None:
+            body["id"] = self.id
         if self.ip_access_list:
             body["ip_access_list"] = self.ip_access_list.as_dict()
         if self.metastore_id is not None:
@@ -1530,6 +1537,8 @@ class RecipientInfo:
             body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
         if self.expiration_time is not None:
             body["expiration_time"] = self.expiration_time
+        if self.id is not None:
+            body["id"] = self.id
         if self.ip_access_list:
             body["ip_access_list"] = self.ip_access_list
         if self.metastore_id is not None:
@@ -1565,6 +1574,7 @@ class RecipientInfo:
             created_by=d.get("created_by", None),
             data_recipient_global_metastore_id=d.get("data_recipient_global_metastore_id", None),
             expiration_time=d.get("expiration_time", None),
+            id=d.get("id", None),
             ip_access_list=_from_dict(d, "ip_access_list", IpAccessList),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -2005,9 +2015,26 @@ class SharedDataObject:
     """Array of partitions for the shared data."""
 
     shared_as: Optional[str] = None
-    """A user-provided new name for the data object within the share. If this new name is not provided,
-    the object's original name will be used as the `shared_as` name. The `shared_as` name must be
-    unique within a share. For tables, the new name must follow the format of `<schema>.<table>`."""
+    """A user-provided alias name for table-like data objects within the share.
+    
+    Use this field for table-like objects (for example: TABLE, VIEW, MATERIALIZED_VIEW,
+    STREAMING_TABLE, FOREIGN_TABLE). For non-table objects (for example: VOLUME, MODEL,
+    NOTEBOOK_FILE, FUNCTION), use `string_shared_as` instead.
+    
+    Important: For non-table objects, this field must be omitted entirely.
+    
+    Format: Must be a 2-part name `<schema_name>.<table_name>` (e.g., "sales_schema.orders_table") -
+    Both schema and table names must contain only alphanumeric characters and underscores - No
+    periods, spaces, forward slashes, or control characters are allowed within each part - Do not
+    include the catalog name (use 2 parts, not 3)
+    
+    Behavior: - If not provided, the service automatically generates the alias as `<schema>.<table>`
+    from the object's original name - If you don't want to specify this field, omit it entirely from
+    the request (do not pass an empty string) - The `shared_as` name must be unique within the share
+    
+    Examples: - Valid: "analytics_schema.customer_view" - Invalid:
+    "catalog.analytics_schema.customer_view" (3 parts not allowed) - Invalid:
+    "analytics-schema.customer-view" (hyphens not allowed)"""
 
     start_version: Optional[int] = None
     """The start version associated with the object. This allows data providers to control the lowest
@@ -2021,10 +2048,30 @@ class SharedDataObject:
     """One of: **ACTIVE**, **PERMISSION_DENIED**."""
 
     string_shared_as: Optional[str] = None
-    """A user-provided new name for the shared object within the share. If this new name is not not
-    provided, the object's original name will be used as the `string_shared_as` name. The
-    `string_shared_as` name must be unique for objects of the same type within a Share. For
-    notebooks, the new name should be the new notebook file name."""
+    """A user-provided alias name for non-table data objects within the share.
+    
+    Use this field for non-table objects (for example: VOLUME, MODEL, NOTEBOOK_FILE, FUNCTION). For
+    table-like objects (for example: TABLE, VIEW, MATERIALIZED_VIEW, STREAMING_TABLE,
+    FOREIGN_TABLE), use `shared_as` instead.
+    
+    Important: For table-like objects, this field must be omitted entirely.
+    
+    Format: - For VOLUME: Must be a 2-part name `<schema_name>.<volume_name>` (e.g.,
+    "data_schema.ml_models") - For FUNCTION: Must be a 2-part name `<schema_name>.<function_name>`
+    (e.g., "udf_schema.calculate_tax") - For MODEL: Must be a 2-part name
+    `<schema_name>.<model_name>` (e.g., "models.prediction_model") - For NOTEBOOK_FILE: Should be
+    the notebook file name (e.g., "analysis_notebook.py") - All names must contain only alphanumeric
+    characters and underscores - No periods, spaces, forward slashes, or control characters are
+    allowed within each part
+    
+    Behavior: - If not provided, the service automatically generates the alias from the object's
+    original name - If you don't want to specify this field, omit it entirely from the request (do
+    not pass an empty string) - The `string_shared_as` name must be unique for objects of the same
+    type within the share
+    
+    Examples: - Valid for VOLUME: "data_schema.training_data" - Valid for FUNCTION:
+    "analytics.calculate_revenue" - Invalid: "catalog.data_schema.training_data" (3 parts not
+    allowed for volumes) - Invalid: "data-schema.training-data" (hyphens not allowed)"""
 
     def as_dict(self) -> dict:
         """Serializes the SharedDataObject into a dictionary suitable for use as a JSON request body."""
@@ -2111,8 +2158,8 @@ class SharedDataObject:
 
 
 class SharedDataObjectDataObjectType(Enum):
-
     FEATURE_SPEC = "FEATURE_SPEC"
+    FOREIGN_TABLE = "FOREIGN_TABLE"
     FUNCTION = "FUNCTION"
     MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
     MODEL = "MODEL"
@@ -2121,16 +2168,15 @@ class SharedDataObjectDataObjectType(Enum):
     STREAMING_TABLE = "STREAMING_TABLE"
     TABLE = "TABLE"
     VIEW = "VIEW"
+    VOLUME = "VOLUME"
 
 
 class SharedDataObjectHistoryDataSharingStatus(Enum):
-
     DISABLED = "DISABLED"
     ENABLED = "ENABLED"
 
 
 class SharedDataObjectStatus(Enum):
-
     ACTIVE = "ACTIVE"
     PERMISSION_DENIED = "PERMISSION_DENIED"
 
@@ -2172,7 +2218,6 @@ class SharedDataObjectUpdate:
 
 
 class SharedDataObjectUpdateAction(Enum):
-
     ADD = "ADD"
     REMOVE = "REMOVE"
     UPDATE = "UPDATE"
@@ -2193,9 +2238,6 @@ class Table:
 
     id: Optional[str] = None
     """The id of the table."""
-
-    internal_attributes: Optional[TableInternalAttributes] = None
-    """Internal information for D2D sharing that should not be disclosed to external users."""
 
     materialization_namespace: Optional[str] = None
     """The catalog and schema of the materialized table"""
@@ -2225,8 +2267,6 @@ class Table:
             body["comment"] = self.comment
         if self.id is not None:
             body["id"] = self.id
-        if self.internal_attributes:
-            body["internal_attributes"] = self.internal_attributes.as_dict()
         if self.materialization_namespace is not None:
             body["materialization_namespace"] = self.materialization_namespace
         if self.materialized_table_name is not None:
@@ -2250,8 +2290,6 @@ class Table:
             body["comment"] = self.comment
         if self.id is not None:
             body["id"] = self.id
-        if self.internal_attributes:
-            body["internal_attributes"] = self.internal_attributes
         if self.materialization_namespace is not None:
             body["materialization_namespace"] = self.materialization_namespace
         if self.materialized_table_name is not None:
@@ -2274,7 +2312,6 @@ class Table:
         return cls(
             comment=d.get("comment", None),
             id=d.get("id", None),
-            internal_attributes=_from_dict(d, "internal_attributes", TableInternalAttributes),
             materialization_namespace=d.get("materialization_namespace", None),
             materialized_table_name=d.get("materialized_table_name", None),
             name=d.get("name", None),
@@ -2283,94 +2320,6 @@ class Table:
             share_id=d.get("share_id", None),
             tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
         )
-
-
-@dataclass
-class TableInternalAttributes:
-    """Internal information for D2D sharing that should not be disclosed to external users."""
-
-    auxiliary_managed_location: Optional[str] = None
-    """Managed Delta Metadata location for foreign iceberg tables."""
-
-    dependency_storage_locations: Optional[List[str]] = None
-    """Storage locations of all table dependencies for shared views. Used on the recipient side for SEG
-    (Secure Egress Gateway) whitelisting."""
-
-    parent_storage_location: Optional[str] = None
-    """Will be populated in the reconciliation response for VIEW and FOREIGN_TABLE, with the value of
-    the parent UC entity's storage_location, following the same logic as getManagedEntityPath in
-    CreateStagingTableHandler, which is used to store the materialized table for a shared
-    VIEW/FOREIGN_TABLE for D2O queries. The value will be used on the recipient side to be
-    whitelisted when SEG is enabled on the workspace of the recipient, to allow the recipient users
-    to query this shared VIEW/FOREIGN_TABLE."""
-
-    storage_location: Optional[str] = None
-    """The cloud storage location of a shard table with DIRECTORY_BASED_TABLE type."""
-
-    type: Optional[TableInternalAttributesSharedTableType] = None
-    """The type of the shared table."""
-
-    view_definition: Optional[str] = None
-    """The view definition of a shared view. DEPRECATED."""
-
-    def as_dict(self) -> dict:
-        """Serializes the TableInternalAttributes into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.auxiliary_managed_location is not None:
-            body["auxiliary_managed_location"] = self.auxiliary_managed_location
-        if self.dependency_storage_locations:
-            body["dependency_storage_locations"] = [v for v in self.dependency_storage_locations]
-        if self.parent_storage_location is not None:
-            body["parent_storage_location"] = self.parent_storage_location
-        if self.storage_location is not None:
-            body["storage_location"] = self.storage_location
-        if self.type is not None:
-            body["type"] = self.type.value
-        if self.view_definition is not None:
-            body["view_definition"] = self.view_definition
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TableInternalAttributes into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.auxiliary_managed_location is not None:
-            body["auxiliary_managed_location"] = self.auxiliary_managed_location
-        if self.dependency_storage_locations:
-            body["dependency_storage_locations"] = self.dependency_storage_locations
-        if self.parent_storage_location is not None:
-            body["parent_storage_location"] = self.parent_storage_location
-        if self.storage_location is not None:
-            body["storage_location"] = self.storage_location
-        if self.type is not None:
-            body["type"] = self.type
-        if self.view_definition is not None:
-            body["view_definition"] = self.view_definition
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TableInternalAttributes:
-        """Deserializes the TableInternalAttributes from a dictionary."""
-        return cls(
-            auxiliary_managed_location=d.get("auxiliary_managed_location", None),
-            dependency_storage_locations=d.get("dependency_storage_locations", None),
-            parent_storage_location=d.get("parent_storage_location", None),
-            storage_location=d.get("storage_location", None),
-            type=_enum(d, "type", TableInternalAttributesSharedTableType),
-            view_definition=d.get("view_definition", None),
-        )
-
-
-class TableInternalAttributesSharedTableType(Enum):
-
-    DELTA_ICEBERG_TABLE = "DELTA_ICEBERG_TABLE"
-    DIRECTORY_BASED_TABLE = "DIRECTORY_BASED_TABLE"
-    FILE_BASED_TABLE = "FILE_BASED_TABLE"
-    FOREIGN_ICEBERG_TABLE = "FOREIGN_ICEBERG_TABLE"
-    FOREIGN_TABLE = "FOREIGN_TABLE"
-    MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
-    METRIC_VIEW = "METRIC_VIEW"
-    STREAMING_TABLE = "STREAMING_TABLE"
-    VIEW = "VIEW"
 
 
 @dataclass
@@ -2407,9 +2356,6 @@ class Volume:
     """This id maps to the shared_volume_id in database Recipient needs shared_volume_id for recon to
     check if this volume is already in recipient's DB or not."""
 
-    internal_attributes: Optional[VolumeInternalAttributes] = None
-    """Internal attributes for D2D sharing that should not be disclosed to external users."""
-
     name: Optional[str] = None
     """The name of the volume."""
 
@@ -2432,8 +2378,6 @@ class Volume:
             body["comment"] = self.comment
         if self.id is not None:
             body["id"] = self.id
-        if self.internal_attributes:
-            body["internal_attributes"] = self.internal_attributes.as_dict()
         if self.name is not None:
             body["name"] = self.name
         if self.schema is not None:
@@ -2453,8 +2397,6 @@ class Volume:
             body["comment"] = self.comment
         if self.id is not None:
             body["id"] = self.id
-        if self.internal_attributes:
-            body["internal_attributes"] = self.internal_attributes
         if self.name is not None:
             body["name"] = self.name
         if self.schema is not None:
@@ -2473,47 +2415,12 @@ class Volume:
         return cls(
             comment=d.get("comment", None),
             id=d.get("id", None),
-            internal_attributes=_from_dict(d, "internal_attributes", VolumeInternalAttributes),
             name=d.get("name", None),
             schema=d.get("schema", None),
             share=d.get("share", None),
             share_id=d.get("share_id", None),
             tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
         )
-
-
-@dataclass
-class VolumeInternalAttributes:
-    """Internal information for D2D sharing that should not be disclosed to external users."""
-
-    storage_location: Optional[str] = None
-    """The cloud storage location of the volume"""
-
-    type: Optional[str] = None
-    """The type of the shared volume."""
-
-    def as_dict(self) -> dict:
-        """Serializes the VolumeInternalAttributes into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.storage_location is not None:
-            body["storage_location"] = self.storage_location
-        if self.type is not None:
-            body["type"] = self.type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the VolumeInternalAttributes into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.storage_location is not None:
-            body["storage_location"] = self.storage_location
-        if self.type is not None:
-            body["type"] = self.type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> VolumeInternalAttributes:
-        """Deserializes the VolumeInternalAttributes from a dictionary."""
-        return cls(storage_location=d.get("storage_location", None), type=d.get("type", None))
 
 
 class ProvidersAPI:
@@ -2560,6 +2467,10 @@ class ProvidersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/providers", body=body, headers=headers)
         return ProviderInfo.from_dict(res)
 
@@ -2574,6 +2485,10 @@ class ProvidersAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/providers/{name}", headers=headers)
 
@@ -2591,6 +2506,10 @@ class ProvidersAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.1/unity-catalog/providers/{name}", headers=headers)
         return ProviderInfo.from_dict(res)
 
@@ -2601,9 +2520,10 @@ class ProvidersAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ProviderInfo]:
-        """Gets an array of available authentication providers. The caller must either be a metastore admin or
-        the owner of the providers. Providers not owned by the caller are not included in the response. There
-        is no guarantee of a specific ordering of the elements in the array.
+        """Gets an array of available authentication providers. The caller must either be a metastore admin, have
+        the **USE_PROVIDER** privilege on the providers, or be the owner of the providers. Providers not owned
+        by the caller and for which the caller does not have the **USE_PROVIDER** privilege are not included
+        in the response. There is no guarantee of a specific ordering of the elements in the array.
 
         :param data_provider_global_metastore_id: str (optional)
           If not provided, all providers will be returned. If no providers exist with this ID, no results will
@@ -2632,6 +2552,10 @@ class ProvidersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -2686,6 +2610,10 @@ class ProvidersAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.1/data-sharing/providers/{provider_name}/shares/{share_name}", query=query, headers=headers
         )
@@ -2722,6 +2650,10 @@ class ProvidersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -2776,6 +2708,10 @@ class ProvidersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/providers/{name}", body=body, headers=headers)
         return ProviderInfo.from_dict(res)
 
@@ -2805,6 +2741,10 @@ class RecipientActivationAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do(
             "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}", headers=headers
         )
@@ -2821,6 +2761,10 @@ class RecipientActivationAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}", headers=headers
@@ -2884,10 +2828,15 @@ class RecipientFederationPoliciesAPI:
         """
 
         body = policy.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies", body=body, headers=headers
@@ -2910,6 +2859,10 @@ class RecipientFederationPoliciesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do(
             "DELETE", f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}", headers=headers
         )
@@ -2929,6 +2882,10 @@ class RecipientFederationPoliciesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}", headers=headers
@@ -2957,6 +2914,10 @@ class RecipientFederationPoliciesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -2999,6 +2960,7 @@ class RecipientsAPI:
         comment: Optional[str] = None,
         data_recipient_global_metastore_id: Optional[str] = None,
         expiration_time: Optional[int] = None,
+        id: Optional[str] = None,
         ip_access_list: Optional[IpAccessList] = None,
         owner: Optional[str] = None,
         properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
@@ -3018,6 +2980,8 @@ class RecipientsAPI:
           __cloud__:__region__:__metastore-uuid__.
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
+        :param id: str (optional)
+          [Create,Update:IGN] common - id of the recipient
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param owner: str (optional)
@@ -3042,6 +3006,8 @@ class RecipientsAPI:
             body["data_recipient_global_metastore_id"] = data_recipient_global_metastore_id
         if expiration_time is not None:
             body["expiration_time"] = expiration_time
+        if id is not None:
+            body["id"] = id
         if ip_access_list is not None:
             body["ip_access_list"] = ip_access_list.as_dict()
         if name is not None:
@@ -3057,6 +3023,10 @@ class RecipientsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/recipients", body=body, headers=headers)
         return RecipientInfo.from_dict(res)
 
@@ -3071,12 +3041,15 @@ class RecipientsAPI:
 
         headers = {}
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
 
     def get(self, name: str) -> RecipientInfo:
-        """Gets a share recipient from the metastore if:
-
-        * the caller is the owner of the share recipient, or: * is a metastore admin
+        """Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**
+        privilege on the metastore * The owner of the share recipient * A metastore admin
 
         :param name: str
           Name of the recipient.
@@ -3087,6 +3060,10 @@ class RecipientsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
         return RecipientInfo.from_dict(res)
@@ -3131,6 +3108,10 @@ class RecipientsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
@@ -3164,13 +3145,17 @@ class RecipientsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", f"/api/2.1/unity-catalog/recipients/{name}/rotate-token", body=body, headers=headers)
         return RecipientInfo.from_dict(res)
 
     def share_permissions(
         self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> GetRecipientSharePermissionsResponse:
-        """Gets the share permissions for the specified Recipient. The caller must have the USE_RECIPIENT
+        """Gets the share permissions for the specified Recipient. The caller must have the **USE_RECIPIENT**
         privilege on the metastore or be the owner of the Recipient.
 
         :param name: str
@@ -3198,6 +3183,10 @@ class RecipientsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/recipients/{name}/share-permissions", query=query, headers=headers
         )
@@ -3209,6 +3198,7 @@ class RecipientsAPI:
         *,
         comment: Optional[str] = None,
         expiration_time: Optional[int] = None,
+        id: Optional[str] = None,
         ip_access_list: Optional[IpAccessList] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
@@ -3224,6 +3214,8 @@ class RecipientsAPI:
           Description about the recipient.
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
+        :param id: str (optional)
+          [Create,Update:IGN] common - id of the recipient
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param new_name: str (optional)
@@ -3243,6 +3235,8 @@ class RecipientsAPI:
             body["comment"] = comment
         if expiration_time is not None:
             body["expiration_time"] = expiration_time
+        if id is not None:
+            body["id"] = id
         if ip_access_list is not None:
             body["ip_access_list"] = ip_access_list.as_dict()
         if new_name is not None:
@@ -3255,6 +3249,10 @@ class RecipientsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/recipients/{name}", body=body, headers=headers)
         return RecipientInfo.from_dict(res)
@@ -3295,6 +3293,10 @@ class SharesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/shares", body=body, headers=headers)
         return ShareInfo.from_dict(res)
 
@@ -3308,6 +3310,10 @@ class SharesAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/shares/{name}", headers=headers)
 
@@ -3329,6 +3335,10 @@ class SharesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}", query=query, headers=headers)
         return ShareInfo.from_dict(res)
@@ -3362,6 +3372,10 @@ class SharesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -3404,6 +3418,10 @@ class SharesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}/permissions", query=query, headers=headers)
         return GetSharePermissionsResponse.from_dict(res)
@@ -3466,6 +3484,10 @@ class SharesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/shares/{name}", body=body, headers=headers)
         return ShareInfo.from_dict(res)
 
@@ -3501,6 +3523,10 @@ class SharesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/shares/{name}/permissions", body=body, headers=headers)
         return UpdateSharePermissionsResponse.from_dict(res)

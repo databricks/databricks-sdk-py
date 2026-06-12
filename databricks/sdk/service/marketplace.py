@@ -1,15 +1,21 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
 import logging
-import uuid
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -42,7 +48,6 @@ class AddExchangeForListingResponse:
 
 
 class AssetType(Enum):
-
     ASSET_TYPE_APP = "ASSET_TYPE_APP"
     ASSET_TYPE_DATA_TABLE = "ASSET_TYPE_DATA_TABLE"
     ASSET_TYPE_GIT_REPO = "ASSET_TYPE_GIT_REPO"
@@ -102,7 +107,6 @@ class BatchGetProvidersResponse:
 
 
 class Category(Enum):
-
     ADVERTISING_AND_MARKETING = "ADVERTISING_AND_MARKETING"
     CLIMATE_AND_ENVIRONMENT = "CLIMATE_AND_ENVIRONMENT"
     COMMERCE = "COMMERCE"
@@ -201,7 +205,6 @@ class ContactInfo:
 
 
 class Cost(Enum):
-
     FREE = "FREE"
     PAID = "PAID"
 
@@ -358,7 +361,6 @@ class CreateProviderResponse:
 
 
 class DataRefresh(Enum):
-
     DAILY = "DAILY"
     HOURLY = "HOURLY"
     MINUTE = "MINUTE"
@@ -509,7 +511,6 @@ class DeleteProviderResponse:
 
 
 class DeltaSharingRecipientType(Enum):
-
     DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS = "DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS"
     DELTA_SHARING_RECIPIENT_TYPE_OPEN = "DELTA_SHARING_RECIPIENT_TYPE_OPEN"
 
@@ -679,7 +680,6 @@ class ExchangeFilter:
 
 
 class ExchangeFilterType(Enum):
-
     GLOBAL_METASTORE_ID = "GLOBAL_METASTORE_ID"
 
 
@@ -847,7 +847,6 @@ class FileParent:
     file_parent_type: Optional[FileParentType] = None
 
     parent_id: Optional[str] = None
-    """TODO make the following fields required"""
 
     def as_dict(self) -> dict:
         """Serializes the FileParent into a dictionary suitable for use as a JSON request body."""
@@ -874,14 +873,12 @@ class FileParent:
 
 
 class FileParentType(Enum):
-
     LISTING = "LISTING"
     LISTING_RESOURCE = "LISTING_RESOURCE"
     PROVIDER = "PROVIDER"
 
 
 class FileStatus(Enum):
-
     FILE_STATUS_PUBLISHED = "FILE_STATUS_PUBLISHED"
     FILE_STATUS_SANITIZATION_FAILED = "FILE_STATUS_SANITIZATION_FAILED"
     FILE_STATUS_SANITIZING = "FILE_STATUS_SANITIZING"
@@ -889,7 +886,6 @@ class FileStatus(Enum):
 
 
 class FulfillmentType(Enum):
-
     INSTALL = "INSTALL"
     REQUEST_ACCESS = "REQUEST_ACCESS"
 
@@ -1237,7 +1233,6 @@ class InstallationDetail:
 
 
 class InstallationStatus(Enum):
-
     FAILED = "FAILED"
     INSTALLED = "INSTALLED"
 
@@ -1706,7 +1701,7 @@ class ListingDetail:
 
     pricing_model: Optional[str] = None
     """What the pricing model is (e.g. paid, subscription, paid upfront); should only be present if
-    cost is paid TODO: Not used yet, should deprecate if we will never use it"""
+    cost is paid"""
 
     privacy_policy_link: Optional[str] = None
 
@@ -1919,7 +1914,6 @@ class ListingSetting:
 
 
 class ListingShareType(Enum):
-
     FULL = "FULL"
     SAMPLE = "SAMPLE"
 
@@ -2120,19 +2114,16 @@ class ListingTag:
 
 
 class ListingTagType(Enum):
-
     LISTING_TAG_TYPE_LANGUAGE = "LISTING_TAG_TYPE_LANGUAGE"
     LISTING_TAG_TYPE_TASK = "LISTING_TAG_TYPE_TASK"
 
 
 class ListingType(Enum):
-
     PERSONALIZED = "PERSONALIZED"
     STANDARD = "STANDARD"
 
 
 class MarketplaceFileType(Enum):
-
     APP = "APP"
     EMBEDDED_NOTEBOOK = "EMBEDDED_NOTEBOOK"
     PROVIDER_ICON = "PROVIDER_ICON"
@@ -2165,6 +2156,8 @@ class PersonalizationRequest:
     recipient_type: Optional[DeltaSharingRecipientType] = None
 
     share: Optional[ShareInfo] = None
+    """Share information is required for data listings but should be empty/ignored for non-data
+    listings (MCP and App)."""
 
     status: Optional[PersonalizationRequestStatus] = None
 
@@ -2270,7 +2263,6 @@ class PersonalizationRequest:
 
 
 class PersonalizationRequestStatus(Enum):
-
     DENIED = "DENIED"
     FULFILLED = "FULFILLED"
     NEW = "NEW"
@@ -2926,7 +2918,6 @@ class UpdateProviderResponse:
 
 
 class Visibility(Enum):
-
     PRIVATE = "PRIVATE"
     PUBLIC = "PUBLIC"
 
@@ -2957,6 +2948,10 @@ class ConsumerFulfillmentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -2992,6 +2987,10 @@ class ConsumerFulfillmentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3050,6 +3049,10 @@ class ConsumerInstallationsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST", f"/api/2.1/marketplace-consumer/listings/{listing_id}/installations", body=body, headers=headers
         )
@@ -3067,6 +3070,10 @@ class ConsumerInstallationsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE",
@@ -3093,6 +3100,10 @@ class ConsumerInstallationsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/marketplace-consumer/installations", query=query, headers=headers)
@@ -3123,6 +3134,10 @@ class ConsumerInstallationsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3169,6 +3184,10 @@ class ConsumerInstallationsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PUT",
             f"/api/2.1/marketplace-consumer/listings/{listing_id}/installations/{installation_id}",
@@ -3200,6 +3219,10 @@ class ConsumerListingsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.1/marketplace-consumer/listings:batchGet", query=query, headers=headers)
         return BatchGetListingsResponse.from_dict(res)
 
@@ -3215,6 +3238,10 @@ class ConsumerListingsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.1/marketplace-consumer/listings/{id}", headers=headers)
         return GetListingResponse.from_dict(res)
 
@@ -3229,7 +3256,7 @@ class ConsumerListingsAPI:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         provider_ids: Optional[List[str]] = None,
-        tags: Optional[List[ListingTag]] = None,
+        tags: Optional[ListingTag] = None,
     ) -> Iterator[Listing]:
         """List all published listings in the Databricks Marketplace that the consumer has access to.
 
@@ -3247,8 +3274,8 @@ class ConsumerListingsAPI:
         :param page_token: str (optional)
         :param provider_ids: List[str] (optional)
           Matches any of the following provider ids
-        :param tags: List[:class:`ListingTag`] (optional)
-          Matches any of the following tags
+        :param tags: :class:`ListingTag` (optional)
+          Matches listings with this tag
 
         :returns: Iterator over :class:`Listing`
         """
@@ -3271,10 +3298,14 @@ class ConsumerListingsAPI:
         if provider_ids is not None:
             query["provider_ids"] = [v for v in provider_ids]
         if tags is not None:
-            query["tags"] = [v.as_dict() for v in tags]
+            query["tags"] = tags.as_dict()
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/marketplace-consumer/listings", query=query, headers=headers)
@@ -3336,6 +3367,10 @@ class ConsumerListingsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/marketplace-consumer/search-listings", query=query, headers=headers)
@@ -3403,6 +3438,10 @@ class ConsumerPersonalizationRequestsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST",
             f"/api/2.1/marketplace-consumer/listings/{listing_id}/personalization-requests",
@@ -3423,6 +3462,10 @@ class ConsumerPersonalizationRequestsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.1/marketplace-consumer/listings/{listing_id}/personalization-requests", headers=headers
@@ -3448,6 +3491,10 @@ class ConsumerPersonalizationRequestsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3482,6 +3529,10 @@ class ConsumerProvidersAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.1/marketplace-consumer/providers:batchGet", query=query, headers=headers)
         return BatchGetProvidersResponse.from_dict(res)
 
@@ -3496,6 +3547,10 @@ class ConsumerProvidersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/marketplace-consumer/providers/{id}", headers=headers)
         return GetProviderResponse.from_dict(res)
@@ -3522,6 +3577,10 @@ class ConsumerProvidersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/marketplace-consumer/providers", query=query, headers=headers)
@@ -3555,6 +3614,10 @@ class ProviderExchangeFiltersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/marketplace-exchange/filters", body=body, headers=headers)
         return CreateExchangeFilterResponse.from_dict(res)
 
@@ -3569,6 +3632,10 @@ class ProviderExchangeFiltersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/marketplace-exchange/filters/{id}", headers=headers)
 
@@ -3595,6 +3662,10 @@ class ProviderExchangeFiltersAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-exchange/filters", query=query, headers=headers)
             if "filters" in json:
@@ -3620,6 +3691,10 @@ class ProviderExchangeFiltersAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-exchange/filters/{id}", body=body, headers=headers)
         return UpdateExchangeFilterResponse.from_dict(res)
@@ -3650,6 +3725,10 @@ class ProviderExchangesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/marketplace-exchange/exchanges-for-listing", body=body, headers=headers)
         return AddExchangeForListingResponse.from_dict(res)
 
@@ -3669,6 +3748,10 @@ class ProviderExchangesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/marketplace-exchange/exchanges", body=body, headers=headers)
         return CreateExchangeResponse.from_dict(res)
 
@@ -3684,6 +3767,10 @@ class ProviderExchangesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/marketplace-exchange/exchanges/{id}", headers=headers)
 
     def delete_listing_from_exchange(self, id: str):
@@ -3698,6 +3785,10 @@ class ProviderExchangesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/marketplace-exchange/exchanges-for-listing/{id}", headers=headers)
 
     def get(self, id: str) -> GetExchangeResponse:
@@ -3711,6 +3802,10 @@ class ProviderExchangesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/marketplace-exchange/exchanges/{id}", headers=headers)
         return GetExchangeResponse.from_dict(res)
@@ -3732,6 +3827,10 @@ class ProviderExchangesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-exchange/exchanges", query=query, headers=headers)
@@ -3764,6 +3863,10 @@ class ProviderExchangesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3799,6 +3902,10 @@ class ProviderExchangesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do(
                 "GET", "/api/2.0/marketplace-exchange/listings-for-exchange", query=query, headers=headers
@@ -3826,6 +3933,10 @@ class ProviderExchangesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-exchange/exchanges/{id}", body=body, headers=headers)
         return UpdateExchangeResponse.from_dict(res)
@@ -3869,6 +3980,10 @@ class ProviderFilesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/marketplace-provider/files", body=body, headers=headers)
         return CreateFileResponse.from_dict(res)
 
@@ -3884,6 +3999,10 @@ class ProviderFilesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/files/{file_id}", headers=headers)
 
     def get(self, file_id: str) -> GetFileResponse:
@@ -3897,6 +4016,10 @@ class ProviderFilesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/marketplace-provider/files/{file_id}", headers=headers)
         return GetFileResponse.from_dict(res)
@@ -3923,6 +4046,10 @@ class ProviderFilesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-provider/files", query=query, headers=headers)
@@ -3957,6 +4084,10 @@ class ProviderListingsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/marketplace-provider/listing", body=body, headers=headers)
         return CreateListingResponse.from_dict(res)
 
@@ -3972,6 +4103,10 @@ class ProviderListingsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/listings/{id}", headers=headers)
 
     def get(self, id: str) -> GetListingResponse:
@@ -3985,6 +4120,10 @@ class ProviderListingsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/marketplace-provider/listings/{id}", headers=headers)
         return GetListingResponse.from_dict(res)
@@ -4006,6 +4145,10 @@ class ProviderListingsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-provider/listings", query=query, headers=headers)
@@ -4032,6 +4175,10 @@ class ProviderListingsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-provider/listings/{id}", body=body, headers=headers)
         return UpdateListingResponse.from_dict(res)
@@ -4065,6 +4212,10 @@ class ProviderPersonalizationRequestsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do(
                 "GET", "/api/2.0/marketplace-provider/personalization-requests", query=query, headers=headers
@@ -4096,8 +4247,6 @@ class ProviderPersonalizationRequestsAPI:
         :returns: :class:`UpdatePersonalizationRequestResponse`
         """
 
-        if request_id is None or request_id == "":
-            request_id = str(uuid.uuid4())
         body = {}
         if reason is not None:
             body["reason"] = reason
@@ -4109,6 +4258,10 @@ class ProviderPersonalizationRequestsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT",
@@ -4135,7 +4288,12 @@ class ProviderProviderAnalyticsDashboardsAPI:
 
         headers = {
             "Accept": "application/json",
+            "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/marketplace-provider/analytics_dashboard", headers=headers)
         return ProviderAnalyticsDashboard.from_dict(res)
@@ -4151,6 +4309,10 @@ class ProviderProviderAnalyticsDashboardsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/marketplace-provider/analytics_dashboard", headers=headers)
         return ListProviderAnalyticsDashboardResponse.from_dict(res)
 
@@ -4164,6 +4326,10 @@ class ProviderProviderAnalyticsDashboardsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/marketplace-provider/analytics_dashboard/latest", headers=headers)
         return GetLatestVersionProviderAnalyticsDashboardResponse.from_dict(res)
@@ -4187,6 +4353,10 @@ class ProviderProviderAnalyticsDashboardsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-provider/analytics_dashboard/{id}", body=body, headers=headers)
         return UpdateProviderAnalyticsDashboardResponse.from_dict(res)
@@ -4214,6 +4384,10 @@ class ProviderProvidersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/marketplace-provider/provider", body=body, headers=headers)
         return CreateProviderResponse.from_dict(res)
 
@@ -4229,6 +4403,10 @@ class ProviderProvidersAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/providers/{id}", headers=headers)
 
     def get(self, id: str) -> GetProviderResponse:
@@ -4242,6 +4420,10 @@ class ProviderProvidersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/marketplace-provider/providers/{id}", headers=headers)
         return GetProviderResponse.from_dict(res)
@@ -4263,6 +4445,10 @@ class ProviderProvidersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-provider/providers", query=query, headers=headers)
@@ -4289,6 +4475,10 @@ class ProviderProvidersAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-provider/providers/{id}", body=body, headers=headers)
         return UpdateProviderResponse.from_dict(res)

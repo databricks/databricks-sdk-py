@@ -31,6 +31,16 @@
 
         
 
+    .. py:method:: delete_online_table(online_table_name: str)
+
+        Delete online table.
+
+        :param online_table_name: str
+          The full three-part (catalog, schema, table) name of the online table.
+
+
+        
+
     .. py:method:: get_online_store(name: str) -> OnlineStore
 
         Get an Online Feature Store.

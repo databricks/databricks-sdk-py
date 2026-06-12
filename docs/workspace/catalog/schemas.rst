@@ -9,7 +9,7 @@
     the USE_SCHEMA data permission on the schema and its parent catalog, and they must have the SELECT
     permission on the table or view.
 
-    .. py:method:: create(name: str, catalog_name: str [, comment: Optional[str], properties: Optional[Dict[str, str]], storage_root: Optional[str]]) -> SchemaInfo
+    .. py:method:: create(name: str, catalog_name: str [, comment: Optional[str], custom_max_retention_hours: Optional[int], properties: Optional[Dict[str, str]], storage_root: Optional[str]]) -> SchemaInfo
 
 
         Usage:
@@ -39,6 +39,8 @@
           Name of parent catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the schema.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param storage_root: str (optional)
@@ -143,7 +145,7 @@
         :returns: Iterator over :class:`SchemaInfo`
         
 
-    .. py:method:: update(full_name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> SchemaInfo
+    .. py:method:: update(full_name: str [, comment: Optional[str], custom_max_retention_hours: Optional[int], enable_predictive_optimization: Optional[EnablePredictiveOptimization], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> SchemaInfo
 
 
         Usage:
@@ -175,6 +177,8 @@
           Full name of the schema.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the schema.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param new_name: str (optional)

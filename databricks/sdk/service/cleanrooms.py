@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -11,8 +14,13 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import catalog, jobs, settings, sharing
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -126,7 +134,6 @@ class CleanRoom:
 
 
 class CleanRoomAccessRestricted(Enum):
-
     CSP_MISMATCH = "CSP_MISMATCH"
     NO_RESTRICTION = "NO_RESTRICTION"
 
@@ -283,7 +290,6 @@ class CleanRoomAsset:
 
 
 class CleanRoomAssetAssetType(Enum):
-
     FOREIGN_TABLE = "FOREIGN_TABLE"
     NOTEBOOK_FILE = "NOTEBOOK_FILE"
     TABLE = "TABLE"
@@ -403,7 +409,6 @@ class CleanRoomAssetNotebook:
 
 
 class CleanRoomAssetStatusEnum(Enum):
-
     ACTIVE = "ACTIVE"
     PENDING = "PENDING"
     PERMISSION_DENIED = "PERMISSION_DENIED"
@@ -622,7 +627,6 @@ class CleanRoomAutoApprovalRule:
 
 
 class CleanRoomAutoApprovalRuleAuthorScope(Enum):
-
     ANY_AUTHOR = "ANY_AUTHOR"
 
 
@@ -767,14 +771,12 @@ class CleanRoomNotebookReview:
 
 
 class CleanRoomNotebookReviewNotebookReviewState(Enum):
-
     APPROVED = "APPROVED"
     PENDING = "PENDING"
     REJECTED = "REJECTED"
 
 
 class CleanRoomNotebookReviewNotebookReviewSubReason(Enum):
-
     AUTO_APPROVED = "AUTO_APPROVED"
     BACKFILLED = "BACKFILLED"
 
@@ -912,7 +914,6 @@ class CleanRoomOutputCatalog:
 
 
 class CleanRoomOutputCatalogOutputCatalogStatus(Enum):
-
     CREATED = "CREATED"
     NOT_CREATED = "NOT_CREATED"
     NOT_ELIGIBLE = "NOT_ELIGIBLE"
@@ -1000,7 +1001,6 @@ class CleanRoomRemoteDetail:
 
 
 class CleanRoomStatusEnum(Enum):
-
     ACTIVE = "ACTIVE"
     DELETED = "DELETED"
     FAILED = "FAILED"
@@ -1140,7 +1140,7 @@ class CreateCleanRoomAssetReviewResponse:
 
 @dataclass
 class CreateCleanRoomOutputCatalogResponse:
-    output_catalog: Optional[CleanRoomOutputCatalog] = None
+    output_catalog: CleanRoomOutputCatalog
 
     def as_dict(self) -> dict:
         """Serializes the CreateCleanRoomOutputCatalogResponse into a dictionary suitable for use as a JSON request body."""
@@ -1419,6 +1419,10 @@ class CleanRoomAssetRevisionsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET",
             f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/revisions/{etag}",
@@ -1460,6 +1464,10 @@ class CleanRoomAssetRevisionsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do(
                 "GET",
@@ -1497,10 +1505,15 @@ class CleanRoomAssetsAPI:
         """
 
         body = asset.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/clean-rooms/{clean_room_name}/assets", body=body, headers=headers)
         return CleanRoomAsset.from_dict(res)
@@ -1534,6 +1547,10 @@ class CleanRoomAssetsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST",
             f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/reviews",
@@ -1559,6 +1576,10 @@ class CleanRoomAssetsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do(
             "DELETE", f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}", headers=headers
         )
@@ -1579,6 +1600,10 @@ class CleanRoomAssetsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}", headers=headers
@@ -1602,6 +1627,10 @@ class CleanRoomAssetsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", f"/api/2.0/clean-rooms/{clean_room_name}/assets", query=query, headers=headers)
@@ -1639,10 +1668,15 @@ class CleanRoomAssetsAPI:
         """
 
         body = asset.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -1678,6 +1712,10 @@ class CleanRoomAutoApprovalRulesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules", body=body, headers=headers
         )
@@ -1696,6 +1734,10 @@ class CleanRoomAutoApprovalRulesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}", headers=headers)
 
     def get(self, clean_room_name: str, rule_id: str) -> CleanRoomAutoApprovalRule:
@@ -1710,6 +1752,10 @@ class CleanRoomAutoApprovalRulesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}", headers=headers
@@ -1739,6 +1785,10 @@ class CleanRoomAutoApprovalRulesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do(
                 "GET", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules", query=query, headers=headers
@@ -1766,10 +1816,15 @@ class CleanRoomAutoApprovalRulesAPI:
         """
 
         body = auto_approval_rule.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}", body=body, headers=headers
@@ -1815,6 +1870,10 @@ class CleanRoomTaskRunsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", f"/api/2.0/clean-rooms/{clean_room_name}/runs", query=query, headers=headers)
@@ -1876,10 +1935,15 @@ class CleanRoomsAPI:
         """
 
         body = clean_room.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.0/clean-rooms", body=body, headers=headers)
         return Wait(
@@ -1902,10 +1966,15 @@ class CleanRoomsAPI:
         """
 
         body = output_catalog.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", f"/api/2.0/clean-rooms/{clean_room_name}/output-catalogs", body=body, headers=headers
@@ -1927,6 +1996,10 @@ class CleanRoomsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/clean-rooms/{name}", headers=headers)
 
     def get(self, name: str) -> CleanRoom:
@@ -1940,6 +2013,10 @@ class CleanRoomsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/clean-rooms/{name}", headers=headers)
         return CleanRoom.from_dict(res)
@@ -1964,6 +2041,10 @@ class CleanRoomsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/clean-rooms", query=query, headers=headers)
@@ -1994,6 +2075,10 @@ class CleanRoomsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/clean-rooms/{name}", body=body, headers=headers)
         return CleanRoom.from_dict(res)

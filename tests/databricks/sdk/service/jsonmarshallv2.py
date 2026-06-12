@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -11,12 +14,18 @@ from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (_duration, _enum, _fieldmask,
-                                              _from_dict, _repeated_dict,
-                                              _repeated_duration,
-                                              _repeated_enum,
-                                              _repeated_fieldmask,
-                                              _repeated_timestamp, _timestamp)
+from databricks.sdk.service._internal import (
+    _duration,
+    _enum,
+    _fieldmask,
+    _from_dict,
+    _repeated_dict,
+    _repeated_duration,
+    _repeated_enum,
+    _repeated_fieldmask,
+    _repeated_timestamp,
+    _timestamp,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -462,7 +471,6 @@ class Resource:
 
 
 class TestEnum(Enum):
-
     TEST_ENUM_ONE = "TEST_ENUM_ONE"
     TEST_ENUM_TWO = "TEST_ENUM_TWO"
 
@@ -474,13 +482,16 @@ class JsonMarshallV2API:
         self._api = api_client
 
     def get_resource(self, name: str, resource: Resource) -> Resource:
-
         query = {}
         if resource is not None:
             query["resource"] = resource.as_dict()
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/json-marshall/{name}", query=query, headers=headers)
         return Resource.from_dict(res)

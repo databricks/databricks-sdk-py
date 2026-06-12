@@ -10,10 +10,12 @@ import pytest
 
 from databricks.sdk import oauth
 from databricks.sdk.config import Config
-from databricks.sdk.credentials_provider import (CredentialsProvider,
-                                                 CredentialsStrategy,
-                                                 DefaultCredentials,
-                                                 runtime_oauth)
+from databricks.sdk.credentials_provider import (
+    CredentialsProvider,
+    CredentialsStrategy,
+    DefaultCredentials,
+    runtime_oauth,
+)
 
 
 @pytest.fixture
@@ -43,6 +45,7 @@ def mock_runtime_native_auth():
         pass
 
     fake_runtime.init_runtime_native_auth = fake_init_runtime_native_auth
+    fake_runtime.init_runtime_native_unified = None
     fake_runtime.init_runtime_legacy_auth = fake_init_runtime_legacy_auth
     fake_runtime.init_runtime_repl_auth = fake_init_runtime_repl_auth
 
@@ -174,7 +177,7 @@ def test_config_authenticate_integration(
 
 @pytest.mark.parametrize(
     "scopes_input,expected_scopes",
-    [(["sql", "offline_access"], "sql offline_access")],
+    [(["sql", "offline_access"], ["offline_access", "sql"])],
 )
 def test_workspace_client_integration(
     mock_runtime_env, mock_runtime_native_auth, mock_pat_exchange, scopes_input, expected_scopes
@@ -187,3 +190,89 @@ def test_workspace_client_integration(
     assert w.config.scopes == expected_scopes
     headers = w.config.authenticate()
     assert headers["Authorization"] == "Bearer exchanged-oauth-token"
+
+
+@pytest.fixture
+def mock_runtime_native_unified():
+    """Mock the runtime module with init_runtime_native_unified returning 4-tuple."""
+    fake_runtime = types.ModuleType("databricks.sdk.runtime")
+
+    def fake_init_runtime_native_unified():
+        def inner():
+            return {"Authorization": "Bearer unified-token"}
+
+        return "https://unified.cloud.databricks.com", "acc-123", "ws-456", inner
+
+    fake_runtime.init_runtime_native_unified = fake_init_runtime_native_unified
+    fake_runtime.init_runtime_native_auth = None
+    fake_runtime.init_runtime_legacy_auth = None
+    fake_runtime.init_runtime_repl_auth = None
+
+    sys.modules["databricks.sdk.runtime"] = fake_runtime
+    yield
+
+
+@pytest.fixture
+def mock_runtime_native_unified_returns_none():
+    """Mock the runtime module with init_runtime_native_unified returning None host."""
+    fake_runtime = types.ModuleType("databricks.sdk.runtime")
+
+    def fake_init_runtime_native_unified():
+        return None, None, None, None
+
+    def fake_init_runtime_native_auth():
+        def inner():
+            return {"Authorization": "Bearer fallback-token"}
+
+        return "https://fallback.cloud.databricks.com", inner
+
+    fake_runtime.init_runtime_native_unified = fake_init_runtime_native_unified
+    fake_runtime.init_runtime_native_auth = fake_init_runtime_native_auth
+    fake_runtime.init_runtime_legacy_auth = None
+    fake_runtime.init_runtime_repl_auth = None
+
+    sys.modules["databricks.sdk.runtime"] = fake_runtime
+    yield
+
+
+def test_runtime_unified_auth_sets_host_and_ids(mock_runtime_env, mock_runtime_native_unified):
+    """Test that init_runtime_native_unified sets host, account_id, and workspace_id on Config."""
+    cfg = Config(host="https://unified.cloud.databricks.com")
+
+    headers = cfg.authenticate()
+    assert headers["Authorization"] == "Bearer unified-token"
+    assert cfg.host == "https://unified.cloud.databricks.com"
+    assert cfg.account_id == "acc-123"
+    assert cfg.workspace_id == "ws-456"
+
+
+def test_runtime_unified_auth_fallback_when_none(mock_runtime_env, mock_runtime_native_unified_returns_none):
+    """Test fallback to init_runtime_native_auth when unified returns None."""
+    cfg = Config(host="https://fallback.cloud.databricks.com")
+
+    headers = cfg.authenticate()
+    assert headers["Authorization"] == "Bearer fallback-token"
+    assert cfg.host == "https://fallback.cloud.databricks.com"
+
+
+def test_runtime_unified_auth_fallback_when_not_available(mock_runtime_env, mock_runtime_native_auth):
+    """Test fallback to init_runtime_native_auth when unified is None (import failed)."""
+    cfg = Config(host="https://test.cloud.databricks.com")
+
+    headers = cfg.authenticate()
+    assert headers["Authorization"] == "Bearer test-notebook-pat-token"
+    assert cfg.host == "https://test.cloud.databricks.com"
+
+
+def test_runtime_unified_auth_priority_over_native(mock_runtime_env, mock_runtime_native_unified):
+    """Test that unified provider is used over native auth in DefaultCredentials chain."""
+    cfg = Config(host="https://unified.cloud.databricks.com")
+
+    default_creds = DefaultCredentials()
+    creds_provider = default_creds(cfg)
+
+    headers = creds_provider()
+    assert headers["Authorization"] == "Bearer unified-token"
+    assert default_creds.auth_type() == "runtime"
+    assert cfg.account_id == "acc-123"
+    assert cfg.workspace_id == "ws-456"

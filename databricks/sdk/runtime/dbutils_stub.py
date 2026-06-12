@@ -11,7 +11,6 @@ class MountInfo(namedtuple("MountInfo", ["mountPoint", "source", "encryptionType
 
 
 class SecretScope(namedtuple("SecretScope", ["name"])):
-
     def getName(self):
         return self.name
 
@@ -21,7 +20,6 @@ class SecretMetadata(namedtuple("SecretMetadata", ["key"])):
 
 
 class dbutils:
-
     class credentials:
         """
         Utilities for interacting with credentials within notebooks

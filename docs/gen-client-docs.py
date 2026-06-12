@@ -14,15 +14,10 @@ from typing import Optional, Any, get_args
 
 from databricks.sdk import AccountClient, WorkspaceClient
 from databricks.sdk.core import credentials_strategy
+from packages import Package, PACKAGES
 
 __dir__ = os.path.dirname(__file__)
 __examples__ = Path(f'{__dir__}/../examples').absolute()
-
-@dataclass
-class Package:
-    name: str
-    label: str
-    description: str
 
 
 @dataclass
@@ -214,69 +209,8 @@ class DataclassesDoc:
         return '\n   '.join(result)
 
 class Generator:
-    packages = [
-        Package("workspace", "Workspace",
-                "Manage workspace-level entities that include notebooks, Git checkouts, and secrets"),
-        Package("compute", "Compute", "Use and configure compute for Databricks"),
-        Package("jobs", "Jobs", "Schedule automated jobs on Databricks Workspaces"),
-        Package("pipelines", "Delta Live Tables",
-                "Manage pipelines, runs, and other Delta Live Table resources"),
-        Package("files", "File Management", "Manage files on Databricks in a filesystem-like interface"),
-        Package("ml", "Machine Learning",
-                "Create and manage experiments, features, and other machine learning artifacts"),
-        Package("serving", "Real-time Serving", "Use real-time inference for machine learning"),
-        Package("iam", "Identity and Access Management",
-                "Manage users, service principals, groups and their permissions in Accounts and Workspaces"),
-        Package(
-            "sql", "Databricks SQL",
-            "Manage Databricks SQL assets, including warehouses, dashboards, queries and query history, and alerts"
-        ),
-        Package(
-            "catalog", "Unity Catalog",
-            "Configure data governance with Unity Catalog for metastores, catalogs, schemas, tables, external locations, and storage credentials"
-        ),
-        Package("sharing", "Delta Sharing",
-                "Configure data sharing with Unity Catalog for providers, recipients, and shares"),
-        Package("settings", "Settings", "Manage security settings for Accounts and Workspaces"),
-        Package("settingsv2", "SettingsV2", "Manage admin settings"),
-        Package("tags", "Tags", "Manage tag policies and tag assignments on workspace objects"),
-        Package(
-            "provisioning", "Provisioning",
-            "Resource management for secure Databricks Workspace deployment, cross-account IAM roles, " +
-            "storage, encryption, networking and private access."),
-        Package("billing", "Billing", "Configure different aspects of Databricks billing and usage."),
-        Package("oauth2", "OAuth", "Configure OAuth 2.0 application registrations for Databricks"),
-        Package("vectorsearch", "Vector Search", "Create and query Vector Search indexes"),
-        Package("dashboards", "Dashboards", "Manage Lakeview dashboards"),
-        Package("marketplace", "Marketplace", "Manage AI and analytics assets such as ML models, notebooks, applications in an open marketplace"),
-        Package("apps", "Apps", "Build custom applications on Databricks"),
-        Package("cleanrooms", "Clean Rooms", "Manage clean rooms and their assets and task runs"),
-        Package(
-            "qualitymonitorv2",
-            "Quality Monitor",
-            "Manage quality monitor on Unity Catalog objects."
-        ),
-        Package(
-            "database",
-            "Database Instances",
-            "Create Database Instances and manage their configurations, including integrations with Unity Catalog"
-        ),
-        Package(
-            "agentbricks",
-            "Agent Bricks",
-            "Create and manage Agent Bricks resources."
-        ),
-        Package(
-            "iamv2",
-            "Identity and Access Management",
-            "Manage identities and workspace access."
-        ),
-        Package(
-            "dataquality",
-            "Data Quality",
-            "Manage data quality monitoring on Unity Catalog objects."
-        ),
-    ]
+
+    packages = PACKAGES
 
     def __init__(self):
         self.mapping = self._load_mapping()
@@ -293,13 +227,19 @@ class Generator:
         mapping = {}
         pkgs = {p.name: p for p in self.packages}
         spec = json.loads(self._openapi_spec())
+
+        tag_by_name = {t['name']: t for t in spec['tags']}
+
         for tag in spec['tags']:
             is_account=tag.get('x-databricks-is-accounts')
-            # Unique identifier for the tag. Note that the service name may not be unique
+            # Unique identifier for the tag. Note that the service name may not be unique.
             key = 'a' if is_account else 'w'
-            parent_service = tag.get('x-databricks-parent-service')
-            if parent_service:
-                # SDK generation removes the "account" prefix from account services
+
+            parent_name = tag.get('x-databricks-parent-name')
+            if parent_name:
+                parent_tag = tag_by_name[parent_name]
+                parent_service = parent_tag['x-databricks-service']
+                # SDK generation removes the "account" prefix from account services.
                 clean_parent_service = parent_service.lower().removeprefix("account")
                 key = f"{key}.{clean_parent_service}"
 

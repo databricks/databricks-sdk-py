@@ -9,7 +9,6 @@
     buckets] using instance profiles for more information.
 
     [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html
-    
 
     .. py:method:: add(instance_profile_arn: str [, iam_role_arn: Optional[str], is_meta_instance_profile: Optional[bool], skip_validation: Optional[bool]])
 

@@ -1,5 +1,813 @@
 # Version changelog
 
+## Release v0.117.0 (2026-06-11)
+
+### API Changes
+* Add `type_overrides` field for `databricks.sdk.service.database.SyncedTableSpec`.
+* Add `type_overrides` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableSpec`.
+* Change `resource_id` field for `databricks.sdk.service.bundledeployments.Operation` to no longer be required.
+* [Breaking] Change `resource_id` field for `databricks.sdk.service.bundledeployments.Operation` to no longer be required.
+
+### Bug Fixes
+* Cache tokens minted by `DatabricksOidcTokenSource` (Workload Identity
+Federation / account-wide token federation). Previously a fresh
+`/oidc/v1/token` exchange was performed on every authenticated API
+call, adding latency, amplifying transient federation-policy errors,
+and hitting OIDC token-endpoint rate limits. The token source now
+reuses the cached token until it is stale or expired, fetching a fresh
+ID token on each refresh to support rotation.
+* Make `WorkspaceClient.dbutils` lazy (`functools.cached_property`).
+The constructor no longer imports `databricks.sdk.runtime` eagerly, so
+on Spark Connect (shared-access-mode) clusters, consumers that never
+read `.dbutils` — such as `dbt-databricks` Python models — no longer
+crash with `CONTEXT_UNAVAILABLE_FOR_REMOTE_CLIENT` during client
+construction.
+* Fall back to the remote runtime implementation when the legacy user
+namespace cannot be materialized. On Spark Connect runtimes (e.g.
+shared-access-mode clusters), importing `databricks.sdk.runtime` —
+which happens when constructing a `WorkspaceClient` on such a cluster
+— tried to build a legacy `SparkContext` and raised
+`CONTEXT_UNAVAILABLE_FOR_REMOTE_CLIENT` at import time. It now logs a
+warning and falls back to the Spark Connect-compatible remote
+implementation instead of crashing.
+
+### Internal Changes
+* Declare `urllib3` as an explicit dependency. The SDK imports it
+directly; previously it was only available transitively through
+`requests`. No resolution change for users.
+
+## Release v0.116.0 (2026-06-10)
+
+### API Changes
+* Add `databricks.sdk.service.aisearch` and `databricks.sdk.service.bundledeployments` packages.
+* Add [w.ai_search](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/aisearch/ai_search.html) workspace-level service.
+* Add [w.bundle_deployments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/bundledeployments/bundle_deployments.html) workspace-level service.
+* Add `running_instances` field for `databricks.sdk.service.apps.ApplicationStatus`.
+* Add `custom_max_retention_hours` field for `databricks.sdk.service.catalog.CatalogInfo`.
+* Add `environment_settings` field for `databricks.sdk.service.catalog.ConnectionInfo`.
+* Add `custom_max_retention_hours` field for `databricks.sdk.service.catalog.CreateCatalog`.
+* Add `environment_settings` field for `databricks.sdk.service.catalog.CreateConnection`.
+* Add `custom_max_retention_hours` field for `databricks.sdk.service.catalog.CreateSchema`.
+* Add `custom_max_retention_hours` field for `databricks.sdk.service.catalog.SchemaInfo`.
+* Add `custom_max_retention_hours` field for `databricks.sdk.service.catalog.UpdateCatalog`.
+* Add `environment_settings` field for `databricks.sdk.service.catalog.UpdateConnection`.
+* Add `custom_max_retention_hours` field for `databricks.sdk.service.catalog.UpdateSchema`.
+* Add `stream_source` field for `databricks.sdk.service.ml.DataSource`.
+* Add `ingestion_config` field for `databricks.sdk.service.ml.KafkaConfig`.
+* Add `clustering_columns`, `enable_auto_clustering` and `table_properties` fields for `databricks.sdk.service.pipelines.TableSpecificConfig`.
+* Add `branch_id` field for `databricks.sdk.service.postgres.Branch`.
+* Add `catalog_id` field for `databricks.sdk.service.postgres.Catalog`.
+* Add `database_id` field for `databricks.sdk.service.postgres.Database`.
+* Add `endpoint_id` field for `databricks.sdk.service.postgres.Endpoint`.
+* Add `project_id` field for `databricks.sdk.service.postgres.Project`.
+* Add `role_id` field for `databricks.sdk.service.postgres.Role`.
+* Add `synced_table_id` field for `databricks.sdk.service.postgres.SyncedTable`.
+* Add `allowed_databricks_destinations` field for `databricks.sdk.service.settings.EgressNetworkPolicyNetworkAccessPolicy`.
+* Add `facets`, `query_columns` and `sort_columns` fields for `databricks.sdk.service.vectorsearch.QueryVectorIndexRequest`.
+* Add `facet_result` field for `databricks.sdk.service.vectorsearch.QueryVectorIndexResponse`.
+* Add `facet_column_count` and `facet_columns` fields for `databricks.sdk.service.vectorsearch.ResultManifest`.
+* Add `dangerously_force_discard_all` field for `databricks.sdk.service.workspace.UpdateRepoRequest`.
+* [Breaking] Remove `databricks.sdk.service.bundle` package.
+* [Breaking] Remove [w.bundle](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/bundle/bundle.html) workspace-level service.
+* Add `accelerated_sync` field for `databricks.sdk.service.database.SyncedTableSpec`.
+* Add `accelerated_sync` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableSpec`.
+
+
+## Release v0.115.0 (2026-06-08)
+
+### New Features and Improvements
+
+* Honor the Vercel `AI_AGENT=<name>` env var as a secondary fallback for AI agent detection in the User-Agent header (after the agents.md `AGENT=<name>` standard). Unrecognized fallback values now pass through the User-Agent sanitized and length-capped at 64 chars instead of being coerced to `agent/unknown`, so versioned variants such as `claude-code_2-1-141_agent` surface as-is.
+
+
+## Release v0.114.0 (2026-06-02)
+
+### API Changes
+* Add `deployment_mode` field for `databricks.sdk.service.bundle.Deployment`.
+* Add `deployment_mode` field for `databricks.sdk.service.bundle.Version`.
+* Add `collaboration_platform_connectivity` and `effective_collaboration_platform_connectivity` fields for `databricks.sdk.service.settingsv2.Setting`.
+
+
+## Release v0.113.0 (2026-06-01)
+
+### Internal Changes
+
+* Switch workspace addressing header on workspace-scoped API calls from `X-Databricks-Org-Id` to `X-Databricks-Workspace-Id`. The value continues to come from `Config.workspace_id` (`DATABRICKS_WORKSPACE_ID`), and now accepts either a classic numeric workspace ID or another workspace identifier format (server disambiguates).
+
+### API Changes
+* Add `create_stream()`, `delete_stream()`, `get_stream()`, `list_streams()` and `update_stream()` methods for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service.
+* Add `update_token_management()` method for [w.token_management](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/token_management.html) workspace-level service.
+* Add `deployment_id` and `version_id` fields for `databricks.sdk.service.jobs.JobDeployment`.
+* Add `parameters` field for `databricks.sdk.service.jobs.PipelineTask`.
+* Add `pipeline_task` field for `databricks.sdk.service.jobs.ResolvedValues`.
+* Add `parameters` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+* Add `parameters` field for `databricks.sdk.service.pipelines.EditPipeline`.
+* Add `parameters` field for `databricks.sdk.service.pipelines.GetPipelineResponse`.
+* Add `deployment_id` and `version_id` fields for `databricks.sdk.service.pipelines.PipelineDeployment`.
+* Add `autoscope_enabled` field for `databricks.sdk.service.settings.CreateOboTokenRequest`.
+* Add `autoscope_enabled` field for `databricks.sdk.service.settings.CreateTokenRequest`.
+* Add `autoscope_state`, `backfill_scopes`, `inferred_scopes` and `scopes` fields for `databricks.sdk.service.settings.PublicTokenInfo`.
+* Add `autoscope_state`, `backfill_scopes`, `inferred_scopes` and `scopes` fields for `databricks.sdk.service.settings.TokenInfo`.
+* [Breaking] Remove `catalog_id` field for `databricks.sdk.service.postgres.CatalogCatalogStatus`.
+* [Breaking] Remove `synced_table_id` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableStatus`.
+* Add `resource_type` field for `databricks.sdk.service.bundle.Operation`.
+
+
+## Release v0.112.0 (2026-05-27)
+
+### Internal Changes
+
+* Switch the formatter and linter from black/isort/autoflake to ruff (format + lint), aligning the SDK formatter with Databricks' internal Python formatting guidelines in preparation for moving the source of truth to a separate internal repository. `make fmt` now runs `ruff format` + `ruff check --fix-only`; `make lint` runs `ruff check` and `ruff format --check` across `databricks` and `tests`. No behavioral changes to the published SDK.
+
+
+## Release v0.111.0 (2026-05-25)
+
+### API Changes
+* Add `databricks.sdk.service.bundle` package.
+* Add [w.bundle](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/bundle/bundle.html) workspace-level service.
+* Add `revert()` method for [w.lakeview](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/lakeview.html) workspace-level service.
+* Add `undelete_branch()` method for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `parent_path` field for `databricks.sdk.service.dashboards.GenieUpdateSpaceRequest`.
+* Add `attributes` and `excluded_attributes` fields for `databricks.sdk.service.iam.MeRequest`.
+* Add `include_trigger_state` field for `databricks.sdk.service.jobs.GetJobRequest`.
+* Add `mtls_config` field for `databricks.sdk.service.ml.AuthConfig`.
+* Add `delete_time` and `purge_time` fields for `databricks.sdk.service.postgres.BranchStatus`.
+* Add `purge` field for `databricks.sdk.service.postgres.DeleteBranchRequest`.
+* Add `show_deleted` field for `databricks.sdk.service.postgres.ListBranchesRequest`.
+* Add `deleted` enum value for `databricks.sdk.service.postgres.BranchStatusState`.
+* [Breaking] Change `tags` field for `databricks.sdk.service.marketplace.ListListingsRequest` to type `databricks.sdk.service.marketplace.ListingTag` dataclass.
+* [Breaking] Change pagination for [ClustersAPI.events](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/compute/clusters.html#databricks.sdk.service.compute.ClustersAPI.events) method.
+* Add `compute_max_instances` and `compute_min_instances` fields for `databricks.sdk.service.apps.App`.
+* Add `compute_max_instances` and `compute_min_instances` fields for `databricks.sdk.service.apps.AppUpdate`.
+* Add `cron_schedule_trigger`, `streaming_mode` and `table_trigger` fields for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `synced_table_id` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableStatus`.
+
+
+## Release v0.110.0 (2026-05-19)
+
+### API Changes
+* Add `full_refresh_selection`, `refresh_flow_selection`, `refresh_selection` and `reset_checkpoint_selection` fields for `databricks.sdk.service.jobs.PipelineParams`.
+* Add `full_refresh_selection`, `refresh_flow_selection`, `refresh_selection` and `reset_checkpoint_selection` fields for `databricks.sdk.service.jobs.PipelineTask`.
+* Add `effective_operational_email_custom_recipient` and `operational_email_custom_recipient` fields for `databricks.sdk.service.settingsv2.Setting`.
+
+
+## Release v0.109.0 (2026-05-18)
+
+### API Changes
+* Add `create_workspace_assignment_detail()`, `delete_workspace_assignment_detail()`, `get_workspace_assignment_detail()`, `list_workspace_assignment_details()` and `update_workspace_assignment_detail()` methods for [a.account_iam_v2](https://databricks-sdk-py.readthedocs.io/en/latest/account/iamv2/account_iam_v2.html) account-level service.
+* Add `create_workspace_assignment_detail_proxy()`, `delete_workspace_assignment_detail_proxy()`, `get_workspace_assignment_detail_proxy()`, `list_workspace_assignment_details_proxy()` and `update_workspace_assignment_detail_proxy()` methods for [w.workspace_iam_v2](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/iamv2/workspace_iam_v2.html) workspace-level service.
+* Add `failover_group_name` field for `databricks.sdk.service.disasterrecovery.StableUrl`.
+* Add `catalog_name`, `created_at`, `created_by`, `name` and `schema_name` fields for `databricks.sdk.service.ml.Feature`.
+* [Breaking] Add `catalog_name` and `schema_name` fields for `databricks.sdk.service.ml.ListFeaturesRequest`.
+* Add `cross_workspace_access` field for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicy`.
+* Add `allowed_apps_user_api_scopes` and `effective_allowed_apps_user_api_scopes` fields for `databricks.sdk.service.settingsv2.Setting`.
+* Add `gpu_xlarge` enum value for `databricks.sdk.service.serving.ServedModelInputWorkloadType`.
+* Add `gpu_xlarge` enum value for `databricks.sdk.service.serving.ServingModelWorkloadType`.
+* [Breaking] Change `list_features()` method for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service with new required argument order.
+* Add `python_operator_task` field for `databricks.sdk.service.jobs.RunTask`.
+* Add `python_operator_task` field for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `python_operator_task` field for `databricks.sdk.service.jobs.Task`.
+* Add `rolling` field for `databricks.sdk.service.ml.TimeWindow`.
+
+
+## Release v0.108.0 (2026-05-12)
+
+### API Changes
+* Add `disabled` field for `databricks.sdk.service.jobs.RunTask`.
+* Add `disabled` field for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `hubspot`, `github`, `outlook` and `smartsheet` enum values for `databricks.sdk.service.catalog.ConnectionType`.
+* [Breaking] Remove `unspecified_resource_name` field for `databricks.sdk.service.postgres.RequestedResource`.
+
+
+## Release v0.107.0 (2026-05-11)
+
+### Internal Changes
+* Pass `--force-refresh` to Databricks CLI `auth token` command so the SDK always receives a freshly minted token instead of a potentially stale one from the CLI's internal cache.
+
+### API Changes
+* Add `create_example()`, `delete_example()`, `get_example()`, `get_permission_levels()`, `get_permissions()`, `list_examples()`, `set_permissions()`, `update_example()` and `update_permissions()` methods for [w.supervisor_agents](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/supervisoragents/supervisor_agents.html) workspace-level service.
+* Add `meta_ads_options` field for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `meta_marketing` and `zendesk` enum values for `databricks.sdk.service.catalog.ConnectionType`.
+* Add `meta_marketing` enum value for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* Change `guidelines` field for `databricks.sdk.service.knowledgeassistants.Example` to no longer be required.
+* [Breaking] Change `guidelines` field for `databricks.sdk.service.knowledgeassistants.Example` to no longer be required.
+* Change `description` field for `databricks.sdk.service.supervisoragents.Tool` to no longer be required.
+* [Breaking] Change `description` field for `databricks.sdk.service.supervisoragents.Tool` to no longer be required.
+* Add `r2_temp_credentials` field for `databricks.sdk.service.catalog.TemporaryCredentials`.
+* Add `zendesk_support_options` field for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `azure_key_info` field for `databricks.sdk.service.provisioning.CreateCustomerManagedKeyRequest`.
+* Add `target_qps` field for `databricks.sdk.service.vectorsearch.CreateEndpoint`.
+* Add `requested_target_qps` field for `databricks.sdk.service.vectorsearch.EndpointScalingInfo`.
+* Add `target_qps` field for `databricks.sdk.service.vectorsearch.PatchEndpointRequest`.
+* Add `jira` and `zendesk` enum values for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* [Breaking] Remove `min_qps` field for `databricks.sdk.service.vectorsearch.CreateEndpoint`.
+* [Breaking] Remove `requested_min_qps` field for `databricks.sdk.service.vectorsearch.EndpointScalingInfo`.
+* [Breaking] Remove `min_qps` field for `databricks.sdk.service.vectorsearch.PatchEndpointRequest`.
+* Add `get_permission_levels()`, `get_permissions()`, `set_permissions()` and `update_permissions()` methods for [w.vector_search_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vectorsearch/vector_search_endpoints.html) workspace-level service.
+* Add `kafka_options` field for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `private_access` field for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicy`.
+* Add `account_api`, `account_databricks_one` and `account_ui` fields for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicyRequestDestination`.
+* Add `scope_qualifier` field for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicyWorkspaceApiDestination`.
+* Add `display_name` and `preview_phase` fields for `databricks.sdk.service.settingsv2.SettingsMetadata`.
+* Add `columns_to_index` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecRequest`.
+* Add `columns_to_index` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecResponse`.
+
+
+## Release v0.106.0 (2026-04-30)
+
+### Bug Fixes
+* Fixed Databricks CLI `--profile` fallback by detecting the CLI version at init time. The previous error-based detection was broken because `--profile` is a global Cobra flag silently accepted by old CLIs.
+
+### Internal Changes
+* Detect Databricks CLI version at init time via `databricks version`, enabling version-gated flag support without additional subprocess calls.
+* Validate Databricks CLI configuration at `DatabricksCliTokenSource.__init__` time. Misconfiguration (missing profile and host, or `--profile`-unsupported CLI without a host fallback) now surfaces as `IOError` synchronously from construction rather than lazily from the first `refresh()` call. The exception type matches the previous `refresh()`-time behaviour, so callers who already catch `IOError` are unaffected.
+
+### API Changes
+* Add [w.temporary_volume_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/temporary_volume_credentials.html) workspace-level service.
+* Add `get_permission_levels()`, `get_permissions()`, `set_permissions()` and `update_permissions()` methods for [w.knowledge_assistants](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/knowledgeassistants/knowledge_assistants.html) workspace-level service.
+* Add `undelete_project()` method for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `thumbnail_url` field for `databricks.sdk.service.apps.App`.
+* Add `confidential_compute_type` field for `databricks.sdk.service.compute.GcpAttributes`.
+* Add `jira_options`, `outlook_options` and `smartsheet_options` fields for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `google_ads_config` field for `databricks.sdk.service.pipelines.SourceConfig`.
+* Add `replace_existing` field for `databricks.sdk.service.postgres.CreateBranchRequest`.
+* Add `replace_existing` field for `databricks.sdk.service.postgres.CreateEndpointRequest`.
+* Add `purge` field for `databricks.sdk.service.postgres.DeleteProjectRequest`.
+* Add `show_deleted` field for `databricks.sdk.service.postgres.ListProjectsRequest`.
+* Add `delete_time` and `purge_time` fields for `databricks.sdk.service.postgres.Project`.
+* Add `uc_connection` field for `databricks.sdk.service.supervisoragents.Tool`.
+* Change `name` field for `databricks.sdk.service.supervisoragents.Connection` to no longer be required.
+* [Breaking] Change `name` field for `databricks.sdk.service.supervisoragents.Connection` to no longer be required.
+* Add `databricks.sdk.service.disasterrecovery` package.
+* Add [a.disaster_recovery](https://databricks-sdk-py.readthedocs.io/en/latest/account/disasterrecovery/disaster_recovery.html) account-level service.
+* Add `create_example()`, `delete_example()`, `get_example()`, `list_examples()` and `update_example()` methods for [w.knowledge_assistants](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/knowledgeassistants/knowledge_assistants.html) workspace-level service.
+* Add `delta_table_name` field for `databricks.sdk.service.ml.BackfillSource`.
+* Add `confluence_options` field for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `confluence` enum value for `databricks.sdk.service.catalog.ConnectionType`.
+* Add `confluence` enum value for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* Change `description` field for `databricks.sdk.service.supervisoragents.SupervisorAgent` to no longer be required.
+* [Breaking] Change `description` field for `databricks.sdk.service.supervisoragents.SupervisorAgent` to no longer be required.
+* [Breaking] Remove `connection` field for `databricks.sdk.service.supervisoragents.Tool`.
+
+
+## Release v0.105.0 (2026-04-23)
+
+### API Changes
+* Add `databricks.sdk.service.supervisoragents` package.
+* Add [w.secrets_uc](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/secrets_uc.html) workspace-level service.
+* Add [w.supervisor_agents](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/supervisoragents/supervisor_agents.html) workspace-level service.
+* Add `update()` method for [w.tokens](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/tokens.html) workspace-level service.
+* Add `etag` field for `databricks.sdk.service.dashboards.GenieSpace`.
+* Add `etag` field for `databricks.sdk.service.dashboards.GenieUpdateSpaceRequest`.
+* Add `branch_id` field for `databricks.sdk.service.postgres.BranchStatus`.
+* Add `catalog_id` field for `databricks.sdk.service.postgres.CatalogCatalogStatus`.
+* Add `database_id` field for `databricks.sdk.service.postgres.DatabaseDatabaseStatus`.
+* Add `endpoint_id` field for `databricks.sdk.service.postgres.EndpointStatus`.
+* Add `project_id` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* Add `role_id` field for `databricks.sdk.service.postgres.RoleRoleStatus`.
+* Add `project` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableStatus`.
+* Add `manual` field for `databricks.sdk.service.provisioning.CreateGcpKeyInfo`.
+* Add `manual` field for `databricks.sdk.service.provisioning.GcpKeyInfo`.
+* Add `apps_runtime` and `lakebase_runtime` fields for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicyRequestDestination`.
+* Add `blocked_internet_destinations` field for `databricks.sdk.service.settings.EgressNetworkPolicyNetworkAccessPolicy`.
+* Add `columns_to_sync` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecResponse`.
+* Add `breaking_change` enum value for `databricks.sdk.service.jobs.TerminationCodeCode`.
+* [Breaking] Change `update_catalog_config()` method for [w.data_classification](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dataclassification/data_classification.html) workspace-level service. Method path has changed.
+* [Breaking] Change `update_default_workspace_base_environment()` method for [w.environments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/environments/environments.html) workspace-level service. Method path has changed.
+* [Breaking] Change `update_knowledge_assistant()` method for [w.knowledge_assistants](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/knowledgeassistants/knowledge_assistants.html) workspace-level service. Method path has changed.
+* [Breaking] Change `update_branch()`, `update_database()`, `update_endpoint()`, `update_project()` and `update_role()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service. Method path has changed.
+* [Breaking] Change `update_default_warehouse_override()` method for [w.warehouses](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sql/warehouses.html) workspace-level service. Method path has changed.
+
+
+## Release v0.104.0 (2026-04-23)
+
+### Bug Fixes
+
+* Add `X-Databricks-Org-Id` header to `WorkspaceExt.upload()` and `WorkspaceExt.download()` for SPOG host compatibility.
+* `WorkspaceClient.get_workspace_id()` now returns `Config.workspace_id` directly when set, instead of calling `/api/2.0/preview/scim/v2/Me`. This removes an API round-trip on every call where the workspace ID is already known (profile, `?o=` query param, env var, or host metadata) and fixes a failure on SPOG hosts where the unauthenticated probe request was rejected with `Unable to load OAuth Config`.
+* Add `X-Databricks-Org-Id` header to `SharesExt.list()` for SPOG host compatibility.
+
+### Internal Changes
+
+* Expanded AI agent detection: added Goose, Amp, Augment, Copilot (VS Code), Kiro, Windsurf. Honors the `AGENT=<name>` standard (resolves to a known product if the value matches one, otherwise `unknown`). Presence-only env var matchers now treat an empty string as "set" for parity with the Go and Java SDKs. Explicit agent env vars (e.g. `CLAUDECODE`, `GOOSE_TERMINAL`) always take precedence over the generic `AGENT=<name>` signal. When multiple agent env vars are present (e.g. a Cursor CLI subagent invoked from Claude Code), the user-agent reports `agent/multiple`.
+
+
+## Release v0.103.0 (2026-04-20)
+
+### New Features and Improvements
+* Add support for unified hosts. A single configuration profile can now be used for both account-level and workspace-level operations when the host supports it and both `account_id` and `workspace_id` are available. The `experimental_is_unified_host` flag has been removed; unified host detection is now automatic.
+* Accept `DATABRICKS_OIDC_TOKEN_FILEPATH` environment variable for consistency with other Databricks SDKs (Go, CLI, Terraform). The previous `DATABRICKS_OIDC_TOKEN_FILE` is still supported as an alias.
+
+### Breaking Changes
+* Drop support for Python 3.8 and 3.9. The minimum supported Python version is now 3.10, in line with the oldest supported Databricks Runtime LTS (DBR 13.3).
+
+### Internal Changes
+* Replace the async-disabling mechanism on token refresh failure with a 1-minute retry backoff. Previously, a single failed async refresh would disable proactive token renewal until the token expired. Now, the SDK waits a short cooldown period and retries, improving resilience to transient errors.
+* Extract `_resolve_profile` to simplify config file loading and improve `__settings__` error messages.
+* Resolve `token_audience` from the `token_federation_default_oidc_audiences` field in the host metadata discovery endpoint, removing the need for explicit audience configuration.
+
+### API Changes
+* Add `create_catalog()`, `create_synced_table()`, `delete_catalog()`, `delete_synced_table()`, `get_catalog()` and `get_synced_table()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
+* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+* Add `effective_file_event_queue` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+* Add `column_selection` field for `databricks.sdk.service.ml.Function`.
+* Add `cascade` field for `databricks.sdk.service.pipelines.DeletePipelineRequest`.
+* Add `default_branch` field for `databricks.sdk.service.postgres.ProjectSpec`.
+* Add `default_branch` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* Add `ingress` and `ingress_dry_run` fields for `databricks.sdk.service.settings.AccountNetworkPolicy`.
+* Add `delete_app_thumbnail()` and `update_app_thumbnail()` methods for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps/apps.html) workspace-level service.
+* Add `create_message_comment()`, `list_conversation_comments()` and `list_message_comments()` methods for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service.
+* Add `apply_environment()` method for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines/pipelines.html) workspace-level service.
+* Add `name` and `permission` fields for `databricks.sdk.service.apps.AppResourceApp`.
+* Add `managed_encryption_settings` field for `databricks.sdk.service.catalog.CatalogInfo`.
+* Add `managed_encryption_settings` field for `databricks.sdk.service.catalog.CreateCatalog`.
+* Add `managed_encryption_settings` field for `databricks.sdk.service.catalog.UpdateCatalog`.
+* Add `comment` field for `databricks.sdk.service.dashboards.GenieFeedback`.
+* Add `thoughts` field for `databricks.sdk.service.dashboards.GenieQueryAttachment`.
+* Add `comment` field for `databricks.sdk.service.dashboards.GenieSendMessageFeedbackRequest`.
+* Add `request_source` field for `databricks.sdk.service.ml.DataSource`.
+* Add `is_online` field for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `connector_options` field for `databricks.sdk.service.pipelines.SchemaSpec`.
+* Add `connector_options` field for `databricks.sdk.service.pipelines.TableSpec`.
+* Add `scopes` field for `databricks.sdk.service.settings.CreateOboTokenRequest`.
+* Add `gcp_endpoint` field for `databricks.sdk.service.settings.CreatePrivateEndpointRule`.
+* Add `scopes` field for `databricks.sdk.service.settings.CreateTokenRequest`.
+* Add `gcp_endpoint` field for `databricks.sdk.service.settings.NccPrivateEndpointRule`.
+* Add `gcp_endpoint` field for `databricks.sdk.service.settings.UpdatePrivateEndpointRule`.
+* Add `sql_state` field for `databricks.sdk.service.sql.StatementStatus`.
+* Add `usage_policy_id` field for `databricks.sdk.service.vectorsearch.CreateEndpoint`.
+* Add `index_subtype` field for `databricks.sdk.service.vectorsearch.CreateVectorIndexRequest`.
+* Add `budget_policy_id` field for `databricks.sdk.service.vectorsearch.EndpointInfo`.
+* Add `index_subtype` field for `databricks.sdk.service.vectorsearch.MiniVectorIndex`.
+* Add `budget_policy_id` field for `databricks.sdk.service.vectorsearch.PatchEndpointBudgetPolicyResponse`.
+* Add `index_subtype` field for `databricks.sdk.service.vectorsearch.VectorIndex`.
+* Add `table_delta_uniform_iceberg_external_deltasharing` enum value for `databricks.sdk.service.catalog.SecurableKind`.
+* Add `google_drive` enum value for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* Add `storage_optimized` enum value for `databricks.sdk.service.vectorsearch.EndpointType`.
+* [Breaking] Remove `project` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableSpec`.
+* [Breaking] Remove `apps` and `lakebase` fields for `databricks.sdk.service.settings.CustomerFacingIngressNetworkPolicyRequestDestination`.
+
+
+## Release v0.102.0 (2026-03-19)
+
+### New Features and Improvements
+
+* Added automatic detection of AI coding agents (Antigravity, Claude Code, Cline, Codex, Copilot CLI, Cursor, Gemini CLI, OpenCode) in the user-agent string. The SDK now appends `agent/<name>` to HTTP request headers when running inside a known AI agent environment.
+
+### API Changes
+* Add `disable_gov_tag_creation` field for `databricks.sdk.service.settings.RestrictWorkspaceAdminsMessage`.
+* Add `disable_gov_tag_creation` field for `databricks.sdk.service.settingsv2.RestrictWorkspaceAdminsMessage`.
+
+
+## Release v0.101.0 (2026-03-18)
+
+### API Changes
+* Add `databricks.sdk.service.environments` package.
+* Add [w.environments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/environments/environments.html) workspace-level service.
+* Add `parent_path` field for `databricks.sdk.service.dashboards.GenieSpace`.
+* Add `can_create_app` enum value for `databricks.sdk.service.iam.PermissionLevel`.
+
+
+## Release v0.100.0 (2026-03-16)
+
+### New Features and Improvements
+* Support `default_profile` in `[__settings__]` section of `.databrickscfg` for consistent default profile resolution across CLI and SDKs.
+
+### API Changes
+* Add `alert_output` field for `databricks.sdk.service.jobs.RunOutput`.
+* Add `alert_task` field for `databricks.sdk.service.jobs.RunTask`.
+* Add `alert_task` field for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `alert_task` field for `databricks.sdk.service.jobs.Task`.
+
+
+## Release v0.99.0 (2026-03-12)
+
+### API Changes
+* Add `connector_type` and `data_staging_options` fields for `databricks.sdk.service.pipelines.IngestionPipelineDefinition`.
+* Add `ingestion_source_catalog_name`, `ingestion_source_connection_name`, `ingestion_source_schema_name`, `ingestion_source_table_name` and `ingestion_source_table_version` fields for `databricks.sdk.service.pipelines.Origin`.
+* Add `sub_domain` field for `databricks.sdk.service.serving.ExternalFunctionRequest`.
+
+
+## Release v0.98.0 (2026-03-11)
+
+### API Changes
+* Add `genie_create_eval_run()`, `genie_get_eval_result_details()`, `genie_get_eval_run()`, `genie_list_eval_results()` and `genie_list_eval_runs()` methods for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service.
+* Add `update_role()` method for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `telemetry_export_destinations` field for `databricks.sdk.service.apps.App`.
+* Add `entities` and `timeseries_column` fields for `databricks.sdk.service.ml.Feature`.
+* Add `aggregation_function` field for `databricks.sdk.service.ml.Function`.
+* Add `filter_condition` field for `databricks.sdk.service.ml.KafkaSource`.
+* Add `attributes` field for `databricks.sdk.service.postgres.RoleRoleStatus`.
+* [Breaking] Change `entity_columns` and `timeseries_column` fields for `databricks.sdk.service.ml.DeltaTableSource` to no longer be required.
+* Change `entity_columns` and `timeseries_column` fields for `databricks.sdk.service.ml.DeltaTableSource` to no longer be required.
+* Change `inputs` field for `databricks.sdk.service.ml.Feature` to no longer be required.
+* [Breaking] Change `inputs` field for `databricks.sdk.service.ml.Feature` to no longer be required.
+* [Breaking] Change `function_type` field for `databricks.sdk.service.ml.Function` to no longer be required.
+* Change `function_type` field for `databricks.sdk.service.ml.Function` to no longer be required.
+* Change `entity_column_identifiers` and `timeseries_column_identifier` fields for `databricks.sdk.service.ml.KafkaSource` to no longer be required.
+* [Breaking] Change `entity_column_identifiers` and `timeseries_column_identifier` fields for `databricks.sdk.service.ml.KafkaSource` to no longer be required.
+
+
+## Release v0.97.0 (2026-03-09)
+
+### Bug Fixes
+* Fixed Databricks CLI authentication to detect when the cached token's scopes don't match the SDK's configured scopes. Previously, a scope mismatch was silently ignored, causing requests to use wrong permissions. The SDK now raises an error with instructions to re-authenticate.
+
+### API Changes
+* Add `databricks.sdk.service.dataclassification` and `databricks.sdk.service.knowledgeassistants` packages.
+* Add [w.data_classification](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dataclassification/data_classification.html) workspace-level service.
+* Add [w.knowledge_assistants](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/knowledgeassistants/knowledge_assistants.html) workspace-level service.
+
+
+## Release v0.96.0 (2026-03-03)
+
+### Internal Changes
+* Implement dynamic auth token stale period based on initial token lifetime. Increased up to 20 mins for standard OAuth with proportionally shorter periods for short-lived tokens. Providing a stale_duration in the constructor of the Refreshable class will use that fixed value instead. To match the previous default, pass stale_duration=timedelta(minutes=5).
+
+
+## Release v0.95.0 (2026-03-02)
+
+### New Features and Improvements
+* Added `Config.discovery_url` config field (`DATABRICKS_DISCOVERY_URL` env var). When set, OIDC endpoints are fetched directly from this URL instead of the default host-type-based logic. Mirrors `discoveryUrl` in the Java SDK.
+* The OAuth token cache filename now includes the config profile name (if set) and uses a serialized map to prevent hash collisions. All users will need to reauthenticate once after upgrading.
+
+### API Changes
+* Add `dataframe_schema`, `filter_condition` and `transformation_sql` fields for `databricks.sdk.service.ml.DeltaTableSource`.
+* Add `environment_version` field for `databricks.sdk.service.pipelines.PipelinesEnvironment`.
+* Add `reset_checkpoint_selection` field for `databricks.sdk.service.pipelines.StartUpdate`.
+* [Breaking] Remove `oauth2_app_client_id` and `oauth2_app_integration_id` fields for `databricks.sdk.service.apps.Space`.
+* Add `create_database()`, `delete_database()`, `get_database()`, `list_databases()` and `update_database()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `postgres` field for `databricks.sdk.service.apps.AppResource`.
+* Add `enable_pg_native_login` field for `databricks.sdk.service.postgres.ProjectSpec`.
+* Add `enable_pg_native_login` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* [Breaking] Remove `node_type_flexibility` field for `databricks.sdk.service.compute.EditInstancePool`.
+
+
+## Release v0.94.0 (2026-02-26)
+
+### New Features and Improvements
+* Added `Config.discovery_url` config field (`DATABRICKS_DISCOVERY_URL` env var). When set, OIDC endpoints are fetched directly from this URL instead of the default host-type-based logic. Mirrors `discoveryUrl` in the Java SDK.
+
+### Bug Fixes
+* Pass `--profile` to CLI token source when profile is set, and add read-fallback to migrate legacy host-keyed tokens to profile keys.
+
+### API Changes
+* Add `effective_publishing_mode` field for `databricks.sdk.service.pipelines.GetPipelineResponse`.
+* Add `dbr_autoscale` enum value for `databricks.sdk.service.compute.EventDetailsCause`.
+* Change `output_catalog` field for `databricks.sdk.service.cleanrooms.CreateCleanRoomOutputCatalogResponse` to be required.
+* [Breaking] Remove `internal_attributes` field for `databricks.sdk.service.sharing.Table`.
+* [Breaking] Remove `internal_attributes` field for `databricks.sdk.service.sharing.Volume`.
+
+
+## Release v0.93.0 (2026-02-25)
+
+### API Changes
+* Add `parameters` field for `databricks.sdk.service.pipelines.StartUpdate`.
+* Add `parameters` field for `databricks.sdk.service.pipelines.UpdateInfo`.
+* [Breaking] Change `get_download_full_query_result()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service with new required argument order.
+* [Breaking] Change `name` field for `databricks.sdk.service.apps.Space` to be required.
+* Change `name` field for `databricks.sdk.service.apps.Space` to be required.
+* [Breaking] Change `id` and `user_id` fields for `databricks.sdk.service.dashboards.GenieConversation` to no longer be required.
+* [Breaking] Change `created_timestamp` and `title` fields for `databricks.sdk.service.dashboards.GenieConversationSummary` to no longer be required.
+* [Breaking] Change `download_id_signature` field for `databricks.sdk.service.dashboards.GenieGetDownloadFullQueryResultRequest` to be required.
+* [Breaking] Change `id` field for `databricks.sdk.service.dashboards.GenieMessage` to no longer be required.
+
+
+## Release v0.92.0 (2026-02-24)
+
+### Documentation
+* Added "Retries" section to README.
+
+### API Changes
+* Add `read_only_host` field for `databricks.sdk.service.postgres.EndpointHosts`.
+* Add `group` field for `databricks.sdk.service.postgres.EndpointSpec`.
+* Add `group` field for `databricks.sdk.service.postgres.EndpointStatus`.
+* Add `initial_endpoint_spec` field for `databricks.sdk.service.postgres.Project`.
+* Add `degraded` enum value for `databricks.sdk.service.postgres.EndpointStatusState`.
+* Add `patch_endpoint()` method for [w.vector_search_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vectorsearch/vector_search_endpoints.html) workspace-level service.
+* Add `app` field for `databricks.sdk.service.apps.AppResource`.
+* Add `securable_kind` field for `databricks.sdk.service.apps.AppResourceUcSecurable`.
+* Add `min_qps` field for `databricks.sdk.service.vectorsearch.CreateEndpoint`.
+* Add `scaling_info` field for `databricks.sdk.service.vectorsearch.EndpointInfo`.
+* Add `modify` enum value for `databricks.sdk.service.apps.AppResourceUcSecurableUcSecurablePermission`.
+* Add `could_not_get_dashboard_schema_exception` enum value for `databricks.sdk.service.dashboards.MessageErrorType`.
+* Add `replace_where_overrides` field for `databricks.sdk.service.pipelines.StartUpdate`.
+* Add `hivemetastore_connectivity_failure` enum value for `databricks.sdk.service.compute.TerminationReasonCode`.
+* Add `hivemetastore_connectivity_failure` enum value for `databricks.sdk.service.sql.TerminationReasonCode`.
+
+
+## Release v0.91.0 (2026-02-19)
+
+### Bug Fixes
+* Make `useragent.with_extra()` idempotent to prevent User-Agent header growth in long-lived processes.
+
+### API Changes
+* Add `attributes` and `membership_roles` fields for `databricks.sdk.service.postgres.RoleRoleSpec`.
+* Add `membership_roles` field for `databricks.sdk.service.postgres.RoleRoleStatus`.
+* Add `general_access` enum value for `databricks.sdk.service.provisioning.EndpointUseCase`.
+
+
+## Release v0.90.0 (2026-02-18)
+
+### API Changes
+* Add `databricks.sdk.service.networking` package.
+* Add [a.endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/account/networking/endpoints.html) account-level service.
+* Add `create_space()`, `delete_space()`, `get_space()`, `get_space_operation()`, `list_spaces()` and `update_space()` methods for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps/apps.html) workspace-level service.
+* Add `space` field for `databricks.sdk.service.apps.App`.
+* Add `space` field for `databricks.sdk.service.apps.ListAppsRequest`.
+* Add `source_type`, `update_time` and `updated_by` fields for `databricks.sdk.service.catalog.EntityTagAssignment`.
+* Add `skip_notify` field for `databricks.sdk.service.dashboards.Subscription`.
+* Add `sparse_checkout` field for `databricks.sdk.service.jobs.GitSource`.
+* Add `disable_auto_optimization`, `max_retries`, `min_retry_interval_millis` and `retry_on_timeout` fields for `databricks.sdk.service.jobs.RunTask`.
+* Add `disable_auto_optimization`, `max_retries`, `min_retry_interval_millis` and `retry_on_timeout` fields for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `budget_policy_id` and `custom_tags` fields for `databricks.sdk.service.postgres.ProjectSpec`.
+* Add `budget_policy_id` and `custom_tags` fields for `databricks.sdk.service.postgres.ProjectStatus`.
+* Add `edgegrid_akamai` enum value for `databricks.sdk.service.catalog.CredentialType`.
+* Add `using_arguments` field for `databricks.sdk.service.catalog.ColumnMask`.
+* Add `effective_enable_file_events` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
+* Add `effective_enable_file_events` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+* Add `input_arguments` field for `databricks.sdk.service.catalog.TableRowFilter`.
+* Add `effective_enable_file_events` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+
+
+## Release v0.89.0 (2026-02-17)
+
+### New Features and Improvements
+* Remove cloud type restrictions from Azure/GCP credential providers. Azure and GCP authentication now works with any Databricks host when credentials are properly configured,enabling authentication against cloud-agnostic endpoints such as aliased hosts.
+
+
+## Release v0.88.0 (2026-02-12)
+
+### New Features and Improvements
+
+* FilesExt retry logic now respects a retry count limit in addition to the time-based timeout. Operations will stop retrying when either the retry count (`experimental_files_ext_cloud_api_max_retries`, default: 3) or timeout (`retry_timeout_seconds`) is exceeded, whichever comes first. This provides faster feedback when APIs are consistently unavailable.
+
+### Bug Fixes
+
+* FilesExt no longer retries on 500 (Internal Server Error) responses. These errors now fail immediately or fallback to alternative upload methods as appropriate.
+
+### API Changes
+* Deprecated `WorkspaceClient.serving_endpoints.get_open_ai_client()` and `WorkspaceClient.serving_endpoints.get_langchain_chat_open_ai_client()` methods in favor of dedicated packages. Users should migrate to `databricks-openai` (using `DatabricksOpenAI`) and `databricks-langchain` (using `ChatDatabricks`) respectively ([#1238](https://github.com/databricks/databricks-sdk-py/pull/1238)).
+
+
+## Release v0.87.0 (2026-02-11)
+
+### Bug Fixes
+
+* Fixed Databricks M2M OAuth to correctly use Databricks OIDC endpoints instead of incorrectly using Azure endpoints when `ARM_CLIENT_ID` is set. Added new `databricks_oidc_endpoints` property that returns only Databricks OIDC endpoints, and updated all Databricks OAuth flows to use it. The old `oidc_endpoints` property is deprecated but maintained for backward compatibility.
+
+
+## Release v0.86.0 (2026-02-10)
+
+### New Features and Improvements
+* Added `custom_headers` parameter to `WorkspaceClient` and `AccountClient` to support custom HTTP headers in all API requests ([#1245](https://github.com/databricks/databricks-sdk-py/pull/1245)).
+
+### API Changes
+* Add `id` field for `databricks.sdk.service.sharing.CreateRecipient`.
+* Add `id` field for `databricks.sdk.service.sharing.RecipientInfo`.
+* Add `id` field for `databricks.sdk.service.sharing.UpdateRecipient`.
+* Add `query_tags` field for `databricks.sdk.service.sql.ExecuteStatementRequest`.
+* Add `query_tags` field for `databricks.sdk.service.sql.QueryInfo`.
+* Add `uc_volume_misconfigured` enum value for `databricks.sdk.service.compute.EventType`.
+* Add `filters` field for `databricks.sdk.service.jobs.DashboardTask`.
+* Add `ssws_token` enum value for `databricks.sdk.service.catalog.CredentialType`.
+
+
+## Release v0.85.0 (2026-02-05)
+
+### API Changes
+* [Breaking] Change `username` field for `databricks.sdk.service.iamv2.User` to no longer be required.
+
+
+## Release v0.84.0 (2026-02-04)
+
+### API Changes
+* Add `base_environment` field for `databricks.sdk.service.compute.Environment`.
+
+
+## Release v0.83.0 (2026-02-03)
+
+### New Features and Improvements
+* Add support for single Profile for Account and Workspace operations in Unified Mode.
+
+### API Changes
+* Add `generate_download_full_query_result()` and `get_download_full_query_result()` methods for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service.
+* Add `active_instances` field for `databricks.sdk.service.apps.ComputeStatus`.
+* [Breaking] Change `create_role()` method for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service. HTTP method/verb has changed.
+* Add `compute` field for `databricks.sdk.service.jobs.RunTask`.
+* Add `compute` field for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `compute` field for `databricks.sdk.service.jobs.Task`.
+* Add `mtls_port_connectivity_failure` enum value for `databricks.sdk.service.compute.TerminationReasonCode`.
+* Add `mtls_port_connectivity_failure` enum value for `databricks.sdk.service.sql.TerminationReasonCode`.
+
+
+## Release v0.82.0 (2026-01-29)
+
+### API Changes
+* Add `backfill_source` field for `databricks.sdk.service.ml.KafkaConfig`.
+* Add `clone_mode` field for `databricks.sdk.service.pipelines.ClonePipelineRequest`.
+* Add `burst_scaling_enabled` field for `databricks.sdk.service.serving.ServedEntityInput`.
+* Add `burst_scaling_enabled` field for `databricks.sdk.service.serving.ServedEntityOutput`.
+* Add `burst_scaling_enabled` field for `databricks.sdk.service.serving.ServedModelInput`.
+* Add `burst_scaling_enabled` field for `databricks.sdk.service.serving.ServedModelOutput`.
+* [Breaking] Change `create_role()` method for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service with new required argument order.
+* Change `role_id` field for `databricks.sdk.service.postgres.CreateRoleRequest` to no longer be required.
+
+
+## Release v0.81.0 (2026-01-27)
+
+### API Changes
+* Add `postgres_role` field for `databricks.sdk.service.postgres.RoleRoleSpec`.
+* Add `postgres_role` field for `databricks.sdk.service.postgres.RoleRoleStatus`.
+* Add `purge` field for `databricks.sdk.service.sql.TrashAlertV2Request`.
+
+
+## Release v0.80.0 (2026-01-22)
+
+### Internal Changes
+
+* Support CLI Profiles for Unified Host.
+
+
+## Release v0.79.0 (2026-01-22)
+
+### API Changes
+* Add `full_refresh_window` field for `databricks.sdk.service.pipelines.IngestionPipelineDefinition`.
+* Add `auto_full_refresh_policy` field for `databricks.sdk.service.pipelines.TableSpecificConfig`.
+* Add `hosts` field for `databricks.sdk.service.postgres.EndpointStatus`.
+* Add `owner` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* Add `validity_check_configurations` field for `databricks.sdk.service.qualitymonitorv2.QualityMonitor`.
+* Add `burst_scaling_enabled` field for `databricks.sdk.service.serving.PtServedModel`.
+* Add `system_managed` enum value for `databricks.sdk.service.jobs.JobDeploymentKind`.
+* Add `endpoint_type_read_write` and `endpoint_type_read_only` enum values for `databricks.sdk.service.postgres.EndpointType`.
+* Add `deleted` enum value for `databricks.sdk.service.vectorsearch.EndpointStatusState`.
+* [Breaking] Remove `host`, `last_active_time`, `start_time` and `suspend_time` fields for `databricks.sdk.service.postgres.EndpointStatus`.
+* [Breaking] Remove `compute_last_active_time` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* [Breaking] Remove `read_write` and `read_only` enum values for `databricks.sdk.service.postgres.EndpointType`.
+* Add `create_default_warehouse_override()`, `delete_default_warehouse_override()`, `get_default_warehouse_override()`, `list_default_warehouse_overrides()` and `update_default_warehouse_override()` methods for [w.warehouses](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sql/warehouses.html) workspace-level service.
+* Add `driver_node_type_flexibility` and `worker_node_type_flexibility` fields for `databricks.sdk.service.compute.ClusterAttributes`.
+* Add `driver_node_type_flexibility` and `worker_node_type_flexibility` fields for `databricks.sdk.service.compute.ClusterDetails`.
+* Add `driver_node_type_flexibility` and `worker_node_type_flexibility` fields for `databricks.sdk.service.compute.ClusterSpec`.
+* Add `driver_node_type_flexibility` and `worker_node_type_flexibility` fields for `databricks.sdk.service.compute.CreateCluster`.
+* Add `node_type_flexibility` field for `databricks.sdk.service.compute.CreateInstancePool`.
+* Add `driver_node_type_flexibility` and `worker_node_type_flexibility` fields for `databricks.sdk.service.compute.EditCluster`.
+* Add `node_type_flexibility` field for `databricks.sdk.service.compute.EditInstancePool`.
+* Add `node_type_flexibility` field for `databricks.sdk.service.compute.GetInstancePool`.
+* Add `node_type_flexibility` field for `databricks.sdk.service.compute.InstancePoolAndStats`.
+* Add `driver_node_type_flexibility` and `worker_node_type_flexibility` fields for `databricks.sdk.service.compute.UpdateClusterResource`.
+* Add `expire_time` and `ttl` fields for `databricks.sdk.service.postgres.BranchSpec`.
+* Add `expire_time` field for `databricks.sdk.service.postgres.BranchStatus`.
+* [Breaking] Change `create_branch()`, `create_endpoint()` and `create_project()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service with new required argument order.
+* [Breaking] Change `branch_id` field for `databricks.sdk.service.postgres.CreateBranchRequest` to be required.
+* [Breaking] Change `endpoint_id` field for `databricks.sdk.service.postgres.CreateEndpointRequest` to be required.
+* [Breaking] Change `project_id` field for `databricks.sdk.service.postgres.CreateProjectRequest` to be required.
+* [Breaking] Remove `default` field for `databricks.sdk.service.postgres.BranchSpec`.
+* [Breaking] Remove `settings` field for `databricks.sdk.service.postgres.ProjectSpec`.
+* [Breaking] Remove `settings` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* Add `generate_database_credential()` method for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `get_public_account_user_preference()`, `list_account_user_preferences_metadata()` and `patch_public_account_user_preference()` methods for [a.account_settings_v2](https://databricks-sdk-py.readthedocs.io/en/latest/account/settingsv2/account_settings_v2.html) account-level service.
+* Add `stderr` field for `databricks.sdk.service.compute.InitScriptInfoAndExecutionDetails`.
+* Add `no_expiry` field for `databricks.sdk.service.postgres.BranchSpec`.
+* Add `outputs` field for `databricks.sdk.service.serving.QueryEndpointResponse`.
+* Add `session_id` field for `databricks.sdk.service.sql.QueryInfo`.
+* Add `principal_id` field for `databricks.sdk.service.workspace.CreateCredentialsRequest`.
+* Add `principal_id` field for `databricks.sdk.service.workspace.DeleteCredentialsRequest`.
+* Add `principal_id` field for `databricks.sdk.service.workspace.GetCredentialsRequest`.
+* Add `principal_id` field for `databricks.sdk.service.workspace.ListCredentialsRequest`.
+* Add `principal_id` field for `databricks.sdk.service.workspace.UpdateCredentialsRequest`.
+* Add `force` field for `databricks.sdk.service.pipelines.DeletePipelineRequest`.
+* Add `no_suspension` field for `databricks.sdk.service.postgres.EndpointSpec`.
+* Add `no_suspension` field for `databricks.sdk.service.postgres.ProjectDefaultEndpointSettings`.
+
+
+## Release v0.78.0 (2026-01-15)
+
+### New Features and Improvements
+
+* Increase async cache stale period from 3 to 5 minutes to cover the maximum monthly downtime of a 99.99% uptime SLA.
+
+### API Changes
+* Add `table_deltasharing_open_dir_based` enum value for `databricks.sdk.service.catalog.SecurableKind`.
+* Add `creating` and `create_failed` enum values for `databricks.sdk.service.settings.NccPrivateEndpointRulePrivateLinkConnectionState`.
+* [Breaking] Remove `access_modes` and `storage_location` fields for `databricks.sdk.service.sharing.Table`.
+* Add `error_message` field for `databricks.sdk.service.settings.CreatePrivateEndpointRule`.
+* Add `error_message` field for `databricks.sdk.service.settings.NccPrivateEndpointRule`.
+* Add `error_message` field for `databricks.sdk.service.settings.UpdatePrivateEndpointRule`.
+* Add `rate_limited` enum value for `databricks.sdk.service.compute.TerminationReasonCode`.
+* Add `rate_limited` enum value for `databricks.sdk.service.sql.TerminationReasonCode`.
+* [Breaking] Add long-running operation configuration for [PostgresAPI.delete_branch](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html#databricks.sdk.service.postgres.PostgresAPI.delete_branch) method.
+* [Breaking] Add long-running operation configuration for [PostgresAPI.delete_endpoint](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html#databricks.sdk.service.postgres.PostgresAPI.delete_endpoint) method.
+* [Breaking] Add long-running operation configuration for [PostgresAPI.delete_project](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html#databricks.sdk.service.postgres.PostgresAPI.delete_project) method.
+* [Breaking] Change `delete_branch()`, `delete_endpoint()` and `delete_project()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service to return `databricks.sdk.service.postgres.Operation` dataclass.
+* [Breaking] Remove `pgbouncer_settings` field for `databricks.sdk.service.postgres.EndpointSettings`.
+* [Breaking] Remove `pooler_mode` field for `databricks.sdk.service.postgres.EndpointSpec`.
+* [Breaking] Remove `pooler_mode` field for `databricks.sdk.service.postgres.EndpointStatus`.
+* [Breaking] Remove `pgbouncer_settings` field for `databricks.sdk.service.postgres.ProjectDefaultEndpointSettings`.
+
+
+## Release v0.77.0 (2026-01-06)
+
+### API Changes
+* Add `git_repository` field for `databricks.sdk.service.apps.App`.
+* Add `git_source` field for `databricks.sdk.service.apps.AppDeployment`.
+* Add `experiment_spec` field for `databricks.sdk.service.apps.AppManifestAppResourceSpec`.
+* Add `experiment` field for `databricks.sdk.service.apps.AppResource`.
+* Add `git_repository` field for `databricks.sdk.service.apps.AppUpdate`.
+* Add `excluded_table_full_names` field for `databricks.sdk.service.dataquality.AnomalyDetectionConfig`.
+* Add `group_name` field for `databricks.sdk.service.jobs.JobRunAs`.
+* Add `row_filter` field for `databricks.sdk.service.pipelines.TableSpecificConfig`.
+* Add `spec` and `status` fields for `databricks.sdk.service.postgres.Endpoint`.
+* Add `excluded_table_full_names` field for `databricks.sdk.service.qualitymonitorv2.AnomalyDetectionConfig`.
+* Add `execute` and `use_connection` enum values for `databricks.sdk.service.apps.AppManifestAppResourceUcSecurableSpecUcSecurablePermission`.
+* Add `function` and `connection` enum values for `databricks.sdk.service.apps.AppManifestAppResourceUcSecurableSpecUcSecurableType`.
+* Add `select`, `execute` and `use_connection` enum values for `databricks.sdk.service.apps.AppResourceUcSecurableUcSecurablePermission`.
+* Add `table`, `function` and `connection` enum values for `databricks.sdk.service.apps.AppResourceUcSecurableUcSecurableType`.
+* [Breaking] Remove `apply_environment()` method for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines/pipelines.html) workspace-level service.
+* [Breaking] Remove `autoscaling_limit_max_cu`, `autoscaling_limit_min_cu`, `current_state`, `disabled`, `effective_autoscaling_limit_max_cu`, `effective_autoscaling_limit_min_cu`, `effective_disabled`, `effective_pooler_mode`, `effective_settings`, `effective_suspend_timeout_duration`, `endpoint_type`, `host`, `last_active_time`, `pending_state`, `pooler_mode`, `settings`, `start_time`, `suspend_time` and `suspend_timeout_duration` fields for `databricks.sdk.service.postgres.Endpoint`.
+* Add `create_role()`, `delete_role()`, `get_role()` and `list_roles()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `destination_source_securable` field for `databricks.sdk.service.catalog.AccessRequestDestinations`.
+* Add `spec` and `status` fields for `databricks.sdk.service.postgres.Branch`.
+* Add `spec` and `status` fields for `databricks.sdk.service.postgres.Project`.
+* Add `access_modes` and `storage_location` fields for `databricks.sdk.service.sharing.Table`.
+* [Breaking] Remove `current_state`, `default`, `effective_default`, `effective_is_protected`, `effective_source_branch`, `effective_source_branch_lsn`, `effective_source_branch_time`, `is_protected`, `logical_size_bytes`, `pending_state`, `source_branch`, `source_branch_lsn`, `source_branch_time` and `state_change_time` fields for `databricks.sdk.service.postgres.Branch`.
+* [Breaking] Remove `branch_logical_size_limit_bytes`, `compute_last_active_time`, `default_endpoint_settings`, `display_name`, `effective_default_endpoint_settings`, `effective_display_name`, `effective_history_retention_duration`, `effective_pg_version`, `effective_settings`, `history_retention_duration`, `pg_version`, `settings` and `synthetic_storage_size_bytes` fields for `databricks.sdk.service.postgres.Project`.
+* Add `command` and `env_vars` fields for `databricks.sdk.service.apps.AppDeployment`.
+* Add `full_name` and `securable_type` fields for `databricks.sdk.service.catalog.AccessRequestDestinations`.
+* [Breaking] Change `delete_kafka_config()` method for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service . Method path has changed.
+* [Breaking] Change long-running operation configuration for [PostgresAPI.delete_role](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html#databricks.sdk.service.postgres.PostgresAPI.delete_role) method . Long running operation response type changed to `None` dataclass.
+
+
+## Release v0.76.0 (2025-12-17)
+
+### New Features and Improvements
+* Add support for unified hosts with experimental flag
+
+
+## Release v0.75.0 (2025-12-17)
+
+### API Changes
+* Add `databricks.sdk.service.postgres` package.
+* Add [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `apply_environment()` method for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines/pipelines.html) workspace-level service.
+* Add `effective_usage_policy_id` and `usage_policy_id` fields for `databricks.sdk.service.apps.App`.
+* Add `external_access_enabled` field for `databricks.sdk.service.catalog.CreateAccountsMetastore`.
+* Add `external_access_enabled` field for `databricks.sdk.service.catalog.CreateMetastore`.
+* Add `external_access_enabled` field for `databricks.sdk.service.catalog.UpdateAccountsMetastore`.
+* Add `external_access_enabled` field for `databricks.sdk.service.catalog.UpdateMetastore`.
+* Add `usage_policy_id` field for `databricks.sdk.service.ml.OnlineStore`.
+* Add `error_message` field for `databricks.sdk.service.settings.CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule`.
+* Add `error_message` field for `databricks.sdk.service.settings.NccAzurePrivateEndpointRule`.
+* Add `control_plane_connection_failure` and `control_plane_connection_failure_due_to_misconfig` enum values for `databricks.sdk.service.compute.TerminationReasonCode`.
+* Add `control_plane_connection_failure` and `control_plane_connection_failure_due_to_misconfig` enum values for `databricks.sdk.service.sql.TerminationReasonCode`.
+
+
+## Release v0.74.0 (2025-12-10)
+
+### New Features and Improvements
+* Add new auth type (`runtime-oauth`) for notebooks: Introduce a new authentication mechanism that allows notebooks to authenticate using OAuth tokens
+
+### Bug Fixes
+
+- Fixed an issue where download from Shared Volumes could fail by falling back to Files API whenever Presigned URLs are not available.
+
+### API Changes
+* Add `create_space()` and `update_space()` methods for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service.
+* Add `create_kafka_config()`, `delete_kafka_config()`, `get_kafka_config()`, `list_kafka_configs()` and `update_kafka_config()` methods for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service.
+* Add `delete_online_table()` method for [w.feature_store](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_store.html) workspace-level service.
+* Add `retrieve_user_visible_metrics()` method for [w.vector_search_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vectorsearch/vector_search_endpoints.html) workspace-level service.
+* Add `major_version` field for `databricks.sdk.service.billing.CreateBillingUsageDashboardRequest`.
+* Add `include_serialized_space` field for `databricks.sdk.service.dashboards.GenieGetSpaceRequest`.
+* Add `serialized_space` field for `databricks.sdk.service.dashboards.GenieSpace`.
+* Add `purpose` field for `databricks.sdk.service.dashboards.TextAttachment`.
+* Add `budget_policy_id` field for `databricks.sdk.service.database.NewPipelineSpec`.
+* Add `model` field for `databricks.sdk.service.jobs.TriggerSettings`.
+* Add `kafka_source` field for `databricks.sdk.service.ml.DataSource`.
+* Add `connection_parameters` field for `databricks.sdk.service.pipelines.IngestionGatewayPipelineDefinition`.
+* Add `ingest_from_uc_foreign_catalog` field for `databricks.sdk.service.pipelines.IngestionPipelineDefinition`.
+* Add `rewind_spec` field for `databricks.sdk.service.pipelines.StartUpdate`.
+* Add `type_text` field for `databricks.sdk.service.vectorsearch.ColumnInfo`.
+* Add `foreign_catalog` enum value for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* Add `creating` and `create_failed` enum values for `databricks.sdk.service.settings.CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState`.
+* Add `creating` and `create_failed` enum values for `databricks.sdk.service.settings.NccAzurePrivateEndpointRuleConnectionState`.
+* [Breaking] Change `destinations` field for `databricks.sdk.service.catalog.AccessRequestDestinations` to no longer be required.
+* Change `destinations` field for `databricks.sdk.service.catalog.AccessRequestDestinations` to no longer be required.
+* [Breaking] Change `online_store_config` field for `databricks.sdk.service.ml.MaterializedFeature` to type `databricks.sdk.service.ml.OnlineStoreConfig` dataclass.
+* Add [w.workspace_entity_tag_assignments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/tags/workspace_entity_tag_assignments.html) workspace-level service.
+* Add `clone()` method for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines/pipelines.html) workspace-level service.
+* Add `dataset_catalog` and `dataset_schema` fields for `databricks.sdk.service.dashboards.CreateDashboardRequest`.
+* Add `dataset_catalog` and `dataset_schema` fields for `databricks.sdk.service.dashboards.UpdateDashboardRequest`.
+* Add `purge_data` field for `databricks.sdk.service.database.DeleteSyncedDatabaseTableRequest`.
+* Add `cron_schedule` field for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `truncation` field for `databricks.sdk.service.pipelines.PipelineEvent`.
+* Add `gcp_service_account` field for `databricks.sdk.service.provisioning.CreateGcpKeyInfo`.
+* Add `gcp_service_account` field for `databricks.sdk.service.provisioning.GcpKeyInfo`.
+* Add `has_delta_uniform_iceberg` field for `databricks.sdk.service.sharing.TableInternalAttributes`.
+* Add `foreign_table` and `volume` enum values for `databricks.sdk.service.sharing.SharedDataObjectDataObjectType`.
+* Change `time_window` field for `databricks.sdk.service.ml.Feature` to no longer be required.
+* [Breaking] Change `time_window` field for `databricks.sdk.service.ml.Feature` to no longer be required.
+
+
 ## Release v0.73.0 (2025-11-05)
 
 ### Security

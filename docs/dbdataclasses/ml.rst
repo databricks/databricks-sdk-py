@@ -62,11 +62,43 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SYSTEM_TRANSITION
       :value: "SYSTEM_TRANSITION"
 
+.. autoclass:: AggregationFunction
+   :members:
+   :undoc-members:
+
 .. autoclass:: ApproveTransitionRequestResponse
    :members:
    :undoc-members:
 
+.. autoclass:: ApproxCountDistinctFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: ApproxPercentileFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: AuthConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: AvgFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: BackfillSource
+   :members:
+   :undoc-members:
+
 .. autoclass:: BatchCreateMaterializedFeaturesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ColumnIdentifier
+   :members:
+   :undoc-members:
+
+.. autoclass:: ColumnSelection
    :members:
    :undoc-members:
 
@@ -99,6 +131,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ContinuousWindow
+   :members:
+   :undoc-members:
+
+.. autoclass:: CountFunction
    :members:
    :undoc-members:
 
@@ -139,6 +175,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CreateWebhookResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: CronSchedule
    :members:
    :undoc-members:
 
@@ -207,6 +247,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeltaTableSource
+   :members:
+   :undoc-members:
+
+.. autoclass:: DirectMtlsConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: DirectSchemas
+   :members:
+   :undoc-members:
+
+.. autoclass:: EntityColumn
    :members:
    :undoc-members:
 
@@ -279,11 +331,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: FieldDefinition
+   :members:
+   :undoc-members:
+
 .. autoclass:: FileInfo
    :members:
    :undoc-members:
 
 .. autoclass:: FinalizeLoggedModelResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: FirstFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: FlatSchema
    :members:
    :undoc-members:
 
@@ -317,6 +381,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: FunctionFunctionType
+
+   Deprecated: Use the function-specific messages in AggregationFunction.function_type oneof instead. Kept for backwards compatibility.
 
    .. py:attribute:: APPROX_COUNT_DISTINCT
       :value: "APPROX_COUNT_DISTINCT"
@@ -409,6 +475,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: IngestionConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: IngestionDestination
+   :members:
+   :undoc-members:
+
 .. autoclass:: InputTag
    :members:
    :undoc-members:
@@ -422,6 +496,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: JobSpecWithoutSecret
+   :members:
+   :undoc-members:
+
+.. autoclass:: KafkaConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: KafkaSource
+   :members:
+   :undoc-members:
+
+.. autoclass:: KafkaStreamConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: KafkaSubscriptionMode
+   :members:
+   :undoc-members:
+
+.. autoclass:: LastFunction
    :members:
    :undoc-members:
 
@@ -449,6 +543,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListKafkaConfigsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListMaterializedFeaturesResponse
    :members:
    :undoc-members:
@@ -462,6 +560,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListRegistryWebhooks
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListStreamsResponse
    :members:
    :undoc-members:
 
@@ -545,7 +647,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SNAPSHOT
       :value: "SNAPSHOT"
 
+.. autoclass:: MaxFunction
+   :members:
+   :undoc-members:
+
 .. autoclass:: Metric
+   :members:
+   :undoc-members:
+
+.. autoclass:: MinFunction
    :members:
    :undoc-members:
 
@@ -596,11 +706,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MtlsConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: OfflineStoreConfig
    :members:
    :undoc-members:
 
 .. autoclass:: OnlineStore
+   :members:
+   :undoc-members:
+
+.. autoclass:: OnlineStoreConfig
    :members:
    :undoc-members:
 
@@ -789,6 +907,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RequestSource
+   :members:
+   :undoc-members:
+
 .. autoclass:: RestoreExperimentResponse
    :members:
    :undoc-members:
@@ -798,6 +920,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RestoreRunsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: RollingWindow
    :members:
    :undoc-members:
 
@@ -840,6 +966,47 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: ScalarDataType
+
+   Scalar data types for request-time field definitions. Only flat (non-nested) types are supported.
+
+   .. py:attribute:: BINARY
+      :value: "BINARY"
+
+   .. py:attribute:: BOOLEAN
+      :value: "BOOLEAN"
+
+   .. py:attribute:: DATE
+      :value: "DATE"
+
+   .. py:attribute:: DECIMAL
+      :value: "DECIMAL"
+
+   .. py:attribute:: DOUBLE
+      :value: "DOUBLE"
+
+   .. py:attribute:: FLOAT
+      :value: "FLOAT"
+
+   .. py:attribute:: INTEGER
+      :value: "INTEGER"
+
+   .. py:attribute:: LONG
+      :value: "LONG"
+
+   .. py:attribute:: SHORT
+      :value: "SHORT"
+
+   .. py:attribute:: STRING
+      :value: "STRING"
+
+   .. py:attribute:: TIMESTAMP
+      :value: "TIMESTAMP"
+
+.. autoclass:: SchemaConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: SearchExperimentsResponse
    :members:
    :undoc-members:
@@ -865,6 +1032,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SearchRunsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: SecretScopeReference
    :members:
    :undoc-members:
 
@@ -907,11 +1078,67 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: READY
       :value: "READY"
 
+.. autoclass:: StddevPopFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: StddevSampFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: Stream
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamConnectionConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamSchemaConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamSource
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamSourceConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamingMode
+   :members:
+   :undoc-members:
+
+.. py:class:: StreamingModeStreamingModeType
+
+   .. py:attribute:: STREAMING_MODE_TYPE_MBM
+      :value: "STREAMING_MODE_TYPE_MBM"
+
+   .. py:attribute:: STREAMING_MODE_TYPE_RTM
+      :value: "STREAMING_MODE_TYPE_RTM"
+
+.. autoclass:: SubscriptionMode
+   :members:
+   :undoc-members:
+
+.. autoclass:: SumFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: TableTrigger
+   :members:
+   :undoc-members:
+
 .. autoclass:: TestRegistryWebhookResponse
    :members:
    :undoc-members:
 
 .. autoclass:: TimeWindow
+   :members:
+   :undoc-members:
+
+.. autoclass:: TimeseriesColumn
    :members:
    :undoc-members:
 
@@ -967,6 +1194,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "SCHEDULED"
 
 .. autoclass:: UpdateWebhookResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: VarPopFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: VarSampFunction
    :members:
    :undoc-members:
 

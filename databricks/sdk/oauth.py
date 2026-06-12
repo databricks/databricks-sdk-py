@@ -20,6 +20,7 @@ import requests
 import requests.auth
 
 from ._base_client import _BaseClient, _fix_host_if_needed
+from .environments import Cloud
 
 # Error code for PKCE flow in Azure Active Directory, that gets additional retry.
 # See https://stackoverflow.com/a/75466778/277035 for more info
@@ -170,7 +171,7 @@ class Token:
                 logger.debug(f"Tried to decode access token as JWT, but failed: {len(jwt_split)} components")
                 return {}
             payload_with_padding = jwt_split[1] + "=="
-            payload_bytes = base64.standard_b64decode(payload_with_padding)
+            payload_bytes = base64.urlsafe_b64decode(payload_with_padding)
             payload_json = payload_bytes.decode("utf8")
             claims = json.loads(payload_json)
             return claims
@@ -247,7 +248,11 @@ class Refreshable(TokenSource):
 
     _EXECUTOR = None
     _EXECUTOR_LOCK = threading.Lock()
-    _DEFAULT_STALE_DURATION = timedelta(minutes=3)
+    # Default maximum stale duration. Chosen to cover the maximum monthly downtime
+    # allowed by a 99.99% uptime SLA (~4.38 minutes) with generous overhead guarantees
+    _MAX_STALE_DURATION = timedelta(minutes=20)
+    # Backoff time after an async refresh failure before trying another one.
+    _ASYNC_REFRESH_RETRY_BACKOFF = timedelta(minutes=1)
 
     @classmethod
     def _get_executor(cls):
@@ -263,17 +268,59 @@ class Refreshable(TokenSource):
         self,
         token: Optional[Token] = None,
         disable_async: bool = True,
-        stale_duration: timedelta = _DEFAULT_STALE_DURATION,
+        stale_duration: Optional[timedelta] = None,
     ):
         # Config properties
-        self._stale_duration = stale_duration
+        self._use_legacy_stale_duration = stale_duration is not None
+        # Only read on the legacy path (when _use_legacy_stale_duration is True).
+        self._stale_duration = stale_duration if stale_duration is not None else timedelta(seconds=0)
         self._disable_async = disable_async
         # Lock
         self._lock = threading.Lock()
         # Non Thread safe properties. They should be accessed only when protected by the lock above.
-        self._token = token or Token("")
+        self._stale_after: Optional[datetime] = None
+        self._token_generation: int = 0
+        self._update_token(token or Token(""))
         self._is_refreshing = False
-        self._refresh_err = False
+
+    def _now(self) -> datetime:
+        """Return the current time, matching the tz-awareness of the cached token."""
+        if self._token.expiry:
+            return datetime.now(tz=self._token.expiry.tzinfo)
+        if self._stale_after:
+            return datetime.now(tz=self._stale_after.tzinfo)
+        return datetime.now()
+
+    def _update_token(self, token: Token) -> None:
+        """Stores the new token and pre-computes the stale threshold.
+
+        The stale period is computed once at token acquisition time as:
+            stale_period = min(TTL x 0.5, max_stale_duration)
+
+        This ensures short-lived tokens (e.g. FastPath with 10-minute TTL) get a
+        proportionally smaller stale window, while standard OAuth tokens (≥1 hour TTL)
+        use the full cap of _MAX_STALE_DURATION.
+        """
+        self._token = token
+        self._token_generation += 1
+        self._stale_after = None
+
+        if self._token.expiry:
+            if self._use_legacy_stale_duration:
+                self._stale_after = self._token.expiry - self._stale_duration
+            else:
+                ttl = self._token.expiry - self._now()
+                stale_duration = max(timedelta(seconds=0), min(ttl // 2, self._MAX_STALE_DURATION))
+                self._stale_after = self._token.expiry - stale_duration
+
+    def _handle_failed_async_refresh(self) -> None:
+        """Pushes _stale_after forward by the retry backoff, making the token appear fresh temporarily.
+
+        This may set _stale_after past the token's expiry; that is safe because
+        _token_state() checks expiry before staleness.
+        """
+        if self._stale_after:
+            self._stale_after = self._now() + self._ASYNC_REFRESH_RETRY_BACKOFF
 
     # This is the main entry point for the Token. Do not access the token
     # using any of the internal functions.
@@ -307,19 +354,16 @@ class Refreshable(TokenSource):
         if not self._token.expiry:
             return _TokenState.FRESH
 
-        lifespan = self._token.expiry - datetime.now()
-        if lifespan < timedelta(seconds=0):
+        now = self._now()
+        if self._token.expiry < now:
             return _TokenState.EXPIRED
-        if lifespan < self._stale_duration:
+        if self._stale_after and self._stale_after < now:
             return _TokenState.STALE
         return _TokenState.FRESH
 
     def _blocking_token(self) -> Token:
         """Returns a token, blocking if necessary to refresh it."""
         state = self._token_state()
-        # This is important to recover from potential previous failed attempts
-        # to refresh the token asynchronously.
-        self._refresh_err = False
         self._is_refreshing = False
 
         # It's possible that the token got refreshed (either by a _blocking_refresh or
@@ -328,11 +372,12 @@ class Refreshable(TokenSource):
         if state != _TokenState.EXPIRED:
             return self._token
 
-        self._token = self.refresh()
+        self._update_token(self.refresh())
         return self._token
 
     def _trigger_async_refresh(self):
         """Starts an asynchronous refresh if none is in progress."""
+        gen_at_submit = self._token_generation
 
         def _refresh_internal():
             new_token = None
@@ -340,21 +385,23 @@ class Refreshable(TokenSource):
                 new_token = self.refresh()
             except Exception as e:
                 # This happens on a thread, so we don't want to propagate the error.
-                # Instead, if there is no new_token for any reason, we will disable async refresh below
-                # But we will do it inside the lock.
+                # Instead, if there is no new_token for any reason, we apply a retry
+                # backoff below so the token appears fresh for a short cooldown period.
                 logger.warning(f"Tried to refresh token asynchronously, but failed: {e}")
 
             with self._lock:
-                if new_token is not None:
-                    self._token = new_token
+                if self._token_generation != gen_at_submit:
+                    logger.debug("Async refresh completed but token was already updated; discarding result.")
+                elif new_token is not None:
+                    self._update_token(new_token)
                 else:
-                    self._refresh_err = True
+                    self._handle_failed_async_refresh()
                 self._is_refreshing = False
 
         # The token may have been refreshed by another thread.
         if self._token_state() == _TokenState.FRESH:
             return
-        if not self._is_refreshing and not self._refresh_err:
+        if not self._is_refreshing:
             self._is_refreshing = True
             Refreshable._get_executor().submit(_refresh_internal)
 
@@ -393,6 +440,62 @@ class _OAuthCallback(BaseHTTPRequestHandler):
         self.wfile.write(b"You can close this tab.")
 
 
+@dataclass
+class HostMetadata:
+    """Parsed response from the /.well-known/databricks-config discovery endpoint."""
+
+    oidc_endpoint: str
+    account_id: Optional[str] = None
+    workspace_id: Optional[str] = None
+    cloud: Optional[Cloud] = None
+    token_federation_default_oidc_audiences: Optional[List[str]] = None
+
+    @staticmethod
+    def from_dict(d: dict) -> "HostMetadata":
+        return HostMetadata(
+            oidc_endpoint=d.get("oidc_endpoint", ""),
+            account_id=d.get("account_id"),
+            workspace_id=d.get("workspace_id"),
+            cloud=Cloud.parse(d.get("cloud", "")),
+            token_federation_default_oidc_audiences=d.get("token_federation_default_oidc_audiences"),
+        )
+
+    def as_dict(self) -> dict:
+        return {
+            "oidc_endpoint": self.oidc_endpoint,
+            "account_id": self.account_id,
+            "workspace_id": self.workspace_id,
+            "cloud": self.cloud.value if self.cloud else None,
+            "token_federation_default_oidc_audiences": self.token_federation_default_oidc_audiences,
+        }
+
+
+def get_host_metadata(host: str, client: _BaseClient = _BaseClient()) -> HostMetadata:
+    """
+    [Experimental] Fetch the raw Databricks well-known configuration from {host}/.well-known/databricks-config.
+
+    :param host: The Databricks host (workspace or account console).
+    :return: Parsed :class:`HostMetadata` as returned by the server.
+    """
+    host = _fix_host_if_needed(host)
+    try:
+        resp = client.do("GET", f"{host}/.well-known/databricks-config")
+    except Exception as e:
+        raise ValueError(f"Failed to fetch host metadata from {host}/.well-known/databricks-config: {e}") from e
+    return HostMetadata.from_dict(resp)
+
+
+def get_endpoints_from_url(url: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
+    """
+    Fetch OIDC endpoints directly from a discovery URL.
+
+    :param url: Full URL to the OIDC discovery document (e.g. the value of discovery_url config).
+    :return: Parsed :class:`OidcEndpoints`.
+    """
+    resp = client.do("GET", url)
+    return OidcEndpoints.from_dict(resp)
+
+
 def get_account_endpoints(host: str, account_id: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
     """
     Get the OIDC endpoints for a given account.
@@ -414,6 +517,19 @@ def get_workspace_endpoints(host: str, client: _BaseClient = _BaseClient()) -> O
     """
     host = _fix_host_if_needed(host)
     oidc = f"{host}/oidc/.well-known/oauth-authorization-server"
+    resp = client.do("GET", oidc)
+    return OidcEndpoints.from_dict(resp)
+
+
+def get_unified_endpoints(host: str, account_id: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
+    """
+    Get the OIDC endpoints for a unified host.
+    :param host: The Databricks unified host.
+    :param account_id: The account ID.
+    :return: The OIDC endpoints for the unified host.
+    """
+    host = _fix_host_if_needed(host)
+    oidc = f"{host}/oidc/accounts/{account_id}/.well-known/oauth-authorization-server"
     resp = client.do("GET", oidc)
     return OidcEndpoints.from_dict(resp)
 
@@ -648,10 +764,10 @@ class OAuthClient:
         client_secret: str = None,
     ):
         if not scopes:
-            # all-apis ensures that the returned OAuth token can be used with all APIs, aside
-            # from direct-to-dataplane APIs.
-            # offline_access ensures that the response from the Authorization server includes
-            # a refresh token.
+            # Default for direct OAuthClient users (e.g., via from_host()).
+            # When used via credentials_provider.external_browser(), scopes are always
+            # passed explicitly from Config.get_scopes(), with offline_access handling
+            # controlled by the disable_oauth_refresh_token flag.
             scopes = ["all-apis", "offline_access"]
 
         self.redirect_url = redirect_url
@@ -677,7 +793,7 @@ class OAuthClient:
             return lambda: {}
 
         config = Config(host=host, credentials_strategy=noop_credentials)
-        oidc = config.oidc_endpoints
+        oidc = config.databricks_oidc_endpoints
         if not oidc:
             raise ValueError(f"{host} does not support OAuth")
         return OAuthClient(oidc, redirect_url, client_id, scopes, client_secret)
@@ -830,6 +946,7 @@ class TokenCache:
         redirect_url: Optional[str] = None,
         client_secret: Optional[str] = None,
         scopes: Optional[List[str]] = None,
+        profile: Optional[str] = None,
     ) -> None:
         self._host = host
         self._client_id = client_id
@@ -837,18 +954,20 @@ class TokenCache:
         self._redirect_url = redirect_url
         self._client_secret = client_secret
         self._scopes = scopes or []
+        self._profile = profile
 
     @property
     def filename(self) -> str:
-        # Include host, client_id, and scopes in the cache filename to make it unique.
-        hash = hashlib.sha256()
-        for chunk in [
-            self._host,
-            self._client_id,
-            ",".join(self._scopes),
-        ]:
-            hash.update(chunk.encode("utf-8"))
-        return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, hash.hexdigest() + ".json"))
+        # Include host, client_id, scopes, and profile in the cache filename to make it unique.
+        # JSON serialization ensures values are properly escaped and separated.
+        key = {
+            "host": self._host,
+            "client_id": self._client_id,
+            "scopes": self._scopes,
+            "profile": self._profile or "",
+        }
+        h = hashlib.sha256(json.dumps(key, sort_keys=True).encode("utf-8"))
+        return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, h.hexdigest() + ".json"))
 
     def load(self) -> Optional[SessionCredentials]:
         """

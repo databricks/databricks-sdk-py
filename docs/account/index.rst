@@ -9,8 +9,10 @@ These APIs are available from AccountClient
 
    billing/index
    catalog/index
+   disasterrecovery/index
    iam/index
    iamv2/index
+   networking/index
    oauth2/index
    provisioning/index
    settings/index

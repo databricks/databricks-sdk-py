@@ -26,6 +26,16 @@
         :returns: :class:`Feature`
         
 
+    .. py:method:: create_kafka_config(kafka_config: KafkaConfig) -> KafkaConfig
+
+        Create a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
+        the entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param kafka_config: :class:`KafkaConfig`
+
+        :returns: :class:`KafkaConfig`
+        
+
     .. py:method:: create_materialized_feature(materialized_feature: MaterializedFeature) -> MaterializedFeature
 
         Create a materialized feature.
@@ -36,12 +46,33 @@
         :returns: :class:`MaterializedFeature`
         
 
+    .. py:method:: create_stream(stream: Stream) -> Stream
+
+        Create a Stream, a governed UC entity representing an external streaming data source.
+
+        :param stream: :class:`Stream`
+          The Stream to create.
+
+        :returns: :class:`Stream`
+        
+
     .. py:method:: delete_feature(full_name: str)
 
         Delete a Feature.
 
         :param full_name: str
           Name of the feature to delete.
+
+
+        
+
+    .. py:method:: delete_kafka_config(name: str)
+
+        Delete a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
+        the entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param name: str
+          Name of the Kafka config to delete.
 
 
         
@@ -56,6 +87,16 @@
 
         
 
+    .. py:method:: delete_stream(name: str)
+
+        Delete a Stream by its full three-part name (catalog.schema.stream).
+
+        :param name: str
+          Full three-part name (catalog.schema.stream) of the Stream to delete.
+
+
+        
+
     .. py:method:: get_feature(full_name: str) -> Feature
 
         Get a Feature.
@@ -64,6 +105,17 @@
           Name of the feature to get.
 
         :returns: :class:`Feature`
+        
+
+    .. py:method:: get_kafka_config(name: str) -> KafkaConfig
+
+        Get a Kafka config. During PrPr, Kafka configs can be read and used when creating features under the
+        entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param name: str
+          Name of the Kafka config to get.
+
+        :returns: :class:`KafkaConfig`
         
 
     .. py:method:: get_materialized_feature(materialized_feature_id: str) -> MaterializedFeature
@@ -76,16 +128,43 @@
         :returns: :class:`MaterializedFeature`
         
 
-    .. py:method:: list_features( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Feature]
+    .. py:method:: get_stream(name: str) -> Stream
+
+        Get a Stream by its full three-part name (catalog.schema.stream).
+
+        :param name: str
+          Full three-part name (catalog.schema.stream) of the Stream to get.
+
+        :returns: :class:`Stream`
+        
+
+    .. py:method:: list_features(catalog_name: str, schema_name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Feature]
 
         List Features.
 
+        :param catalog_name: str
+          Name of parent catalog for features of interest.
+        :param schema_name: str
+          Name of parent schema relative to its parent catalog.
         :param page_size: int (optional)
           The maximum number of results to return.
         :param page_token: str (optional)
           Pagination token to go to the next page based on a previous query.
 
         :returns: Iterator over :class:`Feature`
+        
+
+    .. py:method:: list_kafka_configs( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[KafkaConfig]
+
+        List Kafka configs. During PrPr, Kafka configs can be read and used when creating features under the
+        entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param page_size: int (optional)
+          The maximum number of results to return.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+
+        :returns: Iterator over :class:`KafkaConfig`
         
 
     .. py:method:: list_materialized_features( [, feature_name: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[MaterializedFeature]
@@ -104,12 +183,28 @@
         :returns: Iterator over :class:`MaterializedFeature`
         
 
+    .. py:method:: list_streams( [, page_size: Optional[int], page_token: Optional[str], parent: Optional[str]]) -> Iterator[Stream]
+
+        List Streams under a given catalog.schema parent.
+
+        :param page_size: int (optional)
+          The maximum number of results to return.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+        :param parent: str (optional)
+          Two-part name (catalog.schema) of the parent under which to list Streams.
+
+        :returns: Iterator over :class:`Stream`
+        
+
     .. py:method:: update_feature(full_name: str, feature: Feature, update_mask: str) -> Feature
 
         Update a Feature.
 
         :param full_name: str
-          The full three-part name (catalog, schema, name) of the feature.
+          The full three-part name (catalog, schema, name) of the feature. This is the feature's resource
+          identifier; the catalog_name, schema_name, and name fields below are OUTPUT_ONLY decomposed views of
+          this value.
         :param feature: :class:`Feature`
           Feature to update.
         :param update_mask: str
@@ -118,12 +213,29 @@
         :returns: :class:`Feature`
         
 
+    .. py:method:: update_kafka_config(name: str, kafka_config: KafkaConfig, update_mask: FieldMask) -> KafkaConfig
+
+        Update a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
+        the entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param name: str
+          Name that uniquely identifies this Kafka config within the metastore. This will be the identifier
+          used from the Feature object to reference these configs for a feature. Can be distinct from topic
+          name.
+        :param kafka_config: :class:`KafkaConfig`
+          The Kafka config to update.
+        :param update_mask: FieldMask
+          The list of fields to update.
+
+        :returns: :class:`KafkaConfig`
+        
+
     .. py:method:: update_materialized_feature(materialized_feature_id: str, materialized_feature: MaterializedFeature, update_mask: str) -> MaterializedFeature
 
         Update a materialized feature (pause/resume).
 
         :param materialized_feature_id: str
-          Unique identifier for the materialized feature.
+          Server-assigned unique identifier for the materialized feature.
         :param materialized_feature: :class:`MaterializedFeature`
           The materialized feature to update.
         :param update_mask: str
@@ -131,4 +243,18 @@
           pipeline_state field can be updated.
 
         :returns: :class:`MaterializedFeature`
+        
+
+    .. py:method:: update_stream(name: str, stream: Stream, update_mask: FieldMask) -> Stream
+
+        Update a Stream. Only fields listed in `update_mask` are mutated.
+
+        :param name: str
+          Full three-part (catalog.schema.stream) name of the stream.
+        :param stream: :class:`Stream`
+          The Stream to update.
+        :param update_mask: FieldMask
+          The list of fields to update.
+
+        :returns: :class:`Stream`
         

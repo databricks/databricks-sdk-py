@@ -11,7 +11,6 @@
     Azure Private Link. See [configure serverless secure connectivity].
 
     [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
-    
 
     .. py:method:: create_network_connectivity_configuration(network_connectivity_config: CreateNetworkConnectivityConfiguration) -> NetworkConnectivityConfiguration
 
@@ -65,8 +64,8 @@
 
         Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private
         endpoint is immediately deleted. Otherwise, the private endpoint is deactivated and will be deleted
-        after seven days of deactivation. When a private endpoint is deactivated, the `deactivated` field is
-        set to `true` and the private endpoint is not available to your serverless compute resources.
+        after one day of deactivation. When a private endpoint is deactivated, the `deactivated` field is set
+        to `true` and the private endpoint is not available to your serverless compute resources.
 
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.

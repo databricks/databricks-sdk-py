@@ -1,8 +1,7 @@
 from typing import Any, BinaryIO, Iterator, Optional, Union
 
 from ..core import DatabricksError
-from ..service.workspace import (ExportFormat, ImportFormat, Language,
-                                 ObjectInfo, ObjectType, WorkspaceAPI)
+from ..service.workspace import ExportFormat, ImportFormat, Language, ObjectInfo, ObjectType, WorkspaceAPI
 
 
 def _fqcn(x: Any) -> str:
@@ -85,12 +84,17 @@ class WorkspaceExt(WorkspaceAPI):
             data["language"] = language.value
         if overwrite:
             data["overwrite"] = "true"
+        headers = {}
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
         try:
             return self._api.do(
                 "POST",
                 "/api/2.0/workspace/import",
                 files={"content": content},
                 data=data,
+                headers=headers,
             )
         except DatabricksError as e:
             if e.error_code == "INVALID_PARAMETER_VALUE":
@@ -113,5 +117,9 @@ class WorkspaceExt(WorkspaceAPI):
         query = {"path": path, "direct_download": "true"}
         if format:
             query["format"] = format.value
-        response = self._api.do("GET", "/api/2.0/workspace/export", query=query, raw=True)
+        headers = {}
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+        response = self._api.do("GET", "/api/2.0/workspace/export", query=query, headers=headers, raw=True)
         return response["contents"]

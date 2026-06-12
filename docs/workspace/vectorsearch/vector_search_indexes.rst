@@ -7,12 +7,12 @@
     **Index**: An efficient representation of your embedding vectors that supports real-time and efficient
     approximate nearest neighbor (ANN) search queries.
 
-    There are 2 types of Vector Search indexes: - **Delta Sync Index**: An index that automatically syncs with
-    a source Delta Table, automatically and incrementally updating the index as the underlying data in the
-    Delta Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of
-    vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
+    There are 2 types of AI Search indexes: - **Delta Sync Index**: An index that automatically syncs with a
+    source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta
+    Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of vectors
+    and metadata through our REST and SDK APIs. With this model, the user manages index updates.
 
-    .. py:method:: create_index(name: str, endpoint_name: str, primary_key: str, index_type: VectorIndexType [, delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest], direct_access_index_spec: Optional[DirectAccessVectorIndexSpec]]) -> VectorIndex
+    .. py:method:: create_index(name: str, endpoint_name: str, primary_key: str, index_type: VectorIndexType [, delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest], direct_access_index_spec: Optional[DirectAccessVectorIndexSpec], index_subtype: Optional[IndexSubtype]]) -> VectorIndex
 
         Create a new index.
 
@@ -27,6 +27,8 @@
           Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
           Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
+        :param index_subtype: :class:`IndexSubtype` (optional)
+          The subtype of the index. Use `HYBRID` or `FULL_TEXT`. `VECTOR` is not supported.
 
         :returns: :class:`VectorIndex`
         
@@ -79,7 +81,7 @@
         :returns: Iterator over :class:`MiniVectorIndex`
         
 
-    .. py:method:: query_index(index_name: str, columns: List[str] [, columns_to_rerank: Optional[List[str]], filters_json: Optional[str], num_results: Optional[int], query_text: Optional[str], query_type: Optional[str], query_vector: Optional[List[float]], reranker: Optional[RerankerConfig], score_threshold: Optional[float]]) -> QueryVectorIndexResponse
+    .. py:method:: query_index(index_name: str, columns: List[str] [, columns_to_rerank: Optional[List[str]], facets: Optional[List[str]], filters_json: Optional[str], num_results: Optional[int], query_columns: Optional[List[str]], query_text: Optional[str], query_type: Optional[str], query_vector: Optional[List[float]], reranker: Optional[RerankerConfig], score_threshold: Optional[float], sort_columns: Optional[List[str]]]) -> QueryVectorIndexResponse
 
         Query the specified vector index.
 
@@ -89,6 +91,11 @@
           List of column names to include in the response.
         :param columns_to_rerank: List[str] (optional)
           Column names used to retrieve data to send to the reranker.
+        :param facets: List[str] (optional)
+          Facets to compute over the matched results. Each entry has one of these forms: `"<column>"` - top 10
+          distinct values by count `"<column> TOP <n>"` - top n distinct values, where n > 0 `"<column>
+          BUCKETS [[from,to],...]"` - inclusive numeric ranges `TOP` and `BUCKETS` are case-insensitive. A
+          column may appear at most once.
         :param filters_json: str (optional)
           JSON string representing query filters.
 
@@ -99,6 +106,8 @@
           5. - `{"id": 5}`: Filter for id equal to 5.
         :param num_results: int (optional)
           Number of results to return. Defaults to 10.
+        :param query_columns: List[str] (optional)
+          Text columns to search for `query_text`. When empty, all text columns are searched.
         :param query_text: str (optional)
           Query text. Required for Delta Sync Index using model endpoint.
         :param query_type: str (optional)
@@ -107,8 +116,16 @@
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
         :param reranker: :class:`RerankerConfig` (optional)
+          If set, the top 50 results are reranked with the Databricks Reranker model before returning the
+          `num_results` results to the user. The setting `columns_to_rerank` selects which columns are used
+          for reranking. For each datapoint, the columns selected are concatenated before being sent to the
+          reranking model. See https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank for
+          more information.
         :param score_threshold: float (optional)
           Threshold for the approximate nearest neighbor search. Defaults to 0.0.
+        :param sort_columns: List[str] (optional)
+          Sort results by column values instead of the default relevance ordering. Each clause has the form
+          `"<column> ASC"` or `"<column> DESC"`, for example `["rating DESC", "price ASC"]`.
 
         :returns: :class:`QueryVectorIndexResponse`
         

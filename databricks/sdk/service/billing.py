@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -9,7 +12,11 @@ from enum import Enum
 from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import compute
-from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -61,6 +68,7 @@ class ActionConfiguration:
 
 
 class ActionConfigurationType(Enum):
+    """Type of action that a budget alert executes when its threshold is crossed."""
 
     EMAIL_NOTIFICATION = "EMAIL_NOTIFICATION"
 
@@ -136,17 +144,14 @@ class AlertConfiguration:
 
 
 class AlertConfigurationQuantityType(Enum):
-
     LIST_PRICE_DOLLARS_USD = "LIST_PRICE_DOLLARS_USD"
 
 
 class AlertConfigurationTimePeriod(Enum):
-
     MONTH = "MONTH"
 
 
 class AlertConfigurationTriggerType(Enum):
-
     CUMULATIVE_SPENDING_EXCEEDED = "CUMULATIVE_SPENDING_EXCEEDED"
 
 
@@ -296,7 +301,6 @@ class BudgetConfigurationFilterClause:
 
 
 class BudgetConfigurationFilterOperator(Enum):
-
     IN = "IN"
 
 
@@ -1337,7 +1341,6 @@ class SortSpec:
 
 
 class SortSpecField(Enum):
-
     POLICY_NAME = "POLICY_NAME"
 
 
@@ -1428,8 +1431,12 @@ class UpdateBudgetConfigurationResponse:
         return cls(budget=_from_dict(d, "budget", BudgetConfiguration))
 
 
-class UsageDashboardType(Enum):
+class UsageDashboardMajorVersion(Enum):
+    USAGE_DASHBOARD_MAJOR_VERSION_1 = "USAGE_DASHBOARD_MAJOR_VERSION_1"
+    USAGE_DASHBOARD_MAJOR_VERSION_2 = "USAGE_DASHBOARD_MAJOR_VERSION_2"
 
+
+class UsageDashboardType(Enum):
     USAGE_DASHBOARD_TYPE_GLOBAL = "USAGE_DASHBOARD_TYPE_GLOBAL"
     USAGE_DASHBOARD_TYPE_WORKSPACE = "USAGE_DASHBOARD_TYPE_WORKSPACE"
 
@@ -1820,15 +1827,15 @@ class BudgetsAPI:
 
 class LogDeliveryAPI:
     """These APIs manage log delivery configurations for this account. The two supported log types for this API
-    are _billable usage logs_ and _audit logs_. This feature is in Public Preview. This feature works with all
-    account ID types.
+    are _billable usage logs_ (AWS only) and _audit logs_ (AWS and GCP). This feature is in Public Preview.
+    This feature works with all account ID types.
 
     Log delivery works with all account types. However, if your account is on the E2 version of the platform
     or on a select custom plan that allows multiple workspaces per account, you can optionally configure
     different storage destinations for each workspace. Log delivery status is also provided to know the latest
     status of log delivery attempts.
 
-    The high-level flow of billable usage delivery:
+    The high-level flow of billable usage delivery (AWS only):
 
     1. **Create storage**: In AWS, [create a new AWS S3 bucket] with a specific bucket policy. Using
     Databricks APIs, call the Account API to create a [storage configuration object](:method:Storage/Create)
@@ -1847,8 +1854,8 @@ class LogDeliveryAPI:
     logs, while workspace level log delivery solely delivers logs related to the specified workspaces. You can
     create multiple types of delivery configurations per account.
 
-    For billable usage delivery: * For more information about billable usage logs, see [Billable usage log
-    delivery]. For the CSV schema, see the [Usage page]. * The delivery location is
+    For billable usage delivery (AWS only): * For more information about billable usage logs, see [Billable
+    usage log delivery]. For the CSV schema, see the [Usage page]. * The delivery location is
     `<bucket-name>/<prefix>/billable-usage/csv/`, where `<prefix>` is the name of the optional delivery path
     prefix you set up during log delivery configuration. Files are named
     `workspaceId=<workspace-id>-usageMonth=<month>.csv`. * All billable usage logs apply to specific
@@ -1856,18 +1863,19 @@ class LogDeliveryAPI:
     _account level_ delivery configuration that delivers logs for all current and future workspaces in your
     account. * The files are delivered daily by overwriting the month's CSV file for each workspace.
 
-    For audit log delivery: * For more information about about audit log delivery, see [Audit log delivery],
-    which includes information about the used JSON schema. * The delivery location is
+    For audit log delivery (AWS and GCP): * For more information about about audit log delivery, see Audit log
+    delivery [AWS] or [GCP], which includes information about the used JSON schema. * The delivery location is
     `<bucket-name>/<delivery-path-prefix>/workspaceId=<workspaceId>/date=<yyyy-mm-dd>/auditlogs_<internal-id>.json`.
     Files may get overwritten with the same content multiple times to achieve exactly-once delivery. * If the
     audit log delivery configuration included specific workspace IDs, only _workspace-level_ audit logs for
     those workspaces are delivered. If the log delivery configuration applies to the entire account (_account
     level_ delivery configuration), the audit log delivery includes workspace-level audit logs for all
-    workspaces in the account as well as account-level audit logs. See [Audit log delivery] for details. *
-    Auditable events are typically available in logs within 15 minutes.
+    workspaces in the account as well as account-level audit logs. See Audit log delivery [AWS] or [GCP] for
+    details. * Auditable events are typically available in logs within 15 minutes.
 
-    [Audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+    [AWS]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
     [Billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+    [GCP]: https://docs.databricks.com/gcp/en/admin/account-settings/audit-logs
     [Usage page]: https://docs.databricks.com/administration-guide/account-settings/usage.html
     [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html"""
 
@@ -2023,13 +2031,19 @@ class UsageDashboardsAPI:
         self._api = api_client
 
     def create(
-        self, *, dashboard_type: Optional[UsageDashboardType] = None, workspace_id: Optional[int] = None
+        self,
+        *,
+        dashboard_type: Optional[UsageDashboardType] = None,
+        major_version: Optional[UsageDashboardMajorVersion] = None,
+        workspace_id: Optional[int] = None,
     ) -> CreateBillingUsageDashboardResponse:
         """Create a usage dashboard specified by workspaceId, accountId, and dashboard type.
 
         :param dashboard_type: :class:`UsageDashboardType` (optional)
           Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage
           dashboard shows usage data for all workspaces in the account.
+        :param major_version: :class:`UsageDashboardMajorVersion` (optional)
+          The major version of the usage dashboard template to use. Defaults to VERSION_1.
         :param workspace_id: int (optional)
           The workspace ID of the workspace in which the usage dashboard is created.
 
@@ -2039,6 +2053,8 @@ class UsageDashboardsAPI:
         body = {}
         if dashboard_type is not None:
             body["dashboard_type"] = dashboard_type.value
+        if major_version is not None:
+            body["major_version"] = major_version.value
         if workspace_id is not None:
             body["workspace_id"] = workspace_id
         headers = {

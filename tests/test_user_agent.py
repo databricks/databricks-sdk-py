@@ -45,24 +45,45 @@ def test_user_agent_with_partner(user_agent):
     assert "partner/differenttest" in user_agent.to_string()
 
 
+@pytest.mark.xdist_group(name="user_agent")
+def test_with_extra_is_idempotent(user_agent):
+    user_agent.with_extra("foo", "bar")
+    user_agent.with_extra("foo", "bar")
+    user_agent.with_extra("foo", "bar")
+    assert user_agent.to_string().count("foo/bar") == 1
+
+
+@pytest.mark.xdist_group(name="user_agent")
+def test_with_extra_different_values_still_allowed(user_agent):
+    user_agent.with_extra("foo", "bar")
+    user_agent.with_extra("foo", "wiz")
+    ua = user_agent.to_string()
+    assert "foo/bar" in ua
+    assert "foo/wiz" in ua
+
+
 @pytest.fixture(scope="function")
-def clear_cicd():
+def clean_useragent_env():
     # Save and clear env vars.
     original_env = os.environ.copy()
     os.environ.clear()
 
-    # Clear cached CICD provider.
+    # Clear cached CICD and agent providers.
     from databricks.sdk import useragent
 
     useragent._cicd_provider = None
+    useragent._agent_provider = None
 
     yield
 
-    # Restore env vars.
-    os.environ = original_env
+    # Restore env vars and reset caches.
+    os.environ.clear()
+    os.environ.update(original_env)
+    useragent._cicd_provider = None
+    useragent._agent_provider = None
 
 
-def test_user_agent_cicd_no_provider(clear_cicd):
+def test_user_agent_cicd_no_provider(clean_useragent_env):
     from databricks.sdk import useragent
 
     user_agent = useragent.to_string()
@@ -70,7 +91,7 @@ def test_user_agent_cicd_no_provider(clear_cicd):
     assert "cicd" not in user_agent
 
 
-def test_user_agent_cicd_one_provider(clear_cicd):
+def test_user_agent_cicd_one_provider(clean_useragent_env):
     os.environ["GITHUB_ACTIONS"] = "true"
 
     from databricks.sdk import useragent
@@ -80,7 +101,7 @@ def test_user_agent_cicd_one_provider(clear_cicd):
     assert "cicd/github" in user_agent
 
 
-def test_user_agent_cicd_two_provider(clear_cicd):
+def test_user_agent_cicd_two_provider(clean_useragent_env):
     os.environ["GITHUB_ACTIONS"] = "true"
     os.environ["GITLAB_CI"] = "true"
 
@@ -89,3 +110,386 @@ def test_user_agent_cicd_two_provider(clear_cicd):
     user_agent = useragent.to_string()
 
     assert "cicd/github" in user_agent
+
+
+def test_agent_provider_no_agent(clean_useragent_env):
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == ""
+
+
+def test_agent_provider_antigravity(clean_useragent_env):
+    os.environ["ANTIGRAVITY_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "antigravity"
+
+
+def test_agent_provider_claude_code(clean_useragent_env):
+    os.environ["CLAUDECODE"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "claude-code"
+
+
+def test_agent_provider_cline(clean_useragent_env):
+    os.environ["CLINE_ACTIVE"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "cline"
+
+
+def test_agent_provider_codex(clean_useragent_env):
+    os.environ["CODEX_CI"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "codex"
+
+
+def test_agent_provider_copilot_cli(clean_useragent_env):
+    os.environ["COPILOT_CLI"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "copilot-cli"
+
+
+def test_agent_provider_cursor(clean_useragent_env):
+    os.environ["CURSOR_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "cursor"
+
+
+def test_agent_provider_gemini_cli(clean_useragent_env):
+    os.environ["GEMINI_CLI"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "gemini-cli"
+
+
+def test_agent_provider_opencode(clean_useragent_env):
+    os.environ["OPENCODE"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "opencode"
+
+
+def test_agent_provider_openclaw(clean_useragent_env):
+    os.environ["OPENCLAW_SHELL"] = "exec"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "openclaw"
+
+
+def test_agent_provider_goose_env_var(clean_useragent_env):
+    os.environ["GOOSE_TERMINAL"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "goose"
+
+
+def test_agent_provider_goose_via_agent_standard(clean_useragent_env):
+    os.environ["AGENT"] = "goose"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "goose"
+
+
+def test_agent_provider_goose_both_signals(clean_useragent_env):
+    # Both the dedicated env var and the AGENT=goose standard are set.
+    # This should NOT be ambiguous - it's still a single agent (goose).
+    os.environ["GOOSE_TERMINAL"] = "1"
+    os.environ["AGENT"] = "goose"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "goose"
+
+
+def test_agent_provider_amp_env_var(clean_useragent_env):
+    os.environ["AMP_CURRENT_THREAD_ID"] = "thread-123"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "amp"
+
+
+def test_agent_provider_amp_via_agent_standard(clean_useragent_env):
+    os.environ["AGENT"] = "amp"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "amp"
+
+
+def test_agent_provider_amp_both_signals(clean_useragent_env):
+    # Both AMP_CURRENT_THREAD_ID and AGENT=amp set - still single agent.
+    os.environ["AMP_CURRENT_THREAD_ID"] = "thread-123"
+    os.environ["AGENT"] = "amp"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "amp"
+
+
+def test_agent_provider_augment(clean_useragent_env):
+    os.environ["AUGMENT_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "augment"
+
+
+def test_agent_provider_vscode_agent(clean_useragent_env):
+    os.environ["VSCODE_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "vscode-agent"
+
+
+def test_agent_provider_kiro(clean_useragent_env):
+    os.environ["KIRO"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "kiro"
+
+
+def test_agent_provider_windsurf(clean_useragent_env):
+    os.environ["WINDSURF_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "windsurf"
+
+
+def test_agent_provider_unknown_agent_passthrough(clean_useragent_env):
+    # AGENT set to a value that doesn't match any known agent now passes
+    # through (sanitized) rather than being coerced to "unknown".
+    os.environ["AGENT"] = "someweirdthing"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "someweirdthing"
+
+
+def test_agent_provider_agent_known_product_name_fallback(clean_useragent_env):
+    # AGENT=<known product name> with no other matchers set passes through
+    # unchanged (cursor is only identified by CURSOR_AGENT; AGENT=cursor is a
+    # reasonable implicit signal to attribute it).
+    os.environ["AGENT"] = "cursor"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "cursor"
+
+
+def test_agent_provider_agent_versioned_variant_passthrough(clean_useragent_env):
+    # A versioned variant passes through unchanged since every character is
+    # already in the allowlist.
+    os.environ["AGENT"] = "claude-code_2-1-141_agent"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "claude-code_2-1-141_agent"
+
+
+def test_agent_provider_agent_disallowed_chars_sanitized(clean_useragent_env):
+    # Characters outside the User-Agent allowlist are replaced with hyphens.
+    os.environ["AGENT"] = "claude code/agent"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "claude-code-agent"
+
+
+def test_agent_provider_agent_over_cap_truncated(clean_useragent_env):
+    # Values longer than the cap are truncated to 64 characters.
+    os.environ["AGENT"] = "a" * 100
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "a" * 64
+
+
+def test_agent_provider_known_matcher_wins_over_agent_fallback(clean_useragent_env):
+    # When a known matcher fires, it wins even if AGENT is set to an
+    # unrelated value. The AGENT fallback only applies when nothing else hits.
+    os.environ["AGENT"] = "somethingweird"
+    os.environ["CLAUDECODE"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "claude-code"
+
+
+def test_agent_provider_agent_empty_string(clean_useragent_env):
+    # AGENT="" (empty) should NOT trigger the fallback.
+    os.environ["AGENT"] = ""
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == ""
+
+
+def test_agent_provider_ai_agent_fallback(clean_useragent_env):
+    # AI_AGENT (Vercel @vercel/detect-agent convention) is consulted as a
+    # secondary fallback when AGENT is unset.
+    os.environ["AI_AGENT"] = "cursor"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "cursor"
+
+
+def test_agent_provider_ai_agent_empty_string(clean_useragent_env):
+    # AI_AGENT="" (empty) should NOT trigger the fallback.
+    os.environ["AI_AGENT"] = ""
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == ""
+
+
+def test_agent_provider_known_matcher_wins_over_ai_agent_fallback(clean_useragent_env):
+    # An explicit matcher wins over the AI_AGENT fallback.
+    os.environ["AI_AGENT"] = "somethingunknown"
+    os.environ["CLAUDECODE"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "claude-code"
+
+
+def test_agent_provider_agent_wins_over_ai_agent(clean_useragent_env):
+    # AGENT takes precedence over AI_AGENT when both are non-empty.
+    os.environ["AGENT"] = "claude-code"
+    os.environ["AI_AGENT"] = "cursor"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "claude-code"
+
+
+def test_agent_provider_agent_unrecognized_wins_over_ai_agent(clean_useragent_env):
+    # A non-empty AGENT wins over AI_AGENT even when it is unrecognized.
+    os.environ["AGENT"] = "somethingunknown"
+    os.environ["AI_AGENT"] = "cursor"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "somethingunknown"
+
+
+def test_agent_provider_agent_set_ai_agent_empty(clean_useragent_env):
+    # AGENT set, AI_AGENT empty: AGENT value is used.
+    os.environ["AGENT"] = "cursor"
+    os.environ["AI_AGENT"] = ""
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "cursor"
+
+
+def test_agent_provider_empty_agent_falls_through_to_ai_agent(clean_useragent_env):
+    # An empty AGENT falls through to AI_AGENT.
+    os.environ["AGENT"] = ""
+    os.environ["AI_AGENT"] = "cursor"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "cursor"
+
+
+def test_agent_provider_both_agent_and_ai_agent_empty(clean_useragent_env):
+    # Both AGENT and AI_AGENT empty returns no agent.
+    os.environ["AGENT"] = ""
+    os.environ["AI_AGENT"] = ""
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == ""
+
+
+def test_agent_provider_explicit_wins_over_ai_agent(clean_useragent_env):
+    # An explicit env var wins over AI_AGENT naming a different product.
+    os.environ["AI_AGENT"] = "cursor"
+    os.environ["CLAUDECODE"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "claude-code"
+
+
+def test_agent_provider_multiple_agents(clean_useragent_env):
+    # Nested agents (e.g. Claude Code spawning a Cursor CLI subagent) set
+    # multiple explicit matchers on the same process.
+    os.environ["CLAUDECODE"] = "1"
+    os.environ["CURSOR_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "multiple"
+
+
+def test_agent_provider_three_stacked_agents(clean_useragent_env):
+    os.environ["CLAUDECODE"] = "1"
+    os.environ["CURSOR_AGENT"] = "1"
+    os.environ["AUGMENT_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "multiple"
+
+
+def test_agent_provider_explicit_wins_over_agent_naming_different_product(clean_useragent_env):
+    # Explicit env vars always win over the generic AGENT=<name> signal.
+    # AGENT=goose names a different known product, but CLAUDECODE is explicit,
+    # so claude-code wins. AGENT is ignored entirely when any explicit
+    # matcher fires.
+    os.environ["AGENT"] = "goose"
+    os.environ["CLAUDECODE"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "claude-code"
+
+
+def test_agent_provider_explicit_goose_wins_over_agent_cursor(clean_useragent_env):
+    # Mirror of the above: GOOSE_TERMINAL is explicit, AGENT=cursor names a
+    # different known product. Explicit wins; AGENT is ignored.
+    os.environ["GOOSE_TERMINAL"] = "1"
+    os.environ["AGENT"] = "cursor"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "goose"
+
+
+def test_agent_provider_vscode_agent_and_copilot_cli_reports_multiple(clean_useragent_env):
+    # VSCODE_AGENT can legitimately stack with other agents (e.g. running
+    # Copilot CLI from a VS Code agent terminal).
+    os.environ["VSCODE_AGENT"] = "1"
+    os.environ["COPILOT_CLI"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "multiple"
+
+
+def test_agent_provider_empty_value_still_counts_as_set(clean_useragent_env):
+    # Presence-only matchers fire even when the env var is set to an empty
+    # string. Parity with Go (os.LookupEnv) and Java (env.get != null).
+    os.environ["CLAUDECODE"] = ""
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "claude-code"
+
+
+def test_user_agent_string_includes_agent(clean_useragent_env):
+    os.environ["CLAUDECODE"] = "1"
+    from databricks.sdk import useragent
+
+    ua = useragent.to_string()
+    assert "agent/claude-code" in ua
+
+
+def test_user_agent_string_no_agent(clean_useragent_env):
+    from databricks.sdk import useragent
+
+    ua = useragent.to_string()
+    assert "agent/" not in ua
+
+
+def test_user_agent_string_multiple_agents(clean_useragent_env):
+    os.environ["CLAUDECODE"] = "1"
+    os.environ["CURSOR_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    ua = useragent.to_string()
+    assert "agent/multiple" in ua
+
+
+def test_agent_provider_cached(clean_useragent_env):
+    os.environ["CURSOR_AGENT"] = "1"
+    from databricks.sdk import useragent
+
+    assert useragent.agent_provider() == "cursor"
+
+    # Change the environment: the cached result should persist.
+    del os.environ["CURSOR_AGENT"]
+    os.environ["CLAUDECODE"] = "1"
+
+    assert useragent.agent_provider() == "cursor"

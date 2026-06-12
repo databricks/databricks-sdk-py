@@ -57,7 +57,7 @@
 
         
 
-    .. py:method:: create(name: str [, region: Optional[str], storage_root: Optional[str]]) -> MetastoreInfo
+    .. py:method:: create(name: str [, external_access_enabled: Optional[bool], region: Optional[str], storage_root: Optional[str]]) -> MetastoreInfo
 
 
         Usage:
@@ -86,6 +86,8 @@
 
         :param name: str
           The user-specified name of the metastore.
+        :param external_access_enabled: bool (optional)
+          Whether to allow non-DBR clients to directly access entities under the metastore.
         :param region: str (optional)
           Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
         :param storage_root: str (optional)
@@ -251,7 +253,7 @@
 
         
 
-    .. py:method:: update(id: str [, delta_sharing_organization_name: Optional[str], delta_sharing_recipient_token_lifetime_in_seconds: Optional[int], delta_sharing_scope: Optional[DeltaSharingScopeEnum], new_name: Optional[str], owner: Optional[str], privilege_model_version: Optional[str], storage_root_credential_id: Optional[str]]) -> MetastoreInfo
+    .. py:method:: update(id: str [, delta_sharing_organization_name: Optional[str], delta_sharing_recipient_token_lifetime_in_seconds: Optional[int], delta_sharing_scope: Optional[DeltaSharingScopeEnum], external_access_enabled: Optional[bool], new_name: Optional[str], owner: Optional[str], privilege_model_version: Optional[str], storage_root_credential_id: Optional[str]]) -> MetastoreInfo
 
 
         Usage:
@@ -287,6 +289,8 @@
           The lifetime of delta sharing recipient token in seconds.
         :param delta_sharing_scope: :class:`DeltaSharingScopeEnum` (optional)
           The scope of Delta Sharing enabled for the metastore.
+        :param external_access_enabled: bool (optional)
+          Whether to allow non-DBR clients to directly access entities under the metastore.
         :param new_name: str (optional)
           New name for the metastore.
         :param owner: str (optional)

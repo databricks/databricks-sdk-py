@@ -6,22 +6,30 @@ Dataclasses
    :maxdepth: 1
    
    agentbricks
+   aisearch
    apps
    billing
+   bundledeployments
    catalog
    cleanrooms
    compute
    dashboards
    database
+   dataclassification
    dataquality
+   disasterrecovery
+   environments
    files
    iam
    iamv2
    jobs
+   knowledgeassistants
    marketplace
    ml
+   networking
    oauth2
    pipelines
+   postgres
    provisioning
    qualitymonitorv2
    serving
@@ -29,6 +37,7 @@ Dataclasses
    settingsv2
    sharing
    sql
+   supervisoragents
    tags
    vectorsearch
    workspace
