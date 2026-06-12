@@ -1,6 +1,6 @@
 # Authentication Types Reference
 
-This document provides a comprehensive reference for all authentication types (`auth_type`) supported by the Databricks SDK for Python.
+This document lists all authentication types (`auth_type`) supported by the Databricks SDK for Python.
 
 ## Authentication Types Table
 
@@ -25,22 +25,11 @@ This document provides a comprehensive reference for all authentication types (`
 | `env-oidc` | OIDC token from environment variable | `host` | `oidc_token_env`, `client_id` | `DATABRICKS_HOST`, `DATABRICKS_OIDC_TOKEN`, `DATABRICKS_OIDC_TOKEN_ENV`, `DATABRICKS_CLIENT_ID` |
 | `file-oidc` | OIDC token from file path | `host`, `oidc_token_filepath` | `client_id` | `DATABRICKS_HOST`, `DATABRICKS_OIDC_TOKEN_FILEPATH` (alias: `DATABRICKS_OIDC_TOKEN_FILE`), `DATABRICKS_CLIENT_ID` |
 
-## Common Parameters Across All Auth Types
-
-These parameters can be used with any authentication type:
-
-| Parameter | Description | Environment Variable |
-|-----------|-------------|---------------------|
-| `http_timeout_seconds` | HTTP request timeout (default: 60 seconds) | - |
-| `retry_timeout_seconds` | Total retry timeout (default: 300 seconds / 5 minutes) | - |
-| `debug_truncate_bytes` | Truncate debug logs above this size (default: 96 bytes) | `DATABRICKS_DEBUG_TRUNCATE_BYTES` |
-| `debug_headers` | Enable debug logging of HTTP headers (default: false) | `DATABRICKS_DEBUG_HEADERS` |
-| `rate_limit` | Maximum requests per second to Databricks API | `DATABRICKS_RATE_LIMIT` |
-| `skip_verify` | Skip SSL certificate verification (not recommended) | - |
+For configuration options that apply to all authentication types (timeouts, debug settings, rate limits), see [Authentication](./authentication.md#additional-configuration-options).
 
 ## Usage Examples
 
-When you explicitly set `auth_type`, the SDK will **only** attempt that specific authentication method, skipping the automatic detection of other methods. This is useful when you want to ensure a specific authentication method is used, or when you have multiple credentials configured but want to use a specific one.
+When you explicitly set `auth_type`, the SDK only attempts that authentication method, skipping the automatic detection of other methods. This is useful when you have multiple credentials configured but want to use a specific one.
 
 ### Personal Access Token (PAT)
 ```python
