@@ -600,10 +600,11 @@ class AccountIamV2API:
         self, workspace_id: int, principal_id: int, *, view: Optional[WorkspaceAccessDetailView] = None
     ) -> WorkspaceAccessDetail:
         """Returns the access details for a principal in a workspace. Allows for checking access details for any
-        provisioned principal (user, service principal, or group) in a workspace. * Provisioned principal here
-        refers to one that has been synced into Databricks from the customer's IdP or added explicitly to
-        Databricks via SCIM/UI. Allows for passing in a "view" parameter to control what fields are returned
-        (BASIC by default or FULL).
+        provisioned principal (user, service principal, or group) in a workspace.
+
+        - Provisioned principal here refers to one that has been synced into Databricks from the customer's
+          IdP or added explicitly to Databricks via SCIM/UI. Allows for passing in a "view" parameter to
+          control what fields are returned (BASIC by default or FULL).
 
         :param workspace_id: int
           Required. The workspace ID for which the access details are being requested.
@@ -871,10 +872,11 @@ class WorkspaceIamV2API:
         self, principal_id: int, *, view: Optional[WorkspaceAccessDetailView] = None
     ) -> WorkspaceAccessDetail:
         """Returns the access details for a principal in the current workspace. Allows for checking access
-        details for any provisioned principal (user, service principal, or group) in the current workspace. *
-        Provisioned principal here refers to one that has been synced into Databricks from the customer's IdP
-        or added explicitly to Databricks via SCIM/UI. Allows for passing in a "view" parameter to control
-        what fields are returned (BASIC by default or FULL).
+        details for any provisioned principal (user, service principal, or group) in the current workspace.
+
+        - Provisioned principal here refers to one that has been synced into Databricks from the customer's
+          IdP or added explicitly to Databricks via SCIM/UI. Allows for passing in a "view" parameter to
+          control what fields are returned (BASIC by default or FULL).
 
         :param principal_id: int
           Required. The internal ID of the principal (user/sp/group) for which the access details are being

@@ -315,7 +315,7 @@ class StableUrl:
 
     failover_group_name: Optional[str] = None
     """Fully qualified resource name of the FailoverGroup this stable URL is currently linked to, in
-    the format `accounts/{account_id}/failover-groups/{failover_group_id}`. Empty when the stable
+    the format ``accounts/{account_id}/failover-groups/{failover_group_id}``. Empty when the stable
     URL is not attached to any failover group."""
 
     name: Optional[str] = None
@@ -323,8 +323,8 @@ class StableUrl:
 
     url: Optional[str] = None
     """The stable URL endpoint. Generated on creation and immutable thereafter. For non-Private-Link
-    workspaces this is `https://<spog_host>/?c=<connection_id>`. For Private-Link workspaces this is
-    the per-connection hostname."""
+    workspaces this is ``https://<spog_host>/?c=<connection_id>``. For Private-Link workspaces this
+    is the per-connection hostname."""
 
     def as_dict(self) -> dict:
         """Serializes the StableUrl into a dictionary suitable for use as a JSON request body."""
@@ -686,16 +686,18 @@ class DisasterRecoveryAPI:
     ) -> Iterator[FailoverGroup]:
         """List failover groups.
 
-        List entries are abbreviated: `state` and `replication_point` are not populated. Call GetFailoverGroup
-        to retrieve the full resource.
+        List entries are abbreviated: ``state`` and ``replication_point`` are not populated. Call
+        GetFailoverGroup to retrieve the full resource.
 
         :param parent: str
           The parent resource. Format: accounts/{account_id}.
         :param page_size: int (optional)
-          Maximum number of failover groups to return per page: - when set to a value greater than 0, the page
-          length is the minimum of this value and a server configured value; - when set to 0 or unset, the
-          page length is set to a server configured value (recommended); - when set to a value less than 0, an
-          invalid parameter error is returned.
+          Maximum number of failover groups to return per page:
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0 or unset, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Page token received from a previous ListFailoverGroups call. Provide this to retrieve the subsequent
           page.
@@ -731,10 +733,12 @@ class DisasterRecoveryAPI:
         :param parent: str
           The parent resource. Format: accounts/{account_id}.
         :param page_size: int (optional)
-          Maximum number of stable URLs to return per page: - when set to a value greater than 0, the page
-          length is the minimum of this value and a server configured value; - when set to 0 or unset, the
-          page length is set to a server configured value (recommended); - when set to a value less than 0, an
-          invalid parameter error is returned.
+          Maximum number of stable URLs to return per page:
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0 or unset, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Page token received from a previous ListStableUrls call. Provide this to retrieve the subsequent
           page.

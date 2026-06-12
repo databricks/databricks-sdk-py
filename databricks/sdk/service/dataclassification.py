@@ -72,9 +72,10 @@ class AutoTaggingConfigAutoTaggingMode(Enum):
 @dataclass
 class CatalogConfig:
     """Data Classification configuration for a Unity Catalog catalog. This message follows the "At Most
-    One Resource" pattern: at most one CatalogConfig exists per catalog. - Full CRUD operations are
-    supported: Create enables Data Classification, Delete disables it - It has no unique identifier
-    of its own and uses its parent catalog's identifier (catalog_name)"""
+    One Resource" pattern: at most one CatalogConfig exists per catalog.
+
+    - Full CRUD operations are supported: Create enables Data Classification, Delete disables it
+    - It has no unique identifier of its own and uses its parent catalog's identifier (catalog_name)"""
 
     auto_tag_configs: Optional[List[AutoTaggingConfig]] = None
     """List of auto-tagging configurations for this catalog. Empty list means no auto-tagging is
@@ -82,7 +83,7 @@ class CatalogConfig:
 
     included_schemas: Optional[CatalogConfigSchemaNames] = None
     """Schemas to include in the scan. Empty list is not supported as it results in a no-op scan. If
-    `included_schemas` is not set, all schemas are scanned."""
+    ``included_schemas`` is not set, all schemas are scanned."""
 
     name: Optional[str] = None
     """Resource name in the format: catalogs/{catalog_name}/config."""
@@ -156,8 +157,9 @@ class DataClassificationAPI:
     def create_catalog_config(self, parent: str, catalog_config: CatalogConfig) -> CatalogConfig:
         """Create Data Classification configuration for a catalog.
 
-        Creates a new config resource, which enables Data Classification for the specified catalog. - The
-        config must not already exist for the catalog.
+        Creates a new config resource, which enables Data Classification for the specified catalog.
+
+        - The config must not already exist for the catalog.
 
         :param parent: str
           Parent resource in the format: catalogs/{catalog_name}
@@ -221,9 +223,11 @@ class DataClassificationAPI:
         return CatalogConfig.from_dict(res)
 
     def update_catalog_config(self, name: str, catalog_config: CatalogConfig, update_mask: FieldMask) -> CatalogConfig:
-        """Update the Data Classification configuration for a catalog. - The config must already exist for the
-        catalog. - Updates fields specified in the update_mask. Use update_mask field to perform partial
-        updates of the configuration.
+        """Update the Data Classification configuration for a catalog.
+
+        - The config must already exist for the catalog.
+        - Updates fields specified in the update_mask. Use update_mask field to perform partial updates of the
+          configuration.
 
         :param name: str
           Resource name in the format: catalogs/{catalog_name}/config.

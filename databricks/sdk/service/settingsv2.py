@@ -411,7 +411,7 @@ class IntegerMessage:
 @dataclass
 class ListAccountSettingsMetadataResponse:
     next_page_token: Optional[str] = None
-    """A token that can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    """A token that can be sent as ``page_token`` to retrieve the next page. If this field is omitted,
     there are no subsequent pages."""
 
     settings_metadata: Optional[List[SettingsMetadata]] = None
@@ -447,7 +447,7 @@ class ListAccountSettingsMetadataResponse:
 @dataclass
 class ListAccountUserPreferencesMetadataResponse:
     next_page_token: Optional[str] = None
-    """A token that can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    """A token that can be sent as ``page_token`` to retrieve the next page. If this field is omitted,
     there are no subsequent pages."""
 
     settings_metadata: Optional[List[SettingsMetadata]] = None
@@ -483,7 +483,7 @@ class ListAccountUserPreferencesMetadataResponse:
 @dataclass
 class ListWorkspaceSettingsMetadataResponse:
     next_page_token: Optional[str] = None
-    """A token that can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    """A token that can be sent as ``page_token`` to retrieve the next page. If this field is omitted,
     there are no subsequent pages."""
 
     settings_metadata: Optional[List[SettingsMetadata]] = None
@@ -1109,10 +1109,10 @@ class AccountSettingsV2API:
           unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListAccountSettingsMetadataRequest` call. Provide this to
+          A page token, received from a previous ``ListAccountSettingsMetadataRequest`` call. Provide this to
           retrieve the subsequent page.
 
-          When paginating, all other parameters provided to `ListAccountSettingsMetadataRequest` must match
+          When paginating, all other parameters provided to ``ListAccountSettingsMetadataRequest`` must match
           the call that provided the page token.
 
         :returns: Iterator over :class:`SettingsMetadata`
@@ -1153,10 +1153,10 @@ class AccountSettingsV2API:
           unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListAccountUserPreferencesMetadataRequest` call. Provide
+          A page token, received from a previous ``ListAccountUserPreferencesMetadataRequest`` call. Provide
           this to retrieve the subsequent page.
 
-          When paginating, all other parameters provided to `ListAccountUserPreferencesMetadataRequest` must
+          When paginating, all other parameters provided to ``ListAccountUserPreferencesMetadataRequest`` must
           match the call that provided the page token.
 
         :returns: Iterator over :class:`SettingsMetadata`
@@ -1282,11 +1282,11 @@ class WorkspaceSettingsV2API:
           unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListWorkspaceSettingsMetadataRequest` call. Provide this to
-          retrieve the subsequent page.
+          A page token, received from a previous ``ListWorkspaceSettingsMetadataRequest`` call. Provide this
+          to retrieve the subsequent page.
 
-          When paginating, all other parameters provided to `ListWorkspaceSettingsMetadataRequest` must match
-          the call that provided the page token.
+          When paginating, all other parameters provided to ``ListWorkspaceSettingsMetadataRequest`` must
+          match the call that provided the page token.
 
         :returns: Iterator over :class:`SettingsMetadata`
         """

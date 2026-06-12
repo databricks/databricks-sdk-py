@@ -578,7 +578,7 @@ class GetActivationUrlInfoResponse:
 class GetRecipientSharePermissionsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     permissions_out: Optional[List[ShareToPrivilegeAssignment]] = None
     """An array of data share permissions for a recipient."""
@@ -614,7 +614,7 @@ class GetRecipientSharePermissionsResponse:
 class GetSharePermissionsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     privilege_assignments: Optional[List[PrivilegeAssignment]] = None
     """The privileges assigned to each principal"""
@@ -768,7 +768,7 @@ class ListProviderShareAssetsResponse:
 class ListProviderSharesResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     shares: Optional[List[ProviderShare]] = None
     """An array of provider shares."""
@@ -801,7 +801,7 @@ class ListProviderSharesResponse:
 class ListProvidersResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     providers: Optional[List[ProviderInfo]] = None
     """An array of provider information objects."""
@@ -836,7 +836,7 @@ class ListProvidersResponse:
 class ListRecipientsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     recipients: Optional[List[RecipientInfo]] = None
     """An array of recipient information objects."""
@@ -871,7 +871,7 @@ class ListRecipientsResponse:
 class ListSharesResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     shares: Optional[List[ShareInfo]] = None
     """An array of data share information objects."""
@@ -978,20 +978,34 @@ class OidcFederationPolicy:
 
     subject_claim: str
     """The claim that contains the subject of the token. Depending on the identity provider and the use
-    case (U2M or M2M), this can vary: - For Entra ID (AAD): * U2M flow (group access): Use `groups`.
-    * U2M flow (user access): Use `oid`. * M2M flow (OAuth App access): Use `azp`. - For other IdPs,
-    refer to the specific IdP documentation.
+    case (U2M or M2M), this can vary:
     
-    Supported `subject_claim` values are: - `oid`: Object ID of the user. - `azp`: Client ID of the
-    OAuth app. - `groups`: Object ID of the group. - `sub`: Subject identifier for other use cases."""
+    - For Entra ID (AAD):
+    
+    - U2M flow (group access): Use ``groups``.
+    - U2M flow (user access): Use ``oid``.
+    - M2M flow (OAuth App access): Use ``azp``.
+    
+    - For other IdPs, refer to the specific IdP documentation.
+    
+    Supported ``subject_claim`` values are:
+    
+    - ``oid``: Object ID of the user.
+    - ``azp``: Client ID of the OAuth app.
+    - ``groups``: Object ID of the group.
+    - ``sub``: Subject identifier for other use cases."""
 
     subject: str
     """The required token subject, as specified in the subject claim of federated tokens. The subject
     claim identifies the identity of the user or machine accessing the resource. Examples for Entra
-    ID (AAD): - U2M flow (group access): If the subject claim is `groups`, this must be the Object
-    ID of the group in Entra ID. - U2M flow (user access): If the subject claim is `oid`, this must
-    be the Object ID of the user in Entra ID. - M2M flow (OAuth App access): If the subject claim is
-    `azp`, this must be the client ID of the OAuth app registered in Entra ID."""
+    ID (AAD):
+    
+    - U2M flow (group access): If the subject claim is ``groups``, this must be the Object ID of the
+      group in Entra ID.
+    - U2M flow (user access): If the subject claim is ``oid``, this must be the Object ID of the
+      user in Entra ID.
+    - M2M flow (OAuth App access): If the subject claim is ``azp``, this must be the client ID of
+      the OAuth app registered in Entra ID."""
 
     audiences: Optional[List[str]] = None
     """The allowed token audiences, as specified in the 'aud' claim of federated tokens. The audience
@@ -1070,11 +1084,11 @@ class PartitionValue:
 
     recipient_property_key: Optional[str] = None
     """The key of a Delta Sharing recipient's property. For example "databricks-account-id". When this
-    field is set, field `value` can not be set."""
+    field is set, field ``value`` can not be set."""
 
     value: Optional[str] = None
-    """The value of the partition column. When this value is not set, it means `null` value. When this
-    field is set, field `recipient_property_key` can not be set."""
+    """The value of the partition column. When this value is not set, it means ``null`` value. When
+    this field is set, field ``recipient_property_key`` can not be set."""
 
     def as_dict(self) -> dict:
         """Serializes the PartitionValue into a dictionary suitable for use as a JSON request body."""
@@ -1209,8 +1223,8 @@ class Privilege(Enum):
 @dataclass
 class PrivilegeAssignment:
     principal: Optional[str] = None
-    """The principal (user email address or group name). For deleted principals, `principal` is empty
-    while `principal_id` is populated."""
+    """The principal (user email address or group name). For deleted principals, ``principal`` is empty
+    while ``principal_id`` is populated."""
 
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
@@ -1245,7 +1259,7 @@ class ProviderInfo:
 
     cloud: Optional[str] = None
     """Cloud vendor of the provider's UC metastore. This field is only present when the
-    __authentication_type__ is **DATABRICKS**."""
+    **authentication_type** is **DATABRICKS**."""
 
     comment: Optional[str] = None
     """Description about the provider."""
@@ -1258,11 +1272,11 @@ class ProviderInfo:
 
     data_provider_global_metastore_id: Optional[str] = None
     """The global UC metastore id of the data provider. This field is only present when the
-    __authentication_type__ is **DATABRICKS**. The identifier is of format
-    __cloud__:__region__:__metastore-uuid__."""
+    **authentication_type** is **DATABRICKS**. The identifier is of format
+    **cloud**:**region**:**metastore-uuid**."""
 
     metastore_id: Optional[str] = None
-    """UUID of the provider's UC metastore. This field is only present when the __authentication_type__
+    """UUID of the provider's UC metastore. This field is only present when the **authentication_type**
     is **DATABRICKS**."""
 
     name: Optional[str] = None
@@ -1272,16 +1286,16 @@ class ProviderInfo:
     """Username of Provider owner."""
 
     recipient_profile: Optional[RecipientProfile] = None
-    """The recipient profile. This field is only present when the authentication_type is `TOKEN` or
-    `OAUTH_CLIENT_CREDENTIALS`."""
+    """The recipient profile. This field is only present when the authentication_type is ``TOKEN`` or
+    ``OAUTH_CLIENT_CREDENTIALS``."""
 
     recipient_profile_str: Optional[str] = None
-    """This field is required when the __authentication_type__ is **TOKEN**,
+    """This field is required when the **authentication_type** is **TOKEN**,
     **OAUTH_CLIENT_CREDENTIALS** or not provided."""
 
     region: Optional[str] = None
     """Cloud region of the provider's UC metastore. This field is only present when the
-    __authentication_type__ is **DATABRICKS**."""
+    **authentication_type** is **DATABRICKS**."""
 
     updated_at: Optional[int] = None
     """Time at which this Provider was created, in epoch milliseconds."""
@@ -1414,7 +1428,7 @@ class RecipientInfo:
 
     cloud: Optional[str] = None
     """Cloud vendor of the recipient's Unity Catalog Metastore. This field is only present when the
-    __authentication_type__ is **DATABRICKS**."""
+    **authentication_type** is **DATABRICKS**."""
 
     comment: Optional[str] = None
     """Description about the recipient."""
@@ -1427,8 +1441,8 @@ class RecipientInfo:
 
     data_recipient_global_metastore_id: Optional[str] = None
     """The global Unity Catalog metastore id provided by the data recipient. This field is only present
-    when the __authentication_type__ is **DATABRICKS**. The identifier is of format
-    __cloud__:__region__:__metastore-uuid__."""
+    when the **authentication_type** is **DATABRICKS**. The identifier is of format
+    **cloud**:**region**:**metastore-uuid**."""
 
     expiration_time: Optional[int] = None
     """Expiration timestamp of the token, in epoch milliseconds."""
@@ -1441,7 +1455,7 @@ class RecipientInfo:
 
     metastore_id: Optional[str] = None
     """Unique identifier of recipient's Unity Catalog Metastore. This field is only present when the
-    __authentication_type__ is **DATABRICKS**."""
+    **authentication_type** is **DATABRICKS**."""
 
     name: Optional[str] = None
     """Name of Recipient."""
@@ -1456,14 +1470,14 @@ class RecipientInfo:
 
     region: Optional[str] = None
     """Cloud region of the recipient's Unity Catalog Metastore. This field is only present when the
-    __authentication_type__ is **DATABRICKS**."""
+    **authentication_type** is **DATABRICKS**."""
 
     sharing_code: Optional[str] = None
     """The one-time sharing code provided by the data recipient. This field is only present when the
-    __authentication_type__ is **DATABRICKS**."""
+    **authentication_type** is **DATABRICKS**."""
 
     tokens: Optional[List[RecipientTokenInfo]] = None
-    """This field is only present when the __authentication_type__ is **TOKEN**."""
+    """This field is only present when the **authentication_type** is **TOKEN**."""
 
     updated_at: Optional[int] = None
     """Time at which the recipient was updated, in epoch milliseconds."""
@@ -1792,7 +1806,7 @@ class RetrieveTokenResponse:
 
 @dataclass
 class SecurablePropertiesKvPairs:
-    """An object with __properties__ containing map of key-value properties attached to the securable."""
+    """An object with **properties** containing map of key-value properties attached to the securable."""
 
     properties: Dict[str, str]
     """A map of key-value properties attached to the securable."""
@@ -1985,7 +1999,7 @@ class ShareToPrivilegeAssignment:
 class SharedDataObject:
     name: str
     """A fully qualified name that uniquely identifies a data object. For example, a table's fully
-    qualified name is in the format of `<catalog>.<schema>.<table>`,"""
+    qualified name is in the format of ``<catalog>.<schema>.<table>``,"""
 
     added_at: Optional[int] = None
     """The time when this data object is added to the share, in epoch milliseconds."""
@@ -2019,22 +2033,29 @@ class SharedDataObject:
     
     Use this field for table-like objects (for example: TABLE, VIEW, MATERIALIZED_VIEW,
     STREAMING_TABLE, FOREIGN_TABLE). For non-table objects (for example: VOLUME, MODEL,
-    NOTEBOOK_FILE, FUNCTION), use `string_shared_as` instead.
+    NOTEBOOK_FILE, FUNCTION), use ``string_shared_as`` instead.
     
     Important: For non-table objects, this field must be omitted entirely.
     
-    Format: Must be a 2-part name `<schema_name>.<table_name>` (e.g., "sales_schema.orders_table") -
-    Both schema and table names must contain only alphanumeric characters and underscores - No
-    periods, spaces, forward slashes, or control characters are allowed within each part - Do not
-    include the catalog name (use 2 parts, not 3)
+    Format: Must be a 2-part name ``<schema_name>.<table_name>`` (e.g., "sales_schema.orders_table")
     
-    Behavior: - If not provided, the service automatically generates the alias as `<schema>.<table>`
-    from the object's original name - If you don't want to specify this field, omit it entirely from
-    the request (do not pass an empty string) - The `shared_as` name must be unique within the share
+    - Both schema and table names must contain only alphanumeric characters and underscores
+    - No periods, spaces, forward slashes, or control characters are allowed within each part
+    - Do not include the catalog name (use 2 parts, not 3)
     
-    Examples: - Valid: "analytics_schema.customer_view" - Invalid:
-    "catalog.analytics_schema.customer_view" (3 parts not allowed) - Invalid:
-    "analytics-schema.customer-view" (hyphens not allowed)"""
+    Behavior:
+    
+    - If not provided, the service automatically generates the alias as ``<schema>.<table>`` from
+      the object's original name
+    - If you don't want to specify this field, omit it entirely from the request (do not pass an
+      empty string)
+    - The ``shared_as`` name must be unique within the share
+    
+    Examples:
+    
+    - Valid: "analytics_schema.customer_view"
+    - Invalid: "catalog.analytics_schema.customer_view" (3 parts not allowed)
+    - Invalid: "analytics-schema.customer-view" (hyphens not allowed)"""
 
     start_version: Optional[int] = None
     """The start version associated with the object. This allows data providers to control the lowest
@@ -2042,7 +2063,7 @@ class SharedDataObject:
     changes for versions >= start_version. If not specified, clients can only query starting from
     the version of the object at the time it was added to the share.
     
-    NOTE: The start_version should be <= the `current` version of the object."""
+    NOTE: The start_version should be <= the ``current`` version of the object."""
 
     status: Optional[SharedDataObjectStatus] = None
     """One of: **ACTIVE**, **PERMISSION_DENIED**."""
@@ -2052,26 +2073,35 @@ class SharedDataObject:
     
     Use this field for non-table objects (for example: VOLUME, MODEL, NOTEBOOK_FILE, FUNCTION). For
     table-like objects (for example: TABLE, VIEW, MATERIALIZED_VIEW, STREAMING_TABLE,
-    FOREIGN_TABLE), use `shared_as` instead.
+    FOREIGN_TABLE), use ``shared_as`` instead.
     
     Important: For table-like objects, this field must be omitted entirely.
     
-    Format: - For VOLUME: Must be a 2-part name `<schema_name>.<volume_name>` (e.g.,
-    "data_schema.ml_models") - For FUNCTION: Must be a 2-part name `<schema_name>.<function_name>`
-    (e.g., "udf_schema.calculate_tax") - For MODEL: Must be a 2-part name
-    `<schema_name>.<model_name>` (e.g., "models.prediction_model") - For NOTEBOOK_FILE: Should be
-    the notebook file name (e.g., "analysis_notebook.py") - All names must contain only alphanumeric
-    characters and underscores - No periods, spaces, forward slashes, or control characters are
-    allowed within each part
+    Format:
     
-    Behavior: - If not provided, the service automatically generates the alias from the object's
-    original name - If you don't want to specify this field, omit it entirely from the request (do
-    not pass an empty string) - The `string_shared_as` name must be unique for objects of the same
-    type within the share
+    - For VOLUME: Must be a 2-part name ``<schema_name>.<volume_name>`` (e.g.,
+      "data_schema.ml_models")
+    - For FUNCTION: Must be a 2-part name ``<schema_name>.<function_name>`` (e.g.,
+      "udf_schema.calculate_tax")
+    - For MODEL: Must be a 2-part name ``<schema_name>.<model_name>`` (e.g.,
+      "models.prediction_model")
+    - For NOTEBOOK_FILE: Should be the notebook file name (e.g., "analysis_notebook.py")
+    - All names must contain only alphanumeric characters and underscores
+    - No periods, spaces, forward slashes, or control characters are allowed within each part
     
-    Examples: - Valid for VOLUME: "data_schema.training_data" - Valid for FUNCTION:
-    "analytics.calculate_revenue" - Invalid: "catalog.data_schema.training_data" (3 parts not
-    allowed for volumes) - Invalid: "data-schema.training-data" (hyphens not allowed)"""
+    Behavior:
+    
+    - If not provided, the service automatically generates the alias from the object's original name
+    - If you don't want to specify this field, omit it entirely from the request (do not pass an
+      empty string)
+    - The ``string_shared_as`` name must be unique for objects of the same type within the share
+    
+    Examples:
+    
+    - Valid for VOLUME: "data_schema.training_data"
+    - Valid for FUNCTION: "analytics.calculate_revenue"
+    - Invalid: "catalog.data_schema.training_data" (3 parts not allowed for volumes)
+    - Invalid: "data-schema.training-data" (hyphens not allowed)"""
 
     def as_dict(self) -> dict:
         """Serializes the SharedDataObject into a dictionary suitable for use as a JSON request body."""
@@ -2447,7 +2477,7 @@ class ProvidersAPI:
         :param comment: str (optional)
           Description about the provider.
         :param recipient_profile_str: str (optional)
-          This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
+          This field is required when the **authentication_type** is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.
 
         :returns: :class:`ProviderInfo`
@@ -2529,13 +2559,16 @@ class ProvidersAPI:
           If not provided, all providers will be returned. If no providers exist with this ID, no results will
           be returned.
         :param max_results: int (optional)
-          Maximum number of providers to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid providers are returned (not recommended). - Note: The
-          number of returned providers might be less than the specified max_results size, even zero. The only
-          definitive indication that no further providers can be fetched is when the next_page_token is unset
-          from the response.
+          Maximum number of providers to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid providers are returned (not recommended).
+          - Note: The number of returned providers might be less than the specified max_results size, even
+            zero. The only definitive indication that no further providers can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -2624,18 +2657,22 @@ class ProvidersAPI:
     ) -> Iterator[ProviderShare]:
         """Gets an array of a specified provider's shares within the metastore where:
 
-        * the caller is a metastore admin, or * the caller is the owner.
+        - the caller is a metastore admin, or
+        - the caller is the owner.
 
         :param name: str
           Name of the provider in which to list shares.
         :param max_results: int (optional)
-          Maximum number of shares to return. - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of
-          returned shares might be less than the specified max_results size, even zero. The only definitive
-          indication that no further shares can be fetched is when the next_page_token is unset from the
-          response.
+          Maximum number of shares to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid shares are returned (not recommended).
+          - Note: The number of returned shares might be less than the specified max_results size, even zero.
+            The only definitive indication that no further shares can be fetched is when the next_page_token
+            is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -2688,7 +2725,7 @@ class ProvidersAPI:
         :param owner: str (optional)
           Username of Provider owner.
         :param recipient_profile_str: str (optional)
-          This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
+          This field is required when the **authentication_type** is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.
 
         :returns: :class:`ProviderInfo`
@@ -2718,7 +2755,7 @@ class ProvidersAPI:
 
 class RecipientActivationAPI:
     """The Recipient Activation API is only applicable in the open sharing model where the recipient object has
-    the authentication type of `TOKEN`. The data recipient follows the activation link shared by the data
+    the authentication type of ``TOKEN``. The data recipient follows the activation link shared by the data
     provider to download the credential file that includes the access token. The recipient will then use the
     credential file to establish a secure connection with the provider to receive the shared data.
 
@@ -2774,20 +2811,23 @@ class RecipientActivationAPI:
 
 class RecipientFederationPoliciesAPI:
     """The Recipient Federation Policies APIs are only applicable in the open sharing model where the recipient
-    object has the authentication type of `OIDC_RECIPIENT`, enabling data sharing from Databricks to
+    object has the authentication type of ``OIDC_RECIPIENT``, enabling data sharing from Databricks to
     non-Databricks recipients. OIDC Token Federation enables secure, secret-less authentication for accessing
     Delta Sharing servers. Users and applications authenticate using short-lived OIDC tokens issued by their
     own Identity Provider (IdP), such as Azure Entra ID or Okta, without the need for managing static
     credentials or client secrets. A federation policy defines how non-Databricks recipients authenticate
     using OIDC tokens. It validates the OIDC claims in federated tokens and is set at the recipient level. The
     caller must be the owner of the recipient to create or manage a federation policy. Federation policies
-    support the following scenarios: - User-to-Machine (U2M) flow: A user accesses Delta Shares using their
-    own identity, such as connecting through PowerBI Delta Sharing Client. - Machine-to-Machine (M2M) flow: An
-    application accesses Delta Shares using its own identity, typically for automation tasks like nightly jobs
-    through Python Delta Sharing Client. OIDC Token Federation enables fine-grained access control, supports
-    Multi-Factor Authentication (MFA), and enhances security by minimizing the risk of credential leakage
-    through the use of short-lived, expiring tokens. It is designed for strong identity governance, secure
-    cross-platform data sharing, and reduced operational overhead for credential management.
+    support the following scenarios:
+
+    - User-to-Machine (U2M) flow: A user accesses Delta Shares using their own identity, such as connecting
+      through PowerBI Delta Sharing Client.
+    - Machine-to-Machine (M2M) flow: An application accesses Delta Shares using its own identity, typically
+      for automation tasks like nightly jobs through Python Delta Sharing Client. OIDC Token Federation
+      enables fine-grained access control, supports Multi-Factor Authentication (MFA), and enhances security
+      by minimizing the risk of credential leakage through the use of short-lived, expiring tokens. It is
+      designed for strong identity governance, secure cross-platform data sharing, and reduced operational
+      overhead for credential management.
 
     For more information, see
     https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security and
@@ -2804,20 +2844,26 @@ class RecipientFederationPoliciesAPI:
         defined at the recipient level. This enables secretless sharing clients to authenticate using OIDC
         tokens.
 
-        Supported scenarios for federation policies: 1. **User-to-Machine (U2M) flow** (e.g., PowerBI): A user
-        accesses a resource using their own identity. 2. **Machine-to-Machine (M2M) flow** (e.g., OAuth App):
-        An OAuth App accesses a resource using its own identity, typically for tasks like running nightly
-        jobs.
+        Supported scenarios for federation policies:
 
-        For an overview, refer to: - Blog post: Overview of feature:
-        https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security
+        1. **User-to-Machine (U2M) flow** (e.g., PowerBI): A user accesses a resource using their own
+           identity.
+        2. **Machine-to-Machine (M2M) flow** (e.g., OAuth App): An OAuth App accesses a resource using its own
+           identity, typically for tasks like running nightly jobs.
 
-        For detailed configuration guides based on your use case: - Creating a Federation Policy as a
-        provider: https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed - Configuration and
-        usage for Machine-to-Machine (M2M) applications (e.g., Python Delta Sharing Client):
-        https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-m2m - Configuration and usage for
-        User-to-Machine (U2M) applications (e.g., PowerBI):
-        https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-u2m
+        For an overview, refer to:
+
+        - Blog post: Overview of feature:
+          https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security
+
+        For detailed configuration guides based on your use case:
+
+        - Creating a Federation Policy as a provider:
+          https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed
+        - Configuration and usage for Machine-to-Machine (M2M) applications (e.g., Python Delta Sharing
+          Client): https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-m2m
+        - Configuration and usage for User-to-Machine (U2M) applications (e.g., PowerBI):
+          https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-u2m
 
         :param recipient_name: str
           Name of the recipient. This is the name of the recipient for which the policy is being created.
@@ -2940,14 +2986,14 @@ class RecipientsAPI:
     has access to a Databricks workspace that is enabled for Unity Catalog:
 
     - For recipients with access to a Databricks workspace that is enabled for Unity Catalog, you can create a
-    recipient object along with a unique sharing identifier you get from the recipient. The sharing identifier
-    is the key identifier that enables the secure connection. This sharing mode is called
-    **Databricks-to-Databricks sharing**.
-
+      recipient object along with a unique sharing identifier you get from the recipient. The sharing
+      identifier is the key identifier that enables the secure connection. This sharing mode is called
+      **Databricks-to-Databricks sharing**.
     - For recipients without access to a Databricks workspace that is enabled for Unity Catalog, when you
-    create a recipient object, Databricks generates an activation link you can send to the recipient. The
-    recipient follows the activation link to download the credential file, and then uses the credential file
-    to establish a secure connection to receive the shared data. This sharing mode is called **open sharing**."""
+      create a recipient object, Databricks generates an activation link you can send to the recipient. The
+      recipient follows the activation link to download the credential file, and then uses the credential file
+      to establish a secure connection to receive the shared data. This sharing mode is called **open
+      sharing**."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2976,8 +3022,8 @@ class RecipientsAPI:
           Description about the recipient.
         :param data_recipient_global_metastore_id: str (optional)
           The global Unity Catalog metastore id provided by the data recipient. This field is only present
-          when the __authentication_type__ is **DATABRICKS**. The identifier is of format
-          __cloud__:__region__:__metastore-uuid__.
+          when the **authentication_type** is **DATABRICKS**. The identifier is of format
+          **cloud**:**region**:**metastore-uuid**.
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
         :param id: str (optional)
@@ -2992,7 +3038,7 @@ class RecipientsAPI:
           need to perform a read-modify-write.
         :param sharing_code: str (optional)
           The one-time sharing code provided by the data recipient. This field is only present when the
-          __authentication_type__ is **DATABRICKS**.
+          **authentication_type** is **DATABRICKS**.
 
         :returns: :class:`RecipientInfo`
         """
@@ -3048,8 +3094,11 @@ class RecipientsAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
 
     def get(self, name: str) -> RecipientInfo:
-        """Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**
-        privilege on the metastore * The owner of the share recipient * A metastore admin
+        """Gets a share recipient from the metastore. The caller must be one of:
+
+        - A user with **USE_RECIPIENT** privilege on the metastore
+        - The owner of the share recipient
+        - A metastore admin
 
         :param name: str
           Name of the recipient.
@@ -3077,20 +3126,23 @@ class RecipientsAPI:
     ) -> Iterator[RecipientInfo]:
         """Gets an array of all share recipients within the current metastore where:
 
-        * the caller is a metastore admin, or * the caller is the owner. There is no guarantee of a specific
-        ordering of the elements in the array.
+        - the caller is a metastore admin, or
+        - the caller is the owner. There is no guarantee of a specific ordering of the elements in the array.
 
         :param data_recipient_global_metastore_id: str (optional)
           If not provided, all recipients will be returned. If no recipients exist with this ID, no results
           will be returned.
         :param max_results: int (optional)
-          Maximum number of recipients to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid recipients are returned (not recommended). - Note: The
-          number of returned recipients might be less than the specified max_results size, even zero. The only
-          definitive indication that no further recipients can be fetched is when the next_page_token is unset
-          from the response.
+          Maximum number of recipients to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid recipients are returned (not recommended).
+          - Note: The number of returned recipients might be less than the specified max_results size, even
+            zero. The only definitive indication that no further recipients can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -3161,13 +3213,16 @@ class RecipientsAPI:
         :param name: str
           The name of the Recipient.
         :param max_results: int (optional)
-          Maximum number of permissions to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
-          number of returned permissions might be less than the specified max_results size, even zero. The
-          only definitive indication that no further permissions can be fetched is when the next_page_token is
-          unset from the response.
+          Maximum number of permissions to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid permissions are returned (not recommended).
+          - Note: The number of returned permissions might be less than the specified max_results size, even
+            zero. The only definitive indication that no further permissions can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -3351,13 +3406,16 @@ class SharesAPI:
         is no guarantee of a specific ordering of the elements in the array.
 
         :param max_results: int (optional)
-          Maximum number of shares to return. - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of
-          returned shares might be less than the specified max_results size, even zero. The only definitive
-          indication that no further shares can be fetched is when the next_page_token is unset from the
-          response.
+          Maximum number of shares to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid shares are returned (not recommended).
+          - Note: The number of returned shares might be less than the specified max_results size, even zero.
+            The only definitive indication that no further shares can be fetched is when the next_page_token
+            is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -3397,13 +3455,16 @@ class SharesAPI:
         :param name: str
           The name of the Recipient.
         :param max_results: int (optional)
-          Maximum number of permissions to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
-          number of returned permissions might be less than the specified max_results size, even zero. The
-          only definitive indication that no further permissions can be fetched is when the next_page_token is
-          unset from the response.
+          Maximum number of permissions to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid permissions are returned (not recommended).
+          - Note: The number of returned permissions might be less than the specified max_results size, even
+            zero. The only definitive indication that no further permissions can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -3439,12 +3500,12 @@ class SharesAPI:
         """Updates the share with the changes and data objects in the request. The caller must be the owner of
         the share or a metastore admin.
 
-        When the caller is a metastore admin, only the __owner__ field can be updated.
+        When the caller is a metastore admin, only the **owner** field can be updated.
 
         In the case the share name is changed, **updateShare** requires that the caller is the owner of the
         share and has the CREATE_SHARE privilege.
 
-        If there are notebook files in the share, the __storage_root__ field cannot be updated.
+        If there are notebook files in the share, the **storage_root** field cannot be updated.
 
         For each table that is added through this method, the share owner must also have **SELECT** privilege
         on the table. This privilege must be maintained indefinitely for recipients to be able to access the

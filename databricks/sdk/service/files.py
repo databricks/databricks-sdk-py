@@ -307,7 +307,7 @@ class ListDirectoryResponse:
     """Array of DirectoryEntry."""
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as `page_token` to retrieve the next page."""
+    """A token, which can be sent as ``page_token`` to retrieve the next page."""
 
     def as_dict(self) -> dict:
         """Serializes the ListDirectoryResponse into a dictionary suitable for use as a JSON request body."""
@@ -510,13 +510,14 @@ class DbfsAPI:
 
     def create(self, path: str, *, overwrite: Optional[bool] = None) -> CreateResponse:
         """Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle
-        timeout on this handle. If a file or directory already exists on the given path and __overwrite__ is
+        timeout on this handle. If a file or directory already exists on the given path and **overwrite** is
         set to false, this call will throw an exception with ``RESOURCE_ALREADY_EXISTS``.
 
         A typical workflow for file upload would be:
 
-        1. Issue a ``create`` call and get a handle. 2. Issue one or more ``add-block`` calls with the handle
-        you have. 3. Issue a ``close`` call with the handle you have.
+        1. Issue a ``create`` call and get a handle.
+        2. Issue one or more ``add-block`` calls with the handle you have.
+        3. Issue a ``close`` call with the handle you have.
 
         :param path: str
           The path of the new file. The path should be the absolute DBFS path.
@@ -545,19 +546,18 @@ class DbfsAPI:
 
     def delete(self, path: str, *, recursive: Optional[bool] = None):
         """Delete the file or directory (optionally recursively delete all files in the directory). This call
-        throws an exception with `IO_ERROR` if the path is a non-empty directory and `recursive` is set to
-        `false` or on other similar errors.
+        throws an exception with ``IO_ERROR`` if the path is a non-empty directory and ``recursive`` is set to
+        ``false`` or on other similar errors.
 
         When you delete a large number of files, the delete operation is done in increments. The call returns
         a response after approximately 45 seconds with an error message (503 Service Unavailable) asking you
         to re-invoke the delete operation until the directory structure is fully deleted.
 
         For operations that delete more than 10K files, we discourage using the DBFS REST API, but advise you
-        to perform such operations in the context of a cluster, using the [File system utility
-        (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs). `dbutils.fs` covers the functional scope
-        of the DBFS REST API, but from notebooks. Running such operations using notebooks provides better
-        control and manageability, such as selective deletes, and the possibility to automate periodic delete
-        jobs.
+        to perform such operations in the context of a cluster, using the File system utility (dbutils.fs).
+        ``dbutils.fs`` covers the functional scope of the DBFS REST API, but from notebooks. Running such
+        operations using notebooks provides better control and manageability, such as selective deletes, and
+        the possibility to automate periodic delete jobs.
 
         :param path: str
           The path of the file or directory to delete. The path should be the absolute DBFS path.
@@ -586,7 +586,7 @@ class DbfsAPI:
 
     def get_status(self, path: str) -> FileInfo:
         """Gets the file information for a file or directory. If the file or directory does not exist, this call
-        throws an exception with `RESOURCE_DOES_NOT_EXIST`.
+        throws an exception with ``RESOURCE_DOES_NOT_EXIST``.
 
         :param path: str
           The path of the file or directory. The path should be the absolute DBFS path.
@@ -610,14 +610,13 @@ class DbfsAPI:
 
     def list(self, path: str) -> Iterator[FileInfo]:
         """List the contents of a directory, or details of the file. If the file or directory does not exist,
-        this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
+        this call throws an exception with ``RESOURCE_DOES_NOT_EXIST``.
 
         When calling list on a large directory, the list operation will time out after approximately 60
         seconds. We strongly recommend using list only on directories containing less than 10K files and
         discourage using the DBFS REST API for operations that list more than 10K files. Instead, we recommend
-        that you perform such operations in the context of a cluster, using the [File system utility
-        (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs), which provides the same functionality
-        without timing out.
+        that you perform such operations in the context of a cluster, using the File system utility
+        (dbutils.fs), which provides the same functionality without timing out.
 
         :param path: str
           The path of the file or directory. The path should be the absolute DBFS path.
@@ -643,8 +642,8 @@ class DbfsAPI:
     def mkdirs(self, path: str):
         """Creates the given directory and necessary parent directories if they do not exist. If a file (not a
         directory) exists at any prefix of the input path, this call throws an exception with
-        `RESOURCE_ALREADY_EXISTS`. **Note**: If this operation fails, it might have succeeded in creating some
-        of the necessary parent directories.
+        ``RESOURCE_ALREADY_EXISTS``. **Note**: If this operation fails, it might have succeeded in creating
+        some of the necessary parent directories.
 
         :param path: str
           The path of the new directory. The path should be the absolute DBFS path.
@@ -668,8 +667,8 @@ class DbfsAPI:
 
     def move(self, source_path: str, destination_path: str):
         """Moves a file from one location to another location within DBFS. If the source file does not exist,
-        this call throws an exception with `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the
-        destination path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If the given source
+        this call throws an exception with ``RESOURCE_DOES_NOT_EXIST``. If a file already exists in the
+        destination path, this call throws an exception with ``RESOURCE_ALREADY_EXISTS``. If the given source
         path is a directory, this call always recursively moves all files.
 
         :param source_path: str
@@ -702,8 +701,8 @@ class DbfsAPI:
 
         Alternatively you can pass contents as base64 string.
 
-        The amount of data that can be passed (when not streaming) using the __contents__ parameter is limited
-        to 1 MB. `MAX_BLOCK_SIZE_EXCEEDED` will be thrown if this limit is exceeded.
+        The amount of data that can be passed (when not streaming) using the **contents** parameter is limited
+        to 1 MB. ``MAX_BLOCK_SIZE_EXCEEDED`` will be thrown if this limit is exceeded.
 
         If you want to upload large files, use the streaming upload. For details, see :method:dbfs/create,
         :method:dbfs/addBlock, :method:dbfs/close.
@@ -738,11 +737,11 @@ class DbfsAPI:
 
     def read(self, path: str, *, length: Optional[int] = None, offset: Optional[int] = None) -> ReadResponse:
         """Returns the contents of a file. If the file does not exist, this call throws an exception with
-        `RESOURCE_DOES_NOT_EXIST`. If the path is a directory, the read length is negative, or if the offset
-        is negative, this call throws an exception with `INVALID_PARAMETER_VALUE`. If the read length exceeds
-        1 MB, this call throws an exception with `MAX_READ_SIZE_EXCEEDED`.
+        ``RESOURCE_DOES_NOT_EXIST``. If the path is a directory, the read length is negative, or if the offset
+        is negative, this call throws an exception with ``INVALID_PARAMETER_VALUE``. If the read length
+        exceeds 1 MB, this call throws an exception with ``MAX_READ_SIZE_EXCEEDED``.
 
-        If `offset + length` exceeds the number of bytes in a file, it reads the contents until the end of
+        If ``offset + length`` exceeds the number of bytes in a file, it reads the contents until the end of
         file.
 
         :param path: str
@@ -780,24 +779,24 @@ class FilesAPI:
     directories by referring to their URI. The API makes working with file content as raw bytes easier and
     more efficient.
 
-    The API supports [Unity Catalog volumes], where files and directories to operate on are specified using
-    their volume URI path, which follows the format
+    The API supports `Unity Catalog volumes
+    <https://docs.databricks.com/en/connect/unity-catalog/volumes.html>`__, where files and directories to
+    operate on are specified using their volume URI path, which follows the format
     /Volumes/&lt;catalog_name&gt;/&lt;schema_name&gt;/&lt;volume_name&gt;/&lt;path_to_file&gt;.
 
-    The Files API has two distinct endpoints, one for working with files (`/fs/files`) and another one for
-    working with directories (`/fs/directories`). Both endpoints use the standard HTTP methods GET, HEAD, PUT,
-    and DELETE to manage files and directories specified using their URI path. The path is always absolute.
+    The Files API has two distinct endpoints, one for working with files (``/fs/files``) and another one for
+    working with directories (``/fs/directories``). Both endpoints use the standard HTTP methods GET, HEAD,
+    PUT, and DELETE to manage files and directories specified using their URI path. The path is always
+    absolute.
 
-    Use of Files API may incur Databricks data transfer charges.
-
-    [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html"""
+    Use of Files API may incur Databricks data transfer charges."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create_directory(self, directory_path: str):
         """Creates an empty directory. If necessary, also creates any parent directories of the new, empty
-        directory (like the shell command `mkdir -p`). If called on an existing directory, returns a success
+        directory (like the shell command ``mkdir -p``). If called on an existing directory, returns a success
         response; this method is idempotent (it will succeed if the directory already exists).
 
         :param directory_path: str
@@ -893,8 +892,8 @@ class FilesAPI:
 
         This method is useful to check if a directory exists and the caller has access to it.
 
-        If you wish to ensure the directory exists, you can instead use `PUT`, which will create the directory
-        if it does not exist, and is idempotent (it will succeed if the directory already exists).
+        If you wish to ensure the directory exists, you can instead use ``PUT``, which will create the
+        directory if it does not exist, and is idempotent (it will succeed if the directory already exists).
 
         :param directory_path: str
           The absolute path of a directory.
@@ -950,7 +949,7 @@ class FilesAPI:
           The absolute path of a directory.
         :param page_size: int (optional)
           The maximum number of directory entries to return. The response may contain fewer entries. If the
-          response contains a `next_page_token`, there may be more entries, even if fewer than `page_size`
+          response contains a ``next_page_token``, there may be more entries, even if fewer than ``page_size``
           entries are in the response.
 
           We recommend not to set this value unless you are intentionally listing less than the complete
@@ -959,12 +958,12 @@ class FilesAPI:
           If unspecified, at most 1000 directory entries will be returned. The maximum value is 1000. Values
           above 1000 will be coerced to 1000.
         :param page_token: str (optional)
-          An opaque page token which was the `next_page_token` in the response of the previous request to list
-          the contents of this directory. Provide this token to retrieve the next page of directory entries.
-          When providing a `page_token`, all other parameters provided to the request must match the previous
-          request. To list all of the entries in a directory, it is necessary to continue requesting pages of
-          entries until the response contains no `next_page_token`. Note that the number of entries returned
-          must not be used to determine when the listing is complete.
+          An opaque page token which was the ``next_page_token`` in the response of the previous request to
+          list the contents of this directory. Provide this token to retrieve the next page of directory
+          entries. When providing a ``page_token``, all other parameters provided to the request must match
+          the previous request. To list all of the entries in a directory, it is necessary to continue
+          requesting pages of entries until the response contains no ``next_page_token``. Note that the number
+          of entries returned must not be used to determine when the listing is complete.
 
         :returns: Iterator over :class:`DirectoryEntry`
         """

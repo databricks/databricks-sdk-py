@@ -31,9 +31,8 @@ _LOG = logging.getLogger("databricks.sdk")
 @dataclass
 class CleanRoom:
     access_restricted: Optional[CleanRoomAccessRestricted] = None
-    """Whether clean room access is restricted due to [CSP]
-    
-    [CSP]: https://docs.databricks.com/en/security/privacy/security-profile.html"""
+    """Whether clean room access is restricted due to `CSP
+    <https://docs.databricks.com/en/security/privacy/security-profile.html>`__"""
 
     comment: Optional[str] = None
 
@@ -44,9 +43,8 @@ class CleanRoom:
     """The alias of the collaborator tied to the local clean room."""
 
     name: Optional[str] = None
-    """The name of the clean room. It should follow [UC securable naming requirements].
-    
-    [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements"""
+    """The name of the clean room. It should follow `UC securable naming requirements
+    <https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements>`__."""
 
     output_catalog: Optional[CleanRoomOutputCatalog] = None
     """Output catalog of the clean room. It is an output only field. Output catalog is manipulated
@@ -552,12 +550,12 @@ class CleanRoomAssetVolumeLocalDetails:
 @dataclass
 class CleanRoomAutoApprovalRule:
     author_collaborator_alias: Optional[str] = None
-    """Collaborator alias of the author covered by the rule. Only one of `author_collaborator_alias`
-    and `author_scope` can be set."""
+    """Collaborator alias of the author covered by the rule. Only one of ``author_collaborator_alias``
+    and ``author_scope`` can be set."""
 
     author_scope: Optional[CleanRoomAutoApprovalRuleAuthorScope] = None
-    """Scope of authors covered by the rule. Only one of `author_collaborator_alias` and `author_scope`
-    can be set."""
+    """Scope of authors covered by the rule. Only one of ``author_collaborator_alias`` and
+    ``author_scope`` can be set."""
 
     clean_room_name: Optional[str] = None
     """The name of the clean room this auto-approval rule belongs to."""
@@ -637,9 +635,8 @@ class CleanRoomCollaborator:
     collaborator_alias: str
     """Collaborator alias specified by the clean room creator. It is unique across all collaborators of
     this clean room, and used to derive multiple values internally such as catalog alias and clean
-    room name for single metastore clean rooms. It should follow [UC securable naming requirements].
-    
-    [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements"""
+    room name for single metastore clean rooms. It should follow `UC securable naming requirements
+    <https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements>`__."""
 
     display_name: Optional[str] = None
     """Generated display name for the collaborator. In the case of a single metastore clean room, it is
@@ -661,8 +658,7 @@ class CleanRoomCollaborator:
     the clean room."""
 
     organization_name: Optional[str] = None
-    """[Organization name](:method:metastores/list#metastores-delta_sharing_organization_name)
-    configured in the metastore"""
+    """Organization name configured in the metastore"""
 
     def as_dict(self) -> dict:
         """Serializes the CleanRoomCollaborator into a dictionary suitable for use as a JSON request body."""
@@ -879,10 +875,9 @@ class CleanRoomNotebookTaskRun:
 @dataclass
 class CleanRoomOutputCatalog:
     catalog_name: Optional[str] = None
-    """The name of the output catalog in UC. It should follow [UC securable naming requirements]. The
-    field will always exist if status is CREATED.
-    
-    [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements"""
+    """The name of the output catalog in UC. It should follow `UC securable naming requirements
+    <https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements>`__.
+    The field will always exist if status is CREATED."""
 
     status: Optional[CleanRoomOutputCatalogOutputCatalogStatus] = None
 
@@ -934,7 +929,6 @@ class CleanRoomRemoteDetail:
     that satisfies the owner condition:
     
     1. It has the creator's global_metastore_id (determined by caller of CreateCleanRoom).
-    
     2. Its invite_recipient_email is empty."""
 
     compliance_security_profile: Optional[ComplianceSecurityProfile] = None
@@ -1661,8 +1655,8 @@ class CleanRoomAssetsAPI:
           For notebooks, the name is the notebook file name. For jar analyses, the name is the jar analysis
           name.
         :param asset: :class:`CleanRoomAsset`
-          The asset to update. The asset's `name` and `asset_type` fields are used to identify the asset to
-          update.
+          The asset to update. The asset's ``name`` and ``asset_type`` fields are used to identify the asset
+          to update.
 
         :returns: :class:`CleanRoomAsset`
         """
@@ -2059,7 +2053,7 @@ class CleanRoomsAPI:
         """Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**
         privilege, or be metastore admin.
 
-        When the caller is a metastore admin, only the __owner__ field can be updated.
+        When the caller is a metastore admin, only the **owner** field can be updated.
 
         :param name: str
           Name of the clean room.
