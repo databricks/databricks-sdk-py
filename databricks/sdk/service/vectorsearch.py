@@ -223,11 +223,13 @@ class DeltaSyncVectorIndexSpecRequest:
     """[Optional] Name of the Delta table to sync the vector index contents and computed embeddings to."""
 
     pipeline_type: Optional[PipelineType] = None
-    """Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
-    system stops processing after successfully refreshing the source table in the pipeline once,
-    ensuring the table is updated based on the data available when the update started. -
-    `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it
-    arrives in the source table to keep vector index fresh."""
+    """Pipeline execution mode.
+    
+    - ``TRIGGERED``: If the pipeline uses the triggered execution mode, the system stops processing
+      after successfully refreshing the source table in the pipeline once, ensuring the table is
+      updated based on the data available when the update started.
+    - ``CONTINUOUS``: If the pipeline uses continuous execution, the pipeline processes new data as
+      it arrives in the source table to keep vector index fresh."""
 
     source_table: Optional[str] = None
     """The name of the source table."""
@@ -310,11 +312,13 @@ class DeltaSyncVectorIndexSpecResponse:
     """The ID of the pipeline that is used to sync the index."""
 
     pipeline_type: Optional[PipelineType] = None
-    """Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
-    system stops processing after successfully refreshing the source table in the pipeline once,
-    ensuring the table is updated based on the data available when the update started. -
-    `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it
-    arrives in the source table to keep vector index fresh."""
+    """Pipeline execution mode.
+    
+    - ``TRIGGERED``: If the pipeline uses the triggered execution mode, the system stops processing
+      after successfully refreshing the source table in the pipeline once, ensuring the table is
+      updated based on the data available when the update started.
+    - ``CONTINUOUS``: If the pipeline uses continuous execution, the pipeline processes new data as
+      it arrives in the source table to keep vector index fresh."""
 
     source_table: Optional[str] = None
     """The name of the source table."""
@@ -385,9 +389,9 @@ class DirectAccessVectorIndexSpec:
     """The columns that contain the embedding vectors. The format should be array[double]."""
 
     schema_json: Optional[str] = None
-    """The schema of the index in JSON format. Supported types are `integer`, `long`, `float`,
-    `double`, `boolean`, `string`, `date`, `timestamp`. Supported types for vector column:
-    `array<float>`, `array<double>`,`."""
+    """The schema of the index in JSON format. Supported types are ``integer``, ``long``, ``float``,
+    ``double``, ``boolean``, ``string``, ``date``, ``timestamp``. Supported types for vector column:
+    ``array<float>``, ``array<double>``,`."""
 
     def as_dict(self) -> dict:
         """Serializes the DirectAccessVectorIndexSpec into a dictionary suitable for use as a JSON request body."""
@@ -711,7 +715,7 @@ class FacetResultData:
     """Facet aggregation rows returned by a query."""
 
     facet_array: Optional[List[List[str]]] = None
-    """Facet rows. Each row is `[facet_column_name, value_or_range, count]`."""
+    """Facet rows. Each row is ``[facet_column_name, value_or_range, count]``."""
 
     facet_row_count: Optional[int] = None
     """Number of facet rows returned."""
@@ -766,10 +770,11 @@ class GetVectorSearchEndpointPermissionLevelsResponse:
 
 
 class IndexSubtype(Enum):
-    """The subtype of the AI Search index, determining the indexing and retrieval strategy. - `VECTOR`:
-    Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An index that uses full-text search without
-    vector embeddings. - `HYBRID`: An index that uses vector embeddings for similarity search and
-    hybrid search."""
+    """The subtype of the AI Search index, determining the indexing and retrieval strategy.
+
+    - ``VECTOR``: Not supported. Use ``HYBRID`` instead.
+    - ``FULL_TEXT``: An index that uses full-text search without vector embeddings.
+    - ``HYBRID``: An index that uses vector embeddings for similarity search and hybrid search."""
 
     FULL_TEXT = "FULL_TEXT"
     HYBRID = "HYBRID"
@@ -1153,11 +1158,13 @@ class PatchEndpointBudgetPolicyResponse:
 
 
 class PipelineType(Enum):
-    """Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
-    system stops processing after successfully refreshing the source table in the pipeline once,
-    ensuring the table is updated based on the data available when the update started. -
-    `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it
-    arrives in the source table to keep vector index fresh."""
+    """Pipeline execution mode.
+
+    - ``TRIGGERED``: If the pipeline uses the triggered execution mode, the system stops processing
+      after successfully refreshing the source table in the pipeline once, ensuring the table is
+      updated based on the data available when the update started.
+    - ``CONTINUOUS``: If the pipeline uses continuous execution, the pipeline processes new data as
+      it arrives in the source table to keep vector index fresh."""
 
     CONTINUOUS = "CONTINUOUS"
     TRIGGERED = "TRIGGERED"
@@ -1172,9 +1179,9 @@ class QueryVectorIndexResponse:
     """Metadata about the result set."""
 
     next_page_token: Optional[str] = None
-    """[Optional] Token that can be used in `QueryVectorIndexNextPage` API to get next page of results.
-    If more than 1000 results satisfy the query, they are returned in groups of 1000. Empty value
-    means no more results. The maximum number of results that can be returned is 10,000."""
+    """[Optional] Token that can be used in ``QueryVectorIndexNextPage`` API to get next page of
+    results. If more than 1000 results satisfy the query, they are returned in groups of 1000. Empty
+    value means no more results. The maximum number of results that can be returned is 10,000."""
 
     result: Optional[ResultData] = None
     """Data returned in the query result."""
@@ -1219,8 +1226,10 @@ class QueryVectorIndexResponse:
 @dataclass
 class RerankerConfig:
     model: Optional[str] = None
-    """Reranker identifier: - When model_type=BASE/UNSPECIFIED: must be "databricks_reranker". - When
-    model_type=FINETUNED: the Model Serving endpoint name hosting a finetuned reranker."""
+    """Reranker identifier:
+    
+    - When model_type=BASE/UNSPECIFIED: must be "databricks_reranker".
+    - When model_type=FINETUNED: the Model Serving endpoint name hosting a finetuned reranker."""
 
     parameters: Optional[RerankerConfigRerankerParameters] = None
     """Parameters that control how the reranker processes the query results."""
@@ -1318,10 +1327,10 @@ class ResultManifest:
     """Information about each column in the result set."""
 
     facet_column_count: Optional[int] = None
-    """Number of columns in `facet_result`."""
+    """Number of columns in ``facet_result``."""
 
     facet_columns: Optional[List[ColumnInfo]] = None
-    """Information about each column in `facet_result`."""
+    """Information about each column in ``facet_result``."""
 
     def as_dict(self) -> dict:
         """Serializes the ResultManifest into a dictionary suitable for use as a JSON request body."""
@@ -1778,11 +1787,12 @@ class VectorIndexStatus:
 
 
 class VectorIndexType(Enum):
-    """There are 2 types of AI Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a
-    source Delta Table, automatically and incrementally updating the index as the underlying data in
-    the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of
-    vectors and metadata through our REST and SDK APIs. With this model, the user manages index
-    updates."""
+    """There are 2 types of AI Search indexes:
+
+    - ``DELTA_SYNC``: An index that automatically syncs with a source Delta Table, automatically and
+      incrementally updating the index as the underlying data in the Delta Table changes.
+    - ``DIRECT_ACCESS``: An index that supports direct read and write of vectors and metadata
+      through our REST and SDK APIs. With this model, the user manages index updates."""
 
     DELTA_SYNC = "DELTA_SYNC"
     DIRECT_ACCESS = "DIRECT_ACCESS"
@@ -2445,10 +2455,12 @@ class VectorSearchIndexesAPI:
     """**Index**: An efficient representation of your embedding vectors that supports real-time and efficient
     approximate nearest neighbor (ANN) search queries.
 
-    There are 2 types of AI Search indexes: - **Delta Sync Index**: An index that automatically syncs with a
-    source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta
-    Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of vectors
-    and metadata through our REST and SDK APIs. With this model, the user manages index updates."""
+    There are 2 types of AI Search indexes:
+
+    - **Delta Sync Index**: An index that automatically syncs with a source Delta Table, automatically and
+      incrementally updating the index as the underlying data in the Delta Table changes.
+    - **Direct Vector Access Index**: An index that supports direct read and write of vectors and metadata
+      through our REST and SDK APIs. With this model, the user manages index updates."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2474,11 +2486,11 @@ class VectorSearchIndexesAPI:
           Primary key of the index
         :param index_type: :class:`VectorIndexType`
         :param delta_sync_index_spec: :class:`DeltaSyncVectorIndexSpecRequest` (optional)
-          Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
+          Specification for Delta Sync Index. Required if ``index_type`` is ``DELTA_SYNC``.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
-          Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
+          Specification for Direct Vector Access Index. Required if ``index_type`` is ``DIRECT_ACCESS``.
         :param index_subtype: :class:`IndexSubtype` (optional)
-          The subtype of the index. Use `HYBRID` or `FULL_TEXT`. `VECTOR` is not supported.
+          The subtype of the index. Use ``HYBRID`` or ``FULL_TEXT``. ``VECTOR`` is not supported.
 
         :returns: :class:`VectorIndex`
         """
@@ -2642,40 +2654,42 @@ class VectorSearchIndexesAPI:
         :param columns_to_rerank: List[str] (optional)
           Column names used to retrieve data to send to the reranker.
         :param facets: List[str] (optional)
-          Facets to compute over the matched results. Each entry has one of these forms: `"<column>"` - top 10
-          distinct values by count `"<column> TOP <n>"` - top n distinct values, where n > 0 `"<column>
-          BUCKETS [[from,to],...]"` - inclusive numeric ranges `TOP` and `BUCKETS` are case-insensitive. A
-          column may appear at most once.
+          Facets to compute over the matched results. Each entry has one of these forms: ``"<column>"`` - top
+          10 distinct values by count ``"<column> TOP <n>"`` - top n distinct values, where n > 0 ``"<column>
+          BUCKETS [[from,to],...]"`` - inclusive numeric ranges ``TOP`` and ``BUCKETS`` are case-insensitive.
+          A column may appear at most once.
         :param filters_json: str (optional)
           JSON string representing query filters.
 
           Example filters:
 
-          - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for id greater than 5. - `{"id
-          <=": 5}`: Filter for id less than equal to 5. - `{"id >=": 5}`: Filter for id greater than equal to
-          5. - `{"id": 5}`: Filter for id equal to 5.
+          - ``{"id <": 5}``: Filter for id less than 5.
+          - ``{"id >": 5}``: Filter for id greater than 5.
+          - ``{"id <=": 5}``: Filter for id less than equal to 5.
+          - ``{"id >=": 5}``: Filter for id greater than equal to 5.
+          - ``{"id": 5}``: Filter for id equal to 5.
         :param num_results: int (optional)
           Number of results to return. Defaults to 10.
         :param query_columns: List[str] (optional)
-          Text columns to search for `query_text`. When empty, all text columns are searched.
+          Text columns to search for ``query_text``. When empty, all text columns are searched.
         :param query_text: str (optional)
           Query text. Required for Delta Sync Index using model endpoint.
         :param query_type: str (optional)
-          The query type to use. Choices are `ANN` and `HYBRID` and `FULL_TEXT`. Defaults to `ANN`.
+          The query type to use. Choices are ``ANN`` and ``HYBRID`` and ``FULL_TEXT``. Defaults to ``ANN``.
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
         :param reranker: :class:`RerankerConfig` (optional)
           If set, the top 50 results are reranked with the Databricks Reranker model before returning the
-          `num_results` results to the user. The setting `columns_to_rerank` selects which columns are used
-          for reranking. For each datapoint, the columns selected are concatenated before being sent to the
-          reranking model. See https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank for
-          more information.
+          ``num_results`` results to the user. The setting ``columns_to_rerank`` selects which columns are
+          used for reranking. For each datapoint, the columns selected are concatenated before being sent to
+          the reranking model. See https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank
+          for more information.
         :param score_threshold: float (optional)
           Threshold for the approximate nearest neighbor search. Defaults to 0.0.
         :param sort_columns: List[str] (optional)
           Sort results by column values instead of the default relevance ordering. Each clause has the form
-          `"<column> ASC"` or `"<column> DESC"`, for example `["rating DESC", "price ASC"]`.
+          ``"<column> ASC"`` or ``"<column> DESC"``, for example ``["rating DESC", "price ASC"]``.
 
         :returns: :class:`QueryVectorIndexResponse`
         """
@@ -2720,15 +2734,15 @@ class VectorSearchIndexesAPI:
     def query_next_page(
         self, index_name: str, *, endpoint_name: Optional[str] = None, page_token: Optional[str] = None
     ) -> QueryVectorIndexResponse:
-        """Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request
-        to fetch next page of results.
+        """Use ``next_page_token`` returned from previous ``QueryVectorIndex`` or ``QueryVectorIndexNextPage``
+        request to fetch next page of results.
 
         :param index_name: str
           Name of the vector index to query.
         :param endpoint_name: str (optional)
           Name of the endpoint.
         :param page_token: str (optional)
-          Page token returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` API.
+          Page token returned from previous ``QueryVectorIndex`` or ``QueryVectorIndexNextPage`` API.
 
         :returns: :class:`QueryVectorIndexResponse`
         """
@@ -2755,8 +2769,8 @@ class VectorSearchIndexesAPI:
     def scan_index(
         self, index_name: str, *, last_primary_key: Optional[str] = None, num_results: Optional[int] = None
     ) -> ScanVectorIndexResponse:
-        """Scan the specified vector index and return the first `num_results` entries after the exclusive
-        `primary_key`.
+        """Scan the specified vector index and return the first ``num_results`` entries after the exclusive
+        ``primary_key``.
 
         :param index_name: str
           Name of the vector index to scan.

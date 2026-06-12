@@ -262,8 +262,8 @@ class Operation:
     """This resource represents a long-running operation that is the result of a network API call."""
 
     done: Optional[bool] = None
-    """If the value is `false`, it means the operation is still in progress. If `true`, the operation
-    is completed, and either `error` or `response` is available."""
+    """If the value is ``false``, it means the operation is still in progress. If ``true``, the
+    operation is completed, and either ``error`` or ``response`` is available."""
 
     error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
     """The error result of the operation in case of failure or cancellation."""
@@ -275,8 +275,8 @@ class Operation:
 
     name: Optional[str] = None
     """The server-assigned name, which is only unique within the same service that originally returns
-    it. If you use the default HTTP mapping, the `name` should be a resource name ending with
-    `operations/{unique_id}`."""
+    it. If you use the default HTTP mapping, the ``name`` should be a resource name ending with
+    ``operations/{unique_id}``."""
 
     response: Optional[dict] = None
     """The normal, successful response of the operation."""
@@ -614,15 +614,14 @@ class EnvironmentsAPI:
 
         Databricks provides the following base environments:
 
-        - `workspace-base-environments/databricks_ai_...`: includes popular AI and deep learning packages for
-        serverless GPU compute.
-
-        - `workspace-base-environments/databricks_ml_...`: includes popular ML packages for serverless
-        compute.
+        - ``workspace-base-environments/databricks_ai_...``: includes popular AI and deep learning packages
+          for serverless GPU compute.
+        - ``workspace-base-environments/databricks_ml_...``: includes popular ML packages for serverless
+          compute.
 
         Databricks-provided base environments are versioned. For example,
-        `workspace-base-environments/databricks_ml_v5` corresponds to the ML environment built on environment
-        version 5.
+        ``workspace-base-environments/databricks_ml_v5`` corresponds to the ML environment built on
+        environment version 5.
 
         :param page_size: int (optional)
           The maximum number of environments to return per page. Default is 1000.

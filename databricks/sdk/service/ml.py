@@ -51,13 +51,10 @@ class Activity:
     from_stage: Optional[str] = None
     """Source stage of the transition (if the activity is stage transition related). Valid values are:
     
-    * `None`: The initial stage of a model version.
-    
-    * `Staging`: Staging or pre-production stage.
-    
-    * `Production`: Production stage.
-    
-    * `Archived`: Archived stage."""
+    - ``None``: The initial stage of a model version.
+    - ``Staging``: Staging or pre-production stage.
+    - ``Production``: Production stage.
+    - ``Archived``: Archived stage."""
 
     id: Optional[str] = None
     """Unique identifier for the object."""
@@ -66,20 +63,17 @@ class Activity:
     """Time of the object at last update, as a Unix timestamp in milliseconds."""
 
     system_comment: Optional[str] = None
-    """Comment made by system, for example explaining an activity of type `SYSTEM_TRANSITION`. It
+    """Comment made by system, for example explaining an activity of type ``SYSTEM_TRANSITION``. It
     usually describes a side effect, such as a version being archived as part of another version's
     stage transition, and may not be returned for some activity types."""
 
     to_stage: Optional[str] = None
     """Target stage of the transition (if the activity is stage transition related). Valid values are:
     
-    * `None`: The initial stage of a model version.
-    
-    * `Staging`: Staging or pre-production stage.
-    
-    * `Production`: Production stage.
-    
-    * `Archived`: Archived stage."""
+    - ``None``: The initial stage of a model version.
+    - ``Staging``: Staging or pre-production stage.
+    - ``Production``: Production stage.
+    - ``Archived``: Archived stage."""
 
     user_id: Optional[str] = None
     """The username of the user that created the object."""
@@ -149,15 +143,16 @@ class Activity:
 class ActivityAction(Enum):
     """An action that a user (with sufficient permissions) could take on an activity or comment.
 
-    For activities, valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
+    For activities, valid values are:
 
-    * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+    - ``APPROVE_TRANSITION_REQUEST``: Approve a transition request
+    - ``REJECT_TRANSITION_REQUEST``: Reject a transition request
+    - ``CANCEL_TRANSITION_REQUEST``: Cancel (delete) a transition request
 
-    * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+    For comments, valid values are:
 
-    For comments, valid values are: * `EDIT_COMMENT`: Edit the comment
-
-    * `DELETE_COMMENT`: Delete the comment"""
+    - ``EDIT_COMMENT``: Edit the comment
+    - ``DELETE_COMMENT``: Delete the comment"""
 
     APPROVE_TRANSITION_REQUEST = "APPROVE_TRANSITION_REQUEST"
     CANCEL_TRANSITION_REQUEST = "CANCEL_TRANSITION_REQUEST"
@@ -167,19 +162,15 @@ class ActivityAction(Enum):
 
 
 class ActivityType(Enum):
-    """Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage
-    transition.
+    """Type of activity. Valid values are:
 
-    * `REQUESTED_TRANSITION`: User requested the corresponding stage transition.
-
-    * `CANCELLED_REQUEST`: User cancelled an existing transition request.
-
-    * `APPROVED_REQUEST`: User approved the corresponding stage transition.
-
-    * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
-
-    * `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model
-    versions in a stage."""
+    - ``APPLIED_TRANSITION``: User applied the corresponding stage transition.
+    - ``REQUESTED_TRANSITION``: User requested the corresponding stage transition.
+    - ``CANCELLED_REQUEST``: User cancelled an existing transition request.
+    - ``APPROVED_REQUEST``: User approved the corresponding stage transition.
+    - ``REJECTED_REQUEST``: User rejected the coressponding stage transition.
+    - ``SYSTEM_TRANSITION``: For events performed as a side effect, such as archiving existing model
+      versions in a stage."""
 
     APPLIED_TRANSITION = "APPLIED_TRANSITION"
     APPROVED_REQUEST = "APPROVED_REQUEST"
@@ -452,9 +443,9 @@ class AvgFunction:
 
     input: str
     """The input column from which the average is computed. For Kafka sources, use dot-prefixed path
-    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. Colon-prefixed
-    notation (e.g., "value:amount") is supported for backwards compatibility but is deprecated;
-    migrate to dot notation."""
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. TODO(FS-939):
+    Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility but is
+    deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the AvgFunction into a dictionary suitable for use as a JSON request body."""
@@ -598,15 +589,16 @@ class ColumnSelection:
 class CommentActivityAction(Enum):
     """An action that a user (with sufficient permissions) could take on an activity or comment.
 
-    For activities, valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
+    For activities, valid values are:
 
-    * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+    - ``APPROVE_TRANSITION_REQUEST``: Approve a transition request
+    - ``REJECT_TRANSITION_REQUEST``: Reject a transition request
+    - ``CANCEL_TRANSITION_REQUEST``: Cancel (delete) a transition request
 
-    * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+    For comments, valid values are:
 
-    For comments, valid values are: * `EDIT_COMMENT`: Edit the comment
-
-    * `DELETE_COMMENT`: Delete the comment"""
+    - ``EDIT_COMMENT``: Edit the comment
+    - ``DELETE_COMMENT``: Delete the comment"""
 
     APPROVE_TRANSITION_REQUEST = "APPROVE_TRANSITION_REQUEST"
     CANCEL_TRANSITION_REQUEST = "CANCEL_TRANSITION_REQUEST"
@@ -687,7 +679,7 @@ class CommentObject:
 
 @dataclass
 class ContinuousWindow:
-    """Deprecated: use RollingWindow with `delay` instead."""
+    """Deprecated: use RollingWindow with ``delay`` instead."""
 
     window_duration: str
     """The duration of the continuous window (must be positive)."""
@@ -725,9 +717,9 @@ class CountFunction:
 
     input: str
     """The input column from which the count is computed. For Kafka sources, use dot-prefixed path
-    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. Colon-prefixed
-    notation (e.g., "value:amount") is supported for backwards compatibility but is deprecated;
-    migrate to dot notation."""
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. TODO(FS-939):
+    Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility but is
+    deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the CountFunction into a dictionary suitable for use as a JSON request body."""
@@ -1458,7 +1450,7 @@ class DeltaTableSource:
     transformation_sql: Optional[str] = None
     """A single SQL SELECT expression applied after filter_condition. Should contains all the columns
     needed (eg. "SELECT *, col_a + col_b AS col_c FROM x.y.z WHERE col_a > 0" would have
-    `transformation_sql` "*, col_a + col_b AS col_c") If transformation_sql is not provided, all
+    ``transformation_sql`` "*, col_a + col_b AS col_c") If transformation_sql is not provided, all
     columns of the delta table are present in the DataSource dataframe."""
 
     def as_dict(self) -> dict:
@@ -1510,8 +1502,8 @@ class DeltaTableSource:
 
 @dataclass
 class DirectMtlsConfig:
-    """Direct connection configs for mTLS, as Kafka Connections do not support mTLS yet . Temporarily
-    used until UC Kafka Connections gain mTLS support."""
+    """Direct connection configs for mTLS, as Kafka Connections do not support mTLS yet (XTA-18030).
+    Temporarily used until UC Kafka Connections gain mTLS support."""
 
     bootstrap_servers: str
     """A comma-separated list of host:port pairs for the Kafka bootstrap servers."""
@@ -1591,9 +1583,9 @@ class EntityColumn:
     """The name of the entity column. For Kafka sources, use dot-prefixed path notation to reference
     fields within the key or value schema (e.g., "value.user_id", "key.partition_key"). For nested
     fields, the leaf node name (e.g., "user_id" from "value.trip_details.user_id") is what will be
-    present in materialized tables and expected to match at query time. Colon-prefixed notation
-    (e.g., "value:user_id") is supported for backwards compatibility but is deprecated; migrate to
-    dot notation."""
+    present in materialized tables and expected to match at query time. TODO(FS-939): Colon-prefixed
+    notation (e.g., "value:user_id") is supported for backwards compatibility but is deprecated;
+    migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the EntityColumn into a dictionary suitable for use as a JSON request body."""
@@ -2690,8 +2682,8 @@ class GetExperimentResponse:
 @dataclass
 class GetLatestVersionsResponse:
     model_versions: Optional[List[ModelVersion]] = None
-    """Latest version models for each requests stage. Only return models with current `READY` status.
-    If no `stages` provided, returns the latest version for each stage, including `"None"`."""
+    """Latest version models for each requests stage. Only return models with current ``READY`` status.
+    If no ``stages`` provided, returns the latest version for each stage, including ``"None"``."""
 
     def as_dict(self) -> dict:
         """Serializes the GetLatestVersionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -2741,7 +2733,7 @@ class GetLoggedModelResponse:
 @dataclass
 class GetMetricHistoryResponse:
     metrics: Optional[List[Metric]] = None
-    """All logged values for this metric if `max_results` is not specified in the request or if the
+    """All logged values for this metric if ``max_results`` is not specified in the request or if the
     total count of metrics returned is less than the service level pagination threshold. Otherwise,
     this is one page of results."""
 
@@ -2903,8 +2895,8 @@ class HttpUrlSpec:
 
     authorization: Optional[str] = None
     """Value of the authorization header that should be sent in the request sent by the wehbook. It
-    should be of the form `"<auth type> <credentials>"`. If set to an empty string, no authorization
-    header will be included in the request."""
+    should be of the form ``"<auth type> <credentials>"``. If set to an empty string, no
+    authorization header will be included in the request."""
 
     enable_ssl_verification: Optional[bool] = None
     """Enable/disable SSL certificate validation. Default is true. For self-signed certificates, this
@@ -3012,8 +3004,8 @@ class IngestionConfig:
 
     deduplication_columns: Optional[List[str]] = None
     """Column paths used to identify duplicate rows during ingestion; only one row per distinct
-    combination of these values is kept. Use dot notation for nested fields (e.g. `value.user_id`).
-    Empty list means every column is compared."""
+    combination of these values is kept. Use dot notation for nested fields (e.g.
+    ``value.user_id``). Empty list means every column is compared."""
 
     ingestion_job_id: Optional[int] = None
     """The ID of the Databricks Job that performs the forward-fill ingestion."""
@@ -3545,7 +3537,7 @@ class LineageContext:
 
 @dataclass
 class LinkedFeature:
-    """Feature for model version."""
+    """Feature for model version. ([ML-57150] Renamed from Feature to LinkedFeature)"""
 
     feature_name: Optional[str] = None
     """Feature name"""
@@ -3911,9 +3903,12 @@ class ListStreamsResponse:
     """Response to a ListStreamsRequest.
 
     NOTE: Results are post-filtered by access permission on each stream's ingestion table. This
-    means: - Returned results may be fewer than page_size (including zero) - Page token points to
-    next unfiltered batch, not next filtered batch, and may point to an item that will be filtered
-    out Callers should paginate until next_page_token is empty to retrieve all accessible streams."""
+    means:
+
+    - Returned results may be fewer than page_size (including zero)
+    - Page token points to next unfiltered batch, not next filtered batch, and may point to an item
+      that will be filtered out Callers should paginate until next_page_token is empty to retrieve
+      all accessible streams."""
 
     next_page_token: Optional[str] = None
     """Pagination token to request the next page of results for this query."""
@@ -4369,7 +4364,7 @@ class MaterializedFeature:
 
     cron_schedule: Optional[str] = None
     """The quartz cron expression that defines the schedule of the materialization pipeline. The
-    schedule is evaluated in the UTC timezone. Hidden from GraphQL: superseded by the `trigger`
+    schedule is evaluated in the UTC timezone. Hidden from GraphQL: superseded by the ``trigger``
     oneof (cron_schedule_trigger), so not exposed to Catalog Explorer."""
 
     cron_schedule_trigger: Optional[CronSchedule] = None
@@ -4635,26 +4630,26 @@ class MinFunction:
 @dataclass
 class Model:
     creation_timestamp: Optional[int] = None
-    """Timestamp recorded when this `registered_model` was created."""
+    """Timestamp recorded when this ``registered_model`` was created."""
 
     description: Optional[str] = None
-    """Description of this `registered_model`."""
+    """Description of this ``registered_model``."""
 
     last_updated_timestamp: Optional[int] = None
-    """Timestamp recorded when metadata for this `registered_model` was last updated."""
+    """Timestamp recorded when metadata for this ``registered_model`` was last updated."""
 
     latest_versions: Optional[List[ModelVersion]] = None
-    """Collection of latest model versions for each stage. Only contains models with current `READY`
+    """Collection of latest model versions for each stage. Only contains models with current ``READY``
     status."""
 
     name: Optional[str] = None
     """Unique name for the model."""
 
     tags: Optional[List[ModelTag]] = None
-    """Tags: Additional metadata key-value pairs for this `registered_model`."""
+    """Tags: Additional metadata key-value pairs for this ``registered_model``."""
 
     user_id: Optional[str] = None
-    """User that created this `registered_model`"""
+    """User that created this ``registered_model``"""
 
     def as_dict(self) -> dict:
         """Serializes the Model into a dictionary suitable for use as a JSON request body."""
@@ -4897,41 +4892,41 @@ class ModelTag:
 @dataclass
 class ModelVersion:
     creation_timestamp: Optional[int] = None
-    """Timestamp recorded when this `model_version` was created."""
+    """Timestamp recorded when this ``model_version`` was created."""
 
     current_stage: Optional[str] = None
-    """Current stage for this `model_version`."""
+    """Current stage for this ``model_version``."""
 
     description: Optional[str] = None
-    """Description of this `model_version`."""
+    """Description of this ``model_version``."""
 
     last_updated_timestamp: Optional[int] = None
-    """Timestamp recorded when metadata for this `model_version` was last updated."""
+    """Timestamp recorded when metadata for this ``model_version`` was last updated."""
 
     name: Optional[str] = None
     """Unique name of the model"""
 
     run_id: Optional[str] = None
-    """MLflow run ID used when creating `model_version`, if `source` was generated by an experiment run
-    stored in MLflow tracking server."""
+    """MLflow run ID used when creating ``model_version``, if ``source`` was generated by an experiment
+    run stored in MLflow tracking server."""
 
     run_link: Optional[str] = None
     """Run Link: Direct link to the run that generated this version"""
 
     source: Optional[str] = None
-    """URI indicating the location of the source model artifacts, used when creating `model_version`"""
+    """URI indicating the location of the source model artifacts, used when creating ``model_version``"""
 
     status: Optional[ModelVersionStatus] = None
-    """Current status of `model_version`"""
+    """Current status of ``model_version``"""
 
     status_message: Optional[str] = None
-    """Details on current `status`, if it is pending or failed."""
+    """Details on current ``status``, if it is pending or failed."""
 
     tags: Optional[List[ModelVersionTag]] = None
-    """Tags: Additional metadata key-value pairs for this `model_version`."""
+    """Tags: Additional metadata key-value pairs for this ``model_version``."""
 
     user_id: Optional[str] = None
-    """User that created this `model_version`."""
+    """User that created this ``model_version``."""
 
     version: Optional[str] = None
     """Model's version number."""
@@ -5033,7 +5028,7 @@ class ModelVersionDatabricks:
     Users get subscribed by interacting with the model version."""
 
     feature_list: Optional[FeatureList] = None
-    """Feature lineage of `model_version`."""
+    """Feature lineage of ``model_version``."""
 
     last_updated_timestamp: Optional[int] = None
     """Time of the object at last update, as a Unix timestamp in milliseconds."""
@@ -5042,8 +5037,8 @@ class ModelVersionDatabricks:
     """Name of the model."""
 
     open_requests: Optional[List[Activity]] = None
-    """Open requests for this `model_versions`. Gap in sequence number is intentional and is done in
-    order to match field sequence numbers of `ModelVersion` proto message"""
+    """Open requests for this ``model_versions``. Gap in sequence number is intentional and is done in
+    order to match field sequence numbers of ``ModelVersion`` proto message"""
 
     permission_level: Optional[PermissionLevel] = None
 
@@ -5176,12 +5171,12 @@ class ModelVersionDatabricks:
 
 
 class ModelVersionStatus(Enum):
-    """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
-    a new model version is pending as server performs background tasks.
+    """The status of the model version. Valid values are:
 
-    * `FAILED_REGISTRATION`: Request to register a new model version has failed.
-
-    * `READY`: Model version is ready for use."""
+    - ``PENDING_REGISTRATION``: Request to register a new model version is pending as server
+      performs background tasks.
+    - ``FAILED_REGISTRATION``: Request to register a new model version has failed.
+    - ``READY``: Model version is ready for use."""
 
     FAILED_REGISTRATION = "FAILED_REGISTRATION"
     PENDING_REGISTRATION = "PENDING_REGISTRATION"
@@ -5536,7 +5531,7 @@ class Param:
 
 class PermissionLevel(Enum):
     """Permission level of the requesting user on the object. For what is allowed at each level, see
-    [MLflow Model permissions](..)."""
+    MLflow Model permissions."""
 
     CAN_CREATE_REGISTERED_MODEL = "CAN_CREATE_REGISTERED_MODEL"
     CAN_EDIT = "CAN_EDIT"
@@ -5861,9 +5856,12 @@ class RegisteredModelPermissionsDescription:
 
 class RegistryEmailSubscriptionType(Enum):
     """.. note:: Experimental: This entity may change or be removed in a future release without
-    warning. Email subscription types for registry notifications: - `ALL_EVENTS`: Subscribed to all
-    events. - `DEFAULT`: Default subscription type. - `SUBSCRIBED`: Subscribed to notifications. -
-    `UNSUBSCRIBED`: Not subscribed to notifications."""
+    warning. Email subscription types for registry notifications:
+
+    - ``ALL_EVENTS``: Subscribed to all events.
+    - ``DEFAULT``: Default subscription type.
+    - ``SUBSCRIBED``: Subscribed to notifications.
+    - ``UNSUBSCRIBED``: Not subscribed to notifications."""
 
     ALL_EVENTS = "ALL_EVENTS"
     DEFAULT = "DEFAULT"
@@ -5880,34 +5878,24 @@ class RegistryWebhook:
     """User-specified description for the webhook."""
 
     events: Optional[List[RegistryWebhookEvent]] = None
-    """Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
-    created for the associated model.
+    """Events that can trigger a registry webhook:
     
-    * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
-    
-    * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-    
-    * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-    
-    * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
-    specified for a registry-wide webhook, which can be created by not specifying a model name in
-    the create request.
-    
-    * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-    
-    * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-    
-    * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-    
-    * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-    
-    * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
-    staging.
-    
-    * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned
-    to production.
-    
-    * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived."""
+    - ``MODEL_VERSION_CREATED``: A new model version was created for the associated model.
+    - ``MODEL_VERSION_TRANSITIONED_STAGE``: A model version’s stage was changed.
+    - ``TRANSITION_REQUEST_CREATED``: A user requested a model version’s stage be transitioned.
+    - ``COMMENT_CREATED``: A user wrote a comment on a registered model.
+    - ``REGISTERED_MODEL_CREATED``: A new registered model was created. This event type can only be
+      specified for a registry-wide webhook, which can be created by not specifying a model name in
+      the create request.
+    - ``MODEL_VERSION_TAG_SET``: A user set a tag on the model version.
+    - ``MODEL_VERSION_TRANSITIONED_TO_STAGING``: A model version was transitioned to staging.
+    - ``MODEL_VERSION_TRANSITIONED_TO_PRODUCTION``: A model version was transitioned to production.
+    - ``MODEL_VERSION_TRANSITIONED_TO_ARCHIVED``: A model version was archived.
+    - ``TRANSITION_REQUEST_TO_STAGING_CREATED``: A user requested a model version be transitioned to
+      staging.
+    - ``TRANSITION_REQUEST_TO_PRODUCTION_CREATED``: A user requested a model version be transitioned
+      to production.
+    - ``TRANSITION_REQUEST_TO_ARCHIVED_CREATED``: A user requested a model version be archived."""
 
     http_url_spec: Optional[HttpUrlSpecWithoutSecret] = None
 
@@ -6003,12 +5991,12 @@ class RegistryWebhookEvent(Enum):
 
 class RegistryWebhookStatus(Enum):
     """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
-    `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+    ``ACTIVE``:
 
-    * `DISABLED`: Webhook is not triggered.
-
-    * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
-    real event."""
+    - ``ACTIVE``: Webhook is triggered when an associated event happens.
+    - ``DISABLED``: Webhook is not triggered.
+    - ``TEST_MODE``: Webhook can be triggered through the test endpoint, but is not triggered on a
+      real event."""
 
     ACTIVE = "ACTIVE"
     DISABLED = "DISABLED"
@@ -6156,8 +6144,8 @@ class RestoreRunsResponse:
 @dataclass
 class RollingWindow:
     """A rolling time window with an optional delay. This is the SQL-spec-aligned replacement for
-    ContinuousWindow: `delay` is the non-negative counterpart of the legacy non-positive
-    `ContinuousWindow.offset`."""
+    ContinuousWindow: ``delay`` is the non-negative counterpart of the legacy non-positive
+    ``ContinuousWindow.offset``."""
 
     window_duration: Duration
     """The duration of the rolling window (must be positive)."""
@@ -6922,12 +6910,12 @@ class SlidingWindow:
 
 
 class Status(Enum):
-    """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
-    a new model version is pending as server performs background tasks.
+    """The status of the model version. Valid values are:
 
-    * `FAILED_REGISTRATION`: Request to register a new model version has failed.
-
-    * `READY`: Model version is ready for use."""
+    - ``PENDING_REGISTRATION``: Request to register a new model version is pending as server
+      performs background tasks.
+    - ``FAILED_REGISTRATION``: Request to register a new model version has failed.
+    - ``READY``: Model version is ready for use."""
 
     FAILED_REGISTRATION = "FAILED_REGISTRATION"
     PENDING_REGISTRATION = "PENDING_REGISTRATION"
@@ -6941,8 +6929,8 @@ class StddevPopFunction:
     input: str
     """The input column from which the population standard deviation is computed. For Kafka sources,
     use dot-prefixed path notation (e.g., "value.amount"). For nested fields, the leaf node name is
-    used. Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility
-    but is deprecated; migrate to dot notation."""
+    used. TODO(FS-939): Colon-prefixed notation (e.g., "value:amount") is supported for backwards
+    compatibility but is deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the StddevPopFunction into a dictionary suitable for use as a JSON request body."""
@@ -7110,8 +7098,8 @@ class StreamConnectionConfig:
 
     direct_mtls_config: Optional[DirectMtlsConfig] = None
     """Direct mTLS configuration for stream platform access. This is only used in the short term until
-    UC Kafka Connections support mTLS . Once UC Kafka Connections support mTLS, this will be
-    deprecated."""
+    UC Kafka Connections support mTLS (XTA-18030). Once UC Kafka Connections support mTLS, this will
+    be deprecated."""
 
     uc_connection_name: Optional[str] = None
     """Name of an existing UC Connection for stream platform access. Must be the correct type for the
@@ -7318,9 +7306,9 @@ class SumFunction:
 
     input: str
     """The input column from which the sum is computed. For Kafka sources, use dot-prefixed path
-    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. Colon-prefixed
-    notation (e.g., "value:amount") is supported for backwards compatibility but is deprecated;
-    migrate to dot notation."""
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. TODO(FS-939):
+    Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility but is
+    deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the SumFunction into a dictionary suitable for use as a JSON request body."""
@@ -7448,8 +7436,8 @@ class TimeseriesColumn:
     reference fields within the key or value schema (e.g., "value.event_timestamp"). For nested
     fields, the leaf node name (e.g., "event_timestamp" from "value.event_details.event_timestamp")
     is what will be present in materialized tables and expected to match at query time.
-    Colon-prefixed notation (e.g., "value:event_timestamp") is supported for backwards compatibility
-    but is deprecated; migrate to dot notation."""
+    TODO(FS-939): Colon-prefixed notation (e.g., "value:event_timestamp") is supported for backwards
+    compatibility but is deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the TimeseriesColumn into a dictionary suitable for use as a JSON request body."""
@@ -7488,13 +7476,10 @@ class TransitionRequest:
     to_stage: Optional[str] = None
     """Target stage of the transition (if the activity is stage transition related). Valid values are:
     
-    * `None`: The initial stage of a model version.
-    
-    * `Staging`: Staging or pre-production stage.
-    
-    * `Production`: Production stage.
-    
-    * `Archived`: Archived stage."""
+    - ``None``: The initial stage of a model version.
+    - ``Staging``: Staging or pre-production stage.
+    - ``Production``: Production stage.
+    - ``Archived``: Archived stage."""
 
     user_id: Optional[str] = None
     """The username of the user that created the object."""
@@ -7822,8 +7807,9 @@ class ExperimentsAPI:
         another experiment with the same name does not already exist and fails if another experiment with the
         same name already exists.
 
-        Throws `RESOURCE_ALREADY_EXISTS` if an experiment with the given name exists. Note: In some contexts,
-        this error may be remapped to `ALREADY_EXISTS`. To be safe, clients should check for both error codes.
+        Throws ``RESOURCE_ALREADY_EXISTS`` if an experiment with the given name exists. Note: In some
+        contexts, this error may be remapped to ``ALREADY_EXISTS``. To be safe, clients should check for both
+        error codes.
 
         :param name: str
           Experiment name.
@@ -7921,8 +7907,8 @@ class ExperimentsAPI:
         user_id: Optional[str] = None,
     ) -> CreateRunResponse:
         """Creates a new run within an experiment. A run is usually a single execution of a machine learning or
-        data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric`, and `mlflowRunTag`
-        associated with a single execution.
+        data ETL pipeline. MLflow uses runs to track the ``mlflowParam``, ``mlflowMetric``, and
+        ``mlflowRunTag`` associated with a single execution.
 
         :param experiment_id: str (optional)
           ID of the associated experiment.
@@ -8149,7 +8135,7 @@ class ExperimentsAPI:
         deleted experiment share the same name. If multiple deleted experiments share the same name, the API
         will return one of them.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name exists.
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if no experiment with the specified name exists.
 
         :param experiment_name: str
           Name of the associated experiment.
@@ -8215,8 +8201,8 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run from which to fetch metric values. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run from which to fetch metric values. This field will
-          be removed in a future MLflow version.
+          [Deprecated, use ``run_id`` instead] ID of the run from which to fetch metric values. This field
+          will be removed in a future MLflow version.
 
         :returns: Iterator over :class:`Metric`
         """
@@ -8318,7 +8304,7 @@ class ExperimentsAPI:
         :param run_id: str
           ID of the run to fetch. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run to fetch. This field will be removed in a future
+          [Deprecated, use ``run_id`` instead] ID of the run to fetch. This field will be removed in a future
           MLflow version.
 
         :returns: :class:`GetRunResponse`
@@ -8348,25 +8334,23 @@ class ExperimentsAPI:
         run_id: Optional[str] = None,
         run_uuid: Optional[str] = None,
     ) -> Iterator[FileInfo]:
-        """List artifacts for a run. Takes an optional `artifact_path` prefix which if specified, the response
+        """List artifacts for a run. Takes an optional ``artifact_path`` prefix which if specified, the response
         contains only artifacts with the specified prefix. A maximum of 1000 artifacts will be retrieved for
-        UC Volumes. Please call `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes,
-        which supports pagination. See [List directory contents | Files
-        API](/api/workspace/files/listdirectorycontents).
+        UC Volumes. Please call ``/api/2.0/fs/directories{directory_path}`` for listing artifacts in UC
+        Volumes, which supports pagination. See List directory contents | Files API.
 
         :param page_token: str (optional)
-          The token indicating the page of artifact results to fetch. `page_token` is not supported when
+          The token indicating the page of artifact results to fetch. ``page_token`` is not supported when
           listing artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes.
-          Please call `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which
-          supports pagination. See [List directory contents | Files
-          API](/api/workspace/files/listdirectorycontents).
+          Please call ``/api/2.0/fs/directories{directory_path}`` for listing artifacts in UC Volumes, which
+          supports pagination. See List directory contents | Files API.
         :param path: str (optional)
           Filter artifacts matching this path (a relative path from the root artifact directory).
         :param run_id: str (optional)
           ID of the run whose artifacts to list. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run whose artifacts to list. This field will be removed
-          in a future MLflow version.
+          [Deprecated, use ``run_id`` instead] ID of the run whose artifacts to list. This field will be
+          removed in a future MLflow version.
 
         :returns: Iterator over :class:`FileInfo`
         """
@@ -8407,8 +8391,8 @@ class ExperimentsAPI:
         """Gets a list of all experiments.
 
         :param max_results: int (optional)
-          Maximum number of experiments desired. If `max_results` is unspecified, return all experiments. If
-          `max_results` is too large, it'll be automatically capped at 1000. Callers of this endpoint are
+          Maximum number of experiments desired. If ``max_results`` is unspecified, return all experiments. If
+          ``max_results`` is too large, it'll be automatically capped at 1000. Callers of this endpoint are
           encouraged to pass max_results explicitly and leverage page_token to iterate through experiments.
         :param page_token: str (optional)
           Token indicating the page of experiments to fetch
@@ -8460,36 +8444,31 @@ class ExperimentsAPI:
 
         The overwrite behavior for metrics, params, and tags is as follows:
 
-        * Metrics: metric values are never overwritten. Logging a metric (key, value, timestamp) appends to
-        the set of values for the metric with the provided key.
+        - Metrics: metric values are never overwritten. Logging a metric (key, value, timestamp) appends to
+          the set of values for the metric with the provided key.
+        - Tags: tag values can be overwritten by successive writes to the same tag key. That is, if multiple
+          tag values with the same key are provided in the same API request, the last-provided tag value is
+          written. Logging the same tag (key, value) is permitted. Specifically, logging a tag is idempotent.
+        - Parameters: once written, param values cannot be changed (attempting to overwrite a param value will
+          result in an error). However, logging the same param (key, value) is permitted. Specifically,
+          logging a param is idempotent.
 
-        * Tags: tag values can be overwritten by successive writes to the same tag key. That is, if multiple
-        tag values with the same key are provided in the same API request, the last-provided tag value is
-        written. Logging the same tag (key, value) is permitted. Specifically, logging a tag is idempotent.
+        **Request Limits**
 
-        * Parameters: once written, param values cannot be changed (attempting to overwrite a param value will
-        result in an error). However, logging the same param (key, value) is permitted. Specifically, logging
-        a param is idempotent.
+        A single JSON-serialized API request may be up to 1 MB in size and contain:
 
-        Request Limits ------------------------------- A single JSON-serialized API request may be up to 1 MB
-        in size and contain:
-
-        * No more than 1000 metrics, params, and tags in total
-
-        * Up to 1000 metrics
-
-        * Up to 100 params
-
-        * Up to 100 tags
+        - No more than 1000 metrics, params, and tags in total
+        - Up to 1000 metrics
+        - Up to 100 params
+        - Up to 100 tags
 
         For example, a valid request might contain 900 metrics, 50 params, and 50 tags, but logging 900
         metrics, 50 params, and 51 tags is invalid.
 
         The following limits also apply to metric, param, and tag keys and values:
 
-        * Metric keys, param keys, and tag keys can be up to 250 characters in length
-
-        * Parameter and tag values can be up to 250 characters in length
+        - Metric keys, param keys, and tag keys can be up to 250 characters in length
+        - Parameter and tag values can be up to 250 characters in length
 
         :param metrics: List[:class:`Metric`] (optional)
           Metrics to log. A single request can contain up to 1000 metrics, and up to 1000 metrics, params, and
@@ -8620,7 +8599,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run under which to log the metric. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run under which to log the metric. This field will be
+          [Deprecated, use ``run_id`` instead] ID of the run under which to log the metric. This field will be
           removed in a future MLflow version.
         :param step: int (optional)
           Step at which to log the metric
@@ -8659,8 +8638,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/log-metric", body=body, headers=headers)
 
     def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None):
-        """**Note:** the [Create a logged model](/api/workspace/experiments/createloggedmodel) API replaces this
-        endpoint.
+        """**Note:** the Create a logged model API replaces this endpoint.
 
         Log a model to an MLflow Run.
 
@@ -8727,7 +8705,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run under which to log the param. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run under which to log the param. This field will be
+          [Deprecated, use ``run_id`` instead] ID of the run under which to log the param. This field will be
           removed in a future MLflow version.
 
 
@@ -8758,7 +8736,7 @@ class ExperimentsAPI:
         params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
         also restored.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was permanently deleted.
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if experiment was never created or was permanently deleted.
 
         :param experiment_id: str
           ID of the associated experiment.
@@ -8783,7 +8761,7 @@ class ExperimentsAPI:
     def restore_run(self, run_id: str):
         """Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if the run was never created or was permanently deleted.
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if the run was never created or was permanently deleted.
 
         :param run_id: str
           ID of the run to restore.
@@ -8913,7 +8891,7 @@ class ExperimentsAPI:
 
         :param datasets: List[:class:`SearchLoggedModelsDataset`] (optional)
           List of datasets on which to apply the metrics filter clauses. For example, a filter with
-          `metrics.accuracy > 0.9` and dataset info with name "test_dataset" means we will return all logged
+          ``metrics.accuracy > 0.9`` and dataset info with name "test_dataset" means we will return all logged
           models with accuracy > 0.9 on the test_dataset. Metric values from ANY dataset matching the criteria
           are considered. If no datasets are specified, then metrics across all datasets are considered in the
           filter.
@@ -8971,7 +8949,7 @@ class ExperimentsAPI:
     ) -> Iterator[Run]:
         """Searches for runs that satisfy expressions.
 
-        Search expressions can use `mlflowMetric` and `mlflowParam` keys.
+        Search expressions can use ``mlflowMetric`` and ``mlflowParam`` keys.
 
         :param experiment_ids: List[str] (optional)
           List of experiment IDs to search over.
@@ -8980,20 +8958,20 @@ class ExperimentsAPI:
           syntax is a subset of SQL that supports ANDing together binary operations between a param, metric,
           or tag and a constant.
 
-          Example: `metrics.rmse < 1 and params.model_class = 'LogisticRegression'`
+          Example: ``metrics.rmse < 1 and params.model_class = 'LogisticRegression'``
 
           You can select columns with special characters (hyphen, space, period, etc.) by using double quotes:
-          `metrics."model class" = 'LinearRegression' and tags."user-name" = 'Tomas'`
+          ``metrics."model class" = 'LinearRegression' and tags."user-name" = 'Tomas'``
 
-          Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`.
+          Supported operators are ``=``, ``!=``, ``>``, ``>=``, ``<``, and ``<=``.
         :param max_results: int (optional)
           Maximum number of runs desired. Max threshold is 50000
         :param order_by: List[str] (optional)
           List of columns to be ordered by, including attributes, params, metrics, and tags with an optional
-          `"DESC"` or `"ASC"` annotation, where `"ASC"` is the default. Example: `["params.input DESC",
-          "metrics.alpha ASC", "metrics.rmse"]`. Tiebreaks are done by start_time `DESC` followed by `run_id`
-          for runs with the same start time (and this is the default ordering criterion if order_by is not
-          provided).
+          ``"DESC"`` or ``"ASC"`` annotation, where ``"ASC"`` is the default. Example: ``["params.input DESC",
+          "metrics.alpha ASC", "metrics.rmse"]``. Tiebreaks are done by start_time ``DESC`` followed by
+          ``run_id`` for runs with the same start time (and this is the default ordering criterion if order_by
+          is not provided).
         :param page_token: str (optional)
           Token for the current page of runs.
         :param run_view_type: :class:`ViewType` (optional)
@@ -9127,7 +9105,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run under which to log the tag. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run under which to log the tag. This field will be
+          [Deprecated, use ``run_id`` instead] ID of the run under which to log the tag. This field will be
           removed in a future MLflow version.
 
 
@@ -9225,7 +9203,7 @@ class ExperimentsAPI:
         :param run_name: str (optional)
           Updated name of the run.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run to update. This field will be removed in a future
+          [Deprecated, use ``run_id`` instead] ID of the run to update. This field will be removed in a future
           MLflow version.
         :param status: :class:`UpdateRunStatus` (optional)
           Updated status of the run.
@@ -9818,7 +9796,7 @@ class FeatureEngineeringAPI:
         return MaterializedFeature.from_dict(res)
 
     def update_stream(self, name: str, stream: Stream, update_mask: FieldMask) -> Stream:
-        """Update a Stream. Only fields listed in `update_mask` are mutated.
+        """Update a Stream. Only fields listed in ``update_mask`` are mutated.
 
         :param name: str
           Full three-part (catalog.schema.stream) name of the stream.
@@ -10127,8 +10105,10 @@ class ForecastingAPI:
         :param include_features: List[str] (optional)
           Specifies the list of feature columns to include in model training. These columns must exist in the
           training data and be of type string, numerical, or boolean. If not specified, no additional features
-          will be included. Note: Certain columns are automatically handled: - Automatically excluded:
-          split_column, target_column, custom_weights_column. - Automatically included: time_column.
+          will be included. Note: Certain columns are automatically handled:
+
+          - Automatically excluded: split_column, target_column, custom_weights_column.
+          - Automatically included: time_column.
         :param max_runtime: int (optional)
           The maximum duration for the experiment in minutes. The experiment stops automatically if it exceeds
           this limit.
@@ -10470,9 +10450,9 @@ class MaterializedFeaturesAPI:
 
 class ModelRegistryAPI:
     """Note: This API reference documents APIs for the Workspace Model Registry. Databricks recommends using
-    [Models in Unity Catalog](/api/workspace/registeredmodels) instead. Models in Unity Catalog provides
-    centralized model governance, cross-workspace access, lineage, and deployment. Workspace Model Registry
-    will be deprecated in the future.
+    Models in Unity Catalog instead. Models in Unity Catalog provides centralized model governance,
+    cross-workspace access, lineage, and deployment. Workspace Model Registry will be deprecated in the
+    future.
 
     The Workspace Model Registry is a centralized model repository and a UI and set of APIs that enable you to
     manage the full lifecycle of MLflow Models."""
@@ -10492,13 +10472,10 @@ class ModelRegistryAPI:
         :param stage: str
           Target stage of the transition. Valid values are:
 
-          * `None`: The initial stage of a model version.
-
-          * `Staging`: Staging or pre-production stage.
-
-          * `Production`: Production stage.
-
-          * `Archived`: Archived stage.
+          - ``None``: The initial stage of a model version.
+          - ``Staging``: Staging or pre-production stage.
+          - ``Production``: Production stage.
+          - ``Archived``: Archived stage.
         :param archive_existing_versions: bool
           Specifies whether to archive all current model versions in the target stage.
         :param comment: str (optional)
@@ -10567,7 +10544,7 @@ class ModelRegistryAPI:
         self, name: str, *, description: Optional[str] = None, tags: Optional[List[ModelTag]] = None
     ) -> CreateModelResponse:
         """Creates a new registered model with the name specified in the request body. Throws
-        `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
+        ``RESOURCE_ALREADY_EXISTS`` if a registered model with the given name exists.
 
         :param name: str
           Register models under this name
@@ -10617,7 +10594,7 @@ class ModelRegistryAPI:
         :param description: str (optional)
           Optional description for model version.
         :param run_id: str (optional)
-          MLflow run ID for correlation, if `source` was generated by an experiment run in MLflow tracking
+          MLflow run ID for correlation, if ``source`` was generated by an experiment run in MLflow tracking
           server
         :param run_link: str (optional)
           MLflow run link - this is the exact link of the run that generated this model version, potentially
@@ -10665,13 +10642,10 @@ class ModelRegistryAPI:
         :param stage: str
           Target stage of the transition. Valid values are:
 
-          * `None`: The initial stage of a model version.
-
-          * `Staging`: Staging or pre-production stage.
-
-          * `Production`: Production stage.
-
-          * `Archived`: Archived stage.
+          - ``None``: The initial stage of a model version.
+          - ``Staging``: Staging or pre-production stage.
+          - ``Production``: Production stage.
+          - ``Archived``: Archived stage.
         :param comment: str (optional)
           User-provided comment on the action.
 
@@ -10712,34 +10686,24 @@ class ModelRegistryAPI:
         """**NOTE:** This endpoint is in Public Preview. Creates a registry webhook.
 
         :param events: List[:class:`RegistryWebhookEvent`]
-          Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
-          created for the associated model.
+          Events that can trigger a registry webhook:
 
-          * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
-
-          * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-
-          * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-
-          * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
-          specified for a registry-wide webhook, which can be created by not specifying a model name in the
-          create request.
-
-          * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-
-          * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
-          staging.
-
-          * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to
-          production.
-
-          * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
+          - ``MODEL_VERSION_CREATED``: A new model version was created for the associated model.
+          - ``MODEL_VERSION_TRANSITIONED_STAGE``: A model version’s stage was changed.
+          - ``TRANSITION_REQUEST_CREATED``: A user requested a model version’s stage be transitioned.
+          - ``COMMENT_CREATED``: A user wrote a comment on a registered model.
+          - ``REGISTERED_MODEL_CREATED``: A new registered model was created. This event type can only be
+            specified for a registry-wide webhook, which can be created by not specifying a model name in the
+            create request.
+          - ``MODEL_VERSION_TAG_SET``: A user set a tag on the model version.
+          - ``MODEL_VERSION_TRANSITIONED_TO_STAGING``: A model version was transitioned to staging.
+          - ``MODEL_VERSION_TRANSITIONED_TO_PRODUCTION``: A model version was transitioned to production.
+          - ``MODEL_VERSION_TRANSITIONED_TO_ARCHIVED``: A model version was archived.
+          - ``TRANSITION_REQUEST_TO_STAGING_CREATED``: A user requested a model version be transitioned to
+            staging.
+          - ``TRANSITION_REQUEST_TO_PRODUCTION_CREATED``: A user requested a model version be transitioned to
+            production.
+          - ``TRANSITION_REQUEST_TO_ARCHIVED_CREATED``: A user requested a model version be archived.
         :param description: str (optional)
           User-specified description for the webhook.
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
@@ -10751,12 +10715,12 @@ class ModelRegistryAPI:
           events across all versions of all registered models.
         :param status: :class:`RegistryWebhookStatus` (optional)
           Enable or disable triggering the webhook, or put the webhook into test mode. The default is
-          `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+          ``ACTIVE``:
 
-          * `DISABLED`: Webhook is not triggered.
-
-          * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
-          event.
+          - ``ACTIVE``: Webhook is triggered when an associated event happens.
+          - ``DISABLED``: Webhook is not triggered.
+          - ``TEST_MODE``: Webhook can be triggered through the test endpoint, but is not triggered on a real
+            event.
 
         :returns: :class:`CreateWebhookResponse`
         """
@@ -10926,13 +10890,10 @@ class ModelRegistryAPI:
         :param stage: str
           Target stage of the transition request. Valid values are:
 
-          * `None`: The initial stage of a model version.
-
-          * `Staging`: Staging or pre-production stage.
-
-          * `Production`: Production stage.
-
-          * `Archived`: Archived stage.
+          - ``None``: The initial stage of a model version.
+          - ``Staging``: Staging or pre-production stage.
+          - ``Production``: Production stage.
+          - ``Archived``: Archived stage.
         :param creator: str
           Username of the user who created this request. Of the transition requests matching the specified
           details, only the one transition created by this user will be deleted.
@@ -11016,11 +10977,9 @@ class ModelRegistryAPI:
         return parsed if parsed is not None else []
 
     def get_model(self, name: str) -> GetModelResponse:
-        """Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also
-        returns the model's Databricks workspace ID and the permission level of the requesting user on the
-        model.
-
-        [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel
+        """Get the details of a model. This is a Databricks workspace version of the `MLflow endpoint
+        <https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel>`__ that also returns the
+        model's Databricks workspace ID and the permission level of the requesting user on the model.
 
         :param name: str
           Registered model unique name identifier.
@@ -11140,7 +11099,7 @@ class ModelRegistryAPI:
         return RegisteredModelPermissions.from_dict(res)
 
     def list_models(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Model]:
-        """Lists all available registered models, up to the limit specified in __max_results__.
+        """Lists all available registered models, up to the limit specified in **max_results**.
 
         :param max_results: int (optional)
           Maximum number of registered models desired. Max threshold is 1000.
@@ -11211,37 +11170,28 @@ class ModelRegistryAPI:
         """**NOTE:** This endpoint is in Public Preview. Lists all registry webhooks.
 
         :param events: List[:class:`RegistryWebhookEvent`] (optional)
-          Events that trigger the webhook. * `MODEL_VERSION_CREATED`: A new model version was created for the
-          associated model.
+          Events that trigger the webhook.
 
-          * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
+          - ``MODEL_VERSION_CREATED``: A new model version was created for the associated model.
+          - ``MODEL_VERSION_TRANSITIONED_STAGE``: A model version’s stage was changed.
+          - ``TRANSITION_REQUEST_CREATED``: A user requested a model version’s stage be transitioned.
+          - ``COMMENT_CREATED``: A user wrote a comment on a registered model.
+          - ``REGISTERED_MODEL_CREATED``: A new registered model was created. This event type can only be
+            specified for a registry-wide webhook, which can be created by not specifying a model name in the
+            create request.
+          - ``MODEL_VERSION_TAG_SET``: A user set a tag on the model version.
+          - ``MODEL_VERSION_TRANSITIONED_TO_STAGING``: A model version was transitioned to staging.
+          - ``MODEL_VERSION_TRANSITIONED_TO_PRODUCTION``: A model version was transitioned to production.
+          - ``MODEL_VERSION_TRANSITIONED_TO_ARCHIVED``: A model version was archived.
+          - ``TRANSITION_REQUEST_TO_STAGING_CREATED``: A user requested a model version be transitioned to
+            staging.
+          - ``TRANSITION_REQUEST_TO_PRODUCTION_CREATED``: A user requested a model version be transitioned to
+            production.
+          - ``TRANSITION_REQUEST_TO_ARCHIVED_CREATED``: A user requested a model version be archived.
 
-          * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-
-          * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-
-          * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
-          specified for a registry-wide webhook, which can be created by not specifying a model name in the
-          create request.
-
-          * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-
-          * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
-          staging.
-
-          * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to
-          production.
-
-          * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
-
-          If `events` is specified, any webhook with one or more of the specified trigger events is included
-          in the output. If `events` is not specified, webhooks of all event types are included in the output.
+          If ``events`` is specified, any webhook with one or more of the specified trigger events is included
+          in the output. If ``events`` is not specified, webhooks of all event types are included in the
+          output.
         :param max_results: int (optional)
         :param model_name: str (optional)
           Registered model name If not specified, all webhooks associated with the specified events are
@@ -11290,13 +11240,10 @@ class ModelRegistryAPI:
         :param stage: str
           Target stage of the transition. Valid values are:
 
-          * `None`: The initial stage of a model version.
-
-          * `Staging`: Staging or pre-production stage.
-
-          * `Production`: Production stage.
-
-          * `Archived`: Archived stage.
+          - ``None``: The initial stage of a model version.
+          - ``Staging``: Staging or pre-production stage.
+          - ``Production``: Production stage.
+          - ``Archived``: Archived stage.
         :param comment: str (optional)
           User-provided comment on the action.
 
@@ -11330,7 +11277,7 @@ class ModelRegistryAPI:
         :param name: str
           Registered model unique name identifier.
         :param new_name: str (optional)
-          If provided, updates the name for this `registered_model`.
+          If provided, updates the name for this ``registered_model``.
 
         :returns: :class:`RenameModelResponse`
         """
@@ -11360,7 +11307,7 @@ class ModelRegistryAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ModelVersion]:
-        """Searches for specific model versions based on the supplied __filter__.
+        """Searches for specific model versions based on the supplied **filter**.
 
         :param filter: str (optional)
           String filter condition, like "name='my-model-name'". Must be a single boolean condition, with
@@ -11411,7 +11358,7 @@ class ModelRegistryAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[Model]:
-        """Search for registered models based on the specified __filter__.
+        """Search for registered models based on the specified **filter**.
 
         :param filter: str (optional)
           String filter condition, like "name LIKE 'my-model-name'". Interpreted in the backend automatically
@@ -11462,8 +11409,8 @@ class ModelRegistryAPI:
           Unique name of the model.
         :param key: str
           Name of the tag. Maximum size depends on storage backend. If a tag with this name already exists,
-          its preexisting value will be replaced by the specified `value`. All storage backends are guaranteed
-          to support key values up to 250 bytes in size.
+          its preexisting value will be replaced by the specified ``value``. All storage backends are
+          guaranteed to support key values up to 250 bytes in size.
         :param value: str
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
@@ -11498,8 +11445,8 @@ class ModelRegistryAPI:
           Model version number.
         :param key: str
           Name of the tag. Maximum size depends on storage backend. If a tag with this name already exists,
-          its preexisting value will be replaced by the specified `value`. All storage backends are guaranteed
-          to support key values up to 250 bytes in size.
+          its preexisting value will be replaced by the specified ``value``. All storage backends are
+          guaranteed to support key values up to 250 bytes in size.
         :param value: str
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
@@ -11568,8 +11515,8 @@ class ModelRegistryAPI:
         :param id: str
           Webhook ID
         :param event: :class:`RegistryWebhookEvent` (optional)
-          If `event` is specified, the test trigger uses the specified event. If `event` is not specified, the
-          test trigger uses a randomly chosen event associated with the webhook.
+          If ``event`` is specified, the test trigger uses the specified event. If ``event`` is not specified,
+          the test trigger uses a randomly chosen event associated with the webhook.
 
         :returns: :class:`TestRegistryWebhookResponse`
         """
@@ -11594,10 +11541,9 @@ class ModelRegistryAPI:
     def transition_stage(
         self, name: str, version: str, stage: str, archive_existing_versions: bool, *, comment: Optional[str] = None
     ) -> TransitionStageResponse:
-        """Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
-        that also accepts a comment associated with the transition to be recorded.
-
-        [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage
+        """Transition a model version's stage. This is a Databricks workspace version of the `MLflow endpoint
+        <https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage>`__ that also accepts
+        a comment associated with the transition to be recorded.
 
         :param name: str
           Name of the model.
@@ -11606,13 +11552,10 @@ class ModelRegistryAPI:
         :param stage: str
           Target stage of the transition. Valid values are:
 
-          * `None`: The initial stage of a model version.
-
-          * `Staging`: Staging or pre-production stage.
-
-          * `Production`: Production stage.
-
-          * `Archived`: Archived stage.
+          - ``None``: The initial stage of a model version.
+          - ``Staging``: Staging or pre-production stage.
+          - ``Production``: Production stage.
+          - ``Archived``: Archived stage.
         :param archive_existing_versions: bool
           Specifies whether to archive all current model versions in the target stage.
         :param comment: str (optional)
@@ -11680,7 +11623,7 @@ class ModelRegistryAPI:
         :param name: str
           Registered model unique name identifier.
         :param description: str (optional)
-          If provided, updates the description for this `registered_model`.
+          If provided, updates the description for this ``registered_model``.
 
         :returns: :class:`UpdateModelResponse`
         """
@@ -11712,7 +11655,7 @@ class ModelRegistryAPI:
         :param version: str
           Model version number
         :param description: str (optional)
-          If provided, updates the description for this `registered_model`.
+          If provided, updates the description for this ``registered_model``.
 
         :returns: :class:`UpdateModelVersionResponse`
         """
@@ -11786,34 +11729,24 @@ class ModelRegistryAPI:
         :param description: str (optional)
           User-specified description for the webhook.
         :param events: List[:class:`RegistryWebhookEvent`] (optional)
-          Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
-          created for the associated model.
+          Events that can trigger a registry webhook:
 
-          * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
-
-          * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-
-          * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-
-          * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
-          specified for a registry-wide webhook, which can be created by not specifying a model name in the
-          create request.
-
-          * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-
-          * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
-          staging.
-
-          * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to
-          production.
-
-          * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
+          - ``MODEL_VERSION_CREATED``: A new model version was created for the associated model.
+          - ``MODEL_VERSION_TRANSITIONED_STAGE``: A model version’s stage was changed.
+          - ``TRANSITION_REQUEST_CREATED``: A user requested a model version’s stage be transitioned.
+          - ``COMMENT_CREATED``: A user wrote a comment on a registered model.
+          - ``REGISTERED_MODEL_CREATED``: A new registered model was created. This event type can only be
+            specified for a registry-wide webhook, which can be created by not specifying a model name in the
+            create request.
+          - ``MODEL_VERSION_TAG_SET``: A user set a tag on the model version.
+          - ``MODEL_VERSION_TRANSITIONED_TO_STAGING``: A model version was transitioned to staging.
+          - ``MODEL_VERSION_TRANSITIONED_TO_PRODUCTION``: A model version was transitioned to production.
+          - ``MODEL_VERSION_TRANSITIONED_TO_ARCHIVED``: A model version was archived.
+          - ``TRANSITION_REQUEST_TO_STAGING_CREATED``: A user requested a model version be transitioned to
+            staging.
+          - ``TRANSITION_REQUEST_TO_PRODUCTION_CREATED``: A user requested a model version be transitioned to
+            production.
+          - ``TRANSITION_REQUEST_TO_ARCHIVED_CREATED``: A user requested a model version be archived.
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
         :param job_spec: :class:`JobSpec` (optional)
         :param status: :class:`RegistryWebhookStatus` (optional)

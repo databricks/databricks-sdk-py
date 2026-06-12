@@ -289,7 +289,7 @@ class AccountUser:
     """If this user is active"""
 
     display_name: Optional[str] = None
-    """String that represents a concatenation of given and family names. For example `John Smith`."""
+    """String that represents a concatenation of given and family names. For example ``John Smith``."""
 
     emails: Optional[List[ComplexValue]] = None
     """All the emails associated with the Databricks user."""
@@ -628,8 +628,11 @@ class GrantRule:
     principals: Optional[List[str]] = None
     """Principals this grant rule applies to. A principal can be a user (for end users), a service
     principal (for applications and compute workloads), or an account group. Each principal has its
-    own identifier format: * users/<USERNAME> * groups/<GROUP_NAME> *
-    servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>"""
+    own identifier format:
+    
+    - users/<USERNAME>
+    - groups/<GROUP_NAME>
+    - servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>"""
 
     def as_dict(self) -> dict:
         """Serializes the GrantRule into a dictionary suitable for use as a JSON request body."""
@@ -661,10 +664,9 @@ class Group:
     """String that represents a human-readable group name"""
 
     entitlements: Optional[List[ComplexValue]] = None
-    """Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
-    values.
-    
-    [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
+    """Entitlements assigned to the group. See `assigning entitlements
+    <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+    for a full list of supported values."""
 
     external_id: Optional[str] = None
     """external_id should be unique for identifying groups"""
@@ -1785,8 +1787,8 @@ class ResourceInfo:
 @dataclass
 class ResourceMeta:
     resource_type: Optional[str] = None
-    """Identifier for group type. Can be local workspace group (`WorkspaceGroup`) or account group
-    (`Group`)."""
+    """Identifier for group type. Can be local workspace group (``WorkspaceGroup``) or account group
+    (``Group``)."""
 
     def as_dict(self) -> dict:
         """Serializes the ResourceMeta into a dictionary suitable for use as a JSON request body."""
@@ -1937,10 +1939,9 @@ class ServicePrincipal:
     """String that represents a concatenation of given and family names."""
 
     entitlements: Optional[List[ComplexValue]] = None
-    """Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
-    supported values.
-    
-    [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
+    """Entitlements assigned to the service principal. See `assigning entitlements
+    <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+    for a full list of supported values."""
 
     external_id: Optional[str] = None
 
@@ -2027,20 +2028,19 @@ class User:
     """If this user is active"""
 
     display_name: Optional[str] = None
-    """String that represents a concatenation of given and family names. For example `John Smith`. This
-    field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled].
-    Use Account SCIM APIs to update `displayName`.
-    
-    [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"""
+    """String that represents a concatenation of given and family names. For example ``John Smith``.
+    This field cannot be updated through the Workspace SCIM APIs when `identity federation is
+    enabled
+    <https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation>`__.
+    Use Account SCIM APIs to update ``displayName``."""
 
     emails: Optional[List[ComplexValue]] = None
     """All the emails associated with the Databricks user."""
 
     entitlements: Optional[List[ComplexValue]] = None
-    """Entitlements assigned to the user. See [assigning entitlements] for a full list of supported
-    values.
-    
-    [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
+    """Entitlements assigned to the user. See `assigning entitlements
+    <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+    for a full list of supported values."""
 
     external_id: Optional[str] = None
     """External ID is not currently supported. It is reserved for future use."""
@@ -2241,10 +2241,10 @@ class AccountAccessControlAPI:
         :param resource: str
           The resource name for which assignable roles will be listed.
 
-          Examples | Summary :--- | :--- `resource=accounts/<ACCOUNT_ID>` | A resource name for the account.
-          `resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>` | A resource name for the group.
-          `resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>` | A resource name for the service
-          principal. `resource=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>` | A resource name for the
+          Examples | Summary :--- | :--- ``resource=accounts/<ACCOUNT_ID>`` | A resource name for the account.
+          ``resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>`` | A resource name for the group.
+          ``resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>`` | A resource name for the service
+          principal. ``resource=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>`` | A resource name for the
           tag policy.
 
         :returns: :class:`GetAssignableRolesForResourceResponse`
@@ -2272,13 +2272,13 @@ class AccountAccessControlAPI:
         :param name: str
           The ruleset name associated with the request.
 
-          Examples | Summary :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a rule set
-          on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default` | A name for a rule
-          set on the group.
-          `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default` |
-          A name for a rule set on the service principal.
-          `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default` | A name for a rule set on
-          the tag policy.
+          Examples | Summary :--- | :--- ``name=accounts/<ACCOUNT_ID>/ruleSets/default`` | A name for a rule
+          set on the account. ``name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default`` | A name for a
+          rule set on the group.
+          ``name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default``
+          | A name for a rule set on the service principal.
+          ``name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default`` | A name for a rule set
+          on the tag policy.
         :param etag: str
           Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for
           optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from
@@ -2287,8 +2287,8 @@ class AccountAccessControlAPI:
           etag from a GET rule set request, and pass it with the PUT update request to identify the rule set
           version you are updating.
 
-          Examples | Summary :--- | :--- `etag=` | An empty etag can only be used in GET to indicate no
-          freshness requirements. `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An
+          Examples | Summary :--- | :--- ``etag=`` | An empty etag can only be used in GET to indicate no
+          freshness requirements. ``etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==`` | An
           etag encoded a specific version of the rule set to get or to be updated.
 
         :returns: :class:`RuleSetResponse`
@@ -2356,10 +2356,10 @@ class AccountAccessControlProxyAPI:
         :param resource: str
           The resource name for which assignable roles will be listed.
 
-          Examples | Summary :--- | :--- `resource=accounts/<ACCOUNT_ID>` | A resource name for the account.
-          `resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>` | A resource name for the group.
-          `resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>` | A resource name for the service
-          principal. `resource=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>` | A resource name for the
+          Examples | Summary :--- | :--- ``resource=accounts/<ACCOUNT_ID>`` | A resource name for the account.
+          ``resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>`` | A resource name for the group.
+          ``resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>`` | A resource name for the service
+          principal. ``resource=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>`` | A resource name for the
           tag policy.
 
         :returns: :class:`GetAssignableRolesForResourceResponse`
@@ -2388,13 +2388,13 @@ class AccountAccessControlProxyAPI:
         :param name: str
           The ruleset name associated with the request.
 
-          Examples | Summary :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a rule set
-          on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default` | A name for a rule
-          set on the group.
-          `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default` |
-          A name for a rule set on the service principal.
-          `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default` | A name for a rule set on
-          the tag policy.
+          Examples | Summary :--- | :--- ``name=accounts/<ACCOUNT_ID>/ruleSets/default`` | A name for a rule
+          set on the account. ``name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default`` | A name for a
+          rule set on the group.
+          ``name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default``
+          | A name for a rule set on the service principal.
+          ``name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default`` | A name for a rule set
+          on the tag policy.
         :param etag: str
           Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for
           optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from
@@ -2403,8 +2403,8 @@ class AccountAccessControlProxyAPI:
           etag from a GET rule set request, and pass it with the PUT update request to identify the rule set
           version you are updating.
 
-          Examples | Summary :--- | :--- `etag=` | An empty etag can only be used in GET to indicate no
-          freshness requirements. `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An
+          Examples | Summary :--- | :--- ``etag=`` | An empty etag can only be used in GET to indicate no
+          freshness requirements. ``etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==`` | An
           etag encoded a specific version of the rule set to get or to be updated.
 
         :returns: :class:`RuleSetResponse`
@@ -2556,8 +2556,8 @@ class AccountGroupsV2API:
         start_index: Optional[int] = None,
     ) -> Iterator[AccountGroup]:
         """Gets all details of the groups associated with the Databricks account. As of 08/22/2025, this endpoint
-        will no longer return members. Instead, members should be retrieved by iterating through `Get group
-        details`. Existing accounts that rely on this attribute will not be impacted and will continue
+        will no longer return members. Instead, members should be retrieved by iterating through ``Get group
+        details``. Existing accounts that rely on this attribute will not be impacted and will continue
         receiving member data as before.
 
         :param attributes: str (optional)
@@ -2567,12 +2567,11 @@ class AccountGroupsV2API:
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
-          Query by which the results have to be filtered. Supported operators are equals(`eq`),
-          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
-          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
-          only support simple expressions.
-
-          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+          Query by which the results have to be filtered. Supported operators are equals(``eq``),
+          contains(``co``), starts with(``sw``) and not equals(``ne``). Additionally, simple expressions can
+          be formed using logical operators - ``and`` and ``or``. The `SCIM RFC
+          <https://tools.ietf.org/html/rfc7644#section-3.4.2.2>`__ has more details but we currently only
+          support simple expressions.
         :param sort_by: str (optional)
           Attribute to sort the results.
         :param sort_order: :class:`ListSortOrder` (optional)
@@ -2799,12 +2798,11 @@ class AccountServicePrincipalsV2API:
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
-          Query by which the results have to be filtered. Supported operators are equals(`eq`),
-          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
-          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
-          only support simple expressions.
-
-          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+          Query by which the results have to be filtered. Supported operators are equals(``eq``),
+          contains(``co``), starts with(``sw``) and not equals(``ne``). Additionally, simple expressions can
+          be formed using logical operators - ``and`` and ``or``. The `SCIM RFC
+          <https://tools.ietf.org/html/rfc7644#section-3.4.2.2>`__ has more details but we currently only
+          support simple expressions.
         :param sort_by: str (optional)
           Attribute to sort the results.
         :param sort_order: :class:`ListSortOrder` (optional)
@@ -2965,7 +2963,7 @@ class AccountUsersV2API:
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example ``John Smith``.
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param external_id: str (optional)
@@ -3045,15 +3043,14 @@ class AccountUsersV2API:
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
-          Query by which the results have to be filtered. Supported operators are equals(`eq`),
-          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
-          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
-          only support simple expressions.
-
-          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+          Query by which the results have to be filtered. Supported operators are equals(``eq``),
+          contains(``co``), starts with(``sw``) and not equals(``ne``). Additionally, simple expressions can
+          be formed using logical operators - ``and`` and ``or``. The `SCIM RFC
+          <https://tools.ietf.org/html/rfc7644#section-3.4.2.2>`__ has more details but we currently only
+          support simple expressions.
         :param sort_by: str (optional)
-          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
-          `name.givenName`, and `emails`.
+          Attribute to sort the results. Multi-part paths are supported. For example, ``userName``,
+          ``name.givenName``, and ``emails``.
         :param sort_order: :class:`GetSortOrder` (optional)
           The order to sort the results.
         :param start_index: int (optional)
@@ -3106,15 +3103,14 @@ class AccountUsersV2API:
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
-          Query by which the results have to be filtered. Supported operators are equals(`eq`),
-          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
-          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
-          only support simple expressions.
-
-          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+          Query by which the results have to be filtered. Supported operators are equals(``eq``),
+          contains(``co``), starts with(``sw``) and not equals(``ne``). Additionally, simple expressions can
+          be formed using logical operators - ``and`` and ``or``. The `SCIM RFC
+          <https://tools.ietf.org/html/rfc7644#section-3.4.2.2>`__ has more details but we currently only
+          support simple expressions.
         :param sort_by: str (optional)
-          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
-          `name.givenName`, and `emails`.
+          Attribute to sort the results. Multi-part paths are supported. For example, ``userName``,
+          ``name.givenName``, and ``emails``.
         :param sort_order: :class:`ListSortOrder` (optional)
           The order to sort the results.
         :param start_index: int (optional)
@@ -3201,7 +3197,7 @@ class AccountUsersV2API:
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example ``John Smith``.
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param external_id: str (optional)
@@ -3301,10 +3297,9 @@ class GroupsV2API:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
-          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
-          values.
-
-          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+          Entitlements assigned to the group. See `assigning entitlements
+          <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+          for a full list of supported values.
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -3408,12 +3403,11 @@ class GroupsV2API:
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
-          Query by which the results have to be filtered. Supported operators are equals(`eq`),
-          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
-          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
-          only support simple expressions.
-
-          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+          Query by which the results have to be filtered. Supported operators are equals(``eq``),
+          contains(``co``), starts with(``sw``) and not equals(``ne``). Additionally, simple expressions can
+          be formed using logical operators - ``and`` and ``or``. The `SCIM RFC
+          <https://tools.ietf.org/html/rfc7644#section-3.4.2.2>`__ has more details but we currently only
+          support simple expressions.
         :param sort_by: str (optional)
           Attribute to sort the results.
         :param sort_order: :class:`ListSortOrder` (optional)
@@ -3507,10 +3501,9 @@ class GroupsV2API:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
-          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
-          values.
-
-          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+          Entitlements assigned to the group. See `assigning entitlements
+          <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+          for a full list of supported values.
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
@@ -3605,27 +3598,27 @@ class PermissionMigrationAPI:
 
 class PermissionsAPI:
     """Permissions API are used to create read, write, edit, update and manage access for various users on
-    different objects and endpoints. * **[Apps permissions](:service:apps)** — Manage which users can manage
-    or use apps. * **[Cluster permissions](:service:clusters)** — Manage which users can manage, restart, or
-    attach to clusters. * **[Cluster policy permissions](:service:clusterpolicies)** — Manage which users
-    can use cluster policies. * **[Spark Declarative Pipelines permissions](:service:pipelines)** — Manage
-    which users can view, manage, run, cancel, or own a Spark Declarative Pipeline. * **[Job
-    permissions](:service:jobs)** — Manage which users can view, manage, trigger, cancel, or own a job. *
-    **[MLflow experiment permissions](:service:experiments)** — Manage which users can read, edit, or manage
-    MLflow experiments. * **[MLflow registered model permissions](:service:modelregistry)** — Manage which
-    users can read, edit, or manage MLflow registered models. * **[Instance Pool
-    permissions](:service:instancepools)** — Manage which users can manage or attach to pools. * **[Repo
-    permissions](repos)** — Manage which users can read, run, edit, or manage a repo. * **[Serving endpoint
-    permissions](:service:servingendpoints)** — Manage which users can view, query, or manage a serving
-    endpoint. * **[SQL warehouse permissions](:service:warehouses)** — Manage which users can use or manage
-    SQL warehouses. * **[Token permissions](:service:tokenmanagement)** — Manage which users can create or
-    use tokens. * **[Workspace object permissions](:service:workspace)** — Manage which users can read, run,
-    edit, or manage alerts, dbsql-dashboards, directories, files, notebooks and queries. For the mapping of
-    the required permissions for specific actions or abilities and other important information, see [Access
-    Control]. Note that to manage access control on service principals, use **[Account Access Control
-    Proxy](:service:accountaccesscontrolproxy)**.
+    different objects and endpoints.
 
-    [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html"""
+    - **Apps permissions** — Manage which users can manage or use apps.
+    - **Cluster permissions** — Manage which users can manage, restart, or attach to clusters.
+    - **Cluster policy permissions** — Manage which users can use cluster policies.
+    - **Spark Declarative Pipelines permissions** — Manage which users can view, manage, run, cancel, or own
+      a Spark Declarative Pipeline.
+    - **Job permissions** — Manage which users can view, manage, trigger, cancel, or own a job.
+    - **MLflow experiment permissions** — Manage which users can read, edit, or manage MLflow experiments.
+    - **MLflow registered model permissions** — Manage which users can read, edit, or manage MLflow
+      registered models.
+    - **Instance Pool permissions** — Manage which users can manage or attach to pools.
+    - **Repo permissions** — Manage which users can read, run, edit, or manage a repo.
+    - **Serving endpoint permissions** — Manage which users can view, query, or manage a serving endpoint.
+    - **SQL warehouse permissions** — Manage which users can use or manage SQL warehouses.
+    - **Token permissions** — Manage which users can create or use tokens.
+    - **Workspace object permissions** — Manage which users can read, run, edit, or manage alerts,
+      dbsql-dashboards, directories, files, notebooks and queries. For the mapping of the required permissions
+      for specific actions or abilities and other important information, see `Access Control
+      <https://docs.databricks.com/security/auth-authz/access-control/index.html>`__. Note that to manage
+      access control on service principals, use **Account Access Control Proxy**."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3798,10 +3791,9 @@ class ServicePrincipalsV2API:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
-          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
-          supported values.
-
-          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+          Entitlements assigned to the service principal. See `assigning entitlements
+          <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+          for a full list of supported values.
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -3902,12 +3894,11 @@ class ServicePrincipalsV2API:
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
-          Query by which the results have to be filtered. Supported operators are equals(`eq`),
-          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
-          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
-          only support simple expressions.
-
-          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+          Query by which the results have to be filtered. Supported operators are equals(``eq``),
+          contains(``co``), starts with(``sw``) and not equals(``ne``). Additionally, simple expressions can
+          be formed using logical operators - ``and`` and ``or``. The `SCIM RFC
+          <https://tools.ietf.org/html/rfc7644#section-3.4.2.2>`__ has more details but we currently only
+          support simple expressions.
         :param sort_by: str (optional)
           Attribute to sort the results.
         :param sort_order: :class:`ListSortOrder` (optional)
@@ -4007,10 +3998,9 @@ class ServicePrincipalsV2API:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
-          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
-          supported values.
-
-          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+          Entitlements assigned to the service principal. See `assigning entitlements
+          <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+          for a full list of supported values.
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
@@ -4085,17 +4075,16 @@ class UsersV2API:
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`. This
-          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
-          Account SCIM APIs to update `displayName`.
-
-          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
+          String that represents a concatenation of given and family names. For example ``John Smith``. This
+          field cannot be updated through the Workspace SCIM APIs when `identity federation is enabled
+          <https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation>`__.
+          Use Account SCIM APIs to update ``displayName``.
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
-          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
-
-          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+          Entitlements assigned to the user. See `assigning entitlements
+          <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+          for a full list of supported values.
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
@@ -4188,15 +4177,14 @@ class UsersV2API:
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
-          Query by which the results have to be filtered. Supported operators are equals(`eq`),
-          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
-          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
-          only support simple expressions.
-
-          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+          Query by which the results have to be filtered. Supported operators are equals(``eq``),
+          contains(``co``), starts with(``sw``) and not equals(``ne``). Additionally, simple expressions can
+          be formed using logical operators - ``and`` and ``or``. The `SCIM RFC
+          <https://tools.ietf.org/html/rfc7644#section-3.4.2.2>`__ has more details but we currently only
+          support simple expressions.
         :param sort_by: str (optional)
-          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
-          `name.givenName`, and `emails`.
+          Attribute to sort the results. Multi-part paths are supported. For example, ``userName``,
+          ``name.givenName``, and ``emails``.
         :param sort_order: :class:`GetSortOrder` (optional)
           The order to sort the results.
         :param start_index: int (optional)
@@ -4287,15 +4275,14 @@ class UsersV2API:
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
-          Query by which the results have to be filtered. Supported operators are equals(`eq`),
-          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
-          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
-          only support simple expressions.
-
-          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+          Query by which the results have to be filtered. Supported operators are equals(``eq``),
+          contains(``co``), starts with(``sw``) and not equals(``ne``). Additionally, simple expressions can
+          be formed using logical operators - ``and`` and ``or``. The `SCIM RFC
+          <https://tools.ietf.org/html/rfc7644#section-3.4.2.2>`__ has more details but we currently only
+          support simple expressions.
         :param sort_by: str (optional)
-          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
-          `name.givenName`, and `emails`.
+          Attribute to sort the results. Multi-part paths are supported. For example, ``userName``,
+          ``name.givenName``, and ``emails``.
         :param sort_order: :class:`ListSortOrder` (optional)
           The order to sort the results.
         :param start_index: int (optional)
@@ -4415,17 +4402,16 @@ class UsersV2API:
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`. This
-          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
-          Account SCIM APIs to update `displayName`.
-
-          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
+          String that represents a concatenation of given and family names. For example ``John Smith``. This
+          field cannot be updated through the Workspace SCIM APIs when `identity federation is enabled
+          <https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation>`__.
+          Use Account SCIM APIs to update ``displayName``.
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
-          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
-
-          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+          Entitlements assigned to the user. See `assigning entitlements
+          <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+          for a full list of supported values.
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)

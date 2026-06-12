@@ -34,18 +34,19 @@ _LOG = logging.getLogger("databricks.sdk")
 class AuthorizationDetails:
     grant_rules: Optional[List[AuthorizationDetailsGrantRule]] = None
     """Represents downscoped permission rules with specific access rights. This field is specific to
-    `workspace_rule_set` constraint."""
+    ``workspace_rule_set`` constraint."""
 
     resource_legacy_acl_path: Optional[str] = None
     """The acl path of the tree store resource resource."""
 
     resource_name: Optional[str] = None
     """The resource name to which the authorization rule applies. This field is specific to
-    `workspace_rule_set` constraint. Format: `workspaces/{workspace_id}/dashboards/{dashboard_id}`"""
+    ``workspace_rule_set`` constraint. Format:
+    ``workspaces/{workspace_id}/dashboards/{dashboard_id}``"""
 
     type: Optional[str] = None
-    """The type of authorization downscoping policy. Ex: `workspace_rule_set` defines access rules for
-    a specific workspace resource"""
+    """The type of authorization downscoping policy. Ex: ``workspace_rule_set`` defines access rules
+    for a specific workspace resource"""
 
     def as_dict(self) -> dict:
         """Serializes the AuthorizationDetails into a dictionary suitable for use as a JSON request body."""
@@ -89,7 +90,7 @@ class AuthorizationDetailsGrantRule:
     permission_set: Optional[str] = None
     """Permission sets for dashboard are defined in
     iam-common/rbac-common/permission-sets/definitions/TreeStoreBasePermissionSets Ex:
-    `permissionSets/dashboard.runner`"""
+    ``permissionSets/dashboard.runner``"""
 
     def as_dict(self) -> dict:
         """Serializes the AuthorizationDetailsGrantRule into a dictionary suitable for use as a JSON request body."""
@@ -114,16 +115,14 @@ class AuthorizationDetailsGrantRule:
 @dataclass
 class CronSchedule:
     quartz_cron_expression: str
-    """A cron expression using quartz syntax. EX: `0 0 8 * * ?` represents everyday at 8am. See [Cron
-    Trigger] for details.
-    
-    [Cron Trigger]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html"""
+    """A cron expression using quartz syntax. EX: ``0 0 8 * * ?`` represents everyday at 8am. See `Cron
+    Trigger
+    <http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html>`__ for
+    details."""
 
     timezone_id: str
-    """A Java timezone id. The schedule will be resolved with respect to this timezone. See [Java
-    TimeZone] for details.
-    
-    [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html"""
+    """A Java timezone id. The schedule will be resolved with respect to this timezone. See `Java
+    TimeZone <https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html>`__ for details."""
 
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
@@ -173,15 +172,14 @@ class Dashboard:
 
     path: Optional[str] = None
     """The workspace path of the dashboard asset, including the file name. Exported dashboards always
-    have the file extension `.lvdash.json`. This field is excluded in List Dashboards responses."""
+    have the file extension ``.lvdash.json``. This field is excluded in List Dashboards responses."""
 
     serialized_dashboard: Optional[str] = None
     """The contents of the dashboard in serialized string form. This field is excluded in List
-    Dashboards responses. Use the [get dashboard API] to retrieve an example response, which
-    includes the `serialized_dashboard` field. This field provides the structure of the JSON string
-    that represents the dashboard's layout and components.
-    
-    [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get"""
+    Dashboards responses. Use the `get dashboard API
+    <https://docs.databricks.com/api/workspace/lakeview/get>`__ to retrieve an example response,
+    which includes the ``serialized_dashboard`` field. This field provides the structure of the JSON
+    string that represents the dashboard's layout and components."""
 
     update_time: Optional[str] = None
     """The timestamp of when the dashboard was last updated by the user. This field is excluded in List
@@ -595,42 +593,53 @@ class GenieEvalResultDetails:
     
     Assessment reasons describe why a Genie response was scored as BAD.
     
-    Deterministic values (compared against the ground truth result): - EMPTY_RESULT: Genie's
-    generated SQL results were empty for this benchmark question. - RESULT_MISSING_ROWS: Genie's
-    generated SQL response is missing rows from the provided ground truth SQL. - RESULT_EXTRA_ROWS:
-    Genie's generated SQL response has more rows than the provided ground truth SQL. -
-    RESULT_MISSING_COLUMNS: Genie's generated SQL response is missing columns from the provided
-    ground truth SQL. - RESULT_EXTRA_COLUMNS: Genie's generated SQL response has more columns than
-    the provided ground truth SQL. - SINGLE_CELL_DIFFERENCE: Single value result was produced but
-    differs from ground truth result. - EMPTY_GOOD_SQL: The benchmark SQL returned an empty result.
+    Deterministic values (compared against the ground truth result):
+    
+    - EMPTY_RESULT: Genie's generated SQL results were empty for this benchmark question.
+    - RESULT_MISSING_ROWS: Genie's generated SQL response is missing rows from the provided ground
+      truth SQL.
+    - RESULT_EXTRA_ROWS: Genie's generated SQL response has more rows than the provided ground truth
+      SQL.
+    - RESULT_MISSING_COLUMNS: Genie's generated SQL response is missing columns from the provided
+      ground truth SQL.
+    - RESULT_EXTRA_COLUMNS: Genie's generated SQL response has more columns than the provided ground
+      truth SQL.
+    - SINGLE_CELL_DIFFERENCE: Single value result was produced but differs from ground truth result.
+    - EMPTY_GOOD_SQL: The benchmark SQL returned an empty result.
     - COLUMN_TYPE_DIFFERENCE: The values between the results match but the column type is different.
     
-    LLM judge ratings explain the factors driving BAD results: -
-    LLM_JUDGE_MISSING_OR_INCORRECT_FILTER: Genie's generated SQL is missing a WHERE clause condition
-    or has incorrect filter logic that excludes/includes wrong data. -
-    LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT: Genie's generated SQL returns only some of the requested
-    data or columns, missing parts of what the ground truth SQL returns. -
-    LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST: Genie's generated SQL fundamentally misunderstands
-    what the user is asking for, addressing the wrong question or goal. -
-    LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC: Genie's generated SQL fails to apply
-    specified instructions or business logic that should be followed. -
-    LLM_JUDGE_INCORRECT_METRIC_CALCULATION: Genie's generated SQL uses incorrect logic or makes
-    wrong assumptions when calculating metrics. - LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE: Genie's
-    generated SQL references wrong tables, columns, or uses fields that don't match the ground truth
-    SQL's intent. - LLM_JUDGE_INCORRECT_FUNCTION_USAGE: Genie's generated SQL uses SQL functions
-    incorrectly or inappropriately (wrong parameters, wrong function for the task, etc.). -
-    LLM_JUDGE_MISSING_OR_INCORRECT_JOIN: Genie's generated SQL is missing necessary joins between
-    tables or has incorrect join conditions/types that produce wrong results. -
-    LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION: Genie's generated SQL is missing GROUP BY clauses or
-    has incorrect grouping that doesn't match the requested aggregation level. -
-    LLM_JUDGE_FORMATTING_ERROR: Genie's generated SQL output has incorrect formatting, ordering
-    (ORDER BY), or presentation issues that don't match expectations. - LLM_JUDGE_OTHER: LLM judge
-    identified an error that doesn't fall into other categories.
+    LLM judge ratings explain the factors driving BAD results:
     
-    Deprecated LLM judge values (kept for backward compatibility, do not use): -
-    LLM_JUDGE_MISSING_JOIN (deprecated) - LLM_JUDGE_WRONG_FILTER (deprecated) -
-    LLM_JUDGE_WRONG_AGGREGATION (deprecated) - LLM_JUDGE_WRONG_COLUMNS (deprecated) -
-    LLM_JUDGE_SYNTAX_ERROR (deprecated) - LLM_JUDGE_SEMANTIC_ERROR (deprecated)"""
+    - LLM_JUDGE_MISSING_OR_INCORRECT_FILTER: Genie's generated SQL is missing a WHERE clause
+      condition or has incorrect filter logic that excludes/includes wrong data.
+    - LLM_JUDGE_INCOMPLETE_OR_PARTIAL_OUTPUT: Genie's generated SQL returns only some of the
+      requested data or columns, missing parts of what the ground truth SQL returns.
+    - LLM_JUDGE_MISINTERPRETATION_OF_USER_REQUEST: Genie's generated SQL fundamentally
+      misunderstands what the user is asking for, addressing the wrong question or goal.
+    - LLM_JUDGE_INSTRUCTION_COMPLIANCE_OR_MISSING_BUSINESS_LOGIC: Genie's generated SQL fails to
+      apply specified instructions or business logic that should be followed.
+    - LLM_JUDGE_INCORRECT_METRIC_CALCULATION: Genie's generated SQL uses incorrect logic or makes
+      wrong assumptions when calculating metrics.
+    - LLM_JUDGE_INCORRECT_TABLE_OR_FIELD_USAGE: Genie's generated SQL references wrong tables,
+      columns, or uses fields that don't match the ground truth SQL's intent.
+    - LLM_JUDGE_INCORRECT_FUNCTION_USAGE: Genie's generated SQL uses SQL functions incorrectly or
+      inappropriately (wrong parameters, wrong function for the task, etc.).
+    - LLM_JUDGE_MISSING_OR_INCORRECT_JOIN: Genie's generated SQL is missing necessary joins between
+      tables or has incorrect join conditions/types that produce wrong results.
+    - LLM_JUDGE_MISSING_OR_INCORRECT_AGGREGATION: Genie's generated SQL is missing GROUP BY clauses
+      or has incorrect grouping that doesn't match the requested aggregation level.
+    - LLM_JUDGE_FORMATTING_ERROR: Genie's generated SQL output has incorrect formatting, ordering
+      (ORDER BY), or presentation issues that don't match expectations.
+    - LLM_JUDGE_OTHER: LLM judge identified an error that doesn't fall into other categories.
+    
+    Deprecated LLM judge values (kept for backward compatibility, do not use):
+    
+    - LLM_JUDGE_MISSING_JOIN (deprecated)
+    - LLM_JUDGE_WRONG_FILTER (deprecated)
+    - LLM_JUDGE_WRONG_AGGREGATION (deprecated)
+    - LLM_JUDGE_WRONG_COLUMNS (deprecated)
+    - LLM_JUDGE_SYNTAX_ERROR (deprecated)
+    - LLM_JUDGE_SEMANTIC_ERROR (deprecated)"""
 
     eval_run_status: Optional[EvaluationStatusType] = None
     """Current status of the evaluation run."""
@@ -871,8 +880,8 @@ class GenieGenerateDownloadFullQueryResultResponse:
 @dataclass
 class GenieGetDownloadFullQueryResultResponse:
     statement_response: Optional[sql.StatementResponse] = None
-    """SQL Statement Execution response. See [Get status, manifest, and result first
-    chunk](:method:statementexecution/getstatement) for more details."""
+    """SQL Statement Execution response. See Get status, manifest, and result first chunk for more
+    details."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieGetDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
@@ -897,8 +906,8 @@ class GenieGetDownloadFullQueryResultResponse:
 @dataclass
 class GenieGetMessageQueryResultResponse:
     statement_response: Optional[sql.StatementResponse] = None
-    """SQL Statement Execution response. See [Get status, manifest, and result first
-    chunk](:method:statementexecution/getstatement) for more details."""
+    """SQL Statement Execution response. See Get status, manifest, and result first chunk for more
+    details."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieGetMessageQueryResultResponse into a dictionary suitable for use as a JSON request body."""
@@ -1191,7 +1200,7 @@ class GenieMessage:
 
     query_result: Optional[Result] = None
     """The result of SQL query if the message includes a query attachment. Deprecated. Use
-    `query_result_metadata` in `GenieQueryAttachment` instead."""
+    ``query_result_metadata`` in ``GenieQueryAttachment`` instead."""
 
     status: Optional[MessageStatus] = None
 
@@ -1376,8 +1385,8 @@ class GenieQueryAttachment:
     """Metadata associated with the query result."""
 
     statement_id: Optional[str] = None
-    """Statement Execution API statement id. Use [Get status, manifest, and result first
-    chunk](:method:statementexecution/getstatement) to get the full result data."""
+    """Statement Execution API statement id. Use Get status, manifest, and result first chunk to get
+    the full result data."""
 
     thoughts: Optional[List[Thought]] = None
     """Insights into how Genie came to generate the SQL."""
@@ -1499,9 +1508,9 @@ class GenieSpace:
 
     serialized_space: Optional[str] = None
     """The contents of the Genie Space in serialized string form. This field is excluded in List Genie
-    spaces responses. Use the [Get Genie Space](:method:genie/getspace) API to retrieve an example
-    response, which includes the `serialized_space` field. This field provides the structure of the
-    JSON string that represents the space's layout and components."""
+    spaces responses. Use the Get Genie Space API to retrieve an example response, which includes
+    the ``serialized_space`` field. This field provides the structure of the JSON string that
+    represents the space's layout and components."""
 
     warehouse_id: Optional[str] = None
     """Warehouse associated with the Genie Space"""
@@ -1638,12 +1647,12 @@ class GenieSuggestedQuestionsAttachment:
 class GetPublishedDashboardTokenInfoResponse:
     authorization_details: Optional[List[AuthorizationDetails]] = None
     """Authorization constraints for accessing the published dashboard. Currently includes
-    `workspace_rule_set` and could be enriched with `unity_catalog_privileges` before oAuth token
-    generation."""
+    ``workspace_rule_set`` and could be enriched with ``unity_catalog_privileges`` before oAuth
+    token generation."""
 
     custom_claim: Optional[str] = None
     """Custom claim generated from external_value and external_viewer_id. Format:
-    `urn:aibi:external_data:<external_value>:<external_viewer_id>:<dashboard_id>`"""
+    ``urn:aibi:external_data:<external_value>:<external_viewer_id>:<dashboard_id>``"""
 
     scope: Optional[str] = None
     """Scope defining access permissions."""
@@ -1690,8 +1699,8 @@ class ListDashboardsResponse:
     dashboards: Optional[List[Dashboard]] = None
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted,
-    there are no subsequent dashboards."""
+    """A token, which can be sent as ``page_token`` to retrieve the next page. If this field is
+    omitted, there are no subsequent dashboards."""
 
     def as_dict(self) -> dict:
         """Serializes the ListDashboardsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1722,7 +1731,7 @@ class ListDashboardsResponse:
 @dataclass
 class ListSchedulesResponse:
     next_page_token: Optional[str] = None
-    """A token that can be used as a `page_token` in subsequent requests to retrieve the next page of
+    """A token that can be used as a ``page_token`` in subsequent requests to retrieve the next page of
     results. If this field is omitted, there are no subsequent schedules."""
 
     schedules: Optional[List[Schedule]] = None
@@ -1754,7 +1763,7 @@ class ListSchedulesResponse:
 @dataclass
 class ListSubscriptionsResponse:
     next_page_token: Optional[str] = None
-    """A token that can be used as a `page_token` in subsequent requests to retrieve the next page of
+    """A token that can be used as a ``page_token`` in subsequent requests to retrieve the next page of
     results. If this field is omitted, there are no subsequent subscriptions."""
 
     subscriptions: Optional[List[Subscription]] = None
@@ -1881,20 +1890,21 @@ class MessageErrorType(Enum):
 
 
 class MessageStatus(Enum):
-    """MessageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
-    sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. *
-    `ASKING_AI`: Waiting for the LLM to respond to the user's question. * `PENDING_WAREHOUSE`:
-    Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a
-    generated SQL query. Get the SQL query result by calling
-    [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. *
-    `FAILED`: The response generation or query execution failed. See `error` field. * `COMPLETED`:
-    Message processing is completed. Results are in the `attachments` field. Get the SQL query
-    result by calling
-    [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. *
-    `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available
-    anymore. The user needs to rerun the query. Rerun the SQL query result by calling
-    [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery) API. * `CANCELLED`:
-    Message has been cancelled."""
+    """MessageStatus. The possible values are:
+
+    - ``FETCHING_METADATA``: Fetching metadata from the data sources.
+    - ``FILTERING_CONTEXT``: Running smart context step to determine relevant context.
+    - ``ASKING_AI``: Waiting for the LLM to respond to the user's question.
+    - ``PENDING_WAREHOUSE``: Waiting for warehouse before the SQL query can start executing.
+    - ``EXECUTING_QUERY``: Executing a generated SQL query. Get the SQL query result by calling
+      getMessageAttachmentQueryResult API.
+    - ``FAILED``: The response generation or query execution failed. See ``error`` field.
+    - ``COMPLETED``: Message processing is completed. Results are in the ``attachments`` field. Get
+      the SQL query result by calling getMessageAttachmentQueryResult API.
+    - ``SUBMITTED``: Message has been submitted.
+    - ``QUERY_RESULT_EXPIRED``: SQL result is not available anymore. The user needs to rerun the
+      query. Rerun the SQL query result by calling executeMessageAttachmentQuery API.
+    - ``CANCELLED``: Message has been cancelled."""
 
     ASKING_AI = "ASKING_AI"
     CANCELLED = "CANCELLED"
@@ -2004,8 +2014,8 @@ class Result:
     """Row count of the result"""
 
     statement_id: Optional[str] = None
-    """Statement Execution API statement id. Use [Get status, manifest, and result first
-    chunk](:method:statementexecution/getstatement) to get the full result data."""
+    """Statement Execution API statement id. Use Get status, manifest, and result first chunk to get
+    the full result data."""
 
     statement_id_signature: Optional[str] = None
     """JWT corresponding to the statement contained in this result"""
@@ -2206,11 +2216,11 @@ class ScoreReason(Enum):
 class Subscriber:
     destination_subscriber: Optional[SubscriptionSubscriberDestination] = None
     """The destination to receive the subscription email. This parameter is mutually exclusive with
-    `user_subscriber`."""
+    ``user_subscriber``."""
 
     user_subscriber: Optional[SubscriptionSubscriberUser] = None
     """The user to receive the subscription email. This parameter is mutually exclusive with
-    `destination_subscriber`."""
+    ``destination_subscriber``."""
 
     def as_dict(self) -> dict:
         """Serializes the Subscriber into a dictionary suitable for use as a JSON request body."""
@@ -2437,12 +2447,13 @@ class Thought:
     """The md formatted content for this thought."""
 
     thought_type: Optional[ThoughtType] = None
-    """The category of this thought. The possible values are: * `THOUGHT_TYPE_DESCRIPTION`: A
-    high-level description of how the question was interpreted. * `THOUGHT_TYPE_UNDERSTANDING`: How
-    ambiguous parts of the question were resolved. * `THOUGHT_TYPE_DATA_SOURCING`: Which tables or
-    datasets were identified as relevant. * `THOUGHT_TYPE_INSTRUCTIONS`: Which author-defined
-    instructions were referenced. * `THOUGHT_TYPE_STEPS`: The logical steps taken to compute the
-    answer."""
+    """The category of this thought. The possible values are:
+    
+    - ``THOUGHT_TYPE_DESCRIPTION``: A high-level description of how the question was interpreted.
+    - ``THOUGHT_TYPE_UNDERSTANDING``: How ambiguous parts of the question were resolved.
+    - ``THOUGHT_TYPE_DATA_SOURCING``: Which tables or datasets were identified as relevant.
+    - ``THOUGHT_TYPE_INSTRUCTIONS``: Which author-defined instructions were referenced.
+    - ``THOUGHT_TYPE_STEPS``: The logical steps taken to compute the answer."""
 
     def as_dict(self) -> dict:
         """Serializes the Thought into a dictionary suitable for use as a JSON request body."""
@@ -2469,13 +2480,15 @@ class Thought:
 
 
 class ThoughtType(Enum):
-    """ThoughtType. The possible values are: * `THOUGHT_TYPE_UNSPECIFIED`: Default value that should
-    not be used. * `THOUGHT_TYPE_DESCRIPTION`: A high-level description of how the question was
-    interpreted. * `THOUGHT_TYPE_UNDERSTANDING`: How ambiguous parts of the question were resolved.
-    * `THOUGHT_TYPE_DATA_SOURCING`: Which tables or datasets were identified as relevant. *
-    `THOUGHT_TYPE_INSTRUCTIONS`: Which author-defined instructions were referenced. *
-    `THOUGHT_TYPE_STEPS`: The logical steps taken to compute the answer. The category of a Thought.
-    Additional values may be added in the future."""
+    """ThoughtType. The possible values are:
+
+    - ``THOUGHT_TYPE_UNSPECIFIED``: Default value that should not be used.
+    - ``THOUGHT_TYPE_DESCRIPTION``: A high-level description of how the question was interpreted.
+    - ``THOUGHT_TYPE_UNDERSTANDING``: How ambiguous parts of the question were resolved.
+    - ``THOUGHT_TYPE_DATA_SOURCING``: Which tables or datasets were identified as relevant.
+    - ``THOUGHT_TYPE_INSTRUCTIONS``: Which author-defined instructions were referenced.
+    - ``THOUGHT_TYPE_STEPS``: The logical steps taken to compute the answer. The category of a
+      Thought. Additional values may be added in the future."""
 
     THOUGHT_TYPE_DATA_SOURCING = "THOUGHT_TYPE_DATA_SOURCING"
     THOUGHT_TYPE_DESCRIPTION = "THOUGHT_TYPE_DESCRIPTION"
@@ -2564,8 +2577,8 @@ class GenieAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def create_message(self, space_id: str, conversation_id: str, content: str) -> Wait[GenieMessage]:
-        """Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
-        previously created messages in the conversation to respond.
+        """Create new message in a conversation. The AI response uses all previously created messages in the
+        conversation to respond.
 
         :param space_id: str
           The ID associated with the Genie space where the conversation is started.
@@ -2663,10 +2676,9 @@ class GenieAPI:
         :param warehouse_id: str
           Warehouse to associate with the new space
         :param serialized_space: str
-          The contents of the Genie Space in serialized string form. Use the [Get Genie
-          Space](:method:genie/getspace) API to retrieve an example response, which includes the
-          `serialized_space` field. This field provides the structure of the JSON string that represents the
-          space's layout and components.
+          The contents of the Genie Space in serialized string form. Use the Get Genie Space API to retrieve
+          an example response, which includes the ``serialized_space`` field. This field provides the
+          structure of the JSON string that represents the space's layout and components.
         :param description: str (optional)
           Optional description
         :param parent_path: str (optional)
@@ -2785,8 +2797,7 @@ class GenieAPI:
     def execute_message_query(
         self, space_id: str, conversation_id: str, message_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """DEPRECATED: Use [Execute Message Attachment Query](:method:genie/executemessageattachmentquery)
-        instead.
+        """DEPRECATED: Use Execute Message Attachment Query instead.
 
         :param space_id: str
           Genie space ID
@@ -2817,26 +2828,21 @@ class GenieAPI:
     def generate_download_full_query_result(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGenerateDownloadFullQueryResultResponse:
-        """Initiates a new SQL execution and returns a `download_id` and `download_id_signature` that you can use
-        to track the progress of the download. The query result is stored in an external link and can be
-        retrieved using the [Get Download Full Query Result](:method:genie/getdownloadfullqueryresult) API.
-        Both `download_id` and `download_id_signature` must be provided when calling the Get endpoint.
+        """Initiates a new SQL execution and returns a ``download_id`` and ``download_id_signature`` that you can
+        use to track the progress of the download. The query result is stored in an external link and can be
+        retrieved using the Get Download Full Query Result API. Both ``download_id`` and
+        ``download_id_signature`` must be provided when calling the Get endpoint.
 
-        ----
+        ****Warning: Databricks strongly recommends that you protect the URLs that are returned by the ``EXTERNAL_LINKS`` disposition.****
 
-        ### **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
-        `EXTERNAL_LINKS` disposition.**
-
-        When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is generated, which can be used to
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
         download the results directly from . As a short-lived is embedded in this URL, you should protect the
         URL.
 
-        Because URLs are already generated with embedded temporary s, you must not set an `Authorization`
+        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
         header in the download requests.
 
-        See [Execute Statement](:method:statementexecution/executestatement) for more details.
-
-        ----
+        See Execute Statement for more details.
 
         :param space_id: str
           Genie space ID
@@ -3017,27 +3023,22 @@ class GenieAPI:
         download_id: str,
         download_id_signature: str,
     ) -> GenieGetDownloadFullQueryResultResponse:
-        """After [Generating a Full Query Result Download](:method:genie/generatedownloadfullqueryresult) and
-        successfully receiving a `download_id` and `download_id_signature`, use this API to poll the download
-        progress. Both `download_id` and `download_id_signature` are required to call this endpoint. When the
-        download is complete, the API returns the result in the `EXTERNAL_LINKS` disposition, containing one
-        or more external links to the query result files.
+        """After Generating a Full Query Result Download and successfully receiving a ``download_id`` and
+        ``download_id_signature``, use this API to poll the download progress. Both ``download_id`` and
+        ``download_id_signature`` are required to call this endpoint. When the download is complete, the API
+        returns the result in the ``EXTERNAL_LINKS`` disposition, containing one or more external links to the
+        query result files.
 
-        ----
+        ****Warning: Databricks strongly recommends that you protect the URLs that are returned by the ``EXTERNAL_LINKS`` disposition.****
 
-        ### **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
-        `EXTERNAL_LINKS` disposition.**
-
-        When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is generated, which can be used to
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
         download the results directly from . As a short-lived is embedded in this URL, you should protect the
         URL.
 
-        Because URLs are already generated with embedded temporary s, you must not set an `Authorization`
+        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
         header in the download requests.
 
-        See [Execute Statement](:method:statementexecution/executestatement) for more details.
-
-        ----
+        See Execute Statement for more details.
 
         :param space_id: str
           Genie space ID
@@ -3048,8 +3049,7 @@ class GenieAPI:
         :param attachment_id: str
           Attachment ID
         :param download_id: str
-          Download ID. This ID is provided by the [Generate Download
-          endpoint](:method:genie/generateDownloadFullQueryResult)
+          Download ID. This ID is provided by the Generate Download endpoint
         :param download_id_signature: str
           JWT signature for the download_id to ensure secure access to query results
 
@@ -3107,7 +3107,7 @@ class GenieAPI:
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
         """Get the result of SQL query if the message has a query attachment. This is only available if a message
-        has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.
+        has a query attachment and the message status is ``EXECUTING_QUERY`` OR ``COMPLETED``.
 
         :param space_id: str
           Genie space ID
@@ -3139,8 +3139,7 @@ class GenieAPI:
     def get_message_query_result(
         self, space_id: str, conversation_id: str, message_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)
-        instead.
+        """DEPRECATED: Use Get Message Attachment Query Result instead.
 
         :param space_id: str
           Genie space ID
@@ -3170,8 +3169,7 @@ class GenieAPI:
     def get_message_query_result_by_attachment(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)
-        instead.
+        """DEPRECATED: Use Get Message Attachment Query Result instead.
 
         :param space_id: str
           Genie space ID
@@ -3545,10 +3543,9 @@ class GenieAPI:
         :param parent_path: str (optional)
           Parent workspace folder path to move this Genie space under.
         :param serialized_space: str (optional)
-          The contents of the Genie Space in serialized string form (full replacement). Use the [Get Genie
-          Space](:method:genie/getspace) API to retrieve an example response, which includes the
-          `serialized_space` field. This field provides the structure of the JSON string that represents the
-          space's layout and components.
+          The contents of the Genie Space in serialized string form (full replacement). Use the Get Genie
+          Space API to retrieve an example response, which includes the ``serialized_space`` field. This field
+          provides the structure of the JSON string that represents the space's layout and components.
         :param title: str (optional)
           Optional title override
         :param warehouse_id: str (optional)
@@ -3856,13 +3853,13 @@ class LakeviewAPI:
         :param page_size: int (optional)
           The number of dashboards to return per page.
         :param page_token: str (optional)
-          A page token, received from a previous `ListDashboards` call. This token can be used to retrieve the
-          subsequent page.
+          A page token, received from a previous ``ListDashboards`` call. This token can be used to retrieve
+          the subsequent page.
         :param show_trashed: bool (optional)
           The flag to include dashboards located in the trash. If unspecified, only active dashboards will be
           returned.
         :param view: :class:`DashboardView` (optional)
-          `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.
+          ``DASHBOARD_VIEW_BASIC``only includes summary metadata from the dashboard.
 
         :returns: Iterator over :class:`Dashboard`
         """
@@ -3903,7 +3900,7 @@ class LakeviewAPI:
         :param page_size: int (optional)
           The number of schedules to return per page.
         :param page_token: str (optional)
-          A page token, received from a previous `ListSchedules` call. Use this to retrieve the subsequent
+          A page token, received from a previous ``ListSchedules`` call. Use this to retrieve the subsequent
           page.
 
         :returns: Iterator over :class:`Schedule`
@@ -3945,8 +3942,8 @@ class LakeviewAPI:
         :param page_size: int (optional)
           The number of subscriptions to return per page.
         :param page_token: str (optional)
-          A page token, received from a previous `ListSubscriptions` call. Use this to retrieve the subsequent
-          page.
+          A page token, received from a previous ``ListSubscriptions`` call. Use this to retrieve the
+          subsequent page.
 
         :returns: Iterator over :class:`Subscription`
         """
@@ -4062,7 +4059,8 @@ class LakeviewAPI:
           UUID identifying the dashboard.
         :param etag: str (optional)
           The etag for the dashboard. Optionally, it can be provided to verify that the dashboard has not been
-          modified from its last retrieval.
+          modified from its last retrieval. TODO(TSE-3937): update to new non-CMK-encrypted label when
+          available
 
         :returns: :class:`RevertDashboardResponse`
         """

@@ -228,7 +228,7 @@ class ListExamplesResponse:
 @dataclass
 class ListSupervisorAgentsResponse:
     next_page_token: Optional[str] = None
-    """A token that can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    """A token that can be sent as ``page_token`` to retrieve the next page. If this field is omitted,
     there are no subsequent pages."""
 
     supervisor_agents: Optional[List[SupervisorAgent]] = None
@@ -1058,8 +1058,8 @@ class SupervisorAgentsAPI:
           The maximum number of examples to return. If unspecified, at most 100 examples will be returned. The
           maximum value is 100; values above 100 will be coerced to 100.
         :param page_token: str (optional)
-          A page token, received from a previous `ListExamples` call. Provide this to retrieve the subsequent
-          page. If unspecified, the first page will be returned.
+          A page token, received from a previous ``ListExamples`` call. Provide this to retrieve the
+          subsequent page. If unspecified, the first page will be returned.
 
         :returns: Iterator over :class:`Example`
         """
@@ -1095,7 +1095,7 @@ class SupervisorAgentsAPI:
           The maximum number of supervisor agents to return. If unspecified, at most 100 supervisor agents
           will be returned. The maximum value is 100; values above 100 will be coerced to 100.
         :param page_token: str (optional)
-          A page token, received from a previous `ListSupervisorAgents` call. Provide this to retrieve the
+          A page token, received from a previous ``ListSupervisorAgents`` call. Provide this to retrieve the
           subsequent page. If unspecified, the first page will be returned.
 
         :returns: Iterator over :class:`SupervisorAgent`
@@ -1199,8 +1199,11 @@ class SupervisorAgentsAPI:
           supervisor-agents/{supervisor_agent_id}/examples/{example_id}
         :param example: :class:`Example`
         :param update_mask: FieldMask
-          Comma-delimited list of fields to update on the example. Allowed values: `question`, `guidelines`.
-          Examples: - `question` - `question,guidelines`
+          Comma-delimited list of fields to update on the example. Allowed values: ``question``,
+          ``guidelines``. Examples:
+
+          - ``question``
+          - ``question,guidelines``
 
         :returns: :class:`Example`
         """
@@ -1258,7 +1261,7 @@ class SupervisorAgentsAPI:
         self, name: str, supervisor_agent: SupervisorAgent, update_mask: FieldMask
     ) -> SupervisorAgent:
         """Updates a Supervisor Agent. The fields that are required depend on the paths specified in
-        `update_mask`. Only fields included in the mask will be updated.
+        ``update_mask``. Only fields included in the mask will be updated.
 
         :param name: str
           The resource name of the SupervisorAgent. Format: supervisor-agents/{supervisor_agent_id}
@@ -1287,7 +1290,7 @@ class SupervisorAgentsAPI:
         return SupervisorAgent.from_dict(res)
 
     def update_tool(self, name: str, tool: Tool, update_mask: FieldMask) -> Tool:
-        """Updates a Tool. Only the `description` field can be updated. To change immutable fields such as tool
+        """Updates a Tool. Only the ``description`` field can be updated. To change immutable fields such as tool
         type, spec, or tool ID, delete the tool and recreate it.
 
         :param name: str
