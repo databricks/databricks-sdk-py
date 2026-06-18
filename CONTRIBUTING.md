@@ -1,7 +1,24 @@
-We happily welcome contributions to the Databricks SDK for Python. We use [GitHub Issues](github.com/databricks/databricks-sdk-py/issues) to track community reported issues and [GitHub Pull Requests](https://github.com/databricks/databricks-sdk-py/pulls) for accepting changes.
+We happily welcome contributions to the Databricks SDK for Python. We use [GitHub Issues](https://github.com/databricks/databricks-sdk-py/issues) to track community reported issues and [GitHub Pull Requests](https://github.com/databricks/databricks-sdk-py/pulls) to collect proposed changes.
 Contributions are licensed on a license-in/license-out basis.
 
 # Contributing Guide
+
+## This repository is a mirror
+
+This repository is a read-only mirror: the source of truth for the SDK
+lives in Databricks' internal repository, and the contents here are
+published from it as part of each release. What this means for you:
+
+- **Issues** are tracked publicly
+  [here](https://github.com/databricks/databricks-sdk-py/issues).
+- **External contributors:** pull requests with potential improvements
+  should be made against this repository. These pull requests will be
+  reviewed here, but will not be merged directly once approved.
+  Rather, a maintainer will re-apply the changes in the Databricks
+  internal repository and publish them as part of the next release.
+- **Databricks employees:** do not open pull requests against this
+  repository. Make your change in the internal repository following the
+  internal SDK contribution procedure.
 
 ## Communication
 Before starting work on a major feature, please open a GitHub issue. We will make sure no one else is already working on it and that it is aligned with the goals of the project.

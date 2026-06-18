@@ -62,7 +62,9 @@
 
     .. py:method:: list_workspace_assignment_details_proxy( [, page_size: Optional[int], page_token: Optional[str]]) -> ListWorkspaceAssignmentDetailsResponse
 
-        Lists workspace assignment details for a workspace (workspace-level proxy).
+        Lists workspace assignment details for a workspace (workspace-level proxy). For scalability, the
+        response omits the per-principal entitlement fields (`entitlements` and `effective_entitlements`);
+        call GetWorkspaceAssignmentDetailProxy to read entitlements for a single principal.
 
         :param page_size: int (optional)
           The maximum number of workspace assignment details to return. The service may return fewer than this

@@ -5,7 +5,7 @@
 .. py:class:: SystemSchemasAPI
 
     A system schema is a schema that lives within the system catalog. A system schema may contain information
-    about customer usage of Unity Catalog such as audit-logs, billing-logs, lineage information, etc.
+    about customer usage of Unity Catalog such as audit logs, billing logs, and lineage information.
 
     .. py:method:: disable(metastore_id: str, schema_name: str)
 

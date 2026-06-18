@@ -3113,7 +3113,7 @@ class ServedModelInput:
 
 
 class ServedModelInputWorkloadType(Enum):
-    """Please keep this in sync with with workload types in InferenceEndpointEntities.scala"""
+    """Please keep this in sync with workload types in InferenceEndpointEntities.scala."""
 
     CPU = "CPU"
     GPU_LARGE = "GPU_LARGE"
@@ -3912,7 +3912,7 @@ class ServingEndpointPermissionsDescription:
 
 
 class ServingModelWorkloadType(Enum):
-    """Please keep this in sync with with workload types in InferenceEndpointEntities.scala"""
+    """Please keep this in sync with workload types in InferenceEndpointEntities.scala."""
 
     CPU = "CPU"
     GPU_LARGE = "GPU_LARGE"

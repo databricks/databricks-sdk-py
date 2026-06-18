@@ -480,6 +480,10 @@ class WorkspaceAssignmentDetail:
     """The account ID parent of the workspace where the principal is assigned"""
 
     entitlements: Optional[List[Entitlement]] = None
+    """Entitlements granted directly to the principal on this workspace. The only client-settable
+    field: create and update manage exactly this set (including entitlements the principal also
+    holds via a group). Not populated by ListWorkspaceAssignmentDetails (omitted for scalability);
+    call GetWorkspaceAssignmentDetail to read the entitlements for a single principal."""
 
     principal_type: Optional[PrincipalType] = None
 
@@ -657,7 +661,9 @@ class AccountIamV2API:
     def list_workspace_assignment_details(
         self, workspace_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> ListWorkspaceAssignmentDetailsResponse:
-        """Lists workspace assignment details for a workspace.
+        """Lists workspace assignment details for a workspace. For scalability, the response omits the
+        per-principal entitlement fields (`entitlements` and `effective_entitlements`); call
+        GetWorkspaceAssignmentDetail to read entitlements for a single principal.
 
         :param workspace_id: int
           Required. The workspace ID for which the workspace assignment details are being fetched.
@@ -925,7 +931,9 @@ class WorkspaceIamV2API:
     def list_workspace_assignment_details_proxy(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> ListWorkspaceAssignmentDetailsResponse:
-        """Lists workspace assignment details for a workspace (workspace-level proxy).
+        """Lists workspace assignment details for a workspace (workspace-level proxy). For scalability, the
+        response omits the per-principal entitlement fields (`entitlements` and `effective_entitlements`);
+        call GetWorkspaceAssignmentDetailProxy to read entitlements for a single principal.
 
         :param page_size: int (optional)
           The maximum number of workspace assignment details to return. The service may return fewer than this

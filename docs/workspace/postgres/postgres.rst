@@ -48,6 +48,18 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: create_data_api(parent: str, data_api: DataApi) -> CreateDataApiOperation
+
+        Enable Data API for a database.
+
+        :param parent: str
+          Parent database: projects/{project_id}/branches/{branch_id}/databases/{database_id}
+        :param data_api: :class:`DataApi`
+          The Data API configuration to create.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: create_database(parent: str, database: Database [, database_id: Optional[str]]) -> CreateDatabaseOperation
 
         Create a Database.
@@ -168,6 +180,16 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: delete_data_api(name: str) -> DeleteDataApiOperation
+
+        Disable Data API for a database.
+
+        :param name: str
+          Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: delete_database(name: str) -> DeleteDatabaseOperation
 
         Delete a Database.
@@ -262,6 +284,16 @@
           Format: "catalogs/{catalog_id}".
 
         :returns: :class:`Catalog`
+        
+
+    .. py:method:: get_data_api(name: str) -> DataApi
+
+        Get Data API configuration for a database.
+
+        :param name: str
+          Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+
+        :returns: :class:`DataApi`
         
 
     .. py:method:: get_database(name: str) -> Database
@@ -439,6 +471,20 @@
 
           The branch's `name` field is used to identify the branch to update. Format:
           projects/{project_id}/branches/{branch_id}
+        :param update_mask: FieldMask
+          The list of fields to update. If unspecified, all fields will be updated when possible.
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: update_data_api(name: str, data_api: DataApi, update_mask: FieldMask) -> UpdateDataApiOperation
+
+        Update Data API configuration for a database.
+
+        :param name: str
+          Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+        :param data_api: :class:`DataApi`
+          The Data API configuration to update. The data_api's `name` field identifies the resource.
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
 

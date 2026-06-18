@@ -4,12 +4,12 @@
 
 .. py:class:: VolumesAPI
 
-    Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing and processing
+    Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing, and processing
     files. Use cases include running machine learning on unstructured data such as image, audio, video, or PDF
     files, organizing data sets during the data exploration stages in data science, working with libraries
     that require access to the local file system on cluster machines, storing library and config files of
-    arbitrary formats such as .whl or .txt centrally and providing secure access across workspaces to it, or
-    transforming and querying non-tabular data files in ETL.
+    arbitrary formats such as .whl or .txt centrally and providing secure access to those files across
+    workspaces, or transforming and querying non-tabular data files in ETL.
 
     .. py:method:: create(catalog_name: str, schema_name: str, name: str, volume_type: VolumeType [, comment: Optional[str], storage_location: Optional[str]]) -> VolumeInfo
 

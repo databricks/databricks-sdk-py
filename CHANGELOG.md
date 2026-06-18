@@ -1,5 +1,18 @@
 # Version changelog
 
+## Release v0.118.0 (2026-06-18)
+
+### API Changes
+* Add `create_data_api()`, `delete_data_api()`, `get_data_api()` and `update_data_api()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `capacity_reservation_group` field for `databricks.sdk.service.compute.AzureAttributes`.
+* Add `serverless_compute_id` field for `databricks.sdk.service.pipelines.ClonePipelineRequest`.
+* Add `serverless_compute_id` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+* Add `serverless_compute_id` field for `databricks.sdk.service.pipelines.EditPipeline`.
+* Add `serverless_compute_id` field for `databricks.sdk.service.pipelines.PipelineSpec`.
+* Add `endpoint_id` field for `databricks.sdk.service.vectorsearch.MiniVectorIndex`.
+* Add `endpoint_id` field for `databricks.sdk.service.vectorsearch.VectorIndex`.
+* Add `dynamics365` enum value for `databricks.sdk.service.catalog.ConnectionType`.
+
 ## Release v0.117.0 (2026-06-11)
 
 ### API Changes

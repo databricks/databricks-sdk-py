@@ -943,8 +943,8 @@ class FilesAPI:
     def list_directory_contents(
         self, directory_path: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[DirectoryEntry]:
-        """Returns the contents of a directory. If there is no directory at the specified path, the API returns a
-        HTTP 404 error.
+        """Returns the contents of a directory. If there is no directory at the specified path, the API returns
+        an HTTP 404 error.
 
         :param directory_path: str
           The absolute path of a directory.

@@ -5,7 +5,7 @@
 .. py:class:: SchemasAPI
 
     A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace. A schema
-    organizes tables, views and functions. To access (or list) a table or view in a schema, users must have
+    organizes tables, views, and functions. To access (or list) a table or view in a schema, users must have
     the USE_SCHEMA data permission on the schema and its parent catalog, and they must have the SELECT
     permission on the table or view.
 

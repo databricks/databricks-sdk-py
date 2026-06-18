@@ -121,8 +121,8 @@
 
     .. py:method:: list_directory_contents(directory_path: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[DirectoryEntry]
 
-        Returns the contents of a directory. If there is no directory at the specified path, the API returns a
-        HTTP 404 error.
+        Returns the contents of a directory. If there is no directory at the specified path, the API returns
+        an HTTP 404 error.
 
         :param directory_path: str
           The absolute path of a directory.

@@ -7,9 +7,9 @@
     Primary key and foreign key constraints encode relationships between fields in tables.
 
     Primary and foreign keys are informational only and are not enforced. Foreign keys must reference a
-    primary key in another table. This primary key is the parent constraint of the foreign key and the table
+    primary key in another table. This primary key is the parent constraint of the foreign key, and the table
     this primary key is on is the parent table of the foreign key. Similarly, the foreign key is the child
-    constraint of its referenced primary key; the table of the foreign key is the child table of the primary
+    constraint of its referenced primary key. The table of the foreign key is the child table of the primary
     key.
 
     You can declare primary keys and foreign keys as part of the table specification during table creation.
