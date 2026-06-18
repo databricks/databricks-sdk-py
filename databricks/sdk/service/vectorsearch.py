@@ -1057,6 +1057,9 @@ class MiniVectorIndex:
     creator: Optional[str] = None
     """The user who created the index."""
 
+    endpoint_id: Optional[str] = None
+    """ID of the endpoint associated with the index."""
+
     endpoint_name: Optional[str] = None
     """Name of the endpoint associated with the index"""
 
@@ -1076,6 +1079,8 @@ class MiniVectorIndex:
         body = {}
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
         if self.index_subtype is not None:
@@ -1093,6 +1098,8 @@ class MiniVectorIndex:
         body = {}
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
         if self.index_subtype is not None:
@@ -1110,6 +1117,7 @@ class MiniVectorIndex:
         """Deserializes the MiniVectorIndex from a dictionary."""
         return cls(
             creator=d.get("creator", None),
+            endpoint_id=d.get("endpoint_id", None),
             endpoint_name=d.get("endpoint_name", None),
             index_subtype=_enum(d, "index_subtype", IndexSubtype),
             index_type=_enum(d, "index_type", VectorIndexType),
@@ -1648,6 +1656,9 @@ class VectorIndex:
 
     direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None
 
+    endpoint_id: Optional[str] = None
+    """ID of the endpoint associated with the index."""
+
     endpoint_name: Optional[str] = None
     """Name of the endpoint associated with the index"""
 
@@ -1673,6 +1684,8 @@ class VectorIndex:
             body["delta_sync_index_spec"] = self.delta_sync_index_spec.as_dict()
         if self.direct_access_index_spec:
             body["direct_access_index_spec"] = self.direct_access_index_spec.as_dict()
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
         if self.index_subtype is not None:
@@ -1696,6 +1709,8 @@ class VectorIndex:
             body["delta_sync_index_spec"] = self.delta_sync_index_spec
         if self.direct_access_index_spec:
             body["direct_access_index_spec"] = self.direct_access_index_spec
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
         if self.index_subtype is not None:
@@ -1717,6 +1732,7 @@ class VectorIndex:
             creator=d.get("creator", None),
             delta_sync_index_spec=_from_dict(d, "delta_sync_index_spec", DeltaSyncVectorIndexSpecResponse),
             direct_access_index_spec=_from_dict(d, "direct_access_index_spec", DirectAccessVectorIndexSpec),
+            endpoint_id=d.get("endpoint_id", None),
             endpoint_name=d.get("endpoint_name", None),
             index_subtype=_enum(d, "index_subtype", IndexSubtype),
             index_type=_enum(d, "index_type", VectorIndexType),

@@ -565,7 +565,7 @@ class WorkspaceClient:
 
     @property
     def artifact_allowlists(self) -> pkg_catalog.ArtifactAllowlistsAPI:
-        """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode."""
+        """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can use these artifacts on compute configured with shared access mode."""
         return self._artifact_allowlists
 
     @property
@@ -620,7 +620,7 @@ class WorkspaceClient:
 
     @property
     def connections(self) -> pkg_catalog.ConnectionsAPI:
-        """Connections allow for creating a connection to an external data source."""
+        """A connection represents an external data source for use within Databricks."""
         return self._connections
 
     @property
@@ -1085,17 +1085,17 @@ class WorkspaceClient:
 
     @property
     def temporary_path_credentials(self) -> pkg_catalog.TemporaryPathCredentialsAPI:
-        """Temporary Path Credentials refer to short-lived, downscoped credentials used to access external cloud storage locations registered in Databricks."""
+        """Temporary Path Credentials are short-lived, downscoped credentials used to access external cloud storage locations registered in Databricks."""
         return self._temporary_path_credentials
 
     @property
     def temporary_table_credentials(self) -> pkg_catalog.TemporaryTableCredentialsAPI:
-        """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where table data is stored in Databricks."""
+        """Temporary Table Credentials are short-lived, downscoped credentials used to access cloud storage locations where table data is stored in Databricks."""
         return self._temporary_table_credentials
 
     @property
     def temporary_volume_credentials(self) -> pkg_catalog.TemporaryVolumeCredentialsAPI:
-        """Temporary Volume Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where volume data is stored in Databricks."""
+        """Temporary Volume Credentials are short-lived, downscoped credentials used to access cloud storage locations where volume data is stored in Databricks."""
         return self._temporary_volume_credentials
 
     @property
@@ -1125,7 +1125,7 @@ class WorkspaceClient:
 
     @property
     def volumes(self) -> pkg_catalog.VolumesAPI:
-        """Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing and processing files."""
+        """Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing, and processing files."""
         return self._volumes
 
     @property

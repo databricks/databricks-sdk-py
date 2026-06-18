@@ -3401,9 +3401,12 @@ class KafkaStreamConfig:
     """Options to configure which Kafka topics to pull data from."""
 
     extra_options: Optional[Dict[str, str]] = None
-    """Miscellaneous source options. Accepted keys are source options or Kafka consumer options
-    (kafka.*), validated against an allow-list at request time. All auth configuration goes through
-    the underlying UC Connection(s) or configs and should not be stored here."""
+    """Optional Kafka source or consumer options, validated against a server-side allowlist at request
+    time. Allowed keys: - `maxOffsetsPerTrigger` - `startingOffsets` - `includeHeaders` -
+    `kafka.request.timeout.ms` - `kafka.session.timeout.ms` - `kafka.max.partition.fetch.bytes` The
+    following keys are ingestion-only and are stripped before being forwarded to the materialization
+    pipeline: - `maxOffsetsPerTrigger` - `startingOffsets` Auth and connection details belong on the
+    parent Stream's `connection_config`, not here."""
 
     def as_dict(self) -> dict:
         """Serializes the KafkaStreamConfig into a dictionary suitable for use as a JSON request body."""

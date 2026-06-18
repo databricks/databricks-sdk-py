@@ -76,7 +76,7 @@
         :param name: str
           Name of the instance to delete.
         :param force: bool (optional)
-          By default, a instance cannot be deleted if it has descendant instances created via PITR. If this
+          By default, an instance cannot be deleted if it has descendant instances created via PITR. If this
           flag is specified as true, all descendent instances will be deleted as well.
         :param purge: bool (optional)
           Deprecated. Omitting the field or setting it to true will result in the field being hard deleted.

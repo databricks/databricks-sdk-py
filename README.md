@@ -7,6 +7,10 @@
 [![codecov](https://codecov.io/gh/databricks/databricks-sdk-py/branch/main/graph/badge.svg?token=GU63K7WDBE)](https://codecov.io/gh/databricks/databricks-sdk-py)
 [![lines of code](https://tokei.rs/b1/github/databricks/databricks-sdk-py)]([https://codecov.io/github/databricks/databricks-sdk-py](https://github.com/databricks/databricks-sdk-py))
 
+> This repository is a read-only mirror, published from Databricks'
+> internal repository with each release. Pull requests are reviewed
+> here but merged internally (see [CONTRIBUTING.md](CONTRIBUTING.md)).
+
 [Beta](https://docs.databricks.com/release-notes/release-types.html): This SDK is supported for production use cases, 
 but we do expect future releases to have some interface changes; see [Interface stability](#interface-stability). 
 We are keen to hear feedback from you on these SDKs. Please [file issues](https://github.com/databricks/databricks-sdk-py/issues), and we will address them. 

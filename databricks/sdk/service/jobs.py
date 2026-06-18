@@ -381,7 +381,7 @@ class BaseRun:
 
     tasks: Optional[List[RunTask]] = None
     """The list of tasks performed by the run. Each task has its own `run_id` which you can use to call
-    `JobsGetOutput` to retrieve the run resutls. If more than 100 tasks are available, you can
+    `JobsGetOutput` to retrieve the run results. If more than 100 tasks are available, you can
     paginate through them using :method:jobs/getrun. Use the `next_page_token` field at the object
     root to determine if more results are available."""
 
@@ -1926,7 +1926,7 @@ class ForEachTaskErrorMessageStats:
     """Describes the count of such error message encountered during the iterations."""
 
     error_message: Optional[str] = None
-    """Describes the error message occured during the iterations."""
+    """Describes the error message occurred during the iterations."""
 
     termination_category: Optional[str] = None
     """Describes the termination reason for the error message."""
@@ -5017,7 +5017,7 @@ class Run:
 
     tasks: Optional[List[RunTask]] = None
     """The list of tasks performed by the run. Each task has its own `run_id` which you can use to call
-    `JobsGetOutput` to retrieve the run resutls. If more than 100 tasks are available, you can
+    `JobsGetOutput` to retrieve the run results. If more than 100 tasks are available, you can
     paginate through them using :method:jobs/getrun. Use the `next_page_token` field at the object
     root to determine if more results are available."""
 
@@ -5297,8 +5297,8 @@ class RunForEachTask:
     be able to execute multiple runs of the task concurrently."""
 
     stats: Optional[ForEachStats] = None
-    """Read only field. Populated for GetRun and ListRuns RPC calls and stores the execution stats of
-    an For each task"""
+    """Read only field. Populated for GetRun and ListRuns RPC calls and stores the execution stats of a
+    `For each` task."""
 
     def as_dict(self) -> dict:
         """Serializes the RunForEachTask into a dictionary suitable for use as a JSON request body."""

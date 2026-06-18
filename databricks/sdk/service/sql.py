@@ -7293,8 +7293,8 @@ class WarehouseTypePair:
     workspace."""
 
     enabled: Optional[bool] = None
-    """If set to false the specific warehouse type will not be be allowed as a value for warehouse_type
-    in CreateWarehouse and EditWarehouse"""
+    """If set to false the specific warehouse type will not be allowed as a value for warehouse_type in
+    CreateWarehouse and EditWarehouse"""
 
     warehouse_type: Optional[WarehouseTypePairWarehouseType] = None
 
