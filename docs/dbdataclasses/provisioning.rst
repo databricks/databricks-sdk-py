@@ -252,7 +252,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: WorkspaceStatus
 
-   The different statuses of a workspace. The following represents the current set of valid transitions from status to status: NOT_PROVISIONED -> PROVISIONING -> CANCELLED PROVISIONING -> RUNNING -> FAILED -> CANCELLED (note that this transition is disallowed in the MultiWorkspace Project) RUNNING -> PROVISIONING -> BANNED -> CANCELLED FAILED -> PROVISIONING -> CANCELLED BANNED -> RUNNING -> CANCELLED Note that a transition from any state to itself is also valid. TODO(PLAT-5867): add a transition from CANCELLED to some other value (e.g. RECOVERING)
+   The different statuses of a workspace. The following represents the current set of valid transitions from status to status: NOT_PROVISIONED -> PROVISIONING -> CANCELLED PROVISIONING -> RUNNING -> FAILED -> CANCELLED (note that this transition is disallowed in the MultiWorkspace Project) RUNNING -> PROVISIONING -> BANNED -> CANCELLED FAILED -> PROVISIONING -> CANCELLED BANNED -> RUNNING -> CANCELLED Note that a transition from any state to itself is also valid.
 
    .. py:attribute:: BANNED
       :value: "BANNED"

@@ -70,7 +70,9 @@
 
     .. py:method:: list_workspace_assignment_details(workspace_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> ListWorkspaceAssignmentDetailsResponse
 
-        Lists workspace assignment details for a workspace.
+        Lists workspace assignment details for a workspace. For scalability, the response omits the
+        per-principal entitlement fields (`entitlements` and `effective_entitlements`); call
+        GetWorkspaceAssignmentDetail to read entitlements for a single principal.
 
         :param workspace_id: int
           Required. The workspace ID for which the workspace assignment details are being fetched.

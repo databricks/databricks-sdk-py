@@ -1115,6 +1115,8 @@ class CustomerFacingIngressNetworkPolicy:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyAccountApiDestination:
+    """Matches account-level Databricks API endpoints for an ingress network policy rule."""
+
     scope_qualifier: Optional[CustomerFacingIngressNetworkPolicyApiScopeQualifier] = None
     """Qualifies the breadth of API access for the listed scopes. See ApiScopeQualifier."""
 
@@ -1883,6 +1885,8 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
+    """Matches workspace-level Databricks API endpoints for an ingress network policy rule."""
+
     scope_qualifier: Optional[CustomerFacingIngressNetworkPolicyApiScopeQualifier] = None
     """Qualifies the breadth of API access for the listed scopes. See ApiScopeQualifier."""
 

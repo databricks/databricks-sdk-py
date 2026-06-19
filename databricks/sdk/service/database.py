@@ -68,7 +68,7 @@ class DatabaseCatalog:
     """The name of the DatabaseInstance housing the database."""
 
     database_name: str
-    """The name of the database (in a instance) associated with the catalog."""
+    """The name of the database (in an instance) associated with the catalog."""
 
     create_database_if_not_exists: Optional[bool] = None
 
@@ -1824,7 +1824,7 @@ class DatabaseAPI:
         :param name: str
           Name of the instance to delete.
         :param force: bool (optional)
-          By default, a instance cannot be deleted if it has descendant instances created via PITR. If this
+          By default, an instance cannot be deleted if it has descendant instances created via PITR. If this
           flag is specified as true, all descendent instances will be deleted as well.
         :param purge: bool (optional)
           Deprecated. Omitting the field or setting it to true will result in the field being hard deleted.

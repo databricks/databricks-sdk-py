@@ -565,6 +565,300 @@ class CatalogOperationMetadata:
 
 
 @dataclass
+class DataApi:
+    """DataApi represents the Data API (PostgREST) configuration for a Database. At most one DataApi
+    per database. Create enables Data API, Delete disables it."""
+
+    create_time: Optional[Timestamp] = None
+    """A timestamp indicating when the Data API was first enabled."""
+
+    name: Optional[str] = None
+    """Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api"""
+
+    parent: Optional[str] = None
+    """The database containing this Data API configuration. Format:
+    projects/{project_id}/branches/{branch_id}/databases/{database_id}"""
+
+    spec: Optional[DataApiDataApiSpec] = None
+    """The desired Data API configuration."""
+
+    status: Optional[DataApiDataApiStatus] = None
+    """The observed Data API state (read-only)."""
+
+    update_time: Optional[Timestamp] = None
+    """A timestamp indicating when the Data API configuration was last updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DataApi into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.parent is not None:
+            body["parent"] = self.parent
+        if self.spec:
+            body["spec"] = self.spec.as_dict()
+        if self.status:
+            body["status"] = self.status.as_dict()
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DataApi into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.parent is not None:
+            body["parent"] = self.parent
+        if self.spec:
+            body["spec"] = self.spec
+        if self.status:
+            body["status"] = self.status
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DataApi:
+        """Deserializes the DataApi from a dictionary."""
+        return cls(
+            create_time=_timestamp(d, "create_time"),
+            name=d.get("name", None),
+            parent=d.get("parent", None),
+            spec=_from_dict(d, "spec", DataApiDataApiSpec),
+            status=_from_dict(d, "status", DataApiDataApiStatus),
+            update_time=_timestamp(d, "update_time"),
+        )
+
+
+@dataclass
+class DataApiDataApiSpec:
+    """Desired PostgREST configuration (input)."""
+
+    db_aggregates_enabled: Optional[bool] = None
+    """Enable aggregate functions (count, sum, avg, etc.) in Data API responses. Default: true."""
+
+    db_extra_search_path: Optional[List[str]] = None
+    """Additional schemas to include in the PostgreSQL search path. Each entry must be a valid
+    PostgreSQL schema name."""
+
+    db_max_rows: Optional[int] = None
+    """Maximum number of rows returned in a single Data API response. Must be a positive integer."""
+
+    db_schemas: Optional[List[str]] = None
+    """Database schemas exposed through the Data API. Each entry must be a valid PostgreSQL schema name
+    (1-63 chars, [a-zA-Z_][a-zA-Z0-9_$]*). Maximum 100 entries. Default: ["public"]."""
+
+    jwt_cache_max_lifetime: Optional[Duration] = None
+    """Maximum lifetime for cached JWT tokens. Zero duration disables caching."""
+
+    jwt_role_claim_key: Optional[str] = None
+    """JSON path to the role claim in JWT tokens (e.g., ".sub"). Default: ".sub"."""
+
+    openapi_mode: Optional[OpenApiMode] = None
+    """OpenAPI documentation mode for the Data API endpoint."""
+
+    server_cors_allowed_origins: Optional[List[str]] = None
+    """Allowed origins for CORS requests. Each entry should be a valid origin URL, or use "*" to allow
+    all origins."""
+
+    server_timing_enabled: Optional[bool] = None
+    """Enable the Server-Timing header in Data API responses."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DataApiDataApiSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.db_aggregates_enabled is not None:
+            body["db_aggregates_enabled"] = self.db_aggregates_enabled
+        if self.db_extra_search_path:
+            body["db_extra_search_path"] = [v for v in self.db_extra_search_path]
+        if self.db_max_rows is not None:
+            body["db_max_rows"] = self.db_max_rows
+        if self.db_schemas:
+            body["db_schemas"] = [v for v in self.db_schemas]
+        if self.jwt_cache_max_lifetime is not None:
+            body["jwt_cache_max_lifetime"] = self.jwt_cache_max_lifetime.ToJsonString()
+        if self.jwt_role_claim_key is not None:
+            body["jwt_role_claim_key"] = self.jwt_role_claim_key
+        if self.openapi_mode is not None:
+            body["openapi_mode"] = self.openapi_mode.value
+        if self.server_cors_allowed_origins:
+            body["server_cors_allowed_origins"] = [v for v in self.server_cors_allowed_origins]
+        if self.server_timing_enabled is not None:
+            body["server_timing_enabled"] = self.server_timing_enabled
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DataApiDataApiSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.db_aggregates_enabled is not None:
+            body["db_aggregates_enabled"] = self.db_aggregates_enabled
+        if self.db_extra_search_path:
+            body["db_extra_search_path"] = self.db_extra_search_path
+        if self.db_max_rows is not None:
+            body["db_max_rows"] = self.db_max_rows
+        if self.db_schemas:
+            body["db_schemas"] = self.db_schemas
+        if self.jwt_cache_max_lifetime is not None:
+            body["jwt_cache_max_lifetime"] = self.jwt_cache_max_lifetime
+        if self.jwt_role_claim_key is not None:
+            body["jwt_role_claim_key"] = self.jwt_role_claim_key
+        if self.openapi_mode is not None:
+            body["openapi_mode"] = self.openapi_mode
+        if self.server_cors_allowed_origins:
+            body["server_cors_allowed_origins"] = self.server_cors_allowed_origins
+        if self.server_timing_enabled is not None:
+            body["server_timing_enabled"] = self.server_timing_enabled
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DataApiDataApiSpec:
+        """Deserializes the DataApiDataApiSpec from a dictionary."""
+        return cls(
+            db_aggregates_enabled=d.get("db_aggregates_enabled", None),
+            db_extra_search_path=d.get("db_extra_search_path", None),
+            db_max_rows=d.get("db_max_rows", None),
+            db_schemas=d.get("db_schemas", None),
+            jwt_cache_max_lifetime=_duration(d, "jwt_cache_max_lifetime"),
+            jwt_role_claim_key=d.get("jwt_role_claim_key", None),
+            openapi_mode=_enum(d, "openapi_mode", OpenApiMode),
+            server_cors_allowed_origins=d.get("server_cors_allowed_origins", None),
+            server_timing_enabled=d.get("server_timing_enabled", None),
+        )
+
+
+@dataclass
+class DataApiDataApiStatus:
+    """Observed state (output-only)."""
+
+    available_schemas: Optional[List[str]] = None
+    """Schemas available in the database (for reference when configuring db_schemas)."""
+
+    db_aggregates_enabled: Optional[bool] = None
+    """Actual aggregate function setting read from the database."""
+
+    db_extra_search_path: Optional[List[str]] = None
+    """Actual extra search path schemas read from the database."""
+
+    db_max_rows: Optional[int] = None
+    """Actual max rows setting read from the database."""
+
+    db_schemas: Optional[List[str]] = None
+    """Actual exposed schemas read from the database."""
+
+    jwt_cache_max_lifetime: Optional[Duration] = None
+    """Actual JWT cache max lifetime read from the database."""
+
+    jwt_role_claim_key: Optional[str] = None
+    """Actual JWT role claim key read from the database."""
+
+    openapi_mode: Optional[OpenApiMode] = None
+    """Actual OpenAPI mode read from the database."""
+
+    server_cors_allowed_origins: Optional[List[str]] = None
+    """Actual CORS allowed origins read from the database."""
+
+    server_timing_enabled: Optional[bool] = None
+    """Actual Server-Timing header setting read from the database."""
+
+    url: Optional[str] = None
+    """Data API endpoint URL."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DataApiDataApiStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.available_schemas:
+            body["available_schemas"] = [v for v in self.available_schemas]
+        if self.db_aggregates_enabled is not None:
+            body["db_aggregates_enabled"] = self.db_aggregates_enabled
+        if self.db_extra_search_path:
+            body["db_extra_search_path"] = [v for v in self.db_extra_search_path]
+        if self.db_max_rows is not None:
+            body["db_max_rows"] = self.db_max_rows
+        if self.db_schemas:
+            body["db_schemas"] = [v for v in self.db_schemas]
+        if self.jwt_cache_max_lifetime is not None:
+            body["jwt_cache_max_lifetime"] = self.jwt_cache_max_lifetime.ToJsonString()
+        if self.jwt_role_claim_key is not None:
+            body["jwt_role_claim_key"] = self.jwt_role_claim_key
+        if self.openapi_mode is not None:
+            body["openapi_mode"] = self.openapi_mode.value
+        if self.server_cors_allowed_origins:
+            body["server_cors_allowed_origins"] = [v for v in self.server_cors_allowed_origins]
+        if self.server_timing_enabled is not None:
+            body["server_timing_enabled"] = self.server_timing_enabled
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DataApiDataApiStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.available_schemas:
+            body["available_schemas"] = self.available_schemas
+        if self.db_aggregates_enabled is not None:
+            body["db_aggregates_enabled"] = self.db_aggregates_enabled
+        if self.db_extra_search_path:
+            body["db_extra_search_path"] = self.db_extra_search_path
+        if self.db_max_rows is not None:
+            body["db_max_rows"] = self.db_max_rows
+        if self.db_schemas:
+            body["db_schemas"] = self.db_schemas
+        if self.jwt_cache_max_lifetime is not None:
+            body["jwt_cache_max_lifetime"] = self.jwt_cache_max_lifetime
+        if self.jwt_role_claim_key is not None:
+            body["jwt_role_claim_key"] = self.jwt_role_claim_key
+        if self.openapi_mode is not None:
+            body["openapi_mode"] = self.openapi_mode
+        if self.server_cors_allowed_origins:
+            body["server_cors_allowed_origins"] = self.server_cors_allowed_origins
+        if self.server_timing_enabled is not None:
+            body["server_timing_enabled"] = self.server_timing_enabled
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DataApiDataApiStatus:
+        """Deserializes the DataApiDataApiStatus from a dictionary."""
+        return cls(
+            available_schemas=d.get("available_schemas", None),
+            db_aggregates_enabled=d.get("db_aggregates_enabled", None),
+            db_extra_search_path=d.get("db_extra_search_path", None),
+            db_max_rows=d.get("db_max_rows", None),
+            db_schemas=d.get("db_schemas", None),
+            jwt_cache_max_lifetime=_duration(d, "jwt_cache_max_lifetime"),
+            jwt_role_claim_key=d.get("jwt_role_claim_key", None),
+            openapi_mode=_enum(d, "openapi_mode", OpenApiMode),
+            server_cors_allowed_origins=d.get("server_cors_allowed_origins", None),
+            server_timing_enabled=d.get("server_timing_enabled", None),
+            url=d.get("url", None),
+        )
+
+
+@dataclass
+class DataApiOperationMetadata:
+    def as_dict(self) -> dict:
+        """Serializes the DataApiOperationMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DataApiOperationMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DataApiOperationMetadata:
+        """Deserializes the DataApiOperationMetadata from a dictionary."""
+        return cls()
+
+
+@dataclass
 class Database:
     """Database represents a Postgres database within a Branch."""
 
@@ -1658,6 +1952,15 @@ class NewPipelineSpec:
             storage_catalog=d.get("storage_catalog", None),
             storage_schema=d.get("storage_schema", None),
         )
+
+
+class OpenApiMode(Enum):
+    """Controls how the Data API exposes the OpenAPI documentation endpoint. Only IGNORE_PRIVILEGES and
+    DISABLED are supported today; "follow-privileges" is not implemented yet (it may be added later
+    as value 3 — adding new enum values is backward-compatible)."""
+
+    OPEN_API_MODE_DISABLED = "OPEN_API_MODE_DISABLED"
+    OPEN_API_MODE_IGNORE_PRIVILEGES = "OPEN_API_MODE_IGNORE_PRIVILEGES"
 
 
 @dataclass
@@ -3142,6 +3445,32 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateCatalogOperation(self, operation)
 
+    def create_data_api(self, parent: str, data_api: DataApi) -> CreateDataApiOperation:
+        """Enable Data API for a database.
+
+        :param parent: str
+          Parent database: projects/{project_id}/branches/{branch_id}/databases/{database_id}
+        :param data_api: :class:`DataApi`
+          The Data API configuration to create.
+
+        :returns: :class:`Operation`
+        """
+
+        body = data_api.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{parent}/data-api", body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return CreateDataApiOperation(self, operation)
+
     def create_database(
         self, parent: str, database: Database, *, database_id: Optional[str] = None
     ) -> CreateDatabaseOperation:
@@ -3373,6 +3702,27 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return DeleteCatalogOperation(self, operation)
 
+    def delete_data_api(self, name: str) -> DeleteDataApiOperation:
+        """Disable Data API for a database.
+
+        :param name: str
+          Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+
+        :returns: :class:`Operation`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
+        operation = Operation.from_dict(res)
+        return DeleteDataApiOperation(self, operation)
+
     def delete_database(self, name: str) -> DeleteDatabaseOperation:
         """Delete a Database.
 
@@ -3567,6 +3917,26 @@ class PostgresAPI:
 
         res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
         return Catalog.from_dict(res)
+
+    def get_data_api(self, name: str) -> DataApi:
+        """Get Data API configuration for a database.
+
+        :param name: str
+          Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+
+        :returns: :class:`DataApi`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return DataApi.from_dict(res)
 
     def get_database(self, name: str) -> Database:
         """Get a Database.
@@ -3973,6 +4343,36 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return UpdateBranchOperation(self, operation)
 
+    def update_data_api(self, name: str, data_api: DataApi, update_mask: FieldMask) -> UpdateDataApiOperation:
+        """Update Data API configuration for a database.
+
+        :param name: str
+          Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+        :param data_api: :class:`DataApi`
+          The Data API configuration to update. The data_api's `name` field identifies the resource.
+        :param update_mask: FieldMask
+          The list of fields to update. If unspecified, all fields will be updated when possible.
+
+        :returns: :class:`Operation`
+        """
+
+        body = data_api.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/postgres/{name}", query=query, body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return UpdateDataApiOperation(self, operation)
+
     def update_database(self, name: str, database: Database, update_mask: FieldMask) -> UpdateDatabaseOperation:
         """Update a Database.
 
@@ -4249,6 +4649,83 @@ class CreateCatalogOperation:
             return None
 
         return CatalogOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class CreateDataApiOperation:
+    """Long-running operation for create_data_api"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> DataApi:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`DataApi`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            data_api = DataApi.from_dict(operation.response)
+
+            return data_api, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> DataApiOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`DataApiOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return DataApiOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.
@@ -4784,6 +5261,81 @@ class DeleteCatalogOperation:
             return None
 
         return CatalogOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class DeleteDataApiOperation:
+    """Long-running operation for delete_data_api"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> DataApiOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`DataApiOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return DataApiOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.
@@ -5386,6 +5938,83 @@ class UpdateBranchOperation:
             return None
 
         return BranchOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class UpdateDataApiOperation:
+    """Long-running operation for update_data_api"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> DataApi:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`DataApi`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            data_api = DataApi.from_dict(operation.response)
+
+            return data_api, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> DataApiOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`DataApiOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return DataApiOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

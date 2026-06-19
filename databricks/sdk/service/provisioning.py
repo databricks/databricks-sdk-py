@@ -1812,8 +1812,7 @@ class WorkspaceNetwork:
     gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None
     """The mutually exclusive network deployment modes. The option decides which network mode the
     workspace will use. The network config for GCP workspace with Databricks managed network. This
-    object is input-only and will not be provided when listing workspaces. See
-    go/gcp-byovpc-alpha-design for interface decisions."""
+    object is input-only and will not be provided when listing workspaces."""
 
     network_id: Optional[str] = None
     """The ID of the network object, if the workspace is a BYOVPC workspace. This should apply to
@@ -1858,8 +1857,7 @@ class WorkspaceStatus(Enum):
     transitions from status to status: NOT_PROVISIONED -> PROVISIONING -> CANCELLED PROVISIONING ->
     RUNNING -> FAILED -> CANCELLED (note that this transition is disallowed in the MultiWorkspace
     Project) RUNNING -> PROVISIONING -> BANNED -> CANCELLED FAILED -> PROVISIONING -> CANCELLED
-    BANNED -> RUNNING -> CANCELLED Note that a transition from any state to itself is also valid.
-    TODO(PLAT-5867): add a transition from CANCELLED to some other value (e.g. RECOVERING)"""
+    BANNED -> RUNNING -> CANCELLED Note that a transition from any state to itself is also valid."""
 
     BANNED = "BANNED"
     CANCELLING = "CANCELLING"

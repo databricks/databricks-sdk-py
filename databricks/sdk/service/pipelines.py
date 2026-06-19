@@ -3189,6 +3189,9 @@ class PipelineSpec:
     serverless: Optional[bool] = None
     """Whether serverless compute is enabled for this pipeline."""
 
+    serverless_compute_id: Optional[str] = None
+    """Serverless compute ID specified by the user for serverless pipelines."""
+
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
 
@@ -3257,6 +3260,8 @@ class PipelineSpec:
             body["schema"] = self.schema
         if self.serverless is not None:
             body["serverless"] = self.serverless
+        if self.serverless_compute_id is not None:
+            body["serverless_compute_id"] = self.serverless_compute_id
         if self.storage is not None:
             body["storage"] = self.storage
         if self.tags:
@@ -3318,6 +3323,8 @@ class PipelineSpec:
             body["schema"] = self.schema
         if self.serverless is not None:
             body["serverless"] = self.serverless
+        if self.serverless_compute_id is not None:
+            body["serverless_compute_id"] = self.serverless_compute_id
         if self.storage is not None:
             body["storage"] = self.storage
         if self.tags:
@@ -3357,6 +3364,7 @@ class PipelineSpec:
             root_path=d.get("root_path", None),
             schema=d.get("schema", None),
             serverless=d.get("serverless", None),
+            serverless_compute_id=d.get("serverless_compute_id", None),
             storage=d.get("storage", None),
             tags=d.get("tags", None),
             target=d.get("target", None),
@@ -5066,6 +5074,7 @@ class PipelinesAPI:
         root_path: Optional[str] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
+        serverless_compute_id: Optional[str] = None,
         storage: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
@@ -5136,6 +5145,8 @@ class PipelinesAPI:
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
+        :param serverless_compute_id: str (optional)
+          Serverless compute ID specified by the user for serverless pipelines.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
@@ -5206,6 +5217,8 @@ class PipelinesAPI:
             body["schema"] = schema
         if serverless is not None:
             body["serverless"] = serverless
+        if serverless_compute_id is not None:
+            body["serverless_compute_id"] = serverless_compute_id
         if storage is not None:
             body["storage"] = storage
         if tags is not None:
@@ -5258,6 +5271,7 @@ class PipelinesAPI:
         run_as: Optional[RunAs] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
+        serverless_compute_id: Optional[str] = None,
         storage: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
@@ -5325,6 +5339,8 @@ class PipelinesAPI:
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
+        :param serverless_compute_id: str (optional)
+          Serverless compute ID specified by the user for serverless pipelines.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
@@ -5397,6 +5413,8 @@ class PipelinesAPI:
             body["schema"] = schema
         if serverless is not None:
             body["serverless"] = serverless
+        if serverless_compute_id is not None:
+            body["serverless_compute_id"] = serverless_compute_id
         if storage is not None:
             body["storage"] = storage
         if tags is not None:
@@ -5851,6 +5869,7 @@ class PipelinesAPI:
         run_as: Optional[RunAs] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
+        serverless_compute_id: Optional[str] = None,
         storage: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
@@ -5921,6 +5940,8 @@ class PipelinesAPI:
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
+        :param serverless_compute_id: str (optional)
+          Serverless compute ID specified by the user for serverless pipelines.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
@@ -5993,6 +6014,8 @@ class PipelinesAPI:
             body["schema"] = schema
         if serverless is not None:
             body["serverless"] = serverless
+        if serverless_compute_id is not None:
+            body["serverless_compute_id"] = serverless_compute_id
         if storage is not None:
             body["storage"] = storage
         if tags is not None:

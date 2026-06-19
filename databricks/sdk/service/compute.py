@@ -271,6 +271,20 @@ class AzureAttributes:
     """Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If
     `first_on_demand` is zero, this availability type will be used for the entire cluster."""
 
+    capacity_reservation_group: Optional[str] = None
+    """The Azure capacity reservation group resource ID to use for launching VMs. When specified, VMs
+    will be launched using the provided capacity reservation.
+    
+    Capacity reservations can only be specified when the workspace uses injected vnet (i.e. customer
+    defined vnet not managed by databricks). Ensure the databricks-login-prod Enterprise Application
+    is granted the following four permissions: 1. Microsoft.Compute/capacityReservationGroups/read
+    2. Microsoft.Compute/capacityReservationGroups/deploy/action 3.
+    Microsoft.Compute/capacityReservationGroups/capacityReservations/read 4.
+    Microsoft.Compute/capacityReservationGroups/capacityReservations/deploy/action
+    
+    Format:
+    `/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/capacityReservationGroups/{capacityReservationGroupName}`"""
+
     first_on_demand: Optional[int] = None
     """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This
     value should be greater than 0, to make sure the cluster driver node is placed on an on-demand
@@ -294,6 +308,8 @@ class AzureAttributes:
         body = {}
         if self.availability is not None:
             body["availability"] = self.availability.value
+        if self.capacity_reservation_group is not None:
+            body["capacity_reservation_group"] = self.capacity_reservation_group
         if self.first_on_demand is not None:
             body["first_on_demand"] = self.first_on_demand
         if self.log_analytics_info:
@@ -307,6 +323,8 @@ class AzureAttributes:
         body = {}
         if self.availability is not None:
             body["availability"] = self.availability
+        if self.capacity_reservation_group is not None:
+            body["capacity_reservation_group"] = self.capacity_reservation_group
         if self.first_on_demand is not None:
             body["first_on_demand"] = self.first_on_demand
         if self.log_analytics_info:
@@ -320,6 +338,7 @@ class AzureAttributes:
         """Deserializes the AzureAttributes from a dictionary."""
         return cls(
             availability=_enum(d, "availability", AzureAvailability),
+            capacity_reservation_group=d.get("capacity_reservation_group", None),
             first_on_demand=d.get("first_on_demand", None),
             log_analytics_info=_from_dict(d, "log_analytics_info", LogAnalyticsInfo),
             spot_bid_max_price=d.get("spot_bid_max_price", None),
@@ -4394,7 +4413,7 @@ class InitScriptExecutionDetailsInitScriptExecutionStatus(Enum):
 
 @dataclass
 class InitScriptInfo:
-    """Config for an individual init script Next ID: 11"""
+    """Config for an individual init script"""
 
     abfss: Optional[Adlsgen2Info] = None
     """destination needs to be provided, e.g.
@@ -6189,7 +6208,7 @@ class NodeType:
 
     num_cores: float
     """Number of CPU cores available for this node type. Note that this can be fractional, e.g., 2.5
-    cores, if the the number of cores on a machine instance is not divisible by the number of Spark
+    cores, if the number of cores on a machine instance is not divisible by the number of Spark
     nodes on that machine."""
 
     description: str
