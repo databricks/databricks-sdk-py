@@ -209,6 +209,53 @@ def test_api_client_do_custom_headers(requests_mock):
     assert res == {"well": "done"}
 
 
+@pytest.mark.parametrize("method", ["POST", "PUT", "PATCH"])
+def test_api_client_do_sends_empty_json_body_for_parameterless_request(requests_mock, method):
+    # A body-bearing request that advertises a JSON content type but has no body to serialize
+    # (resource actions like ".../knowledge-sources:sync") must still send a valid JSON body,
+    # otherwise requests sends no body at all and gateways reject the request.
+    client = _BaseClient()
+    requests_mock.register_uri(method, "https://localhost/sync", json={})
+    client.do(method, "https://localhost/sync", headers={"Content-Type": "application/json"})
+    assert requests_mock.last_request.text == "{}"
+    assert requests_mock.last_request.json() == {}
+
+
+def test_api_client_do_keeps_no_body_when_no_json_content_type(requests_mock):
+    # POSTs that don't advertise application/json keep sending no body.
+    client = _BaseClient()
+    requests_mock.post("/action", json={})
+    client.do("POST", "https://localhost/action")
+    assert requests_mock.last_request.body is None
+
+
+def test_api_client_do_does_not_add_body_to_get(requests_mock):
+    # The empty-body default only applies to body-bearing verbs, never GET.
+    client = _BaseClient()
+    requests_mock.get("/list", json={"items": []})
+    client.do("GET", "https://localhost/list", headers={"Content-Type": "application/json"})
+    assert requests_mock.last_request.body is None
+
+
+def test_api_client_do_does_not_add_body_when_files_given(requests_mock):
+    # An explicitly supplied payload — even an empty files= dict — means the caller is sending
+    # its own body, so the JSON default must not kick in. (requests treats an empty files= as
+    # "no multipart", so without the `is None` guard this would wrongly send "{}".)
+    client = _BaseClient()
+    requests_mock.post("/upload", json={})
+    client.do("POST", "https://localhost/upload", headers={"Content-Type": "application/json"}, files={})
+    assert requests_mock.last_request.body is None
+
+
+def test_api_client_do_does_not_replace_explicit_falsy_body(requests_mock):
+    # An explicitly supplied falsy body (e.g. an empty list) is the caller's intent and must be
+    # sent verbatim, not clobbered to {} — guards against a `not body` regression of the guard.
+    client = _BaseClient()
+    requests_mock.post("/x", json={})
+    client.do("POST", "https://localhost/x", headers={"Content-Type": "application/json"}, body=[])
+    assert requests_mock.last_request.json() == []
+
+
 @pytest.mark.parametrize(
     "status_code,include_retry_after",
     ((429, False), (429, True), (503, False), (503, True)),

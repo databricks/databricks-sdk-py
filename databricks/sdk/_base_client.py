@@ -162,6 +162,24 @@ class _BaseClient:
             headers = {}
         headers["User-Agent"] = self._user_agent_base
 
+        # A request that advertises a JSON content type must still send a JSON body. Resource
+        # actions that take no parameters (e.g. ".../knowledge-sources:sync") set
+        # Content-Type: application/json but have no fields to serialize, so the caller passes
+        # no body. requests turns json=None into no request body at all, which some Databricks
+        # API gateways reject. Default the body to an empty object so the request is well-formed.
+        # The Content-Type comparison is intentionally an exact match: every generated call site
+        # emits this literal, so matching it narrowly avoids touching callers that set a variant.
+        # `data`/`files` are checked with `is None` because an explicitly supplied payload — even
+        # an empty one — means the caller is sending its own body, not requesting the default.
+        if (
+            body is None
+            and data is None
+            and files is None
+            and method in ("POST", "PUT", "PATCH")
+            and headers.get("Content-Type") == "application/json"
+        ):
+            body = {}
+
         # Wrap strings and bytes in a seekable stream so that we can rewind them.
         if isinstance(data, (str, bytes)):
             data = io.BytesIO(data.encode("utf-8") if isinstance(data, str) else data)
