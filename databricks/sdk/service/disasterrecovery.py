@@ -323,7 +323,7 @@ class StableUrl:
 
     url: Optional[str] = None
     """The stable URL endpoint. Generated on creation and immutable thereafter. For non-Private-Link
-    workspaces this is `https://<spog_host>/?c=<connection_id>`. For Private-Link workspaces this is
+    workspaces this is `https://<spog_host>/?w=<connection_id>`. For Private-Link workspaces this is
     the per-connection hostname."""
 
     def as_dict(self) -> dict:
@@ -447,8 +447,9 @@ class WorkspaceSet:
     """Workspace IDs in this set. The system derives and validates regions. All workspaces must be in
     the Mission Critical tier."""
 
-    replicate_workspace_assets: bool
-    """Whether to enable control plane DR (notebooks, jobs, clusters, etc.) for this set."""
+    replicate_workspace_assets: Optional[bool] = None
+    """Whether to enable control plane DR (notebooks, jobs, clusters, etc.) for this set. Defaults to
+    false."""
 
     stable_url_names: Optional[List[str]] = None
     """Resource names of stable URLs associated with this workspace set. Format:

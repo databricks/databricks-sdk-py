@@ -13,12 +13,15 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from google.protobuf.timestamp_pb2 import Timestamp
+
 from databricks.sdk.service._internal import (
     Wait,
     _enum,
     _from_dict,
     _repeated_dict,
     _repeated_enum,
+    _timestamp,
 )
 
 from ..errors import OperationFailed
@@ -352,6 +355,27 @@ class AzureAvailability(Enum):
     ON_DEMAND_AZURE = "ON_DEMAND_AZURE"
     SPOT_AZURE = "SPOT_AZURE"
     SPOT_WITH_FALLBACK_AZURE = "SPOT_WITH_FALLBACK_AZURE"
+
+
+@dataclass
+class CancelPendingClusterEnforcementResponse:
+    """Response for canceling the pending enforcement for a cluster. If the cancel request succeeds, an
+    empty response object is returned. Otherwise, an error response is returned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelPendingClusterEnforcementResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelPendingClusterEnforcementResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CancelPendingClusterEnforcementResponse:
+        """Deserializes the CancelPendingClusterEnforcementResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -920,6 +944,10 @@ class ClusterCompliance:
     is_compliant: Optional[bool] = None
     """Whether this cluster is in compliance with the latest version of its policy."""
 
+    pending_enforcement: Optional[PendingEnforcement] = None
+    """Information about the pending enforcement for the cluster. Only present if a pending enforcement
+    is scheduled for the cluster."""
+
     violations: Optional[Dict[str, str]] = None
     """An object containing key-value mappings representing the first 200 policy validation errors. The
     keys indicate the path where the policy validation error is occurring. The values indicate an
@@ -932,6 +960,8 @@ class ClusterCompliance:
             body["cluster_id"] = self.cluster_id
         if self.is_compliant is not None:
             body["is_compliant"] = self.is_compliant
+        if self.pending_enforcement:
+            body["pending_enforcement"] = self.pending_enforcement.as_dict()
         if self.violations:
             body["violations"] = self.violations
         return body
@@ -943,6 +973,8 @@ class ClusterCompliance:
             body["cluster_id"] = self.cluster_id
         if self.is_compliant is not None:
             body["is_compliant"] = self.is_compliant
+        if self.pending_enforcement:
+            body["pending_enforcement"] = self.pending_enforcement
         if self.violations:
             body["violations"] = self.violations
         return body
@@ -953,6 +985,7 @@ class ClusterCompliance:
         return cls(
             cluster_id=d.get("cluster_id", None),
             is_compliant=d.get("is_compliant", None),
+            pending_enforcement=_from_dict(d, "pending_enforcement", PendingEnforcement),
             violations=d.get("violations", None),
         )
 
@@ -3167,6 +3200,9 @@ class EnforceClusterComplianceResponse:
     """A list of changes that have been made to the cluster settings for the cluster to become
     compliant with its policy."""
 
+    enforce_result: Optional[EnforcePolicyComplianceForClusterResponseEnforceResult] = None
+    """Describes whether changes have been applied to the cluster."""
+
     has_changes: Optional[bool] = None
     """Whether any changes have been made to the cluster settings for the cluster to become compliant
     with its policy."""
@@ -3176,6 +3212,8 @@ class EnforceClusterComplianceResponse:
         body = {}
         if self.changes:
             body["changes"] = [v.as_dict() for v in self.changes]
+        if self.enforce_result is not None:
+            body["enforce_result"] = self.enforce_result.value
         if self.has_changes is not None:
             body["has_changes"] = self.has_changes
         return body
@@ -3185,6 +3223,8 @@ class EnforceClusterComplianceResponse:
         body = {}
         if self.changes:
             body["changes"] = self.changes
+        if self.enforce_result is not None:
+            body["enforce_result"] = self.enforce_result
         if self.has_changes is not None:
             body["has_changes"] = self.has_changes
         return body
@@ -3192,7 +3232,369 @@ class EnforceClusterComplianceResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EnforceClusterComplianceResponse:
         """Deserializes the EnforceClusterComplianceResponse from a dictionary."""
-        return cls(changes=_repeated_dict(d, "changes", ClusterSettingsChange), has_changes=d.get("has_changes", None))
+        return cls(
+            changes=_repeated_dict(d, "changes", ClusterSettingsChange),
+            enforce_result=_enum(d, "enforce_result", EnforcePolicyComplianceForClusterResponseEnforceResult),
+            has_changes=d.get("has_changes", None),
+        )
+
+
+class EnforcePolicyComplianceForClusterEnforceMode(Enum):
+    ENFORCE_IMMEDIATELY = "ENFORCE_IMMEDIATELY"
+    WAIT_FOR_TERMINATION = "WAIT_FOR_TERMINATION"
+
+
+@dataclass
+class EnforcePolicyComplianceForClusterResponseClusterSettings:
+    autoscale: Optional[AutoScale] = None
+    """Parameters needed in order to automatically scale clusters up and down based on load. Note:
+    autoscaling works best with DB runtime versions 3.0 or later."""
+
+    autotermination_minutes: Optional[int] = None
+    """Automatically terminates the cluster after it is inactive for this time in minutes. If not set,
+    this cluster will not be automatically terminated. If specified, the threshold must be between
+    10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic
+    termination."""
+
+    aws_attributes: Optional[AwsAttributes] = None
+    """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
+    creation, a set of default values will be used."""
+
+    azure_attributes: Optional[AzureAttributes] = None
+    """Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation,
+    a set of default values will be used."""
+
+    cluster_log_conf: Optional[ClusterLogConf] = None
+    """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
+    destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
+    specified for one cluster. If the conf is given, the logs will be delivered to the destination
+    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
+    destination of executor logs is `$destination/$clusterId/executor`."""
+
+    cluster_name: Optional[str] = None
+    """Cluster name requested by the user. This doesn't have to be unique. If not specified at
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
+
+    custom_tags: Optional[Dict[str, str]] = None
+    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+    instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+    
+    - Currently, Databricks allows at most 45 custom tags
+    
+    - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
+    tags"""
+
+    data_security_mode: Optional[DataSecurityMode] = None
+
+    docker_image: Optional[DockerImage] = None
+    """Custom docker image BYOC"""
+
+    driver_instance_pool_id: Optional[str] = None
+    """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
+    uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
+
+    driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the driver node."""
+
+    driver_node_type_id: Optional[str] = None
+    """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
+    type will be set as the same value as `node_type_id` defined above.
+    
+    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
+    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
+    and node_type_id take precedence."""
+
+    enable_elastic_disk: Optional[bool] = None
+    """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
+    space when its Spark workers are running low on disk space."""
+
+    enable_local_disk_encryption: Optional[bool] = None
+    """Whether to enable LUKS on cluster VMs' local disks"""
+
+    gcp_attributes: Optional[GcpAttributes] = None
+    """Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
+    creation, a set of default values will be used."""
+
+    init_scripts: Optional[List[InitScriptInfo]] = None
+    """The configuration for storing init scripts. Any number of destinations can be specified. The
+    scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
+    init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
+
+    instance_pool_id: Optional[str] = None
+    """The optional ID of the instance pool to which the cluster belongs."""
+
+    is_single_node: Optional[bool] = None
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
+    kind: Optional[Kind] = None
+
+    node_type_id: Optional[str] = None
+    """This field encodes, through a single value, the resources available to each of the Spark nodes
+    in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
+    compute intensive workloads. A list of available node types can be retrieved by using the
+    :method:clusters/listNodeTypes API call."""
+
+    num_workers: Optional[int] = None
+    """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
+    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+    
+    Note: When reading the properties of a cluster, this field reflects the desired number of
+    workers rather than the actual current number of workers. For instance, if a cluster is resized
+    from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
+    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
+    new nodes are provisioned."""
+
+    policy_id: Optional[str] = None
+    """The ID of the cluster policy used to create the cluster if applicable."""
+
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
+    runtime_engine: Optional[RuntimeEngine] = None
+    """Determines the cluster's runtime engine, either standard or Photon.
+    
+    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+    
+    If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+    -photon-, in which case Photon will be used."""
+
+    single_user_name: Optional[str] = None
+    """Single user name if data_security_mode is `SINGLE_USER`"""
+
+    spark_conf: Optional[Dict[str, str]] = None
+    """An object containing a set of optional, user-specified Spark configuration key-value pairs.
+    Users can also pass in a string of extra JVM options to the driver and the executors via
+    `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively."""
+
+    spark_env_vars: Optional[Dict[str, str]] = None
+    """An object containing a set of optional, user-specified environment variable key-value pairs.
+    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
+    while launching the driver and workers.
+    
+    In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
+    to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
+    databricks managed environmental variables are included as well.
+    
+    Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+    "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+    -Dspark.shuffle.service.enabled=true"}`"""
+
+    spark_version: Optional[str] = None
+    """The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can
+    be retrieved by using the :method:clusters/sparkVersions API call."""
+
+    ssh_public_keys: Optional[List[str]] = None
+    """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
+    private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
+    be specified."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
+    worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for worker nodes."""
+
+    workload_type: Optional[WorkloadType] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceForClusterResponseClusterSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.autoscale:
+            body["autoscale"] = self.autoscale.as_dict()
+        if self.autotermination_minutes is not None:
+            body["autotermination_minutes"] = self.autotermination_minutes
+        if self.aws_attributes:
+            body["aws_attributes"] = self.aws_attributes.as_dict()
+        if self.azure_attributes:
+            body["azure_attributes"] = self.azure_attributes.as_dict()
+        if self.cluster_log_conf:
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
+        if self.cluster_name is not None:
+            body["cluster_name"] = self.cluster_name
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
+        if self.data_security_mode is not None:
+            body["data_security_mode"] = self.data_security_mode.value
+        if self.docker_image:
+            body["docker_image"] = self.docker_image.as_dict()
+        if self.driver_instance_pool_id is not None:
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility.as_dict()
+        if self.driver_node_type_id is not None:
+            body["driver_node_type_id"] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None:
+            body["enable_elastic_disk"] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
+        if self.gcp_attributes:
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
+        if self.init_scripts:
+            body["init_scripts"] = [v.as_dict() for v in self.init_scripts]
+        if self.instance_pool_id is not None:
+            body["instance_pool_id"] = self.instance_pool_id
+        if self.is_single_node is not None:
+            body["is_single_node"] = self.is_single_node
+        if self.kind is not None:
+            body["kind"] = self.kind.value
+        if self.node_type_id is not None:
+            body["node_type_id"] = self.node_type_id
+        if self.num_workers is not None:
+            body["num_workers"] = self.num_workers
+        if self.policy_id is not None:
+            body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
+        if self.runtime_engine is not None:
+            body["runtime_engine"] = self.runtime_engine.value
+        if self.single_user_name is not None:
+            body["single_user_name"] = self.single_user_name
+        if self.spark_conf:
+            body["spark_conf"] = self.spark_conf
+        if self.spark_env_vars:
+            body["spark_env_vars"] = self.spark_env_vars
+        if self.spark_version is not None:
+            body["spark_version"] = self.spark_version
+        if self.ssh_public_keys:
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
+        if self.use_ml_runtime is not None:
+            body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility.as_dict()
+        if self.workload_type:
+            body["workload_type"] = self.workload_type.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceForClusterResponseClusterSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.autoscale:
+            body["autoscale"] = self.autoscale
+        if self.autotermination_minutes is not None:
+            body["autotermination_minutes"] = self.autotermination_minutes
+        if self.aws_attributes:
+            body["aws_attributes"] = self.aws_attributes
+        if self.azure_attributes:
+            body["azure_attributes"] = self.azure_attributes
+        if self.cluster_log_conf:
+            body["cluster_log_conf"] = self.cluster_log_conf
+        if self.cluster_name is not None:
+            body["cluster_name"] = self.cluster_name
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
+        if self.data_security_mode is not None:
+            body["data_security_mode"] = self.data_security_mode
+        if self.docker_image:
+            body["docker_image"] = self.docker_image
+        if self.driver_instance_pool_id is not None:
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility
+        if self.driver_node_type_id is not None:
+            body["driver_node_type_id"] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None:
+            body["enable_elastic_disk"] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
+        if self.gcp_attributes:
+            body["gcp_attributes"] = self.gcp_attributes
+        if self.init_scripts:
+            body["init_scripts"] = self.init_scripts
+        if self.instance_pool_id is not None:
+            body["instance_pool_id"] = self.instance_pool_id
+        if self.is_single_node is not None:
+            body["is_single_node"] = self.is_single_node
+        if self.kind is not None:
+            body["kind"] = self.kind
+        if self.node_type_id is not None:
+            body["node_type_id"] = self.node_type_id
+        if self.num_workers is not None:
+            body["num_workers"] = self.num_workers
+        if self.policy_id is not None:
+            body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
+        if self.runtime_engine is not None:
+            body["runtime_engine"] = self.runtime_engine
+        if self.single_user_name is not None:
+            body["single_user_name"] = self.single_user_name
+        if self.spark_conf:
+            body["spark_conf"] = self.spark_conf
+        if self.spark_env_vars:
+            body["spark_env_vars"] = self.spark_env_vars
+        if self.spark_version is not None:
+            body["spark_version"] = self.spark_version
+        if self.ssh_public_keys:
+            body["ssh_public_keys"] = self.ssh_public_keys
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
+        if self.use_ml_runtime is not None:
+            body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility
+        if self.workload_type:
+            body["workload_type"] = self.workload_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnforcePolicyComplianceForClusterResponseClusterSettings:
+        """Deserializes the EnforcePolicyComplianceForClusterResponseClusterSettings from a dictionary."""
+        return cls(
+            autoscale=_from_dict(d, "autoscale", AutoScale),
+            autotermination_minutes=d.get("autotermination_minutes", None),
+            aws_attributes=_from_dict(d, "aws_attributes", AwsAttributes),
+            azure_attributes=_from_dict(d, "azure_attributes", AzureAttributes),
+            cluster_log_conf=_from_dict(d, "cluster_log_conf", ClusterLogConf),
+            cluster_name=d.get("cluster_name", None),
+            custom_tags=d.get("custom_tags", None),
+            data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
+            docker_image=_from_dict(d, "docker_image", DockerImage),
+            driver_instance_pool_id=d.get("driver_instance_pool_id", None),
+            driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
+            driver_node_type_id=d.get("driver_node_type_id", None),
+            enable_elastic_disk=d.get("enable_elastic_disk", None),
+            enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
+            gcp_attributes=_from_dict(d, "gcp_attributes", GcpAttributes),
+            init_scripts=_repeated_dict(d, "init_scripts", InitScriptInfo),
+            instance_pool_id=d.get("instance_pool_id", None),
+            is_single_node=d.get("is_single_node", None),
+            kind=_enum(d, "kind", Kind),
+            node_type_id=d.get("node_type_id", None),
+            num_workers=d.get("num_workers", None),
+            policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
+            runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
+            single_user_name=d.get("single_user_name", None),
+            spark_conf=d.get("spark_conf", None),
+            spark_env_vars=d.get("spark_env_vars", None),
+            spark_version=d.get("spark_version", None),
+            ssh_public_keys=d.get("ssh_public_keys", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
+            use_ml_runtime=d.get("use_ml_runtime", None),
+            worker_node_type_flexibility=_from_dict(d, "worker_node_type_flexibility", NodeTypeFlexibility),
+            workload_type=_from_dict(d, "workload_type", WorkloadType),
+        )
+
+
+class EnforcePolicyComplianceForClusterResponseEnforceResult(Enum):
+    APPLIED = "APPLIED"
+    DEFERRED = "DEFERRED"
+    NO_CHANGES = "NO_CHANGES"
 
 
 @dataclass
@@ -3475,6 +3877,8 @@ class EventType(Enum):
     DBFS_DOWN = "DBFS_DOWN"
     DECOMMISSION_ENDED = "DECOMMISSION_ENDED"
     DECOMMISSION_STARTED = "DECOMMISSION_STARTED"
+    DEFERRED_POLICY_ENFORCEMENT_FAILED = "DEFERRED_POLICY_ENFORCEMENT_FAILED"
+    DEFERRED_POLICY_ENFORCEMENT_SCHEDULED = "DEFERRED_POLICY_ENFORCEMENT_SCHEDULED"
     DID_NOT_EXPAND_DISK = "DID_NOT_EXPAND_DISK"
     DRIVER_HEALTHY = "DRIVER_HEALTHY"
     DRIVER_NOT_RESPONDING = "DRIVER_NOT_RESPONDING"
@@ -3647,6 +4051,10 @@ class GetClusterComplianceResponse:
     """Whether the cluster is compliant with its policy or not. Clusters could be out of compliance if
     the policy was updated after the cluster was last edited."""
 
+    pending_enforcement: Optional[PendingEnforcement] = None
+    """Information about the pending enforcement for the cluster. Only present if a pending enforcement
+    is scheduled for the cluster."""
+
     violations: Optional[Dict[str, str]] = None
     """An object containing key-value mappings representing the first 200 policy validation errors. The
     keys indicate the path where the policy validation error is occurring. The values indicate an
@@ -3657,6 +4065,8 @@ class GetClusterComplianceResponse:
         body = {}
         if self.is_compliant is not None:
             body["is_compliant"] = self.is_compliant
+        if self.pending_enforcement:
+            body["pending_enforcement"] = self.pending_enforcement.as_dict()
         if self.violations:
             body["violations"] = self.violations
         return body
@@ -3666,6 +4076,8 @@ class GetClusterComplianceResponse:
         body = {}
         if self.is_compliant is not None:
             body["is_compliant"] = self.is_compliant
+        if self.pending_enforcement:
+            body["pending_enforcement"] = self.pending_enforcement
         if self.violations:
             body["violations"] = self.violations
         return body
@@ -3673,7 +4085,11 @@ class GetClusterComplianceResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetClusterComplianceResponse:
         """Deserializes the GetClusterComplianceResponse from a dictionary."""
-        return cls(is_compliant=d.get("is_compliant", None), violations=d.get("violations", None))
+        return cls(
+            is_compliant=d.get("is_compliant", None),
+            pending_enforcement=_from_dict(d, "pending_enforcement", PendingEnforcement),
+            violations=d.get("violations", None),
+        )
 
 
 @dataclass
@@ -6407,6 +6823,76 @@ class NodeTypeFlexibility:
     def from_dict(cls, d: Dict[str, Any]) -> NodeTypeFlexibility:
         """Deserializes the NodeTypeFlexibility from a dictionary."""
         return cls(alternate_node_type_ids=d.get("alternate_node_type_ids", None))
+
+
+@dataclass
+class PendingEnforcement:
+    """Represents a pending enforcement on a cluster, which contains the changes to make to the cluster
+    configuration when the cluster is next terminated or restarted."""
+
+    enforcement_status: Optional[PendingEnforcementEnforcementStatus] = None
+    """Whether the pending enforcement will be applied. A pending enforcement begins in `ACTIVE` state.
+    If the enforcement fails to apply too many times, the state transitions to `INACTIVE`.
+    Afterwards, the enforcement must be re-scheduled to become `ACTIVE` again."""
+
+    initiate_time: Optional[Timestamp] = None
+    """The time the pending enforcement was initiated."""
+
+    initiator_user: Optional[str] = None
+    """The user who initiated the pending enforcement."""
+
+    target_changes: Optional[List[ClusterSettingsChange]] = None
+    """A list of changes that will be made to the cluster configuration when the pending enforcement is
+    applied."""
+
+    target_spec: Optional[EnforcePolicyComplianceForClusterResponseClusterSettings] = None
+    """The new configuration to apply upon cluster termination or restart."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PendingEnforcement into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enforcement_status is not None:
+            body["enforcement_status"] = self.enforcement_status.value
+        if self.initiate_time is not None:
+            body["initiate_time"] = self.initiate_time.ToJsonString()
+        if self.initiator_user is not None:
+            body["initiator_user"] = self.initiator_user
+        if self.target_changes:
+            body["target_changes"] = [v.as_dict() for v in self.target_changes]
+        if self.target_spec:
+            body["target_spec"] = self.target_spec.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PendingEnforcement into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enforcement_status is not None:
+            body["enforcement_status"] = self.enforcement_status
+        if self.initiate_time is not None:
+            body["initiate_time"] = self.initiate_time
+        if self.initiator_user is not None:
+            body["initiator_user"] = self.initiator_user
+        if self.target_changes:
+            body["target_changes"] = self.target_changes
+        if self.target_spec:
+            body["target_spec"] = self.target_spec
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PendingEnforcement:
+        """Deserializes the PendingEnforcement from a dictionary."""
+        return cls(
+            enforcement_status=_enum(d, "enforcement_status", PendingEnforcementEnforcementStatus),
+            initiate_time=_timestamp(d, "initiate_time"),
+            initiator_user=d.get("initiator_user", None),
+            target_changes=_repeated_dict(d, "target_changes", ClusterSettingsChange),
+            target_spec=_from_dict(d, "target_spec", EnforcePolicyComplianceForClusterResponseClusterSettings),
+        )
+
+
+class PendingEnforcementEnforcementStatus(Enum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
 
 
 @dataclass
@@ -10919,23 +11405,69 @@ class PolicyComplianceForClustersAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def enforce_compliance(
-        self, cluster_id: str, *, validate_only: Optional[bool] = None
-    ) -> EnforceClusterComplianceResponse:
-        """Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if
-        it is in a `RUNNING` or `TERMINATED` state.
+    def cancel_pending_cluster_enforcement(
+        self, cluster_id: str, *, allow_missing: Optional[bool] = None
+    ) -> CancelPendingClusterEnforcementResponse:
+        """Cancels a pending enforcement on a cluster. After canceling the pending enforcement, the cluster will
+        no longer update on the next termination or restart. Pending enforcements cannot be canceled when a
+        cluster is in `TERMINATING` state. Only workspace admins can cancel pending enforcements.
 
-        If a cluster is updated while in a `RUNNING` state, it will be restarted so that the new attributes
-        can take effect.
+        :param cluster_id: str
+          The ID of the cluster to cancel the pending enforcement for.
+        :param allow_missing: bool (optional)
+          If true and no pending enforcement exists, the request will succeed but no action will be taken.
+
+        :returns: :class:`CancelPendingClusterEnforcementResponse`
+        """
+
+        body = {}
+        if allow_missing is not None:
+            body["allow_missing"] = allow_missing
+        if cluster_id is not None:
+            body["cluster_id"] = cluster_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST", "/api/2.0/policies/clusters:cancelPendingClusterEnforcement", body=body, headers=headers
+        )
+        return CancelPendingClusterEnforcementResponse.from_dict(res)
+
+    def enforce_compliance(
+        self,
+        cluster_id: str,
+        *,
+        enforce_mode: Optional[EnforcePolicyComplianceForClusterEnforceMode] = None,
+        validate_only: Optional[bool] = None,
+    ) -> EnforceClusterComplianceResponse:
+        """Updates a cluster to be compliant with the current version of its policy.
 
         If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time the
         cluster is started, the new attributes will take effect.
+
+        For clusters in other states, the behavior depends on the `enforce_mode` used.
 
         Clusters created by the Databricks Jobs, SDP, or Models services cannot be enforced by this API.
         Instead, use the "Enforce job policy compliance" API to enforce policy compliance on jobs.
 
         :param cluster_id: str
           The ID of the cluster you want to enforce policy compliance on.
+        :param enforce_mode: :class:`EnforcePolicyComplianceForClusterEnforceMode` (optional)
+          Determines how changes should be made to clusters that are not in `TERMINATED` state.
+
+          - `ENFORCE_IMMEDIATELY`: If the cluster is in a `RUNNING` state, it will be restarted so that the
+          new attributes can take effect. For other states aside from `TERMINATED` state, the request will be
+          rejected. - `WAIT_FOR_TERMINATION`: The cluster is not immediately edited. Instead, a pending
+          enforcement is scheduled to update the cluster when it terminates or restarts. When this occurs,
+          `enforce_result` will contain `DEFERRED`. Only workspace admins can use this mode.
+
+          Regardless of the enforce mode, clusters in `TERMINATED` state are immediately edited.
         :param validate_only: bool (optional)
           If set, previews the changes that would be made to a cluster to enforce compliance but does not
           update the cluster.
@@ -10946,6 +11478,8 @@ class PolicyComplianceForClustersAPI:
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
+        if enforce_mode is not None:
+            body["enforce_mode"] = enforce_mode.value
         if validate_only is not None:
             body["validate_only"] = validate_only
         headers = {

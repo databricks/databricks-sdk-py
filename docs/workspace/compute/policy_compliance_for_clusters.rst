@@ -13,22 +13,44 @@
     The get and list compliance APIs allow you to view the policy compliance status of a cluster. The enforce
     compliance API allows you to update a cluster to be compliant with the current version of its policy.
 
-    .. py:method:: enforce_compliance(cluster_id: str [, validate_only: Optional[bool]]) -> EnforceClusterComplianceResponse
+    .. py:method:: cancel_pending_cluster_enforcement(cluster_id: str [, allow_missing: Optional[bool]]) -> CancelPendingClusterEnforcementResponse
 
-        Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if
-        it is in a `RUNNING` or `TERMINATED` state.
+        Cancels a pending enforcement on a cluster. After canceling the pending enforcement, the cluster will
+        no longer update on the next termination or restart. Pending enforcements cannot be canceled when a
+        cluster is in `TERMINATING` state. Only workspace admins can cancel pending enforcements.
 
-        If a cluster is updated while in a `RUNNING` state, it will be restarted so that the new attributes
-        can take effect.
+        :param cluster_id: str
+          The ID of the cluster to cancel the pending enforcement for.
+        :param allow_missing: bool (optional)
+          If true and no pending enforcement exists, the request will succeed but no action will be taken.
+
+        :returns: :class:`CancelPendingClusterEnforcementResponse`
+        
+
+    .. py:method:: enforce_compliance(cluster_id: str [, enforce_mode: Optional[EnforcePolicyComplianceForClusterEnforceMode], validate_only: Optional[bool]]) -> EnforceClusterComplianceResponse
+
+        Updates a cluster to be compliant with the current version of its policy.
 
         If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time the
         cluster is started, the new attributes will take effect.
+
+        For clusters in other states, the behavior depends on the `enforce_mode` used.
 
         Clusters created by the Databricks Jobs, SDP, or Models services cannot be enforced by this API.
         Instead, use the "Enforce job policy compliance" API to enforce policy compliance on jobs.
 
         :param cluster_id: str
           The ID of the cluster you want to enforce policy compliance on.
+        :param enforce_mode: :class:`EnforcePolicyComplianceForClusterEnforceMode` (optional)
+          Determines how changes should be made to clusters that are not in `TERMINATED` state.
+
+          - `ENFORCE_IMMEDIATELY`: If the cluster is in a `RUNNING` state, it will be restarted so that the
+          new attributes can take effect. For other states aside from `TERMINATED` state, the request will be
+          rejected. - `WAIT_FOR_TERMINATION`: The cluster is not immediately edited. Instead, a pending
+          enforcement is scheduled to update the cluster when it terminates or restarts. When this occurs,
+          `enforce_result` will contain `DEFERRED`. Only workspace admins can use this mode.
+
+          Regardless of the enforce mode, clusters in `TERMINATED` state are immediately edited.
         :param validate_only: bool (optional)
           If set, previews the changes that would be made to a cluster to enforce compliance but does not
           update the cluster.

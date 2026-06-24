@@ -416,30 +416,37 @@ class ListVersionsResponse:
 
 @dataclass
 class Operation:
-    """An operation on a single resource performed during a version. Operations are append-only and
-    record the result of applying a resource change to the workspace."""
+    """An operation on a single resource performed during a version. Operations record the result of
+    applying a resource change to the workspace. Most fields are immutable once recorded; `state`,
+    `error_message`, `resource_id`, and `status` may be updated afterwards (via UpdateOperation),
+    guarded by `sequence_id` for optimistic concurrency control."""
 
     action_type: OperationActionType
     """The type of operation performed on this resource."""
 
     status: OperationStatus
-    """Whether the operation succeeded or failed."""
+    """Whether the operation succeeded or failed. Mutable: may be updated after creation via
+    UpdateOperation, e.g. when an operation recorded as failed is retried and eventually succeeds. A
+    succeeded operation cannot carry an `error_message`."""
 
     create_time: Optional[Timestamp] = None
     """When the operation was recorded."""
 
     error_message: Optional[str] = None
     """Error message if the operation failed. Set when status is OPERATION_STATUS_FAILED. Captures the
-    error encountered while applying the resource to the workspace."""
+    error encountered while applying the resource to the workspace. Mutable: may be updated after
+    creation via UpdateOperation; setting it to an empty string clears it. After an update is
+    applied, an operation whose status is OPERATION_STATUS_SUCCEEDED cannot carry an error_message."""
 
     name: Optional[str] = None
     """Resource name of the operation. Format:
     deployments/{deployment_id}/versions/{version_id}/operations/{resource_key}"""
 
     resource_id: Optional[str] = None
-    """ID of the actual resource in the workspace (e.g. the job ID, pipeline ID). Required for every
-    operation except CREATE and RECREATE, which produce a new resource whose ID is not yet known
-    when the operation is recorded."""
+    """ID of the actual resource in the workspace (e.g. the job ID, pipeline ID). Optional at creation:
+    CREATE and RECREATE operations produce a new resource whose ID is not yet known when the
+    operation is recorded. Mutable: may be filled in (or corrected) later via UpdateOperation once
+    the ID is known."""
 
     resource_key: Optional[str] = None
     """Resource identifier within the bundle (e.g. "jobs.foo", "pipelines.bar", "jobs.foo.permissions",
@@ -451,7 +458,9 @@ class Operation:
     prefix (e.g. "jobs" → JOB); the caller does not set this field."""
 
     state: Optional[any] = None
-    """Serialized local config state after the operation. Should be unset for delete operations."""
+    """Serialized local config state after the operation. Should be unset for delete operations.
+    Mutable: may be updated after creation via UpdateOperation. When updating, the caller must echo
+    the last-observed `sequence_id` as a concurrency precondition."""
 
     def as_dict(self) -> dict:
         """Serializes the Operation into a dictionary suitable for use as a JSON request body."""
@@ -662,8 +671,10 @@ class Version:
     """Target name of the deployment, captured at the time of this version."""
 
     version_id: Optional[str] = None
-    """Monotonically increasing version identifier within the parent deployment. Assigned by the client
-    on creation."""
+    """Version identifier within the parent deployment, assigned by the client on creation. A numeric
+    string (base-10, fits in a signed 64-bit integer) that is greater than or equal to 1. Version
+    IDs are strictly increasing within a deployment but are not required to start at 1 or to be
+    contiguous."""
 
     workspace_info: Optional[WorkspaceInfo] = None
     """Workspace location of the deployment, captured at the time of this version."""
@@ -787,6 +798,10 @@ class VersionType(Enum):
 class WorkspaceInfo:
     """Workspace location of a bundle deployment, captured at deploy time."""
 
+    bundle_root_path: Optional[str] = None
+    """Path of the bundle root (the directory containing databricks.yml) relative to git_folder_path.
+    Empty when the deployment is not from a Databricks Git folder."""
+
     file_path: Optional[str] = None
     """Absolute workspace path where the deployed bundle files live. Mirrors the workspace.file_path
     field in DABs bundle config."""
@@ -806,6 +821,8 @@ class WorkspaceInfo:
     def as_dict(self) -> dict:
         """Serializes the WorkspaceInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.bundle_root_path is not None:
+            body["bundle_root_path"] = self.bundle_root_path
         if self.file_path is not None:
             body["file_path"] = self.file_path
         if self.git_folder_path is not None:
@@ -819,6 +836,8 @@ class WorkspaceInfo:
     def as_shallow_dict(self) -> dict:
         """Serializes the WorkspaceInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.bundle_root_path is not None:
+            body["bundle_root_path"] = self.bundle_root_path
         if self.file_path is not None:
             body["file_path"] = self.file_path
         if self.git_folder_path is not None:
@@ -833,6 +852,7 @@ class WorkspaceInfo:
     def from_dict(cls, d: Dict[str, Any]) -> WorkspaceInfo:
         """Deserializes the WorkspaceInfo from a dictionary."""
         return cls(
+            bundle_root_path=d.get("bundle_root_path", None),
             file_path=d.get("file_path", None),
             git_folder_path=d.get("git_folder_path", None),
             root_path=d.get("root_path", None),
@@ -956,16 +976,21 @@ class BundleDeploymentsAPI:
         """Creates a new version under a deployment.
 
         Creating a version acquires an exclusive lock on the deployment, preventing concurrent deploys. The
-        caller provides a `version_id` which the server validates equals `last_version_id + 1` on the
-        deployment.
+        caller provides a `version_id`, a numeric string that must be numerically greater than the
+        deployment's most recent version, and sets the version's `previous_version_id` to the deployment's
+        most recent version (leaving it unset for the first version), which the server validates to detect
+        concurrent deploys.
 
         :param parent: str
           The parent deployment where this version will be created. Format: deployments/{deployment_id}
         :param version: :class:`Version`
           The version to create.
         :param version_id: str
-          The version ID the caller expects to create. The server validates this equals `last_version_id + 1`
-          on the deployment. If it doesn't match, the server returns `ABORTED`.
+          The ID to use for the version, which becomes the final component of the version's resource name. A
+          numeric string (base-10, fits in a signed 64-bit integer) chosen by the caller; must be greater than
+          or equal to 1. Must be numerically greater than the deployment's most recent version (see
+          `version.previous_version_id`); it does not need to start at 1 or increase by exactly 1. If the
+          value is not numerically greater, the server returns `INVALID_PARAMETER_VALUE`.
 
         :returns: :class:`Version`
         """
@@ -1236,7 +1261,7 @@ class BundleDeploymentsAPI:
     def list_versions(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Version]:
-        """Lists versions under a deployment, ordered by version_id descending (most recent first).
+        """Lists versions under a deployment, ordered numerically by version_id descending (most recent first).
 
         :param parent: str
           The parent deployment. Format: deployments/{deployment_id}

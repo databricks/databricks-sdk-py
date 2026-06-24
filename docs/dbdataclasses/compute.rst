@@ -51,6 +51,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SPOT_WITH_FALLBACK_AZURE
       :value: "SPOT_WITH_FALLBACK_AZURE"
 
+.. autoclass:: CancelPendingClusterEnforcementResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: CancelResponse
    :members:
    :undoc-members:
@@ -414,6 +418,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: EnforcePolicyComplianceForClusterEnforceMode
+
+   .. py:attribute:: ENFORCE_IMMEDIATELY
+      :value: "ENFORCE_IMMEDIATELY"
+
+   .. py:attribute:: WAIT_FOR_TERMINATION
+      :value: "WAIT_FOR_TERMINATION"
+
+.. autoclass:: EnforcePolicyComplianceForClusterResponseClusterSettings
+   :members:
+   :undoc-members:
+
+.. py:class:: EnforcePolicyComplianceForClusterResponseEnforceResult
+
+   .. py:attribute:: APPLIED
+      :value: "APPLIED"
+
+   .. py:attribute:: DEFERRED
+      :value: "DEFERRED"
+
+   .. py:attribute:: NO_CHANGES
+      :value: "NO_CHANGES"
+
 .. autoclass:: Environment
    :members:
    :undoc-members:
@@ -475,6 +502,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DECOMMISSION_STARTED
       :value: "DECOMMISSION_STARTED"
+
+   .. py:attribute:: DEFERRED_POLICY_ENFORCEMENT_FAILED
+      :value: "DEFERRED_POLICY_ENFORCEMENT_FAILED"
+
+   .. py:attribute:: DEFERRED_POLICY_ENFORCEMENT_SCHEDULED
+      :value: "DEFERRED_POLICY_ENFORCEMENT_SCHEDULED"
 
    .. py:attribute:: DID_NOT_EXPAND_DISK
       :value: "DID_NOT_EXPAND_DISK"
@@ -925,6 +958,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: NodeTypeFlexibility
    :members:
    :undoc-members:
+
+.. autoclass:: PendingEnforcement
+   :members:
+   :undoc-members:
+
+.. py:class:: PendingEnforcementEnforcementStatus
+
+   .. py:attribute:: ACTIVE
+      :value: "ACTIVE"
+
+   .. py:attribute:: INACTIVE
+      :value: "INACTIVE"
 
 .. autoclass:: PendingInstanceError
    :members:

@@ -33,13 +33,23 @@
     fetches the public keys from the issuer’s well known endpoint. Databricks strongly recommends relying on
     the issuer’s well known endpoint for discovering public keys.
 
-    An example service principal federation policy, for a Github Actions workload, is: ``` issuer:
-    "https://token.actions.githubusercontent.com" audiences: ["https://github.com/my-github-org"] subject:
-    "repo:my-github-org/my-repo:environment:prod" ```
+    An example service principal federation policy, for a Github Actions workload, is:
 
-    An example JWT token body that matches this policy and could be used to authenticate to Databricks is: ```
-    { "iss": "https://token.actions.githubusercontent.com", "aud": "https://github.com/my-github-org", "sub":
-    "repo:my-github-org/my-repo:environment:prod" } ```
+    .. code-block::
+
+       issuer: "https://token.actions.githubusercontent.com"
+       audiences: ["https://github.com/my-github-org"]
+       subject: "repo:my-github-org/my-repo:environment:prod"
+
+    An example JWT token body that matches this policy and could be used to authenticate to Databricks is:
+
+    .. code-block::
+
+       {
+       "iss": "https://token.actions.githubusercontent.com",
+       "aud": "https://github.com/my-github-org",
+       "sub": "repo:my-github-org/my-repo:environment:prod"
+       }
 
     You may also need to configure the workload runtime to generate tokens for your workloads.
 
