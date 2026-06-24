@@ -30,12 +30,24 @@
     Databricks automatically fetches the public keys from your issuer’s well known endpoint. Databricks
     strongly recommends relying on your issuer’s well known endpoint for discovering public keys.
 
-    An example federation policy is: ``` issuer: "https://idp.mycompany.com/oidc" audiences: ["databricks"]
-    subject_claim: "sub" ```
+    An example federation policy is:
+
+    .. code-block::
+
+       issuer: "https://idp.mycompany.com/oidc"
+       audiences: ["databricks"]
+       subject_claim: "sub"
 
     An example JWT token body that matches this policy and could be used to authenticate to Databricks as user
-    `username@mycompany.com` is: ``` { "iss": "https://idp.mycompany.com/oidc", "aud": "databricks", "sub":
-    "username@mycompany.com" } ```
+    `username@mycompany.com` is:
+
+    .. code-block::
+
+       {
+       "iss": "https://idp.mycompany.com/oidc",
+       "aud": "databricks",
+       "sub": "username@mycompany.com"
+       }
 
     You may also need to configure your IdP to generate tokens for your users to exchange with Databricks, if
     your users do not already have the ability to generate tokens that are compatible with your federation

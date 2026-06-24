@@ -199,7 +199,13 @@
           output of `SELECT concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)` would
           look like this:
 
-          ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null ], ] ```
+          .. code-block::
+
+             [
+             [ "id-1", "1", null ],
+             [ "id-2", "2", null ],
+             [ "id-3", "3", null ],
+             ]
 
           When specifying `format=JSON_ARRAY` and `disposition=EXTERNAL_LINKS`, each chunk in the result
           contains compact JSON with no indentation or extra whitespace.
@@ -213,7 +219,12 @@
           chunk in the result would contain a header row with column names. For example, the output of `SELECT
           concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM range(3)` would look like this:
 
-          ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
+          .. code-block::
+
+             strCol,intCol,nullCol
+             id-1,1,null
+             id-2,2,null
+             id-3,3,null
 
           [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
           [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
@@ -237,7 +248,9 @@
 
           For example, the following statement contains two parameters, `my_name` and `my_date`:
 
-          ``` SELECT * FROM my_table WHERE name = :my_name AND date = :my_date ```
+          .. code-block::
+
+             SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
 
           The parameters can be passed in the request body as follows:
 

@@ -1853,8 +1853,6 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 127"""
-
     BIGQUERY = "BIGQUERY"
     CONFLUENCE = "CONFLUENCE"
     DATABRICKS = "DATABRICKS"
@@ -2669,8 +2667,6 @@ class CredentialPurpose(Enum):
 
 
 class CredentialType(Enum):
-    """Next Id: 20"""
-
     ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
     EDGEGRID_AKAMAI = "EDGEGRID_AKAMAI"
@@ -8902,8 +8898,6 @@ class RowFilterOptions:
 
 @dataclass
 class SchemaInfo:
-    """Next ID: 45"""
-
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
@@ -9291,10 +9285,6 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_MARKETO_OAUTH_M2M = 347; Next id: 348. Reserved numbers: 316, 317, 327,
-    330, 341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING,
-    MCP_SERVICE_STANDARD)."""
-
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
     TABLE_DELTASHARING = "TABLE_DELTASHARING"

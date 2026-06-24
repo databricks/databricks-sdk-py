@@ -1,5 +1,27 @@
 # Version changelog
 
+## Release v0.119.0 (2026-06-24)
+
+### New Features and Improvements
+* Added a `meta-harness` user-agent dimension that reports the omnigent meta-harness (detected via the `OMNIGENT` environment variable) independently of agent detection.
+
+### API Changes
+* Add `cancel_pending_cluster_enforcement()` method for [w.policy_compliance_for_clusters](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/compute/policy_compliance_for_clusters.html) workspace-level service.
+* Add `bundle_root_path` field for `databricks.sdk.service.bundledeployments.WorkspaceInfo`.
+* Add `pending_enforcement` field for `databricks.sdk.service.compute.ClusterCompliance`.
+* Add `enforce_mode` field for `databricks.sdk.service.compute.EnforceClusterComplianceRequest`.
+* Add `enforce_result` field for `databricks.sdk.service.compute.EnforceClusterComplianceResponse`.
+* Add `pending_enforcement` field for `databricks.sdk.service.compute.GetClusterComplianceResponse`.
+* Add `ai_runtime_task` field for `databricks.sdk.service.jobs.ResolvedValues`.
+* Add `ai_runtime_task_output` field for `databricks.sdk.service.jobs.RunOutput`.
+* Add `ai_runtime_task` field for `databricks.sdk.service.jobs.RunTask`.
+* Add `ai_runtime_task` field for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `ai_runtime_task` field for `databricks.sdk.service.jobs.Task`.
+* Add `xlarge` enum value for `databricks.sdk.service.apps.ComputeSize`.
+* Add `deferred_policy_enforcement_scheduled` and `deferred_policy_enforcement_failed` enum values for `databricks.sdk.service.compute.EventType`.
+* [Breaking] Change `replicate_workspace_assets` field for `databricks.sdk.service.disasterrecovery.WorkspaceSet` to no longer be required.
+* Change `replicate_workspace_assets` field for `databricks.sdk.service.disasterrecovery.WorkspaceSet` to no longer be required.
+
 ## Release v0.118.0 (2026-06-18)
 
 ### API Changes

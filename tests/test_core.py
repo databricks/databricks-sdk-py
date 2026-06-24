@@ -275,6 +275,7 @@ def test_extra_and_upstream_user_agent(monkeypatch):
     monkeypatch.setattr(useragent, "_extra", [])
     monkeypatch.setattr(useragent, "_cicd_provider", None)
     monkeypatch.setattr(useragent, "_agent_provider", None)
+    monkeypatch.setattr(useragent, "_meta_harness_provider", None)
 
     monkeypatch.setattr(platform, "python_version", lambda: "3.0.0")
     monkeypatch.setattr(platform, "uname", MockUname)

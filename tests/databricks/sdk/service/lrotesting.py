@@ -310,7 +310,13 @@ class LroTestingAPI:
         self._api.do("POST", f"/api/2.0/lro-testing/operations/{name}/cancel", headers=headers)
 
     def create_test_resource(self, resource: TestResource) -> CreateTestResourceOperation:
-        """Simple method to create test resource for LRO testing
+        """Simple method to create test resource for LRO testing.
+
+        Example:
+
+        .. code-block:: python
+
+           op = w.lro_testing.create_test_resource(resource=resource)
 
         :param resource: :class:`TestResource`
           The resource to create

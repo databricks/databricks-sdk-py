@@ -1817,6 +1817,7 @@ class ApplicationStatus:
 class ComputeSize(Enum):
     LARGE = "LARGE"
     MEDIUM = "MEDIUM"
+    XLARGE = "XLARGE"
 
 
 class ComputeState(Enum):

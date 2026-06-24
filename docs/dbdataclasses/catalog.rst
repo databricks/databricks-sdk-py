@@ -283,8 +283,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 127
-
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
 
@@ -447,8 +445,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "STORAGE"
 
 .. py:class:: CredentialType
-
-   Next Id: 20
 
    .. py:attribute:: ANY_STATIC_CREDENTIAL
       :value: "ANY_STATIC_CREDENTIAL"
@@ -1554,8 +1550,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: SecurableKind
-
-   Latest kind: CONNECTION_MARKETO_OAUTH_M2M = 347; Next id: 348. Reserved numbers: 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING, MCP_SERVICE_STANDARD).
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
