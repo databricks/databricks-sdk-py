@@ -11,7 +11,7 @@ from typing import Dict, Iterable, List, Optional
 import requests
 
 from . import useragent
-from ._base_client import _fix_host_if_needed
+from ._base_client import _BaseClient, _fix_host_if_needed
 from .client_types import ClientType, HostType
 from .clock import Clock, RealClock
 from .credentials_provider import CredentialsStrategy, DefaultCredentials, OAuthCredentialsProvider
@@ -637,8 +637,17 @@ class Config:
         """
         if not self.host:
             return
+        # Host metadata is a best-effort discovery probe that falls back to the
+        # explicit configuration below on any failure. Build its client from the
+        # configured timeouts: otherwise it uses the default 300s retry budget,
+        # which blocks Config() initialization for ~5 minutes when the host is
+        # unreachable.
+        client = _BaseClient(
+            retry_timeout_seconds=self.retry_timeout_seconds,
+            http_timeout_seconds=self.http_timeout_seconds,
+        )
         try:
-            meta = get_host_metadata(self.host)
+            meta = get_host_metadata(self.host, client=client)
         except Exception as e:
             logger.warning(
                 f"Failed to automatically resolve config from host metadata: {e}. Falling back to explicit user provided configuration."
