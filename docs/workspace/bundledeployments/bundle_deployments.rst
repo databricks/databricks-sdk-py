@@ -69,16 +69,21 @@
         Creates a new version under a deployment.
 
         Creating a version acquires an exclusive lock on the deployment, preventing concurrent deploys. The
-        caller provides a `version_id` which the server validates equals `last_version_id + 1` on the
-        deployment.
+        caller provides a `version_id`, a numeric string that must be numerically greater than the
+        deployment's most recent version, and sets the version's `previous_version_id` to the deployment's
+        most recent version (leaving it unset for the first version), which the server validates to detect
+        concurrent deploys.
 
         :param parent: str
           The parent deployment where this version will be created. Format: deployments/{deployment_id}
         :param version: :class:`Version`
           The version to create.
         :param version_id: str
-          The version ID the caller expects to create. The server validates this equals `last_version_id + 1`
-          on the deployment. If it doesn't match, the server returns `ABORTED`.
+          The ID to use for the version, which becomes the final component of the version's resource name. A
+          numeric string (base-10, fits in a signed 64-bit integer) chosen by the caller; must be greater than
+          or equal to 1. Must be numerically greater than the deployment's most recent version (see
+          `version.previous_version_id`); it does not need to start at 1 or increase by exactly 1. If the
+          value is not numerically greater, the server returns `INVALID_PARAMETER_VALUE`.
 
         :returns: :class:`Version`
         
@@ -203,7 +208,7 @@
 
     .. py:method:: list_versions(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Version]
 
-        Lists versions under a deployment, ordered by version_id descending (most recent first).
+        Lists versions under a deployment, ordered numerically by version_id descending (most recent first).
 
         :param parent: str
           The parent deployment. Format: deployments/{deployment_id}

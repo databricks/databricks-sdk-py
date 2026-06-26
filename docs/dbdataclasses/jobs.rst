@@ -4,6 +4,14 @@ Jobs
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.jobs`` module.
 
 .. py:currentmodule:: databricks.sdk.service.jobs
+.. autoclass:: AiRuntimeTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiRuntimeTaskOutput
+   :members:
+   :undoc-members:
+
 .. py:class:: AlertEvaluationState
 
    Same alert evaluation state as in redash-v2/api/proto/alertsv2/alerts.proto
@@ -153,6 +161,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ComputeSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: ComputeSpecAcceleratorType
+
+   Customer-facing AcceleratorType: hardware accelerator type for the AiRuntime workload. Per-node accelerator count is encoded in the value name (e.g. `GPU_8xH100` means 8 H100s per node).
+
+   .. py:attribute:: GPU_1X_A10
+      :value: "GPU_1X_A10"
+
+   .. py:attribute:: GPU_1X_H100
+      :value: "GPU_1X_H100"
+
+   .. py:attribute:: GPU_8X_H100
+      :value: "GPU_8X_H100"
+
 .. py:class:: Condition
 
    .. py:attribute:: ALL_UPDATED
@@ -263,6 +288,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DbtTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeploymentSpec
    :members:
    :undoc-members:
 
@@ -683,6 +712,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ResolvedValues
+   :members:
+   :undoc-members:
+
+.. autoclass:: ResolvedValuesAiRuntimeTaskResolvedValues
    :members:
    :undoc-members:
 

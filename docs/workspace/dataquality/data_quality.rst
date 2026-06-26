@@ -71,7 +71,7 @@
         **USE_SCHEMA** on the table's parent schema, and **MANAGE** on the table.
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: `schema`or `table`.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. It is `schema_id` for `schema`, and `table_id` for `table`.
 

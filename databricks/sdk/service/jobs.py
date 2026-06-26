@@ -29,6 +29,126 @@ _LOG = logging.getLogger("databricks.sdk")
 # all definitions in this file are in alphabetical order
 
 
+@dataclass
+class AiRuntimeTask:
+    """AiRuntimeTask: multi-node GPU compute task definition for Databricks AI Runtime workloads.
+
+    Jobs-framework-level concepts (retries, per-task timeout, idempotency token, usage/budget
+    policy, permissions) live on the surrounding TaskSettings / run-submit request and are
+    intentionally NOT duplicated here. Users compose `ai_runtime_task` with the standard Jobs/DABs
+    task wrapper to get those."""
+
+    experiment: str
+    """MLflow experiment name for this run. If an experiment with this name already exists under the
+    calling user, the run is appended to it; otherwise a new experiment is created. To target a
+    specific MLflow storage location (for example, when running as a service principal), set
+    `mlflow_experiment_directory`."""
+
+    deployments: List[DeploymentSpec]
+    """Deployment specs for this task. Exactly one deployment is currently supported (a single entry
+    where every node runs the same command); this is a current-Preview constraint. Role-split
+    workloads (driver + worker, parameter server, separate eval node, etc.) with multiple entries
+    are the eventual intent but not yet supported."""
+
+    code_source_path: Optional[str] = None
+    """Optional workspace or UC volume path of the uploaded code-source archive. The CLI packages the
+    user's local code directory into an archive and populates this. Customers calling the Jobs API
+    directly should upload their archive to the workspace or a UC volume first and supply the
+    resulting path here.
+    
+    When set, the training node exposes the value via the `$CODE_SOURCE` environment variable."""
+
+    mlflow_experiment_directory: Optional[str] = None
+    """Optional workspace directory under which the MLflow experiment named in `experiment` is created.
+    Must start with `/Workspace`. Set this when running as a service principal that has no default
+    user directory; for regular users the experiment defaults to the user's home directory."""
+
+    mlflow_run: Optional[str] = None
+    """Optional display name for the MLflow run created under `experiment`. If omitted, MLflow
+    generates a default name."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiRuntimeTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.code_source_path is not None:
+            body["code_source_path"] = self.code_source_path
+        if self.deployments:
+            body["deployments"] = [v.as_dict() for v in self.deployments]
+        if self.experiment is not None:
+            body["experiment"] = self.experiment
+        if self.mlflow_experiment_directory is not None:
+            body["mlflow_experiment_directory"] = self.mlflow_experiment_directory
+        if self.mlflow_run is not None:
+            body["mlflow_run"] = self.mlflow_run
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiRuntimeTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.code_source_path is not None:
+            body["code_source_path"] = self.code_source_path
+        if self.deployments:
+            body["deployments"] = self.deployments
+        if self.experiment is not None:
+            body["experiment"] = self.experiment
+        if self.mlflow_experiment_directory is not None:
+            body["mlflow_experiment_directory"] = self.mlflow_experiment_directory
+        if self.mlflow_run is not None:
+            body["mlflow_run"] = self.mlflow_run
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AiRuntimeTask:
+        """Deserializes the AiRuntimeTask from a dictionary."""
+        return cls(
+            code_source_path=d.get("code_source_path", None),
+            deployments=_repeated_dict(d, "deployments", DeploymentSpec),
+            experiment=d.get("experiment", None),
+            mlflow_experiment_directory=d.get("mlflow_experiment_directory", None),
+            mlflow_run=d.get("mlflow_run", None),
+        )
+
+
+@dataclass
+class AiRuntimeTaskOutput:
+    """AiRuntimeTaskOutput: output identifiers for an AiRuntimeTask run — the MLflow experiment and
+    run IDs the task wrote to.
+
+    Run lifecycle and termination status are not on this message; they live on the surrounding
+    `RunTask.status` field (see `runs.proto:RunTask.status`)."""
+
+    mlflow_experiment_id: Optional[str] = None
+    """MLflow experiment ID the run was logged to. Use it to look up the experiment in MLflow APIs or
+    the workspace MLflow UI."""
+
+    mlflow_run_id: Optional[str] = None
+    """MLflow run ID for this task execution. Use it to look up the run in MLflow APIs or the workspace
+    MLflow UI."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiRuntimeTaskOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.mlflow_experiment_id is not None:
+            body["mlflow_experiment_id"] = self.mlflow_experiment_id
+        if self.mlflow_run_id is not None:
+            body["mlflow_run_id"] = self.mlflow_run_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiRuntimeTaskOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.mlflow_experiment_id is not None:
+            body["mlflow_experiment_id"] = self.mlflow_experiment_id
+        if self.mlflow_run_id is not None:
+            body["mlflow_run_id"] = self.mlflow_run_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AiRuntimeTaskOutput:
+        """Deserializes the AiRuntimeTaskOutput from a dictionary."""
+        return cls(mlflow_experiment_id=d.get("mlflow_experiment_id", None), mlflow_run_id=d.get("mlflow_run_id", None))
+
+
 class AlertEvaluationState(Enum):
     """Same alert evaluation state as in redash-v2/api/proto/alertsv2/alerts.proto"""
 
@@ -914,6 +1034,56 @@ class ComputeConfig:
         )
 
 
+@dataclass
+class ComputeSpec:
+    """ComputeSpec: compute configuration — accelerator type and total accelerator count across all
+    nodes."""
+
+    accelerator_type: ComputeSpecAcceleratorType
+    """Hardware accelerator type (for example, `GPU_1xA10` or `GPU_8xH100`). The number of accelerators
+    per node is encoded in the enum value — `GPU_8xH100` means 8 H100 GPUs per node."""
+
+    accelerator_count: int
+    """Total number of accelerators across all nodes. Must be a positive multiple of the per-node
+    accelerator count encoded in `accelerator_type`. For example, `GPU_8xH100` with
+    `accelerator_count: 16` allocates 2 nodes (8 GPUs per node)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ComputeSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.accelerator_count is not None:
+            body["accelerator_count"] = self.accelerator_count
+        if self.accelerator_type is not None:
+            body["accelerator_type"] = self.accelerator_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ComputeSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.accelerator_count is not None:
+            body["accelerator_count"] = self.accelerator_count
+        if self.accelerator_type is not None:
+            body["accelerator_type"] = self.accelerator_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ComputeSpec:
+        """Deserializes the ComputeSpec from a dictionary."""
+        return cls(
+            accelerator_count=d.get("accelerator_count", None),
+            accelerator_type=_enum(d, "accelerator_type", ComputeSpecAcceleratorType),
+        )
+
+
+class ComputeSpecAcceleratorType(Enum):
+    """Customer-facing AcceleratorType: hardware accelerator type for the AiRuntime workload. Per-node
+    accelerator count is encoded in the value name (e.g. `GPU_8xH100` means 8 H100s per node)."""
+
+    GPU_1X_A10 = "GPU_1xA10"
+    GPU_1X_H100 = "GPU_1xH100"
+    GPU_8X_H100 = "GPU_8xH100"
+
+
 class Condition(Enum):
     ALL_UPDATED = "ALL_UPDATED"
     ANY_UPDATED = "ANY_UPDATED"
@@ -1642,6 +1812,59 @@ class DbtTask:
             schema=d.get("schema", None),
             source=_enum(d, "source", Source),
             warehouse_id=d.get("warehouse_id", None),
+        )
+
+
+@dataclass
+class DeploymentSpec:
+    """DeploymentSpec: configuration for one deployment within an AiRuntimeTask. Each entry in
+    `AiRuntimeTask.deployments` describes a group of nodes that share the same command and compute.
+    Many single-program training algorithms use a single entry where every node runs the same
+    command; role-split workloads (driver + worker, parameter server, separate eval node, etc.) use
+    multiple entries."""
+
+    command_path: str
+    """Workspace path of the bash script to execute on each node in this deployment. The CLI uploads
+    the user's script and populates this. Customers calling the Jobs API directly should upload
+    their script to the workspace first and supply the resulting path here."""
+
+    compute: ComputeSpec
+    """Compute resources allocated to each node in this deployment."""
+
+    name: Optional[str] = None
+    """Optional human-readable name for this deployment (for example, `driver`, `worker`,
+    `param_server`). Used for log and UI display. Distinct names are recommended so deployments can
+    be told apart, but uniqueness is not enforced."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeploymentSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.command_path is not None:
+            body["command_path"] = self.command_path
+        if self.compute:
+            body["compute"] = self.compute.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeploymentSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.command_path is not None:
+            body["command_path"] = self.command_path
+        if self.compute:
+            body["compute"] = self.compute
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeploymentSpec:
+        """Deserializes the DeploymentSpec from a dictionary."""
+        return cls(
+            command_path=d.get("command_path", None),
+            compute=_from_dict(d, "compute", ComputeSpec),
+            name=d.get("name", None),
         )
 
 
@@ -4779,6 +5002,10 @@ class ResolvedStringParamsValues:
 
 @dataclass
 class ResolvedValues:
+    ai_runtime_task: Optional[ResolvedValuesAiRuntimeTaskResolvedValues] = None
+    """Resolved values for an AI Runtime task — env_vars with `{{tasks.<key>.values.<name>}}`
+    references substituted to concrete values before submission to the training service."""
+
     condition_task: Optional[ResolvedConditionTaskValues] = None
 
     dbt_task: Optional[ResolvedDbtTaskValues] = None
@@ -4804,6 +5031,8 @@ class ResolvedValues:
     def as_dict(self) -> dict:
         """Serializes the ResolvedValues into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_runtime_task:
+            body["ai_runtime_task"] = self.ai_runtime_task.as_dict()
         if self.condition_task:
             body["condition_task"] = self.condition_task.as_dict()
         if self.dbt_task:
@@ -4831,6 +5060,8 @@ class ResolvedValues:
     def as_shallow_dict(self) -> dict:
         """Serializes the ResolvedValues into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.ai_runtime_task:
+            body["ai_runtime_task"] = self.ai_runtime_task
         if self.condition_task:
             body["condition_task"] = self.condition_task
         if self.dbt_task:
@@ -4859,6 +5090,7 @@ class ResolvedValues:
     def from_dict(cls, d: Dict[str, Any]) -> ResolvedValues:
         """Deserializes the ResolvedValues from a dictionary."""
         return cls(
+            ai_runtime_task=_from_dict(d, "ai_runtime_task", ResolvedValuesAiRuntimeTaskResolvedValues),
             condition_task=_from_dict(d, "condition_task", ResolvedConditionTaskValues),
             dbt_task=_from_dict(d, "dbt_task", ResolvedDbtTaskValues),
             notebook_task=_from_dict(d, "notebook_task", ResolvedNotebookTaskValues),
@@ -4871,6 +5103,28 @@ class ResolvedValues:
             spark_submit_task=_from_dict(d, "spark_submit_task", ResolvedStringParamsValues),
             sql_task=_from_dict(d, "sql_task", ResolvedParamPairValues),
         )
+
+
+@dataclass
+class ResolvedValuesAiRuntimeTaskResolvedValues:
+    """Resolved env_vars for an AiRuntimeTask after dynamic-value substitution. Mirrors the task's
+    `resolved_parameters_field` (env_vars) so Jobs can expand `{{tasks.<key>.values.<name>}}`
+    references before submission."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ResolvedValuesAiRuntimeTaskResolvedValues into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolvedValuesAiRuntimeTaskResolvedValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedValuesAiRuntimeTaskResolvedValues:
+        """Deserializes the ResolvedValuesAiRuntimeTaskResolvedValues from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -5611,6 +5865,12 @@ class RunNowResponse:
 class RunOutput:
     """Run output was retrieved successfully."""
 
+    ai_runtime_task_output: Optional[AiRuntimeTaskOutput] = None
+    """The output of an AiRuntimeTask, if available — MLflow identifiers, artifact paths, and
+    per-replica allocated compute. Run lifecycle / termination status lives on the surrounding
+    framework `RunTask.status` (`runs.proto:RunTask.status` of type `RunStatus`), not on this
+    output. See `tasks/genai/ai_runtime_task.proto:AiRuntimeTaskOutput`."""
+
     alert_output: Optional[AlertTaskOutput] = None
     """The output of an alert task, if available"""
 
@@ -5669,6 +5929,8 @@ class RunOutput:
     def as_dict(self) -> dict:
         """Serializes the RunOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_runtime_task_output:
+            body["ai_runtime_task_output"] = self.ai_runtime_task_output.as_dict()
         if self.alert_output:
             body["alert_output"] = self.alert_output.as_dict()
         if self.clean_rooms_notebook_output:
@@ -5704,6 +5966,8 @@ class RunOutput:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunOutput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.ai_runtime_task_output:
+            body["ai_runtime_task_output"] = self.ai_runtime_task_output
         if self.alert_output:
             body["alert_output"] = self.alert_output
         if self.clean_rooms_notebook_output:
@@ -5740,6 +6004,7 @@ class RunOutput:
     def from_dict(cls, d: Dict[str, Any]) -> RunOutput:
         """Deserializes the RunOutput from a dictionary."""
         return cls(
+            ai_runtime_task_output=_from_dict(d, "ai_runtime_task_output", AiRuntimeTaskOutput),
             alert_output=_from_dict(d, "alert_output", AlertTaskOutput),
             clean_rooms_notebook_output=_from_dict(
                 d, "clean_rooms_notebook_output", CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput
@@ -6043,6 +6308,10 @@ class RunTask:
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
 
+    ai_runtime_task: Optional[AiRuntimeTask] = None
+    """The task runs a multi-node GPU compute workload on Databricks AI Runtime. External-facing
+    surface; mirrors the AIR CLI (fka SGCLI) v2 YAML schema."""
+
     alert_task: Optional[AlertTask] = None
     """The task evaluates a Databricks alert and sends notifications to subscribers when the
     `alert_task` field is present."""
@@ -6261,6 +6530,8 @@ class RunTask:
     def as_dict(self) -> dict:
         """Serializes the RunTask into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_runtime_task:
+            body["ai_runtime_task"] = self.ai_runtime_task.as_dict()
         if self.alert_task:
             body["alert_task"] = self.alert_task.as_dict()
         if self.attempt_number is not None:
@@ -6374,6 +6645,8 @@ class RunTask:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunTask into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.ai_runtime_task:
+            body["ai_runtime_task"] = self.ai_runtime_task
         if self.alert_task:
             body["alert_task"] = self.alert_task
         if self.attempt_number is not None:
@@ -6488,6 +6761,7 @@ class RunTask:
     def from_dict(cls, d: Dict[str, Any]) -> RunTask:
         """Deserializes the RunTask from a dictionary."""
         return cls(
+            ai_runtime_task=_from_dict(d, "ai_runtime_task", AiRuntimeTask),
             alert_task=_from_dict(d, "alert_task", AlertTask),
             attempt_number=d.get("attempt_number", None),
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
@@ -7384,6 +7658,10 @@ class SubmitTask:
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
 
+    ai_runtime_task: Optional[AiRuntimeTask] = None
+    """The task runs a multi-node GPU compute workload on Databricks AI Runtime. External-facing
+    surface; mirrors the AIR CLI (fka SGCLI) v2 YAML schema."""
+
     alert_task: Optional[AlertTask] = None
     """The task evaluates a Databricks alert and sends notifications to subscribers when the
     `alert_task` field is present."""
@@ -7524,6 +7802,8 @@ class SubmitTask:
     def as_dict(self) -> dict:
         """Serializes the SubmitTask into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_runtime_task:
+            body["ai_runtime_task"] = self.ai_runtime_task.as_dict()
         if self.alert_task:
             body["alert_task"] = self.alert_task.as_dict()
         if self.clean_rooms_notebook_task:
@@ -7605,6 +7885,8 @@ class SubmitTask:
     def as_shallow_dict(self) -> dict:
         """Serializes the SubmitTask into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.ai_runtime_task:
+            body["ai_runtime_task"] = self.ai_runtime_task
         if self.alert_task:
             body["alert_task"] = self.alert_task
         if self.clean_rooms_notebook_task:
@@ -7687,6 +7969,7 @@ class SubmitTask:
     def from_dict(cls, d: Dict[str, Any]) -> SubmitTask:
         """Deserializes the SubmitTask from a dictionary."""
         return cls(
+            ai_runtime_task=_from_dict(d, "ai_runtime_task", AiRuntimeTask),
             alert_task=_from_dict(d, "alert_task", AlertTask),
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
             compute=_from_dict(d, "compute", Compute),
@@ -7934,6 +8217,10 @@ class Task:
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
 
+    ai_runtime_task: Optional[AiRuntimeTask] = None
+    """The task runs a multi-node GPU compute workload on Databricks AI Runtime. External-facing
+    surface; mirrors the AIR CLI (fka SGCLI) v2 YAML schema."""
+
     alert_task: Optional[AlertTask] = None
     """The task evaluates a Databricks alert and sends notifications to subscribers when the
     `alert_task` field is present."""
@@ -8082,6 +8369,8 @@ class Task:
     def as_dict(self) -> dict:
         """Serializes the Task into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_runtime_task:
+            body["ai_runtime_task"] = self.ai_runtime_task.as_dict()
         if self.alert_task:
             body["alert_task"] = self.alert_task.as_dict()
         if self.clean_rooms_notebook_task:
@@ -8165,6 +8454,8 @@ class Task:
     def as_shallow_dict(self) -> dict:
         """Serializes the Task into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.ai_runtime_task:
+            body["ai_runtime_task"] = self.ai_runtime_task
         if self.alert_task:
             body["alert_task"] = self.alert_task
         if self.clean_rooms_notebook_task:
@@ -8249,6 +8540,7 @@ class Task:
     def from_dict(cls, d: Dict[str, Any]) -> Task:
         """Deserializes the Task from a dictionary."""
         return cls(
+            ai_runtime_task=_from_dict(d, "ai_runtime_task", AiRuntimeTask),
             alert_task=_from_dict(d, "alert_task", AlertTask),
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
             compute=_from_dict(d, "compute", Compute),
