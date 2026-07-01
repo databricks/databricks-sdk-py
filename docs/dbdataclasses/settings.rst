@@ -726,7 +726,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: ListType
 
    Type of IP access list. Valid values are as follows and are case-sensitive:
-   * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or range. IP addresses in the block list are excluded even if they are included in an allow list.
+   - ``ALLOW``: An allow list. Include this IP or range. - ``BLOCK``: A block list. Exclude this IP or range. IP addresses in the block list are excluded even if they are included in an allow list.
 
    .. py:attribute:: ALLOW
       :value: "ALLOW"
@@ -934,7 +934,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TokenType
 
-   The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported.
+   The type of token request. As of now, only ``AZURE_ACTIVE_DIRECTORY_TOKEN`` is supported.
 
    .. py:attribute:: ARCLIGHT_AZURE_EXCHANGE_TOKEN
       :value: "ARCLIGHT_AZURE_EXCHANGE_TOKEN"

@@ -24,10 +24,10 @@
             
             w = WorkspaceClient()
             
-            created_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
+            created = w.catalogs.create(name=f"sdk-{time.time_ns()}")
             
             # cleanup
-            w.catalogs.delete(name=created_catalog.name, force=True)
+            w.catalogs.delete(name=created.name, force=True)
 
         Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the
         **CREATE_CATALOG** privilege.
@@ -136,13 +136,16 @@
           Whether to include catalogs not bound to the workspace. Effective only if the user has permission to
           update the catalog–workspace binding.
         :param max_results: int (optional)
-          Maximum number of catalogs to return. - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all valid catalogs are returned (not recommended). - Note: The number of
-          returned catalogs might be less than the specified max_results size, even zero. The only definitive
-          indication that no further catalogs can be fetched is when the next_page_token is unset from the
-          response.
+          Maximum number of catalogs to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid catalogs are returned (not recommended).
+          - Note: The number of returned catalogs might be less than the specified max_results size, even
+            zero. The only definitive indication that no further catalogs can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 

@@ -18,10 +18,9 @@
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
-          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
-          values.
-
-          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+          Entitlements assigned to the group. See `assigning entitlements
+          <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+          for a full list of supported values.
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -68,12 +67,11 @@
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
-          Query by which the results have to be filtered. Supported operators are equals(`eq`),
-          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
-          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
-          only support simple expressions.
-
-          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+          Query by which the results have to be filtered. Supported operators are equals(``eq``),
+          contains(``co``), starts with(``sw``) and not equals(``ne``). Additionally, simple expressions can
+          be formed using logical operators - ``and`` and ``or``. The `SCIM RFC
+          <https://tools.ietf.org/html/rfc7644#section-3.4.2.2>`__ has more details but we currently only
+          support simple expressions.
         :param sort_by: str (optional)
           Attribute to sort the results.
         :param sort_order: :class:`ListSortOrder` (optional)
@@ -106,10 +104,9 @@
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
-          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
-          values.
-
-          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+          Entitlements assigned to the group. See `assigning entitlements
+          <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+          for a full list of supported values.
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)

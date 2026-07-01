@@ -8,7 +8,7 @@
     tenant. Each credential is subject to Unity Catalog access-control policies that control which users and
     groups can access the credential.
 
-    To create credentials, you must be a Databricks account admin or have the `CREATE SERVICE CREDENTIAL`
+    To create credentials, you must be a Databricks account admin or have the ``CREATE SERVICE CREDENTIAL``
     privilege. The user who creates the credential can delegate ownership to another user or group to manage
     permissions on it.
 
@@ -84,7 +84,7 @@
 
     .. py:method:: list_credentials( [, include_unbound: Optional[bool], max_results: Optional[int], page_token: Optional[str], purpose: Optional[CredentialPurpose]]) -> Iterator[CredentialInfo]
 
-        Gets an array of credentials (as __CredentialInfo__ objects).
+        Gets an array of credentials (as **CredentialInfo** objects).
 
         The array is limited to only the credentials that the caller has permission to access. If the caller
         is a metastore admin, retrieval of credentials is unrestricted. There is no guarantee of a specific
@@ -98,10 +98,13 @@
           Whether to include credentials not bound to the workspace. Effective only if the user has permission
           to update the credential–workspace binding.
         :param max_results: int (optional)
-          Maximum number of credentials to return. - If not set, the default max page size is used. - When set
-          to a value greater than 0, the page length is the minimum of this value and a server-configured
-          value. - When set to 0, the page length is set to a server-configured value (recommended). - When
-          set to a value less than 0, an invalid parameter error is returned.
+          Maximum number of credentials to return.
+
+          - If not set, the default max page size is used.
+          - When set to a value greater than 0, the page length is the minimum of this value and a
+            server-configured value.
+          - When set to 0, the page length is set to a server-configured value (recommended).
+          - When set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Opaque token to retrieve the next page of results.
         :param purpose: :class:`CredentialPurpose` (optional)
@@ -114,8 +117,8 @@
 
         Updates a service or storage credential on the metastore.
 
-        The caller must be the owner of the credential or a metastore admin or have the `MANAGE` permission.
-        If the caller is a metastore admin, only the __owner__ field can be changed.
+        The caller must be the owner of the credential or a metastore admin or have the ``MANAGE`` permission.
+        If the caller is a metastore admin, only the **owner** field can be changed.
 
         :param name_arg: str
           Name of the credential.
@@ -151,13 +154,13 @@
 
         Validates a credential.
 
-        For service credentials (purpose is **SERVICE**), either the __credential_name__ or the cloud-specific
+        For service credentials (purpose is **SERVICE**), either the **credential_name** or the cloud-specific
         credential must be provided.
 
-        For storage credentials (purpose is **STORAGE**), at least one of __external_location_name__ and
-        __url__ need to be provided. If only one of them is provided, it will be used for validation. And if
-        both are provided, the __url__ will be used for validation, and __external_location_name__ will be
-        ignored when checking overlapping urls. Either the __credential_name__ or the cloud-specific
+        For storage credentials (purpose is **STORAGE**), at least one of **external_location_name** and
+        **url** need to be provided. If only one of them is provided, it will be used for validation. And if
+        both are provided, the **url** will be used for validation, and **external_location_name** will be
+        ignored when checking overlapping urls. Either the **credential_name** or the cloud-specific
         credential must be provided.
 
         The caller must be a metastore admin or the credential owner or have the required permission on the

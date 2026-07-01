@@ -39,7 +39,7 @@
         :param object_info: :class:`ExternalLineageObject`
           The object to query external lineage relationships for. Since this field is a query parameter,
           please flatten the nested fields. For example, if the object is a table, the query parameter should
-          look like: `object_info.table.name=main.sales.customers`
+          look like: ``object_info.table.name=main.sales.customers``
         :param lineage_direction: :class:`LineageDirection`
           The lineage direction to filter on.
         :param page_size: int (optional)
@@ -59,14 +59,14 @@
         :param external_lineage_relationship: :class:`UpdateRequestExternalLineage`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`ExternalLineageRelationship`
         

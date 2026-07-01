@@ -5,7 +5,7 @@
 .. py:class:: RecipientActivationAPI
 
     The Recipient Activation API is only applicable in the open sharing model where the recipient object has
-    the authentication type of `TOKEN`. The data recipient follows the activation link shared by the data
+    the authentication type of ``TOKEN``. The data recipient follows the activation link shared by the data
     provider to download the credential file that includes the access token. The recipient will then use the
     credential file to establish a secure connection with the provider to receive the shared data.
 

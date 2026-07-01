@@ -8,9 +8,8 @@
     resources. This API provides stable subnets for your workspace so that you can configure your firewalls on
     your Azure Storage accounts to allow access from Databricks. You can also use the API to provision private
     endpoints for Databricks to privately connect serverless compute resources to your Azure resources using
-    Azure Private Link. See [configure serverless secure connectivity].
-
-    [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+    Azure Private Link. See `configure serverless secure connectivity
+    <https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security>`__.
 
     .. py:method:: create_network_connectivity_configuration(network_connectivity_config: CreateNetworkConnectivityConfiguration) -> NetworkConnectivityConfiguration
 
@@ -22,9 +21,8 @@
         **IMPORTANT**: After you create the network connectivity configuration, you must assign one or more
         workspaces to the new network connectivity configuration. You can share one network connectivity
         configuration with multiple workspaces from the same Azure region within the same Databricks account.
-        See [configure serverless secure connectivity].
-
-        [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+        See `configure serverless secure connectivity
+        <https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security>`__.
 
         :param network_connectivity_config: :class:`CreateNetworkConnectivityConfiguration`
 
@@ -38,10 +36,9 @@
         resource.
 
         **IMPORTANT**: You must use Azure portal or other Azure tools to approve the private endpoint to
-        complete the connection. To get the information of the private endpoint created, make a `GET` request
-        on the new private endpoint rule. See [serverless private link].
-
-        [serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link
+        complete the connection. To get the information of the private endpoint created, make a ``GET``
+        request on the new private endpoint rule. See `serverless private link
+        <https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link>`__.
 
         :param network_connectivity_config_id: str
           Your Network Connectivity Configuration ID.
@@ -64,8 +61,8 @@
 
         Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private
         endpoint is immediately deleted. Otherwise, the private endpoint is deactivated and will be deleted
-        after one day of deactivation. When a private endpoint is deactivated, the `deactivated` field is set
-        to `true` and the private endpoint is not available to your serverless compute resources.
+        after one day of deactivation. When a private endpoint is deactivated, the ``deactivated`` field is
+        set to ``true`` and the private endpoint is not available to your serverless compute resources.
 
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
@@ -132,8 +129,8 @@
         :param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 

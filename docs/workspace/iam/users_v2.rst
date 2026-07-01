@@ -22,17 +22,16 @@
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`. This
-          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
-          Account SCIM APIs to update `displayName`.
-
-          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
+          String that represents a concatenation of given and family names. For example ``John Smith``. This
+          field cannot be updated through the Workspace SCIM APIs when `identity federation is enabled
+          <https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation>`__.
+          Use Account SCIM APIs to update ``displayName``.
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
-          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
-
-          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+          Entitlements assigned to the user. See `assigning entitlements
+          <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+          for a full list of supported values.
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
@@ -73,15 +72,14 @@
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
-          Query by which the results have to be filtered. Supported operators are equals(`eq`),
-          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
-          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
-          only support simple expressions.
-
-          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+          Query by which the results have to be filtered. Supported operators are equals(``eq``),
+          contains(``co``), starts with(``sw``) and not equals(``ne``). Additionally, simple expressions can
+          be formed using logical operators - ``and`` and ``or``. The `SCIM RFC
+          <https://tools.ietf.org/html/rfc7644#section-3.4.2.2>`__ has more details but we currently only
+          support simple expressions.
         :param sort_by: str (optional)
-          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
-          `name.givenName`, and `emails`.
+          Attribute to sort the results. Multi-part paths are supported. For example, ``userName``,
+          ``name.givenName``, and ``emails``.
         :param sort_order: :class:`GetSortOrder` (optional)
           The order to sort the results.
         :param start_index: int (optional)
@@ -117,15 +115,14 @@
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
-          Query by which the results have to be filtered. Supported operators are equals(`eq`),
-          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
-          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
-          only support simple expressions.
-
-          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+          Query by which the results have to be filtered. Supported operators are equals(``eq``),
+          contains(``co``), starts with(``sw``) and not equals(``ne``). Additionally, simple expressions can
+          be formed using logical operators - ``and`` and ``or``. The `SCIM RFC
+          <https://tools.ietf.org/html/rfc7644#section-3.4.2.2>`__ has more details but we currently only
+          support simple expressions.
         :param sort_by: str (optional)
-          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
-          `name.givenName`, and `emails`.
+          Attribute to sort the results. Multi-part paths are supported. For example, ``userName``,
+          ``name.givenName``, and ``emails``.
         :param sort_order: :class:`ListSortOrder` (optional)
           The order to sort the results.
         :param start_index: int (optional)
@@ -166,17 +163,16 @@
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`. This
-          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
-          Account SCIM APIs to update `displayName`.
-
-          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
+          String that represents a concatenation of given and family names. For example ``John Smith``. This
+          field cannot be updated through the Workspace SCIM APIs when `identity federation is enabled
+          <https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation>`__.
+          Use Account SCIM APIs to update ``displayName``.
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
-          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
-
-          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+          Entitlements assigned to the user. See `assigning entitlements
+          <https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements>`__
+          for a full list of supported values.
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)

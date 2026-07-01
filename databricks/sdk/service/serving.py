@@ -35,13 +35,13 @@ _LOG = logging.getLogger("databricks.sdk")
 class Ai21LabsConfig:
     ai21labs_api_key: Optional[str] = None
     """The Databricks secret key reference for an AI21 Labs API key. If you prefer to paste your API
-    key directly, see `ai21labs_api_key_plaintext`. You must provide an API key using one of the
-    following fields: `ai21labs_api_key` or `ai21labs_api_key_plaintext`."""
+    key directly, see ``ai21labs_api_key_plaintext``. You must provide an API key using one of the
+    following fields: ``ai21labs_api_key`` or ``ai21labs_api_key_plaintext``."""
 
     ai21labs_api_key_plaintext: Optional[str] = None
     """An AI21 Labs API key provided as a plaintext string. If you prefer to reference your key using
-    Databricks Secrets, see `ai21labs_api_key`. You must provide an API key using one of the
-    following fields: `ai21labs_api_key` or `ai21labs_api_key_plaintext`."""
+    Databricks Secrets, see ``ai21labs_api_key``. You must provide an API key using one of the
+    following fields: ``ai21labs_api_key`` or ``ai21labs_api_key_plaintext``."""
 
     def as_dict(self) -> dict:
         """Serializes the Ai21LabsConfig into a dictionary suitable for use as a JSON request body."""
@@ -415,32 +415,32 @@ class AmazonBedrockConfig:
     aws_access_key_id: Optional[str] = None
     """The Databricks secret key reference for an AWS access key ID with permissions to interact with
     Bedrock services. If you prefer to paste your API key directly, see
-    `aws_access_key_id_plaintext`. You must provide an API key using one of the following fields:
-    `aws_access_key_id` or `aws_access_key_id_plaintext`."""
+    ``aws_access_key_id_plaintext``. You must provide an API key using one of the following fields:
+    ``aws_access_key_id`` or ``aws_access_key_id_plaintext``."""
 
     aws_access_key_id_plaintext: Optional[str] = None
     """An AWS access key ID with permissions to interact with Bedrock services provided as a plaintext
-    string. If you prefer to reference your key using Databricks Secrets, see `aws_access_key_id`.
-    You must provide an API key using one of the following fields: `aws_access_key_id` or
-    `aws_access_key_id_plaintext`."""
+    string. If you prefer to reference your key using Databricks Secrets, see ``aws_access_key_id``.
+    You must provide an API key using one of the following fields: ``aws_access_key_id`` or
+    ``aws_access_key_id_plaintext``."""
 
     aws_secret_access_key: Optional[str] = None
     """The Databricks secret key reference for an AWS secret access key paired with the access key ID,
     with permissions to interact with Bedrock services. If you prefer to paste your API key
-    directly, see `aws_secret_access_key_plaintext`. You must provide an API key using one of the
-    following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`."""
+    directly, see ``aws_secret_access_key_plaintext``. You must provide an API key using one of the
+    following fields: ``aws_secret_access_key`` or ``aws_secret_access_key_plaintext``."""
 
     aws_secret_access_key_plaintext: Optional[str] = None
     """An AWS secret access key paired with the access key ID, with permissions to interact with
     Bedrock services provided as a plaintext string. If you prefer to reference your key using
-    Databricks Secrets, see `aws_secret_access_key`. You must provide an API key using one of the
-    following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`."""
+    Databricks Secrets, see ``aws_secret_access_key``. You must provide an API key using one of the
+    following fields: ``aws_secret_access_key`` or ``aws_secret_access_key_plaintext``."""
 
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the external model will use to access AWS resources. You must
     authenticate using an instance profile or access keys. If you prefer to authenticate using
-    access keys, see `aws_access_key_id`, `aws_access_key_id_plaintext`, `aws_secret_access_key` and
-    `aws_secret_access_key_plaintext`."""
+    access keys, see ``aws_access_key_id``, ``aws_access_key_id_plaintext``,
+    ``aws_secret_access_key`` and ``aws_secret_access_key_plaintext``."""
 
     def as_dict(self) -> dict:
         """Serializes the AmazonBedrockConfig into a dictionary suitable for use as a JSON request body."""
@@ -505,13 +505,13 @@ class AmazonBedrockConfigBedrockProvider(Enum):
 class AnthropicConfig:
     anthropic_api_key: Optional[str] = None
     """The Databricks secret key reference for an Anthropic API key. If you prefer to paste your API
-    key directly, see `anthropic_api_key_plaintext`. You must provide an API key using one of the
-    following fields: `anthropic_api_key` or `anthropic_api_key_plaintext`."""
+    key directly, see ``anthropic_api_key_plaintext``. You must provide an API key using one of the
+    following fields: ``anthropic_api_key`` or ``anthropic_api_key_plaintext``."""
 
     anthropic_api_key_plaintext: Optional[str] = None
     """The Anthropic API key provided as a plaintext string. If you prefer to reference your key using
-    Databricks Secrets, see `anthropic_api_key`. You must provide an API key using one of the
-    following fields: `anthropic_api_key` or `anthropic_api_key_plaintext`."""
+    Databricks Secrets, see ``anthropic_api_key``. You must provide an API key using one of the
+    following fields: ``anthropic_api_key`` or ``anthropic_api_key_plaintext``."""
 
     def as_dict(self) -> dict:
         """Serializes the AnthropicConfig into a dictionary suitable for use as a JSON request body."""
@@ -547,11 +547,11 @@ class ApiKeyAuth:
 
     value: Optional[str] = None
     """The Databricks secret key reference for an API Key. If you prefer to paste your token directly,
-    see `value_plaintext`."""
+    see ``value_plaintext``."""
 
     value_plaintext: Optional[str] = None
     """The API Key provided as a plaintext string. If you prefer to reference your token using
-    Databricks Secrets, see `value`."""
+    Databricks Secrets, see ``value``."""
 
     def as_dict(self) -> dict:
         """Serializes the ApiKeyAuth into a dictionary suitable for use as a JSON request body."""
@@ -730,11 +730,11 @@ class AutoCaptureState:
 class BearerTokenAuth:
     token: Optional[str] = None
     """The Databricks secret key reference for a token. If you prefer to paste your token directly, see
-    `token_plaintext`."""
+    ``token_plaintext``."""
 
     token_plaintext: Optional[str] = None
     """The token provided as a plaintext string. If you prefer to reference your token using Databricks
-    Secrets, see `token`."""
+    Secrets, see ``token``."""
 
     def as_dict(self) -> dict:
         """Serializes the BearerTokenAuth into a dictionary suitable for use as a JSON request body."""
@@ -833,13 +833,13 @@ class CohereConfig:
 
     cohere_api_key: Optional[str] = None
     """The Databricks secret key reference for a Cohere API key. If you prefer to paste your API key
-    directly, see `cohere_api_key_plaintext`. You must provide an API key using one of the following
-    fields: `cohere_api_key` or `cohere_api_key_plaintext`."""
+    directly, see ``cohere_api_key_plaintext``. You must provide an API key using one of the
+    following fields: ``cohere_api_key`` or ``cohere_api_key_plaintext``."""
 
     cohere_api_key_plaintext: Optional[str] = None
     """The Cohere API key provided as a plaintext string. If you prefer to reference your key using
-    Databricks Secrets, see `cohere_api_key`. You must provide an API key using one of the following
-    fields: `cohere_api_key` or `cohere_api_key_plaintext`."""
+    Databricks Secrets, see ``cohere_api_key``. You must provide an API key using one of the
+    following fields: ``cohere_api_key`` or ``cohere_api_key_plaintext``."""
 
     def as_dict(self) -> dict:
         """Serializes the CohereConfig into a dictionary suitable for use as a JSON request body."""
@@ -964,15 +964,15 @@ class DatabricksModelServingConfig:
     """The Databricks secret key reference for a Databricks API token that corresponds to a user or
     service principal with Can Query access to the model serving endpoint pointed to by this
     external model. If you prefer to paste your API key directly, see
-    `databricks_api_token_plaintext`. You must provide an API key using one of the following fields:
-    `databricks_api_token` or `databricks_api_token_plaintext`."""
+    ``databricks_api_token_plaintext``. You must provide an API key using one of the following
+    fields: ``databricks_api_token`` or ``databricks_api_token_plaintext``."""
 
     databricks_api_token_plaintext: Optional[str] = None
     """The Databricks API token that corresponds to a user or service principal with Can Query access
     to the model serving endpoint pointed to by this external model provided as a plaintext string.
-    If you prefer to reference your key using Databricks Secrets, see `databricks_api_token`. You
-    must provide an API key using one of the following fields: `databricks_api_token` or
-    `databricks_api_token_plaintext`."""
+    If you prefer to reference your key using Databricks Secrets, see ``databricks_api_token``. You
+    must provide an API key using one of the following fields: ``databricks_api_token`` or
+    ``databricks_api_token_plaintext``."""
 
     def as_dict(self) -> dict:
         """Serializes the DatabricksModelServingConfig into a dictionary suitable for use as a JSON request body."""
@@ -1808,28 +1808,23 @@ class GoogleCloudVertexAiConfig:
     """This is the Google Cloud project id that the service account is associated with."""
 
     region: str
-    """This is the region for the Google Cloud Vertex AI Service. See [supported regions] for more
-    details. Some models are only available in specific regions.
-    
-    [supported regions]: https://cloud.google.com/vertex-ai/docs/general/locations"""
+    """This is the region for the Google Cloud Vertex AI Service. See `supportedregions
+    <https://cloud.google.com/vertex-ai/docs/general/locations>`__ for more details. Some models are
+    only available in specific regions."""
 
     private_key: Optional[str] = None
     """The Databricks secret key reference for a private key for the service account which has access
-    to the Google Cloud Vertex AI Service. See [Best practices for managing service account keys].
-    If you prefer to paste your API key directly, see `private_key_plaintext`. You must provide an
-    API key using one of the following fields: `private_key` or `private_key_plaintext`
-    
-    [Best practices for managing service account keys]:
-    https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"""
+    to the Google Cloud Vertex AI Service. See `Bestpractices for managing service account keys
+    <https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys>`__. If you
+    prefer to paste your API key directly, see ``private_key_plaintext``. You must provide an API
+    key using one of the following fields: ``private_key`` or ``private_key_plaintext``"""
 
     private_key_plaintext: Optional[str] = None
     """The private key for the service account which has access to the Google Cloud Vertex AI Service
-    provided as a plaintext secret. See [Best practices for managing service account keys]. If you
-    prefer to reference your key using Databricks Secrets, see `private_key`. You must provide an
-    API key using one of the following fields: `private_key` or `private_key_plaintext`.
-    
-    [Best practices for managing service account keys]:
-    https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"""
+    provided as a plaintext secret. See `Bestpractices for managing service account keys
+    <https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys>`__. If you
+    prefer to reference your key using Databricks Secrets, see ``private_key``. You must provide an
+    API key using one of the following fields: ``private_key`` or ``private_key_plaintext``."""
 
     def as_dict(self) -> dict:
         """Serializes the GoogleCloudVertexAiConfig into a dictionary suitable for use as a JSON request body."""
@@ -1955,14 +1950,15 @@ class OpenAiConfig:
     microsoft_entra_client_secret: Optional[str] = None
     """The Databricks secret key reference for a client secret used for Microsoft Entra ID
     authentication. If you prefer to paste your client secret directly, see
-    `microsoft_entra_client_secret_plaintext`. You must provide an API key using one of the
-    following fields: `microsoft_entra_client_secret` or `microsoft_entra_client_secret_plaintext`."""
+    ``microsoft_entra_client_secret_plaintext``. You must provide an API key using one of the
+    following fields: ``microsoft_entra_client_secret`` or
+    ``microsoft_entra_client_secret_plaintext``."""
 
     microsoft_entra_client_secret_plaintext: Optional[str] = None
     """The client secret used for Microsoft Entra ID authentication provided as a plaintext string. If
-    you prefer to reference your key using Databricks Secrets, see `microsoft_entra_client_secret`.
-    You must provide an API key using one of the following fields: `microsoft_entra_client_secret`
-    or `microsoft_entra_client_secret_plaintext`."""
+    you prefer to reference your key using Databricks Secrets, see
+    ``microsoft_entra_client_secret``. You must provide an API key using one of the following
+    fields: ``microsoft_entra_client_secret`` or ``microsoft_entra_client_secret_plaintext``."""
 
     microsoft_entra_tenant_id: Optional[str] = None
     """This field is only required for Azure AD OpenAI and is the Microsoft Entra Tenant ID."""
@@ -1975,13 +1971,14 @@ class OpenAiConfig:
 
     openai_api_key: Optional[str] = None
     """The Databricks secret key reference for an OpenAI API key using the OpenAI or Azure service. If
-    you prefer to paste your API key directly, see `openai_api_key_plaintext`. You must provide an
-    API key using one of the following fields: `openai_api_key` or `openai_api_key_plaintext`."""
+    you prefer to paste your API key directly, see ``openai_api_key_plaintext``. You must provide an
+    API key using one of the following fields: ``openai_api_key`` or ``openai_api_key_plaintext``."""
 
     openai_api_key_plaintext: Optional[str] = None
     """The OpenAI API key using the OpenAI or Azure service provided as a plaintext string. If you
-    prefer to reference your key using Databricks Secrets, see `openai_api_key`. You must provide an
-    API key using one of the following fields: `openai_api_key` or `openai_api_key_plaintext`."""
+    prefer to reference your key using Databricks Secrets, see ``openai_api_key``. You must provide
+    an API key using one of the following fields: ``openai_api_key`` or
+    ``openai_api_key_plaintext``."""
 
     openai_api_type: Optional[str] = None
     """This is an optional field to specify the type of OpenAI API to use. For Azure OpenAI, this field
@@ -2076,13 +2073,13 @@ class OpenAiConfig:
 class PaLmConfig:
     palm_api_key: Optional[str] = None
     """The Databricks secret key reference for a PaLM API key. If you prefer to paste your API key
-    directly, see `palm_api_key_plaintext`. You must provide an API key using one of the following
-    fields: `palm_api_key` or `palm_api_key_plaintext`."""
+    directly, see ``palm_api_key_plaintext``. You must provide an API key using one of the following
+    fields: ``palm_api_key`` or ``palm_api_key_plaintext``."""
 
     palm_api_key_plaintext: Optional[str] = None
     """The PaLM API key provided as a plaintext string. If you prefer to reference your key using
-    Databricks Secrets, see `palm_api_key`. You must provide an API key using one of the following
-    fields: `palm_api_key` or `palm_api_key_plaintext`."""
+    Databricks Secrets, see ``palm_api_key``. You must provide an API key using one of the following
+    fields: ``palm_api_key`` or ``palm_api_key_plaintext``."""
 
     def as_dict(self) -> dict:
         """Serializes the PaLmConfig into a dictionary suitable for use as a JSON request body."""
@@ -2337,27 +2334,27 @@ class PutResponse:
 @dataclass
 class QueryEndpointResponse:
     choices: Optional[List[V1ResponseChoiceElement]] = None
-    """The list of choices returned by the __chat or completions external/foundation model__ serving
+    """The list of choices returned by the **chat or completions external/foundation model** serving
     endpoint."""
 
     created: Optional[int] = None
-    """The timestamp in seconds when the query was created in Unix time returned by a __completions or
-    chat external/foundation model__ serving endpoint."""
+    """The timestamp in seconds when the query was created in Unix time returned by a **completions or
+    chat external/foundation model** serving endpoint."""
 
     data: Optional[List[EmbeddingsV1ResponseEmbeddingElement]] = None
-    """The list of the embeddings returned by the __embeddings external/foundation model__ serving
+    """The list of the embeddings returned by the **embeddings external/foundation model** serving
     endpoint."""
 
     id: Optional[str] = None
-    """The ID of the query that may be returned by a __completions or chat external/foundation model__
+    """The ID of the query that may be returned by a **completions or chat external/foundation model**
     serving endpoint."""
 
     model: Optional[str] = None
-    """The name of the __external/foundation model__ used for querying. This is the name of the model
+    """The name of the **external/foundation model** used for querying. This is the name of the model
     that was specified in the endpoint config."""
 
     object: Optional[QueryEndpointResponseObject] = None
-    """The type of object returned by the __external/foundation model__ serving endpoint, one of
+    """The type of object returned by the **external/foundation model** serving endpoint, one of
     [text_completion, chat.completion, list (of embeddings)]."""
 
     outputs: Optional[List[any]] = None
@@ -2371,7 +2368,7 @@ class QueryEndpointResponse:
     models behind the same endpoint with traffic split."""
 
     usage: Optional[ExternalModelUsageElement] = None
-    """The usage object that may be returned by the __external/foundation model__ serving endpoint.
+    """The usage object that may be returned by the **external/foundation model** serving endpoint.
     This contains information about the number of tokens used in the prompt and response."""
 
     def as_dict(self) -> dict:
@@ -2442,7 +2439,7 @@ class QueryEndpointResponse:
 
 
 class QueryEndpointResponseObject(Enum):
-    """The type of object returned by the __external/foundation model__ serving endpoint, one of
+    """The type of object returned by the **external/foundation model** serving endpoint, one of
     [text_completion, chat.completion, list (of embeddings)]."""
 
     CHAT_COMPLETION = "chat.completion"
@@ -2564,8 +2561,8 @@ class ServedEntityInput:
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
     for serving this entity. Note: this is an experimental feature and subject to change. Example
-    entity environment variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
-    "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}`"""
+    entity environment variables that refer to Databricks secrets: ``{"OPENAI_API_KEY":
+    "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}``"""
 
     external_model: Optional[ExternalModel] = None
     """The external model to be served. NOTE: Only one of external_model and (entity_name,
@@ -2617,9 +2614,8 @@ class ServedEntityInput:
     """The workload type of the served entity. The workload type selects which type of compute to use
     in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
-    available [GPU types].
-    
-    [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
+    available `GPU types
+    <https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types>`__."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedEntityInput into a dictionary suitable for use as a JSON request body."""
@@ -2735,8 +2731,8 @@ class ServedEntityOutput:
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
     for serving this entity. Note: this is an experimental feature and subject to change. Example
-    entity environment variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
-    "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}`"""
+    entity environment variables that refer to Databricks secrets: ``{"OPENAI_API_KEY":
+    "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}``"""
 
     external_model: Optional[ExternalModel] = None
     """The external model to be served. NOTE: Only one of external_model and (entity_name,
@@ -2792,9 +2788,8 @@ class ServedEntityOutput:
     """The workload type of the served entity. The workload type selects which type of compute to use
     in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
-    available [GPU types].
-    
-    [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
+    available `GPU types
+    <https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types>`__."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedEntityOutput into a dictionary suitable for use as a JSON request body."""
@@ -2979,8 +2974,8 @@ class ServedModelInput:
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
     for serving this entity. Note: this is an experimental feature and subject to change. Example
-    entity environment variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
-    "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}`"""
+    entity environment variables that refer to Databricks secrets: ``{"OPENAI_API_KEY":
+    "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}``"""
 
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
@@ -3021,9 +3016,8 @@ class ServedModelInput:
     """The workload type of the served entity. The workload type selects which type of compute to use
     in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
-    available [GPU types].
-    
-    [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
+    available `GPU types
+    <https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types>`__."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedModelInput into a dictionary suitable for use as a JSON request body."""
@@ -3137,8 +3131,8 @@ class ServedModelOutput:
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
     for serving this entity. Note: this is an experimental feature and subject to change. Example
-    entity environment variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
-    "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}`"""
+    entity environment variables that refer to Databricks secrets: ``{"OPENAI_API_KEY":
+    "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}``"""
 
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
@@ -3182,9 +3176,8 @@ class ServedModelOutput:
     """The workload type of the served entity. The workload type selects which type of compute to use
     in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
-    available [GPU types].
-    
-    [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
+    available `GPU types
+    <https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types>`__."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedModelOutput into a dictionary suitable for use as a JSON request body."""
@@ -3424,6 +3417,9 @@ class ServingEndpoint:
     task: Optional[str] = None
     """The task type of the serving endpoint."""
 
+    telemetry_config: Optional[TelemetryConfig] = None
+    """Telemetry configuration for the endpoint, including inference-table payload logging."""
+
     usage_policy_id: Optional[str] = None
     """The usage policy associated with serving endpoint."""
 
@@ -3454,6 +3450,8 @@ class ServingEndpoint:
             body["tags"] = [v.as_dict() for v in self.tags]
         if self.task is not None:
             body["task"] = self.task
+        if self.telemetry_config:
+            body["telemetry_config"] = self.telemetry_config.as_dict()
         if self.usage_policy_id is not None:
             body["usage_policy_id"] = self.usage_policy_id
         return body
@@ -3485,6 +3483,8 @@ class ServingEndpoint:
             body["tags"] = self.tags
         if self.task is not None:
             body["task"] = self.task
+        if self.telemetry_config:
+            body["telemetry_config"] = self.telemetry_config
         if self.usage_policy_id is not None:
             body["usage_policy_id"] = self.usage_policy_id
         return body
@@ -3505,6 +3505,7 @@ class ServingEndpoint:
             state=_from_dict(d, "state", EndpointState),
             tags=_repeated_dict(d, "tags", EndpointTag),
             task=d.get("task", None),
+            telemetry_config=_from_dict(d, "telemetry_config", TelemetryConfig),
             usage_policy_id=d.get("usage_policy_id", None),
         )
 
@@ -3677,6 +3678,9 @@ class ServingEndpointDetailed:
     task: Optional[str] = None
     """The task type of the serving endpoint."""
 
+    telemetry_config: Optional[TelemetryConfig] = None
+    """Telemetry configuration for the endpoint, including inference-table payload logging."""
+
     def as_dict(self) -> dict:
         """Serializes the ServingEndpointDetailed into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3716,6 +3720,8 @@ class ServingEndpointDetailed:
             body["tags"] = [v.as_dict() for v in self.tags]
         if self.task is not None:
             body["task"] = self.task
+        if self.telemetry_config:
+            body["telemetry_config"] = self.telemetry_config.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3757,6 +3763,8 @@ class ServingEndpointDetailed:
             body["tags"] = self.tags
         if self.task is not None:
             body["task"] = self.task
+        if self.telemetry_config:
+            body["telemetry_config"] = self.telemetry_config
         return body
 
     @classmethod
@@ -3781,6 +3789,7 @@ class ServingEndpointDetailed:
             state=_from_dict(d, "state", EndpointState),
             tags=_repeated_dict(d, "tags", EndpointTag),
             task=d.get("task", None),
+            telemetry_config=_from_dict(d, "telemetry_config", TelemetryConfig),
         )
 
 
@@ -3923,6 +3932,66 @@ class ServingModelWorkloadType(Enum):
 
 
 @dataclass
+class TelemetryConfig:
+    inference_table_config: Optional[TelemetryInferenceTableConfig] = None
+    """Configuration for inference table payload logging, including sampling."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TelemetryConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.inference_table_config:
+            body["inference_table_config"] = self.inference_table_config.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TelemetryConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.inference_table_config:
+            body["inference_table_config"] = self.inference_table_config
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TelemetryConfig:
+        """Deserializes the TelemetryConfig from a dictionary."""
+        return cls(inference_table_config=_from_dict(d, "inference_table_config", TelemetryInferenceTableConfig))
+
+
+@dataclass
+class TelemetryInferenceTableConfig:
+    """Inference table payload logging configuration"""
+
+    name: Optional[str] = None
+    """The full name of the inference table created for this endpoint."""
+
+    sampling_fraction: Optional[float] = None
+    """Fraction of requests sampled for payload logging, in the range [0.0, 1.0], where 1.0 logs all
+    requests."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TelemetryInferenceTableConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.sampling_fraction is not None:
+            body["sampling_fraction"] = self.sampling_fraction
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TelemetryInferenceTableConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.sampling_fraction is not None:
+            body["sampling_fraction"] = self.sampling_fraction
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TelemetryInferenceTableConfig:
+        """Deserializes the TelemetryInferenceTableConfig from a dictionary."""
+        return cls(name=d.get("name", None), sampling_fraction=d.get("sampling_fraction", None))
+
+
+@dataclass
 class TrafficConfig:
     routes: Optional[List[Route]] = None
     """The list of routes that define traffic to each served entity."""
@@ -3985,16 +4054,16 @@ class V1ResponseChoiceElement:
     """The finish reason returned by the endpoint."""
 
     index: Optional[int] = None
-    """The index of the choice in the __chat or completions__ response."""
+    """The index of the choice in the **chat or completions** response."""
 
     logprobs: Optional[int] = None
-    """The logprobs returned only by the __completions__ endpoint."""
+    """The logprobs returned only by the **completions** endpoint."""
 
     message: Optional[ChatMessage] = None
-    """The message response from the __chat__ endpoint."""
+    """The message response from the **chat** endpoint."""
 
     text: Optional[str] = None
-    """The text response from the __completions__ endpoint."""
+    """The text response from the **completions** endpoint."""
 
     def as_dict(self) -> dict:
         """Serializes the V1ResponseChoiceElement into a dictionary suitable for use as a JSON request body."""
@@ -4124,6 +4193,7 @@ class ServingEndpointsAPI:
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
+        telemetry_config: Optional[TelemetryConfig] = None,
     ) -> Wait[ServingEndpointDetailed]:
         """Create a new serving endpoint.
 
@@ -4148,6 +4218,8 @@ class ServingEndpointsAPI:
           Enable route optimization for the serving endpoint.
         :param tags: List[:class:`EndpointTag`] (optional)
           Tags to be attached to the serving endpoint and automatically propagated to billing logs.
+        :param telemetry_config: :class:`TelemetryConfig` (optional)
+          Configuration for persisting endpoint telemetry (logs, traces, and metrics) to Unity Catalog tables.
 
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
@@ -4173,6 +4245,8 @@ class ServingEndpointsAPI:
             body["route_optimized"] = route_optimized
         if tags is not None:
             body["tags"] = [v.as_dict() for v in tags]
+        if telemetry_config is not None:
+            body["telemetry_config"] = telemetry_config.as_dict()
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -4201,6 +4275,7 @@ class ServingEndpointsAPI:
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
+        telemetry_config: Optional[TelemetryConfig] = None,
         timeout=timedelta(minutes=20),
     ) -> ServingEndpointDetailed:
         return self.create(
@@ -4213,6 +4288,7 @@ class ServingEndpointsAPI:
             rate_limits=rate_limits,
             route_optimized=route_optimized,
             tags=tags,
+            telemetry_config=telemetry_config,
         ).result(timeout=timeout)
 
     def create_provisioned_throughput_endpoint(
@@ -4445,8 +4521,8 @@ class ServingEndpointsAPI:
         :param sub_domain: str (optional)
           Optional subdomain to prepend to the connection URL's host. If provided, this will be added as a
           prefix to the connection URL's host. For example, if the connection URL is
-          `https://api.example.com/v1` and `sub_domain` is `"custom"`, the resulting URL will be
-          `https://custom.api.example.com/v1`.
+          ``https://api.example.com/v1`` and ``sub_domain`` is ``"custom"``, the resulting URL will be
+          ``https://custom.api.example.com/v1``.
 
         :returns: :class:`HttpRequestResponse`
         """
@@ -4666,40 +4742,40 @@ class ServingEndpointsAPI:
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
           Pandas Dataframe input in the split orientation.
         :param extra_params: Dict[str,str] (optional)
-          The extra parameters field used ONLY for __completions, chat,__ and __embeddings external &
-          foundation model__ serving endpoints. This is a map of strings and should only be used with other
+          The extra parameters field used ONLY for **completions, chat,** and **embeddings external &
+          foundation model** serving endpoints. This is a map of strings and should only be used with other
           external/foundation model query fields.
         :param input: Any (optional)
-          The input string (or array of strings) field used ONLY for __embeddings external & foundation
-          model__ serving endpoints and is the only field (along with extra_params if needed) used by
+          The input string (or array of strings) field used ONLY for **embeddings external & foundation
+          model** serving endpoints and is the only field (along with extra_params if needed) used by
           embeddings queries.
         :param inputs: Any (optional)
           Tensor-based input in columnar format.
         :param instances: List[Any] (optional)
           Tensor-based input in row format.
         :param max_tokens: int (optional)
-          The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving
+          The max tokens field used ONLY for **completions** and **chat external & foundation model** serving
           endpoints. This is an integer and should only be used with other chat/completions query fields.
         :param messages: List[:class:`ChatMessage`] (optional)
-          The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an
+          The messages field used ONLY for **chat external & foundation model** serving endpoints. This is an
           array of ChatMessage objects and should only be used with other chat query fields.
         :param n: int (optional)
-          The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation
-          model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be
+          The n (number of candidates) field used ONLY for **completions** and **chat external & foundation
+          model** serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be
           used with other chat/completions query fields.
         :param prompt: Any (optional)
-          The prompt string (or array of strings) field used ONLY for __completions external & foundation
-          model__ serving endpoints and should only be used with other completions query fields.
+          The prompt string (or array of strings) field used ONLY for **completions external & foundation
+          model** serving endpoints and should only be used with other completions query fields.
         :param stop: List[str] (optional)
-          The stop sequences field used ONLY for __completions__ and __chat external & foundation model__
+          The stop sequences field used ONLY for **completions** and **chat external & foundation model**
           serving endpoints. This is a list of strings and should only be used with other chat/completions
           query fields.
         :param stream: bool (optional)
-          The stream field used ONLY for __completions__ and __chat external & foundation model__ serving
+          The stream field used ONLY for **completions** and **chat external & foundation model** serving
           endpoints. This is a boolean defaulting to false and should only be used with other chat/completions
           query fields.
         :param temperature: float (optional)
-          The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving
+          The temperature field used ONLY for **completions** and **chat external & foundation model** serving
           endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
           other chat/completions query fields.
         :param usage_context: Dict[str,str] (optional)
@@ -5033,40 +5109,40 @@ class ServingEndpointsDataPlaneAPI:
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
           Pandas Dataframe input in the split orientation.
         :param extra_params: Dict[str,str] (optional)
-          The extra parameters field used ONLY for __completions, chat,__ and __embeddings external &
-          foundation model__ serving endpoints. This is a map of strings and should only be used with other
+          The extra parameters field used ONLY for **completions, chat,** and **embeddings external &
+          foundation model** serving endpoints. This is a map of strings and should only be used with other
           external/foundation model query fields.
         :param input: Any (optional)
-          The input string (or array of strings) field used ONLY for __embeddings external & foundation
-          model__ serving endpoints and is the only field (along with extra_params if needed) used by
+          The input string (or array of strings) field used ONLY for **embeddings external & foundation
+          model** serving endpoints and is the only field (along with extra_params if needed) used by
           embeddings queries.
         :param inputs: Any (optional)
           Tensor-based input in columnar format.
         :param instances: List[Any] (optional)
           Tensor-based input in row format.
         :param max_tokens: int (optional)
-          The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving
+          The max tokens field used ONLY for **completions** and **chat external & foundation model** serving
           endpoints. This is an integer and should only be used with other chat/completions query fields.
         :param messages: List[:class:`ChatMessage`] (optional)
-          The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an
+          The messages field used ONLY for **chat external & foundation model** serving endpoints. This is an
           array of ChatMessage objects and should only be used with other chat query fields.
         :param n: int (optional)
-          The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation
-          model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be
+          The n (number of candidates) field used ONLY for **completions** and **chat external & foundation
+          model** serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be
           used with other chat/completions query fields.
         :param prompt: Any (optional)
-          The prompt string (or array of strings) field used ONLY for __completions external & foundation
-          model__ serving endpoints and should only be used with other completions query fields.
+          The prompt string (or array of strings) field used ONLY for **completions external & foundation
+          model** serving endpoints and should only be used with other completions query fields.
         :param stop: List[str] (optional)
-          The stop sequences field used ONLY for __completions__ and __chat external & foundation model__
+          The stop sequences field used ONLY for **completions** and **chat external & foundation model**
           serving endpoints. This is a list of strings and should only be used with other chat/completions
           query fields.
         :param stream: bool (optional)
-          The stream field used ONLY for __completions__ and __chat external & foundation model__ serving
+          The stream field used ONLY for **completions** and **chat external & foundation model** serving
           endpoints. This is a boolean defaulting to false and should only be used with other chat/completions
           query fields.
         :param temperature: float (optional)
-          The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving
+          The temperature field used ONLY for **completions** and **chat external & foundation model** serving
           endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
           other chat/completions query fields.
         :param usage_context: Dict[str,str] (optional)

@@ -55,9 +55,10 @@
     .. py:method:: update(listing_id: str, installation_id: str, installation: InstallationDetail [, rotate_token: Optional[bool]]) -> UpdateInstallationResponse
 
         This is a update API that will update the part of the fields defined in the installation table as well
-        as interact with external services according to the fields not included in the installation table 1.
-        the token will be rotate if the rotateToken flag is true 2. the token will be forcibly rotate if the
-        rotateToken flag is true and the tokenInfo field is empty
+        as interact with external services according to the fields not included in the installation table
+
+        1. the token will be rotate if the rotateToken flag is true
+        2. the token will be forcibly rotate if the rotateToken flag is true and the tokenInfo field is empty
 
         :param listing_id: str
         :param installation_id: str

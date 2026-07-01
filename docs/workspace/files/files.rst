@@ -8,22 +8,22 @@
     directories by referring to their URI. The API makes working with file content as raw bytes easier and
     more efficient.
 
-    The API supports [Unity Catalog volumes], where files and directories to operate on are specified using
-    their volume URI path, which follows the format
+    The API supports `Unity Catalog volumes
+    <https://docs.databricks.com/en/connect/unity-catalog/volumes.html>`__, where files and directories to
+    operate on are specified using their volume URI path, which follows the format
     /Volumes/&lt;catalog_name&gt;/&lt;schema_name&gt;/&lt;volume_name&gt;/&lt;path_to_file&gt;.
 
-    The Files API has two distinct endpoints, one for working with files (`/fs/files`) and another one for
-    working with directories (`/fs/directories`). Both endpoints use the standard HTTP methods GET, HEAD, PUT,
-    and DELETE to manage files and directories specified using their URI path. The path is always absolute.
+    The Files API has two distinct endpoints, one for working with files (``/fs/files``) and another one for
+    working with directories (``/fs/directories``). Both endpoints use the standard HTTP methods GET, HEAD,
+    PUT, and DELETE to manage files and directories specified using their URI path. The path is always
+    absolute.
 
     Use of Files API may incur Databricks data transfer charges.
-
-    [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 
     .. py:method:: create_directory(directory_path: str)
 
         Creates an empty directory. If necessary, also creates any parent directories of the new, empty
-        directory (like the shell command `mkdir -p`). If called on an existing directory, returns a success
+        directory (like the shell command ``mkdir -p``). If called on an existing directory, returns a success
         response; this method is idempotent (it will succeed if the directory already exists).
 
         :param directory_path: str
@@ -100,8 +100,8 @@
 
         This method is useful to check if a directory exists and the caller has access to it.
 
-        If you wish to ensure the directory exists, you can instead use `PUT`, which will create the directory
-        if it does not exist, and is idempotent (it will succeed if the directory already exists).
+        If you wish to ensure the directory exists, you can instead use ``PUT``, which will create the
+        directory if it does not exist, and is idempotent (it will succeed if the directory already exists).
 
         :param directory_path: str
           The absolute path of a directory.
@@ -128,7 +128,7 @@
           The absolute path of a directory.
         :param page_size: int (optional)
           The maximum number of directory entries to return. The response may contain fewer entries. If the
-          response contains a `next_page_token`, there may be more entries, even if fewer than `page_size`
+          response contains a ``next_page_token``, there may be more entries, even if fewer than ``page_size``
           entries are in the response.
 
           We recommend not to set this value unless you are intentionally listing less than the complete
@@ -137,12 +137,12 @@
           If unspecified, at most 1000 directory entries will be returned. The maximum value is 1000. Values
           above 1000 will be coerced to 1000.
         :param page_token: str (optional)
-          An opaque page token which was the `next_page_token` in the response of the previous request to list
-          the contents of this directory. Provide this token to retrieve the next page of directory entries.
-          When providing a `page_token`, all other parameters provided to the request must match the previous
-          request. To list all of the entries in a directory, it is necessary to continue requesting pages of
-          entries until the response contains no `next_page_token`. Note that the number of entries returned
-          must not be used to determine when the listing is complete.
+          An opaque page token which was the ``next_page_token`` in the response of the previous request to
+          list the contents of this directory. Provide this token to retrieve the next page of directory
+          entries. When providing a ``page_token``, all other parameters provided to the request must match
+          the previous request. To list all of the entries in a directory, it is necessary to continue
+          requesting pages of entries until the response contains no ``next_page_token``. Note that the number
+          of entries returned must not be used to determine when the listing is complete.
 
         :returns: Iterator over :class:`DirectoryEntry`
         

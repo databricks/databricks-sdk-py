@@ -77,11 +77,14 @@
           present in a single page response is guaranteed to contain all the privileges granted on the
           requested Securable for the respective principal.
 
-          If not set, all the permissions are returned. If set to - lesser than 0: invalid parameter error -
-          0: page length is set to a server configured value - lesser than 150 but greater than 0: invalid
-          parameter error (this is to ensure that server is able to return at least one complete
-          PrivilegeAssignment in a single page response) - greater than (or equal to) 150: page length is the
-          minimum of this value and a server configured value
+          If not set, all the permissions are returned. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete PrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
         :param principal: str (optional)
@@ -156,11 +159,14 @@
           effective privileges granted on (or inherited by) the requested Securable for the respective
           principal.
 
-          If not set, all the effective permissions are returned. If set to - lesser than 0: invalid parameter
-          error - 0: page length is set to a server configured value - lesser than 150 but greater than 0:
-          invalid parameter error (this is to ensure that server is able to return at least one complete
-          EffectivePrivilegeAssignment in a single page response) - greater than (or equal to) 150: page
-          length is the minimum of this value and a server configured value
+          If not set, all the effective permissions are returned. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete EffectivePrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
         :param page_token: str (optional)
           Opaque token for the next page of results (pagination).
         :param principal: str (optional)
@@ -170,7 +176,7 @@
         :returns: :class:`EffectivePermissionsList`
         
 
-    .. py:method:: update(securable_type: str, full_name: str [, changes: Optional[List[PermissionsChange]]]) -> UpdatePermissionsResponse
+    .. py:method:: update(securable_type: str, full_name: str [, changes: Optional[List[PermissionsChange]], omit_permissions_in_response: Optional[bool]]) -> UpdatePermissionsResponse
 
 
         Usage:
@@ -232,6 +238,8 @@
           Full name of securable.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permissions change objects.
+        :param omit_permissions_in_response: bool (optional)
+          Optional, default false. Specifies whether all the permissions should be returned in the response.
 
         :returns: :class:`UpdatePermissionsResponse`
         

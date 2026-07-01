@@ -13,14 +13,15 @@
 
         Creates a tag assignment for an Unity Catalog entity.
 
-        To add tags to Unity Catalog entities, you must own the entity or have the following privileges: -
-        **APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the
-        entity's parent catalog
+        To add tags to Unity Catalog entities, you must own the entity or have the following privileges:
+
+        - **APPLY TAG** on the entity
+        - **USE SCHEMA** on the entity's parent schema
+        - **USE CATALOG** on the entity's parent catalog
 
         To add a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
-        permission on the tag policy. See [Manage tag policy permissions].
-
-        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+        permission on the tag policy. See `Manage tag policy permissions
+        <https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions>`__.
 
         :param tag_assignment: :class:`EntityTagAssignment`
 
@@ -32,13 +33,14 @@
         Deletes a tag assignment for an Unity Catalog entity by its key.
 
         To delete tags from Unity Catalog entities, you must own the entity or have the following privileges:
-        - **APPLY TAG** on the entity - **USE_SCHEMA** on the entity's parent schema - **USE_CATALOG** on the
-        entity's parent catalog
+
+        - **APPLY TAG** on the entity
+        - **USE_SCHEMA** on the entity's parent schema
+        - **USE_CATALOG** on the entity's parent catalog
 
         To delete a governed tag from Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
-        permission on the tag policy. See [Manage tag policy permissions].
-
-        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+        permission on the tag policy. See `Manage tag policy permissions
+        <https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions>`__.
 
         :param entity_type: str
           The type of the entity to which the tag is assigned.
@@ -88,14 +90,15 @@
 
         Updates an existing tag assignment for an Unity Catalog entity.
 
-        To update tags to Unity Catalog entities, you must own the entity or have the following privileges: -
-        **APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the
-        entity's parent catalog
+        To update tags to Unity Catalog entities, you must own the entity or have the following privileges:
+
+        - **APPLY TAG** on the entity
+        - **USE SCHEMA** on the entity's parent schema
+        - **USE CATALOG** on the entity's parent catalog
 
         To update a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
-        permission on the tag policy. See [Manage tag policy permissions].
-
-        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+        permission on the tag policy. See `Manage tag policy permissions
+        <https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions>`__.
 
         :param entity_type: str
           The type of the entity to which the tag is assigned.
@@ -106,14 +109,14 @@
         :param tag_assignment: :class:`EntityTagAssignment`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`EntityTagAssignment`
         

@@ -1015,7 +1015,7 @@ class SyncedDatabaseTable:
     
     When creating a synced table in a standard catalog, this field is required. In this scenario,
     specifying this field will allow targeting an arbitrary postgres database. Note that this has
-    implications for the `create_database_objects_is_missing` field in `spec`."""
+    implications for the ``create_database_objects_is_missing`` field in ``spec``."""
 
     spec: Optional[SyncedTableSpec] = None
 
@@ -1861,7 +1861,7 @@ class DatabaseAPI:
         :param instance_name: str
         :param name: str
         :param allow_missing: bool (optional)
-          This is the AIP standard name for the equivalent of Postgres' `IF EXISTS` option
+          This is the AIP standard name for the equivalent of Postgres' ``IF EXISTS`` option
         :param reassign_owned_to: str (optional)
 
 

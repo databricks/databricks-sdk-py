@@ -37,7 +37,7 @@
 
         Controls whether schedules or workload tasks for refreshing AI/BI Dashboards in the workspace can send
         subscription emails containing PDFs and/or images of the dashboard. By default, this setting is enabled
-        (set to `true`)
+        (set to ``true``)
 
     .. py:property:: default_namespace
         :type: DefaultNamespaceAPI
@@ -65,16 +65,17 @@
         'Disabling legacy access' has the following impacts:
     
         1. Disables direct access to Hive Metastores from the workspace. However, you can still access a Hive
-        Metastore through Hive Metastore federation. 2. Disables fallback mode on external location access from
-        the workspace. 3. Disables Databricks Runtime versions prior to 13.3LTS.
+           Metastore through Hive Metastore federation.
+        2. Disables fallback mode on external location access from the workspace.
+        3. Disables Databricks Runtime versions prior to 13.3LTS.
 
     .. py:property:: disable_legacy_dbfs
         :type: DisableLegacyDbfsAPI
 
         Disabling legacy DBFS has the following implications:
     
-        1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation of new mounts). 2. Disables
-        Databricks Runtime versions prior to 13.3LTS.
+        1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation of new mounts).
+        2. Disables Databricks Runtime versions prior to 13.3LTS.
     
         When the setting is off, all DBFS functionality is enabled and no restrictions are imposed on Databricks
         Runtime versions. This setting can take up to 20 minutes to take effect and requires a manual restart of
@@ -129,4 +130,4 @@
         :type: SqlResultsDownloadAPI
 
         Controls whether users within the workspace are allowed to download results from the SQL Editor and AI/BI
-        Dashboards UIs. By default, this setting is enabled (set to `true`)
+        Dashboards UIs. By default, this setting is enabled (set to ``true``)

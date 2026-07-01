@@ -1,5 +1,37 @@
 # Version changelog
 
+## Release v0.120.0 (2026-07-01)
+
+### API Changes
+* Add `download_message_attachment_visualization()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service.
+* Add `omit_permissions_in_response` field for `databricks.sdk.service.catalog.UpdatePermissions`.
+* Add `viz` field for `databricks.sdk.service.dashboards.GenieAttachment`.
+* Add `enable_visualization` field for `databricks.sdk.service.dashboards.GenieCreateConversationMessageRequest`.
+* Add `enable_visualization` field for `databricks.sdk.service.dashboards.GenieStartConversationMessageRequest`.
+* Add `excluded_schemas` field for `databricks.sdk.service.dataclassification.CatalogConfig`.
+* Add `etag` field for `databricks.sdk.service.disasterrecovery.UpdateFailoverGroupRequest`.
+* Add `spec` field for `databricks.sdk.service.environments.WorkspaceBaseEnvironment`.
+* Add `full_name` field for `databricks.sdk.service.iamv2.User`.
+* Add `status_message` field for `databricks.sdk.service.jobs.AiRuntimeTaskOutput`.
+* Add `sql_condition` field for `databricks.sdk.service.jobs.CronSchedule`.
+* Add `sql_condition` field for `databricks.sdk.service.jobs.TriggerInfo`.
+* Add `sql_condition` field for `databricks.sdk.service.jobs.TriggerSettings`.
+* Add `sql_condition` field for `databricks.sdk.service.jobs.TriggerStateProto`.
+* Add `first_distinct_n`, `first_n`, `last_distinct_n` and `last_n` fields for `databricks.sdk.service.ml.AggregationFunction`.
+* Add `replace_existing` field for `databricks.sdk.service.postgres.CreateDatabaseRequest`.
+* Add `replace_existing` field for `databricks.sdk.service.postgres.CreateRoleRequest`.
+* Add `read_only_pooled_host` and `read_write_pooled_host` fields for `databricks.sdk.service.postgres.EndpointHosts`.
+* Add `last_active_time` field for `databricks.sdk.service.postgres.EndpointStatus`.
+* Add `expire_time`, `group_name` and `ttl` fields for `databricks.sdk.service.postgres.GenerateDatabaseCredentialRequest`.
+* Add `autoscaling_limit_max_cu`, `autoscaling_limit_min_cu`, `no_suspension` and `suspend_timeout_duration` fields for `databricks.sdk.service.postgres.InitialEndpointSpec`.
+* Add `initial_branch_spec` field for `databricks.sdk.service.postgres.Project`.
+* Add `compute_last_active_time` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* Add `telemetry_config` field for `databricks.sdk.service.serving.CreateServingEndpoint`.
+* Add `telemetry_config` field for `databricks.sdk.service.serving.ServingEndpoint`.
+* Add `telemetry_config` field for `databricks.sdk.service.serving.ServingEndpointDetailed`.
+* Add `read_metadata` enum value for `databricks.sdk.service.catalog.Privilege`.
+* [Breaking] Remove `name` field for `databricks.sdk.service.iamv2.User`.
+
 ## Release v0.119.0 (2026-06-24)
 
 ### New Features and Improvements

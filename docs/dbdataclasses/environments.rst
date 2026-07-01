@@ -22,6 +22,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnvironmentSpec
+   :members:
+   :undoc-members:
+
 .. py:class:: ErrorCode
 
    Error codes returned by Databricks APIs to indicate specific failure conditions.

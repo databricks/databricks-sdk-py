@@ -10,7 +10,7 @@
     **Important:** Existing clusters must be restarted to pick up any changes made to global init scripts.
     Global init scripts are run in order. If the init script returns with a bad exit code, the Apache Spark
     container fails to launch and init scripts with later position are skipped. If enough containers fail, the
-    entire cluster fails with a `GLOBAL_INIT_SCRIPT_FAILURE` error code.
+    entire cluster fails with a ``GLOBAL_INIT_SCRIPT_FAILURE`` error code.
 
     .. py:method:: create(name: str, script: str [, enabled: Optional[bool], position: Optional[int]]) -> CreateResponse
 

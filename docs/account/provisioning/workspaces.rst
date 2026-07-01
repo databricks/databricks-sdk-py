@@ -69,7 +69,8 @@
         information, you cannot reuse a Databricks Account API network configuration across workspaces.
 
         For information about how to create a new workspace with this API including error handling, see
-        [Create a new workspace using the Account API].
+        `Create a new workspace using the Account API
+        <http://docs.databricks.com/administration-guide/account-api/new-workspace.html>`__.
 
         Important: Customer-managed VPCs, PrivateLink, and customer-managed keys are supported on a limited
         set of deployment and subscription types. If you have questions about availability, contact your
@@ -78,18 +79,16 @@
         This operation is available only if your account is on the E2 version of the platform or on a select
         custom plan that allows multiple workspaces per account.
 
-        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-
         :param aws_region: str (optional)
         :param cloud: str (optional)
           DEPRECATED: This field is being ignored by the server and will be removed in the future. The cloud
-          name. This field always has the value `gcp`.
+          name. This field always has the value ``gcp``.
         :param cloud_resource_container: :class:`CloudResourceContainer` (optional)
         :param compute_mode: :class:`CustomerFacingComputeMode` (optional)
-          If the compute mode is `SERVERLESS`, a serverless workspace is created that comes pre-configured
+          If the compute mode is ``SERVERLESS``, a serverless workspace is created that comes pre-configured
           with serverless compute and default storage, providing a fully-managed, enterprise-ready SaaS
           experience. This means you don't need to provide any resources managed by you, such as credentials,
-          storage, or network. If the compute mode is `HYBRID` (which is the default option), a classic
+          storage, or network. If the compute mode is ``HYBRID`` (which is the default option), a classic
           workspace is created that uses customer-managed resources.
         :param credentials_id: str (optional)
           ID of the workspace's credential configuration object.
@@ -117,7 +116,7 @@
         :param gke_config: :class:`GkeConfig` (optional)
         :param location: str (optional)
           The Google Cloud region of the workspace data plane in your Google account (for example,
-          `us-east4`).
+          ``us-east4``).
         :param managed_services_customer_managed_key_id: str (optional)
           The ID of the workspace's managed services encryption key configuration object. This is used to help
           protect and control access to the workspace's notebooks, secrets, Databricks SQL queries, and query
@@ -132,12 +131,10 @@
         :param pricing_tier: :class:`PricingTier` (optional)
         :param private_access_settings_id: str (optional)
           ID of the workspace's private access settings object. Only used for PrivateLink. You must specify
-          this ID if you are using [AWS PrivateLink] for either front-end (user-to-workspace connection),
-          back-end (data plane to control plane connection), or both connection types. Before configuring
-          PrivateLink, read the [Databricks article about PrivateLink].",
-
-          [AWS PrivateLink]: https://aws.amazon.com/privatelink/
-          [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+          this ID if you are using `AWS PrivateLink <https://aws.amazon.com/privatelink/>`__ for either
+          front-end (user-to-workspace connection), back-end (data plane to control plane connection), or both
+          connection types. Before configuring PrivateLink, read the `Databricks article about PrivateLink
+          <https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html>`__.",
         :param storage_configuration_id: str (optional)
           ID of the workspace's storage configuration object.
         :param storage_customer_managed_key_id: str (optional)
@@ -180,13 +177,11 @@
             by_id = a.workspaces.get(workspace_id=created.workspace_id)
 
         Gets information including status for a Databricks workspace, specified by ID. In the response, the
-        `workspace_status` field indicates the current status. After initial workspace creation (which is
-        asynchronous), make repeated `GET` requests with the workspace ID and check its status. The workspace
-        becomes available when the status changes to `RUNNING`. For information about how to create a new
-        workspace with this API **including error handling**, see [Create a new workspace using the Account
-        API].
-
-        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
+        ``workspace_status`` field indicates the current status. After initial workspace creation (which is
+        asynchronous), make repeated ``GET`` requests with the workspace ID and check its status. The
+        workspace becomes available when the status changes to ``RUNNING``. For information about how to
+        create a new workspace with this API **including error handling**, see `Create a new workspace using
+        the Account API <http://docs.databricks.com/administration-guide/account-api/new-workspace.html>`__.
 
         :param workspace_id: int
 
@@ -251,14 +246,14 @@
         :param customer_facing_workspace: :class:`Workspace`
         :param update_mask: str (optional)
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns:
           Long-running operation waiter for :class:`Workspace`.

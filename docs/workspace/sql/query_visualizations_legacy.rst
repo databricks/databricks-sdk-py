@@ -7,18 +7,15 @@
     This is an evolving API that facilitates the addition and removal of vizualisations from existing queries
     within the Databricks Workspace. Data structures may change over time.
 
-    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
-
-    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. `Learn more
+    <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
     .. py:method:: create(options: Any, query_id: str, type: str [, description: Optional[str], name: Optional[str]]) -> LegacyVisualization
 
         Creates visualization in the query.
 
-        **Warning**: This API is deprecated. Please use :method:queryvisualizations/create instead. [Learn
-        more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/create instead. `Learn
+        more <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param options: Any
           The options object varies widely from one visualization type to the next and is unsupported.
@@ -39,10 +36,8 @@
 
         Removes a visualization from the query.
 
-        **Warning**: This API is deprecated. Please use :method:queryvisualizations/delete instead. [Learn
-        more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/delete instead. `Learn
+        more <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param id: str
           Widget ID returned by :method:queryvisualizations/create
@@ -54,10 +49,8 @@
 
         Updates visualization in the query.
 
-        **Warning**: This API is deprecated. Please use :method:queryvisualizations/update instead. [Learn
-        more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/update instead. `Learn
+        more <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param created_at: str (optional)
         :param description: str (optional)

@@ -802,14 +802,14 @@ class AzureManagedIdentity:
 
     access_connector_id: str
     """The Azure resource ID of the Azure Databricks Access Connector. Use the format
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}``."""
 
     credential_id: Optional[str] = None
     """The Databricks internal ID that represents this managed identity."""
 
     managed_identity_id: Optional[str] = None
     """The Azure resource ID of the managed identity. Use the format,
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}``
     This is only available for user-assgined identities. For system-assigned identities, the
     access_connector_id is used to identify the identity. If this field is not provided, then we
     assume the AzureManagedIdentity is using the system-assigned identity."""
@@ -852,11 +852,11 @@ class AzureManagedIdentityRequest:
 
     access_connector_id: str
     """The Azure resource ID of the Azure Databricks Access Connector. Use the format
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}``."""
 
     managed_identity_id: Optional[str] = None
     """The Azure resource ID of the managed identity. Use the format,
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}``
     This is only available for user-assgined identities. For system-assigned identities, the
     access_connector_id is used to identify the identity. If this field is not provided, then we
     assume the AzureManagedIdentity is using the system-assigned identity."""
@@ -894,14 +894,14 @@ class AzureManagedIdentityResponse:
 
     access_connector_id: str
     """The Azure resource ID of the Azure Databricks Access Connector. Use the format
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}``."""
 
     credential_id: Optional[str] = None
     """The Databricks internal ID that represents this managed identity."""
 
     managed_identity_id: Optional[str] = None
     """The Azure resource ID of the managed identity. Use the format,
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}``
     This is only available for user-assgined identities. For system-assigned identities, the
     access_connector_id is used to identify the identity. If this field is not provided, then we
     assume the AzureManagedIdentity is using the system-assigned identity."""
@@ -1661,7 +1661,7 @@ class ConnectionDependency:
     """A connection that is dependent on a SQL object."""
 
     connection_name: Optional[str] = None
-    """Full name of the dependent connection, in the form of __connection_name__."""
+    """Full name of the dependent connection, in the form of **connection_name**."""
 
     def as_dict(self) -> dict:
         """Serializes the ConnectionDependency into a dictionary suitable for use as a JSON request body."""
@@ -1934,7 +1934,7 @@ class ContinuousUpdateStatus:
 @dataclass
 class CreateAccessRequest:
     behalf_of: Optional[Principal] = None
-    """Optional. The principal this request is for. Empty `behalf_of` defaults to the requester's
+    """Optional. The principal this request is for. Empty ``behalf_of`` defaults to the requester's
     identity.
     
     Principals must be unique across the API call."""
@@ -2027,7 +2027,7 @@ class CreateAccountsMetastore:
     """Whether to allow non-DBR clients to directly access entities under the metastore."""
 
     region: Optional[str] = None
-    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
+    """Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``)."""
 
     storage_root: Optional[str] = None
     """The storage root URL for metastore"""
@@ -2473,7 +2473,7 @@ class CredentialDependency:
     """A credential that is dependent on a SQL object."""
 
     credential_name: Optional[str] = None
-    """Full name of the dependent credential, in the form of __credential_name__."""
+    """Full name of the dependent credential, in the form of **credential_name**."""
 
     def as_dict(self) -> dict:
         """Serializes the CredentialDependency into a dictionary suitable for use as a JSON request body."""
@@ -2987,7 +2987,7 @@ class DeleteTableConstraintResponse:
 @dataclass
 class DeltaRuntimePropertiesKvPairs:
     """Properties pertaining to the current state of the delta table as given by the commit server.
-    This does not contain **delta.*** (input) properties in __TableInfo.properties__."""
+    This does not contain **delta.*** (input) properties in **TableInfo.properties**."""
 
     delta_runtime_properties: Dict[str, str]
     """A map of key-value properties attached to the securable."""
@@ -3019,8 +3019,8 @@ class DeltaSharingScopeEnum(Enum):
 
 @dataclass
 class Dependency:
-    """A dependency of a SQL object. One of the following fields must be defined: __table__,
-    __function__, __connection__, __credential__, __volume__, or __secret__."""
+    """A dependency of a SQL object. One of the following fields must be defined: **table**,
+    **function**, **connection**, **credential**, **volume**, or **secret**."""
 
     connection: Optional[ConnectionDependency] = None
 
@@ -3124,7 +3124,7 @@ class DisableResponse:
 class EffectivePermissionsList:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     privilege_assignments: Optional[List[EffectivePrivilegeAssignment]] = None
     """The privileges conveyed to each principal (either directly or via inheritance)"""
@@ -4049,18 +4049,18 @@ class ExternalLocationInfo:
     """Name of the storage credential used with this location."""
 
     effective_enable_file_events: Optional[bool] = None
-    """The effective value of `enable_file_events` after applying server-side defaults."""
+    """The effective value of ``enable_file_events`` after applying server-side defaults."""
 
     effective_file_event_queue: Optional[FileEventQueue] = None
     """The effective file event queue configuration after applying server-side defaults. Always
     populated when a queue is provisioned, regardless of whether the user explicitly set
-    `enable_file_events`. Use this field instead of `file_event_queue` for reading the actual queue
-    state."""
+    ``enable_file_events``. Use this field instead of ``file_event_queue`` for reading the actual
+    queue state."""
 
     enable_file_events: Optional[bool] = None
-    """Whether to enable file events on this external location. Default to `true`. Set to `false` to
-    disable file events. The actual applied value may differ due to server-side defaults; check
-    `effective_enable_file_events` for the effective state."""
+    """Whether to enable file events on this external location. Default to ``true``. Set to ``false``
+    to disable file events. The actual applied value may differ due to server-side defaults; check
+    ``effective_enable_file_events`` for the effective state."""
 
     encryption_details: Optional[EncryptionDetails] = None
 
@@ -4070,7 +4070,7 @@ class ExternalLocationInfo:
     sufficient."""
 
     file_event_queue: Optional[FileEventQueue] = None
-    """File event queue settings. If `enable_file_events` is not `false`, must be defined and have
+    """File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
     exactly one of the documented properties."""
 
     isolation_mode: Optional[IsolationMode] = None
@@ -4543,7 +4543,7 @@ class FunctionDependency:
 
     function_full_name: str
     """Full name of the dependent function, in the form of
-    __catalog_name__.__schema_name__.__function_name__."""
+    **catalog_name**.**schema_name**.**function_name**."""
 
     def as_dict(self) -> dict:
         """Serializes the FunctionDependency into a dictionary suitable for use as a JSON request body."""
@@ -5356,7 +5356,7 @@ class GetCatalogWorkspaceBindingsResponse:
 @dataclass
 class GetMetastoreSummaryResponse:
     cloud: Optional[str] = None
-    """Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`)."""
+    """Cloud vendor of the metastore home shard (e.g., ``aws``, ``azure``, ``gcp``)."""
 
     created_at: Optional[int] = None
     """Time at which this metastore was created, in epoch milliseconds."""
@@ -5381,7 +5381,8 @@ class GetMetastoreSummaryResponse:
     """Whether to allow non-DBR clients to directly access entities under the metastore."""
 
     global_metastore_id: Optional[str] = None
-    """Globally unique metastore ID across clouds and regions, of the form `cloud:region:metastore_id`."""
+    """Globally unique metastore ID across clouds and regions, of the form
+    ``cloud:region:metastore_id``."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of metastore."""
@@ -5393,10 +5394,10 @@ class GetMetastoreSummaryResponse:
     """The owner of the metastore."""
 
     privilege_model_version: Optional[str] = None
-    """Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)."""
+    """Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``)."""
 
     region: Optional[str] = None
-    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
+    """Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``)."""
 
     storage_root: Optional[str] = None
     """The storage root URL for metastore"""
@@ -5535,7 +5536,7 @@ class GetMetastoreSummaryResponse:
 class GetPermissionsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     privilege_assignments: Optional[List[PrivilegeAssignment]] = None
     """The privileges assigned to each principal"""
@@ -5599,7 +5600,7 @@ class GetWorkspaceBindingsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the GetWorkspaceBindingsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5697,7 +5698,7 @@ class ListCatalogsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListCatalogsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5730,7 +5731,7 @@ class ListConnectionsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListConnectionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5764,7 +5765,7 @@ class ListCredentialsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListCredentialsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5867,7 +5868,7 @@ class ListExternalLocationsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListExternalLocationsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5936,7 +5937,7 @@ class ListFunctionsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListFunctionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5971,7 +5972,7 @@ class ListMetastoresResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListMetastoresResponse into a dictionary suitable for use as a JSON request body."""
@@ -6005,7 +6006,7 @@ class ListModelVersionsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListModelVersionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -6037,7 +6038,7 @@ class ListModelVersionsResponse:
 @dataclass
 class ListPoliciesResponse:
     next_page_token: Optional[str] = None
-    """Optional opaque token for continuing pagination. `page_token` should be set to this value for
+    """Optional opaque token for continuing pagination. ``page_token`` should be set to this value for
     the next request to retrieve the next page of results."""
 
     policies: Optional[List[PolicyInfo]] = None
@@ -6071,7 +6072,7 @@ class ListPoliciesResponse:
 class ListQuotasResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request."""
+    **page_token** should be set to this value for the next request."""
 
     quotas: Optional[List[QuotaInfo]] = None
     """An array of returned QuotaInfos."""
@@ -6139,7 +6140,7 @@ class ListRegisteredModelsResponse:
 class ListSchemasResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     schemas: Optional[List[SchemaInfo]] = None
     """An array of schema information objects."""
@@ -6207,7 +6208,7 @@ class ListSecretsResponse:
 class ListStorageCredentialsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     storage_credentials: Optional[List[StorageCredentialInfo]] = None
 
@@ -6242,7 +6243,7 @@ class ListStorageCredentialsResponse:
 class ListSystemSchemasResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     schemas: Optional[List[SystemSchemaInfo]] = None
     """An array of system schema information objects."""
@@ -6277,7 +6278,7 @@ class ListSystemSchemasResponse:
 class ListTableSummariesResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     tables: Optional[List[TableSummary]] = None
     """List of table summaries."""
@@ -6310,7 +6311,7 @@ class ListTableSummariesResponse:
 class ListTablesResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     tables: Optional[List[TableInfo]] = None
     """An array of table information objects."""
@@ -6343,7 +6344,7 @@ class ListTablesResponse:
 class ListVolumesResponseContent:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request to retrieve the next page of
+    **page_token** should be set to this value for the next request to retrieve the next page of
     results."""
 
     volumes: Optional[List[VolumeInfo]] = None
@@ -6457,7 +6458,7 @@ class MetastoreAssignment:
 @dataclass
 class MetastoreInfo:
     cloud: Optional[str] = None
-    """Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`)."""
+    """Cloud vendor of the metastore home shard (e.g., ``aws``, ``azure``, ``gcp``)."""
 
     created_at: Optional[int] = None
     """Time at which this metastore was created, in epoch milliseconds."""
@@ -6482,7 +6483,8 @@ class MetastoreInfo:
     """Whether to allow non-DBR clients to directly access entities under the metastore."""
 
     global_metastore_id: Optional[str] = None
-    """Globally unique metastore ID across clouds and regions, of the form `cloud:region:metastore_id`."""
+    """Globally unique metastore ID across clouds and regions, of the form
+    ``cloud:region:metastore_id``."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of metastore."""
@@ -6494,10 +6496,10 @@ class MetastoreInfo:
     """The owner of the metastore."""
 
     privilege_model_version: Optional[str] = None
-    """Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)."""
+    """Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``)."""
 
     region: Optional[str] = None
-    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
+    """Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``)."""
 
     storage_root: Optional[str] = None
     """The storage root URL for metastore"""
@@ -6807,9 +6809,8 @@ class ModelVersionInfoStatus(Enum):
 @dataclass
 class MonitorCronSchedule:
     quartz_cron_expression: str
-    """The expression that determines when to run the monitor. See [examples].
-    
-    [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html"""
+    """The expression that determines when to run the monitor. See `examples
+    <https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html>`__."""
 
     timezone_id: str
     """The timezone id (e.g., ``PST``) in which to evaluate the quartz expression."""
@@ -6999,18 +7000,18 @@ class MonitorInfo:
     {catalog}.{schema}"""
 
     table_name: str
-    """[Create:ERR Update:IGN] UC table to monitor. Format: `catalog.schema.table_name`"""
+    """[Create:ERR Update:IGN] UC table to monitor. Format: ``catalog.schema.table_name``"""
 
     status: MonitorInfoStatus
     """[Create:ERR Update:IGN] The monitor status."""
 
     profile_metrics_table_name: str
     """[Create:ERR Update:IGN] Table that stores profile metrics data. Format:
-    `catalog.schema.table_name`."""
+    ``catalog.schema.table_name``."""
 
     drift_metrics_table_name: str
     """[Create:ERR Update:IGN] Table that stores drift metrics data. Format:
-    `catalog.schema.table_name`."""
+    ``catalog.schema.table_name``."""
 
     monitor_version: int
     """[Create:ERR Update:IGN] Represents the current monitor configuration version in use. The version
@@ -7023,7 +7024,7 @@ class MonitorInfo:
 
     baseline_table_name: Optional[str] = None
     """[Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the
-    data in the monitored `table_name`. The baseline table and the monitored table shall have the
+    data in the monitored ``table_name``. The baseline table and the monitored table shall have the
     same schema."""
 
     custom_metrics: Optional[List[MonitorMetric]] = None
@@ -7050,10 +7051,10 @@ class MonitorInfo:
     slicing_exprs: Optional[List[str]] = None
     """[Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
     data is grouped by each expression independently, resulting in a separate slice for each
-    predicate and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will
-    generate the following slices: two slices for `col_2 > 10` (True and False), and one slice per
-    unique value in `col1`. For high-cardinality columns, only the top 100 unique values by
-    frequency will generate slices."""
+    predicate and its complements. For example ``slicing_exprs=[“col_1”, “col_2 > 10”]``
+    will generate the following slices: two slices for ``col_2 > 10`` (True and False), and one
+    slice per unique value in ``col1``. For high-cardinality columns, only the top 100 unique values
+    by frequency will generate slices."""
 
     snapshot: Optional[MonitorSnapshot] = None
     """Configuration for monitoring snapshot tables."""
@@ -7184,10 +7185,9 @@ class MonitorMetric:
     """Name of the metric in the output tables."""
 
     definition: str
-    """Jinja template for a SQL expression that specifies how to compute the metric. See [create metric
-    definition].
-    
-    [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition"""
+    """Jinja template for a SQL expression that specifies how to compute the metric. See `create metric
+    definition
+    <https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition>`__."""
 
     input_columns: List[str]
     """A list of column names in the input table the metric should be computed for. Can use
@@ -7201,9 +7201,11 @@ class MonitorMetric:
     ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and
     ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the
     ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the
-    two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing
-    columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
-    metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
+    two consecutive time windows.
+    
+    - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table
+    - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics
+    - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
 
     def as_dict(self) -> dict:
         """Serializes the MonitorMetric into a dictionary suitable for use as a JSON request body."""
@@ -7252,9 +7254,11 @@ class MonitorMetricType(Enum):
     ``\"CUSTOM_METRIC_TYPE_DRIFT\"``. The ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"`` and
     ``\"CUSTOM_METRIC_TYPE_DERIVED\"`` metrics are computed on a single table, whereas the
     ``\"CUSTOM_METRIC_TYPE_DRIFT\"`` compare metrics across baseline and input table, or across the
-    two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing
-    columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
-    metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
+    two consecutive time windows.
+
+    - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table
+    - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics
+    - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
 
     CUSTOM_METRIC_TYPE_AGGREGATE = "CUSTOM_METRIC_TYPE_AGGREGATE"
     CUSTOM_METRIC_TYPE_DERIVED = "CUSTOM_METRIC_TYPE_DERIVED"
@@ -8115,14 +8119,14 @@ class PolicyInfo:
     update."""
 
     for_securable_type: SecurableType
-    """Type of securables that the policy should take effect on. Only `TABLE` is supported at this
+    """Type of securables that the policy should take effect on. Only ``TABLE`` is supported at this
     moment. Required on create and optional on update."""
 
     policy_type: PolicyType
     """Type of the policy. Required on create."""
 
     column_mask: Optional[ColumnMaskOptions] = None
-    """Options for column mask policies. Valid only if `policy_type` is `POLICY_TYPE_COLUMN_MASK`.
+    """Options for column mask policies. Valid only if ``policy_type`` is ``POLICY_TYPE_COLUMN_MASK``.
     Required on create and optional on update. When specified on update, the new options will
     replace the existing options as a whole."""
 
@@ -8143,22 +8147,22 @@ class PolicyInfo:
 
     match_columns: Optional[List[MatchColumn]] = None
     """Optional list of condition expressions used to match table columns. Only valid when
-    `for_securable_type` is `TABLE`. When specified, the policy only applies to tables whose columns
-    satisfy all match conditions."""
+    ``for_securable_type`` is ``TABLE``. When specified, the policy only applies to tables whose
+    columns satisfy all match conditions."""
 
     name: Optional[str] = None
-    """Name of the policy. Required on create and optional on update. To rename the policy, set `name`
-    to a different value on update."""
+    """Name of the policy. Required on create and optional on update. To rename the policy, set
+    ``name`` to a different value on update."""
 
     on_securable_fullname: Optional[str] = None
     """Full name of the securable on which the policy is defined. Required on create."""
 
     on_securable_type: Optional[SecurableType] = None
-    """Type of the securable on which the policy is defined. Only `CATALOG`, `SCHEMA` and `TABLE` are
-    supported at this moment. Required on create."""
+    """Type of the securable on which the policy is defined. Only ``CATALOG``, ``SCHEMA`` and ``TABLE``
+    are supported at this moment. Required on create."""
 
     row_filter: Optional[RowFilterOptions] = None
-    """Options for row filter policies. Valid only if `policy_type` is `POLICY_TYPE_ROW_FILTER`.
+    """Options for row filter policies. Valid only if ``policy_type`` is ``POLICY_TYPE_ROW_FILTER``.
     Required on create and optional on update. When specified on update, the new options will
     replace the existing options as a whole."""
 
@@ -8401,6 +8405,7 @@ class Privilege(Enum):
     MODIFY = "MODIFY"
     MODIFY_CLEAN_ROOM = "MODIFY_CLEAN_ROOM"
     READ_FILES = "READ_FILES"
+    READ_METADATA = "READ_METADATA"
     READ_PRIVATE_FILES = "READ_PRIVATE_FILES"
     READ_VOLUME = "READ_VOLUME"
     REFRESH = "REFRESH"
@@ -8422,8 +8427,8 @@ class Privilege(Enum):
 @dataclass
 class PrivilegeAssignment:
     principal: Optional[str] = None
-    """The principal (user email address or group name). For deleted principals, `principal` is empty
-    while `principal_id` is populated."""
+    """The principal (user email address or group name). For deleted principals, ``principal`` is empty
+    while ``principal_id`` is populated."""
 
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
@@ -8926,7 +8931,7 @@ class SchemaInfo:
     """Whether predictive optimization should be enabled for this object and objects under it."""
 
     full_name: Optional[str] = None
-    """Full name of schema, in form of __catalog_name__.__schema_name__."""
+    """Full name of schema, in form of **catalog_name**.**schema_name**."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of parent metastore."""
@@ -9754,7 +9759,7 @@ class SystemType(Enum):
 @dataclass
 class TableConstraint:
     """A table constraint, as defined by *one* of the following fields being set:
-    __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__."""
+    **primary_key_constraint**, **foreign_key_constraint**, **named_table_constraint**."""
 
     foreign_key_constraint: Optional[ForeignKeyConstraint] = None
 
@@ -9800,7 +9805,7 @@ class TableDependency:
 
     table_full_name: str
     """Full name of the dependent table, in the form of
-    __catalog_name__.__schema_name__.__table_name__."""
+    **catalog_name**.**schema_name**.**table_name**."""
 
     def as_dict(self) -> dict:
         """Serializes the TableDependency into a dictionary suitable for use as a JSON request body."""
@@ -9860,7 +9865,7 @@ class TableInfo:
     """Name of parent catalog."""
 
     columns: Optional[List[ColumnInfo]] = None
-    """The array of __ColumnInfo__ definitions of the table's columns."""
+    """The array of **ColumnInfo** definitions of the table's columns."""
 
     comment: Optional[str] = None
     """User-provided free-form text description."""
@@ -9890,7 +9895,7 @@ class TableInfo:
     encryption_details: Optional[EncryptionDetails] = None
 
     full_name: Optional[str] = None
-    """Full name of table, in form of __catalog_name__.__schema_name__.__table_name__"""
+    """Full name of table, in form of **catalog_name**.**schema_name**.**table_name**"""
 
     metastore_id: Optional[str] = None
     """Unique identifier of parent metastore."""
@@ -9926,7 +9931,7 @@ class TableInfo:
     """Storage root URL for table (for **MANAGED**, **EXTERNAL** tables)."""
 
     table_constraints: Optional[List[TableConstraint]] = None
-    """List of table constraints. Note: this field is not set in the output of the __listTables__ API."""
+    """List of table constraints. Note: this field is not set in the output of the **listTables** API."""
 
     table_id: Optional[str] = None
     """The unique identifier of the table."""
@@ -9940,15 +9945,16 @@ class TableInfo:
     """Username of user who last modified the table."""
 
     view_definition: Optional[str] = None
-    """View definition SQL (when __table_type__ is **VIEW**, **MATERIALIZED_VIEW**, or
+    """View definition SQL (when **table_type** is **VIEW**, **MATERIALIZED_VIEW**, or
     **STREAMING_TABLE**)"""
 
     view_dependencies: Optional[DependencyList] = None
-    """View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**, **STREAMING_TABLE**) -
-    when DependencyList is None, the dependency is not provided; - when DependencyList is an empty
-    list, the dependency is provided but is empty; - when DependencyList is not an empty list,
-    dependencies are provided and recorded. Note: this field is not set in the output of the
-    __listTables__ API."""
+    """View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**, **STREAMING_TABLE**)
+    
+    - when DependencyList is None, the dependency is not provided;
+    - when DependencyList is an empty list, the dependency is provided but is empty;
+    - when DependencyList is not an empty list, dependencies are provided and recorded. Note: this
+      field is not set in the output of the **listTables** API."""
 
     def as_dict(self) -> dict:
         """Serializes the TableInfo into a dictionary suitable for use as a JSON request body."""
@@ -10420,7 +10426,7 @@ class UpdateAccountsMetastore:
     """The owner of the metastore."""
 
     privilege_model_version: Optional[str] = None
-    """Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)."""
+    """Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``)."""
 
     storage_root_credential_id: Optional[str] = None
     """UUID of storage credential to access the metastore storage_root."""
@@ -10979,9 +10985,8 @@ class VolumeInfo:
     volume_type: Optional[VolumeType] = None
     """The type of the volume. An external volume is located in the specified external location. A
     managed volume is located in the default location which is specified by the parent schema, or
-    the parent catalog, or the Metastore. [Learn more]
-    
-    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
+    the parent catalog, or the Metastore. `Learn more
+    <https://docs.databricks.com/aws/en/volumes/managed-vs-external>`__"""
 
     def as_dict(self) -> dict:
         """Serializes the VolumeInfo into a dictionary suitable for use as a JSON request body."""
@@ -11130,8 +11135,8 @@ class WorkspaceBinding:
 
 
 class WorkspaceBindingBindingType(Enum):
-    """Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation` enum in
-    `credentials_common.proto`."""
+    """Using ``BINDING_TYPE_`` prefix here to avoid conflict with ``TableOperation`` enum in
+    ``credentials_common.proto``."""
 
     BINDING_TYPE_READ_ONLY = "BINDING_TYPE_READ_ONLY"
     BINDING_TYPE_READ_WRITE = "BINDING_TYPE_READ_WRITE"
@@ -11391,11 +11396,13 @@ class AccountStorageCredentialsAPI:
         credential_info: Optional[CreateAccountsStorageCredential] = None,
         skip_validation: Optional[bool] = None,
     ) -> AccountsCreateStorageCredentialInfo:
-        """Creates a new storage credential. The request object is specific to the cloud: - **AwsIamRole** for
-        AWS credentials - **AzureServicePrincipal** for Azure credentials - **GcpServiceAccountKey** for GCP
-        credentials
+        """Creates a new storage credential. The request object is specific to the cloud:
 
-        The caller must be a metastore admin and have the `CREATE_STORAGE_CREDENTIAL` privilege on the
+        - **AwsIamRole** for AWS credentials
+        - **AzureServicePrincipal** for Azure credentials
+        - **GcpServiceAccountKey** for GCP credentials
+
+        The caller must be a metastore admin and have the ``CREATE_STORAGE_CREDENTIAL`` privilege on the
         metastore.
 
         :param metastore_id: str
@@ -11543,7 +11550,7 @@ class AccountStorageCredentialsAPI:
 
 
 class ArtifactAllowlistsAPI:
-    """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so
+    """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the ``allowlist`` in UC so
     that users can use these artifacts on compute configured with shared access mode."""
 
     def __init__(self, api_client):
@@ -11787,13 +11794,16 @@ class CatalogsAPI:
           Whether to include catalogs not bound to the workspace. Effective only if the user has permission to
           update the catalog–workspace binding.
         :param max_results: int (optional)
-          Maximum number of catalogs to return. - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all valid catalogs are returned (not recommended). - Note: The number of
-          returned catalogs might be less than the specified max_results size, even zero. The only definitive
-          indication that no further catalogs can be fetched is when the next_page_token is unset from the
-          response.
+          Maximum number of catalogs to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid catalogs are returned (not recommended).
+          - Note: The number of returned catalogs might be less than the specified max_results size, even
+            zero. The only definitive indication that no further catalogs can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -12024,10 +12034,13 @@ class ConnectionsAPI:
         absent, which is the only indication that the end of results has been reached.
 
         :param max_results: int (optional)
-          Maximum number of connections to return. - If not set, all connections are returned (not
-          recommended). - when set to a value greater than 0, the page length is the minimum of this value and
-          a server configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of connections to return.
+
+          - If not set, all connections are returned (not recommended).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -12110,7 +12123,7 @@ class CredentialsAPI:
     tenant. Each credential is subject to Unity Catalog access-control policies that control which users and
     groups can access the credential.
 
-    To create credentials, you must be a Databricks account admin or have the `CREATE SERVICE CREDENTIAL`
+    To create credentials, you must be a Databricks account admin or have the ``CREATE SERVICE CREDENTIAL``
     privilege. The user who creates the credential can delegate ownership to another user or group to manage
     permissions on it."""
 
@@ -12283,7 +12296,7 @@ class CredentialsAPI:
         page_token: Optional[str] = None,
         purpose: Optional[CredentialPurpose] = None,
     ) -> Iterator[CredentialInfo]:
-        """Gets an array of credentials (as __CredentialInfo__ objects).
+        """Gets an array of credentials (as **CredentialInfo** objects).
 
         The array is limited to only the credentials that the caller has permission to access. If the caller
         is a metastore admin, retrieval of credentials is unrestricted. There is no guarantee of a specific
@@ -12297,10 +12310,13 @@ class CredentialsAPI:
           Whether to include credentials not bound to the workspace. Effective only if the user has permission
           to update the credential–workspace binding.
         :param max_results: int (optional)
-          Maximum number of credentials to return. - If not set, the default max page size is used. - When set
-          to a value greater than 0, the page length is the minimum of this value and a server-configured
-          value. - When set to 0, the page length is set to a server-configured value (recommended). - When
-          set to a value less than 0, an invalid parameter error is returned.
+          Maximum number of credentials to return.
+
+          - If not set, the default max page size is used.
+          - When set to a value greater than 0, the page length is the minimum of this value and a
+            server-configured value.
+          - When set to 0, the page length is set to a server-configured value (recommended).
+          - When set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Opaque token to retrieve the next page of results.
         :param purpose: :class:`CredentialPurpose` (optional)
@@ -12353,8 +12369,8 @@ class CredentialsAPI:
     ) -> CredentialInfo:
         """Updates a service or storage credential on the metastore.
 
-        The caller must be the owner of the credential or a metastore admin or have the `MANAGE` permission.
-        If the caller is a metastore admin, only the __owner__ field can be changed.
+        The caller must be the owner of the credential or a metastore admin or have the ``MANAGE`` permission.
+        If the caller is a metastore admin, only the **owner** field can be changed.
 
         :param name_arg: str
           Name of the credential.
@@ -12435,13 +12451,13 @@ class CredentialsAPI:
     ) -> ValidateCredentialResponse:
         """Validates a credential.
 
-        For service credentials (purpose is **SERVICE**), either the __credential_name__ or the cloud-specific
+        For service credentials (purpose is **SERVICE**), either the **credential_name** or the cloud-specific
         credential must be provided.
 
-        For storage credentials (purpose is **STORAGE**), at least one of __external_location_name__ and
-        __url__ need to be provided. If only one of them is provided, it will be used for validation. And if
-        both are provided, the __url__ will be used for validation, and __external_location_name__ will be
-        ignored when checking overlapping urls. Either the __credential_name__ or the cloud-specific
+        For storage credentials (purpose is **STORAGE**), at least one of **external_location_name** and
+        **url** need to be provided. If only one of them is provided, it will be used for validation. And if
+        both are provided, the **url** will be used for validation, and **external_location_name** will be
+        ignored when checking overlapping urls. Either the **credential_name** or the cloud-specific
         credential must be provided.
 
         The caller must be a metastore admin or the credential owner or have the required permission on the
@@ -12508,14 +12524,15 @@ class EntityTagAssignmentsAPI:
     def create(self, tag_assignment: EntityTagAssignment) -> EntityTagAssignment:
         """Creates a tag assignment for an Unity Catalog entity.
 
-        To add tags to Unity Catalog entities, you must own the entity or have the following privileges: -
-        **APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the
-        entity's parent catalog
+        To add tags to Unity Catalog entities, you must own the entity or have the following privileges:
+
+        - **APPLY TAG** on the entity
+        - **USE SCHEMA** on the entity's parent schema
+        - **USE CATALOG** on the entity's parent catalog
 
         To add a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
-        permission on the tag policy. See [Manage tag policy permissions].
-
-        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+        permission on the tag policy. See `Manage tag policy permissions
+        <https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions>`__.
 
         :param tag_assignment: :class:`EntityTagAssignment`
 
@@ -12540,13 +12557,14 @@ class EntityTagAssignmentsAPI:
         """Deletes a tag assignment for an Unity Catalog entity by its key.
 
         To delete tags from Unity Catalog entities, you must own the entity or have the following privileges:
-        - **APPLY TAG** on the entity - **USE_SCHEMA** on the entity's parent schema - **USE_CATALOG** on the
-        entity's parent catalog
+
+        - **APPLY TAG** on the entity
+        - **USE_SCHEMA** on the entity's parent schema
+        - **USE_CATALOG** on the entity's parent catalog
 
         To delete a governed tag from Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
-        permission on the tag policy. See [Manage tag policy permissions].
-
-        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+        permission on the tag policy. See `Manage tag policy permissions
+        <https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions>`__.
 
         :param entity_type: str
           The type of the entity to which the tag is assigned.
@@ -12653,14 +12671,15 @@ class EntityTagAssignmentsAPI:
     ) -> EntityTagAssignment:
         """Updates an existing tag assignment for an Unity Catalog entity.
 
-        To update tags to Unity Catalog entities, you must own the entity or have the following privileges: -
-        **APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the
-        entity's parent catalog
+        To update tags to Unity Catalog entities, you must own the entity or have the following privileges:
+
+        - **APPLY TAG** on the entity
+        - **USE SCHEMA** on the entity's parent schema
+        - **USE CATALOG** on the entity's parent catalog
 
         To update a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
-        permission on the tag policy. See [Manage tag policy permissions].
-
-        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+        permission on the tag policy. See `Manage tag policy permissions
+        <https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions>`__.
 
         :param entity_type: str
           The type of the entity to which the tag is assigned.
@@ -12671,14 +12690,14 @@ class EntityTagAssignmentsAPI:
         :param tag_assignment: :class:`EntityTagAssignment`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`EntityTagAssignment`
         """
@@ -12778,7 +12797,7 @@ class ExternalLineageAPI:
         :param object_info: :class:`ExternalLineageObject`
           The object to query external lineage relationships for. Since this field is a query parameter,
           please flatten the nested fields. For example, if the object is a table, the query parameter should
-          look like: `object_info.table.name=main.sales.customers`
+          look like: ``object_info.table.name=main.sales.customers``
         :param lineage_direction: :class:`LineageDirection`
           The lineage direction to filter on.
         :param page_size: int (optional)
@@ -12825,14 +12844,14 @@ class ExternalLineageAPI:
         :param external_lineage_relationship: :class:`UpdateRequestExternalLineage`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`ExternalLineageRelationship`
         """
@@ -12900,23 +12919,23 @@ class ExternalLocationsAPI:
         :param comment: str (optional)
           User-provided free-form text description.
         :param effective_enable_file_events: bool (optional)
-          The effective value of `enable_file_events` after applying server-side defaults.
+          The effective value of ``enable_file_events`` after applying server-side defaults.
         :param effective_file_event_queue: :class:`FileEventQueue` (optional)
           The effective file event queue configuration after applying server-side defaults. Always populated
-          when a queue is provisioned, regardless of whether the user explicitly set `enable_file_events`. Use
-          this field instead of `file_event_queue` for reading the actual queue state.
+          when a queue is provisioned, regardless of whether the user explicitly set ``enable_file_events``.
+          Use this field instead of ``file_event_queue`` for reading the actual queue state.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          Whether to enable file events on this external location. Default to ``true``. Set to ``false`` to
           disable file events. The actual applied value may differ due to server-side defaults; check
-          `effective_enable_file_events` for the effective state.
+          ``effective_enable_file_events`` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
-          one of the documented properties.
+          File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
+          exactly one of the documented properties.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -13022,7 +13041,7 @@ class ExternalLocationsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ExternalLocationInfo]:
-        """Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
+        """Gets an array of external locations (**ExternalLocationInfo** objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
         the external location. There is no guarantee of a specific ordering of the elements in the array.
 
@@ -13041,9 +13060,12 @@ class ExternalLocationsAPI:
           permission to update the location–workspace binding.
         :param max_results: int (optional)
           Maximum number of external locations to return. If not set, all the external locations are returned
-          (not recommended). - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -13109,23 +13131,23 @@ class ExternalLocationsAPI:
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
         :param effective_enable_file_events: bool (optional)
-          The effective value of `enable_file_events` after applying server-side defaults.
+          The effective value of ``enable_file_events`` after applying server-side defaults.
         :param effective_file_event_queue: :class:`FileEventQueue` (optional)
           The effective file event queue configuration after applying server-side defaults. Always populated
-          when a queue is provisioned, regardless of whether the user explicitly set `enable_file_events`. Use
-          this field instead of `file_event_queue` for reading the actual queue state.
+          when a queue is provisioned, regardless of whether the user explicitly set ``enable_file_events``.
+          Use this field instead of ``file_event_queue`` for reading the actual queue state.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          Whether to enable file events on this external location. Default to ``true``. Set to ``false`` to
           disable file events. The actual applied value may differ due to server-side defaults; check
-          `effective_enable_file_events` for the effective state.
+          ``effective_enable_file_events`` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
-          one of the documented properties.
+          File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
+          exactly one of the documented properties.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
@@ -13313,14 +13335,14 @@ class ExternalMetadataAPI:
         :param external_metadata: :class:`ExternalMetadata`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`ExternalMetadata`
         """
@@ -13349,7 +13371,7 @@ class FunctionsAPI:
 
     The function implementation can be any SQL expression or Query, and it can be invoked wherever a table
     reference is allowed in a query. In Unity Catalog, a function resides at the same level as a table, so it
-    can be referenced with the form __catalog_name__.__schema_name__.__function_name__."""
+    can be referenced with the form **catalog_name**.**schema_name**.**function_name**."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -13359,12 +13381,13 @@ class FunctionsAPI:
 
         Creates a new function
 
-        The user must have the following permissions in order for the function to be created: -
-        **USE_CATALOG** on the function's parent catalog - **USE_SCHEMA** and **CREATE_FUNCTION** on the
-        function's parent schema
+        The user must have the following permissions in order for the function to be created:
+
+        - **USE_CATALOG** on the function's parent catalog
+        - **USE_SCHEMA** and **CREATE_FUNCTION** on the function's parent schema
 
         :param function_info: :class:`CreateFunction`
-          Partial __FunctionInfo__ specifying the function to be created.
+          Partial **FunctionInfo** specifying the function to be created.
 
         :returns: :class:`FunctionInfo`
         """
@@ -13386,14 +13409,17 @@ class FunctionsAPI:
 
     def delete(self, name: str, *, force: Optional[bool] = None):
         """Deletes the function that matches the supplied name. For the deletion to succeed, the user must
-        satisfy one of the following conditions: - Is the owner of the function's parent catalog - Is the
-        owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent catalog -
-        Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent catalog
-        and the **USE_SCHEMA** privilege on its parent schema
+        satisfy one of the following conditions:
+
+        - Is the owner of the function's parent catalog
+        - Is the owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent
+          catalog
+        - Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent
+          catalog and the **USE_SCHEMA** privilege on its parent schema
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__) .
+          **catalog_name**.**schema_name**.**function__name**) .
         :param force: bool (optional)
           Force deletion even if the function is notempty.
 
@@ -13413,15 +13439,17 @@ class FunctionsAPI:
 
     def get(self, name: str, *, include_browse: Optional[bool] = None) -> FunctionInfo:
         """Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must
-        satisfy one of the following requirements: - Is a metastore admin - Is an owner of the function's
-        parent catalog - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner
-        of the function - Have the **USE_CATALOG** privilege on the function's parent catalog, the
-        **USE_SCHEMA** privilege on the function's parent schema, and the **EXECUTE** privilege on the
-        function itself
+        satisfy one of the following requirements:
+
+        - Is a metastore admin
+        - Is an owner of the function's parent catalog
+        - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner of the function
+        - Have the **USE_CATALOG** privilege on the function's parent catalog, the **USE_SCHEMA** privilege on
+          the function's parent schema, and the **EXECUTE** privilege on the function itself
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__).
+          **catalog_name**.**schema_name**.**function__name**).
         :param include_browse: bool (optional)
           Whether to include functions in the response for which the principal can only access selective
           metadata for
@@ -13474,9 +13502,11 @@ class FunctionsAPI:
           metadata for
         :param max_results: int (optional)
           Maximum number of functions to return. If not set, all the functions are returned (not recommended).
+
           - when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -13516,14 +13546,18 @@ class FunctionsAPI:
     def update(self, name: str, *, owner: Optional[str] = None) -> FunctionInfo:
         """Updates the function that matches the supplied name. Only the owner of the function can be updated. If
         the user is not a metastore admin, the user must be a member of the group that is the new function
-        owner. - Is a metastore admin - Is the owner of the function's parent catalog - Is the owner of the
-        function's parent schema and has the **USE_CATALOG** privilege on its parent catalog - Is the owner of
-        the function itself and has the **USE_CATALOG** privilege on its parent catalog as well as the
-        **USE_SCHEMA** privilege on the function's parent schema.
+        owner.
+
+        - Is a metastore admin
+        - Is the owner of the function's parent catalog
+        - Is the owner of the function's parent schema and has the **USE_CATALOG** privilege on its parent
+          catalog
+        - Is the owner of the function itself and has the **USE_CATALOG** privilege on its parent catalog as
+          well as the **USE_SCHEMA** privilege on the function's parent schema.
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__).
+          **catalog_name**.**schema_name**.**function__name**).
         :param owner: str (optional)
           Username of current owner of the function.
 
@@ -13586,11 +13620,14 @@ class GrantsAPI:
           present in a single page response is guaranteed to contain all the privileges granted on the
           requested Securable for the respective principal.
 
-          If not set, all the permissions are returned. If set to - lesser than 0: invalid parameter error -
-          0: page length is set to a server configured value - lesser than 150 but greater than 0: invalid
-          parameter error (this is to ensure that server is able to return at least one complete
-          PrivilegeAssignment in a single page response) - greater than (or equal to) 150: page length is the
-          minimum of this value and a server configured value
+          If not set, all the permissions are returned. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete PrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
         :param principal: str (optional)
@@ -13648,11 +13685,14 @@ class GrantsAPI:
           effective privileges granted on (or inherited by) the requested Securable for the respective
           principal.
 
-          If not set, all the effective permissions are returned. If set to - lesser than 0: invalid parameter
-          error - 0: page length is set to a server configured value - lesser than 150 but greater than 0:
-          invalid parameter error (this is to ensure that server is able to return at least one complete
-          EffectivePrivilegeAssignment in a single page response) - greater than (or equal to) 150: page
-          length is the minimum of this value and a server configured value
+          If not set, all the effective permissions are returned. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete EffectivePrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
         :param page_token: str (optional)
           Opaque token for the next page of results (pagination).
         :param principal: str (optional)
@@ -13686,7 +13726,12 @@ class GrantsAPI:
         return EffectivePermissionsList.from_dict(res)
 
     def update(
-        self, securable_type: str, full_name: str, *, changes: Optional[List[PermissionsChange]] = None
+        self,
+        securable_type: str,
+        full_name: str,
+        *,
+        changes: Optional[List[PermissionsChange]] = None,
+        omit_permissions_in_response: Optional[bool] = None,
     ) -> UpdatePermissionsResponse:
         """Updates the permissions for a securable.
 
@@ -13696,6 +13741,8 @@ class GrantsAPI:
           Full name of securable.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permissions change objects.
+        :param omit_permissions_in_response: bool (optional)
+          Optional, default false. Specifies whether all the permissions should be returned in the response.
 
         :returns: :class:`UpdatePermissionsResponse`
         """
@@ -13703,6 +13750,8 @@ class GrantsAPI:
         body = {}
         if changes is not None:
             body["changes"] = [v.as_dict() for v in changes]
+        if omit_permissions_in_response is not None:
+            body["omit_permissions_in_response"] = omit_permissions_in_response
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -13735,8 +13784,8 @@ class MetastoresAPI:
         self._api = api_client
 
     def assign(self, workspace_id: int, metastore_id: str, default_catalog_name: str):
-        """Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
-        overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
+        """Creates a new metastore assignment. If an assignment for the same **workspace_id** exists, it will be
+        overwritten by the new **metastore_id** and **default_catalog_name**. The caller must be an account
         admin.
 
         :param workspace_id: int
@@ -13775,8 +13824,8 @@ class MetastoresAPI:
         storage_root: Optional[str] = None,
     ) -> MetastoreInfo:
         """Creates a new metastore based on a provided name and optional storage root path. By default (if the
-        __owner__ field is not set), the owner of the new metastore is the user calling the
-        __createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is
+        **owner** field is not set), the owner of the new metastore is the user calling the
+        **createMetastore** API. If the **owner** field is set to the empty string (**""**), the ownership is
         assigned to the System User instead.
 
         :param name: str
@@ -13784,7 +13833,7 @@ class MetastoresAPI:
         :param external_access_enabled: bool (optional)
           Whether to allow non-DBR clients to directly access entities under the metastore.
         :param region: str (optional)
-          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+          Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``).
         :param storage_root: str (optional)
           The storage root URL for metastore
 
@@ -13876,7 +13925,7 @@ class MetastoresAPI:
         return MetastoreInfo.from_dict(res)
 
     def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[MetastoreInfo]:
-        """Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
+        """Gets an array of the available metastores (as **MetastoreInfo** objects). The caller must be an admin
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
 
         NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
@@ -13887,13 +13936,16 @@ class MetastoresAPI:
         absent, which is the only indication that the end of results has been reached.
 
         :param max_results: int (optional)
-          Maximum number of metastores to return. - when set to a value greater than 0, the page length is the
-          minimum of this value and a server configured value; - when set to 0, the page length is set to a
-          server configured value (recommended); - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all the metastores are returned (not recommended). - Note: The number of
-          returned metastores might be less than the specified max_results size, even zero. The only
-          definitive indication that no further metastores can be fetched is when the next_page_token is unset
-          from the response.
+          Maximum number of metastores to return.
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all the metastores are returned (not recommended).
+          - Note: The number of returned metastores might be less than the specified max_results size, even
+            zero. The only definitive indication that no further metastores can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -13982,7 +14034,7 @@ class MetastoresAPI:
         privilege_model_version: Optional[str] = None,
         storage_root_credential_id: Optional[str] = None,
     ) -> MetastoreInfo:
-        """Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
+        """Updates information for a specific metastore. The caller must be a metastore admin. If the **owner**
         field is set to the empty string (**""**), the ownership is updated to the System User.
 
         :param id: str
@@ -14001,7 +14053,7 @@ class MetastoresAPI:
         :param owner: str (optional)
           The owner of the metastore.
         :param privilege_model_version: str (optional)
-          Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`).
+          Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``).
         :param storage_root_credential_id: str (optional)
           UUID of storage credential to access the metastore storage_root.
 
@@ -14042,9 +14094,9 @@ class MetastoresAPI:
     def update_assignment(
         self, workspace_id: int, *, default_catalog_name: Optional[str] = None, metastore_id: Optional[str] = None
     ):
-        """Updates a metastore assignment. This operation can be used to update __metastore_id__ or
-        __default_catalog_name__ for a specified Workspace, if the Workspace is already assigned a metastore.
-        The caller must be an account admin to update __metastore_id__; otherwise, the caller can be a
+        """Updates a metastore assignment. This operation can be used to update **metastore_id** or
+        **default_catalog_name** for a specified Workspace, if the Workspace is already assigned a metastore.
+        The caller must be an account admin to update **metastore_id**; otherwise, the caller can be a
         Workspace admin.
 
         :param workspace_id: int
@@ -14219,10 +14271,13 @@ class ModelVersionsAPI:
           metadata for
         :param max_results: int (optional)
           Maximum number of model versions to return. If not set, the page length is set to a server
-          configured value (100, as of 1/3/2024). - when set to a value greater than 0, the page length is the
-          minimum of this value and a server configured value(1000, as of 1/3/2024); - when set to 0, the page
-          length is set to a server configured value (100, as of 1/3/2024) (recommended); - when set to a
-          value less than 0, an invalid parameter error is returned;
+          configured value (100, as of 1/3/2024).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value(1000, as of 1/3/2024);
+          - when set to 0, the page length is set to a server configured value (100, as of 1/3/2024)
+            (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -14492,8 +14547,8 @@ class PoliciesAPI:
     in Unity Catalog. With ABAC policies, access is controlled in a hierarchical and scalable manner, based on
     data attributes rather than specific resources, enabling more flexible and comprehensive access control.
     ABAC policies in Unity Catalog support conditions on securable properties, governance tags, and
-    environment contexts. Callers must have the `MANAGE` privilege on a securable to view, create, update, or
-    delete ABAC policies."""
+    environment contexts. Callers must have the ``MANAGE`` privilege on a securable to view, create, update,
+    or delete ABAC policies."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -14601,9 +14656,11 @@ class PoliciesAPI:
           Optional. Whether to include policies defined on parent securables. By default, the inherited
           policies are not included.
         :param max_results: int (optional)
-          Optional. Maximum number of policies to return on a single page (page length). - When not set or set
-          to 0, the page length is set to a server configured value (recommended); - When set to a value
-          greater than 0, the page length is the minimum of this value and a server configured value;
+          Optional. Maximum number of policies to return on a single page (page length).
+
+          - When not set or set to 0, the page length is set to a server configured value (recommended);
+          - When set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
         :param page_token: str (optional)
           Optional. Opaque pagination token to go to next page based on previous query.
 
@@ -14657,12 +14714,14 @@ class PoliciesAPI:
         :param name: str
           Required. The name of the policy to update.
         :param policy_info: :class:`PolicyInfo`
-          Optional fields to update. This is the request body for updating a policy. Use `update_mask` field
-          to specify which fields in the request is to be updated. - If `update_mask` is empty or "*", all
-          specified fields will be updated. - If `update_mask` is specified, only the fields specified in the
-          `update_mask` will be updated. If a field is specified in `update_mask` and not set in the request,
-          the field will be cleared. Users can use the update mask to explicitly unset optional fields such as
-          `exception_principals` and `when_condition`.
+          Optional fields to update. This is the request body for updating a policy. Use ``update_mask`` field
+          to specify which fields in the request is to be updated.
+
+          - If ``update_mask`` is empty or "*", all specified fields will be updated.
+          - If ``update_mask`` is specified, only the fields specified in the ``update_mask`` will be updated.
+            If a field is specified in ``update_mask`` and not set in the request, the field will be cleared.
+            Users can use the update mask to explicitly unset optional fields such as ``exception_principals``
+            and ``when_condition``.
         :param update_mask: str (optional)
           Optional. The update mask field for specifying user intentions on which fields to update in the
           request.
@@ -14711,13 +14770,14 @@ class QualityMonitorsAPI:
         already-initiated refresh job.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          UC table name in format ``catalog.schema.table_name``. table_name is case insensitive and spaces are
           disallowed.
         :param refresh_id: int
 
 
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -14728,7 +14788,10 @@ class QualityMonitorsAPI:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
-            "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel", headers=headers
+            "POST",
+            f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel",
+            body=body,
+            headers=headers,
         )
 
     def create(
@@ -14753,16 +14816,22 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Creates a new
         monitor for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
-        table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
-        parent catalog, be an owner of the table's parent schema, and have **SELECT** access on the table. 3.
-        have the following permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on
-        the table's parent schema - be an owner of the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the table's parent schema, and
+           have **SELECT** access on the table
+        2. have **USE_CATALOG** on the table's parent catalog, be an owner of the table's parent schema, and
+           have **SELECT** access on the table.
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table.
 
         Workspace assets, such as the dashboard, will be created in the workspace where this call was made.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
         :param output_schema_name: str
           [Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
@@ -14772,7 +14841,7 @@ class QualityMonitorsAPI:
           data-monitoring assets. Normally prepopulated to a default user location via UI and Python APIs.
         :param baseline_table_name: str (optional)
           [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in
-          the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
+          the monitored ``table_name``. The baseline table and the monitored table shall have the same schema.
         :param custom_metrics: List[:class:`MonitorMetric`] (optional)
           [Create:OPT Update:OPT] Custom metrics.
         :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
@@ -14789,9 +14858,9 @@ class QualityMonitorsAPI:
         :param slicing_exprs: List[str] (optional)
           [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
           data is grouped by each expression independently, resulting in a separate slice for each predicate
-          and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
-          following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in
-          `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate
+          and its complements. For example ``slicing_exprs=[“col_1”, “col_2 > 10”]`` will generate the
+          following slices: two slices for ``col_2 > 10`` (True and False), and one slice per unique value in
+          ``col1``. For high-cardinality columns, only the top 100 unique values by frequency will generate
           slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
@@ -14849,10 +14918,15 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Deletes a monitor
         for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
@@ -14860,7 +14934,7 @@ class QualityMonitorsAPI:
         be manually cleaned up (if desired).
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
 
         :returns: :class:`DeleteMonitorResponse`
@@ -14881,17 +14955,22 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets a monitor for
         the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema. 3. have the following
-        permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent
-        schema - **SELECT** privilege on the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema.
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - **SELECT** privilege on the table.
 
         The returned information includes configuration values, as well as information on assets created by
         the monitor. Some information (e.g., dashboard) may be filtered out if the caller is in a different
         workspace than where the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
 
         :returns: :class:`MonitorInfo`
@@ -14912,10 +14991,15 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets info about a
         specific monitor refresh using the given refresh ID.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-        **SELECT** privilege on the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - **SELECT** privilege on the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
@@ -14944,15 +15028,20 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets an array
         containing the history of the most recent refreshes (up to 25) for this table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-        **SELECT** privilege on the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - **SELECT** privilege on the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          UC table name in format ``catalog.schema.table_name``. table_name is case insensitive and spaces are
           disallowed.
 
         :returns: :class:`MonitorRefreshListResponse`
@@ -14975,16 +15064,21 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Regenerates the
         monitoring dashboard for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table
 
         The call must be made from the workspace where the monitor was created. The dashboard will be
         regenerated in the assets directory that was specified when the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
         :param warehouse_id: str (optional)
           Optional argument to specify the warehouse for dashboard regeneration. If not specified, the first
@@ -15014,20 +15108,26 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Queues a metric
         refresh on the monitor for the specified table. The refresh will execute in the background.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          UC table name in format ``catalog.schema.table_name``. table_name is case insensitive and spaces are
           disallowed.
 
         :returns: :class:`MonitorRefreshInfo`
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -15037,7 +15137,9 @@ class QualityMonitorsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
+        res = self._api.do(
+            "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", body=body, headers=headers
+        )
         return MonitorRefreshInfo.from_dict(res)
 
     def update(
@@ -15060,10 +15162,15 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Updates a monitor
         for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table.
 
         Additionally, the call must be made from the workspace where the monitor was created, and the caller
         must be the original creator of the monitor.
@@ -15071,14 +15178,14 @@ class QualityMonitorsAPI:
         Certain configuration fields, such as output asset identifiers, cannot be updated.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
         :param output_schema_name: str
           [Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
           {catalog}.{schema}
         :param baseline_table_name: str (optional)
           [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in
-          the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
+          the monitored ``table_name``. The baseline table and the monitored table shall have the same schema.
         :param custom_metrics: List[:class:`MonitorMetric`] (optional)
           [Create:OPT Update:OPT] Custom metrics.
         :param dashboard_id: str (optional)
@@ -15096,9 +15203,9 @@ class QualityMonitorsAPI:
         :param slicing_exprs: List[str] (optional)
           [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
           data is grouped by each expression independently, resulting in a separate slice for each predicate
-          and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
-          following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in
-          `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate
+          and its complements. For example ``slicing_exprs=[“col_1”, “col_2 > 10”]`` will generate the
+          following slices: two slices for ``col_2 > 10`` (True and False), and one slice per unique value in
+          ``col1``. For high-cardinality columns, only the top 100 unique values by frequency will generate
           slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
@@ -15161,13 +15268,14 @@ class RegisteredModelsAPI:
     catalog and USE_SCHEMA permissions on the enclosing schema. In addition, the following additional
     privileges are required for various operations:
 
-    * To create a registered model, users must additionally have the CREATE_MODEL permission on the target
-    schema. * To view registered model or model version metadata, model version data files, or invoke a model
-    version, users must additionally have the EXECUTE permission on the registered model * To update
-    registered model or model version tags, users must additionally have APPLY TAG permissions on the
-    registered model * To update other registered model or model version metadata (comments, aliases) create a
-    new model version, or update permissions on the registered model, users must be owners of the registered
-    model.
+    - To create a registered model, users must additionally have the CREATE_MODEL permission on the target
+      schema.
+    - To view registered model or model version metadata, model version data files, or invoke a model version,
+      users must additionally have the EXECUTE permission on the registered model
+    - To update registered model or model version tags, users must additionally have APPLY TAG permissions on
+      the registered model
+    - To update other registered model or model version metadata (comments, aliases) create a new model
+      version, or update permissions on the registered model, users must be owners of the registered model.
 
     Note: The securable type for models is FUNCTION. When using REST APIs (for example, tagging, grants) that
     specify a securable type, use FUNCTION as the securable type."""
@@ -15198,9 +15306,11 @@ class RegisteredModelsAPI:
         File storage for model versions in the registered model will be located in the default location which
         is specified by the parent schema, or the parent catalog, or the Metastore.
 
-        For registered model creation to succeed, the user must satisfy the following conditions: - The caller
-        must be a metastore admin, or be the owner of the parent catalog and schema, or have the
-        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        For registered model creation to succeed, the user must satisfy the following conditions:
+
+        - The caller must be a metastore admin, or be the owner of the parent catalog and schema, or have the
+          **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent
+          schema.
         - The caller must have the **CREATE MODEL** or **CREATE FUNCTION** privilege on the parent schema.
 
         :param aliases: List[:class:`RegisteredModelAlias`] (optional)
@@ -15390,17 +15500,23 @@ class RegisteredModelsAPI:
         :param max_results: int (optional)
           Max number of registered models to return.
 
-          If both catalog and schema are specified: - when max_results is not specified, the page length is
-          set to a server configured value (10000, as of 4/2/2024). - when set to a value greater than 0, the
-          page length is the minimum of this value and a server configured value (10000, as of 4/2/2024); -
-          when set to 0, the page length is set to a server configured value (10000, as of 4/2/2024); - when
-          set to a value less than 0, an invalid parameter error is returned;
+          If both catalog and schema are specified:
 
-          If neither schema nor catalog is specified: - when max_results is not specified, the page length is
-          set to a server configured value (100, as of 4/2/2024). - when set to a value greater than 0, the
-          page length is the minimum of this value and a server configured value (1000, as of 4/2/2024); -
-          when set to 0, the page length is set to a server configured value (100, as of 4/2/2024); - when set
-          to a value less than 0, an invalid parameter error is returned;
+          - when max_results is not specified, the page length is set to a server configured value (10000, as
+            of 4/2/2024).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (10000, as of 4/2/2024);
+          - when set to 0, the page length is set to a server configured value (10000, as of 4/2/2024);
+          - when set to a value less than 0, an invalid parameter error is returned;
+
+          If neither schema nor catalog is specified:
+
+          - when max_results is not specified, the page length is set to a server configured value (100, as of
+            4/2/2024).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (1000, as of 4/2/2024);
+          - when set to 0, the page length is set to a server configured value (100, as of 4/2/2024);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque token to send for the next page of results (pagination).
         :param schema_name: str (optional)
@@ -15580,9 +15696,8 @@ class ResourceQuotasAPI:
     """Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that
     can be created. Quotas are expressed in terms of a resource type and a parent (for example, tables per
     metastore or schemas per catalog). The resource quota APIs enable you to monitor your current usage and
-    limits. For more information on resource quotas see the [Unity Catalog documentation].
-
-    [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas"""
+    limits. For more information on resource quotas see the `Unity Catalog documentation
+    <https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas>`__."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -15749,14 +15864,14 @@ class RfaAPI:
           **destination_id** and **destination_type** must be defined.
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`AccessRequestDestinations`
         """
@@ -15919,10 +16034,12 @@ class SchemasAPI:
           Whether to include schemas in the response for which the principal can only access selective
           metadata for
         :param max_results: int (optional)
-          Maximum number of schemas to return. If not set, all the schemas are returned (not recommended). -
-          when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of schemas to return. If not set, all the schemas are returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -15969,8 +16086,8 @@ class SchemasAPI:
         properties: Optional[Dict[str, str]] = None,
     ) -> SchemaInfo:
         """Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If
-        the caller is a metastore admin, only the __owner__ field can be changed in the update. If the
-        __name__ field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
+        the caller is a metastore admin, only the **owner** field can be changed in the update. If the
+        **name** field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
         privilege on the parent catalog.
 
         :param full_name: str
@@ -16139,9 +16256,10 @@ class SecretsUcAPI:
         :param page_size: int (optional)
           Maximum number of secrets to return.
 
-          - If not specified, at most 10000 secrets are returned. - If set to a value greater than 0, the page
-          length is the minimum of this value and 10000. - If set to 0, the page length is set to 10000. - If
-          set to a value less than 0, an invalid parameter error is returned.
+          - If not specified, at most 10000 secrets are returned.
+          - If set to a value greater than 0, the page length is the minimum of this value and 10000.
+          - If set to 0, the page length is set to 10000.
+          - If set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Opaque pagination token to go to the next page based on previous query. The maximum page length is
           determined by a server configured value.
@@ -16363,7 +16481,7 @@ class StorageCredentialsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[StorageCredentialInfo]:
-        """Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
+        """Gets an array of storage credentials (as **StorageCredentialInfo** objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
         admin, retrieval of credentials is unrestricted. There is no guarantee of a specific ordering of the
         elements in the array.
@@ -16380,10 +16498,12 @@ class StorageCredentialsAPI:
           to update the credential–workspace binding.
         :param max_results: int (optional)
           Maximum number of storage credentials to return. If not set, all the storage credentials are
-          returned (not recommended). - when set to a value greater than 0, the page length is the minimum of
-          this value and a server configured value; - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value less than 0, an invalid parameter error is
-          returned;
+          returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -16519,12 +16639,12 @@ class StorageCredentialsAPI:
         storage_credential_name: Optional[str] = None,
         url: Optional[str] = None,
     ) -> ValidateStorageCredentialResponse:
-        """Validates a storage credential. At least one of __external_location_name__ and __url__ need to be
+        """Validates a storage credential. At least one of **external_location_name** and **url** need to be
         provided. If only one of them is provided, it will be used for validation. And if both are provided,
-        the __url__ will be used for validation, and __external_location_name__ will be ignored when checking
+        the **url** will be used for validation, and **external_location_name** will be ignored when checking
         overlapping urls.
 
-        Either the __storage_credential_name__ or the cloud-specific credential must be provided.
+        Either the **storage_credential_name** or the cloud-specific credential must be provided.
 
         The caller must be a metastore admin or the storage credential owner or have the
         **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.
@@ -16663,10 +16783,13 @@ class SystemSchemasAPI:
         :param metastore_id: str
           The ID for the metastore in which the system schema resides.
         :param max_results: int (optional)
-          Maximum number of schemas to return. - When set to 0, the page length is set to a server configured
-          value (recommended); - When set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - When set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all the schemas are returned (not recommended).
+          Maximum number of schemas to return.
+
+          - When set to 0, the page length is set to a server configured value (recommended);
+          - When set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - When set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all the schemas are returned (not recommended).
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -16718,12 +16841,13 @@ class TableConstraintsAPI:
     def create(self, full_name_arg: str, constraint: TableConstraint) -> TableConstraint:
         """Creates a new table constraint.
 
-        For the table constraint creation to succeed, the user must satisfy both of these conditions: - the
-        user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
-        privilege on the table's parent schema, and be the owner of the table. - if the new constraint is a
-        __ForeignKeyConstraint__, the user must have the **USE_CATALOG** privilege on the referenced parent
-        table's catalog, the **USE_SCHEMA** privilege on the referenced parent table's schema, and be the
-        owner of the referenced parent table.
+        For the table constraint creation to succeed, the user must satisfy both of these conditions:
+
+        - the user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
+          privilege on the table's parent schema, and be the owner of the table.
+        - if the new constraint is a **ForeignKeyConstraint**, the user must have the **USE_CATALOG**
+          privilege on the referenced parent table's catalog, the **USE_SCHEMA** privilege on the referenced
+          parent table's schema, and be the owner of the referenced parent table.
 
         :param full_name_arg: str
           The full name of the table referenced by the constraint.
@@ -16752,12 +16876,13 @@ class TableConstraintsAPI:
     def delete(self, full_name: str, constraint_name: str, cascade: bool):
         """Deletes a table constraint.
 
-        For the table constraint deletion to succeed, the user must satisfy both of these conditions: - the
-        user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
-        privilege on the table's parent schema, and be the owner of the table. - if __cascade__ argument is
-        **true**, the user must have the following permissions on all of the child tables: the **USE_CATALOG**
-        privilege on the table's catalog, the **USE_SCHEMA** privilege on the table's schema, and be the owner
-        of the table.
+        For the table constraint deletion to succeed, the user must satisfy both of these conditions:
+
+        - the user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
+          privilege on the table's parent schema, and be the owner of the table.
+        - if **cascade** argument is **true**, the user must have the following permissions on all of the
+          child tables: the **USE_CATALOG** privilege on the table's catalog, the **USE_SCHEMA** privilege on
+          the table's schema, and be the owner of the table.
 
         :param full_name: str
           Full name of the table referenced by the constraint.
@@ -16793,7 +16918,7 @@ class TablesAPI:
     permission on the table, and they must have the USE_CATALOG permission on its parent catalog and the
     USE_SCHEMA permission on its parent schema.
 
-    A table can be managed or external. From an API perspective, a __VIEW__ is a particular kind of table
+    A table can be managed or external. From an API perspective, a **VIEW** is a particular kind of table
     (rather than a managed or external table)."""
 
     def __init__(self, api_client):
@@ -16841,7 +16966,7 @@ class TablesAPI:
         :param storage_location: str
           Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
         :param columns: List[:class:`ColumnInfo`] (optional)
-          The array of __ColumnInfo__ definitions of the table's columns.
+          The array of **ColumnInfo** definitions of the table's columns.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
 
@@ -16901,11 +17026,15 @@ class TablesAPI:
 
     def exists(self, full_name: str) -> TableExistsResponse:
         """Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
-        of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
-        owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
-        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
-        and either be the table owner or have the **SELECT** privilege on the table. * Have **BROWSE**
-        privilege on the parent catalog * Have **BROWSE** privilege on the parent schema
+        of the following requirements:
+
+        - Be a metastore admin
+        - Be the owner of the parent catalog
+        - Be the owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog
+        - Have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+          parent schema, and either be the table owner or have the **SELECT** privilege on the table.
+        - Have **BROWSE** privilege on the parent catalog
+        - Have **BROWSE** privilege on the parent schema
 
         :param full_name: str
           Full name of the table.
@@ -16933,10 +17062,13 @@ class TablesAPI:
         include_manifest_capabilities: Optional[bool] = None,
     ) -> TableInfo:
         """Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
-        following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
-        the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
-        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
-        and either be the table owner or have the **SELECT** privilege on the table.
+        following requirements:
+
+        - Be a metastore admin
+        - Be the owner of the parent catalog
+        - Be the owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog
+        - Have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+          parent schema, and either be the table owner or have the **SELECT** privilege on the table.
 
         :param full_name: str
           Full name of the table.
@@ -17007,10 +17139,12 @@ class TablesAPI:
         :param include_manifest_capabilities: bool (optional)
           Whether to include a manifest containing table capabilities in the response.
         :param max_results: int (optional)
-          Maximum number of tables to return. If not set, all the tables are returned (not recommended). -
-          when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of tables to return. If not set, all the tables are returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param omit_columns: bool (optional)
           Whether to omit the columns of the table from the response or not.
         :param omit_properties: bool (optional)
@@ -17075,11 +17209,12 @@ class TablesAPI:
         """Gets an array of summaries for tables for a schema and catalog within the metastore. The table
         summaries returned are either:
 
-        * summaries for tables (within the current metastore and parent catalog and schema), when the user is
-        a metastore admin, or: * summaries for tables and schemas (within the current metastore and parent
-        catalog) for which the user has ownership or the **SELECT** privilege on the table and ownership or
-        **USE_SCHEMA** privilege on the schema, provided that the user also has ownership or the
-        **USE_CATALOG** privilege on the parent catalog.
+        - summaries for tables (within the current metastore and parent catalog and schema), when the user is
+          a metastore admin, or:
+        - summaries for tables and schemas (within the current metastore and parent catalog) for which the
+          user has ownership or the **SELECT** privilege on the table and ownership or **USE_SCHEMA**
+          privilege on the schema, provided that the user also has ownership or the **USE_CATALOG** privilege
+          on the parent catalog.
 
         There is no guarantee of a specific ordering of the elements in the array.
 
@@ -17093,10 +17228,13 @@ class TablesAPI:
           Whether to include a manifest containing table capabilities in the response.
         :param max_results: int (optional)
           Maximum number of summaries for tables to return. If not set, the page length is set to a server
-          configured value (10000, as of 1/5/2024). - when set to a value greater than 0, the page length is
-          the minimum of this value and a server configured value (10000, as of 1/5/2024); - when set to 0,
-          the page length is set to a server configured value (10000, as of 1/5/2024) (recommended); - when
-          set to a value less than 0, an invalid parameter error is returned;
+          configured value (10000, as of 1/5/2024).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (10000, as of 1/5/2024);
+          - when set to 0, the page length is set to a server configured value (10000, as of 1/5/2024)
+            (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
         :param schema_name_pattern: str (optional)
@@ -17367,15 +17505,19 @@ class VolumesAPI:
         created in the specified external location, while a managed volume will be located in the default
         location which is specified by the parent schema, or the parent catalog, or the Metastore.
 
-        For the volume creation to succeed, the user must satisfy following conditions: - The caller must be a
-        metastore admin, or be the owner of the parent catalog and schema, or have the **USE_CATALOG**
-        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema. - The caller
-        must have **CREATE VOLUME** privilege on the parent schema.
+        For the volume creation to succeed, the user must satisfy following conditions:
 
-        For an external volume, following conditions also need to satisfy - The caller must have **CREATE
-        EXTERNAL VOLUME** privilege on the external location. - There are no other tables, nor volumes
-        existing in the specified storage location. - The specified storage location is not under the location
-        of other tables, nor volumes, or catalogs or schemas.
+        - The caller must be a metastore admin, or be the owner of the parent catalog and schema, or have the
+          **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent
+          schema.
+        - The caller must have **CREATE VOLUME** privilege on the parent schema.
+
+        For an external volume, following conditions also need to satisfy
+
+        - The caller must have **CREATE EXTERNAL VOLUME** privilege on the external location.
+        - There are no other tables, nor volumes existing in the specified storage location.
+        - The specified storage location is not under the location of other tables, nor volumes, or catalogs
+          or schemas.
 
         :param catalog_name: str
           The name of the catalog where the schema and the volume are
@@ -17386,9 +17528,8 @@ class VolumesAPI:
         :param volume_type: :class:`VolumeType`
           The type of the volume. An external volume is located in the specified external location. A managed
           volume is located in the default location which is specified by the parent schema, or the parent
-          catalog, or the Metastore. [Learn more]
-
-          [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
+          catalog, or the Metastore. `Learn more
+          <https://docs.databricks.com/aws/en/volumes/managed-vs-external>`__
         :param comment: str (optional)
           The comment attached to the volume
         :param storage_location: str (optional)
@@ -17476,11 +17617,13 @@ class VolumesAPI:
         :param max_results: int (optional)
           Maximum number of volumes to return (page length).
 
-          If not set, the page length is set to a server configured value (10000, as of 1/29/2024). - when set
-          to a value greater than 0, the page length is the minimum of this value and a server configured
-          value (10000, as of 1/29/2024); - when set to 0, the page length is set to a server configured value
-          (10000, as of 1/29/2024) (recommended); - when set to a value less than 0, an invalid parameter
-          error is returned;
+          If not set, the page length is set to a server configured value (10000, as of 1/29/2024).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (10000, as of 1/29/2024);
+          - when set to 0, the page length is set to a server configured value (10000, as of 1/29/2024)
+            (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
 
           Note: this parameter controls only the maximum number of volumes to return. The actual number of
           volumes returned in a page may be smaller than this value, including 0, even if there are more
@@ -17594,12 +17737,12 @@ class VolumesAPI:
 
 
 class WorkspaceBindingsAPI:
-    """A securable in Databricks can be configured as __OPEN__ or __ISOLATED__. An __OPEN__ securable can be
-    accessed from any workspace, while an __ISOLATED__ securable can only be accessed from a configured list
+    """A securable in Databricks can be configured as **OPEN** or **ISOLATED**. An **OPEN** securable can be
+    accessed from any workspace, while an **ISOLATED** securable can only be accessed from a configured list
     of workspaces. This API allows you to configure (bind) securables to workspaces.
 
-    NOTE: The __isolation_mode__ is configured for the securable itself (using its Update method) and the
-    workspace bindings are only consulted when the securable's __isolation_mode__ is set to __ISOLATED__.
+    NOTE: The **isolation_mode** is configured for the securable itself (using its Update method) and the
+    workspace bindings are only consulted when the securable's **isolation_mode** is set to **ISOLATED**.
 
     A securable's workspace bindings can be configured by a metastore admin or the owner of the securable.
 
@@ -17607,7 +17750,12 @@ class WorkspaceBindingsAPI:
     path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}), which introduces the ability to
     bind a securable in READ_ONLY mode (catalogs only).
 
-    Securable types that support binding: - catalog - storage_credential - credential - external_location"""
+    Securable types that support binding:
+
+    - catalog
+    - storage_credential
+    - credential
+    - external_location"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -17657,10 +17805,13 @@ class WorkspaceBindingsAPI:
         :param securable_name: str
           The name of the securable.
         :param max_results: int (optional)
-          Maximum number of workspace bindings to return. - When set to 0, the page length is set to a server
-          configured value (recommended); - When set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - When set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all the workspace bindings are returned (not recommended).
+          Maximum number of workspace bindings to return.
+
+          - When set to 0, the page length is set to a server configured value (recommended);
+          - When set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - When set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all the workspace bindings are returned (not recommended).
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 

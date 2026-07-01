@@ -12,23 +12,30 @@
     With token federation, your users and service principals can exchange tokens from your IdP for Databricks
     OAuth tokens, which can be used to access Databricks APIs. Token federation eliminates the need to manage
     Databricks secrets, and allows you to centralize management of token issuance policies in your IdP.
-    Databricks token federation is typically used in combination with [SCIM], so users in your IdP are
-    synchronized into your Databricks account.
+    Databricks token federation is typically used in combination with `SCIM
+    <https://docs.databricks.com/admin/users-groups/scim/index.html>`__, so users in your IdP are synchronized
+    into your Databricks account.
 
     Token federation is configured in your Databricks account using an account federation policy. An account
-    federation policy specifies: * which IdP, or issuer, your Databricks account should accept tokens from *
-    how to determine which Databricks user, or subject, a token is issued for
+    federation policy specifies:
 
-    To configure a federation policy, you provide the following: * The required token __issuer__, as specified
-    in the “iss” claim of your tokens. The issuer is an https URL that identifies your IdP. * The allowed
-    token __audiences__, as specified in the “aud” claim of your tokens. This identifier is intended to
-    represent the recipient of the token. As long as the audience in the token matches at least one audience
-    in the policy, the token is considered a match. If unspecified, the default value is your Databricks
-    account id. * The __subject claim__, which indicates which token claim contains the Databricks username of
-    the user the token was issued for. If unspecified, the default value is “sub”. * Optionally, the
-    public keys used to validate the signature of your tokens, in JWKS format. If unspecified (recommended),
-    Databricks automatically fetches the public keys from your issuer’s well known endpoint. Databricks
-    strongly recommends relying on your issuer’s well known endpoint for discovering public keys.
+    - which IdP, or issuer, your Databricks account should accept tokens from
+    - how to determine which Databricks user, or subject, a token is issued for
+
+    To configure a federation policy, you provide the following:
+
+    - The required token **issuer**, as specified in the “iss” claim of your tokens. The issuer is an
+      https URL that identifies your IdP.
+    - The allowed token **audiences**, as specified in the “aud” claim of your tokens. This identifier is
+      intended to represent the recipient of the token. As long as the audience in the token matches at least
+      one audience in the policy, the token is considered a match. If unspecified, the default value is your
+      Databricks account id.
+    - The **subject claim**, which indicates which token claim contains the Databricks username of the user
+      the token was issued for. If unspecified, the default value is “sub”.
+    - Optionally, the public keys used to validate the signature of your tokens, in JWKS format. If
+      unspecified (recommended), Databricks automatically fetches the public keys from your issuer’s well
+      known endpoint. Databricks strongly recommends relying on your issuer’s well known endpoint for
+      discovering public keys.
 
     An example federation policy is:
 
@@ -39,7 +46,7 @@
        subject_claim: "sub"
 
     An example JWT token body that matches this policy and could be used to authenticate to Databricks as user
-    `username@mycompany.com` is:
+    ``username@mycompany.com`` is:
 
     .. code-block::
 
@@ -54,8 +61,6 @@
     policy.
 
     You do not need to configure an OAuth application in Databricks to use token federation.
-
-    [SCIM]: https://docs.databricks.com/admin/users-groups/scim/index.html
 
     .. py:method:: create(policy: FederationPolicy [, policy_id: Optional[str]]) -> FederationPolicy
 

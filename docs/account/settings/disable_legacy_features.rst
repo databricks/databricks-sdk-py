@@ -6,9 +6,12 @@
 
     Disable legacy features for new Databricks workspaces.
 
-    For newly created workspaces: 1. Disables the use of DBFS root and mounts. 2. Hive Metastore will not be
-    provisioned. 3. Disables the use of ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
-    prior to 13.3LTS.
+    For newly created workspaces:
+
+    1. Disables the use of DBFS root and mounts.
+    2. Hive Metastore will not be provisioned.
+    3. Disables the use of ‘No-isolation clusters’.
+    4. Disables Databricks Runtime versions prior to 13.3LTS.
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteDisableLegacyFeaturesResponse
 
@@ -47,14 +50,14 @@
         :param setting: :class:`DisableLegacyFeatures`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`DisableLegacyFeatures`
         
