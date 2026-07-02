@@ -281,6 +281,16 @@ def _fieldmask(d: str) -> FieldMask:
                 ],
             ),
         ),
+        (
+            lambda requests_mock: requests_mock.post(
+                "http://localhost/api/2.0/http-call/sync_string/123/true/state:sync"
+            ),
+            lambda client: client.sync_resource(
+                path_param_string="sync_string",
+                path_param_int=123,
+                path_param_bool=True,
+            ),
+        ),
     ],
     ids=[
         "LegacyHttpPostNoQueryParamsNoBody",
@@ -298,6 +308,7 @@ def _fieldmask(d: str) -> FieldMask:
         "GetResourceWithRepeatedQueryParam",
         "GetResourceWithRepeatedNestedQueryParam",
         "GetResourceWithDoubleRepeatedNestedQueryParam",
+        "SyncResourceNoBody",
     ],
 )
 def test_http_call(config, requests_mock, apply_mock, make_call):

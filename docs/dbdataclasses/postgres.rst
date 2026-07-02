@@ -152,7 +152,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EndpointType
 
-   The compute endpoint type. Either `read_write` or `read_only`.
+   The compute endpoint type. Either ``read_write`` or ``read_only``.
 
    .. py:attribute:: ENDPOINT_TYPE_READ_ONLY
       :value: "ENDPOINT_TYPE_READ_ONLY"
@@ -406,6 +406,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WORKSPACE_TEMPORARILY_UNAVAILABLE
       :value: "WORKSPACE_TEMPORARILY_UNAVAILABLE"
+
+.. autoclass:: InitialBranchSpec
+   :members:
+   :undoc-members:
 
 .. autoclass:: InitialEndpointSpec
    :members:

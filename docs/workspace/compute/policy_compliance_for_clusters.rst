@@ -17,7 +17,7 @@
 
         Cancels a pending enforcement on a cluster. After canceling the pending enforcement, the cluster will
         no longer update on the next termination or restart. Pending enforcements cannot be canceled when a
-        cluster is in `TERMINATING` state. Only workspace admins can cancel pending enforcements.
+        cluster is in ``TERMINATING`` state. Only workspace admins can cancel pending enforcements.
 
         :param cluster_id: str
           The ID of the cluster to cancel the pending enforcement for.
@@ -31,10 +31,10 @@
 
         Updates a cluster to be compliant with the current version of its policy.
 
-        If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time the
-        cluster is started, the new attributes will take effect.
+        If a cluster is updated while in a ``TERMINATED`` state, it will remain ``TERMINATED``. The next time
+        the cluster is started, the new attributes will take effect.
 
-        For clusters in other states, the behavior depends on the `enforce_mode` used.
+        For clusters in other states, the behavior depends on the ``enforce_mode`` used.
 
         Clusters created by the Databricks Jobs, SDP, or Models services cannot be enforced by this API.
         Instead, use the "Enforce job policy compliance" API to enforce policy compliance on jobs.
@@ -42,15 +42,16 @@
         :param cluster_id: str
           The ID of the cluster you want to enforce policy compliance on.
         :param enforce_mode: :class:`EnforcePolicyComplianceForClusterEnforceMode` (optional)
-          Determines how changes should be made to clusters that are not in `TERMINATED` state.
+          Determines how changes should be made to clusters that are not in ``TERMINATED`` state.
 
-          - `ENFORCE_IMMEDIATELY`: If the cluster is in a `RUNNING` state, it will be restarted so that the
-          new attributes can take effect. For other states aside from `TERMINATED` state, the request will be
-          rejected. - `WAIT_FOR_TERMINATION`: The cluster is not immediately edited. Instead, a pending
-          enforcement is scheduled to update the cluster when it terminates or restarts. When this occurs,
-          `enforce_result` will contain `DEFERRED`. Only workspace admins can use this mode.
+          - ``ENFORCE_IMMEDIATELY``: If the cluster is in a ``RUNNING`` state, it will be restarted so that
+            the new attributes can take effect. For other states aside from ``TERMINATED`` state, the request
+            will be rejected.
+          - ``WAIT_FOR_TERMINATION``: The cluster is not immediately edited. Instead, a pending enforcement is
+            scheduled to update the cluster when it terminates or restarts. When this occurs,
+            ``enforce_result`` will contain ``DEFERRED``. Only workspace admins can use this mode.
 
-          Regardless of the enforce mode, clusters in `TERMINATED` state are immediately edited.
+          Regardless of the enforce mode, clusters in ``TERMINATED`` state are immediately edited.
         :param validate_only: bool (optional)
           If set, previews the changes that would be made to a cluster to enforce compliance but does not
           update the cluster.
@@ -81,7 +82,7 @@
           further constrain the maximum number of results returned in a single page.
         :param page_token: str (optional)
           A page token that can be used to navigate to the next page or previous page as returned by
-          `next_page_token` or `prev_page_token`.
+          ``next_page_token`` or ``prev_page_token``.
 
         :returns: Iterator over :class:`ClusterCompliance`
         

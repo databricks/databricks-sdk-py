@@ -22,13 +22,13 @@
             
             w = WorkspaceClient()
             
-            created_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
+            new_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
             
-            created_schema = w.schemas.create(name=f"sdk-{time.time_ns()}", catalog_name=created_catalog.name)
+            created = w.schemas.create(name=f"sdk-{time.time_ns()}", catalog_name=new_catalog.name)
             
             # cleanup
-            w.catalogs.delete(name=created_catalog.name, force=True)
-            w.schemas.delete(full_name=created_schema.full_name)
+            w.catalogs.delete(name=new_catalog.name, force=True)
+            w.schemas.delete(full_name=created.full_name)
 
         Creates a new schema for catalog in the Metastore. The caller must be a metastore admin, or have the
         **CREATE_SCHEMA** privilege in the parent catalog.
@@ -135,10 +135,12 @@
           Whether to include schemas in the response for which the principal can only access selective
           metadata for
         :param max_results: int (optional)
-          Maximum number of schemas to return. If not set, all the schemas are returned (not recommended). -
-          when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of schemas to return. If not set, all the schemas are returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -169,8 +171,8 @@
             w.schemas.delete(full_name=created.full_name)
 
         Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If
-        the caller is a metastore admin, only the __owner__ field can be changed in the update. If the
-        __name__ field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
+        the caller is a metastore admin, only the **owner** field can be changed in the update. If the
+        **name** field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
         privilege on the parent catalog.
 
         :param full_name: str

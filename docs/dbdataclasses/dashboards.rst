@@ -25,6 +25,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DASHBOARD_VIEW_BASIC
       :value: "DASHBOARD_VIEW_BASIC"
 
+.. autoclass:: DownloadMessageAttachmentVisualizationResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: EvaluationStatusType
 
    .. py:attribute:: DONE
@@ -174,6 +178,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieSuggestedQuestionsAttachment
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieVizAttachment
    :members:
    :undoc-members:
 
@@ -392,7 +400,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: MessageStatus
 
-   MessageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to respond to the user's question. * `PENDING_WAREHOUSE`: Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a generated SQL query. Get the SQL query result by calling [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. * `FAILED`: The response generation or query execution failed. See `error` field. * `COMPLETED`: Message processing is completed. Results are in the `attachments` field. Get the SQL query result by calling [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. * `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user needs to rerun the query. Rerun the SQL query result by calling [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery) API. * `CANCELLED`: Message has been cancelled.
+   MessageStatus. The possible values are:
+   - ``FETCHING_METADATA``: Fetching metadata from the data sources. - ``FILTERING_CONTEXT``: Running smart context step to determine relevant context. - ``ASKING_AI``: Waiting for the LLM to respond to the user's question. - ``PENDING_WAREHOUSE``: Waiting for warehouse before the SQL query can start executing. - ``EXECUTING_QUERY``: Executing a generated SQL query. Get the SQL query result by calling [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. - ``FAILED``: The response generation or query execution failed. See ``error`` field. - ``COMPLETED``: Message processing is completed. Results are in the ``attachments`` field. Get the SQL query result by calling [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. - ``SUBMITTED``: Message has been submitted. - ``QUERY_RESULT_EXPIRED``: SQL result is not available anymore. The user needs to rerun the query. Rerun the SQL query result by calling [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery) API. - ``CANCELLED``: Message has been cancelled.
 
    .. py:attribute:: ASKING_AI
       :value: "ASKING_AI"
@@ -562,7 +571,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ThoughtType
 
-   ThoughtType. The possible values are: * `THOUGHT_TYPE_UNSPECIFIED`: Default value that should not be used. * `THOUGHT_TYPE_DESCRIPTION`: A high-level description of how the question was interpreted. * `THOUGHT_TYPE_UNDERSTANDING`: How ambiguous parts of the question were resolved. * `THOUGHT_TYPE_DATA_SOURCING`: Which tables or datasets were identified as relevant. * `THOUGHT_TYPE_INSTRUCTIONS`: Which author-defined instructions were referenced. * `THOUGHT_TYPE_STEPS`: The logical steps taken to compute the answer. The category of a Thought. Additional values may be added in the future.
+   ThoughtType. The possible values are:
+   - ``THOUGHT_TYPE_UNSPECIFIED``: Default value that should not be used. - ``THOUGHT_TYPE_DESCRIPTION``: A high-level description of how the question was interpreted. - ``THOUGHT_TYPE_UNDERSTANDING``: How ambiguous parts of the question were resolved. - ``THOUGHT_TYPE_DATA_SOURCING``: Which tables or datasets were identified as relevant. - ``THOUGHT_TYPE_INSTRUCTIONS``: Which author-defined instructions were referenced. - ``THOUGHT_TYPE_STEPS``: The logical steps taken to compute the answer. The category of a Thought. Additional values may be added in the future.
 
    .. py:attribute:: THOUGHT_TYPE_DATA_SOURCING
       :value: "THOUGHT_TYPE_DATA_SOURCING"

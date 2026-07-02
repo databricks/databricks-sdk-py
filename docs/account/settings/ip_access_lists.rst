@@ -11,9 +11,11 @@
     account APIs. If the feature is disabled for the account, all access is allowed for this account. There is
     support for allow lists (inclusion) and block lists (exclusion).
 
-    When a connection is attempted: 1. **First, all block lists are checked.** If the connection IP address
-    matches any block list, the connection is rejected. 2. **If the connection was not rejected by block
-    lists**, the IP address is compared with the allow lists.
+    When a connection is attempted:
+
+    1. **First, all block lists are checked.** If the connection IP address matches any block list, the
+       connection is rejected.
+    2. **If the connection was not rejected by block lists**, the IP address is compared with the allow lists.
 
     If there is at least one allow list for the account, the connection is allowed only if the IP address
     matches an allow list. If there are no allow lists for the account, all IP addresses are allowed.
@@ -32,10 +34,11 @@
 
         When creating or updating an IP access list:
 
-        * For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
-        where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
-        `error_code` value `QUOTA_EXCEEDED`. * If the new list would block the calling user's current IP,
-        error 400 is returned with `error_code` value `INVALID_STATE`.
+        - For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
+          where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
+          ``error_code`` value ``QUOTA_EXCEEDED``.
+        - If the new list would block the calling user's current IP, error 400 is returned with ``error_code``
+          value ``INVALID_STATE``.
 
         It can take a few minutes for the changes to take effect.
 
@@ -80,12 +83,13 @@
         Replaces an IP access list, specified by its ID.
 
         A list can include allow lists and block lists. See the top of this file for a description of how the
-        server treats allow lists and block lists at run time. When replacing an IP access list: * For all
-        allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values, where one
-        CIDR counts as a single value. Attempts to exceed that number return error 400 with `error_code` value
-        `QUOTA_EXCEEDED`. * If the resulting list would block the calling user's current IP, error 400 is
-        returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take
-        effect.
+        server treats allow lists and block lists at run time. When replacing an IP access list:
+
+        - For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
+          where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
+          ``error_code`` value ``QUOTA_EXCEEDED``.
+        - If the resulting list would block the calling user's current IP, error 400 is returned with
+          ``error_code`` value ``INVALID_STATE``. It can take a few minutes for the changes to take effect.
 
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
@@ -108,10 +112,11 @@
 
         When updating an IP access list:
 
-        * For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
-        where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
-        `error_code` value `QUOTA_EXCEEDED`. * If the updated list would block the calling user's current IP,
-        error 400 is returned with `error_code` value `INVALID_STATE`.
+        - For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
+          where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
+          ``error_code`` value ``QUOTA_EXCEEDED``.
+        - If the updated list would block the calling user's current IP, error 400 is returned with
+          ``error_code`` value ``INVALID_STATE``.
 
         It can take a few minutes for the changes to take effect.
 

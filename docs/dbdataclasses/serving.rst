@@ -338,7 +338,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: QueryEndpointResponseObject
 
-   The type of object returned by the __external/foundation model__ serving endpoint, one of [text_completion, chat.completion, list (of embeddings)].
+   The type of object returned by the **external/foundation model** serving endpoint, one of [text_completion, chat.completion, list (of embeddings)].
 
    .. py:attribute:: CHAT_COMPLETION
       :value: "CHAT_COMPLETION"
@@ -514,6 +514,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: MULTIGPU_MEDIUM
       :value: "MULTIGPU_MEDIUM"
+
+.. autoclass:: TelemetryConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: TelemetryInferenceTableConfig
+   :members:
+   :undoc-members:
 
 .. autoclass:: TrafficConfig
    :members:

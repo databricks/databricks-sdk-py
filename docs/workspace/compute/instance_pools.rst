@@ -48,7 +48,8 @@
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
           intensive workloads. A list of available node types can be retrieved by using the
-          :method:clusters/listNodeTypes API call.
+          `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
+          call.
         :param aws_attributes: :class:`InstancePoolAwsAttributes` (optional)
           Attributes related to instance pools running on Amazon Web Services. If not specified at pool
           creation, a set of default values will be used.
@@ -57,7 +58,7 @@
           default values will be used.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
-          EBS volumes) with these tags in addition to `default_tags`. Notes:
+          EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
         :param disk_spec: :class:`DiskSpec` (optional)
@@ -88,7 +89,8 @@
         :param preloaded_spark_versions: List[str] (optional)
           A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
           started with the preloaded Spark version will start faster. A list of available Spark versions can
-          be retrieved by using the :method:clusters/sparkVersions API call.
+          be retrieved by using the `clusters/sparkVersions
+          <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call.
         :param remote_disk_throughput: int (optional)
           If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
           for GCP HYPERDISK_BALANCED types.
@@ -146,10 +148,11 @@
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
           intensive workloads. A list of available node types can be retrieved by using the
-          :method:clusters/listNodeTypes API call.
+          `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
+          call.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
-          EBS volumes) with these tags in addition to `default_tags`. Notes:
+          EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
         :param idle_instance_autotermination_minutes: int (optional)

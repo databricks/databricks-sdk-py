@@ -10,7 +10,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: DeploymentMode
 
-   Bundle target deployment mode. Mirrors the `mode` field on a bundle target in `databricks.yml` (see https://docs.databricks.com/dev-tools/bundles/deployment-modes).
+   Bundle target deployment mode. Mirrors the ``mode`` field on a bundle target in ``databricks.yml`` (see https://docs.databricks.com/dev-tools/bundles/deployment-modes).
 
    .. py:attribute:: DEPLOYMENT_MODE_DEVELOPMENT
       :value: "DEPLOYMENT_MODE_DEVELOPMENT"

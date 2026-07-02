@@ -17,21 +17,25 @@
     Azure DevOps, GitLab, Terraform Cloud, and Kubernetes clusters, among others.
 
     Workload identity federation is configured in your Databricks account using a service principal federation
-    policy. A service principal federation policy specifies: * which IdP, or issuer, the service principal is
-    allowed to authenticate from * which workload identity, or subject, is allowed to authenticate as the
-    Databricks service principal
+    policy. A service principal federation policy specifies:
 
-    To configure a federation policy, you provide the following: * The required token __issuer__, as specified
-    in the “iss” claim of workload identity tokens. The issuer is an https URL that identifies the
-    workload identity provider. * The required token __subject__, as specified in the “sub” claim of
-    workload identity tokens. The subject uniquely identifies the workload in the workload runtime
-    environment. * The allowed token __audiences__, as specified in the “aud” claim of workload identity
-    tokens. The audience is intended to represent the recipient of the token. As long as the audience in the
-    token matches at least one audience in the policy, the token is considered a match. If unspecified, the
-    default value is your Databricks account id. * Optionally, the public keys used to validate the signature
-    of the workload identity tokens, in JWKS format. If unspecified (recommended), Databricks automatically
-    fetches the public keys from the issuer’s well known endpoint. Databricks strongly recommends relying on
-    the issuer’s well known endpoint for discovering public keys.
+    - which IdP, or issuer, the service principal is allowed to authenticate from
+    - which workload identity, or subject, is allowed to authenticate as the Databricks service principal
+
+    To configure a federation policy, you provide the following:
+
+    - The required token **issuer**, as specified in the “iss” claim of workload identity tokens. The
+      issuer is an https URL that identifies the workload identity provider.
+    - The required token **subject**, as specified in the “sub” claim of workload identity tokens. The
+      subject uniquely identifies the workload in the workload runtime environment.
+    - The allowed token **audiences**, as specified in the “aud” claim of workload identity tokens. The
+      audience is intended to represent the recipient of the token. As long as the audience in the token
+      matches at least one audience in the policy, the token is considered a match. If unspecified, the
+      default value is your Databricks account id.
+    - Optionally, the public keys used to validate the signature of the workload identity tokens, in JWKS
+      format. If unspecified (recommended), Databricks automatically fetches the public keys from the
+      issuer’s well known endpoint. Databricks strongly recommends relying on the issuer’s well known
+      endpoint for discovering public keys.
 
     An example service principal federation policy, for a Github Actions workload, is:
 

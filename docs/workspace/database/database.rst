@@ -92,7 +92,7 @@
         :param instance_name: str
         :param name: str
         :param allow_missing: bool (optional)
-          This is the AIP standard name for the equivalent of Postgres' `IF EXISTS` option
+          This is the AIP standard name for the equivalent of Postgres' ``IF EXISTS`` option
         :param reassign_owned_to: str (optional)
 
 

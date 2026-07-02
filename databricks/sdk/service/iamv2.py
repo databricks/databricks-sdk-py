@@ -295,10 +295,10 @@ class User:
     external_id: Optional[str] = None
     """ExternalId of the user in the customer's IdP."""
 
+    full_name: Optional[UserFullName] = None
+
     internal_id: Optional[int] = None
     """Internal userId of the user in Databricks."""
-
-    name: Optional[UserName] = None
 
     username: Optional[str] = None
     """Username/email of the user."""
@@ -312,10 +312,10 @@ class User:
             body["account_user_status"] = self.account_user_status.value
         if self.external_id is not None:
             body["external_id"] = self.external_id
+        if self.full_name:
+            body["full_name"] = self.full_name.as_dict()
         if self.internal_id is not None:
             body["internal_id"] = self.internal_id
-        if self.name:
-            body["name"] = self.name.as_dict()
         if self.username is not None:
             body["username"] = self.username
         return body
@@ -329,10 +329,10 @@ class User:
             body["account_user_status"] = self.account_user_status
         if self.external_id is not None:
             body["external_id"] = self.external_id
+        if self.full_name:
+            body["full_name"] = self.full_name
         if self.internal_id is not None:
             body["internal_id"] = self.internal_id
-        if self.name:
-            body["name"] = self.name
         if self.username is not None:
             body["username"] = self.username
         return body
@@ -344,20 +344,20 @@ class User:
             account_id=d.get("account_id", None),
             account_user_status=_enum(d, "account_user_status", State),
             external_id=d.get("external_id", None),
+            full_name=_from_dict(d, "full_name", UserFullName),
             internal_id=d.get("internal_id", None),
-            name=_from_dict(d, "name", UserName),
             username=d.get("username", None),
         )
 
 
 @dataclass
-class UserName:
+class UserFullName:
     family_name: Optional[str] = None
 
     given_name: Optional[str] = None
 
     def as_dict(self) -> dict:
-        """Serializes the UserName into a dictionary suitable for use as a JSON request body."""
+        """Serializes the UserFullName into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.family_name is not None:
             body["family_name"] = self.family_name
@@ -366,7 +366,7 @@ class UserName:
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the UserName into a shallow dictionary of its immediate attributes."""
+        """Serializes the UserFullName into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.family_name is not None:
             body["family_name"] = self.family_name
@@ -375,8 +375,8 @@ class UserName:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UserName:
-        """Deserializes the UserName from a dictionary."""
+    def from_dict(cls, d: Dict[str, Any]) -> UserFullName:
+        """Deserializes the UserFullName from a dictionary."""
         return cls(family_name=d.get("family_name", None), given_name=d.get("given_name", None))
 
 
@@ -604,10 +604,11 @@ class AccountIamV2API:
         self, workspace_id: int, principal_id: int, *, view: Optional[WorkspaceAccessDetailView] = None
     ) -> WorkspaceAccessDetail:
         """Returns the access details for a principal in a workspace. Allows for checking access details for any
-        provisioned principal (user, service principal, or group) in a workspace. * Provisioned principal here
-        refers to one that has been synced into Databricks from the customer's IdP or added explicitly to
-        Databricks via SCIM/UI. Allows for passing in a "view" parameter to control what fields are returned
-        (BASIC by default or FULL).
+        provisioned principal (user, service principal, or group) in a workspace.
+
+        - Provisioned principal here refers to one that has been synced into Databricks from the customer's
+          IdP or added explicitly to Databricks via SCIM/UI. Allows for passing in a "view" parameter to
+          control what fields are returned (BASIC by default or FULL).
 
         :param workspace_id: int
           Required. The workspace ID for which the access details are being requested.
@@ -662,7 +663,7 @@ class AccountIamV2API:
         self, workspace_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> ListWorkspaceAssignmentDetailsResponse:
         """Lists workspace assignment details for a workspace. For scalability, the response omits the
-        per-principal entitlement fields (`entitlements` and `effective_entitlements`); call
+        per-principal entitlement fields (``entitlements`` and ``effective_entitlements``); call
         GetWorkspaceAssignmentDetail to read entitlements for a single principal.
 
         :param workspace_id: int
@@ -877,10 +878,11 @@ class WorkspaceIamV2API:
         self, principal_id: int, *, view: Optional[WorkspaceAccessDetailView] = None
     ) -> WorkspaceAccessDetail:
         """Returns the access details for a principal in the current workspace. Allows for checking access
-        details for any provisioned principal (user, service principal, or group) in the current workspace. *
-        Provisioned principal here refers to one that has been synced into Databricks from the customer's IdP
-        or added explicitly to Databricks via SCIM/UI. Allows for passing in a "view" parameter to control
-        what fields are returned (BASIC by default or FULL).
+        details for any provisioned principal (user, service principal, or group) in the current workspace.
+
+        - Provisioned principal here refers to one that has been synced into Databricks from the customer's
+          IdP or added explicitly to Databricks via SCIM/UI. Allows for passing in a "view" parameter to
+          control what fields are returned (BASIC by default or FULL).
 
         :param principal_id: int
           Required. The internal ID of the principal (user/sp/group) for which the access details are being
@@ -932,7 +934,7 @@ class WorkspaceIamV2API:
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> ListWorkspaceAssignmentDetailsResponse:
         """Lists workspace assignment details for a workspace (workspace-level proxy). For scalability, the
-        response omits the per-principal entitlement fields (`entitlements` and `effective_entitlements`);
+        response omits the per-principal entitlement fields (``entitlements`` and ``effective_entitlements``);
         call GetWorkspaceAssignmentDetailProxy to read entitlements for a single principal.
 
         :param page_size: int (optional)

@@ -211,6 +211,7 @@ class AgentBricksAPI:
 
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -220,7 +221,7 @@ class AgentBricksAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize/cancel", headers=headers)
+        self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize/cancel", body=body, headers=headers)
 
     def create_custom_llm(
         self,
@@ -321,6 +322,7 @@ class AgentBricksAPI:
         :returns: :class:`CustomLlm`
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -330,7 +332,7 @@ class AgentBricksAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize", headers=headers)
+        res = self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize", body=body, headers=headers)
         return CustomLlm.from_dict(res)
 
     def update_custom_llm(self, id: str, custom_llm: CustomLlm, update_mask: str) -> CustomLlm:
@@ -342,17 +344,17 @@ class AgentBricksAPI:
           The CustomLlm containing the fields which should be updated.
         :param update_mask: str
           The list of the CustomLlm fields to update. These should correspond to the values (or lack thereof)
-          present in `custom_llm`.
+          present in ``custom_llm``.
 
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`CustomLlm`
         """

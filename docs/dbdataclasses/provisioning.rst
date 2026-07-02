@@ -135,8 +135,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: GkeConfigConnectivityType
 
    Specifies the network connectivity types for the GKE nodes and the GKE master network.
-   Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the workspace. The GKE nodes will not have public IPs.
-   Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a public GKE cluster have public IP addresses.
+   Set to ``PRIVATE_NODE_PUBLIC_MASTER`` for a private GKE cluster for the workspace. The GKE nodes will not have public IPs.
+   Set to ``PUBLIC_NODE_PUBLIC_MASTER`` for a public GKE cluster. The nodes of a public GKE cluster have public IP addresses.
 
    .. py:attribute:: PRIVATE_NODE_PUBLIC_MASTER
       :value: "PRIVATE_NODE_PUBLIC_MASTER"

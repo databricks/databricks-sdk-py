@@ -40,9 +40,9 @@ class Deployment:
     version's mode."""
 
     destroy_time: Optional[Timestamp] = None
-    """When the deployment was destroyed (i.e. `bundle destroy` completed). Unset if the deployment has
-    not been destroyed. Named destroy_time (not delete_time) because this tracks the `databricks
-    bundle destroy` command, not the API-level deletion."""
+    """When the deployment was destroyed (i.e. ``bundle destroy`` completed). Unset if the deployment
+    has not been destroyed. Named destroy_time (not delete_time) because this tracks the
+    ``databricks bundle destroy`` command, not the API-level deletion."""
 
     destroyed_by: Optional[str] = None
     """The user who destroyed the deployment (email or principal name). Unset if the deployment has not
@@ -157,8 +157,8 @@ class Deployment:
 
 
 class DeploymentMode(Enum):
-    """Bundle target deployment mode. Mirrors the `mode` field on a bundle target in `databricks.yml`
-    (see https://docs.databricks.com/dev-tools/bundles/deployment-modes)."""
+    """Bundle target deployment mode. Mirrors the ``mode`` field on a bundle target in
+    ``databricks.yml`` (see https://docs.databricks.com/dev-tools/bundles/deployment-modes)."""
 
     DEPLOYMENT_MODE_DEVELOPMENT = "DEPLOYMENT_MODE_DEVELOPMENT"
     DEPLOYMENT_MODE_PRODUCTION = "DEPLOYMENT_MODE_PRODUCTION"
@@ -278,8 +278,8 @@ class ListDeploymentsResponse:
     """The deployments from the queried workspace."""
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
+    """A token, which can be sent as ``page_token`` to retrieve the next page. If this field is
+    omitted, there are no subsequent pages."""
 
     def as_dict(self) -> dict:
         """Serializes the ListDeploymentsResponse into a dictionary suitable for use as a JSON request body."""
@@ -312,8 +312,8 @@ class ListOperationsResponse:
     """Response for ListOperations."""
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
+    """A token, which can be sent as ``page_token`` to retrieve the next page. If this field is
+    omitted, there are no subsequent pages."""
 
     operations: Optional[List[Operation]] = None
     """The resource operations under the specified version."""
@@ -349,8 +349,8 @@ class ListResourcesResponse:
     """Response for ListResources."""
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
+    """A token, which can be sent as ``page_token`` to retrieve the next page. If this field is
+    omitted, there are no subsequent pages."""
 
     resources: Optional[List[Resource]] = None
     """The resources under the specified deployment."""
@@ -384,8 +384,8 @@ class ListVersionsResponse:
     """Response for ListVersions."""
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
+    """A token, which can be sent as ``page_token`` to retrieve the next page. If this field is
+    omitted, there are no subsequent pages."""
 
     versions: Optional[List[Version]] = None
     """The versions under the specified deployment."""
@@ -417,9 +417,9 @@ class ListVersionsResponse:
 @dataclass
 class Operation:
     """An operation on a single resource performed during a version. Operations record the result of
-    applying a resource change to the workspace. Most fields are immutable once recorded; `state`,
-    `error_message`, `resource_id`, and `status` may be updated afterwards (via UpdateOperation),
-    guarded by `sequence_id` for optimistic concurrency control."""
+    applying a resource change to the workspace. Most fields are immutable once recorded; ``state``,
+    ``error_message``, ``resource_id``, and ``status`` may be updated afterwards (via
+    UpdateOperation), guarded by ``sequence_id`` for optimistic concurrency control."""
 
     action_type: OperationActionType
     """The type of operation performed on this resource."""
@@ -427,7 +427,7 @@ class Operation:
     status: OperationStatus
     """Whether the operation succeeded or failed. Mutable: may be updated after creation via
     UpdateOperation, e.g. when an operation recorded as failed is retried and eventually succeeds. A
-    succeeded operation cannot carry an `error_message`."""
+    succeeded operation cannot carry an ``error_message``."""
 
     create_time: Optional[Timestamp] = None
     """When the operation was recorded."""
@@ -454,13 +454,13 @@ class Operation:
     to the corresponding deployment-level Resource."""
 
     resource_type: Optional[DeploymentResourceType] = None
-    """The type of the deployment resource this operation applies to. Derived from the `resource_key`
+    """The type of the deployment resource this operation applies to. Derived from the ``resource_key``
     prefix (e.g. "jobs" → JOB); the caller does not set this field."""
 
     state: Optional[any] = None
     """Serialized local config state after the operation. Should be unset for delete operations.
     Mutable: may be updated after creation via UpdateOperation. When updating, the caller must echo
-    the last-observed `sequence_id` as a concurrency precondition."""
+    the last-observed ``sequence_id`` as a concurrency precondition."""
 
     def as_dict(self) -> dict:
         """Serializes the Operation into a dictionary suitable for use as a JSON request body."""
@@ -639,8 +639,8 @@ class Version:
     """When the version completed. Unset while the version is in progress."""
 
     completed_by: Optional[str] = None
-    """The user who completed the version (email or principal name). May differ from `created_by` when
-    another user force-completes the version."""
+    """The user who completed the version (email or principal name). May differ from ``created_by``
+    when another user force-completes the version."""
 
     completion_reason: Optional[VersionComplete] = None
     """Why the version was completed. Unset while in progress. Set when status transitions to
@@ -871,9 +871,12 @@ class BundleDeploymentsAPI:
     ) -> Version:
         """Marks a version as complete and releases the deployment lock.
 
-        The server atomically: 1. Sets the version status to the provided terminal status. 2. Sets
-        `complete_time` to the current server timestamp. 3. Releases the lock on the parent deployment. 4.
-        Updates the parent deployment's `status` and `last_version_id`.
+        The server atomically:
+
+        1. Sets the version status to the provided terminal status.
+        2. Sets ``complete_time`` to the current server timestamp.
+        3. Releases the lock on the parent deployment.
+        4. Updates the parent deployment's ``status`` and ``last_version_id``.
 
         :param name: str
           The name of the version to complete. Format: deployments/{deployment_id}/versions/{version_id}
@@ -907,14 +910,14 @@ class BundleDeploymentsAPI:
     def create_deployment(self, deployment: Deployment, deployment_id: str) -> Deployment:
         """Creates a new deployment in the workspace.
 
-        The caller must provide a `deployment_id` which becomes the final component of the deployment's
-        resource name. If a deployment with the same ID already exists, the server returns `ALREADY_EXISTS`.
+        The caller must provide a ``deployment_id`` which becomes the final component of the deployment's
+        resource name. If a deployment with the same ID already exists, the server returns ``ALREADY_EXISTS``.
 
         :param deployment: :class:`Deployment`
           The deployment to create.
         :param deployment_id: str
           The ID to use for the deployment, which will become the final component of the deployment's resource
-          name (i.e. `deployments/{deployment_id}`).
+          name (i.e. ``deployments/{deployment_id}``).
 
         :returns: :class:`Deployment`
         """
@@ -938,8 +941,9 @@ class BundleDeploymentsAPI:
     def create_operation(self, parent: str, operation: Operation, resource_key: str) -> Operation:
         """Creates a resource operation under a version.
 
-        The caller must provide a `resource_key` which becomes the final component of the operation's name. If
-        an operation with the same key already exists under the version, the server returns `ALREADY_EXISTS`.
+        The caller must provide a ``resource_key`` which becomes the final component of the operation's name.
+        If an operation with the same key already exists under the version, the server returns
+        ``ALREADY_EXISTS``.
 
         On success the server also updates the corresponding deployment-level Resource (creating it if this is
         the first operation for that resource_key, or removing it if action_type is DELETE).
@@ -976,8 +980,8 @@ class BundleDeploymentsAPI:
         """Creates a new version under a deployment.
 
         Creating a version acquires an exclusive lock on the deployment, preventing concurrent deploys. The
-        caller provides a `version_id`, a numeric string that must be numerically greater than the
-        deployment's most recent version, and sets the version's `previous_version_id` to the deployment's
+        caller provides a ``version_id``, a numeric string that must be numerically greater than the
+        deployment's most recent version, and sets the version's ``previous_version_id`` to the deployment's
         most recent version (leaving it unset for the first version), which the server validates to detect
         concurrent deploys.
 
@@ -989,8 +993,8 @@ class BundleDeploymentsAPI:
           The ID to use for the version, which becomes the final component of the version's resource name. A
           numeric string (base-10, fits in a signed 64-bit integer) chosen by the caller; must be greater than
           or equal to 1. Must be numerically greater than the deployment's most recent version (see
-          `version.previous_version_id`); it does not need to start at 1 or increase by exactly 1. If the
-          value is not numerically greater, the server returns `INVALID_PARAMETER_VALUE`.
+          ``version.previous_version_id``); it does not need to start at 1 or increase by exactly 1. If the
+          value is not numerically greater, the server returns ``INVALID_PARAMETER_VALUE``.
 
         :returns: :class:`Version`
         """
@@ -1016,7 +1020,7 @@ class BundleDeploymentsAPI:
 
         The deployment is marked as deleted. It and all its children (versions and their operations) will be
         permanently deleted after the retention policy expires. If the deployment has an in-progress version,
-        the server returns `RESOURCE_CONFLICT`.
+        the server returns ``RESOURCE_CONFLICT``.
 
         :param name: str
           Resource name of the deployment to delete. Format: deployments/{deployment_id}
@@ -1120,7 +1124,7 @@ class BundleDeploymentsAPI:
 
         The server validates that the version is the active (non-terminal) version on the parent deployment
         and resets the lock expiry. If the lock has already expired or the version is no longer active, the
-        server returns `ABORTED`.
+        server returns ``ABORTED``.
 
         :param name: str
           The version whose lock to renew. Format: deployments/{deployment_id}/versions/{version_id}
@@ -1128,6 +1132,7 @@ class BundleDeploymentsAPI:
         :returns: :class:`HeartbeatResponse`
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1137,7 +1142,7 @@ class BundleDeploymentsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/bundle/{name}/heartbeat", headers=headers)
+        res = self._api.do("POST", f"/api/2.0/bundle/{name}/heartbeat", body=body, headers=headers)
         return HeartbeatResponse.from_dict(res)
 
     def list_deployments(
@@ -1150,7 +1155,7 @@ class BundleDeploymentsAPI:
           unspecified, at most 50 deployments will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListDeployments` call. Provide this to retrieve the
+          A page token, received from a previous ``ListDeployments`` call. Provide this to retrieve the
           subsequent page.
 
         :returns: Iterator over :class:`Deployment`
@@ -1190,7 +1195,7 @@ class BundleDeploymentsAPI:
           unspecified, at most 50 operations will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListOperations` call. Provide this to retrieve the
+          A page token, received from a previous ``ListOperations`` call. Provide this to retrieve the
           subsequent page.
 
         :returns: Iterator over :class:`Operation`
@@ -1230,8 +1235,8 @@ class BundleDeploymentsAPI:
           unspecified, at most 50 resources will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListResources` call. Provide this to retrieve the subsequent
-          page.
+          A page token, received from a previous ``ListResources`` call. Provide this to retrieve the
+          subsequent page.
 
         :returns: Iterator over :class:`Resource`
         """
@@ -1270,8 +1275,8 @@ class BundleDeploymentsAPI:
           unspecified, at most 50 versions will be returned. The maximum value is 1000; values above 1000 will
           be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListVersions` call. Provide this to retrieve the subsequent
-          page.
+          A page token, received from a previous ``ListVersions`` call. Provide this to retrieve the
+          subsequent page.
 
         :returns: Iterator over :class:`Version`
         """

@@ -44,14 +44,14 @@
         :param url: str
           URL of the Git repository to be linked.
         :param provider: str
-          Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra
-          ID authentication), `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
-          `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit` (deprecated by AWS, not
+          Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
+          ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
+          Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
+          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit`` (deprecated by AWS, not
           accepting new customers).
         :param path: str (optional)
           Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo
-          is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`.
+          is created in ``/Repos``, path must be in the format ``/Repos/{folder}/{repo-name}``.
         :param sparse_checkout: :class:`SparseCheckout` (optional)
           If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
           sparse checkout after the repo is created.
@@ -137,7 +137,7 @@
             
             all = w.repos.list(workspace.ListReposRequest())
 
-        Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate
+        Returns repos that the calling user has Manage permissions on. Use ``next_page_token`` to iterate
         through additional pages.
 
         :param next_page_token: str (optional)
@@ -145,8 +145,8 @@
           well as a next page token if there are more results.
         :param path_prefix: str (optional)
           Filters repos that have paths starting with the given path prefix. If not provided or when provided
-          an effectively empty prefix (`/` or `/Workspace`) Git folders (repos) from `/Workspace/Repos` will
-          be served.
+          an effectively empty prefix (``/`` or ``/Workspace``) Git folders (repos) from ``/Workspace/Repos``
+          will be served.
 
         :returns: Iterator over :class:`RepoInfo`
         

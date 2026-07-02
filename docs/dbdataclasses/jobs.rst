@@ -167,7 +167,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ComputeSpecAcceleratorType
 
-   Customer-facing AcceleratorType: hardware accelerator type for the AiRuntime workload. Per-node accelerator count is encoded in the value name (e.g. `GPU_8xH100` means 8 H100s per node).
+   Customer-facing AcceleratorType: hardware accelerator type for the AiRuntime workload. Per-node accelerator count is encoded in the value name (e.g. ``GPU_8xH100`` means 8 H100s per node).
 
    .. py:attribute:: GPU_1X_A10
       :value: "GPU_1X_A10"
@@ -192,8 +192,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConditionTaskOp
 
-   * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their operands. This means that `“12.0” == “12”` will evaluate to `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands. `“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to `false`.
-   The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`. If a task value was set to a boolean value, it will be serialized to `“true”` or `“false”` for the comparison.
+   - ``EQUAL_TO``, ``NOT_EQUAL`` operators perform string comparison of their operands. This means that ``“12.0” == “12”`` will evaluate to ``false``. - ``GREATER_THAN``, ``GREATER_THAN_OR_EQUAL``, ``LESS_THAN``, ``LESS_THAN_OR_EQUAL`` operators perform numeric comparison of their operands. ``“12.0” >= “12”`` will evaluate to ``true``, ``“10.0” >= “12”`` will evaluate to ``false``.
+   The boolean comparison to task values can be implemented with operators ``EQUAL_TO``, ``NOT_EQUAL``. If a task value was set to a boolean value, it will be serialized to ``“true”`` or ``“false”`` for the comparison.
 
    .. py:attribute:: EQUAL_TO
       :value: "EQUAL_TO"
@@ -411,7 +411,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: JobDeploymentKind
 
-   * `BUNDLE`: The job is managed by Databricks Asset Bundle. * `SYSTEM_MANAGED`: The job is managed by Databricks and is read-only.
+   - ``BUNDLE``: The job is managed by Databricks Asset Bundle. - ``SYSTEM_MANAGED``: The job is managed by Databricks and is read-only.
 
    .. py:attribute:: BUNDLE
       :value: "BUNDLE"
@@ -422,7 +422,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: JobEditMode
 
    Edit mode of the job.
-   * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in an editable state and can be modified.
+   - ``UI_LOCKED``: The job is in a locked UI state and cannot be modified. - ``EDITABLE``: The job is in an editable state and can be modified.
 
    .. py:attribute:: EDITABLE
       :value: "EDITABLE"
@@ -493,7 +493,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: JobSourceDirtyState
 
    Dirty state indicates the job is not fully synced with the job specification in the remote repository.
-   Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job specification. Import the remote job specification from UI to make the job fully synced. * `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is allowed for live edit. Import the remote job specification again from UI to make the job fully synced.
+   Possible values are:
+   - ``NOT_SYNCED``: The job is not yet synced with the remote job specification. Import the remote job specification from UI to make the job fully synced. - ``DISCONNECTED``: The job is temporary disconnected from the remote job specification and is allowed for live edit. Import the remote job specification again from UI to make the job fully synced.
 
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"
@@ -504,7 +505,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: JobsHealthMetric
 
    Specifies the health metric that is being evaluated for a particular health rule.
-   * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`: An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate of the maximum consumer delay across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all streams. This metric is in Public Preview.
+   - ``RUN_DURATION_SECONDS``: Expected total time for a run in seconds. - ``STREAMING_BACKLOG_BYTES``: An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric is in Public Preview. - ``STREAMING_BACKLOG_RECORDS``: An estimate of the maximum offset lag across all streams. This metric is in Public Preview. - ``STREAMING_BACKLOG_SECONDS``: An estimate of the maximum consumer delay across all streams. This metric is in Public Preview. - ``STREAMING_BACKLOG_FILES``: An estimate of the maximum number of outstanding files across all streams. This metric is in Public Preview.
 
    .. py:attribute:: RUN_DURATION_SECONDS
       :value: "RUN_DURATION_SECONDS"
@@ -646,7 +647,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: QueueDetailsCodeCode
 
-   The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run was queued due to reaching the workspace limit of active task runs. * `MAX_CONCURRENT_RUNS_REACHED`: The run was queued due to reaching the per-job limit of concurrent job runs. * `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run was queued due to reaching the workspace limit of active run job tasks.
+   The reason for queuing the run.
+   - ``ACTIVE_RUNS_LIMIT_REACHED``: The run was queued due to reaching the workspace limit of active task runs. - ``MAX_CONCURRENT_RUNS_REACHED``: The run was queued due to reaching the per-job limit of concurrent job runs. - ``ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED``: The run was queued due to reaching the workspace limit of active run job tasks.
 
    .. py:attribute:: ACTIVE_RUNS_LIMIT_REACHED
       :value: "ACTIVE_RUNS_LIMIT_REACHED"
@@ -733,8 +735,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RunIf
 
-   An optional value indicating the condition that determines whether the task should be run once its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`.
-   Possible values are: * `ALL_SUCCESS`: All dependencies have executed and succeeded * `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded * `NONE_FAILED`: None of the dependencies have failed and at least one was executed * `ALL_DONE`: All dependencies have been completed * `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl dependencies have failed
+   An optional value indicating the condition that determines whether the task should be run once its dependencies have been completed. When omitted, defaults to ``ALL_SUCCESS``.
+   Possible values are:
+   - ``ALL_SUCCESS``: All dependencies have executed and succeeded - ``AT_LEAST_ONE_SUCCESS``: At least one dependency has succeeded - ``NONE_FAILED``: None of the dependencies have failed and at least one was executed - ``ALL_DONE``: All dependencies have been completed - ``AT_LEAST_ONE_FAILED``: At least one dependency failed - ``ALL_FAILED``: ALl dependencies have failed
 
    .. py:attribute:: ALL_DONE
       :value: "ALL_DONE"
@@ -764,7 +767,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RunLifeCycleState
 
-   A value indicating the run's lifecycle state. The possible values are: * `QUEUED`: The run is queued. * `PENDING`: The run is waiting to be executed while the cluster and execution context are being prepared. * `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task of this run has completed, and the cluster and execution context are being cleaned up. * `TERMINATED`: The task of this run has completed, and the cluster and execution context have been cleaned up. This state is terminal. * `SKIPPED`: This run was aborted because a previous run of the same job was already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional state that indicates a failure in the Jobs service, such as network failure over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR` state, the Jobs service terminates the cluster as soon as possible. This state is terminal. * `BLOCKED`: The run is blocked on an upstream dependency. * `WAITING_FOR_RETRY`: The run is waiting for a retry.
+   A value indicating the run's lifecycle state. The possible values are:
+   - ``QUEUED``: The run is queued. - ``PENDING``: The run is waiting to be executed while the cluster and execution context are being prepared. - ``RUNNING``: The task of this run is being executed. - ``TERMINATING``: The task of this run has completed, and the cluster and execution context are being cleaned up. - ``TERMINATED``: The task of this run has completed, and the cluster and execution context have been cleaned up. This state is terminal. - ``SKIPPED``: This run was aborted because a previous run of the same job was already active. This state is terminal. - ``INTERNAL_ERROR``: An exceptional state that indicates a failure in the Jobs service, such as network failure over a long period. If a run on a new cluster ends in the ``INTERNAL_ERROR`` state, the Jobs service terminates the cluster as soon as possible. This state is terminal. - ``BLOCKED``: The run is blocked on an upstream dependency. - ``WAITING_FOR_RETRY``: The run is waiting for a retry.
 
    .. py:attribute:: BLOCKED
       :value: "BLOCKED"
@@ -832,7 +836,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RunResultState
 
-   A value indicating the run's result. The possible values are: * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout. * `CANCELED`: The run was canceled at user request. * `MAXIMUM_CONCURRENT_RUNS_REACHED`: The run was skipped because the maximum concurrent runs were reached. * `EXCLUDED`: The run was skipped because the necessary conditions were not met. * `SUCCESS_WITH_FAILURES`: The job run completed successfully with some failures; leaf tasks were successful. * `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. * `UPSTREAM_CANCELED`: The run was skipped because an upstream task was canceled. * `DISABLED`: The run was skipped because it was disabled explicitly by the user.
+   A value indicating the run's result. The possible values are:
+   - ``SUCCESS``: The task completed successfully. - ``FAILED``: The task completed with an error. - ``TIMEDOUT``: The run was stopped after reaching the timeout. - ``CANCELED``: The run was canceled at user request. - ``MAXIMUM_CONCURRENT_RUNS_REACHED``: The run was skipped because the maximum concurrent runs were reached. - ``EXCLUDED``: The run was skipped because the necessary conditions were not met. - ``SUCCESS_WITH_FAILURES``: The job run completed successfully with some failures; leaf tasks were successful. - ``UPSTREAM_FAILED``: The run was skipped because of an upstream failure. - ``UPSTREAM_CANCELED``: The run was skipped because an upstream task was canceled. - ``DISABLED``: The run was skipped because it was disabled explicitly by the user.
 
    .. py:attribute:: CANCELED
       :value: "CANCELED"
@@ -878,8 +883,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RunType
 
-   The type of a run. * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
-   [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
+   The type of a run.
+   - ``JOB_RUN``: Normal job run. A run created with :method:jobs/runNow. - ``WORKFLOW_RUN``: Workflow run. A run created with `dbutils.notebook.run <https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow>`__. - ``SUBMIT_RUN``: Submit run. A run created with :method:jobs/submit.
 
    .. py:attribute:: JOB_RUN
       :value: "JOB_RUN"
@@ -892,8 +897,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: Source
 
-   Optional location type of the SQL file. When set to `WORKSPACE`, the SQL file will be retrieved    from the local Databricks workspace. When set to `GIT`, the SQL file will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise.
-   * `WORKSPACE`: SQL file is located in Databricks workspace. * `GIT`: SQL file is located in cloud Git provider.
+   Optional location type of the SQL file. When set to ``WORKSPACE``, the SQL file will be retrieved from the local Databricks workspace. When set to ``GIT``, the SQL file will be retrieved from a Git repository defined in ``git_source``. If the value is empty, the task will use ``GIT`` if ``git_source`` is defined and ``WORKSPACE`` otherwise.
+   - ``WORKSPACE``: SQL file is located in Databricks workspace. - ``GIT``: SQL file is located in cloud Git provider.
 
    .. py:attribute:: GIT
       :value: "GIT"
@@ -924,7 +929,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: SqlAlertState
 
    The state of the SQL alert.
-   * UNKNOWN: alert yet to be evaluated * OK: alert evaluated and did not fulfill trigger conditions * TRIGGERED: alert evaluated and fulfilled trigger conditions
+   - UNKNOWN: alert yet to be evaluated - OK: alert evaluated and did not fulfill trigger conditions - TRIGGERED: alert evaluated and fulfilled trigger conditions
 
    .. py:attribute:: OK
       :value: "OK"
@@ -934,6 +939,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: UNKNOWN
       :value: "UNKNOWN"
+
+.. autoclass:: SqlConditionConfiguration
+   :members:
+   :undoc-members:
+
+.. autoclass:: SqlConditionRunInfoDetails
+   :members:
+   :undoc-members:
+
+.. autoclass:: SqlConditionState
+   :members:
+   :undoc-members:
+
+.. py:class:: SqlConditionTriggerMode
+
+   The strategy used to evaluate a SQL condition trigger against a query result set.
+   - ``SQL_CONDITION_TRIGGER_MODE_UNSPECIFIED``: Sentinel zero-value. Not a valid input — the validator rejects this when sent explicitly. Internally treated as ``QUERY_RETURNS_ROWS`` when reading legacy data that predates this field. - ``QUERY_RETURNS_ROWS``: Fires whenever the result set has at least one row. Zero rows means the condition is not met. This is the original SQL condition behavior. - ``RESULT_VALUE_CHANGES``: Fires whenever the query's single result value differs from the previous evaluation. The first evaluation always fires. Queries must return exactly one cell (one row, one column).
+
+   .. py:attribute:: QUERY_RETURNS_ROWS
+      :value: "QUERY_RETURNS_ROWS"
+
+   .. py:attribute:: RESULT_VALUE_CHANGES
+      :value: "RESULT_VALUE_CHANGES"
 
 .. autoclass:: SqlDashboardOutput
    :members:
@@ -1057,7 +1085,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TaskRetryMode
 
-   task retry mode of the continuous job * NEVER: The failed task will not be retried. * ON_FAILURE: Retry a failed task if at least one other task in the job is still running its first attempt. When this condition is no longer met or the retry limit is reached, the job run is cancelled and a new run is started.
+   task retry mode of the continuous job
+   - NEVER: The failed task will not be retried. - ON_FAILURE: Retry a failed task if at least one other task in the job is still running its first attempt. When this condition is no longer met or the retry limit is reached, the job run is cancelled and a new run is started.
 
    .. py:attribute:: NEVER
       :value: "NEVER"
@@ -1067,8 +1096,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TerminationCodeCode
 
-   The code indicates why the run was terminated. Additional codes might be introduced in future releases. * `SUCCESS`: The run was completed successfully. * `SUCCESS_WITH_FAILURES`: The run was completed successfully but some child runs failed. * `USER_CANCELED`: The run was successfully canceled during execution by a user. * `CANCELED`: The run was canceled during execution by the Databricks platform; for example, if the maximum run duration was exceeded. * `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency type condition was not met, or there were no material tasks to execute. * `INTERNAL_ERROR`: The run encountered an unexpected error. Refer to the state message for further details. * `DRIVER_ERROR`: The run encountered an error while communicating with the Spark Driver. * `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state message for further details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error when communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because it issued an invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The workspace has reached the quota for the maximum number of concurrent active runs. Consider scheduling the runs over a larger time frame. * `FEATURE_DISABLED`: The run failed because it tried to access a feature unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number of cluster creation, start, and upsize requests have exceeded the allotted rate limit. Consider spreading the run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run failed due to an error when accessing the customer blob storage. Refer to the state message for further details. * `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`: The run failed due to a permission issue while accessing a resource. Refer to the state message for further details. * `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the user-requested library. Refer to the state message for further details. The causes might include, but are not limited to: The provided library is invalid, there are insufficient permissions to install the library, and so forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a cluster that has already reached the maximum number of contexts it is configured to create. See: [Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to the state message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The run failed due to a cloud provider issue. Refer to the state message for further details. * `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user. * `BREAKING_CHANGE`: Run failed because of an intentional breaking change in Spark, but it will be retried with a mitigation config. * `CLUSTER_TERMINATED_BY_USER`: The run failed because the externally managed cluster entered an unusable state, likely due to the user terminating or restarting it outside the jobs service.
-   [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
+   The code indicates why the run was terminated. Additional codes might be introduced in future releases.
+   - ``SUCCESS``: The run was completed successfully. - ``SUCCESS_WITH_FAILURES``: The run was completed successfully but some child runs failed. - ``USER_CANCELED``: The run was successfully canceled during execution by a user. - ``CANCELED``: The run was canceled during execution by the Databricks platform; for example, if the maximum run duration was exceeded. - ``SKIPPED``: Run was never executed, for example, if the upstream task run failed, the dependency type condition was not met, or there were no material tasks to execute. - ``INTERNAL_ERROR``: The run encountered an unexpected error. Refer to the state message for further details. - ``DRIVER_ERROR``: The run encountered an error while communicating with the Spark Driver. - ``CLUSTER_ERROR``: The run failed due to a cluster error. Refer to the state message for further details. - ``REPOSITORY_CHECKOUT_FAILED``: Failed to complete the checkout due to an error when communicating with the third party service. - ``INVALID_CLUSTER_REQUEST``: The run failed because it issued an invalid request to start the cluster. - ``WORKSPACE_RUN_LIMIT_EXCEEDED``: The workspace has reached the quota for the maximum number of concurrent active runs. Consider scheduling the runs over a larger time frame. - ``FEATURE_DISABLED``: The run failed because it tried to access a feature unavailable for the workspace. - ``CLUSTER_REQUEST_LIMIT_EXCEEDED``: The number of cluster creation, start, and upsize requests have exceeded the allotted rate limit. Consider spreading the run execution over a larger time frame. - ``STORAGE_ACCESS_ERROR``: The run failed due to an error when accessing the customer blob storage. Refer to the state message for further details. - ``RUN_EXECUTION_ERROR``: The run was completed with task failures. For more details, refer to the state message or run output. - ``UNAUTHORIZED_ERROR``: The run failed due to a permission issue while accessing a resource. Refer to the state message for further details. - ``LIBRARY_INSTALLATION_ERROR``: The run failed while installing the user-requested library. Refer to the state message for further details. The causes might include, but are not limited to: The provided library is invalid, there are insufficient permissions to install the library, and so forth. - ``MAX_CONCURRENT_RUNS_EXCEEDED``: The scheduled run exceeds the limit of maximum concurrent runs set for the job. - ``MAX_SPARK_CONTEXTS_EXCEEDED``: The run is scheduled on a cluster that has already reached the maximum number of contexts it is configured to create. See: `Link <https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now>`__. - ``RESOURCE_NOT_FOUND``: A resource necessary for run execution does not exist. Refer to the state message for further details. - ``INVALID_RUN_CONFIGURATION``: The run failed due to an invalid configuration. Refer to the state message for further details. - ``CLOUD_FAILURE``: The run failed due to a cloud provider issue. Refer to the state message for further details. - ``MAX_JOB_QUEUE_SIZE_EXCEEDED``: The run was skipped due to reaching the job level queue size limit. - ``DISABLED``: The run was never executed because it was disabled explicitly by the user. - ``BREAKING_CHANGE``: Run failed because of an intentional breaking change in Spark, but it will be retried with a mitigation config. - ``CLUSTER_TERMINATED_BY_USER``: The run failed because the externally managed cluster entered an unusable state, likely due to the user terminating or restarting it outside the jobs service.
 
    .. py:attribute:: BREAKING_CHANGE
       :value: "BREAKING_CHANGE"
@@ -1154,8 +1183,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TerminationTypeType
 
-   * `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An error occurred in the Databricks platform. Please look at the [status page] or contact support if the issue persists. * `CLIENT_ERROR`: The run was terminated because of an error caused by user input or the job configuration. * `CLOUD_FAILURE`: The run was terminated because of an issue with your cloud provider.
-   [status page]: https://status.databricks.com/
+   - ``SUCCESS``: The run terminated without any issues - ``INTERNAL_ERROR``: An error occurred in the Databricks platform. Please look at the `status page <https://status.databricks.com/>`__ or contact support if the issue persists. - ``CLIENT_ERROR``: The run was terminated because of an error caused by user input or the job configuration. - ``CLOUD_FAILURE``: The run was terminated because of an issue with your cloud provider.
 
    .. py:attribute:: CLIENT_ERROR
       :value: "CLIENT_ERROR"
@@ -1184,7 +1212,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: TriggerType
 
    The type of trigger that fired this run.
-   * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`: One time triggers that fire a single run. This occurs you triggered a single run on demand through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a previously failed run. This occurs when you request to re-run the job in case of failures. * `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival. * `CONTINUOUS`: Indicates a run that is triggered by a continuous job. * `TABLE`: Indicates a run that is triggered by a table update. * `CONTINUOUS_RESTART`: Indicates a run created by user to manually restart a continuous job run. * `MODEL`: Indicates a run that is triggered by a model update.
+   - ``PERIODIC``: Schedules that periodically trigger runs, such as a cron scheduler. - ``ONE_TIME``: One time triggers that fire a single run. This occurs you triggered a single run on demand through the UI or the API. - ``RETRY``: Indicates a run that is triggered as a retry of a previously failed run. This occurs when you request to re-run the job in case of failures. - ``RUN_JOB_TASK``: Indicates a run that is triggered using a Run Job task. - ``FILE_ARRIVAL``: Indicates a run that is triggered by a file arrival. - ``CONTINUOUS``: Indicates a run that is triggered by a continuous job. - ``TABLE``: Indicates a run that is triggered by a table update. - ``CONTINUOUS_RESTART``: Indicates a run created by user to manually restart a continuous job run. - ``MODEL``: Indicates a run that is triggered by a model update.
 
    .. py:attribute:: CONTINUOUS
       :value: "CONTINUOUS"
@@ -1216,7 +1244,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ViewType
 
-   * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
+   - ``NOTEBOOK``: Notebook view item. - ``DASHBOARD``: Dashboard view item.
 
    .. py:attribute:: DASHBOARD
       :value: "DASHBOARD"
@@ -1226,7 +1254,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ViewsToExport
 
-   * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of the notebook. * `ALL`: All views of the notebook.
+   - ``CODE``: Code view of the notebook. - ``DASHBOARDS``: All dashboard views of the notebook. - ``ALL``: All views of the notebook.
 
    .. py:attribute:: ALL
       :value: "ALL"

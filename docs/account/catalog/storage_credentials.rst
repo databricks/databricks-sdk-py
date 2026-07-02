@@ -8,11 +8,13 @@
 
     .. py:method:: create(metastore_id: str [, credential_info: Optional[CreateAccountsStorageCredential], skip_validation: Optional[bool]]) -> AccountsCreateStorageCredentialInfo
 
-        Creates a new storage credential. The request object is specific to the cloud: - **AwsIamRole** for
-        AWS credentials - **AzureServicePrincipal** for Azure credentials - **GcpServiceAccountKey** for GCP
-        credentials
+        Creates a new storage credential. The request object is specific to the cloud:
 
-        The caller must be a metastore admin and have the `CREATE_STORAGE_CREDENTIAL` privilege on the
+        - **AwsIamRole** for AWS credentials
+        - **AzureServicePrincipal** for Azure credentials
+        - **GcpServiceAccountKey** for GCP credentials
+
+        The caller must be a metastore admin and have the ``CREATE_STORAGE_CREDENTIAL`` privilege on the
         metastore.
 
         :param metastore_id: str

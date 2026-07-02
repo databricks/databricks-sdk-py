@@ -80,9 +80,10 @@
         :param page_size: int (optional)
           Maximum number of secrets to return.
 
-          - If not specified, at most 10000 secrets are returned. - If set to a value greater than 0, the page
-          length is the minimum of this value and 10000. - If set to 0, the page length is set to 10000. - If
-          set to a value less than 0, an invalid parameter error is returned.
+          - If not specified, at most 10000 secrets are returned.
+          - If set to a value greater than 0, the page length is the minimum of this value and 10000.
+          - If set to 0, the page length is set to 10000.
+          - If set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Opaque pagination token to go to the next page based on previous query. The maximum page length is
           determined by a server configured value.

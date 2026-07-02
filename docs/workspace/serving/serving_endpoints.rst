@@ -27,7 +27,7 @@
         :returns: :class:`BuildLogsResponse`
         
 
-    .. py:method:: create(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], description: Optional[str], email_notifications: Optional[EmailNotifications], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
+    .. py:method:: create(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], description: Optional[str], email_notifications: Optional[EmailNotifications], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], telemetry_config: Optional[TelemetryConfig]]) -> Wait[ServingEndpointDetailed]
 
         Create a new serving endpoint.
 
@@ -52,13 +52,15 @@
           Enable route optimization for the serving endpoint.
         :param tags: List[:class:`EndpointTag`] (optional)
           Tags to be attached to the serving endpoint and automatically propagated to billing logs.
+        :param telemetry_config: :class:`TelemetryConfig` (optional)
+          Configuration for persisting endpoint telemetry (logs, traces, and metrics) to Unity Catalog tables.
 
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         
 
-    .. py:method:: create_and_wait(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], description: Optional[str], email_notifications: Optional[EmailNotifications], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
+    .. py:method:: create_and_wait(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], description: Optional[str], email_notifications: Optional[EmailNotifications], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], telemetry_config: Optional[TelemetryConfig], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
 
     .. py:method:: create_provisioned_throughput_endpoint(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], email_notifications: Optional[EmailNotifications], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
@@ -305,40 +307,40 @@
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
           Pandas Dataframe input in the split orientation.
         :param extra_params: Dict[str,str] (optional)
-          The extra parameters field used ONLY for __completions, chat,__ and __embeddings external &
-          foundation model__ serving endpoints. This is a map of strings and should only be used with other
+          The extra parameters field used ONLY for **completions, chat,** and **embeddings external &
+          foundation model** serving endpoints. This is a map of strings and should only be used with other
           external/foundation model query fields.
         :param input: Any (optional)
-          The input string (or array of strings) field used ONLY for __embeddings external & foundation
-          model__ serving endpoints and is the only field (along with extra_params if needed) used by
+          The input string (or array of strings) field used ONLY for **embeddings external & foundation
+          model** serving endpoints and is the only field (along with extra_params if needed) used by
           embeddings queries.
         :param inputs: Any (optional)
           Tensor-based input in columnar format.
         :param instances: List[Any] (optional)
           Tensor-based input in row format.
         :param max_tokens: int (optional)
-          The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving
+          The max tokens field used ONLY for **completions** and **chat external & foundation model** serving
           endpoints. This is an integer and should only be used with other chat/completions query fields.
         :param messages: List[:class:`ChatMessage`] (optional)
-          The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an
+          The messages field used ONLY for **chat external & foundation model** serving endpoints. This is an
           array of ChatMessage objects and should only be used with other chat query fields.
         :param n: int (optional)
-          The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation
-          model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be
+          The n (number of candidates) field used ONLY for **completions** and **chat external & foundation
+          model** serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be
           used with other chat/completions query fields.
         :param prompt: Any (optional)
-          The prompt string (or array of strings) field used ONLY for __completions external & foundation
-          model__ serving endpoints and should only be used with other completions query fields.
+          The prompt string (or array of strings) field used ONLY for **completions external & foundation
+          model** serving endpoints and should only be used with other completions query fields.
         :param stop: List[str] (optional)
-          The stop sequences field used ONLY for __completions__ and __chat external & foundation model__
+          The stop sequences field used ONLY for **completions** and **chat external & foundation model**
           serving endpoints. This is a list of strings and should only be used with other chat/completions
           query fields.
         :param stream: bool (optional)
-          The stream field used ONLY for __completions__ and __chat external & foundation model__ serving
+          The stream field used ONLY for **completions** and **chat external & foundation model** serving
           endpoints. This is a boolean defaulting to false and should only be used with other chat/completions
           query fields.
         :param temperature: float (optional)
-          The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving
+          The temperature field used ONLY for **completions** and **chat external & foundation model** serving
           endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
           other chat/completions query fields.
         :param usage_context: Dict[str,str] (optional)

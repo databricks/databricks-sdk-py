@@ -37,8 +37,10 @@
         :param include_features: List[str] (optional)
           Specifies the list of feature columns to include in model training. These columns must exist in the
           training data and be of type string, numerical, or boolean. If not specified, no additional features
-          will be included. Note: Certain columns are automatically handled: - Automatically excluded:
-          split_column, target_column, custom_weights_column. - Automatically included: time_column.
+          will be included. Note: Certain columns are automatically handled:
+
+          - Automatically excluded: split_column, target_column, custom_weights_column.
+          - Automatically included: time_column.
         :param max_runtime: int (optional)
           The maximum duration for the experiment in minutes. The experiment stops automatically if it exceeds
           this limit.

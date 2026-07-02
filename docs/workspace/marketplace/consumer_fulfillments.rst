@@ -19,7 +19,7 @@
 
     .. py:method:: list(listing_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ListingFulfillment]
 
-        Get all listings fulfillments associated with a listing. A _fulfillment_ is a potential installation.
+        Get all listings fulfillments associated with a listing. A *fulfillment* is a potential installation.
         Standard installations contain metadata about the attached share or git repo. Only one of these fields
         will be present. Personalized installations contain metadata about the attached share or git repo, as
         well as the Delta Sharing recipient type.

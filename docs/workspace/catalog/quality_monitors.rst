@@ -19,7 +19,7 @@
         already-initiated refresh job.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          UC table name in format ``catalog.schema.table_name``. table_name is case insensitive and spaces are
           disallowed.
         :param refresh_id: int
 
@@ -31,16 +31,22 @@
         Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Creates a new
         monitor for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
-        table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
-        parent catalog, be an owner of the table's parent schema, and have **SELECT** access on the table. 3.
-        have the following permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on
-        the table's parent schema - be an owner of the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the table's parent schema, and
+           have **SELECT** access on the table
+        2. have **USE_CATALOG** on the table's parent catalog, be an owner of the table's parent schema, and
+           have **SELECT** access on the table.
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table.
 
         Workspace assets, such as the dashboard, will be created in the workspace where this call was made.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
         :param output_schema_name: str
           [Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
@@ -50,7 +56,7 @@
           data-monitoring assets. Normally prepopulated to a default user location via UI and Python APIs.
         :param baseline_table_name: str (optional)
           [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in
-          the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
+          the monitored ``table_name``. The baseline table and the monitored table shall have the same schema.
         :param custom_metrics: List[:class:`MonitorMetric`] (optional)
           [Create:OPT Update:OPT] Custom metrics.
         :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
@@ -67,9 +73,9 @@
         :param slicing_exprs: List[str] (optional)
           [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
           data is grouped by each expression independently, resulting in a separate slice for each predicate
-          and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
-          following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in
-          `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate
+          and its complements. For example ``slicing_exprs=[“col_1”, “col_2 > 10”]`` will generate the
+          following slices: two slices for ``col_2 > 10`` (True and False), and one slice per unique value in
+          ``col1``. For high-cardinality columns, only the top 100 unique values by frequency will generate
           slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
@@ -87,10 +93,15 @@
         Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Deletes a monitor
         for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
@@ -98,7 +109,7 @@
         be manually cleaned up (if desired).
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
 
         :returns: :class:`DeleteMonitorResponse`
@@ -109,17 +120,22 @@
         Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets a monitor for
         the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema. 3. have the following
-        permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent
-        schema - **SELECT** privilege on the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema.
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - **SELECT** privilege on the table.
 
         The returned information includes configuration values, as well as information on assets created by
         the monitor. Some information (e.g., dashboard) may be filtered out if the caller is in a different
         workspace than where the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
 
         :returns: :class:`MonitorInfo`
@@ -130,10 +146,15 @@
         Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets info about a
         specific monitor refresh using the given refresh ID.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-        **SELECT** privilege on the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - **SELECT** privilege on the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
@@ -150,15 +171,20 @@
         Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets an array
         containing the history of the most recent refreshes (up to 25) for this table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-        **SELECT** privilege on the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - **SELECT** privilege on the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          UC table name in format ``catalog.schema.table_name``. table_name is case insensitive and spaces are
           disallowed.
 
         :returns: :class:`MonitorRefreshListResponse`
@@ -169,16 +195,21 @@
         Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Regenerates the
         monitoring dashboard for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table
 
         The call must be made from the workspace where the monitor was created. The dashboard will be
         regenerated in the assets directory that was specified when the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
         :param warehouse_id: str (optional)
           Optional argument to specify the warehouse for dashboard regeneration. If not specified, the first
@@ -192,15 +223,20 @@
         Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Queues a metric
         refresh on the monitor for the specified table. The refresh will execute in the background.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          UC table name in format ``catalog.schema.table_name``. table_name is case insensitive and spaces are
           disallowed.
 
         :returns: :class:`MonitorRefreshInfo`
@@ -211,10 +247,15 @@
         Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Updates a monitor
         for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table.
 
         Additionally, the call must be made from the workspace where the monitor was created, and the caller
         must be the original creator of the monitor.
@@ -222,14 +263,14 @@
         Certain configuration fields, such as output asset identifiers, cannot be updated.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
         :param output_schema_name: str
           [Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
           {catalog}.{schema}
         :param baseline_table_name: str (optional)
           [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in
-          the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
+          the monitored ``table_name``. The baseline table and the monitored table shall have the same schema.
         :param custom_metrics: List[:class:`MonitorMetric`] (optional)
           [Create:OPT Update:OPT] Custom metrics.
         :param dashboard_id: str (optional)
@@ -247,9 +288,9 @@
         :param slicing_exprs: List[str] (optional)
           [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
           data is grouped by each expression independently, resulting in a separate slice for each predicate
-          and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
-          following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in
-          `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate
+          and its complements. For example ``slicing_exprs=[“col_1”, “col_2 > 10”]`` will generate the
+          following slices: two slices for ``col_2 > 10`` (True and False), and one slice per unique value in
+          ``col1``. For high-cardinality columns, only the top 100 unique values by frequency will generate
           slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.

@@ -11,7 +11,8 @@
 
         Create Custom OAuth App Integration.
 
-        You can retrieve the custom OAuth app integration via :method:CustomAppIntegration/get.
+        You can retrieve the custom OAuth app integration via `CustomAppIntegration/get
+        <https://docs.databricks.com/api/account/customappintegration/get>`__.
 
         :param confidential: bool (optional)
           This field indicates whether an OAuth client secret is required to authenticate this client.
@@ -34,7 +35,7 @@
     .. py:method:: delete(integration_id: str)
 
         Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via
-        :method:CustomAppIntegration/get.
+        `CustomAppIntegration/get <https://docs.databricks.com/api/account/customappintegration/get>`__.
 
         :param integration_id: str
 
@@ -65,7 +66,7 @@
     .. py:method:: update(integration_id: str [, redirect_urls: Optional[List[str]], scopes: Optional[List[str]], token_access_policy: Optional[TokenAccessPolicy], user_authorized_scopes: Optional[List[str]]])
 
         Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration
-        via :method:CustomAppIntegration/get.
+        via `CustomAppIntegration/get <https://docs.databricks.com/api/account/customappintegration/get>`__.
 
         :param integration_id: str
         :param redirect_urls: List[str] (optional)

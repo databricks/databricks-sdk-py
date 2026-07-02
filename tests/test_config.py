@@ -805,6 +805,19 @@ def test_resolve_host_metadata_called_for_non_unified(mocker):
     mock_get.assert_called_once()
 
 
+def test_resolve_host_metadata_uses_configured_timeouts(mocker):
+    """The discovery client honors the configured timeouts so an unreachable host
+    cannot block Config() init for the default 300s retry budget."""
+    mock_get = mocker.patch(
+        "databricks.sdk.config.get_host_metadata",
+        return_value=oauth.HostMetadata(oidc_endpoint=""),
+    )
+    Config(host=_DUMMY_WS_HOST, token="t", retry_timeout_seconds=7, http_timeout_seconds=3)
+    client = mock_get.call_args.kwargs["client"]
+    assert client._retry_timeout_seconds == 7
+    assert client._http_timeout_seconds == 3
+
+
 # ---------------------------------------------------------------------------
 # Cloud field tests
 # ---------------------------------------------------------------------------

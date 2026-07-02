@@ -1107,7 +1107,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: MonitorMetricType
 
-   Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``, ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics
+   Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``, ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the two consecutive time windows.
+   - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics
 
    .. py:attribute:: CUSTOM_METRIC_TYPE_AGGREGATE
       :value: "CUSTOM_METRIC_TYPE_AGGREGATE"
@@ -1432,6 +1433,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: READ_FILES
       :value: "READ_FILES"
+
+   .. py:attribute:: READ_METADATA
+      :value: "READ_METADATA"
 
    .. py:attribute:: READ_PRIVATE_FILES
       :value: "READ_PRIVATE_FILES"
@@ -2117,7 +2121,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: WorkspaceBindingBindingType
 
-   Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation` enum in `credentials_common.proto`.
+   Using ``BINDING_TYPE_`` prefix here to avoid conflict with ``TableOperation`` enum in ``credentials_common.proto``.
 
    .. py:attribute:: BINDING_TYPE_READ_ONLY
       :value: "BINDING_TYPE_READ_ONLY"

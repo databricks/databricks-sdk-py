@@ -52,8 +52,8 @@
     .. py:method:: list( [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[ListSortOrder], start_index: Optional[int]]) -> Iterator[AccountGroup]
 
         Gets all details of the groups associated with the Databricks account. As of 08/22/2025, this endpoint
-        will no longer return members. Instead, members should be retrieved by iterating through `Get group
-        details`. Existing accounts that rely on this attribute will not be impacted and will continue
+        will no longer return members. Instead, members should be retrieved by iterating through ``Get group
+        details``. Existing accounts that rely on this attribute will not be impacted and will continue
         receiving member data as before.
 
         :param attributes: str (optional)
@@ -63,12 +63,11 @@
         :param excluded_attributes: str (optional)
           Comma-separated list of attributes to exclude in response.
         :param filter: str (optional)
-          Query by which the results have to be filtered. Supported operators are equals(`eq`),
-          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
-          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
-          only support simple expressions.
-
-          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+          Query by which the results have to be filtered. Supported operators are equals(``eq``),
+          contains(``co``), starts with(``sw``) and not equals(``ne``). Additionally, simple expressions can
+          be formed using logical operators - ``and`` and ``or``. The `SCIM RFC
+          <https://tools.ietf.org/html/rfc7644#section-3.4.2.2>`__ has more details but we currently only
+          support simple expressions.
         :param sort_by: str (optional)
           Attribute to sort the results.
         :param sort_order: :class:`ListSortOrder` (optional)

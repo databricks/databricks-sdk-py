@@ -61,7 +61,7 @@
 
         Change the owner of the cluster. You must be an admin and the cluster must be terminated to perform
         this operation. The service principal application ID can be supplied as an argument to
-        `owner_username`.
+        ``owner_username``.
 
         :param cluster_id: str
         :param owner_username: str
@@ -110,13 +110,13 @@
         Otherwise the cluster will terminate with an informative error message.
 
         Rather than authoring the cluster's JSON definition from scratch, Databricks recommends filling out
-        the [create compute UI] and then copying the generated JSON definition from the UI.
-
-        [create compute UI]: https://docs.databricks.com/compute/configure.html
+        the `create compute UI <https://docs.databricks.com/compute/configure.html>`__ and then copying the
+        generated JSON definition from the UI.
 
         :param spark_version: str
-          The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
-          retrieved by using the :method:clusters/sparkVersions API call.
+          The Spark version of the cluster, e.g. ``3.3.x-scala2.11``. A list of available Spark versions can
+          be retrieved by using the `clusters/sparkVersions
+          <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call.
         :param apply_policy_default_values: bool (optional)
           When set to true, fixed and default values from the policy will be used for fields that are omitted.
           When set to false, only fixed values from the policy will be applied.
@@ -139,18 +139,17 @@
           The configuration for delivering spark logs to a long-term storage destination. Three kinds of
           destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
           specified for one cluster. If the conf is given, the logs will be delivered to the destination every
-          `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the destination
-          of executor logs is `$destination/$clusterId/executor`.
+          ``5 mins``. The destination of driver logs is ``$destination/$clusterId/driver``, while the
+          destination of executor logs is ``$destination/$clusterId/executor``.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
           the cluster name will be an empty string. For job clusters, the cluster name is automatically set
           based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
-          instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+          instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
-
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
         :param docker_image: :class:`DockerImage` (optional)
@@ -162,7 +161,7 @@
           Flexible node type configuration for the driver node.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
-          will be set as the same value as `node_type_id` defined above.
+          will be set as the same value as ``node_type_id`` defined above.
 
           This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
           driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and
@@ -177,29 +176,30 @@
           creation, a set of default values will be used.
         :param init_scripts: List[:class:`InitScriptInfo`] (optional)
           The configuration for storing init scripts. Any number of destinations can be specified. The scripts
-          are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script
-          logs are sent to `<destination>/<cluster-ID>/init_scripts`.
+          are executed sequentially in the order provided. If ``cluster_log_conf`` is specified, init script
+          logs are sent to ``<destination>/<cluster-ID>/init_scripts``.
         :param instance_pool_id: str (optional)
           The optional ID of the instance pool to which the cluster belongs.
         :param is_single_node: bool (optional)
-          This field can only be used when `kind = CLASSIC_PREVIEW`.
+          This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
-          When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
-          and `num_workers`
+          When set to true, Databricks will automatically set single node related ``custom_tags``,
+          ``spark_conf``, and ``num_workers``
         :param kind: :class:`Kind` (optional)
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
           intensive workloads. A list of available node types can be retrieved by using the
-          :method:clusters/listNodeTypes API call.
+          `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
+          call.
         :param num_workers: int (optional)
           Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-          `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+          ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
 
           Note: When reading the properties of a cluster, this field reflects the desired number of workers
           rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10
           workers, this field will immediately be updated to reflect the target size of 10 workers, whereas
-          the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are
+          the workers listed in ``spark_info`` will gradually increase from 5 to 10 as the new nodes are
           provisioned.
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
@@ -209,41 +209,41 @@
         :param runtime_engine: :class:`RuntimeEngine` (optional)
           Determines the cluster's runtime engine, either standard or Photon.
 
-          This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
-          `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+          This field is not compatible with legacy ``spark_version`` values that contain ``-photon-``. Remove
+          ``-photon-`` from the ``spark_version`` and set ``runtime_engine`` to ``PHOTON``.
 
           If left unspecified, the runtime engine defaults to standard unless the spark_version contains
           -photon-, in which case Photon will be used.
         :param single_user_name: str (optional)
-          Single user name if data_security_mode is `SINGLE_USER`
+          Single user name if data_security_mode is ``SINGLE_USER``
         :param spark_conf: Dict[str,str] (optional)
           An object containing a set of optional, user-specified Spark configuration key-value pairs. Users
           can also pass in a string of extra JVM options to the driver and the executors via
-          `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively.
+          ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions`` respectively.
         :param spark_env_vars: Dict[str,str] (optional)
           An object containing a set of optional, user-specified environment variable key-value pairs. Please
-          note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while
+          note that key-value pair of the form (X,Y) will be exported as is (i.e., ``export X='Y'``) while
           launching the driver and workers.
 
-          In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
-          `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks
+          In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them to
+          ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures that all default databricks
           managed environmental variables are included as well.
 
-          Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-          "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-          -Dspark.shuffle.service.enabled=true"}`
+          Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+          "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+          -Dspark.shuffle.service.enabled=true"}``
         :param ssh_public_keys: List[str] (optional)
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
-          private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
-          specified.
+          private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys can
+          be specified.
         :param total_initial_remote_disk_size: int (optional)
           If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
           supported for GCP HYPERDISK_BALANCED disks.
         :param use_ml_runtime: bool (optional)
-          This field can only be used when `kind = CLASSIC_PREVIEW`.
+          This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
-          `effective_spark_version` is determined by `spark_version` (DBR release), this field
-          `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
+          ``effective_spark_version`` is determined by ``spark_version`` (DBR release), this field
+          ``use_ml_runtime``, and whether ``node_type_id`` is gpu node or not.
         :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
           Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
@@ -288,8 +288,8 @@
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
-        termination has completed, the cluster will be in a `TERMINATED` state. If the cluster is already in a
-        `TERMINATING` or `TERMINATED` state, nothing will happen.
+        termination has completed, the cluster will be in a ``TERMINATED`` state. If the cluster is already in
+        a ``TERMINATING`` or ``TERMINATED`` state, nothing will happen.
 
         :param cluster_id: str
           The cluster to be terminated.
@@ -341,22 +341,23 @@
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
-        updated if it is in a `RUNNING` or `TERMINATED` state.
+        updated if it is in a ``RUNNING`` or ``TERMINATED`` state.
 
-        If a cluster is updated while in a `RUNNING` state, it will be restarted so that the new attributes
+        If a cluster is updated while in a ``RUNNING`` state, it will be restarted so that the new attributes
         can take effect.
 
-        If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time it
-        is started using the `clusters/start` API, the new attributes will take effect. Any attempt to update
-        a cluster in any other state will be rejected with an `INVALID_STATE` error code.
+        If a cluster is updated while in a ``TERMINATED`` state, it will remain ``TERMINATED``. The next time
+        it is started using the ``clusters/start`` API, the new attributes will take effect. Any attempt to
+        update a cluster in any other state will be rejected with an ``INVALID_STATE`` error code.
 
         Clusters created by the Databricks Jobs service cannot be edited.
 
         :param cluster_id: str
           ID of the cluster
         :param spark_version: str
-          The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
-          retrieved by using the :method:clusters/sparkVersions API call.
+          The Spark version of the cluster, e.g. ``3.3.x-scala2.11``. A list of available Spark versions can
+          be retrieved by using the `clusters/sparkVersions
+          <https://docs.databricks.com/api/workspace/clusters/sparkversions>`__ API call.
         :param apply_policy_default_values: bool (optional)
           When set to true, fixed and default values from the policy will be used for fields that are omitted.
           When set to false, only fixed values from the policy will be applied.
@@ -377,18 +378,17 @@
           The configuration for delivering spark logs to a long-term storage destination. Three kinds of
           destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
           specified for one cluster. If the conf is given, the logs will be delivered to the destination every
-          `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the destination
-          of executor logs is `$destination/$clusterId/executor`.
+          ``5 mins``. The destination of driver logs is ``$destination/$clusterId/driver``, while the
+          destination of executor logs is ``$destination/$clusterId/executor``.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
           the cluster name will be an empty string. For job clusters, the cluster name is automatically set
           based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
-          instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+          instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
-
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
         :param docker_image: :class:`DockerImage` (optional)
@@ -400,7 +400,7 @@
           Flexible node type configuration for the driver node.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
-          will be set as the same value as `node_type_id` defined above.
+          will be set as the same value as ``node_type_id`` defined above.
 
           This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
           driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and
@@ -415,29 +415,30 @@
           creation, a set of default values will be used.
         :param init_scripts: List[:class:`InitScriptInfo`] (optional)
           The configuration for storing init scripts. Any number of destinations can be specified. The scripts
-          are executed sequentially in the order provided. If `cluster_log_conf` is specified, init script
-          logs are sent to `<destination>/<cluster-ID>/init_scripts`.
+          are executed sequentially in the order provided. If ``cluster_log_conf`` is specified, init script
+          logs are sent to ``<destination>/<cluster-ID>/init_scripts``.
         :param instance_pool_id: str (optional)
           The optional ID of the instance pool to which the cluster belongs.
         :param is_single_node: bool (optional)
-          This field can only be used when `kind = CLASSIC_PREVIEW`.
+          This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
-          When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
-          and `num_workers`
+          When set to true, Databricks will automatically set single node related ``custom_tags``,
+          ``spark_conf``, and ``num_workers``
         :param kind: :class:`Kind` (optional)
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
           intensive workloads. A list of available node types can be retrieved by using the
-          :method:clusters/listNodeTypes API call.
+          `clusters/listNodeTypes <https://docs.databricks.com/api/workspace/clusters/listnodetypes>`__ API
+          call.
         :param num_workers: int (optional)
           Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-          `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+          ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
 
           Note: When reading the properties of a cluster, this field reflects the desired number of workers
           rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10
           workers, this field will immediately be updated to reflect the target size of 10 workers, whereas
-          the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are
+          the workers listed in ``spark_info`` will gradually increase from 5 to 10 as the new nodes are
           provisioned.
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
@@ -447,41 +448,41 @@
         :param runtime_engine: :class:`RuntimeEngine` (optional)
           Determines the cluster's runtime engine, either standard or Photon.
 
-          This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
-          `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+          This field is not compatible with legacy ``spark_version`` values that contain ``-photon-``. Remove
+          ``-photon-`` from the ``spark_version`` and set ``runtime_engine`` to ``PHOTON``.
 
           If left unspecified, the runtime engine defaults to standard unless the spark_version contains
           -photon-, in which case Photon will be used.
         :param single_user_name: str (optional)
-          Single user name if data_security_mode is `SINGLE_USER`
+          Single user name if data_security_mode is ``SINGLE_USER``
         :param spark_conf: Dict[str,str] (optional)
           An object containing a set of optional, user-specified Spark configuration key-value pairs. Users
           can also pass in a string of extra JVM options to the driver and the executors via
-          `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively.
+          ``spark.driver.extraJavaOptions`` and ``spark.executor.extraJavaOptions`` respectively.
         :param spark_env_vars: Dict[str,str] (optional)
           An object containing a set of optional, user-specified environment variable key-value pairs. Please
-          note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`) while
+          note that key-value pair of the form (X,Y) will be exported as is (i.e., ``export X='Y'``) while
           launching the driver and workers.
 
-          In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
-          `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default databricks
+          In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them to
+          ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures that all default databricks
           managed environmental variables are included as well.
 
-          Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-          "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-          -Dspark.shuffle.service.enabled=true"}`
+          Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+          "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+          -Dspark.shuffle.service.enabled=true"}``
         :param ssh_public_keys: List[str] (optional)
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
-          private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
-          specified.
+          private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys can
+          be specified.
         :param total_initial_remote_disk_size: int (optional)
           If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
           supported for GCP HYPERDISK_BALANCED disks.
         :param use_ml_runtime: bool (optional)
-          This field can only be used when `kind = CLASSIC_PREVIEW`.
+          This field can only be used when ``kind = CLASSIC_PREVIEW``.
 
-          `effective_spark_version` is determined by `spark_version` (DBR release), this field
-          `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
+          ``effective_spark_version`` is determined by ``spark_version`` (DBR release), this field
+          ``use_ml_runtime``, and whether ``node_type_id`` is gpu node or not.
         :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
           Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
@@ -789,7 +790,7 @@
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
         Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
-        `RUNNING` state.
+        ``RUNNING`` state.
 
         :param cluster_id: str
           The cluster to be resized.
@@ -798,12 +799,12 @@
           autoscaling works best with DB runtime versions 3.0 or later.
         :param num_workers: int (optional)
           Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-          `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+          ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
 
           Note: When reading the properties of a cluster, this field reflects the desired number of workers
           rather than the actual current number of workers. For instance, if a cluster is resized from 5 to 10
           workers, this field will immediately be updated to reflect the target size of 10 workers, whereas
-          the workers listed in `spark_info` will gradually increase from 5 to 10 as the new nodes are
+          the workers listed in ``spark_info`` will gradually increase from 5 to 10 as the new nodes are
           provisioned.
 
         :returns:
@@ -845,7 +846,7 @@
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
+        Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a ``RUNNING`` state,
         nothing will happen.
 
         :param cluster_id: str
@@ -972,11 +973,15 @@
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
-        - The previous cluster id and attributes are preserved. - The cluster starts with the last specified
-        cluster size. - If the previous cluster was an autoscaling cluster, the current cluster starts with
-        the minimum number of nodes. - If the cluster is not currently in a ``TERMINATED`` state, nothing will
-        happen. - Clusters launched to run a job cannot be started.
+        Starts a terminated Spark cluster with the supplied ID. This works similar to ``createCluster``
+        except:
+
+        - The previous cluster id and attributes are preserved.
+        - The cluster starts with the last specified cluster size.
+        - If the previous cluster was an autoscaling cluster, the current cluster starts with the minimum
+          number of nodes.
+        - If the cluster is not currently in a ``TERMINATED`` state, nothing will happen.
+        - Clusters launched to run a job cannot be started.
 
         :param cluster_id: str
           The cluster to be started.
@@ -1032,13 +1037,13 @@
     .. py:method:: update(cluster_id: str, update_mask: str [, cluster: Optional[UpdateClusterResource]]) -> Wait[ClusterDetails]
 
         Updates the configuration of a cluster to match the partial set of attributes and size. Denote which
-        fields to update using the `update_mask` field in the request body. A cluster can be updated if it is
-        in a `RUNNING` or `TERMINATED` state. If a cluster is updated while in a `RUNNING` state, it will be
-        restarted so that the new attributes can take effect. If a cluster is updated while in a `TERMINATED`
-        state, it will remain `TERMINATED`. The updated attributes will take effect the next time the cluster
-        is started using the `clusters/start` API. Attempts to update a cluster in any other state will be
-        rejected with an `INVALID_STATE` error code. Clusters created by the Databricks Jobs service cannot be
-        updated.
+        fields to update using the ``update_mask`` field in the request body. A cluster can be updated if it
+        is in a ``RUNNING`` or ``TERMINATED`` state. If a cluster is updated while in a ``RUNNING`` state, it
+        will be restarted so that the new attributes can take effect. If a cluster is updated while in a
+        ``TERMINATED`` state, it will remain ``TERMINATED``. The updated attributes will take effect the next
+        time the cluster is started using the ``clusters/start`` API. Attempts to update a cluster in any
+        other state will be rejected with an ``INVALID_STATE`` error code. Clusters created by the Databricks
+        Jobs service cannot be updated.
 
         :param cluster_id: str
           ID of the cluster.
@@ -1047,14 +1052,14 @@
           for more details.
 
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
         :param cluster: :class:`UpdateClusterResource` (optional)
           The cluster to be updated.
 

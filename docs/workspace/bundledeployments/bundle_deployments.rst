@@ -10,9 +10,12 @@
 
         Marks a version as complete and releases the deployment lock.
 
-        The server atomically: 1. Sets the version status to the provided terminal status. 2. Sets
-        `complete_time` to the current server timestamp. 3. Releases the lock on the parent deployment. 4.
-        Updates the parent deployment's `status` and `last_version_id`.
+        The server atomically:
+
+        1. Sets the version status to the provided terminal status.
+        2. Sets ``complete_time`` to the current server timestamp.
+        3. Releases the lock on the parent deployment.
+        4. Updates the parent deployment's ``status`` and ``last_version_id``.
 
         :param name: str
           The name of the version to complete. Format: deployments/{deployment_id}/versions/{version_id}
@@ -30,14 +33,14 @@
 
         Creates a new deployment in the workspace.
 
-        The caller must provide a `deployment_id` which becomes the final component of the deployment's
-        resource name. If a deployment with the same ID already exists, the server returns `ALREADY_EXISTS`.
+        The caller must provide a ``deployment_id`` which becomes the final component of the deployment's
+        resource name. If a deployment with the same ID already exists, the server returns ``ALREADY_EXISTS``.
 
         :param deployment: :class:`Deployment`
           The deployment to create.
         :param deployment_id: str
           The ID to use for the deployment, which will become the final component of the deployment's resource
-          name (i.e. `deployments/{deployment_id}`).
+          name (i.e. ``deployments/{deployment_id}``).
 
         :returns: :class:`Deployment`
         
@@ -46,8 +49,9 @@
 
         Creates a resource operation under a version.
 
-        The caller must provide a `resource_key` which becomes the final component of the operation's name. If
-        an operation with the same key already exists under the version, the server returns `ALREADY_EXISTS`.
+        The caller must provide a ``resource_key`` which becomes the final component of the operation's name.
+        If an operation with the same key already exists under the version, the server returns
+        ``ALREADY_EXISTS``.
 
         On success the server also updates the corresponding deployment-level Resource (creating it if this is
         the first operation for that resource_key, or removing it if action_type is DELETE).
@@ -69,8 +73,8 @@
         Creates a new version under a deployment.
 
         Creating a version acquires an exclusive lock on the deployment, preventing concurrent deploys. The
-        caller provides a `version_id`, a numeric string that must be numerically greater than the
-        deployment's most recent version, and sets the version's `previous_version_id` to the deployment's
+        caller provides a ``version_id``, a numeric string that must be numerically greater than the
+        deployment's most recent version, and sets the version's ``previous_version_id`` to the deployment's
         most recent version (leaving it unset for the first version), which the server validates to detect
         concurrent deploys.
 
@@ -82,8 +86,8 @@
           The ID to use for the version, which becomes the final component of the version's resource name. A
           numeric string (base-10, fits in a signed 64-bit integer) chosen by the caller; must be greater than
           or equal to 1. Must be numerically greater than the deployment's most recent version (see
-          `version.previous_version_id`); it does not need to start at 1 or increase by exactly 1. If the
-          value is not numerically greater, the server returns `INVALID_PARAMETER_VALUE`.
+          ``version.previous_version_id``); it does not need to start at 1 or increase by exactly 1. If the
+          value is not numerically greater, the server returns ``INVALID_PARAMETER_VALUE``.
 
         :returns: :class:`Version`
         
@@ -94,7 +98,7 @@
 
         The deployment is marked as deleted. It and all its children (versions and their operations) will be
         permanently deleted after the retention policy expires. If the deployment has an in-progress version,
-        the server returns `RESOURCE_CONFLICT`.
+        the server returns ``RESOURCE_CONFLICT``.
 
         :param name: str
           Resource name of the deployment to delete. Format: deployments/{deployment_id}
@@ -149,7 +153,7 @@
 
         The server validates that the version is the active (non-terminal) version on the parent deployment
         and resets the lock expiry. If the lock has already expired or the version is no longer active, the
-        server returns `ABORTED`.
+        server returns ``ABORTED``.
 
         :param name: str
           The version whose lock to renew. Format: deployments/{deployment_id}/versions/{version_id}
@@ -166,7 +170,7 @@
           unspecified, at most 50 deployments will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListDeployments` call. Provide this to retrieve the
+          A page token, received from a previous ``ListDeployments`` call. Provide this to retrieve the
           subsequent page.
 
         :returns: Iterator over :class:`Deployment`
@@ -183,7 +187,7 @@
           unspecified, at most 50 operations will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListOperations` call. Provide this to retrieve the
+          A page token, received from a previous ``ListOperations`` call. Provide this to retrieve the
           subsequent page.
 
         :returns: Iterator over :class:`Operation`
@@ -200,8 +204,8 @@
           unspecified, at most 50 resources will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListResources` call. Provide this to retrieve the subsequent
-          page.
+          A page token, received from a previous ``ListResources`` call. Provide this to retrieve the
+          subsequent page.
 
         :returns: Iterator over :class:`Resource`
         
@@ -217,8 +221,8 @@
           unspecified, at most 50 versions will be returned. The maximum value is 1000; values above 1000 will
           be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListVersions` call. Provide this to retrieve the subsequent
-          page.
+          A page token, received from a previous ``ListVersions`` call. Provide this to retrieve the
+          subsequent page.
 
         :returns: Iterator over :class:`Version`
         

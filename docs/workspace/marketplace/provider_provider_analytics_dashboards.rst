@@ -8,7 +8,7 @@
 
     .. py:method:: create() -> ProviderAnalyticsDashboard
 
-        Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the
+        Create provider analytics dashboard. Returns Marketplace specific ``id``. Not to be confused with the
         Lakeview dashboard id.
 
 

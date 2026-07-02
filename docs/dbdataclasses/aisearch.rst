@@ -18,7 +18,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: DataModificationStatus
 
-   Overall outcome of a data-plane upsert or delete. Mirrors the legacy `databricks.brickindexscheduler.UpsertDeleteDataStatus` value-for-value.
+   Overall outcome of a data-plane upsert or delete. Mirrors the legacy ``databricks.brickindexscheduler.UpsertDeleteDataStatus`` value-for-value.
 
    .. py:attribute:: FAILURE
       :value: "FAILURE"
@@ -107,7 +107,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: IndexSubtype
 
-   The subtype of the AI Search index, determining the indexing and retrieval strategy. - `VECTOR`: Not a supported create value — do not select it. Use `HYBRID` (vector + hybrid search) or `FULL_TEXT` (full-text only). It is the proto2 default (`= 0`) solely to mirror the legacy `index_v2.proto` enum value-for-value; it is not an offered index subtype. - `FULL_TEXT`: An index that uses full-text search without vector embeddings. - `HYBRID`: An index that uses vector embeddings for similarity search and hybrid search.
+   The subtype of the AI Search index, determining the indexing and retrieval strategy.
+   - ``VECTOR``: Not a supported create value — do not select it. Use ``HYBRID`` (vector + hybrid search) or ``FULL_TEXT`` (full-text only). It is the proto2 default (``= 0``) solely to mirror the legacy ``index_v2.proto`` enum value-for-value; it is not an offered index subtype. - ``FULL_TEXT``: An index that uses full-text search without vector embeddings. - ``HYBRID``: An index that uses vector embeddings for similarity search and hybrid search.
 
    .. py:attribute:: FULL_TEXT
       :value: "FULL_TEXT"
@@ -120,7 +121,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: IndexType
 
-   There are 2 types of AI Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
+   There are 2 types of AI Search indexes:
+   - ``DELTA_SYNC``: An index that automatically syncs with a source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta Table changes. - ``DIRECT_ACCESS``: An index that supports direct read and write of vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
 
    .. py:attribute:: DELTA_SYNC
       :value: "DELTA_SYNC"
@@ -138,7 +140,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PipelineType
 
-   Pipeline execution mode for a Delta Sync index. Required on create for Delta Sync indexes; the legacy backend rejects an unset value with INVALID_PARAMETER_VALUE. - `TRIGGERED`: the pipeline stops after refreshing the source table once, using the data available when the update started. - `CONTINUOUS`: the pipeline processes new data as it arrives in the source table to keep the index fresh.
+   Pipeline execution mode for a Delta Sync index. Required on create for Delta Sync indexes; the legacy backend rejects an unset value with INVALID_PARAMETER_VALUE.
+   - ``TRIGGERED``: the pipeline stops after refreshing the source table once, using the data available when the update started. - ``CONTINUOUS``: the pipeline processes new data as it arrives in the source table to keep the index fresh.
 
    .. py:attribute:: CONTINUOUS
       :value: "CONTINUOUS"
@@ -160,7 +163,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RerankerConfigModelType
 
-   How the `model` field is interpreted.
+   How the ``model`` field is interpreted.
 
    .. py:attribute:: MODEL_TYPE_BASE
       :value: "MODEL_TYPE_BASE"
@@ -203,7 +206,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ThroughputChangeRequestState
 
-   State of the most recent throughput change request issued against a Storage Optimized endpoint. Surfaced on `EndpointThroughputInfo.change_request_state`.
+   State of the most recent throughput change request issued against a Storage Optimized endpoint. Surfaced on ``EndpointThroughputInfo.change_request_state``.
 
    .. py:attribute:: CHANGE_ADJUSTED
       :value: "CHANGE_ADJUSTED"

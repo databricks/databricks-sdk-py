@@ -5,7 +5,7 @@
 .. py:class:: QualityMonitorV2API
 
     Deprecated: Please use the Data Quality Monitoring API instead (REST: /api/data-quality/v1/monitors).
-    Manage data quality of UC objects (currently support `schema`).
+    Manage data quality of UC objects (currently support ``schema``).
 
     .. py:method:: create_quality_monitor(quality_monitor: QualityMonitor) -> QualityMonitor
 

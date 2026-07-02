@@ -79,20 +79,20 @@ class OptionalFields:
 
     field_mask: Optional[FieldMask] = None
     """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names."""
+    The field path is relative to the resource object, using a dot (``.``) to navigate sub-fields
+    (e.g., ``author.given_name``). Specification of elements in sequence or map fields is not
+    allowed, as only the entire collection field can be specified. Field names must exactly match
+    the resource field names."""
 
     legacy_duration: Optional[str] = None
     """Legacy Well Known types"""
 
     legacy_field_mask: Optional[str] = None
     """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names."""
+    The field path is relative to the resource object, using a dot (``.``) to navigate sub-fields
+    (e.g., ``author.given_name``). Specification of elements in sequence or map fields is not
+    allowed, as only the entire collection field can be specified. Field names must exactly match
+    the resource field names."""
 
     legacy_timestamp: Optional[str] = None
 
@@ -337,10 +337,10 @@ class RequiredFields:
 
     required_field_mask: FieldMask
     """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names."""
+    The field path is relative to the resource object, using a dot (``.``) to navigate sub-fields
+    (e.g., ``author.given_name``). Specification of elements in sequence or map fields is not
+    allowed, as only the entire collection field can be specified. Field names must exactly match
+    the resource field names."""
 
     required_timestamp: Timestamp
 

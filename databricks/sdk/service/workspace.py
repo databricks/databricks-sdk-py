@@ -67,7 +67,7 @@ class AclPermission(Enum):
 
 @dataclass
 class AzureKeyVaultSecretScopeMetadata:
-    """The metadata of the Azure KeyVault for a secret scope of type `AZURE_KEYVAULT`"""
+    """The metadata of the Azure KeyVault for a secret scope of type ``AZURE_KEYVAULT``"""
 
     resource_id: str
     """The resource id of the azure KeyVault that user wants to associate the scope with."""
@@ -187,9 +187,9 @@ class CreateRepoResponse:
     """Path of the Git folder (repo) in the workspace."""
 
     provider: Optional[str] = None
-    """Git provider of the linked Git repository, e.g. `gitHub`, `azureDevOpsServices`,
-    `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition` (GitLab Self-Managed), or
-    `awsCodeCommit` (deprecated)."""
+    """Git provider of the linked Git repository, e.g. ``gitHub``, ``azureDevOpsServices``,
+    ``bitbucketServer`` (Bitbucket Data Center), ``gitLabEnterpriseEdition`` (GitLab Self-Managed),
+    or ``awsCodeCommit`` (deprecated)."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """Sparse checkout settings for the Git folder (repo)."""
@@ -261,10 +261,10 @@ class CredentialInfo:
     https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider"""
 
     git_provider: Optional[str] = None
-    """The Git provider associated with the credential. One of `gitHub`, `bitbucketCloud`, `gitLab`,
-    `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra ID authentication),
-    `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition` (GitLab
-    Self-Managed), or `awsCodeCommit` (deprecated)."""
+    """The Git provider associated with the credential. One of ``gitHub``, ``bitbucketCloud``,
+    ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft Entra ID
+    authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
+    ``gitLabEnterpriseEdition`` (GitLab Self-Managed), or ``awsCodeCommit`` (deprecated)."""
 
     git_username: Optional[str] = None
     """The username provided with your Git provider account and associated with the credential. For
@@ -411,7 +411,7 @@ class ExportFormat(Enum):
 
 @dataclass
 class ExportResponse:
-    """The request field `direct_download` determines whether a JSON response or binary contents are
+    """The request field ``direct_download`` determines whether a JSON response or binary contents are
     returned by this endpoint."""
 
     content: Optional[str] = None
@@ -558,9 +558,9 @@ class GetRepoResponse:
     """Path of the Git folder (repo) in the workspace."""
 
     provider: Optional[str] = None
-    """Git provider of the linked Git repository, e.g. `gitHub`, `azureDevOpsServices`,
-    `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition` (GitLab Self-Managed), or
-    `awsCodeCommit` (deprecated)."""
+    """Git provider of the linked Git repository, e.g. ``gitHub``, ``azureDevOpsServices``,
+    ``bitbucketServer`` (Bitbucket Data Center), ``gitLabEnterpriseEdition`` (GitLab Self-Managed),
+    or ``awsCodeCommit`` (deprecated)."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """Sparse checkout settings for the Git folder (repo)."""
@@ -769,7 +769,7 @@ class ListCredentialsResponse:
 @dataclass
 class ListReposResponse:
     next_page_token: Optional[str] = None
-    """Token that can be specified as a query parameter to the `GET /repos` endpoint to retrieve the
+    """Token that can be specified as a query parameter to the ``GET /repos`` endpoint to retrieve the
     next page of results."""
 
     repos: Optional[List[RepoInfo]] = None
@@ -912,9 +912,12 @@ class ObjectInfo:
     object_type: Optional[ObjectType] = None
     """The type of the object in workspace.
     
-    - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. -
-    `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository - `DASHBOARD`:
-    Lakeview dashboard"""
+    - ``NOTEBOOK``: document that contains runnable code, visualizations, and explanatory text.
+    - ``DIRECTORY``: directory
+    - ``LIBRARY``: library
+    - ``FILE``: file
+    - ``REPO``: repository
+    - ``DASHBOARD``: Lakeview dashboard"""
 
     path: Optional[str] = None
     """The absolute path of the object."""
@@ -1119,9 +1122,9 @@ class RepoInfo:
     """Root path of the git folder (repo) in the Workspace."""
 
     provider: Optional[str] = None
-    """Git provider of the remote git repository, e.g. `gitHub`, `azureDevOpsServices`,
-    `bitbucketServer` (Bitbucket Data Center), `gitLabEnterpriseEdition` (GitLab Self-Managed), or
-    `awsCodeCommit` (deprecated)."""
+    """Git provider of the remote git repository, e.g. ``gitHub``, ``azureDevOpsServices``,
+    ``bitbucketServer`` (Bitbucket Data Center), ``gitLabEnterpriseEdition`` (GitLab Self-Managed),
+    or ``awsCodeCommit`` (deprecated)."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """Sparse checkout config for the git folder (repo)."""
@@ -1397,9 +1400,8 @@ class SparseCheckout:
     """Sparse checkout configuration, it contains options like cone patterns."""
 
     patterns: Optional[List[str]] = None
-    """List of sparse checkout cone patterns, see [cone mode handling] for details.
-    
-    [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling"""
+    """List of sparse checkout cone patterns, see `cone mode handling
+    <https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling>`__ for details."""
 
     def as_dict(self) -> dict:
         """Serializes the SparseCheckout into a dictionary suitable for use as a JSON request body."""
@@ -1426,9 +1428,8 @@ class SparseCheckoutUpdate:
     """Sparse checkout configuration, it contains options like cone patterns."""
 
     patterns: Optional[List[str]] = None
-    """List of sparse checkout cone patterns, see [cone mode handling] for details.
-    
-    [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling"""
+    """List of sparse checkout cone patterns, see `cone mode handling
+    <https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling>`__ for details."""
 
     def as_dict(self) -> dict:
         """Serializes the SparseCheckoutUpdate into a dictionary suitable for use as a JSON request body."""
@@ -1720,9 +1721,7 @@ class WorkspaceObjectPermissionsDescription:
 class GitCredentialsAPI:
     """Registers personal access token for Databricks to do operations on behalf of the user.
 
-    See [more info].
-
-    [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
+    See `more info <https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html>`__."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1742,10 +1741,10 @@ class GitCredentialsAPI:
         the DELETE endpoint to delete existing credentials.
 
         :param git_provider: str
-          Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra
-          ID authentication), `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
-          `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit` (deprecated by AWS, not
+          Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
+          ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
+          Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
+          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit`` (deprecated by AWS, not
           accepting new customers).
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
@@ -1763,9 +1762,8 @@ class GitCredentialsAPI:
           the name of the git credential, used for identification and ease of lookup
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
-          providers, support may exist for other types of scoped access tokens. [Learn more].
-
-          [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+          providers, support may exist for other types of scoped access tokens. `Learn more
+          <https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html>`__.
         :param principal_id: int (optional)
           The ID of the service principal whose credentials will be modified. Only service principal managers
           can perform this action.
@@ -1893,10 +1891,10 @@ class GitCredentialsAPI:
         :param credential_id: int
           The ID for the corresponding credential to access.
         :param git_provider: str
-          Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra
-          ID authentication), `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
-          `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit` (deprecated by AWS, not
+          Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
+          ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
+          Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
+          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit`` (deprecated by AWS, not
           accepting new customers).
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
@@ -1914,9 +1912,8 @@ class GitCredentialsAPI:
           the name of the git credential, used for identification and ease of lookup
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
-          providers, support may exist for other types of scoped access tokens. [Learn more].
-
-          [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+          providers, support may exist for other types of scoped access tokens. `Learn more
+          <https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html>`__.
         :param principal_id: int (optional)
           The ID of the service principal whose credentials will be modified. Only service principal managers
           can perform this action.
@@ -1974,14 +1971,14 @@ class ReposAPI:
         :param url: str
           URL of the Git repository to be linked.
         :param provider: str
-          Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices` (Azure DevOps Services, including Microsoft Entra
-          ID authentication), `gitHubEnterprise`, `bitbucketServer` (Bitbucket Data Center),
-          `gitLabEnterpriseEdition` (GitLab Self-Managed), and `awsCodeCommit` (deprecated by AWS, not
+          Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
+          ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
+          Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
+          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit`` (deprecated by AWS, not
           accepting new customers).
         :param path: str (optional)
           Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo
-          is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`.
+          is created in ``/Repos``, path must be in the format ``/Repos/{folder}/{repo-name}``.
         :param sparse_checkout: :class:`SparseCheckout` (optional)
           If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
           sparse checkout after the repo is created.
@@ -2090,7 +2087,7 @@ class ReposAPI:
         return RepoPermissions.from_dict(res)
 
     def list(self, *, next_page_token: Optional[str] = None, path_prefix: Optional[str] = None) -> Iterator[RepoInfo]:
-        """Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate
+        """Returns repos that the calling user has Manage permissions on. Use ``next_page_token`` to iterate
         through additional pages.
 
         :param next_page_token: str (optional)
@@ -2098,8 +2095,8 @@ class ReposAPI:
           well as a next page token if there are more results.
         :param path_prefix: str (optional)
           Filters repos that have paths starting with the given path prefix. If not provided or when provided
-          an effectively empty prefix (`/` or `/Workspace`) Git folders (repos) from `/Workspace/Repos` will
-          be served.
+          an effectively empty prefix (``/`` or ``/Workspace``) Git folders (repos) from ``/Workspace/Repos``
+          will be served.
 
         :returns: Iterator over :class:`RepoInfo`
         """
@@ -2272,7 +2269,10 @@ class SecretsAPI:
         .. code::
 
         { "scope": "my-simple-databricks-scope", "initial_manage_principal": "users" "scope_backend_type":
-        "databricks|azure_keyvault", # below is only required if scope type is azure_keyvault
+        "databricks|azure_keyvault",
+
+        below is only required if scope type is azure_keyvault
+
         "backend_azure_keyvault": { "resource_id":
         "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxx/providers/Microsoft.KeyVault/vaults/xxxx",
         "tenant_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "dns_name": "https://xxxx.vault.azure.net/", } }
@@ -2630,9 +2630,9 @@ class SecretsAPI:
         scope point. In general, a user or group will use the most powerful permission available to them, and
         permissions are ordered as follows:
 
-        * ``MANAGE`` - Allowed to change ACLs, and read and write to this secret scope. * ``WRITE`` - Allowed
-        to read and write to this secret scope. * ``READ`` - Allowed to read this secret scope and list what
-        secrets are available.
+        - ``MANAGE`` - Allowed to change ACLs, and read and write to this secret scope.
+        - ``WRITE`` - Allowed to read and write to this secret scope.
+        - ``READ`` - Allowed to read this secret scope and list what secrets are available.
 
         Note that in general, secret values can only be read from within a command on a cluster (for example,
         through a notebook). There is no API to read the actual secret value material outside of a cluster.
@@ -2753,17 +2753,18 @@ class WorkspaceAPI:
         self._api = api_client
 
     def delete(self, path: str, *, recursive: Optional[bool] = None):
-        """Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *
-        If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a
-        non-empty directory and `recursive` is set to `false`, this call returns an error
-        `DIRECTORY_NOT_EMPTY`.
+        """Deletes an object or a directory (and optionally recursively deletes all objects in the directory).
+
+        - If ``path`` does not exist, this call returns an error ``RESOURCE_DOES_NOT_EXIST``.
+        - If ``path`` is a non-empty directory and ``recursive`` is set to ``false``, this call returns an
+          error ``DIRECTORY_NOT_EMPTY``.
 
         Object deletion cannot be undone and deleting a directory recursively is not atomic.
 
         :param path: str
           The absolute path of the notebook or directory.
         :param recursive: bool (optional)
-          The flag that specifies whether to delete the object recursively. It is `false` by default. Please
+          The flag that specifies whether to delete the object recursively. It is ``false`` by default. Please
           note this deleting directory is not atomic. If it fails in the middle, some of objects under this
           directory may be deleted and cannot be undone.
 
@@ -2789,25 +2790,28 @@ class WorkspaceAPI:
     def export(self, path: str, *, format: Optional[ExportFormat] = None) -> ExportResponse:
         """Exports an object or the contents of an entire directory.
 
-        If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
+        If ``path`` does not exist, this call returns an error ``RESOURCE_DOES_NOT_EXIST``.
 
-        If the exported data would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.
+        If the exported data would exceed size limit, this call returns ``MAX_NOTEBOOK_SIZE_EXCEEDED``.
         Currently, this API does not support exporting a library.
 
         :param path: str
-          The absolute path of the object or directory. Exporting a directory is only supported for the `DBC`,
-          `SOURCE`, and `AUTO` format.
+          The absolute path of the object or directory. Exporting a directory is only supported for the
+          ``DBC``, ``SOURCE``, and ``AUTO`` format.
         :param format: :class:`ExportFormat` (optional)
-          This specifies the format of the exported file. By default, this is `SOURCE`.
+          This specifies the format of the exported file. By default, this is ``SOURCE``.
 
           The value is case sensitive.
 
-          - `SOURCE`: The notebook is exported as source code. Directory exports will not include non-notebook
-          entries. - `HTML`: The notebook is exported as an HTML file. - `JUPYTER`: The notebook is exported
-          as a Jupyter/IPython Notebook file. - `DBC`: The notebook is exported in Databricks archive format.
-          Directory exports will not include non-notebook entries. - `R_MARKDOWN`: The notebook is exported to
-          R Markdown format. - `AUTO`: The object or directory is exported depending on the objects type.
-          Directory exports will include notebooks and workspace files.
+          - ``SOURCE``: The notebook is exported as source code. Directory exports will not include
+            non-notebook entries.
+          - ``HTML``: The notebook is exported as an HTML file.
+          - ``JUPYTER``: The notebook is exported as a Jupyter/IPython Notebook file.
+          - ``DBC``: The notebook is exported in Databricks archive format. Directory exports will not include
+            non-notebook entries.
+          - ``R_MARKDOWN``: The notebook is exported to R Markdown format.
+          - ``AUTO``: The object or directory is exported depending on the objects type. Directory exports
+            will include notebooks and workspace files.
 
         :returns: :class:`ExportResponse`
         """
@@ -2886,8 +2890,8 @@ class WorkspaceAPI:
         return WorkspaceObjectPermissions.from_dict(res)
 
     def get_status(self, path: str) -> ObjectInfo:
-        """Gets the status of an object or a directory. If `path` does not exist, this call returns an error
-        `RESOURCE_DOES_NOT_EXIST`.
+        """Gets the status of an object or a directory. If ``path`` does not exist, this call returns an error
+        ``RESOURCE_DOES_NOT_EXIST``.
 
         :param path: str
           The absolute path of the notebook or directory.
@@ -2919,14 +2923,14 @@ class WorkspaceAPI:
         overwrite: Optional[bool] = None,
     ):
         """Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
-        If `path` already exists and `overwrite` is set to `false`, this call returns an error
-        `RESOURCE_ALREADY_EXISTS`. To import a directory, you can use either the `DBC` format or the `SOURCE`
-        format with the `language` field unset. To import a single file as `SOURCE`, you must set the
-        `language` field. Zip files within directories are not supported.
+        If ``path`` already exists and ``overwrite`` is set to ``false``, this call returns an error
+        ``RESOURCE_ALREADY_EXISTS``. To import a directory, you can use either the ``DBC`` format or the
+        ``SOURCE`` format with the ``language`` field unset. To import a single file as ``SOURCE``, you must
+        set the ``language`` field. Zip files within directories are not supported.
 
         :param path: str
-          The absolute path of the object or directory. Importing a directory is only supported for the `DBC`
-          and `SOURCE` formats.
+          The absolute path of the object or directory. Importing a directory is only supported for the
+          ``DBC`` and ``SOURCE`` formats.
         :param content: str (optional)
           The base64-encoded content. This has a limit of 10 MB.
 
@@ -2937,17 +2941,19 @@ class WorkspaceAPI:
 
           The value is case sensitive.
 
-          - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
-          content provided in the request. If the item is imported as a notebook, then the item's extension is
-          automatically removed. - `SOURCE`: The notebook or directory is imported as source code. - `HTML`:
-          The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython
-          Notebook file. - `DBC`: The notebook is imported in Databricks archive format. Required for
-          directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format.
+          - ``AUTO``: The item is imported depending on an analysis of the item's extension and the header
+            content provided in the request. If the item is imported as a notebook, then the item's extension
+            is automatically removed.
+          - ``SOURCE``: The notebook or directory is imported as source code.
+          - ``HTML``: The notebook is imported as an HTML file.
+          - ``JUPYTER``: The notebook is imported as a Jupyter/IPython Notebook file.
+          - ``DBC``: The notebook is imported in Databricks archive format. Required for directories.
+          - ``R_MARKDOWN``: The notebook is imported from R Markdown format.
         :param language: :class:`Language` (optional)
-          The language of the object. This value is set only if the object type is `NOTEBOOK`.
+          The language of the object. This value is set only if the object type is ``NOTEBOOK``.
         :param overwrite: bool (optional)
-          The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC`
-          format, `overwrite` is not supported since it may contain a directory.
+          The flag that specifies whether to overwrite existing object. It is ``false`` by default. For
+          ``DBC`` format, ``overwrite`` is not supported since it may contain a directory.
 
 
         """
@@ -2976,7 +2982,7 @@ class WorkspaceAPI:
 
     def list(self, path: str, *, notebooks_modified_after: Optional[int] = None) -> Iterator[ObjectInfo]:
         """Lists the contents of a directory, or the object if it is not a directory. If the input path does not
-        exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
+        exist, this call returns an error ``RESOURCE_DOES_NOT_EXIST``.
 
         :param path: str
           The absolute path of the notebook or directory.
@@ -3006,7 +3012,7 @@ class WorkspaceAPI:
     def mkdirs(self, path: str):
         """Creates the specified directory (and necessary parent directories if they do not exist). If there is
         an object (not a directory) at any prefix of the input path, this call returns an error
-        `RESOURCE_ALREADY_EXISTS`.
+        ``RESOURCE_ALREADY_EXISTS``.
 
         Note that if this operation fails it may have succeeded in creating some of the necessary parent
         directories.
