@@ -572,6 +572,10 @@ class Resource:
     state: Optional[any] = None
     """Serialized local config state (what the CLI deployed)."""
 
+    update_time: Optional[Timestamp] = None
+    """When the last operation that updated this resource's recorded state was applied. Pairs with
+    last_action_type and last_version_id (all three advance together on that write)."""
+
     def as_dict(self) -> dict:
         """Serializes the Resource into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -589,6 +593,8 @@ class Resource:
             body["resource_type"] = self.resource_type.value
         if self.state:
             body["state"] = self.state
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -608,6 +614,8 @@ class Resource:
             body["resource_type"] = self.resource_type
         if self.state:
             body["state"] = self.state
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
         return body
 
     @classmethod
@@ -621,6 +629,7 @@ class Resource:
             resource_key=d.get("resource_key", None),
             resource_type=_enum(d, "resource_type", DeploymentResourceType),
             state=d.get("state", None),
+            update_time=_timestamp(d, "update_time"),
         )
 
 

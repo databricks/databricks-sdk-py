@@ -3110,6 +3110,8 @@ class ServedModelInputWorkloadType(Enum):
     """Please keep this in sync with workload types in InferenceEndpointEntities.scala."""
 
     CPU = "CPU"
+    CPU_LARGE = "CPU_LARGE"
+    CPU_MEDIUM = "CPU_MEDIUM"
     GPU_LARGE = "GPU_LARGE"
     GPU_MEDIUM = "GPU_MEDIUM"
     GPU_SMALL = "GPU_SMALL"
@@ -3924,6 +3926,8 @@ class ServingModelWorkloadType(Enum):
     """Please keep this in sync with workload types in InferenceEndpointEntities.scala."""
 
     CPU = "CPU"
+    CPU_LARGE = "CPU_LARGE"
+    CPU_MEDIUM = "CPU_MEDIUM"
     GPU_LARGE = "GPU_LARGE"
     GPU_MEDIUM = "GPU_MEDIUM"
     GPU_SMALL = "GPU_SMALL"

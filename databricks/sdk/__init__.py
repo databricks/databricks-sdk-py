@@ -960,7 +960,7 @@ class WorkspaceClient:
 
     @property
     def query_visualizations_legacy(self) -> pkg_sql.QueryVisualizationsLegacyAPI:
-        """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace."""
+        """This is an evolving API that facilitates the addition and removal of visualizations from existing queries within the Databricks Workspace."""
         return self._query_visualizations_legacy
 
     @property

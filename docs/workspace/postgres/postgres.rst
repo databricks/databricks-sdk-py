@@ -260,7 +260,7 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: generate_database_credential(endpoint: str [, claims: Optional[List[RequestedClaims]], expire_time: Optional[Timestamp], group_name: Optional[str], ttl: Optional[Duration]]) -> DatabaseCredential
+    .. py:method:: generate_database_credential(endpoint: str [, claims: Optional[List[RequestedClaims]], expire_time: Optional[Timestamp], ttl: Optional[Duration]]) -> DatabaseCredential
 
         Generate OAuth credentials for a Postgres database.
 
@@ -272,9 +272,6 @@
         :param expire_time: Timestamp (optional)
           Timestamp in UTC of when this credential should expire. Must be at least 300 seconds (5 minutes) and
           at most 1 hour from the current time.
-        :param group_name: str (optional)
-          Databricks workspace group name. When provided, credentials are generated with permissions scoped to
-          this group.
         :param ttl: Duration (optional)
           The requested time-to-live for the generated credential token. Must be at least 300 seconds (5
           minutes) and at most 3600 seconds (1 hour).

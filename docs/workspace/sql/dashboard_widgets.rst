@@ -20,7 +20,7 @@
           If this is a textbox widget, the application displays this text. This field is ignored if the widget
           contains a visualization in the ``visualization`` field.
         :param visualization_id: str (optional)
-          Query Vizualization ID returned by :method:queryvisualizations/create.
+          Query Visualization ID returned by :method:queryvisualizations/create.
 
         :returns: :class:`Widget`
         
@@ -50,7 +50,7 @@
           If this is a textbox widget, the application displays this text. This field is ignored if the widget
           contains a visualization in the ``visualization`` field.
         :param visualization_id: str (optional)
-          Query Vizualization ID returned by :method:queryvisualizations/create.
+          Query Visualization ID returned by :method:queryvisualizations/create.
 
         :returns: :class:`Widget`
         

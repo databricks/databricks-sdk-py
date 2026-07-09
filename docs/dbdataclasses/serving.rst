@@ -393,6 +393,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CPU
       :value: "CPU"
 
+   .. py:attribute:: CPU_LARGE
+      :value: "CPU_LARGE"
+
+   .. py:attribute:: CPU_MEDIUM
+      :value: "CPU_MEDIUM"
+
    .. py:attribute:: GPU_LARGE
       :value: "GPU_LARGE"
 
@@ -499,6 +505,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CPU
       :value: "CPU"
+
+   .. py:attribute:: CPU_LARGE
+      :value: "CPU_LARGE"
+
+   .. py:attribute:: CPU_MEDIUM
+      :value: "CPU_MEDIUM"
 
    .. py:attribute:: GPU_LARGE
       :value: "GPU_LARGE"

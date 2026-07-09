@@ -938,6 +938,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListEffectivePrivilegeAssignmentsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListEntityTagAssignmentsResponse
    :members:
    :undoc-members:
@@ -967,6 +971,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListPoliciesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListPrivilegeAssignmentsResponse
    :members:
    :undoc-members:
 

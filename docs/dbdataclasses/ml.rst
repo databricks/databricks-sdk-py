@@ -297,6 +297,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ExperimentTraceLocation
+   :members:
+   :undoc-members:
+
 .. autoclass:: Feature
    :members:
    :undoc-members:
@@ -337,7 +341,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: FirstDistinctNFunction
+.. autoclass:: FirstDistinctFunction
    :members:
    :undoc-members:
 
@@ -517,7 +521,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: LastDistinctNFunction
+.. autoclass:: LastDistinctFunction
    :members:
    :undoc-members:
 
@@ -639,6 +643,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "LOGGED_MODEL_UPLOAD_FAILED"
 
 .. autoclass:: LoggedModelTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: LongRollingWindow
    :members:
    :undoc-members:
 
@@ -776,6 +784,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CAN_READ
       :value: "CAN_READ"
+
+.. autoclass:: ProtoSchemaSpec
+   :members:
+   :undoc-members:
 
 .. autoclass:: PublishSpec
    :members:
@@ -1159,6 +1171,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TumblingWindow
+   :members:
+   :undoc-members:
+
+.. autoclass:: UcTraceLocation
    :members:
    :undoc-members:
 

@@ -970,6 +970,14 @@ class DatabaseCredential:
 
 @dataclass
 class DatabaseDatabaseSpec:
+    role: str
+    """The name of the role that owns the database. Format:
+    projects/{project_id}/branches/{branch_id}/roles/{role_id}
+    
+    To change the owner, pass valid existing Role name when updating the Database
+    
+    A database always has an owner."""
+
     postgres_database: Optional[str] = None
     """The name of the Postgres database.
     
@@ -978,14 +986,6 @@ class DatabaseDatabaseSpec:
     when creating the Database.
     
     To rename, pass a valid postgres identifier when updating the Database."""
-
-    role: Optional[str] = None
-    """The name of the role that owns the database. Format:
-    projects/{project_id}/branches/{branch_id}/roles/{role_id}
-    
-    To change the owner, pass valid existing Role name when updating the Database
-    
-    A database always has an owner."""
 
     def as_dict(self) -> dict:
         """Serializes the DatabaseDatabaseSpec into a dictionary suitable for use as a JSON request body."""
@@ -3343,8 +3343,8 @@ class SyncedTableSyncedTableSpecTypeOverride:
     """PostgreSQL-specific target type to use for the column."""
 
     size: Optional[int] = None
-    """Size parameter for the target type. Required when pg_type is PG_SPECIFIC_TYPE_VECTOR (specifies
-    the vector dimension, e.g., 1024)."""
+    """Size parameter for the target type. Required when pg_type is PG_SPECIFIC_TYPE_VECTOR or
+    PG_SPECIFIC_TYPE_HALFVEC (specifies the vector dimension, e.g., 1024)."""
 
     def as_dict(self) -> dict:
         """Serializes the SyncedTableSyncedTableSpecTypeOverride into a dictionary suitable for use as a JSON request body."""
@@ -3989,7 +3989,6 @@ class PostgresAPI:
         *,
         claims: Optional[List[RequestedClaims]] = None,
         expire_time: Optional[Timestamp] = None,
-        group_name: Optional[str] = None,
         ttl: Optional[Duration] = None,
     ) -> DatabaseCredential:
         """Generate OAuth credentials for a Postgres database.
@@ -4002,9 +4001,6 @@ class PostgresAPI:
         :param expire_time: Timestamp (optional)
           Timestamp in UTC of when this credential should expire. Must be at least 300 seconds (5 minutes) and
           at most 1 hour from the current time.
-        :param group_name: str (optional)
-          Databricks workspace group name. When provided, credentials are generated with permissions scoped to
-          this group.
         :param ttl: Duration (optional)
           The requested time-to-live for the generated credential token. Must be at least 300 seconds (5
           minutes) and at most 3600 seconds (1 hour).
@@ -4019,8 +4015,6 @@ class PostgresAPI:
             body["endpoint"] = endpoint
         if expire_time is not None:
             body["expire_time"] = expire_time.ToJsonString()
-        if group_name is not None:
-            body["group_name"] = group_name
         if ttl is not None:
             body["ttl"] = ttl.ToJsonString()
         headers = {

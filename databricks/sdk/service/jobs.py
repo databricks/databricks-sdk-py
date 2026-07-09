@@ -411,6 +411,11 @@ class BaseRun:
     """The creator user name. This field won’t be included in the response if the user has already
     been deleted."""
 
+    deployment_id: Optional[str] = None
+    """ID of the deployment that produced the job when this run was created. Used to look up deployment
+    metadata from the Deployment Metadata service. Only set for job runs of jobs with a ``BUNDLE``
+    deployment."""
+
     description: Optional[str] = None
     """Description of the run"""
 
@@ -529,6 +534,11 @@ class BaseRun:
 
     trigger_info: Optional[TriggerInfo] = None
 
+    version_id: Optional[str] = None
+    """ID of the deployment version that produced the job when this run was created. Identifies a
+    specific snapshot of the deployment in the Deployment Metadata service. Only set for job runs of
+    jobs with a ``BUNDLE`` deployment."""
+
     def as_dict(self) -> dict:
         """Serializes the BaseRun into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -542,6 +552,8 @@ class BaseRun:
             body["cluster_spec"] = self.cluster_spec.as_dict()
         if self.creator_user_name is not None:
             body["creator_user_name"] = self.creator_user_name
+        if self.deployment_id is not None:
+            body["deployment_id"] = self.deployment_id
         if self.description is not None:
             body["description"] = self.description
         if self.effective_performance_target is not None:
@@ -600,6 +612,8 @@ class BaseRun:
             body["trigger"] = self.trigger.value
         if self.trigger_info:
             body["trigger_info"] = self.trigger_info.as_dict()
+        if self.version_id is not None:
+            body["version_id"] = self.version_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -615,6 +629,8 @@ class BaseRun:
             body["cluster_spec"] = self.cluster_spec
         if self.creator_user_name is not None:
             body["creator_user_name"] = self.creator_user_name
+        if self.deployment_id is not None:
+            body["deployment_id"] = self.deployment_id
         if self.description is not None:
             body["description"] = self.description
         if self.effective_performance_target is not None:
@@ -673,6 +689,8 @@ class BaseRun:
             body["trigger"] = self.trigger
         if self.trigger_info:
             body["trigger_info"] = self.trigger_info
+        if self.version_id is not None:
+            body["version_id"] = self.version_id
         return body
 
     @classmethod
@@ -684,6 +702,7 @@ class BaseRun:
             cluster_instance=_from_dict(d, "cluster_instance", ClusterInstance),
             cluster_spec=_from_dict(d, "cluster_spec", ClusterSpec),
             creator_user_name=d.get("creator_user_name", None),
+            deployment_id=d.get("deployment_id", None),
             description=d.get("description", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
@@ -713,6 +732,7 @@ class BaseRun:
             tasks=_repeated_dict(d, "tasks", RunTask),
             trigger=_enum(d, "trigger", TriggerType),
             trigger_info=_from_dict(d, "trigger_info", TriggerInfo),
+            version_id=d.get("version_id", None),
         )
 
 
@@ -3436,6 +3456,10 @@ class JobSettings:
     parameters: Optional[List[JobParameterDefinition]] = None
     """Job-level parameter definitions"""
 
+    parent_path: Optional[str] = None
+    """Path of the job parent folder in workspace file tree. If absent, the job doesn't have a
+    workspace object."""
+
     performance_target: Optional[PerformanceTarget] = None
     """The performance mode on a serverless job. This field determines the level of compute performance
     or cost-efficiency for the run. The performance target does not apply to tasks that run on
@@ -3518,6 +3542,8 @@ class JobSettings:
             body["notification_settings"] = self.notification_settings.as_dict()
         if self.parameters:
             body["parameters"] = [v.as_dict() for v in self.parameters]
+        if self.parent_path is not None:
+            body["parent_path"] = self.parent_path
         if self.performance_target is not None:
             body["performance_target"] = self.performance_target.value
         if self.queue:
@@ -3573,6 +3599,8 @@ class JobSettings:
             body["notification_settings"] = self.notification_settings
         if self.parameters:
             body["parameters"] = self.parameters
+        if self.parent_path is not None:
+            body["parent_path"] = self.parent_path
         if self.performance_target is not None:
             body["performance_target"] = self.performance_target
         if self.queue:
@@ -3614,6 +3642,7 @@ class JobSettings:
             name=d.get("name", None),
             notification_settings=_from_dict(d, "notification_settings", JobNotificationSettings),
             parameters=_repeated_dict(d, "parameters", JobParameterDefinition),
+            parent_path=d.get("parent_path", None),
             performance_target=_enum(d, "performance_target", PerformanceTarget),
             queue=_from_dict(d, "queue", QueueSettings),
             run_as=_from_dict(d, "run_as", JobRunAs),
@@ -5206,6 +5235,11 @@ class Run:
     """The creator user name. This field won’t be included in the response if the user has already
     been deleted."""
 
+    deployment_id: Optional[str] = None
+    """ID of the deployment that produced the job when this run was created. Used to look up deployment
+    metadata from the Deployment Metadata service. Only set for job runs of jobs with a ``BUNDLE``
+    deployment."""
+
     description: Optional[str] = None
     """Description of the run"""
 
@@ -5330,6 +5364,11 @@ class Run:
 
     trigger_info: Optional[TriggerInfo] = None
 
+    version_id: Optional[str] = None
+    """ID of the deployment version that produced the job when this run was created. Identifies a
+    specific snapshot of the deployment in the Deployment Metadata service. Only set for job runs of
+    jobs with a ``BUNDLE`` deployment."""
+
     def as_dict(self) -> dict:
         """Serializes the Run into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -5343,6 +5382,8 @@ class Run:
             body["cluster_spec"] = self.cluster_spec.as_dict()
         if self.creator_user_name is not None:
             body["creator_user_name"] = self.creator_user_name
+        if self.deployment_id is not None:
+            body["deployment_id"] = self.deployment_id
         if self.description is not None:
             body["description"] = self.description
         if self.effective_performance_target is not None:
@@ -5405,6 +5446,8 @@ class Run:
             body["trigger"] = self.trigger.value
         if self.trigger_info:
             body["trigger_info"] = self.trigger_info.as_dict()
+        if self.version_id is not None:
+            body["version_id"] = self.version_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5420,6 +5463,8 @@ class Run:
             body["cluster_spec"] = self.cluster_spec
         if self.creator_user_name is not None:
             body["creator_user_name"] = self.creator_user_name
+        if self.deployment_id is not None:
+            body["deployment_id"] = self.deployment_id
         if self.description is not None:
             body["description"] = self.description
         if self.effective_performance_target is not None:
@@ -5482,6 +5527,8 @@ class Run:
             body["trigger"] = self.trigger
         if self.trigger_info:
             body["trigger_info"] = self.trigger_info
+        if self.version_id is not None:
+            body["version_id"] = self.version_id
         return body
 
     @classmethod
@@ -5493,6 +5540,7 @@ class Run:
             cluster_instance=_from_dict(d, "cluster_instance", ClusterInstance),
             cluster_spec=_from_dict(d, "cluster_spec", ClusterSpec),
             creator_user_name=d.get("creator_user_name", None),
+            deployment_id=d.get("deployment_id", None),
             description=d.get("description", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
@@ -5524,6 +5572,7 @@ class Run:
             tasks=_repeated_dict(d, "tasks", RunTask),
             trigger=_enum(d, "trigger", TriggerType),
             trigger_info=_from_dict(d, "trigger_info", TriggerInfo),
+            version_id=d.get("version_id", None),
         )
 
 
@@ -9594,6 +9643,7 @@ class JobsAPI:
         name: Optional[str] = None,
         notification_settings: Optional[JobNotificationSettings] = None,
         parameters: Optional[List[JobParameterDefinition]] = None,
+        parent_path: Optional[str] = None,
         performance_target: Optional[PerformanceTarget] = None,
         queue: Optional[QueueSettings] = None,
         run_as: Optional[JobRunAs] = None,
@@ -9666,6 +9716,9 @@ class JobsAPI:
           ``email_notifications`` and ``webhook_notifications`` for this job.
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
+        :param parent_path: str (optional)
+          Path of the job parent folder in workspace file tree. If absent, the job doesn't have a workspace
+          object.
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. This field determines the level of compute performance or
           cost-efficiency for the run. The performance target does not apply to tasks that run on Serverless
@@ -9742,6 +9795,8 @@ class JobsAPI:
             body["notification_settings"] = notification_settings.as_dict()
         if parameters is not None:
             body["parameters"] = [v.as_dict() for v in parameters]
+        if parent_path is not None:
+            body["parent_path"] = parent_path
         if performance_target is not None:
             body["performance_target"] = performance_target.value
         if queue is not None:
@@ -10460,6 +10515,11 @@ class JobsAPI:
         :param only: List[str] (optional)
           A list of task keys to run inside of the job. If this field is not provided, all tasks in the job
           will be run.
+
+          Prefix a task key with ``+`` to also run its upstream tasks, or suffix it with ``+`` to also run its
+          downstream tasks. For example, ``+my_task`` runs ``my_task`` and everything upstream of it,
+          ``my_task+`` runs ``my_task`` and everything downstream of it, and ``+my_task+`` runs both. A task
+          key with no ``+`` runs only that task.
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. The performance target determines the level of compute
           performance or cost-efficiency for the run. This field overrides the performance target defined on
