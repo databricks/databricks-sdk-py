@@ -320,6 +320,11 @@ class StableUrl:
     name: Optional[str] = None
     """Fully qualified resource name. Format: accounts/{account_id}/stable-urls/{stable_url_id}."""
 
+    stable_workspace_id: Optional[str] = None
+    """The stable workspace ID for this stable URL. Generated on creation and immutable thereafter;
+    identifies the URL across failovers and is the same value embedded in the ``url`` (as the ``w=``
+    query parameter for SPOG URLs, or in the ``conn-<id>`` hostname for Private-Link URLs)."""
+
     url: Optional[str] = None
     """The stable URL endpoint. Generated on creation and immutable thereafter. For non-Private-Link
     workspaces this is ``https://<spog_host>/?w=<connection_id>``. For Private-Link workspaces this
@@ -334,6 +339,8 @@ class StableUrl:
             body["initial_workspace_id"] = self.initial_workspace_id
         if self.name is not None:
             body["name"] = self.name
+        if self.stable_workspace_id is not None:
+            body["stable_workspace_id"] = self.stable_workspace_id
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -347,6 +354,8 @@ class StableUrl:
             body["initial_workspace_id"] = self.initial_workspace_id
         if self.name is not None:
             body["name"] = self.name
+        if self.stable_workspace_id is not None:
+            body["stable_workspace_id"] = self.stable_workspace_id
         if self.url is not None:
             body["url"] = self.url
         return body
@@ -358,6 +367,7 @@ class StableUrl:
             failover_group_name=d.get("failover_group_name", None),
             initial_workspace_id=d.get("initial_workspace_id", None),
             name=d.get("name", None),
+            stable_workspace_id=d.get("stable_workspace_id", None),
             url=d.get("url", None),
         )
 

@@ -1963,7 +1963,13 @@ class ReposAPI:
         self._api = api_client
 
     def create(
-        self, url: str, provider: str, *, path: Optional[str] = None, sparse_checkout: Optional[SparseCheckout] = None
+        self,
+        url: str,
+        provider: str,
+        *,
+        git_credential_id: Optional[int] = None,
+        path: Optional[str] = None,
+        sparse_checkout: Optional[SparseCheckout] = None,
     ) -> CreateRepoResponse:
         """Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created
         programmatically must be linked to a remote Git repo, unlike repos created in the browser.
@@ -1976,6 +1982,9 @@ class ReposAPI:
           Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
           ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit`` (deprecated by AWS, not
           accepting new customers).
+        :param git_credential_id: int (optional)
+          Git credential ID to use when cloning the repository. The Git credential must be configured for the
+          current user.
         :param path: str (optional)
           Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo
           is created in ``/Repos``, path must be in the format ``/Repos/{folder}/{repo-name}``.
@@ -1987,6 +1996,8 @@ class ReposAPI:
         """
 
         body = {}
+        if git_credential_id is not None:
+            body["git_credential_id"] = git_credential_id
         if path is not None:
             body["path"] = path
         if provider is not None:
@@ -2157,6 +2168,7 @@ class ReposAPI:
         *,
         branch: Optional[str] = None,
         dangerously_force_discard_all: Optional[bool] = None,
+        git_credential_id: Optional[int] = None,
         sparse_checkout: Optional[SparseCheckoutUpdate] = None,
         tag: Optional[str] = None,
     ):
@@ -2178,6 +2190,9 @@ class ReposAPI:
           destroyed without warning.
 
           Local commits that have been made but not yet pushed to the remote are preserved.
+        :param git_credential_id: int (optional)
+          Git credential ID to use for this update operation. The Git credential must be configured for the
+          current user.
         :param sparse_checkout: :class:`SparseCheckoutUpdate` (optional)
           If specified, update the sparse checkout settings. The update will fail if sparse checkout is not
           enabled for the repo.
@@ -2194,6 +2209,8 @@ class ReposAPI:
             body["branch"] = branch
         if dangerously_force_discard_all is not None:
             body["dangerously_force_discard_all"] = dangerously_force_discard_all
+        if git_credential_id is not None:
+            body["git_credential_id"] = git_credential_id
         if sparse_checkout is not None:
             body["sparse_checkout"] = sparse_checkout.as_dict()
         if tag is not None:

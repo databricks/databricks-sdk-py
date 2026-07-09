@@ -1,5 +1,36 @@
 # Version changelog
 
+## Release v0.121.0 (2026-07-09)
+
+### API Changes
+* Add `list()` and `list_effective()` methods for [w.grants](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/grants.html) workspace-level service.
+* Add `update_time` field for `databricks.sdk.service.bundledeployments.Resource`.
+* Add `stable_workspace_id` field for `databricks.sdk.service.disasterrecovery.StableUrl`.
+* Add `deployment_id` and `version_id` fields for `databricks.sdk.service.jobs.BaseRun`.
+* Add `parent_path` field for `databricks.sdk.service.jobs.CreateJob`.
+* Add `parent_path` field for `databricks.sdk.service.jobs.JobSettings`.
+* Add `deployment_id` and `version_id` fields for `databricks.sdk.service.jobs.Run`.
+* Add `first_distinct` and `last_distinct` fields for `databricks.sdk.service.ml.AggregationFunction`.
+* Add `trace_location` field for `databricks.sdk.service.ml.CreateExperiment`.
+* Add `trace_location` field for `databricks.sdk.service.ml.Experiment`.
+* Add `avro_schema` and `proto_schema` fields for `databricks.sdk.service.ml.SchemaConfig`.
+* Add `freshness_target` field for `databricks.sdk.service.ml.StreamingMode`.
+* Add `long_rolling` field for `databricks.sdk.service.ml.TimeWindow`.
+* Add `git_credential_id` field for `databricks.sdk.service.workspace.CreateRepoRequest`.
+* Add `git_credential_id` field for `databricks.sdk.service.workspace.UpdateRepoRequest`.
+* Add `cpu_large` and `cpu_medium` enum values for `databricks.sdk.service.serving.ServedModelInputWorkloadType`.
+* Add `cpu_large` and `cpu_medium` enum values for `databricks.sdk.service.serving.ServingModelWorkloadType`.
+* [Breaking] Change `role` field for `databricks.sdk.service.postgres.DatabaseDatabaseSpec` to be required.
+* Change `role` field for `databricks.sdk.service.postgres.DatabaseDatabaseSpec` to be required.
+* [Breaking] Remove `include_browse` field for `databricks.sdk.service.catalog.GetSecretRequest`.
+* [Breaking] Remove `include_browse` field for `databricks.sdk.service.catalog.ListSecretsRequest`.
+* [Breaking] Remove `browse_only` and `external_secret_id` fields for `databricks.sdk.service.catalog.Secret`.
+* [Breaking] Remove `first_distinct_n` and `last_distinct_n` fields for `databricks.sdk.service.ml.AggregationFunction`.
+* [Breaking] Remove `group_name` field for `databricks.sdk.service.postgres.GenerateDatabaseCredentialRequest`.
+
+### Documentation
+* Document all 18 valid `auth_type` values in a new [Authentication Types Reference](https://github.com/databricks/databricks-sdk-py/blob/main/docs/auth-types-reference.md) page, linked from the README and authentication docs.
+
 ## Release v0.120.0 (2026-07-01)
 
 ### API Changes

@@ -5794,6 +5794,44 @@ class ListCredentialsResponse:
 
 
 @dataclass
+class ListEffectivePrivilegeAssignmentsResponse:
+    effective_privilege_assignments: Optional[List[EffectivePrivilegeAssignment]] = None
+    """The effective privilege assignments for the securable (and optional principal)."""
+
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    **page_token** should be set to this value for the next request (for the next page of results)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListEffectivePrivilegeAssignmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.effective_privilege_assignments:
+            body["effective_privilege_assignments"] = [v.as_dict() for v in self.effective_privilege_assignments]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListEffectivePrivilegeAssignmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.effective_privilege_assignments:
+            body["effective_privilege_assignments"] = self.effective_privilege_assignments
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListEffectivePrivilegeAssignmentsResponse:
+        """Deserializes the ListEffectivePrivilegeAssignmentsResponse from a dictionary."""
+        return cls(
+            effective_privilege_assignments=_repeated_dict(
+                d, "effective_privilege_assignments", EffectivePrivilegeAssignment
+            ),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListEntityTagAssignmentsResponse:
     next_page_token: Optional[str] = None
     """Optional. Pagination token for retrieving the next page of results"""
@@ -6066,6 +6104,41 @@ class ListPoliciesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListPoliciesResponse:
         """Deserializes the ListPoliciesResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), policies=_repeated_dict(d, "policies", PolicyInfo))
+
+
+@dataclass
+class ListPrivilegeAssignmentsResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    **page_token** should be set to this value for the next request (for the next page of results)."""
+
+    privilege_assignments: Optional[List[PrivilegeAssignment]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListPrivilegeAssignmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.privilege_assignments:
+            body["privilege_assignments"] = [v.as_dict() for v in self.privilege_assignments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListPrivilegeAssignmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.privilege_assignments:
+            body["privilege_assignments"] = self.privilege_assignments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListPrivilegeAssignmentsResponse:
+        """Deserializes the ListPrivilegeAssignmentsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment),
+        )
 
 
 @dataclass
@@ -9095,10 +9168,6 @@ class Secret:
     value. The maximum size is 60 KiB (pre-encryption). Accepted content includes passwords, tokens,
     keys, and other sensitive credential data."""
 
-    browse_only: Optional[bool] = None
-    """Indicates whether the principal is limited to retrieving metadata for the associated object
-    through the **BROWSE** privilege when **include_browse** is enabled in the request."""
-
     comment: Optional[str] = None
     """User-provided free-form text description of the secret."""
 
@@ -9121,8 +9190,6 @@ class Secret:
     longer be used and may be displayed as a warning in the UI. It is purely informational and does
     not trigger any automatic actions or affect the secret's lifecycle."""
 
-    external_secret_id: Optional[str] = None
-
     full_name: Optional[str] = None
     """The three-level (fully qualified) name of the secret, in the form of
     **catalog_name.schema_name.secret_name**."""
@@ -9143,8 +9210,6 @@ class Secret:
     def as_dict(self) -> dict:
         """Serializes the Secret into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.catalog_name is not None:
             body["catalog_name"] = self.catalog_name
         if self.comment is not None:
@@ -9159,8 +9224,6 @@ class Secret:
             body["effective_value"] = self.effective_value
         if self.expire_time is not None:
             body["expire_time"] = self.expire_time.ToJsonString()
-        if self.external_secret_id is not None:
-            body["external_secret_id"] = self.external_secret_id
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -9182,8 +9245,6 @@ class Secret:
     def as_shallow_dict(self) -> dict:
         """Serializes the Secret into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.catalog_name is not None:
             body["catalog_name"] = self.catalog_name
         if self.comment is not None:
@@ -9198,8 +9259,6 @@ class Secret:
             body["effective_value"] = self.effective_value
         if self.expire_time is not None:
             body["expire_time"] = self.expire_time
-        if self.external_secret_id is not None:
-            body["external_secret_id"] = self.external_secret_id
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -9222,7 +9281,6 @@ class Secret:
     def from_dict(cls, d: Dict[str, Any]) -> Secret:
         """Deserializes the Secret from a dictionary."""
         return cls(
-            browse_only=d.get("browse_only", None),
             catalog_name=d.get("catalog_name", None),
             comment=d.get("comment", None),
             create_time=_timestamp(d, "create_time"),
@@ -9230,7 +9288,6 @@ class Secret:
             effective_owner=d.get("effective_owner", None),
             effective_value=d.get("effective_value", None),
             expire_time=_timestamp(d, "expire_time"),
-            external_secret_id=d.get("external_secret_id", None),
             full_name=d.get("full_name", None),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -13725,6 +13782,140 @@ class GrantsAPI:
         )
         return EffectivePermissionsList.from_dict(res)
 
+    def list(
+        self,
+        securable_type: str,
+        full_name: str,
+        *,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        principal: Optional[str] = None,
+    ) -> Iterator[PrivilegeAssignment]:
+        """Lists the privilege assignments for a securable. Does not include inherited privileges. Paginated
+        version of Get Permissions API.
+
+        :param securable_type: str
+          Type of securable.
+        :param full_name: str
+          Full name of securable.
+        :param page_size: int (optional)
+          Specifies the maximum number of privilege assignments to return (page length). Every
+          PrivilegeAssignment present in a single page response is guaranteed to contain all the privileges
+          granted on the requested Securable for the respective principal.
+
+          If not set, page length is the server configured value. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete PrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+        :param principal: str (optional)
+          If provided, only the permissions for the specified principal (user or group) are returned.
+
+        :returns: Iterator over :class:`PrivilegeAssignment`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if principal is not None:
+            query["principal"] = principal
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/unity-catalog/privilege-assignments/{securable_type}/{full_name}",
+                query=query,
+                headers=headers,
+            )
+            if "privilege_assignments" in json:
+                for v in json["privilege_assignments"]:
+                    yield PrivilegeAssignment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_effective(
+        self,
+        securable_type: str,
+        full_name: str,
+        *,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        principal: Optional[str] = None,
+    ) -> Iterator[EffectivePrivilegeAssignment]:
+        """Lists the effective privilege assignments for a securable. Includes inherited privileges. Paginated
+        version of Get Effective Permissions API.
+
+        :param securable_type: str
+          Type of securable.
+        :param full_name: str
+          Full name of securable.
+        :param page_size: int (optional)
+          Specifies the maximum number of privilege assignments to return (page length). Every
+          EffectivePrivilegeAssignment present in a single page response is guaranteed to contain all the
+          effective privileges granted on (or inherited by) the requested Securable for the respective
+          principal.
+
+          If not set, a server-configured default is used. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete EffectivePrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+        :param principal: str (optional)
+          If provided, only the effective permissions for the specified principal (user or group) are
+          returned.
+
+        :returns: Iterator over :class:`EffectivePrivilegeAssignment`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if principal is not None:
+            query["principal"] = principal
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/unity-catalog/effective-privilege-assignments/{securable_type}/{full_name}",
+                query=query,
+                headers=headers,
+            )
+            if "effective_privilege_assignments" in json:
+                for v in json["effective_privilege_assignments"]:
+                    yield EffectivePrivilegeAssignment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def update(
         self,
         securable_type: str,
@@ -16196,7 +16387,7 @@ class SecretsUcAPI:
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/secrets/{full_name}", headers=headers)
 
-    def get_secret(self, full_name: str, *, include_browse: Optional[bool] = None) -> Secret:
+    def get_secret(self, full_name: str) -> Secret:
         """Gets a secret by its three-level (fully qualified) name.
 
         You must be a metastore admin, the owner of the secret, or have the **MANAGE** privilege on the
@@ -16208,16 +16399,10 @@ class SecretsUcAPI:
         :param full_name: str
           The three-level (fully qualified) name of the secret (for example,
           **catalog_name.schema_name.secret_name**).
-        :param include_browse: bool (optional)
-          Whether to include secrets in the response for which you only have the **BROWSE** privilege, which
-          limits access to metadata.
 
         :returns: :class:`Secret`
         """
 
-        query = {}
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         headers = {
             "Accept": "application/json",
         }
@@ -16226,14 +16411,13 @@ class SecretsUcAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/secrets/{full_name}", query=query, headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/secrets/{full_name}", headers=headers)
         return Secret.from_dict(res)
 
     def list_secrets(
         self,
         *,
         catalog_name: Optional[str] = None,
-        include_browse: Optional[bool] = None,
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         schema_name: Optional[str] = None,
@@ -16250,15 +16434,12 @@ class SecretsUcAPI:
         :param catalog_name: str (optional)
           The name of the catalog under which to list secrets. Both **catalog_name** and **schema_name** must
           be specified together.
-        :param include_browse: bool (optional)
-          Whether to include secrets in the response for which you only have the **BROWSE** privilege, which
-          limits access to metadata.
         :param page_size: int (optional)
           Maximum number of secrets to return.
 
-          - If not specified, at most 10000 secrets are returned.
-          - If set to a value greater than 0, the page length is the minimum of this value and 10000.
-          - If set to 0, the page length is set to 10000.
+          - If not specified, at most 1000 secrets are returned.
+          - If set to a value greater than 0, the page length is the minimum of this value and 1000.
+          - If set to 0, the page length is set to 1000.
           - If set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Opaque pagination token to go to the next page based on previous query. The maximum page length is
@@ -16273,8 +16454,6 @@ class SecretsUcAPI:
         query = {}
         if catalog_name is not None:
             query["catalog_name"] = catalog_name
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:
@@ -16314,8 +16493,12 @@ class SecretsUcAPI:
           The secret object containing the fields to update. Only fields specified in **update_mask** will be
           updated.
         :param update_mask: FieldMask
-          The field mask specifying which fields of the secret to update. Supported fields: **value**,
-          **comment**, **owner**, **expire_time**.
+          The field mask specifying which fields of the secret to update.
+
+          - If **update_mask** is **"*"**, all fields specified in **secret** are updated.
+          - If **update_mask** specifies one or more fields, only those fields are updated. Each specified
+            field must be set in **secret**. Supported fields: **value**, **comment**, **owner**,
+            **expire_time**. To change the secret name, delete and recreate the secret.
 
         :returns: :class:`Secret`
         """

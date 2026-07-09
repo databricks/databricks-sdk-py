@@ -1066,14 +1066,13 @@ class CspEnablementAccountSetting:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicy:
-    """This proto is under development. The network policies applying for ingress traffic. Any changes
-    here should also be synced to estore/namespaces/lakehousenetworkmanager/latest.proto."""
+    """The network policies applying for ingress traffic."""
 
     cross_workspace_access: Optional[CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess] = None
 
     private_access: Optional[CustomerFacingIngressNetworkPolicyPrivateAccess] = None
-    """The network policy restrictions for private access to the workspace. Configures how registered
-    private endpoints are allowed or denied access."""
+    """The network policy restrictions for private access. Configures how requests arriving over
+    private connectivity are governed."""
 
     public_access: Optional[CustomerFacingIngressNetworkPolicyPublicAccess] = None
     """The network policy restrictions for public access to the workspace. Configures how public
@@ -1121,6 +1120,7 @@ class CustomerFacingIngressNetworkPolicyAccountApiDestination:
     """Qualifies the breadth of API access for the listed scopes. See ApiScopeQualifier."""
 
     scopes: Optional[List[str]] = None
+    """The API scopes to match. Use "all-apis" to match any account-level API."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyAccountApiDestination into a dictionary suitable for use as a JSON request body."""
@@ -1176,6 +1176,8 @@ class CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyAccountUiDestination:
+    """The account console UI destination."""
+
     all_destinations: Optional[bool] = None
     """Must be set to true."""
 
@@ -1445,7 +1447,10 @@ class CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyEndpoints:
+    """A set of registered endpoints, identified by their endpoint IDs."""
+
     endpoint_ids: Optional[List[str]] = None
+    """The IDs of the registered endpoints. Must contain at least one endpoint ID."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyEndpoints into a dictionary suitable for use as a JSON request body."""
@@ -1519,11 +1524,20 @@ class CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyPrivateAccess:
+    """Configures how requests arriving over private connectivity, such as registered endpoints, are
+    allowed or denied access."""
+
     restriction_mode: CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode
+    """The restriction mode for private access."""
 
     allow_rules: Optional[List[CustomerFacingIngressNetworkPolicyPrivateIngressRule]] = None
+    """Allow rules are evaluated after deny rules. A request matching any allow rule is allowed; a
+    request matching no rule is denied by default. Only applies when restriction_mode is
+    RESTRICTED_ACCESS."""
 
     deny_rules: Optional[List[CustomerFacingIngressNetworkPolicyPrivateIngressRule]] = None
+    """Deny rules are evaluated first. A request matching any deny rule is denied, regardless of allow
+    rules. Only applies when restriction_mode is RESTRICTED_ACCESS."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyPrivateAccess into a dictionary suitable for use as a JSON request body."""
@@ -1560,20 +1574,37 @@ class CustomerFacingIngressNetworkPolicyPrivateAccess:
 
 
 class CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode(Enum):
+    """The restriction mode for private access. In ALLOW_ALL_REGISTERED_ENDPOINTS mode, requests
+    arriving through any endpoint registered to the account are allowed, and deny rules and allow
+    rules cannot be set. In RESTRICTED_ACCESS mode, access is restricted based on deny rules and
+    allow rules; requests that do not match any allow rule are denied."""
+
     ALLOW_ALL_REGISTERED_ENDPOINTS = "ALLOW_ALL_REGISTERED_ENDPOINTS"
     RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
 
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyPrivateIngressRule:
+    """An ingress rule is enforced when a request satisfies all specified attributes — including
+    request origin, destination, and authentication."""
+
     authentication: Optional[CustomerFacingIngressNetworkPolicyAuthentication] = None
+    """The authenticated identity the request must match. When unset, the rule matches all users and
+    service principals. On the account-level network policy, scoping to specific identities is not
+    currently supported, so this field must be unset (the rule matches all users and service
+    principals)."""
 
     destination: Optional[CustomerFacingIngressNetworkPolicyRequestDestination] = None
+    """The destination the request must match — the resource being accessed, for example the
+    workspace UI, workspace APIs, or account-level APIs. See RequestDestination."""
 
     label: Optional[str] = None
     """The label for this ingress rule."""
 
     origin: Optional[CustomerFacingIngressNetworkPolicyPrivateRequestOrigin] = None
+    """The origin the request must match — the private connectivity the request arrives through, for
+    example a specific set of registered endpoints or any endpoint registered to the account. See
+    PrivateRequestOrigin."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyPrivateIngressRule into a dictionary suitable for use as a JSON request body."""
@@ -1614,13 +1645,25 @@ class CustomerFacingIngressNetworkPolicyPrivateIngressRule:
 
 @dataclass
 class CustomerFacingIngressNetworkPolicyPrivateRequestOrigin:
+    """The origin of a private access request, identified by the endpoint through which the request
+    arrives."""
+
     all_private_access: Optional[bool] = None
+    """Matches requests arriving over any private connectivity, including registered endpoints and the
+    workspace's Azure Private Link (ui-api) endpoints. Can only be used in deny rules of
+    workspace-level network policies. Must be set to true when specified."""
 
     all_registered_endpoints: Optional[bool] = None
+    """Matches requests arriving through any endpoint registered to the account. Must be set to true
+    when specified."""
 
     azure_workspace_private_link: Optional[bool] = None
+    """Matches requests arriving through the workspace's Azure Private Link (ui-api) endpoints. Can
+    only be used in deny rules of workspace-level network policies. Must be set to true when
+    specified."""
 
     endpoints: Optional[CustomerFacingIngressNetworkPolicyEndpoints] = None
+    """Matches requests arriving through any of the specified registered endpoints."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyPrivateRequestOrigin into a dictionary suitable for use as a JSON request body."""
@@ -1803,12 +1846,14 @@ class CustomerFacingIngressNetworkPolicyPublicRequestOrigin:
 @dataclass
 class CustomerFacingIngressNetworkPolicyRequestDestination:
     account_api: Optional[CustomerFacingIngressNetworkPolicyAccountApiDestination] = None
+    """Matches requests to account-level APIs. Can only be used in the account-level network policy."""
 
     account_databricks_one: Optional[CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination] = None
-    """Account DatabricksOne destination is not supported. DO NOT change the stage of this destination
-    past PRIVATE_PREVIEW."""
+    """Account DatabricksOne destination is not supported."""
 
     account_ui: Optional[CustomerFacingIngressNetworkPolicyAccountUiDestination] = None
+    """Matches requests to the account console UI. Can only be used in the account-level network
+    policy."""
 
     all_destinations: Optional[bool] = None
     """When true, match all destinations, no other destination fields can be set. When not set or

@@ -130,7 +130,7 @@ For all authentication methods, you can override the default behavior in client 
 
 | Argument                | Description | Environment variable   |
 |-------------------------|-------------|------------------------|
-| `auth_type`             | _(String)_ When multiple auth attributes are available in the environment, use the auth type specified by this argument. This argument also holds the currently selected auth. | `DATABRICKS_AUTH_TYPE` |
+| `auth_type`             | _(String)_ When multiple auth attributes are available in the environment, use the auth type specified by this argument. This argument also holds the currently selected auth. When set explicitly, the SDK only attempts that authentication method, skipping automatic detection of others. See the [Authentication Types Reference](./auth-types-reference.md) for all valid values, required parameters, and usage examples. | `DATABRICKS_AUTH_TYPE` |
 | `http_timeout_seconds`  | _(Integer)_ Number of seconds for HTTP timeout. Default is _60_. | _(None)_               |
 | `retry_timeout_seconds` | _(Integer)_ Number of seconds to keep retrying HTTP requests. Default is _300 (5 minutes)_. | _(None)_               |
 | `debug_truncate_bytes`  | _(Integer)_ Truncate JSON fields in debug logs above this limit. Default is 96. | `DATABRICKS_DEBUG_TRUNCATE_BYTES` |

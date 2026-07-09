@@ -195,13 +195,13 @@ class AggregationFunction:
 
     first: Optional[FirstFunction] = None
 
-    first_distinct_n: Optional[FirstDistinctNFunction] = None
+    first_distinct: Optional[FirstDistinctFunction] = None
 
     first_n: Optional[FirstNFunction] = None
 
     last: Optional[LastFunction] = None
 
-    last_distinct_n: Optional[LastDistinctNFunction] = None
+    last_distinct: Optional[LastDistinctFunction] = None
 
     last_n: Optional[LastNFunction] = None
 
@@ -235,14 +235,14 @@ class AggregationFunction:
             body["count_function"] = self.count_function.as_dict()
         if self.first:
             body["first"] = self.first.as_dict()
-        if self.first_distinct_n:
-            body["first_distinct_n"] = self.first_distinct_n.as_dict()
+        if self.first_distinct:
+            body["first_distinct"] = self.first_distinct.as_dict()
         if self.first_n:
             body["first_n"] = self.first_n.as_dict()
         if self.last:
             body["last"] = self.last.as_dict()
-        if self.last_distinct_n:
-            body["last_distinct_n"] = self.last_distinct_n.as_dict()
+        if self.last_distinct:
+            body["last_distinct"] = self.last_distinct.as_dict()
         if self.last_n:
             body["last_n"] = self.last_n.as_dict()
         if self.max:
@@ -276,14 +276,14 @@ class AggregationFunction:
             body["count_function"] = self.count_function
         if self.first:
             body["first"] = self.first
-        if self.first_distinct_n:
-            body["first_distinct_n"] = self.first_distinct_n
+        if self.first_distinct:
+            body["first_distinct"] = self.first_distinct
         if self.first_n:
             body["first_n"] = self.first_n
         if self.last:
             body["last"] = self.last
-        if self.last_distinct_n:
-            body["last_distinct_n"] = self.last_distinct_n
+        if self.last_distinct:
+            body["last_distinct"] = self.last_distinct
         if self.last_n:
             body["last_n"] = self.last_n
         if self.max:
@@ -313,10 +313,10 @@ class AggregationFunction:
             avg=_from_dict(d, "avg", AvgFunction),
             count_function=_from_dict(d, "count_function", CountFunction),
             first=_from_dict(d, "first", FirstFunction),
-            first_distinct_n=_from_dict(d, "first_distinct_n", FirstDistinctNFunction),
+            first_distinct=_from_dict(d, "first_distinct", FirstDistinctFunction),
             first_n=_from_dict(d, "first_n", FirstNFunction),
             last=_from_dict(d, "last", LastFunction),
-            last_distinct_n=_from_dict(d, "last_distinct_n", LastDistinctNFunction),
+            last_distinct=_from_dict(d, "last_distinct", LastDistinctFunction),
             last_n=_from_dict(d, "last_n", LastNFunction),
             max=_from_dict(d, "max", MaxFunction),
             min=_from_dict(d, "min", MinFunction),
@@ -1661,6 +1661,10 @@ class Experiment:
     tags: Optional[List[ExperimentTag]] = None
     """Tags: Additional metadata key-value pairs."""
 
+    trace_location: Optional[ExperimentTraceLocation] = None
+    """The location where the experiment's traces are stored. Unset when traces are stored in the
+    default MLflow backend. This field cannot be updated after the experiment is created."""
+
     def as_dict(self) -> dict:
         """Serializes the Experiment into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1678,6 +1682,8 @@ class Experiment:
             body["name"] = self.name
         if self.tags:
             body["tags"] = [v.as_dict() for v in self.tags]
+        if self.trace_location:
+            body["trace_location"] = self.trace_location.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1697,6 +1703,8 @@ class Experiment:
             body["name"] = self.name
         if self.tags:
             body["tags"] = self.tags
+        if self.trace_location:
+            body["trace_location"] = self.trace_location
         return body
 
     @classmethod
@@ -1710,6 +1718,7 @@ class Experiment:
             lifecycle_stage=d.get("lifecycle_stage", None),
             name=d.get("name", None),
             tags=_repeated_dict(d, "tags", ExperimentTag),
+            trace_location=_from_dict(d, "trace_location", ExperimentTraceLocation),
         )
 
 
@@ -1975,6 +1984,33 @@ class ExperimentTag:
     def from_dict(cls, d: Dict[str, Any]) -> ExperimentTag:
         """Deserializes the ExperimentTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class ExperimentTraceLocation:
+    """The storage location for an experiment's traces."""
+
+    uc_trace_location: Optional[UcTraceLocation] = None
+    """A Unity Catalog schema where the experiment's traces are stored as Delta tables."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExperimentTraceLocation into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.uc_trace_location:
+            body["uc_trace_location"] = self.uc_trace_location.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExperimentTraceLocation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.uc_trace_location:
+            body["uc_trace_location"] = self.uc_trace_location
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentTraceLocation:
+        """Deserializes the ExperimentTraceLocation from a dictionary."""
+        return cls(uc_trace_location=_from_dict(d, "uc_trace_location", UcTraceLocation))
 
 
 @dataclass
@@ -2417,7 +2453,7 @@ class FinalizeLoggedModelResponse:
 
 
 @dataclass
-class FirstDistinctNFunction:
+class FirstDistinctFunction:
     """Returns the first N distinct values, ordered by the feature's timeseries column."""
 
     input: str
@@ -2427,7 +2463,7 @@ class FirstDistinctNFunction:
     """The number of distinct values to return."""
 
     def as_dict(self) -> dict:
-        """Serializes the FirstDistinctNFunction into a dictionary suitable for use as a JSON request body."""
+        """Serializes the FirstDistinctFunction into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.input is not None:
             body["input"] = self.input
@@ -2436,7 +2472,7 @@ class FirstDistinctNFunction:
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the FirstDistinctNFunction into a shallow dictionary of its immediate attributes."""
+        """Serializes the FirstDistinctFunction into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.input is not None:
             body["input"] = self.input
@@ -2445,8 +2481,8 @@ class FirstDistinctNFunction:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> FirstDistinctNFunction:
-        """Deserializes the FirstDistinctNFunction from a dictionary."""
+    def from_dict(cls, d: Dict[str, Any]) -> FirstDistinctFunction:
+        """Deserializes the FirstDistinctFunction from a dictionary."""
         return cls(input=d.get("input", None), n=d.get("n", None))
 
 
@@ -3579,7 +3615,7 @@ class KafkaSubscriptionMode:
 
 
 @dataclass
-class LastDistinctNFunction:
+class LastDistinctFunction:
     """Returns the last N distinct values, ordered by the feature's timeseries column."""
 
     input: str
@@ -3589,7 +3625,7 @@ class LastDistinctNFunction:
     """The number of distinct values to return."""
 
     def as_dict(self) -> dict:
-        """Serializes the LastDistinctNFunction into a dictionary suitable for use as a JSON request body."""
+        """Serializes the LastDistinctFunction into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.input is not None:
             body["input"] = self.input
@@ -3598,7 +3634,7 @@ class LastDistinctNFunction:
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the LastDistinctNFunction into a shallow dictionary of its immediate attributes."""
+        """Serializes the LastDistinctFunction into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.input is not None:
             body["input"] = self.input
@@ -3607,8 +3643,8 @@ class LastDistinctNFunction:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> LastDistinctNFunction:
-        """Deserializes the LastDistinctNFunction from a dictionary."""
+    def from_dict(cls, d: Dict[str, Any]) -> LastDistinctFunction:
+        """Deserializes the LastDistinctFunction from a dictionary."""
         return cls(input=d.get("input", None), n=d.get("n", None))
 
 
@@ -4527,6 +4563,47 @@ class LoggedModelTag:
     def from_dict(cls, d: Dict[str, Any]) -> LoggedModelTag:
         """Deserializes the LoggedModelTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class LongRollingWindow:
+    """A long (multi-day) rolling window served via the hybrid batch + streaming path. The batch
+    pipeline maintains daily partial aggregates for the bulk of the window while the streaming
+    pipeline maintains the most recent day(s), and serving merges them on read. Distinct from
+    RollingWindow so the control plane can explicitly identify long rolling window features rather
+    than inferring hybrid behavior from window_duration."""
+
+    window_duration: Duration
+    """The duration of the rolling window. Must be positive and span more than two days, so that both
+    the batch (N-1 day) and stale-path (N-2 day) partial aggregates are well defined. The duration
+    need not be a whole number of days (e.g. 3 days 15 minutes is allowed)."""
+
+    delay: Optional[Duration] = None
+    """The delay applied to the end of the rolling window (must be non-negative). For example, delay=1d
+    shifts the window end 1 day before the evaluation time."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LongRollingWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay.ToJsonString()
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LongRollingWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LongRollingWindow:
+        """Deserializes the LongRollingWindow from a dictionary."""
+        return cls(delay=_duration(d, "delay"), window_duration=_duration(d, "window_duration"))
 
 
 @dataclass
@@ -5716,6 +5793,46 @@ class PermissionLevel(Enum):
 
 
 @dataclass
+class ProtoSchemaSpec:
+    """A Protocol Buffer schema paired with the name of the message within it that describes the Kafka
+    payload. A .proto file may declare multiple messages; message_name disambiguates."""
+
+    schema_text: str
+    """The raw .proto file text (proto2 and proto3 syntax supported, see
+    https://protobuf.dev/programming-guides/proto3/ and
+    https://protobuf.dev/programming-guides/proto2/)."""
+
+    message_name: str
+    """The fully-qualified name of the message within schema_text that describes the Kafka payload
+    (e.g. "Event" or "com.example.Event" if schema_text declares a package). Identifies which
+    message is used to decode each Kafka record — a .proto file may declare multiple messages but
+    only one represents the payload. Must not be empty."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ProtoSchemaSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.message_name is not None:
+            body["message_name"] = self.message_name
+        if self.schema_text is not None:
+            body["schema_text"] = self.schema_text
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ProtoSchemaSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.message_name is not None:
+            body["message_name"] = self.message_name
+        if self.schema_text is not None:
+            body["schema_text"] = self.schema_text
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ProtoSchemaSpec:
+        """Deserializes the ProtoSchemaSpec from a dictionary."""
+        return cls(message_name=d.get("message_name", None), schema_text=d.get("schema_text", None))
+
+
+@dataclass
 class PublishSpec:
     online_store: str
     """The name of the target online store."""
@@ -6647,27 +6764,45 @@ class ScalarDataType(Enum):
 
 @dataclass
 class SchemaConfig:
+    avro_schema: Optional[str] = None
+    """Avro schema in JSON format (https://avro.apache.org/docs/current/specification/)."""
+
     json_schema: Optional[str] = None
     """Schema of the JSON object in standard IETF JSON schema format (https://json-schema.org/)."""
+
+    proto_schema: Optional[ProtoSchemaSpec] = None
+    """Protocol Buffer schema with its payload message name."""
 
     def as_dict(self) -> dict:
         """Serializes the SchemaConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.avro_schema is not None:
+            body["avro_schema"] = self.avro_schema
         if self.json_schema is not None:
             body["json_schema"] = self.json_schema
+        if self.proto_schema:
+            body["proto_schema"] = self.proto_schema.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SchemaConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.avro_schema is not None:
+            body["avro_schema"] = self.avro_schema
         if self.json_schema is not None:
             body["json_schema"] = self.json_schema
+        if self.proto_schema:
+            body["proto_schema"] = self.proto_schema
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SchemaConfig:
         """Deserializes the SchemaConfig from a dictionary."""
-        return cls(json_schema=d.get("json_schema", None))
+        return cls(
+            avro_schema=d.get("avro_schema", None),
+            json_schema=d.get("json_schema", None),
+            proto_schema=_from_dict(d, "proto_schema", ProtoSchemaSpec),
+        )
 
 
 @dataclass
@@ -7399,12 +7534,18 @@ class StreamSourceConfig:
 class StreamingMode:
     """The streaming mode configuration for a streaming materialization pipeline."""
 
+    freshness_target: Optional[str] = None
+    """The desired data freshness for feature materialization, expressed as a duration string (e.g. "1
+    minute")."""
+
     mode: Optional[StreamingModeStreamingModeType] = None
     """The type of streaming mode used by the materialization pipeline."""
 
     def as_dict(self) -> dict:
         """Serializes the StreamingMode into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.freshness_target is not None:
+            body["freshness_target"] = self.freshness_target
         if self.mode is not None:
             body["mode"] = self.mode.value
         return body
@@ -7412,6 +7553,8 @@ class StreamingMode:
     def as_shallow_dict(self) -> dict:
         """Serializes the StreamingMode into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.freshness_target is not None:
+            body["freshness_target"] = self.freshness_target
         if self.mode is not None:
             body["mode"] = self.mode
         return body
@@ -7419,7 +7562,9 @@ class StreamingMode:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StreamingMode:
         """Deserializes the StreamingMode from a dictionary."""
-        return cls(mode=_enum(d, "mode", StreamingModeStreamingModeType))
+        return cls(
+            freshness_target=d.get("freshness_target", None), mode=_enum(d, "mode", StreamingModeStreamingModeType)
+        )
 
 
 class StreamingModeStreamingModeType(Enum):
@@ -7560,6 +7705,9 @@ class TestRegistryWebhookResponse:
 class TimeWindow:
     continuous: Optional[ContinuousWindow] = None
 
+    long_rolling: Optional[LongRollingWindow] = None
+    """A long (multi-day) rolling window served via the hybrid batch + streaming path."""
+
     rolling: Optional[RollingWindow] = None
 
     sliding: Optional[SlidingWindow] = None
@@ -7571,6 +7719,8 @@ class TimeWindow:
         body = {}
         if self.continuous:
             body["continuous"] = self.continuous.as_dict()
+        if self.long_rolling:
+            body["long_rolling"] = self.long_rolling.as_dict()
         if self.rolling:
             body["rolling"] = self.rolling.as_dict()
         if self.sliding:
@@ -7584,6 +7734,8 @@ class TimeWindow:
         body = {}
         if self.continuous:
             body["continuous"] = self.continuous
+        if self.long_rolling:
+            body["long_rolling"] = self.long_rolling
         if self.rolling:
             body["rolling"] = self.rolling
         if self.sliding:
@@ -7597,6 +7749,7 @@ class TimeWindow:
         """Deserializes the TimeWindow from a dictionary."""
         return cls(
             continuous=_from_dict(d, "continuous", ContinuousWindow),
+            long_rolling=_from_dict(d, "long_rolling", LongRollingWindow),
             rolling=_from_dict(d, "rolling", RollingWindow),
             sliding=_from_dict(d, "sliding", SlidingWindow),
             tumbling=_from_dict(d, "tumbling", TumblingWindow),
@@ -7748,6 +7901,52 @@ class TumblingWindow:
     def from_dict(cls, d: Dict[str, Any]) -> TumblingWindow:
         """Deserializes the TumblingWindow from a dictionary."""
         return cls(window_duration=d.get("window_duration", None))
+
+
+@dataclass
+class UcTraceLocation:
+    """A Unity Catalog trace storage location. Traces are stored as Delta tables in the specified
+    catalog and schema."""
+
+    catalog: str
+    """The name of the Unity Catalog catalog."""
+
+    schema: str
+    """The name of the Unity Catalog schema within ``catalog``."""
+
+    table_prefix: Optional[str] = None
+    """The prefix for the trace tables, which are named ``{catalog}.{schema}.{table_prefix}_otel_*``.
+    May only contain letters, digits, and underscores, and may be at most 238 characters. When
+    unset, a server-generated prefix derived from the experiment ID is used."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UcTraceLocation into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.table_prefix is not None:
+            body["table_prefix"] = self.table_prefix
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UcTraceLocation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.table_prefix is not None:
+            body["table_prefix"] = self.table_prefix
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UcTraceLocation:
+        """Deserializes the UcTraceLocation from a dictionary."""
+        return cls(
+            catalog=d.get("catalog", None), schema=d.get("schema", None), table_prefix=d.get("table_prefix", None)
+        )
 
 
 @dataclass
@@ -7975,7 +8174,12 @@ class ExperimentsAPI:
         self._api = api_client
 
     def create_experiment(
-        self, name: str, *, artifact_location: Optional[str] = None, tags: Optional[List[ExperimentTag]] = None
+        self,
+        name: str,
+        *,
+        artifact_location: Optional[str] = None,
+        tags: Optional[List[ExperimentTag]] = None,
+        trace_location: Optional[ExperimentTraceLocation] = None,
     ) -> CreateExperimentResponse:
         """Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that
         another experiment with the same name does not already exist and fails if another experiment with the
@@ -7995,6 +8199,10 @@ class ExperimentsAPI:
           depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250
           bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to
           support up to 20 tags per request.
+        :param trace_location: :class:`ExperimentTraceLocation` (optional)
+          The location where the experiment's traces are stored. When set, the underlying storage is
+          provisioned and the experiment's traces are routed to it. When unset, traces are stored in the
+          default MLflow backend. This field cannot be updated after the experiment is created.
 
         :returns: :class:`CreateExperimentResponse`
         """
@@ -8006,6 +8214,8 @@ class ExperimentsAPI:
             body["name"] = name
         if tags is not None:
             body["tags"] = [v.as_dict() for v in tags]
+        if trace_location is not None:
+            body["trace_location"] = trace_location.as_dict()
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

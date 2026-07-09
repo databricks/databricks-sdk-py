@@ -12,6 +12,7 @@ We are keen to hear feedback from you on these SDKs. Please `file GitHub issues 
 
    getting-started
    authentication
+   auth-types-reference
    oauth
    wait
    pagination

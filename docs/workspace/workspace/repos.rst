@@ -14,7 +14,7 @@
     Within Repos you can develop code in notebooks or other files and follow data science and engineering code
     development best practices using Git for version control, collaboration, and CI/CD.
 
-    .. py:method:: create(url: str, provider: str [, path: Optional[str], sparse_checkout: Optional[SparseCheckout]]) -> CreateRepoResponse
+    .. py:method:: create(url: str, provider: str [, git_credential_id: Optional[int], path: Optional[str], sparse_checkout: Optional[SparseCheckout]]) -> CreateRepoResponse
 
 
         Usage:
@@ -49,6 +49,9 @@
           Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
           ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit`` (deprecated by AWS, not
           accepting new customers).
+        :param git_credential_id: int (optional)
+          Git credential ID to use when cloning the repository. The Git credential must be configured for the
+          current user.
         :param path: str (optional)
           Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo
           is created in ``/Repos``, path must be in the format ``/Repos/{folder}/{repo-name}``.
@@ -163,7 +166,7 @@
         :returns: :class:`RepoPermissions`
         
 
-    .. py:method:: update(repo_id: int [, branch: Optional[str], dangerously_force_discard_all: Optional[bool], sparse_checkout: Optional[SparseCheckoutUpdate], tag: Optional[str]])
+    .. py:method:: update(repo_id: int [, branch: Optional[str], dangerously_force_discard_all: Optional[bool], git_credential_id: Optional[int], sparse_checkout: Optional[SparseCheckoutUpdate], tag: Optional[str]])
 
 
         Usage:
@@ -207,6 +210,9 @@
           destroyed without warning.
 
           Local commits that have been made but not yet pushed to the remote are preserved.
+        :param git_credential_id: int (optional)
+          Git credential ID to use for this update operation. The Git credential must be configured for the
+          current user.
         :param sparse_checkout: :class:`SparseCheckoutUpdate` (optional)
           If specified, update the sparse checkout settings. The update will fail if sparse checkout is not
           enabled for the repo.

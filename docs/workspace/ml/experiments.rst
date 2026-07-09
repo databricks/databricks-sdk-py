@@ -11,7 +11,7 @@
     Experiments are located in the workspace file tree. You manage experiments using the same tools you use to
     manage other workspace objects such as folders, notebooks, and libraries.
 
-    .. py:method:: create_experiment(name: str [, artifact_location: Optional[str], tags: Optional[List[ExperimentTag]]]) -> CreateExperimentResponse
+    .. py:method:: create_experiment(name: str [, artifact_location: Optional[str], tags: Optional[List[ExperimentTag]], trace_location: Optional[ExperimentTraceLocation]]) -> CreateExperimentResponse
 
 
         Usage:
@@ -47,6 +47,10 @@
           depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250
           bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to
           support up to 20 tags per request.
+        :param trace_location: :class:`ExperimentTraceLocation` (optional)
+          The location where the experiment's traces are stored. When set, the underlying storage is
+          provisioned and the experiment's traces are routed to it. When unset, traces are stored in the
+          default MLflow backend. This field cannot be updated after the experiment is created.
 
         :returns: :class:`CreateExperimentResponse`
         
