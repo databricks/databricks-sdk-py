@@ -1,5 +1,6 @@
 import io
 import logging
+import os
 import urllib.parse
 from abc import ABC, abstractmethod
 from datetime import timedelta
@@ -53,6 +54,10 @@ class _BaseClient:
         debug_headers: Optional[bool] = False,
         clock: Optional[Clock] = None,
         streaming_buffer_size: int = 1024 * 1024,
+        proxy_url: Optional[str] = None,
+        proxy_username: Optional[str] = None,
+        proxy_password: Optional[str] = None,
+        proxy_auth_type: Optional[str] = None,
     ):  # 1MB
         """
         :param debug_truncate_bytes:
@@ -83,6 +88,45 @@ class _BaseClient:
         self._session = requests.Session()
         self._session.auth = self._authenticate
         self._streaming_buffer_size = streaming_buffer_size
+
+        self._proxy_url = proxy_url or os.environ.get("DATABRICKS_PROXY_URL")
+        self._proxy_username = proxy_username or os.environ.get("DATABRICKS_PROXY_USERNAME")
+        self._proxy_password = proxy_password or os.environ.get("DATABRICKS_PROXY_PASSWORD")
+        self._proxy_auth_type = proxy_auth_type or os.environ.get("DATABRICKS_PROXY_AUTH_TYPE")
+
+        if self._proxy_url:
+            p_url = self._proxy_url
+            if "://" not in p_url:
+                p_url = "http://" + p_url
+
+            if self._proxy_username:
+                parsed = urllib.parse.urlparse(p_url)
+                if "@" in parsed.netloc:
+                    _, host_port = parsed.netloc.rsplit("@", 1)
+                else:
+                    host_port = parsed.netloc
+
+                user = urllib.parse.quote(self._proxy_username)
+                if self._proxy_password:
+                    password = urllib.parse.quote(self._proxy_password)
+                    user_part = f"{user}:{password}@"
+                else:
+                    user_part = f"{user}@"
+
+                netloc = f"{user_part}{host_port}"
+                p_url = urllib.parse.urlunparse((
+                    parsed.scheme,
+                    netloc,
+                    parsed.path,
+                    parsed.params,
+                    parsed.query,
+                    parsed.fragment
+                ))
+
+            self._session.proxies = {
+                "http": p_url,
+                "https": p_url,
+            }
 
         # We don't use `max_retries` from HTTPAdapter to align with a more production-ready
         # retry strategy established in the Databricks SDK for Go. See _is_retryable and
