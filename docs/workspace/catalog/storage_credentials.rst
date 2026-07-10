@@ -30,14 +30,13 @@
             
             w = WorkspaceClient()
             
-            storage_credential = w.storage_credentials.create(
+            created = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
                 aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
-                comment="created via SDK",
             )
             
             # cleanup
-            w.storage_credentials.delete(name=storage_credential.name)
+            w.storage_credentials.delete(name=created.name)
 
         Creates a new storage credential.
 
@@ -99,13 +98,13 @@
             
             created = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
-                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
             )
             
-            by_name = w.storage_credentials.get(name=created.name)
+            by_name = w.storage_credentials.get(get=created.name)
             
             # cleanup
-            w.storage_credentials.delete(name=created.name)
+            w.storage_credentials.delete(delete=created.name)
 
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
         storage credential, or have some permission on the storage credential.
@@ -124,13 +123,12 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
-            all = w.storage_credentials.list(catalog.ListStorageCredentialsRequest())
+            all = w.storage_credentials.list()
 
-        Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
+        Gets an array of storage credentials (as **StorageCredentialInfo** objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
         admin, retrieval of credentials is unrestricted. There is no guarantee of a specific ordering of the
         elements in the array.
@@ -147,10 +145,12 @@
           to update the credential–workspace binding.
         :param max_results: int (optional)
           Maximum number of storage credentials to return. If not set, all the storage credentials are
-          returned (not recommended). - when set to a value greater than 0, the page length is the minimum of
-          this value and a server configured value; - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value less than 0, an invalid parameter error is
-          returned;
+          returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -224,12 +224,12 @@
 
     .. py:method:: validate( [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentityRequest], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], external_location_name: Optional[str], read_only: Optional[bool], storage_credential_name: Optional[str], url: Optional[str]]) -> ValidateStorageCredentialResponse
 
-        Validates a storage credential. At least one of __external_location_name__ and __url__ need to be
+        Validates a storage credential. At least one of **external_location_name** and **url** need to be
         provided. If only one of them is provided, it will be used for validation. And if both are provided,
-        the __url__ will be used for validation, and __external_location_name__ will be ignored when checking
+        the **url** will be used for validation, and **external_location_name** will be ignored when checking
         overlapping urls.
 
-        Either the __storage_credential_name__ or the cloud-specific credential must be provided.
+        Either the **storage_credential_name** or the cloud-specific credential must be provided.
 
         The caller must be a metastore admin or the storage credential owner or have the
         **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.

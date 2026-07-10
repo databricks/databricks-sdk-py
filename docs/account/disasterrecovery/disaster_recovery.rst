@@ -72,7 +72,7 @@
           The fully qualified resource name of the failover group to failover. Format:
           accounts/{account_id}/failover-groups/{failover_group_id}.
         :param target_primary_region: str
-          The target primary region. Must be one of the derived regions and different from the current
+          The target primary region. Must be one of the participating regions and different from the current
           effective_primary_region. Serves as an idempotency check.
         :param failover_type: :class:`FailoverFailoverGroupRequestFailoverType`
           The type of failover to perform.
@@ -108,13 +108,18 @@
 
         List failover groups.
 
+        List entries are abbreviated: ``state`` and ``replication_point`` are not populated. Call
+        GetFailoverGroup to retrieve the full resource.
+
         :param parent: str
           The parent resource. Format: accounts/{account_id}.
         :param page_size: int (optional)
-          Maximum number of failover groups to return per page: - when set to a value greater than 0, the page
-          length is the minimum of this value and a server configured value; - when set to 0 or unset, the
-          page length is set to a server configured value (recommended); - when set to a value less than 0, an
-          invalid parameter error is returned.
+          Maximum number of failover groups to return per page:
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0 or unset, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Page token received from a previous ListFailoverGroups call. Provide this to retrieve the subsequent
           page.
@@ -129,10 +134,12 @@
         :param parent: str
           The parent resource. Format: accounts/{account_id}.
         :param page_size: int (optional)
-          Maximum number of stable URLs to return per page: - when set to a value greater than 0, the page
-          length is the minimum of this value and a server configured value; - when set to 0 or unset, the
-          page length is set to a server configured value (recommended); - when set to a value less than 0, an
-          invalid parameter error is returned.
+          Maximum number of stable URLs to return per page:
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0 or unset, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Page token received from a previous ListStableUrls call. Provide this to retrieve the subsequent
           page.
@@ -140,7 +147,7 @@
         :returns: Iterator over :class:`StableUrl`
         
 
-    .. py:method:: update_failover_group(name: str, failover_group: FailoverGroup, update_mask: FieldMask) -> FailoverGroup
+    .. py:method:: update_failover_group(name: str, failover_group: FailoverGroup, update_mask: FieldMask [, etag: Optional[str]]) -> FailoverGroup
 
         Update a failover group.
 
@@ -152,6 +159,10 @@
           the URL path.
         :param update_mask: FieldMask
           Comma-separated list of fields to update.
+        :param etag: str (optional)
+          Optional opaque version string for optimistic locking, obtained from a prior read of the failover
+          group. If provided, the update is rejected unless it matches the failover group's current etag. If
+          omitted, the update proceeds without an optimistic-lock check.
 
         :returns: :class:`FailoverGroup`
         

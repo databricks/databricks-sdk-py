@@ -123,8 +123,14 @@ class FileIdTokenSource(IdTokenSource):
         return IdToken(jwt=token)
 
 
-class DatabricksOidcTokenSource(oauth.TokenSource):
+class DatabricksOidcTokenSource(oauth.Refreshable):
     """A TokenSource which exchanges a token using Workload Identity Federation.
+
+    The exchanged token is cached and reused across calls. It is only refreshed
+    when it is stale or expired, mirroring the M2M/PAT auth flows. This avoids
+    minting a fresh token on every authenticated API call. Each refresh fetches a
+    fresh ID token from the ``id_token_source``, so short-lived (rotating) ID
+    tokens are handled transparently.
 
     Parameters
     ----------
@@ -164,15 +170,20 @@ class DatabricksOidcTokenSource(oauth.TokenSource):
         self._client_id = client_id
         self._account_id = account_id
         self._audience = audience
-        self._disable_async = disable_async
         self._scopes = scopes
+        # Refreshable.__init__ stores disable_async as self._disable_async, which
+        # _exchange_id_token reads — no need to duplicate it here.
+        super().__init__(disable_async=disable_async)
 
-    def token(self) -> oauth.Token:
-        """Get a token by exchanging the ID token.
+    def refresh(self) -> oauth.Token:
+        """Mint a fresh token by exchanging the ID token.
+
+        Called by the base :class:`oauth.Refreshable` only when the cached token
+        is missing, stale, or expired. The result is cached by the base class.
 
         Returns
         -------
-        dict
+        oauth.Token
             The exchanged token.
 
         Raises

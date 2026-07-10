@@ -58,6 +58,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DataApi
+   :members:
+   :undoc-members:
+
+.. autoclass:: DataApiDataApiSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: DataApiDataApiStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: DataApiOperationMetadata
+   :members:
+   :undoc-members:
+
 .. autoclass:: Database
    :members:
    :undoc-members:
@@ -136,7 +152,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EndpointType
 
-   The compute endpoint type. Either `read_write` or `read_only`.
+   The compute endpoint type. Either ``read_write`` or ``read_only``.
 
    .. py:attribute:: ENDPOINT_TYPE_READ_ONLY
       :value: "ENDPOINT_TYPE_READ_ONLY"
@@ -391,6 +407,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKSPACE_TEMPORARILY_UNAVAILABLE
       :value: "WORKSPACE_TEMPORARILY_UNAVAILABLE"
 
+.. autoclass:: InitialBranchSpec
+   :members:
+   :undoc-members:
+
 .. autoclass:: InitialEndpointSpec
    :members:
    :undoc-members:
@@ -418,6 +438,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: NewPipelineSpec
    :members:
    :undoc-members:
+
+.. py:class:: OpenApiMode
+
+   Controls how the Data API exposes the OpenAPI documentation endpoint. Only IGNORE_PRIVILEGES and DISABLED are supported today; "follow-privileges" is not implemented yet (it may be added later as value 3 — adding new enum values is backward-compatible).
+
+   .. py:attribute:: OPEN_API_MODE_DISABLED
+      :value: "OPEN_API_MODE_DISABLED"
+
+   .. py:attribute:: OPEN_API_MODE_IGNORE_PRIVILEGES
+      :value: "OPEN_API_MODE_IGNORE_PRIVILEGES"
 
 .. autoclass:: Operation
    :members:
@@ -603,6 +633,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: SyncedTableSyncedTableSpecPgSpecificType
+
+   PostgreSQL-specific target types that can override the default Delta-to-PG mapping.
+
+   .. py:attribute:: PG_SPECIFIC_TYPE_VECTOR
+      :value: "PG_SPECIFIC_TYPE_VECTOR"
+
 .. py:class:: SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy
 
    Scheduling policy of the synced table's underlying pipeline.
@@ -615,6 +652,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TRIGGERED
       :value: "TRIGGERED"
+
+.. autoclass:: SyncedTableSyncedTableSpecTypeOverride
+   :members:
+   :undoc-members:
 
 .. autoclass:: SyncedTableSyncedTableStatus
    :members:

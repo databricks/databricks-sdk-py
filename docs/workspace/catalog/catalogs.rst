@@ -11,7 +11,7 @@
     the workspaces in a Databricks account. Users in different workspaces can share access to the same data,
     depending on privileges granted centrally in Unity Catalog.
 
-    .. py:method:: create(name: str [, comment: Optional[str], connection_name: Optional[str], managed_encryption_settings: Optional[EncryptionSettings], options: Optional[Dict[str, str]], properties: Optional[Dict[str, str]], provider_name: Optional[str], share_name: Optional[str], storage_root: Optional[str]]) -> CatalogInfo
+    .. py:method:: create(name: str [, comment: Optional[str], connection_name: Optional[str], custom_max_retention_hours: Optional[int], managed_encryption_settings: Optional[EncryptionSettings], options: Optional[Dict[str, str]], properties: Optional[Dict[str, str]], provider_name: Optional[str], share_name: Optional[str], storage_root: Optional[str]]) -> CatalogInfo
 
 
         Usage:
@@ -24,10 +24,10 @@
             
             w = WorkspaceClient()
             
-            created_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
+            created = w.catalogs.create(name=f"sdk-{time.time_ns()}")
             
             # cleanup
-            w.catalogs.delete(name=created_catalog.name, force=True)
+            w.catalogs.delete(name=created.name, force=True)
 
         Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the
         **CREATE_CATALOG** privilege.
@@ -38,6 +38,8 @@
           User-provided free-form text description.
         :param connection_name: str (optional)
           The name of the connection to an external data source.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the catalog
         :param managed_encryption_settings: :class:`EncryptionSettings` (optional)
           Control CMK encryption for managed catalog data
         :param options: Dict[str,str] (optional)
@@ -134,20 +136,23 @@
           Whether to include catalogs not bound to the workspace. Effective only if the user has permission to
           update the catalog–workspace binding.
         :param max_results: int (optional)
-          Maximum number of catalogs to return. - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all valid catalogs are returned (not recommended). - Note: The number of
-          returned catalogs might be less than the specified max_results size, even zero. The only definitive
-          indication that no further catalogs can be fetched is when the next_page_token is unset from the
-          response.
+          Maximum number of catalogs to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid catalogs are returned (not recommended).
+          - Note: The number of returned catalogs might be less than the specified max_results size, even
+            zero. The only definitive indication that no further catalogs can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
         :returns: Iterator over :class:`CatalogInfo`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], isolation_mode: Optional[CatalogIsolationMode], managed_encryption_settings: Optional[EncryptionSettings], new_name: Optional[str], options: Optional[Dict[str, str]], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> CatalogInfo
+    .. py:method:: update(name: str [, comment: Optional[str], custom_max_retention_hours: Optional[int], enable_predictive_optimization: Optional[EnablePredictiveOptimization], isolation_mode: Optional[CatalogIsolationMode], managed_encryption_settings: Optional[EncryptionSettings], new_name: Optional[str], options: Optional[Dict[str, str]], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> CatalogInfo
 
 
         Usage:
@@ -157,13 +162,12 @@
             import time
             
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
             created = w.catalogs.create(name=f"sdk-{time.time_ns()}")
             
-            _ = w.catalogs.update(name=created.name, isolation_mode=catalog.CatalogIsolationMode.ISOLATED)
+            _ = w.catalogs.update(name=created.name, comment="updated")
             
             # cleanup
             w.catalogs.delete(name=created.name, force=True)
@@ -175,6 +179,8 @@
           The name of the catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the catalog
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`CatalogIsolationMode` (optional)

@@ -16,10 +16,10 @@
         :param resource: str
           The resource name for which assignable roles will be listed.
 
-          Examples | Summary :--- | :--- `resource=accounts/<ACCOUNT_ID>` | A resource name for the account.
-          `resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>` | A resource name for the group.
-          `resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>` | A resource name for the service
-          principal. `resource=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>` | A resource name for the
+          Examples | Summary :--- | :--- ``resource=accounts/<ACCOUNT_ID>`` | A resource name for the account.
+          ``resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>`` | A resource name for the group.
+          ``resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>`` | A resource name for the service
+          principal. ``resource=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>`` | A resource name for the
           tag policy.
 
         :returns: :class:`GetAssignableRolesForResourceResponse`
@@ -33,13 +33,13 @@
         :param name: str
           The ruleset name associated with the request.
 
-          Examples | Summary :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a rule set
-          on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default` | A name for a rule
-          set on the group.
-          `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default` |
-          A name for a rule set on the service principal.
-          `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default` | A name for a rule set on
-          the tag policy.
+          Examples | Summary :--- | :--- ``name=accounts/<ACCOUNT_ID>/ruleSets/default`` | A name for a rule
+          set on the account. ``name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default`` | A name for a
+          rule set on the group.
+          ``name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default``
+          | A name for a rule set on the service principal.
+          ``name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default`` | A name for a rule set
+          on the tag policy.
         :param etag: str
           Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for
           optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from
@@ -48,8 +48,8 @@
           etag from a GET rule set request, and pass it with the PUT update request to identify the rule set
           version you are updating.
 
-          Examples | Summary :--- | :--- `etag=` | An empty etag can only be used in GET to indicate no
-          freshness requirements. `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An
+          Examples | Summary :--- | :--- ``etag=`` | An empty etag can only be used in GET to indicate no
+          freshness requirements. ``etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==`` | An
           etag encoded a specific version of the rule set to get or to be updated.
 
         :returns: :class:`RuleSetResponse`

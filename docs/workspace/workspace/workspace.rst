@@ -13,17 +13,18 @@
 
     .. py:method:: delete(path: str [, recursive: Optional[bool]])
 
-        Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *
-        If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a
-        non-empty directory and `recursive` is set to `false`, this call returns an error
-        `DIRECTORY_NOT_EMPTY`.
+        Deletes an object or a directory (and optionally recursively deletes all objects in the directory).
+
+        - If ``path`` does not exist, this call returns an error ``RESOURCE_DOES_NOT_EXIST``.
+        - If ``path`` is a non-empty directory and ``recursive`` is set to ``false``, this call returns an
+          error ``DIRECTORY_NOT_EMPTY``.
 
         Object deletion cannot be undone and deleting a directory recursively is not atomic.
 
         :param path: str
           The absolute path of the notebook or directory.
         :param recursive: bool (optional)
-          The flag that specifies whether to delete the object recursively. It is `false` by default. Please
+          The flag that specifies whether to delete the object recursively. It is ``false`` by default. Please
           note this deleting directory is not atomic. If it fails in the middle, some of objects under this
           directory may be deleted and cannot be undone.
 
@@ -81,29 +82,32 @@
             
             notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            export_response = w.workspace.export_(format=workspace.ExportFormat.SOURCE, path=notebook)
+            export_response = w.workspace.export(format=workspace.ExportFormat.SOURCE, path=notebook)
 
         Exports an object or the contents of an entire directory.
 
-        If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
+        If ``path`` does not exist, this call returns an error ``RESOURCE_DOES_NOT_EXIST``.
 
-        If the exported data would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.
+        If the exported data would exceed size limit, this call returns ``MAX_NOTEBOOK_SIZE_EXCEEDED``.
         Currently, this API does not support exporting a library.
 
         :param path: str
-          The absolute path of the object or directory. Exporting a directory is only supported for the `DBC`,
-          `SOURCE`, and `AUTO` format.
+          The absolute path of the object or directory. Exporting a directory is only supported for the
+          ``DBC``, ``SOURCE``, and ``AUTO`` format.
         :param format: :class:`ExportFormat` (optional)
-          This specifies the format of the exported file. By default, this is `SOURCE`.
+          This specifies the format of the exported file. By default, this is ``SOURCE``.
 
           The value is case sensitive.
 
-          - `SOURCE`: The notebook is exported as source code. Directory exports will not include non-notebook
-          entries. - `HTML`: The notebook is exported as an HTML file. - `JUPYTER`: The notebook is exported
-          as a Jupyter/IPython Notebook file. - `DBC`: The notebook is exported in Databricks archive format.
-          Directory exports will not include non-notebook entries. - `R_MARKDOWN`: The notebook is exported to
-          R Markdown format. - `AUTO`: The object or directory is exported depending on the objects type.
-          Directory exports will include notebooks and workspace files.
+          - ``SOURCE``: The notebook is exported as source code. Directory exports will not include
+            non-notebook entries.
+          - ``HTML``: The notebook is exported as an HTML file.
+          - ``JUPYTER``: The notebook is exported as a Jupyter/IPython Notebook file.
+          - ``DBC``: The notebook is exported in Databricks archive format. Directory exports will not include
+            non-notebook entries.
+          - ``R_MARKDOWN``: The notebook is exported to R Markdown format.
+          - ``AUTO``: The object or directory is exported depending on the objects type. Directory exports
+            will include notebooks and workspace files.
 
         :returns: :class:`ExportResponse`
         
@@ -150,12 +154,12 @@
             
             w = WorkspaceClient()
             
-            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
+            notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            get_status_response = w.workspace.get_status(path=notebook)
+            obj = w.workspace.get_status(path=notebook_path)
 
-        Gets the status of an object or a directory. If `path` does not exist, this call returns an error
-        `RESOURCE_DOES_NOT_EXIST`.
+        Gets the status of an object or a directory. If ``path`` does not exist, this call returns an error
+        ``RESOURCE_DOES_NOT_EXIST``.
 
         :param path: str
           The absolute path of the notebook or directory.
@@ -181,29 +185,22 @@
             notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
             w.workspace.import_(
-                path=notebook_path,
-                overwrite=true_,
+                content=base64.b64encode(("CREATE LIVE TABLE dlt_sample AS SELECT 1").encode()).decode(),
                 format=workspace.ImportFormat.SOURCE,
-                language=workspace.Language.PYTHON,
-                content=base64.b64encode(
-                    (
-                        """import time
-            time.sleep(10)
-            dbutils.notebook.exit('hello')
-            """
-                    ).encode()
-                ).decode(),
+                language=workspace.Language.SQL,
+                overwrite=True,
+                path=notebook_path,
             )
 
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
-        If `path` already exists and `overwrite` is set to `false`, this call returns an error
-        `RESOURCE_ALREADY_EXISTS`. To import a directory, you can use either the `DBC` format or the `SOURCE`
-        format with the `language` field unset. To import a single file as `SOURCE`, you must set the
-        `language` field. Zip files within directories are not supported.
+        If ``path`` already exists and ``overwrite`` is set to ``false``, this call returns an error
+        ``RESOURCE_ALREADY_EXISTS``. To import a directory, you can use either the ``DBC`` format or the
+        ``SOURCE`` format with the ``language`` field unset. To import a single file as ``SOURCE``, you must
+        set the ``language`` field. Zip files within directories are not supported.
 
         :param path: str
-          The absolute path of the object or directory. Importing a directory is only supported for the `DBC`
-          and `SOURCE` formats.
+          The absolute path of the object or directory. Importing a directory is only supported for the
+          ``DBC`` and ``SOURCE`` formats.
         :param content: str (optional)
           The base64-encoded content. This has a limit of 10 MB.
 
@@ -214,17 +211,19 @@
 
           The value is case sensitive.
 
-          - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
-          content provided in the request. If the item is imported as a notebook, then the item's extension is
-          automatically removed. - `SOURCE`: The notebook or directory is imported as source code. - `HTML`:
-          The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython
-          Notebook file. - `DBC`: The notebook is imported in Databricks archive format. Required for
-          directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format.
+          - ``AUTO``: The item is imported depending on an analysis of the item's extension and the header
+            content provided in the request. If the item is imported as a notebook, then the item's extension
+            is automatically removed.
+          - ``SOURCE``: The notebook or directory is imported as source code.
+          - ``HTML``: The notebook is imported as an HTML file.
+          - ``JUPYTER``: The notebook is imported as a Jupyter/IPython Notebook file.
+          - ``DBC``: The notebook is imported in Databricks archive format. Required for directories.
+          - ``R_MARKDOWN``: The notebook is imported from R Markdown format.
         :param language: :class:`Language` (optional)
-          The language of the object. This value is set only if the object type is `NOTEBOOK`.
+          The language of the object. This value is set only if the object type is ``NOTEBOOK``.
         :param overwrite: bool (optional)
-          The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC`
-          format, `overwrite` is not supported since it may contain a directory.
+          The flag that specifies whether to overwrite existing object. It is ``false`` by default. For
+          ``DBC`` format, ``overwrite`` is not supported since it may contain a directory.
 
 
         
@@ -236,14 +235,16 @@
 
         .. code-block::
 
+            import os
+            import time
+            
             from databricks.sdk import WorkspaceClient
             
             w = WorkspaceClient()
             
-            names = []
-            for i in w.workspace.list(f"/Users/{w.current_user.me().user_name}", recursive=True):
-                names.append(i.path)
-            assert len(names) > 0
+            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
+            
+            objects = w.workspace.list(path=os.path.dirname(notebook))
 
         List workspace objects
 
@@ -257,7 +258,7 @@
 
         Creates the specified directory (and necessary parent directories if they do not exist). If there is
         an object (not a directory) at any prefix of the input path, this call returns an error
-        `RESOURCE_ALREADY_EXISTS`.
+        ``RESOURCE_ALREADY_EXISTS``.
 
         Note that if this operation fails it may have succeeded in creating some of the necessary parent
         directories.

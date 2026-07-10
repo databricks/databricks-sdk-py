@@ -92,7 +92,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: DeploymentKind
 
-   The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a Databricks Asset Bundle.
+   The deployment method that manages the pipeline:
+   - BUNDLE: The pipeline is managed by a Databricks Asset Bundle.
 
    .. py:attribute:: BUNDLE
       :value: "BUNDLE"
@@ -430,7 +431,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PipelineClusterAutoscaleMode
 
-   Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating cluster resources based on workload volume, with minimal impact to the data processing latency of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy autoscaling feature is used for `maintenance` clusters.
+   Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating cluster resources based on workload volume, with minimal impact to the data processing latency of your pipelines. Enhanced Autoscaling is available for ``updates`` clusters only. The legacy autoscaling feature is used for ``maintenance`` clusters.
 
    .. py:attribute:: ENHANCED
       :value: "ENHANCED"

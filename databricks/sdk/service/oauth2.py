@@ -210,9 +210,9 @@ class FederationPolicy:
 
     name: Optional[str] = None
     """Resource name for the federation policy. Example values include
-    `accounts/<account-id>/federationPolicies/my-federation-policy` for Account Federation Policies,
-    and
-    `accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy`
+    ``accounts/<account-id>/federationPolicies/my-federation-policy`` for Account Federation
+    Policies, and
+    ``accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy``
     for Service Principal Federation Policies. Typically an output parameter, which does not need to
     be specified in create or update requests. If specified in a request, must match the value in
     the request URL."""
@@ -594,7 +594,7 @@ class ListFederationPoliciesResponse:
 @dataclass
 class ListServicePrincipalSecretsResponse:
     next_page_token: Optional[str] = None
-    """A token, which can be sent as `page_token` to retrieve the next page."""
+    """A token, which can be sent as ``page_token`` to retrieve the next page."""
 
     secrets: Optional[List[SecretInfo]] = None
     """List of the secrets"""
@@ -955,38 +955,55 @@ class AccountFederationPolicyAPI:
     With token federation, your users and service principals can exchange tokens from your IdP for Databricks
     OAuth tokens, which can be used to access Databricks APIs. Token federation eliminates the need to manage
     Databricks secrets, and allows you to centralize management of token issuance policies in your IdP.
-    Databricks token federation is typically used in combination with [SCIM], so users in your IdP are
-    synchronized into your Databricks account.
+    Databricks token federation is typically used in combination with `SCIM
+    <https://docs.databricks.com/admin/users-groups/scim/index.html>`__, so users in your IdP are synchronized
+    into your Databricks account.
 
     Token federation is configured in your Databricks account using an account federation policy. An account
-    federation policy specifies: * which IdP, or issuer, your Databricks account should accept tokens from *
-    how to determine which Databricks user, or subject, a token is issued for
+    federation policy specifies:
 
-    To configure a federation policy, you provide the following: * The required token __issuer__, as specified
-    in the “iss” claim of your tokens. The issuer is an https URL that identifies your IdP. * The allowed
-    token __audiences__, as specified in the “aud” claim of your tokens. This identifier is intended to
-    represent the recipient of the token. As long as the audience in the token matches at least one audience
-    in the policy, the token is considered a match. If unspecified, the default value is your Databricks
-    account id. * The __subject claim__, which indicates which token claim contains the Databricks username of
-    the user the token was issued for. If unspecified, the default value is “sub”. * Optionally, the
-    public keys used to validate the signature of your tokens, in JWKS format. If unspecified (recommended),
-    Databricks automatically fetches the public keys from your issuer’s well known endpoint. Databricks
-    strongly recommends relying on your issuer’s well known endpoint for discovering public keys.
+    - which IdP, or issuer, your Databricks account should accept tokens from
+    - how to determine which Databricks user, or subject, a token is issued for
 
-    An example federation policy is: ``` issuer: "https://idp.mycompany.com/oidc" audiences: ["databricks"]
-    subject_claim: "sub" ```
+    To configure a federation policy, you provide the following:
+
+    - The required token **issuer**, as specified in the “iss” claim of your tokens. The issuer is an
+      https URL that identifies your IdP.
+    - The allowed token **audiences**, as specified in the “aud” claim of your tokens. This identifier is
+      intended to represent the recipient of the token. As long as the audience in the token matches at least
+      one audience in the policy, the token is considered a match. If unspecified, the default value is your
+      Databricks account id.
+    - The **subject claim**, which indicates which token claim contains the Databricks username of the user
+      the token was issued for. If unspecified, the default value is “sub”.
+    - Optionally, the public keys used to validate the signature of your tokens, in JWKS format. If
+      unspecified (recommended), Databricks automatically fetches the public keys from your issuer’s well
+      known endpoint. Databricks strongly recommends relying on your issuer’s well known endpoint for
+      discovering public keys.
+
+    An example federation policy is:
+
+    .. code-block::
+
+       issuer: "https://idp.mycompany.com/oidc"
+       audiences: ["databricks"]
+       subject_claim: "sub"
 
     An example JWT token body that matches this policy and could be used to authenticate to Databricks as user
-    `username@mycompany.com` is: ``` { "iss": "https://idp.mycompany.com/oidc", "aud": "databricks", "sub":
-    "username@mycompany.com" } ```
+    ``username@mycompany.com`` is:
+
+    .. code-block::
+
+       {
+       "iss": "https://idp.mycompany.com/oidc",
+       "aud": "databricks",
+       "sub": "username@mycompany.com"
+       }
 
     You may also need to configure your IdP to generate tokens for your users to exchange with Databricks, if
     your users do not already have the ability to generate tokens that are compatible with your federation
     policy.
 
-    You do not need to configure an OAuth application in Databricks to use token federation.
-
-    [SCIM]: https://docs.databricks.com/admin/users-groups/scim/index.html"""
+    You do not need to configure an OAuth application in Databricks to use token federation."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1140,7 +1157,8 @@ class CustomAppIntegrationAPI:
     ) -> CreateCustomAppIntegrationOutput:
         """Create Custom OAuth App Integration.
 
-        You can retrieve the custom OAuth app integration via :method:CustomAppIntegration/get.
+        You can retrieve the custom OAuth app integration via `CustomAppIntegration/get
+        <https://docs.databricks.com/api/account/customappintegration/get>`__.
 
         :param confidential: bool (optional)
           This field indicates whether an OAuth client secret is required to authenticate this client.
@@ -1188,7 +1206,7 @@ class CustomAppIntegrationAPI:
 
     def delete(self, integration_id: str):
         """Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via
-        :method:CustomAppIntegration/get.
+        `CustomAppIntegration/get <https://docs.databricks.com/api/account/customappintegration/get>`__.
 
         :param integration_id: str
 
@@ -1276,7 +1294,7 @@ class CustomAppIntegrationAPI:
         user_authorized_scopes: Optional[List[str]] = None,
     ):
         """Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration
-        via :method:CustomAppIntegration/get.
+        via `CustomAppIntegration/get <https://docs.databricks.com/api/account/customappintegration/get>`__.
 
         :param integration_id: str
         :param redirect_urls: List[str] (optional)
@@ -1369,7 +1387,8 @@ class PublishedAppIntegrationAPI:
     ) -> CreatePublishedAppIntegrationOutput:
         """Create Published OAuth App Integration.
 
-        You can retrieve the published OAuth app integration via :method:PublishedAppIntegration/get.
+        You can retrieve the published OAuth app integration via `PublishedAppIntegration/get
+        <https://docs.databricks.com/api/account/publishedappintegration/get>`__.
 
         :param app_id: str (optional)
           App id of the OAuth published app integration. For example power-bi, tableau-deskop
@@ -1399,7 +1418,8 @@ class PublishedAppIntegrationAPI:
 
     def delete(self, integration_id: str):
         """Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app
-        integration via :method:PublishedAppIntegration/get.
+        integration via `PublishedAppIntegration/get
+        <https://docs.databricks.com/api/account/publishedappintegration/get>`__.
 
         :param integration_id: str
 
@@ -1471,7 +1491,8 @@ class PublishedAppIntegrationAPI:
 
     def update(self, integration_id: str, *, token_access_policy: Optional[TokenAccessPolicy] = None):
         """Updates an existing published OAuth App Integration. You can retrieve the published OAuth app
-        integration via :method:PublishedAppIntegration/get.
+        integration via `PublishedAppIntegration/get
+        <https://docs.databricks.com/api/account/publishedappintegration/get>`__.
 
         :param integration_id: str
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
@@ -1510,29 +1531,43 @@ class ServicePrincipalFederationPolicyAPI:
     Azure DevOps, GitLab, Terraform Cloud, and Kubernetes clusters, among others.
 
     Workload identity federation is configured in your Databricks account using a service principal federation
-    policy. A service principal federation policy specifies: * which IdP, or issuer, the service principal is
-    allowed to authenticate from * which workload identity, or subject, is allowed to authenticate as the
-    Databricks service principal
+    policy. A service principal federation policy specifies:
 
-    To configure a federation policy, you provide the following: * The required token __issuer__, as specified
-    in the “iss” claim of workload identity tokens. The issuer is an https URL that identifies the
-    workload identity provider. * The required token __subject__, as specified in the “sub” claim of
-    workload identity tokens. The subject uniquely identifies the workload in the workload runtime
-    environment. * The allowed token __audiences__, as specified in the “aud” claim of workload identity
-    tokens. The audience is intended to represent the recipient of the token. As long as the audience in the
-    token matches at least one audience in the policy, the token is considered a match. If unspecified, the
-    default value is your Databricks account id. * Optionally, the public keys used to validate the signature
-    of the workload identity tokens, in JWKS format. If unspecified (recommended), Databricks automatically
-    fetches the public keys from the issuer’s well known endpoint. Databricks strongly recommends relying on
-    the issuer’s well known endpoint for discovering public keys.
+    - which IdP, or issuer, the service principal is allowed to authenticate from
+    - which workload identity, or subject, is allowed to authenticate as the Databricks service principal
 
-    An example service principal federation policy, for a Github Actions workload, is: ``` issuer:
-    "https://token.actions.githubusercontent.com" audiences: ["https://github.com/my-github-org"] subject:
-    "repo:my-github-org/my-repo:environment:prod" ```
+    To configure a federation policy, you provide the following:
 
-    An example JWT token body that matches this policy and could be used to authenticate to Databricks is: ```
-    { "iss": "https://token.actions.githubusercontent.com", "aud": "https://github.com/my-github-org", "sub":
-    "repo:my-github-org/my-repo:environment:prod" } ```
+    - The required token **issuer**, as specified in the “iss” claim of workload identity tokens. The
+      issuer is an https URL that identifies the workload identity provider.
+    - The required token **subject**, as specified in the “sub” claim of workload identity tokens. The
+      subject uniquely identifies the workload in the workload runtime environment.
+    - The allowed token **audiences**, as specified in the “aud” claim of workload identity tokens. The
+      audience is intended to represent the recipient of the token. As long as the audience in the token
+      matches at least one audience in the policy, the token is considered a match. If unspecified, the
+      default value is your Databricks account id.
+    - Optionally, the public keys used to validate the signature of the workload identity tokens, in JWKS
+      format. If unspecified (recommended), Databricks automatically fetches the public keys from the
+      issuer’s well known endpoint. Databricks strongly recommends relying on the issuer’s well known
+      endpoint for discovering public keys.
+
+    An example service principal federation policy, for a Github Actions workload, is:
+
+    .. code-block::
+
+       issuer: "https://token.actions.githubusercontent.com"
+       audiences: ["https://github.com/my-github-org"]
+       subject: "repo:my-github-org/my-repo:environment:prod"
+
+    An example JWT token body that matches this policy and could be used to authenticate to Databricks is:
+
+    .. code-block::
+
+       {
+       "iss": "https://token.actions.githubusercontent.com",
+       "aud": "https://github.com/my-github-org",
+       "sub": "repo:my-github-org/my-repo:environment:prod"
+       }
 
     You may also need to configure the workload runtime to generate tokens for your workloads.
 
@@ -1696,14 +1731,12 @@ class ServicePrincipalSecretsAPI:
     """These APIs enable administrators to manage service principal secrets.
 
     You can use the generated secrets to obtain OAuth access tokens for a service principal, which can then be
-    used to access Databricks Accounts and Workspace APIs. For more information, see [Authentication using
-    OAuth tokens for service principals].
+    used to access Databricks Accounts and Workspace APIs. For more information, see `Authentication using
+    OAuth tokens for service principals <https://docs.databricks.com/dev-tools/authentication-oauth.html>`__.
 
     In addition, the generated secrets can be used to configure the Databricks Terraform Provider to
-    authenticate with the service principal. For more information, see [Databricks Terraform Provider].
-
-    [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
-    [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal"""
+    authenticate with the service principal. For more information, see `Databricks Terraform Provider
+    <https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal>`__."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1767,12 +1800,12 @@ class ServicePrincipalSecretsAPI:
           The service principal ID.
         :param page_size: int (optional)
         :param page_token: str (optional)
-          An opaque page token which was the `next_page_token` in the response of the previous request to list
-          the secrets for this service principal. Provide this token to retrieve the next page of secret
-          entries. When providing a `page_token`, all other parameters provided to the request must match the
-          previous request. To list all of the secrets for a service principal, it is necessary to continue
-          requesting pages of entries until the response contains no `next_page_token`. Note that the number
-          of entries returned must not be used to determine when the listing is complete.
+          An opaque page token which was the ``next_page_token`` in the response of the previous request to
+          list the secrets for this service principal. Provide this token to retrieve the next page of secret
+          entries. When providing a ``page_token``, all other parameters provided to the request must match
+          the previous request. To list all of the secrets for a service principal, it is necessary to
+          continue requesting pages of entries until the response contains no ``next_page_token``. Note that
+          the number of entries returned must not be used to determine when the listing is complete.
 
         :returns: Iterator over :class:`SecretInfo`
         """
@@ -1806,14 +1839,12 @@ class ServicePrincipalSecretsProxyAPI:
     APIs, the service principal must be first added to the current workspace.
 
     You can use the generated secrets to obtain OAuth access tokens for a service principal, which can then be
-    used to access Databricks Accounts and Workspace APIs. For more information, see [Authentication using
-    OAuth tokens for service principals].
+    used to access Databricks Accounts and Workspace APIs. For more information, see `Authentication using
+    OAuth tokens for service principals <https://docs.databricks.com/dev-tools/authentication-oauth.html>`__.
 
     In addition, the generated secrets can be used to configure the Databricks Terraform Providerto
-    authenticate with the service principal. For more information, see [Databricks Terraform Provider].
-
-    [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
-    [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal"""
+    authenticate with the service principal. For more information, see `Databricks Terraform Provider
+    <https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal>`__."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1885,12 +1916,12 @@ class ServicePrincipalSecretsProxyAPI:
           The service principal ID.
         :param page_size: int (optional)
         :param page_token: str (optional)
-          An opaque page token which was the `next_page_token` in the response of the previous request to list
-          the secrets for this service principal. Provide this token to retrieve the next page of secret
-          entries. When providing a `page_token`, all other parameters provided to the request must match the
-          previous request. To list all of the secrets for a service principal, it is necessary to continue
-          requesting pages of entries until the response contains no `next_page_token`. Note that the number
-          of entries returned must not be used to determine when the listing is complete.
+          An opaque page token which was the ``next_page_token`` in the response of the previous request to
+          list the secrets for this service principal. Provide this token to retrieve the next page of secret
+          entries. When providing a ``page_token``, all other parameters provided to the request must match
+          the previous request. To list all of the secrets for a service principal, it is necessary to
+          continue requesting pages of entries until the response contains no ``next_page_token``. Note that
+          the number of entries returned must not be used to determine when the listing is complete.
 
         :returns: Iterator over :class:`SecretInfo`
         """

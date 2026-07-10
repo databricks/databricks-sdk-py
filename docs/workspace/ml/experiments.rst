@@ -11,7 +11,7 @@
     Experiments are located in the workspace file tree. You manage experiments using the same tools you use to
     manage other workspace objects such as folders, notebooks, and libraries.
 
-    .. py:method:: create_experiment(name: str [, artifact_location: Optional[str], tags: Optional[List[ExperimentTag]]]) -> CreateExperimentResponse
+    .. py:method:: create_experiment(name: str [, artifact_location: Optional[str], tags: Optional[List[ExperimentTag]], trace_location: Optional[ExperimentTraceLocation]]) -> CreateExperimentResponse
 
 
         Usage:
@@ -33,8 +33,9 @@
         another experiment with the same name does not already exist and fails if another experiment with the
         same name already exists.
 
-        Throws `RESOURCE_ALREADY_EXISTS` if an experiment with the given name exists. Note: In some contexts,
-        this error may be remapped to `ALREADY_EXISTS`. To be safe, clients should check for both error codes.
+        Throws ``RESOURCE_ALREADY_EXISTS`` if an experiment with the given name exists. Note: In some
+        contexts, this error may be remapped to ``ALREADY_EXISTS``. To be safe, clients should check for both
+        error codes.
 
         :param name: str
           Experiment name.
@@ -46,6 +47,10 @@
           depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250
           bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to
           support up to 20 tags per request.
+        :param trace_location: :class:`ExperimentTraceLocation` (optional)
+          The location where the experiment's traces are stored. When set, the underlying storage is
+          provisioned and the experiment's traces are routed to it. When unset, traces are stored in the
+          default MLflow backend. This field cannot be updated after the experiment is created.
 
         :returns: :class:`CreateExperimentResponse`
         
@@ -96,8 +101,8 @@
             w.experiments.delete_run(run_id=created.run.info.run_id)
 
         Creates a new run within an experiment. A run is usually a single execution of a machine learning or
-        data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric`, and `mlflowRunTag`
-        associated with a single execution.
+        data ETL pipeline. MLflow uses runs to track the ``mlflowParam``, ``mlflowMetric``, and
+        ``mlflowRunTag`` associated with a single execution.
 
         :param experiment_id: str (optional)
           ID of the associated experiment.
@@ -209,7 +214,7 @@
         deleted experiment share the same name. If multiple deleted experiments share the same name, the API
         will return one of them.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name exists.
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if no experiment with the specified name exists.
 
         :param experiment_name: str
           Name of the associated experiment.
@@ -259,8 +264,8 @@
         :param run_id: str (optional)
           ID of the run from which to fetch metric values. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run from which to fetch metric values. This field will
-          be removed in a future MLflow version.
+          [Deprecated, use ``run_id`` instead] ID of the run from which to fetch metric values. This field
+          will be removed in a future MLflow version.
 
         :returns: Iterator over :class:`Metric`
         
@@ -305,7 +310,7 @@
         :param run_id: str
           ID of the run to fetch. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run to fetch. This field will be removed in a future
+          [Deprecated, use ``run_id`` instead] ID of the run to fetch. This field will be removed in a future
           MLflow version.
 
         :returns: :class:`GetRunResponse`
@@ -313,16 +318,16 @@
 
     .. py:method:: list_artifacts( [, page_token: Optional[str], path: Optional[str], run_id: Optional[str], run_uuid: Optional[str]]) -> Iterator[FileInfo]
 
-        List artifacts for a run. Takes an optional `artifact_path` prefix which if specified, the response
+        List artifacts for a run. Takes an optional ``artifact_path`` prefix which if specified, the response
         contains only artifacts with the specified prefix. A maximum of 1000 artifacts will be retrieved for
-        UC Volumes. Please call `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes,
-        which supports pagination. See [List directory contents | Files
+        UC Volumes. Please call ``/api/2.0/fs/directories{directory_path}`` for listing artifacts in UC
+        Volumes, which supports pagination. See [List directory contents | Files
         API](/api/workspace/files/listdirectorycontents).
 
         :param page_token: str (optional)
-          The token indicating the page of artifact results to fetch. `page_token` is not supported when
+          The token indicating the page of artifact results to fetch. ``page_token`` is not supported when
           listing artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes.
-          Please call `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which
+          Please call ``/api/2.0/fs/directories{directory_path}`` for listing artifacts in UC Volumes, which
           supports pagination. See [List directory contents | Files
           API](/api/workspace/files/listdirectorycontents).
         :param path: str (optional)
@@ -330,8 +335,8 @@
         :param run_id: str (optional)
           ID of the run whose artifacts to list. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run whose artifacts to list. This field will be removed
-          in a future MLflow version.
+          [Deprecated, use ``run_id`` instead] ID of the run whose artifacts to list. This field will be
+          removed in a future MLflow version.
 
         :returns: Iterator over :class:`FileInfo`
         
@@ -353,8 +358,8 @@
         Gets a list of all experiments.
 
         :param max_results: int (optional)
-          Maximum number of experiments desired. If `max_results` is unspecified, return all experiments. If
-          `max_results` is too large, it'll be automatically capped at 1000. Callers of this endpoint are
+          Maximum number of experiments desired. If ``max_results`` is unspecified, return all experiments. If
+          ``max_results`` is too large, it'll be automatically capped at 1000. Callers of this endpoint are
           encouraged to pass max_results explicitly and leverage page_token to iterate through experiments.
         :param page_token: str (optional)
           Token indicating the page of experiments to fetch
@@ -376,36 +381,31 @@
 
         The overwrite behavior for metrics, params, and tags is as follows:
 
-        * Metrics: metric values are never overwritten. Logging a metric (key, value, timestamp) appends to
-        the set of values for the metric with the provided key.
+        - Metrics: metric values are never overwritten. Logging a metric (key, value, timestamp) appends to
+          the set of values for the metric with the provided key.
+        - Tags: tag values can be overwritten by successive writes to the same tag key. That is, if multiple
+          tag values with the same key are provided in the same API request, the last-provided tag value is
+          written. Logging the same tag (key, value) is permitted. Specifically, logging a tag is idempotent.
+        - Parameters: once written, param values cannot be changed (attempting to overwrite a param value will
+          result in an error). However, logging the same param (key, value) is permitted. Specifically,
+          logging a param is idempotent.
 
-        * Tags: tag values can be overwritten by successive writes to the same tag key. That is, if multiple
-        tag values with the same key are provided in the same API request, the last-provided tag value is
-        written. Logging the same tag (key, value) is permitted. Specifically, logging a tag is idempotent.
+        Request Limits
 
-        * Parameters: once written, param values cannot be changed (attempting to overwrite a param value will
-        result in an error). However, logging the same param (key, value) is permitted. Specifically, logging
-        a param is idempotent.
+        A single JSON-serialized API request may be up to 1 MB in size and contain:
 
-        Request Limits ------------------------------- A single JSON-serialized API request may be up to 1 MB
-        in size and contain:
-
-        * No more than 1000 metrics, params, and tags in total
-
-        * Up to 1000 metrics
-
-        * Up to 100 params
-
-        * Up to 100 tags
+        - No more than 1000 metrics, params, and tags in total
+        - Up to 1000 metrics
+        - Up to 100 params
+        - Up to 100 tags
 
         For example, a valid request might contain 900 metrics, 50 params, and 50 tags, but logging 900
         metrics, 50 params, and 51 tags is invalid.
 
         The following limits also apply to metric, param, and tag keys and values:
 
-        * Metric keys, param keys, and tag keys can be up to 250 characters in length
-
-        * Parameter and tag values can be up to 250 characters in length
+        - Metric keys, param keys, and tag keys can be up to 250 characters in length
+        - Parameter and tag values can be up to 250 characters in length
 
         :param metrics: List[:class:`Metric`] (optional)
           Metrics to log. A single request can contain up to 1000 metrics, and up to 1000 metrics, params, and
@@ -473,7 +473,7 @@
         :param run_id: str (optional)
           ID of the run under which to log the metric. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run under which to log the metric. This field will be
+          [Deprecated, use ``run_id`` instead] ID of the run under which to log the metric. This field will be
           removed in a future MLflow version.
         :param step: int (optional)
           Step at which to log the metric
@@ -521,7 +521,7 @@
         :param run_id: str (optional)
           ID of the run under which to log the param. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run under which to log the param. This field will be
+          [Deprecated, use ``run_id`` instead] ID of the run under which to log the param. This field will be
           removed in a future MLflow version.
 
 
@@ -533,7 +533,7 @@
         params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
         also restored.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was permanently deleted.
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if experiment was never created or was permanently deleted.
 
         :param experiment_id: str
           ID of the associated experiment.
@@ -545,7 +545,7 @@
 
         Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if the run was never created or was permanently deleted.
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if the run was never created or was permanently deleted.
 
         :param run_id: str
           ID of the run to restore.
@@ -597,7 +597,7 @@
 
         :param datasets: List[:class:`SearchLoggedModelsDataset`] (optional)
           List of datasets on which to apply the metrics filter clauses. For example, a filter with
-          `metrics.accuracy > 0.9` and dataset info with name "test_dataset" means we will return all logged
+          ``metrics.accuracy > 0.9`` and dataset info with name "test_dataset" means we will return all logged
           models with accuracy > 0.9 on the test_dataset. Metric values from ANY dataset matching the criteria
           are considered. If no datasets are specified, then metrics across all datasets are considered in the
           filter.
@@ -622,7 +622,7 @@
 
         Searches for runs that satisfy expressions.
 
-        Search expressions can use `mlflowMetric` and `mlflowParam` keys.
+        Search expressions can use ``mlflowMetric`` and ``mlflowParam`` keys.
 
         :param experiment_ids: List[str] (optional)
           List of experiment IDs to search over.
@@ -631,20 +631,20 @@
           syntax is a subset of SQL that supports ANDing together binary operations between a param, metric,
           or tag and a constant.
 
-          Example: `metrics.rmse < 1 and params.model_class = 'LogisticRegression'`
+          Example: ``metrics.rmse < 1 and params.model_class = 'LogisticRegression'``
 
           You can select columns with special characters (hyphen, space, period, etc.) by using double quotes:
-          `metrics."model class" = 'LinearRegression' and tags."user-name" = 'Tomas'`
+          ``metrics."model class" = 'LinearRegression' and tags."user-name" = 'Tomas'``
 
-          Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`.
+          Supported operators are ``=``, ``!=``, ``>``, ``>=``, ``<``, and ``<=``.
         :param max_results: int (optional)
           Maximum number of runs desired. Max threshold is 50000
         :param order_by: List[str] (optional)
           List of columns to be ordered by, including attributes, params, metrics, and tags with an optional
-          `"DESC"` or `"ASC"` annotation, where `"ASC"` is the default. Example: `["params.input DESC",
-          "metrics.alpha ASC", "metrics.rmse"]`. Tiebreaks are done by start_time `DESC` followed by `run_id`
-          for runs with the same start time (and this is the default ordering criterion if order_by is not
-          provided).
+          ``"DESC"`` or ``"ASC"`` annotation, where ``"ASC"`` is the default. Example: ``["params.input DESC",
+          "metrics.alpha ASC", "metrics.rmse"]``. Tiebreaks are done by start_time ``DESC`` followed by
+          ``run_id`` for runs with the same start time (and this is the default ordering criterion if order_by
+          is not provided).
         :param page_token: str (optional)
           Token for the current page of runs.
         :param run_view_type: :class:`ViewType` (optional)
@@ -702,7 +702,7 @@
         :param run_id: str (optional)
           ID of the run under which to log the tag. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run under which to log the tag. This field will be
+          [Deprecated, use ``run_id`` instead] ID of the run under which to log the tag. This field will be
           removed in a future MLflow version.
 
 
@@ -785,7 +785,7 @@
         :param run_name: str (optional)
           Updated name of the run.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run to update. This field will be removed in a future
+          [Deprecated, use ``run_id`` instead] ID of the run to update. This field will be removed in a future
           MLflow version.
         :param status: :class:`UpdateRunStatus` (optional)
           Updated status of the run.

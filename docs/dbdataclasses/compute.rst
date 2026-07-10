@@ -22,8 +22,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AwsAvailability
 
-   Availability type used for all subsequent nodes past the `first_on_demand` ones.
-   Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
+   Availability type used for all subsequent nodes past the ``first_on_demand`` ones.
+   Note: If ``first_on_demand`` is zero, this availability type will be used for the entire cluster.
 
    .. py:attribute:: ON_DEMAND
       :value: "ON_DEMAND"
@@ -40,7 +40,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AzureAvailability
 
-   Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
+   Availability type used for all subsequent nodes past the ``first_on_demand`` ones. Note: If ``first_on_demand`` is zero, this availability type will be used for the entire cluster.
 
    .. py:attribute:: ON_DEMAND_AZURE
       :value: "ON_DEMAND_AZURE"
@@ -50,6 +50,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SPOT_WITH_FALLBACK_AZURE
       :value: "SPOT_WITH_FALLBACK_AZURE"
+
+.. autoclass:: CancelPendingClusterEnforcementResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: CancelResponse
    :members:
@@ -288,11 +292,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: DataSecurityMode
 
    Data security mode decides what data governance model to use when accessing data from a cluster.
-   * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate access mode depending on your compute configuration. * `DATA_SECURITY_MODE_STANDARD`: A secure cluster that can be shared by multiple users. Cluster users are fully isolated so that they cannot see each other’s data and credentials. Most data governance features are supported in this mode. But programming languages and cluster features might be limited. * `DATA_SECURITY_MODE_DEDICATED`: A secure cluster that can only be exclusively used by a single user specified in `single_user_name`. Most programming languages, cluster features and data governance features are available in this mode.
+   - ``DATA_SECURITY_MODE_AUTO``: Databricks will choose the most appropriate access mode depending on your compute configuration. - ``DATA_SECURITY_MODE_STANDARD``: A secure cluster that can be shared by multiple users. Cluster users are fully isolated so that they cannot see each other’s data and credentials. Most data governance features are supported in this mode. But programming languages and cluster features might be limited. - ``DATA_SECURITY_MODE_DEDICATED``: A secure cluster that can only be exclusively used by a single user specified in ``single_user_name``. Most programming languages, cluster features and data governance features are available in this mode.
    The following modes are legacy aliases for the above modes:
-   * `USER_ISOLATION`: Legacy alias for `DATA_SECURITY_MODE_STANDARD`. * `SINGLE_USER`: Legacy alias for `DATA_SECURITY_MODE_DEDICATED`.
+   - ``USER_ISOLATION``: Legacy alias for ``DATA_SECURITY_MODE_STANDARD``. - ``SINGLE_USER``: Legacy alias for ``DATA_SECURITY_MODE_DEDICATED``.
    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for future Databricks Runtime versions:
-   * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC nor passthrough enabled.
+   - ``LEGACY_TABLE_ACL``: This mode is for users migrating from legacy Table ACL clusters. - ``LEGACY_PASSTHROUGH``: This mode is for users migrating from legacy Passthrough on high concurrency clusters. - ``LEGACY_SINGLE_USER``: This mode is for users migrating from legacy Passthrough on standard clusters. - ``LEGACY_SINGLE_USER_STANDARD``: This mode provides a way that doesn’t have UC nor passthrough enabled.
 
    .. py:attribute:: DATA_SECURITY_MODE_AUTO
       :value: "DATA_SECURITY_MODE_AUTO"
@@ -414,6 +418,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: EnforcePolicyComplianceForClusterEnforceMode
+
+   .. py:attribute:: ENFORCE_IMMEDIATELY
+      :value: "ENFORCE_IMMEDIATELY"
+
+   .. py:attribute:: WAIT_FOR_TERMINATION
+      :value: "WAIT_FOR_TERMINATION"
+
+.. autoclass:: EnforcePolicyComplianceForClusterResponseClusterSettings
+   :members:
+   :undoc-members:
+
+.. py:class:: EnforcePolicyComplianceForClusterResponseEnforceResult
+
+   .. py:attribute:: APPLIED
+      :value: "APPLIED"
+
+   .. py:attribute:: DEFERRED
+      :value: "DEFERRED"
+
+   .. py:attribute:: NO_CHANGES
+      :value: "NO_CHANGES"
+
 .. autoclass:: Environment
    :members:
    :undoc-members:
@@ -475,6 +502,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DECOMMISSION_STARTED
       :value: "DECOMMISSION_STARTED"
+
+   .. py:attribute:: DEFERRED_POLICY_ENFORCEMENT_FAILED
+      :value: "DEFERRED_POLICY_ENFORCEMENT_FAILED"
+
+   .. py:attribute:: DEFERRED_POLICY_ENFORCEMENT_SCHEDULED
+      :value: "DEFERRED_POLICY_ENFORCEMENT_SCHEDULED"
 
    .. py:attribute:: DID_NOT_EXPAND_DISK
       :value: "DID_NOT_EXPAND_DISK"
@@ -760,10 +793,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: Kind
 
    The kind of compute described by this compute specification.
-   Depending on `kind`, different validations and default values will be applied.
-   Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) * [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime)
-   By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
-   [simple form]: https://docs.databricks.com/compute/simple-form.html
+   Depending on ``kind``, different validations and default values will be applied.
+   Clusters with ``kind = CLASSIC_PREVIEW`` support the following fields, whereas clusters with no specified ``kind`` do not.
+   - [is_single_node](/api/workspace/clusters/create#is_single_node) - [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime)
+   By using the `simple form <https://docs.databricks.com/compute/simple-form.html>`__, your clusters are automatically using ``kind = CLASSIC_PREVIEW``.
 
    .. py:attribute:: CLASSIC_PREVIEW
       :value: "CLASSIC_PREVIEW"
@@ -926,6 +959,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PendingEnforcement
+   :members:
+   :undoc-members:
+
+.. py:class:: PendingEnforcementEnforcementStatus
+
+   .. py:attribute:: ACTIVE
+      :value: "ACTIVE"
+
+   .. py:attribute:: INACTIVE
+      :value: "INACTIVE"
+
 .. autoclass:: PendingInstanceError
    :members:
    :undoc-members:
@@ -1021,7 +1066,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: State
 
    The state of a Cluster. The current allowable state transitions are as follows:
-   - `PENDING` -> `RUNNING` - `PENDING` -> `TERMINATING` - `RUNNING` -> `RESIZING` - `RUNNING` -> `RESTARTING` - `RUNNING` -> `TERMINATING` - `RESTARTING` -> `RUNNING` - `RESTARTING` -> `TERMINATING` - `RESIZING` -> `RUNNING` - `RESIZING` -> `TERMINATING` - `TERMINATING` -> `TERMINATED`
+   - ``PENDING`` -> ``RUNNING`` - ``PENDING`` -> ``TERMINATING`` - ``RUNNING`` -> ``RESIZING`` - ``RUNNING`` -> ``RESTARTING`` - ``RUNNING`` -> ``TERMINATING`` - ``RESTARTING`` -> ``RUNNING`` - ``RESTARTING`` -> ``TERMINATING`` - ``RESIZING`` -> ``RUNNING`` - ``RESIZING`` -> ``TERMINATING`` - ``TERMINATING`` -> ``TERMINATED``
 
    .. py:attribute:: ERROR
       :value: "ERROR"

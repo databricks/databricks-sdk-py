@@ -68,7 +68,7 @@ class DatabaseCatalog:
     """The name of the DatabaseInstance housing the database."""
 
     database_name: str
-    """The name of the database (in a instance) associated with the catalog."""
+    """The name of the database (in an instance) associated with the catalog."""
 
     create_database_if_not_exists: Optional[bool] = None
 
@@ -1015,7 +1015,7 @@ class SyncedDatabaseTable:
     
     When creating a synced table in a standard catalog, this field is required. In this scenario,
     specifying this field will allow targeting an arbitrary postgres database. Note that this has
-    implications for the `create_database_objects_is_missing` field in `spec`."""
+    implications for the ``create_database_objects_is_missing`` field in ``spec``."""
 
     spec: Optional[SyncedTableSpec] = None
 
@@ -1325,6 +1325,10 @@ class SyncedTableSchedulingPolicy(Enum):
 class SyncedTableSpec:
     """Specification of a synced database table."""
 
+    accelerated_sync: Optional[bool] = None
+    """When true, enables accelerated sync mode for the initial data load. This significantly improves
+    performance for large tables. Requires workspace-level enablement."""
+
     create_database_objects_if_missing: Optional[bool] = None
     """If true, the synced table's logical database and schema resources in PG will be created if they
     do not already exist."""
@@ -1357,9 +1361,15 @@ class SyncedTableSpec:
     timeseries_key: Optional[str] = None
     """Time series key to deduplicate (tie-break) rows with the same primary key."""
 
+    type_overrides: Optional[List[SyncedTableSpecTypeOverride]] = None
+    """Override the default Delta->PG type mapping for specific columns. A TypeOverride with
+    PG_SPECIFIC_TYPE_UNSPECIFIED is rejected; a valid pg_type must be set."""
+
     def as_dict(self) -> dict:
         """Serializes the SyncedTableSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.accelerated_sync is not None:
+            body["accelerated_sync"] = self.accelerated_sync
         if self.create_database_objects_if_missing is not None:
             body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
         if self.existing_pipeline_id is not None:
@@ -1374,11 +1384,15 @@ class SyncedTableSpec:
             body["source_table_full_name"] = self.source_table_full_name
         if self.timeseries_key is not None:
             body["timeseries_key"] = self.timeseries_key
+        if self.type_overrides:
+            body["type_overrides"] = [v.as_dict() for v in self.type_overrides]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SyncedTableSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.accelerated_sync is not None:
+            body["accelerated_sync"] = self.accelerated_sync
         if self.create_database_objects_if_missing is not None:
             body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
         if self.existing_pipeline_id is not None:
@@ -1393,12 +1407,15 @@ class SyncedTableSpec:
             body["source_table_full_name"] = self.source_table_full_name
         if self.timeseries_key is not None:
             body["timeseries_key"] = self.timeseries_key
+        if self.type_overrides:
+            body["type_overrides"] = self.type_overrides
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SyncedTableSpec:
         """Deserializes the SyncedTableSpec from a dictionary."""
         return cls(
+            accelerated_sync=d.get("accelerated_sync", None),
             create_database_objects_if_missing=d.get("create_database_objects_if_missing", None),
             existing_pipeline_id=d.get("existing_pipeline_id", None),
             new_pipeline_spec=_from_dict(d, "new_pipeline_spec", NewPipelineSpec),
@@ -1406,6 +1423,59 @@ class SyncedTableSpec:
             scheduling_policy=_enum(d, "scheduling_policy", SyncedTableSchedulingPolicy),
             source_table_full_name=d.get("source_table_full_name", None),
             timeseries_key=d.get("timeseries_key", None),
+            type_overrides=_repeated_dict(d, "type_overrides", SyncedTableSpecTypeOverride),
+        )
+
+
+class SyncedTableSpecPgSpecificType(Enum):
+    """PostgreSQL-specific target types that can override the default Delta-to-PG mapping."""
+
+    PG_SPECIFIC_TYPE_VECTOR = "PG_SPECIFIC_TYPE_VECTOR"
+
+
+@dataclass
+class SyncedTableSpecTypeOverride:
+    """Overrides the default Delta-to-PostgreSQL type mapping for a single column."""
+
+    column_name: str
+    """Name of the source column whose target PostgreSQL type should be overridden."""
+
+    pg_type: SyncedTableSpecPgSpecificType
+    """PostgreSQL-specific target type to use for the column."""
+
+    size: Optional[int] = None
+    """Size parameter for the target type. Required when pg_type is PG_SPECIFIC_TYPE_VECTOR or
+    PG_SPECIFIC_TYPE_HALFVEC (specifies the vector dimension, e.g., 1024)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTableSpecTypeOverride into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column_name is not None:
+            body["column_name"] = self.column_name
+        if self.pg_type is not None:
+            body["pg_type"] = self.pg_type.value
+        if self.size is not None:
+            body["size"] = self.size
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTableSpecTypeOverride into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column_name is not None:
+            body["column_name"] = self.column_name
+        if self.pg_type is not None:
+            body["pg_type"] = self.pg_type
+        if self.size is not None:
+            body["size"] = self.size
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTableSpecTypeOverride:
+        """Deserializes the SyncedTableSpecTypeOverride from a dictionary."""
+        return cls(
+            column_name=d.get("column_name", None),
+            pg_type=_enum(d, "pg_type", SyncedTableSpecPgSpecificType),
+            size=d.get("size", None),
         )
 
 
@@ -1754,7 +1824,7 @@ class DatabaseAPI:
         :param name: str
           Name of the instance to delete.
         :param force: bool (optional)
-          By default, a instance cannot be deleted if it has descendant instances created via PITR. If this
+          By default, an instance cannot be deleted if it has descendant instances created via PITR. If this
           flag is specified as true, all descendent instances will be deleted as well.
         :param purge: bool (optional)
           Deprecated. Omitting the field or setting it to true will result in the field being hard deleted.
@@ -1791,7 +1861,7 @@ class DatabaseAPI:
         :param instance_name: str
         :param name: str
         :param allow_missing: bool (optional)
-          This is the AIP standard name for the equivalent of Postgres' `IF EXISTS` option
+          This is the AIP standard name for the equivalent of Postgres' ``IF EXISTS`` option
         :param reassign_owned_to: str (optional)
 
 

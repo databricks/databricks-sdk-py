@@ -283,8 +283,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 126
-
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
 
@@ -293,6 +291,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DATABRICKS
       :value: "DATABRICKS"
+
+   .. py:attribute:: DYNAMICS365
+      :value: "DYNAMICS365"
 
    .. py:attribute:: GA4_RAW_DATA
       :value: "GA4_RAW_DATA"
@@ -444,8 +445,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "STORAGE"
 
 .. py:class:: CredentialType
-
-   Next Id: 19
 
    .. py:attribute:: ANY_STATIC_CREDENTIAL
       :value: "ANY_STATIC_CREDENTIAL"
@@ -721,6 +720,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnvironmentSettings
+   :members:
+   :undoc-members:
+
 .. autoclass:: ExternalLineageExternalMetadata
    :members:
    :undoc-members:
@@ -935,6 +938,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListEffectivePrivilegeAssignmentsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListEntityTagAssignmentsResponse
    :members:
    :undoc-members:
@@ -964,6 +971,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListPoliciesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListPrivilegeAssignmentsResponse
    :members:
    :undoc-members:
 
@@ -1104,7 +1115,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: MonitorMetricType
 
-   Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``, ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics
+   Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``, ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the two consecutive time windows.
+   - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics
 
    .. py:attribute:: CUSTOM_METRIC_TYPE_AGGREGATE
       :value: "CUSTOM_METRIC_TYPE_AGGREGATE"
@@ -1430,6 +1442,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: READ_FILES
       :value: "READ_FILES"
 
+   .. py:attribute:: READ_METADATA
+      :value: "READ_METADATA"
+
    .. py:attribute:: READ_PRIVATE_FILES
       :value: "READ_PRIVATE_FILES"
 
@@ -1547,8 +1562,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: SecurableKind
-
-   Latest kind: MEMORY_STORE_STANDARD = 342; Next id: 343. Reserved numbers: 316, 317, 327, 330, 341 (former ENDPOINT_LLM_*, MODEL_SERVICE_STANDARD, MODEL_SERVICE_SYSTEM_DELTASHARING, MCP_SERVICE_STANDARD).
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
@@ -2116,7 +2129,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: WorkspaceBindingBindingType
 
-   Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation` enum in `credentials_common.proto`.
+   Using ``BINDING_TYPE_`` prefix here to avoid conflict with ``TableOperation`` enum in ``credentials_common.proto``.
 
    .. py:attribute:: BINDING_TYPE_READ_ONLY
       :value: "BINDING_TYPE_READ_ONLY"

@@ -4,8 +4,8 @@
 
 .. py:class:: ArtifactAllowlistsAPI
 
-    In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so
-    that users can leverage these artifacts on compute configured with shared access mode.
+    In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the ``allowlist`` in UC so
+    that users can use these artifacts on compute configured with shared access mode.
 
     .. py:method:: get(artifact_type: ArtifactType) -> ArtifactAllowlistInfo
 

@@ -12,6 +12,7 @@ from .version import __version__
 RUNTIME_KEY = "runtime"
 CICD_KEY = "cicd"
 AUTH_KEY = "auth"
+META_HARNESS_KEY = "meta-harness"
 
 _product_name = "unknown"
 _product_version = "0.0.0"
@@ -22,6 +23,11 @@ _extra = []
 
 # Precompiled regex patterns
 alphanum_pattern = re.compile(r"^[a-zA-Z0-9_.+-]+$")
+
+# Matches any single character not allowed in a User-Agent token. Used to
+# sanitize free-form values (e.g. the AGENT/AI_AGENT fallback) by replacing
+# disallowed characters with a hyphen.
+alphanum_inverse_pattern = re.compile(r"[^a-zA-Z0-9_.+-]")
 
 # official https://semver.org/ recommendation: https://regex101.com/r/Ly7O1x/
 # with addition of "x" wildcards for minor/patch versions. Also, patch version may be omitted.
@@ -133,6 +139,11 @@ def _sanitize_header_value(value: str) -> str:
     return value
 
 
+def _sanitize_agent_value(value: str) -> str:
+    """Replace any character not allowed in a User-Agent token with a hyphen."""
+    return alphanum_inverse_pattern.sub("-", value)
+
+
 def to_string(
     alternate_product_info: Optional[Tuple[str, str]] = None,
     other_info: Optional[List[Tuple[str, str]]] = None,
@@ -165,6 +176,9 @@ def to_string(
     agent = agent_provider()
     if agent:
         base.append(("agent", agent))
+    meta_harness = meta_harness_provider()
+    if meta_harness:
+        base.append((META_HARNESS_KEY, meta_harness))
     return " ".join(f"{k}/{v}" for k, v in base)
 
 
@@ -226,7 +240,8 @@ def cicd_provider() -> str:
 
 
 # Canonical list of known AI coding agents. Alphabetical by product name.
-# Keep this list in sync with databricks-sdk-go and databricks-sdk-java.
+# Keep this list, and the AGENT / AI_AGENT fallback handling in
+# _agent_env_fallback, in sync with databricks-sdk-go and databricks-sdk-java.
 #
 # Each record has a single env var that identifies the product by presence
 # (the env var just needs to be set, even to an empty string).
@@ -234,6 +249,12 @@ def cicd_provider() -> str:
 class _AgentRecord:
     env_var: str
     product: str
+
+
+# Caps fallback values to keep the User-Agent bounded. Explicit-matcher
+# products are short by construction; only the fallback path can carry
+# arbitrary lengths.
+_MAX_AGENT_FALLBACK_LEN = 64
 
 
 _KNOWN_AGENTS: List[_AgentRecord] = [
@@ -274,13 +295,12 @@ def agent_provider() -> str:
     every enclosing layer).
 
     Explicit agent env vars (e.g. CLAUDECODE, GOOSE_TERMINAL) always take
-    precedence. The agents.md-standard AGENT=<name> env var is only consulted
-    as a fallback when no explicit matcher fired:
-      - If AGENT matches a known product name, return that product.
-      - Otherwise return "unknown".
+    precedence. The agents.md-standard AGENT=<name> env var and the Vercel
+    AI_AGENT=<name> convention are only consulted as a fallback when no
+    explicit matcher fired (see _agent_env_fallback).
 
-    This means AGENT=<name> never contributes to the multi-agent signal: if
-    any explicit matcher fires, AGENT is ignored entirely, even when it names
+    This means AGENT/AI_AGENT never contribute to the multi-agent signal: if
+    any explicit matcher fires, they are ignored entirely, even when they name
     a different known product.
 
     Result is cached after first call.
@@ -301,14 +321,49 @@ def agent_provider() -> str:
 
 
 def _agent_env_fallback() -> str:
-    """Honor the agents.md AGENT=<name> standard.
+    """Return a sanitized, length-capped name from AGENT or AI_AGENT.
 
-    Returns the value if it matches a known product name, "unknown" if AGENT
-    is set to any other non-empty value, and "" if AGENT is unset or empty.
+    AGENT (the agents.md standard) is preferred; AI_AGENT (the Vercel
+    @vercel/detect-agent convention) is consulted only when AGENT is unset or
+    empty. The value is passed through rather than categorized so that new
+    names are propagated without updating the list of known agents. Returns ""
+    if both are unset or empty.
     """
-    v = os.environ.get("AGENT", "")
+    v = os.environ.get("AGENT") or os.environ.get("AI_AGENT")
     if not v:
         return ""
-    if v in {a.product for a in _KNOWN_AGENTS}:
-        return v
-    return "unknown"
+    return _sanitize_agent_value(v)[:_MAX_AGENT_FALLBACK_LEN]
+
+
+@dataclass(frozen=True)
+class _MetaHarnessRecord:
+    env_var: str
+    product: str
+
+
+# Known agent meta-harnesses, detected independently of agents (a meta-harness
+# is not an agent). Keep in sync with databricks-sdk-go and databricks-sdk-java.
+_KNOWN_META_HARNESSES: List[_MetaHarnessRecord] = [
+    _MetaHarnessRecord("OMNIGENT", "omnigent"),  # https://github.com/omnigent-ai/omnigent
+]
+
+# None = not computed, "" = computed but no meta-harness found.
+_meta_harness_provider = None
+
+
+def meta_harness_provider() -> str:
+    """Detect a known agent meta-harness by presence-only env var, else "".
+
+    Returns "multiple" if more than one matched. Cached after the first call.
+    """
+    global _meta_harness_provider
+    if _meta_harness_provider is not None:
+        return _meta_harness_provider
+    matches = [h.product for h in _KNOWN_META_HARNESSES if h.env_var in os.environ]
+    if len(matches) == 1:
+        _meta_harness_provider = matches[0]
+    elif len(matches) > 1:
+        _meta_harness_provider = "multiple"
+    else:
+        _meta_harness_provider = ""
+    return _meta_harness_provider

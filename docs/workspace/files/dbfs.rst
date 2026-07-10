@@ -40,13 +40,14 @@
     .. py:method:: create(path: str [, overwrite: Optional[bool]]) -> CreateResponse
 
         Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle
-        timeout on this handle. If a file or directory already exists on the given path and __overwrite__ is
+        timeout on this handle. If a file or directory already exists on the given path and **overwrite** is
         set to false, this call will throw an exception with ``RESOURCE_ALREADY_EXISTS``.
 
         A typical workflow for file upload would be:
 
-        1. Issue a ``create`` call and get a handle. 2. Issue one or more ``add-block`` calls with the handle
-        you have. 3. Issue a ``close`` call with the handle you have.
+        1. Issue a ``create`` call and get a handle.
+        2. Issue one or more ``add-block`` calls with the handle you have.
+        3. Issue a ``close`` call with the handle you have.
 
         :param path: str
           The path of the new file. The path should be the absolute DBFS path.
@@ -92,7 +93,7 @@
     .. py:method:: get_status(path: str) -> FileInfo
 
         Gets the file information for a file or directory. If the file or directory does not exist, this call
-        throws an exception with `RESOURCE_DOES_NOT_EXIST`.
+        throws an exception with ``RESOURCE_DOES_NOT_EXIST``.
 
         :param path: str
           The path of the file or directory. The path should be the absolute DBFS path.
@@ -122,8 +123,8 @@
     .. py:method:: move(source_path: str, destination_path: str)
 
         Moves a file from one location to another location within DBFS. If the source file does not exist,
-        this call throws an exception with `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the
-        destination path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If the given source
+        this call throws an exception with ``RESOURCE_DOES_NOT_EXIST``. If a file already exists in the
+        destination path, this call throws an exception with ``RESOURCE_ALREADY_EXISTS``. If the given source
         path is a directory, this call always recursively moves all files.
 
         :param source_path: str
@@ -148,8 +149,8 @@
 
         Alternatively you can pass contents as base64 string.
 
-        The amount of data that can be passed (when not streaming) using the __contents__ parameter is limited
-        to 1 MB. `MAX_BLOCK_SIZE_EXCEEDED` will be thrown if this limit is exceeded.
+        The amount of data that can be passed (when not streaming) using the **contents** parameter is limited
+        to 1 MB. ``MAX_BLOCK_SIZE_EXCEEDED`` will be thrown if this limit is exceeded.
 
         If you want to upload large files, use the streaming upload. For details, see :method:dbfs/create,
         :method:dbfs/addBlock, :method:dbfs/close.
@@ -167,11 +168,11 @@
     .. py:method:: read(path: str [, length: Optional[int], offset: Optional[int]]) -> ReadResponse
 
         Returns the contents of a file. If the file does not exist, this call throws an exception with
-        `RESOURCE_DOES_NOT_EXIST`. If the path is a directory, the read length is negative, or if the offset
-        is negative, this call throws an exception with `INVALID_PARAMETER_VALUE`. If the read length exceeds
-        1 MB, this call throws an exception with `MAX_READ_SIZE_EXCEEDED`.
+        ``RESOURCE_DOES_NOT_EXIST``. If the path is a directory, the read length is negative, or if the offset
+        is negative, this call throws an exception with ``INVALID_PARAMETER_VALUE``. If the read length
+        exceeds 1 MB, this call throws an exception with ``MAX_READ_SIZE_EXCEEDED``.
 
-        If `offset + length` exceeds the number of bytes in a file, it reads the contents until the end of
+        If ``offset + length`` exceeds the number of bytes in a file, it reads the contents until the end of
         file.
 
         :param path: str

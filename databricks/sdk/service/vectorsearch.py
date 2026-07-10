@@ -223,11 +223,13 @@ class DeltaSyncVectorIndexSpecRequest:
     """[Optional] Name of the Delta table to sync the vector index contents and computed embeddings to."""
 
     pipeline_type: Optional[PipelineType] = None
-    """Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
-    system stops processing after successfully refreshing the source table in the pipeline once,
-    ensuring the table is updated based on the data available when the update started. -
-    `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it
-    arrives in the source table to keep vector index fresh."""
+    """Pipeline execution mode.
+    
+    - ``TRIGGERED``: If the pipeline uses the triggered execution mode, the system stops processing
+      after successfully refreshing the source table in the pipeline once, ensuring the table is
+      updated based on the data available when the update started.
+    - ``CONTINUOUS``: If the pipeline uses continuous execution, the pipeline processes new data as
+      it arrives in the source table to keep vector index fresh."""
 
     source_table: Optional[str] = None
     """The name of the source table."""
@@ -310,11 +312,13 @@ class DeltaSyncVectorIndexSpecResponse:
     """The ID of the pipeline that is used to sync the index."""
 
     pipeline_type: Optional[PipelineType] = None
-    """Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
-    system stops processing after successfully refreshing the source table in the pipeline once,
-    ensuring the table is updated based on the data available when the update started. -
-    `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it
-    arrives in the source table to keep vector index fresh."""
+    """Pipeline execution mode.
+    
+    - ``TRIGGERED``: If the pipeline uses the triggered execution mode, the system stops processing
+      after successfully refreshing the source table in the pipeline once, ensuring the table is
+      updated based on the data available when the update started.
+    - ``CONTINUOUS``: If the pipeline uses continuous execution, the pipeline processes new data as
+      it arrives in the source table to keep vector index fresh."""
 
     source_table: Optional[str] = None
     """The name of the source table."""
@@ -385,9 +389,9 @@ class DirectAccessVectorIndexSpec:
     """The columns that contain the embedding vectors. The format should be array[double]."""
 
     schema_json: Optional[str] = None
-    """The schema of the index in JSON format. Supported types are `integer`, `long`, `float`,
-    `double`, `boolean`, `string`, `date`, `timestamp`. Supported types for vector column:
-    `array<float>`, `array<double>`,`."""
+    """The schema of the index in JSON format. Supported types are ``integer``, ``long``, ``float``,
+    ``double``, ``boolean``, ``string``, ``date``, ``timestamp``. Supported types for vector column:
+    ``array<float>``, ``array<double>``,`."""
 
     def as_dict(self) -> dict:
         """Serializes the DirectAccessVectorIndexSpec into a dictionary suitable for use as a JSON request body."""
@@ -707,6 +711,40 @@ class EndpointType(Enum):
 
 
 @dataclass
+class FacetResultData:
+    """Facet aggregation rows returned by a query."""
+
+    facet_array: Optional[List[List[str]]] = None
+    """Facet rows. Each row is ``[facet_column_name, value_or_range, count]``."""
+
+    facet_row_count: Optional[int] = None
+    """Number of facet rows returned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FacetResultData into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.facet_array:
+            body["facet_array"] = [v for v in self.facet_array]
+        if self.facet_row_count is not None:
+            body["facet_row_count"] = self.facet_row_count
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FacetResultData into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.facet_array:
+            body["facet_array"] = self.facet_array
+        if self.facet_row_count is not None:
+            body["facet_row_count"] = self.facet_row_count
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FacetResultData:
+        """Deserializes the FacetResultData from a dictionary."""
+        return cls(facet_array=d.get("facet_array", None), facet_row_count=d.get("facet_row_count", None))
+
+
+@dataclass
 class GetVectorSearchEndpointPermissionLevelsResponse:
     permission_levels: Optional[List[VectorSearchEndpointPermissionsDescription]] = None
     """Specific permission levels"""
@@ -732,10 +770,11 @@ class GetVectorSearchEndpointPermissionLevelsResponse:
 
 
 class IndexSubtype(Enum):
-    """The subtype of the AI Search index, determining the indexing and retrieval strategy. - `VECTOR`:
-    Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An index that uses full-text search without
-    vector embeddings. - `HYBRID`: An index that uses vector embeddings for similarity search and
-    hybrid search."""
+    """The subtype of the AI Search index, determining the indexing and retrieval strategy.
+
+    - ``VECTOR``: Not supported. Use ``HYBRID`` instead.
+    - ``FULL_TEXT``: An index that uses full-text search without vector embeddings.
+    - ``HYBRID``: An index that uses vector embeddings for similarity search and hybrid search."""
 
     FULL_TEXT = "FULL_TEXT"
     HYBRID = "HYBRID"
@@ -1023,6 +1062,9 @@ class MiniVectorIndex:
     creator: Optional[str] = None
     """The user who created the index."""
 
+    endpoint_id: Optional[str] = None
+    """ID of the endpoint associated with the index."""
+
     endpoint_name: Optional[str] = None
     """Name of the endpoint associated with the index"""
 
@@ -1042,6 +1084,8 @@ class MiniVectorIndex:
         body = {}
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
         if self.index_subtype is not None:
@@ -1059,6 +1103,8 @@ class MiniVectorIndex:
         body = {}
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
         if self.index_subtype is not None:
@@ -1076,6 +1122,7 @@ class MiniVectorIndex:
         """Deserializes the MiniVectorIndex from a dictionary."""
         return cls(
             creator=d.get("creator", None),
+            endpoint_id=d.get("endpoint_id", None),
             endpoint_name=d.get("endpoint_name", None),
             index_subtype=_enum(d, "index_subtype", IndexSubtype),
             index_type=_enum(d, "index_type", VectorIndexType),
@@ -1119,11 +1166,13 @@ class PatchEndpointBudgetPolicyResponse:
 
 
 class PipelineType(Enum):
-    """Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
-    system stops processing after successfully refreshing the source table in the pipeline once,
-    ensuring the table is updated based on the data available when the update started. -
-    `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it
-    arrives in the source table to keep vector index fresh."""
+    """Pipeline execution mode.
+
+    - ``TRIGGERED``: If the pipeline uses the triggered execution mode, the system stops processing
+      after successfully refreshing the source table in the pipeline once, ensuring the table is
+      updated based on the data available when the update started.
+    - ``CONTINUOUS``: If the pipeline uses continuous execution, the pipeline processes new data as
+      it arrives in the source table to keep vector index fresh."""
 
     CONTINUOUS = "CONTINUOUS"
     TRIGGERED = "TRIGGERED"
@@ -1131,13 +1180,16 @@ class PipelineType(Enum):
 
 @dataclass
 class QueryVectorIndexResponse:
+    facet_result: Optional[FacetResultData] = None
+    """Facet aggregation rows returned by a query."""
+
     manifest: Optional[ResultManifest] = None
     """Metadata about the result set."""
 
     next_page_token: Optional[str] = None
-    """[Optional] Token that can be used in `QueryVectorIndexNextPage` API to get next page of results.
-    If more than 1000 results satisfy the query, they are returned in groups of 1000. Empty value
-    means no more results. The maximum number of results that can be returned is 10,000."""
+    """[Optional] Token that can be used in ``QueryVectorIndexNextPage`` API to get next page of
+    results. If more than 1000 results satisfy the query, they are returned in groups of 1000. Empty
+    value means no more results. The maximum number of results that can be returned is 10,000."""
 
     result: Optional[ResultData] = None
     """Data returned in the query result."""
@@ -1145,6 +1197,8 @@ class QueryVectorIndexResponse:
     def as_dict(self) -> dict:
         """Serializes the QueryVectorIndexResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.facet_result:
+            body["facet_result"] = self.facet_result.as_dict()
         if self.manifest:
             body["manifest"] = self.manifest.as_dict()
         if self.next_page_token is not None:
@@ -1156,6 +1210,8 @@ class QueryVectorIndexResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryVectorIndexResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.facet_result:
+            body["facet_result"] = self.facet_result
         if self.manifest:
             body["manifest"] = self.manifest
         if self.next_page_token is not None:
@@ -1168,6 +1224,7 @@ class QueryVectorIndexResponse:
     def from_dict(cls, d: Dict[str, Any]) -> QueryVectorIndexResponse:
         """Deserializes the QueryVectorIndexResponse from a dictionary."""
         return cls(
+            facet_result=_from_dict(d, "facet_result", FacetResultData),
             manifest=_from_dict(d, "manifest", ResultManifest),
             next_page_token=d.get("next_page_token", None),
             result=_from_dict(d, "result", ResultData),
@@ -1177,8 +1234,10 @@ class QueryVectorIndexResponse:
 @dataclass
 class RerankerConfig:
     model: Optional[str] = None
-    """Reranker identifier: - When model_type=BASE/UNSPECIFIED: must be "databricks_reranker". - When
-    model_type=FINETUNED: the Model Serving endpoint name hosting a finetuned reranker."""
+    """Reranker identifier:
+    
+    - When model_type=BASE/UNSPECIFIED: must be "databricks_reranker".
+    - When model_type=FINETUNED: the Model Serving endpoint name hosting a finetuned reranker."""
 
     parameters: Optional[RerankerConfigRerankerParameters] = None
     """Parameters that control how the reranker processes the query results."""
@@ -1275,6 +1334,12 @@ class ResultManifest:
     columns: Optional[List[ColumnInfo]] = None
     """Information about each column in the result set."""
 
+    facet_column_count: Optional[int] = None
+    """Number of columns in ``facet_result``."""
+
+    facet_columns: Optional[List[ColumnInfo]] = None
+    """Information about each column in ``facet_result``."""
+
     def as_dict(self) -> dict:
         """Serializes the ResultManifest into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1282,6 +1347,10 @@ class ResultManifest:
             body["column_count"] = self.column_count
         if self.columns:
             body["columns"] = [v.as_dict() for v in self.columns]
+        if self.facet_column_count is not None:
+            body["facet_column_count"] = self.facet_column_count
+        if self.facet_columns:
+            body["facet_columns"] = [v.as_dict() for v in self.facet_columns]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1291,12 +1360,21 @@ class ResultManifest:
             body["column_count"] = self.column_count
         if self.columns:
             body["columns"] = self.columns
+        if self.facet_column_count is not None:
+            body["facet_column_count"] = self.facet_column_count
+        if self.facet_columns:
+            body["facet_columns"] = self.facet_columns
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultManifest:
         """Deserializes the ResultManifest from a dictionary."""
-        return cls(column_count=d.get("column_count", None), columns=_repeated_dict(d, "columns", ColumnInfo))
+        return cls(
+            column_count=d.get("column_count", None),
+            columns=_repeated_dict(d, "columns", ColumnInfo),
+            facet_column_count=d.get("facet_column_count", None),
+            facet_columns=_repeated_dict(d, "facet_columns", ColumnInfo),
+        )
 
 
 @dataclass
@@ -1587,6 +1665,9 @@ class VectorIndex:
 
     direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None
 
+    endpoint_id: Optional[str] = None
+    """ID of the endpoint associated with the index."""
+
     endpoint_name: Optional[str] = None
     """Name of the endpoint associated with the index"""
 
@@ -1612,6 +1693,8 @@ class VectorIndex:
             body["delta_sync_index_spec"] = self.delta_sync_index_spec.as_dict()
         if self.direct_access_index_spec:
             body["direct_access_index_spec"] = self.direct_access_index_spec.as_dict()
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
         if self.index_subtype is not None:
@@ -1635,6 +1718,8 @@ class VectorIndex:
             body["delta_sync_index_spec"] = self.delta_sync_index_spec
         if self.direct_access_index_spec:
             body["direct_access_index_spec"] = self.direct_access_index_spec
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
         if self.index_subtype is not None:
@@ -1656,6 +1741,7 @@ class VectorIndex:
             creator=d.get("creator", None),
             delta_sync_index_spec=_from_dict(d, "delta_sync_index_spec", DeltaSyncVectorIndexSpecResponse),
             direct_access_index_spec=_from_dict(d, "direct_access_index_spec", DirectAccessVectorIndexSpec),
+            endpoint_id=d.get("endpoint_id", None),
             endpoint_name=d.get("endpoint_name", None),
             index_subtype=_enum(d, "index_subtype", IndexSubtype),
             index_type=_enum(d, "index_type", VectorIndexType),
@@ -1717,11 +1803,12 @@ class VectorIndexStatus:
 
 
 class VectorIndexType(Enum):
-    """There are 2 types of AI Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a
-    source Delta Table, automatically and incrementally updating the index as the underlying data in
-    the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of
-    vectors and metadata through our REST and SDK APIs. With this model, the user manages index
-    updates."""
+    """There are 2 types of AI Search indexes:
+
+    - ``DELTA_SYNC``: An index that automatically syncs with a source Delta Table, automatically and
+      incrementally updating the index as the underlying data in the Delta Table changes.
+    - ``DIRECT_ACCESS``: An index that supports direct read and write of vectors and metadata
+      through our REST and SDK APIs. With this model, the user manages index updates."""
 
     DELTA_SYNC = "DELTA_SYNC"
     DIRECT_ACCESS = "DIRECT_ACCESS"
@@ -2384,10 +2471,12 @@ class VectorSearchIndexesAPI:
     """**Index**: An efficient representation of your embedding vectors that supports real-time and efficient
     approximate nearest neighbor (ANN) search queries.
 
-    There are 2 types of AI Search indexes: - **Delta Sync Index**: An index that automatically syncs with a
-    source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta
-    Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of vectors
-    and metadata through our REST and SDK APIs. With this model, the user manages index updates."""
+    There are 2 types of AI Search indexes:
+
+    - **Delta Sync Index**: An index that automatically syncs with a source Delta Table, automatically and
+      incrementally updating the index as the underlying data in the Delta Table changes.
+    - **Direct Vector Access Index**: An index that supports direct read and write of vectors and metadata
+      through our REST and SDK APIs. With this model, the user manages index updates."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2413,11 +2502,11 @@ class VectorSearchIndexesAPI:
           Primary key of the index
         :param index_type: :class:`VectorIndexType`
         :param delta_sync_index_spec: :class:`DeltaSyncVectorIndexSpecRequest` (optional)
-          Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
+          Specification for Delta Sync Index. Required if ``index_type`` is ``DELTA_SYNC``.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
-          Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
+          Specification for Direct Vector Access Index. Required if ``index_type`` is ``DIRECT_ACCESS``.
         :param index_subtype: :class:`IndexSubtype` (optional)
-          The subtype of the index. Use `HYBRID` or `FULL_TEXT`. `VECTOR` is not supported.
+          The subtype of the index. Use ``HYBRID`` or ``FULL_TEXT``. ``VECTOR`` is not supported.
 
         :returns: :class:`VectorIndex`
         """
@@ -2561,13 +2650,16 @@ class VectorSearchIndexesAPI:
         columns: List[str],
         *,
         columns_to_rerank: Optional[List[str]] = None,
+        facets: Optional[List[str]] = None,
         filters_json: Optional[str] = None,
         num_results: Optional[int] = None,
+        query_columns: Optional[List[str]] = None,
         query_text: Optional[str] = None,
         query_type: Optional[str] = None,
         query_vector: Optional[List[float]] = None,
         reranker: Optional[RerankerConfig] = None,
         score_threshold: Optional[float] = None,
+        sort_columns: Optional[List[str]] = None,
     ) -> QueryVectorIndexResponse:
         """Query the specified vector index.
 
@@ -2577,31 +2669,43 @@ class VectorSearchIndexesAPI:
           List of column names to include in the response.
         :param columns_to_rerank: List[str] (optional)
           Column names used to retrieve data to send to the reranker.
+        :param facets: List[str] (optional)
+          Facets to compute over the matched results. Each entry has one of these forms: ``"<column>"`` - top
+          10 distinct values by count ``"<column> TOP <n>"`` - top n distinct values, where n > 0 ``"<column>
+          BUCKETS [[from,to],...]"`` - inclusive numeric ranges ``TOP`` and ``BUCKETS`` are case-insensitive.
+          A column may appear at most once.
         :param filters_json: str (optional)
           JSON string representing query filters.
 
           Example filters:
 
-          - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for id greater than 5. - `{"id
-          <=": 5}`: Filter for id less than equal to 5. - `{"id >=": 5}`: Filter for id greater than equal to
-          5. - `{"id": 5}`: Filter for id equal to 5.
+          - ``{"id <": 5}``: Filter for id less than 5.
+          - ``{"id >": 5}``: Filter for id greater than 5.
+          - ``{"id <=": 5}``: Filter for id less than equal to 5.
+          - ``{"id >=": 5}``: Filter for id greater than equal to 5.
+          - ``{"id": 5}``: Filter for id equal to 5.
         :param num_results: int (optional)
           Number of results to return. Defaults to 10.
+        :param query_columns: List[str] (optional)
+          Text columns to search for ``query_text``. When empty, all text columns are searched.
         :param query_text: str (optional)
           Query text. Required for Delta Sync Index using model endpoint.
         :param query_type: str (optional)
-          The query type to use. Choices are `ANN` and `HYBRID` and `FULL_TEXT`. Defaults to `ANN`.
+          The query type to use. Choices are ``ANN`` and ``HYBRID`` and ``FULL_TEXT``. Defaults to ``ANN``.
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
         :param reranker: :class:`RerankerConfig` (optional)
           If set, the top 50 results are reranked with the Databricks Reranker model before returning the
-          `num_results` results to the user. The setting `columns_to_rerank` selects which columns are used
-          for reranking. For each datapoint, the columns selected are concatenated before being sent to the
-          reranking model. See https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank for
-          more information.
+          ``num_results`` results to the user. The setting ``columns_to_rerank`` selects which columns are
+          used for reranking. For each datapoint, the columns selected are concatenated before being sent to
+          the reranking model. See https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank
+          for more information.
         :param score_threshold: float (optional)
           Threshold for the approximate nearest neighbor search. Defaults to 0.0.
+        :param sort_columns: List[str] (optional)
+          Sort results by column values instead of the default relevance ordering. Each clause has the form
+          ``"<column> ASC"`` or ``"<column> DESC"``, for example ``["rating DESC", "price ASC"]``.
 
         :returns: :class:`QueryVectorIndexResponse`
         """
@@ -2611,10 +2715,14 @@ class VectorSearchIndexesAPI:
             body["columns"] = [v for v in columns]
         if columns_to_rerank is not None:
             body["columns_to_rerank"] = [v for v in columns_to_rerank]
+        if facets is not None:
+            body["facets"] = [v for v in facets]
         if filters_json is not None:
             body["filters_json"] = filters_json
         if num_results is not None:
             body["num_results"] = num_results
+        if query_columns is not None:
+            body["query_columns"] = [v for v in query_columns]
         if query_text is not None:
             body["query_text"] = query_text
         if query_type is not None:
@@ -2625,6 +2733,8 @@ class VectorSearchIndexesAPI:
             body["reranker"] = reranker.as_dict()
         if score_threshold is not None:
             body["score_threshold"] = score_threshold
+        if sort_columns is not None:
+            body["sort_columns"] = [v for v in sort_columns]
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -2640,15 +2750,15 @@ class VectorSearchIndexesAPI:
     def query_next_page(
         self, index_name: str, *, endpoint_name: Optional[str] = None, page_token: Optional[str] = None
     ) -> QueryVectorIndexResponse:
-        """Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request
-        to fetch next page of results.
+        """Use ``next_page_token`` returned from previous ``QueryVectorIndex`` or ``QueryVectorIndexNextPage``
+        request to fetch next page of results.
 
         :param index_name: str
           Name of the vector index to query.
         :param endpoint_name: str (optional)
           Name of the endpoint.
         :param page_token: str (optional)
-          Page token returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` API.
+          Page token returned from previous ``QueryVectorIndex`` or ``QueryVectorIndexNextPage`` API.
 
         :returns: :class:`QueryVectorIndexResponse`
         """
@@ -2675,8 +2785,8 @@ class VectorSearchIndexesAPI:
     def scan_index(
         self, index_name: str, *, last_primary_key: Optional[str] = None, num_results: Optional[int] = None
     ) -> ScanVectorIndexResponse:
-        """Scan the specified vector index and return the first `num_results` entries after the exclusive
-        `primary_key`.
+        """Scan the specified vector index and return the first ``num_results`` entries after the exclusive
+        ``primary_key``.
 
         :param index_name: str
           Name of the vector index to scan.
@@ -2714,6 +2824,7 @@ class VectorSearchIndexesAPI:
 
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -2723,7 +2834,7 @@ class VectorSearchIndexesAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", headers=headers)
+        self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", body=body, headers=headers)
 
     def upsert_data_vector_index(self, index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
         """Handles the upserting of data into a specified vector index.

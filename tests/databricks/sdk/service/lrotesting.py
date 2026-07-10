@@ -163,8 +163,8 @@ class Operation:
     """This resource represents a long-running operation that is the result of a network API call."""
 
     done: Optional[bool] = None
-    """If the value is `false`, it means the operation is still in progress. If `true`, the operation
-    is completed, and either `error` or `response` is available."""
+    """If the value is ``false``, it means the operation is still in progress. If ``true``, the
+    operation is completed, and either ``error`` or ``response`` is available."""
 
     error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
     """The error result of the operation in case of failure or cancellation."""
@@ -176,8 +176,8 @@ class Operation:
 
     name: Optional[str] = None
     """The server-assigned name, which is only unique within the same service that originally returns
-    it. If you use the default HTTP mapping, the `name` should be a resource name ending with
-    `operations/{unique_id}`."""
+    it. If you use the default HTTP mapping, the ``name`` should be a resource name ending with
+    ``operations/{unique_id}``."""
 
     response: Optional[dict] = None
     """The normal, successful response of the operation."""
@@ -310,7 +310,13 @@ class LroTestingAPI:
         self._api.do("POST", f"/api/2.0/lro-testing/operations/{name}/cancel", headers=headers)
 
     def create_test_resource(self, resource: TestResource) -> CreateTestResourceOperation:
-        """Simple method to create test resource for LRO testing
+        """Simple method to create test resource for LRO testing.
+
+        Example:
+
+        .. code-block:: python
+
+           op = w.lro_testing.create_test_resource(resource=resource)
 
         :param resource: :class:`TestResource`
           The resource to create

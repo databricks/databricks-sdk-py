@@ -503,7 +503,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ExecuteStatementRequestOnWaitTimeout
 
-   When `wait_timeout > 0s`, the call will block up to the specified time. If the statement execution doesn't finish within this time, `on_wait_timeout` determines whether the execution should continue or be canceled. When set to `CONTINUE`, the statement execution continues asynchronously and the call returns a statement ID which can be used for polling with :method:statementexecution/getStatement. When set to `CANCEL`, the statement execution is canceled and the call returns with a `CANCELED` state.
+   When ``wait_timeout > 0s``, the call will block up to the specified time. If the statement execution doesn't finish within this time, ``on_wait_timeout`` determines whether the execution should continue or be canceled. When set to ``CONTINUE``, the statement execution continues asynchronously and the call returns a statement ID which can be used for polling with :method:statementexecution/getStatement. When set to ``CANCEL``, the statement execution is canceled and the call returns with a ``CANCELED`` state.
 
    .. py:attribute:: CANCEL
       :value: "CANCEL"
@@ -731,7 +731,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PermissionLevel
 
-   * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
+   - ``CAN_VIEW``: Can view the query - ``CAN_RUN``: Can run the query - ``CAN_EDIT``: Can edit the query - ``CAN_MANAGE``: Can manage the query
 
    .. py:attribute:: CAN_EDIT
       :value: "CAN_EDIT"
@@ -1017,7 +1017,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    EndpointSpotInstancePolicy configures whether the endpoint should use spot instances.
    The breakdown of how the EndpointSpotInstancePolicy converts to per cloud configurations is:
    +-------+--------------------------------------+--------------------------------+ | Cloud | COST_OPTIMIZED | RELIABILITY_OPTIMIZED | +-------+--------------------------------------+--------------------------------+ | AWS | On Demand Driver with Spot Executors | On Demand Driver and Executors | | AZURE | On Demand Driver and Executors | On Demand Driver and Executors | +-------+--------------------------------------+--------------------------------+
-   While including "spot" in the enum name may limit the the future extensibility of this field because it limits this enum to denoting "spot or not", this is the field that PM recommends after discussion with customers per SC-48783.
 
    .. py:attribute:: COST_OPTIMIZED
       :value: "COST_OPTIMIZED"
@@ -1034,7 +1033,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: State
 
-   * State of a warehouse.
+   State of a warehouse.
 
    .. py:attribute:: DELETED
       :value: "DELETED"

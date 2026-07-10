@@ -96,8 +96,8 @@
           For notebooks, the name is the notebook file name. For jar analyses, the name is the jar analysis
           name.
         :param asset: :class:`CleanRoomAsset`
-          The asset to update. The asset's `name` and `asset_type` fields are used to identify the asset to
-          update.
+          The asset to update. The asset's ``name`` and ``asset_type`` fields are used to identify the asset
+          to update.
 
         :returns: :class:`CleanRoomAsset`
         

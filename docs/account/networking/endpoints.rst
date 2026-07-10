@@ -19,7 +19,7 @@
 
         :param parent: str
           The parent resource name of the account under which the endpoint is created. Format:
-          `accounts/{account_id}`.
+          ``accounts/{account_id}``.
         :param endpoint: :class:`Endpoint`
 
         :returns: :class:`Endpoint`
@@ -50,7 +50,7 @@
         Lists all network connectivity endpoints for the account.
 
         :param parent: str
-          The parent resource name of the account to list endpoints for. Format: `accounts/{account_id}`.
+          The parent resource name of the account to list endpoints for. Format: ``accounts/{account_id}``.
         :param page_size: int (optional)
         :param page_token: str (optional)
 

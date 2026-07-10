@@ -39,10 +39,11 @@
     .. py:method:: get_workspace_access_detail(workspace_id: int, principal_id: int [, view: Optional[WorkspaceAccessDetailView]]) -> WorkspaceAccessDetail
 
         Returns the access details for a principal in a workspace. Allows for checking access details for any
-        provisioned principal (user, service principal, or group) in a workspace. * Provisioned principal here
-        refers to one that has been synced into Databricks from the customer's IdP or added explicitly to
-        Databricks via SCIM/UI. Allows for passing in a "view" parameter to control what fields are returned
-        (BASIC by default or FULL).
+        provisioned principal (user, service principal, or group) in a workspace.
+
+        - Provisioned principal here refers to one that has been synced into Databricks from the customer's
+          IdP or added explicitly to Databricks via SCIM/UI. Allows for passing in a "view" parameter to
+          control what fields are returned (BASIC by default or FULL).
 
         :param workspace_id: int
           Required. The workspace ID for which the access details are being requested.
@@ -70,7 +71,9 @@
 
     .. py:method:: list_workspace_assignment_details(workspace_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> ListWorkspaceAssignmentDetailsResponse
 
-        Lists workspace assignment details for a workspace.
+        Lists workspace assignment details for a workspace. For scalability, the response omits the
+        per-principal entitlement fields (``entitlements`` and ``effective_entitlements``); call
+        GetWorkspaceAssignmentDetail to read entitlements for a single principal.
 
         :param workspace_id: int
           Required. The workspace ID for which the workspace assignment details are being fetched.

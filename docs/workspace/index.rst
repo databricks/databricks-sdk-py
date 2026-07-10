@@ -8,8 +8,9 @@ These APIs are available from WorkspaceClient
    :maxdepth: 1
 
    agentbricks/index
+   aisearch/index
    apps/index
-   bundle/index
+   bundledeployments/index
    catalog/index
    cleanrooms/index
    compute/index

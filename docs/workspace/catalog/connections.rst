@@ -4,16 +4,15 @@
 
 .. py:class:: ConnectionsAPI
 
-    Connections allow for creating a connection to an external data source.
+    A connection represents an external data source for use within Databricks.
 
-    A connection is an abstraction of an external data source that can be connected from Databricks Compute.
-    Creating a connection object is the first step to managing external data sources within Unity Catalog,
-    with the second step being creating a data object (catalog, schema, or table) using the connection. Data
-    objects derived from a connection can be written to or read from similar to other Unity Catalog data
-    objects based on cloud storage. Users may create different types of connections with each connection
-    having a unique set of configuration options to support credential management and other settings.
+    Creating a connection object is the first step to managing external data sources within Unity Catalog. The
+    second step is creating a data object (catalog, schema, or table) using the connection. Data objects
+    derived from a connection can be written to or read from similar to other Unity Catalog data objects based
+    on cloud storage. You can create different types of connections, and each connection has a unique set of
+    configuration options to support credential management and other settings.
 
-    .. py:method:: create(name: str, connection_type: ConnectionType, options: Dict[str, str] [, comment: Optional[str], properties: Optional[Dict[str, str]], read_only: Optional[bool]]) -> ConnectionInfo
+    .. py:method:: create(name: str, connection_type: ConnectionType, options: Dict[str, str] [, comment: Optional[str], environment_settings: Optional[EnvironmentSettings], properties: Optional[Dict[str, str]], read_only: Optional[bool]]) -> ConnectionInfo
 
 
         Usage:
@@ -54,6 +53,8 @@
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param environment_settings: :class:`EnvironmentSettings` (optional)
+          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
@@ -143,17 +144,20 @@
         absent, which is the only indication that the end of results has been reached.
 
         :param max_results: int (optional)
-          Maximum number of connections to return. - If not set, all connections are returned (not
-          recommended). - when set to a value greater than 0, the page length is the minimum of this value and
-          a server configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of connections to return.
+
+          - If not set, all connections are returned (not recommended).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
         :returns: Iterator over :class:`ConnectionInfo`
         
 
-    .. py:method:: update(name: str, options: Dict[str, str] [, new_name: Optional[str], owner: Optional[str]]) -> ConnectionInfo
+    .. py:method:: update(name: str, options: Dict[str, str] [, environment_settings: Optional[EnvironmentSettings], new_name: Optional[str], owner: Optional[str]]) -> ConnectionInfo
 
 
         Usage:
@@ -196,6 +200,8 @@
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
+        :param environment_settings: :class:`EnvironmentSettings` (optional)
+          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param new_name: str (optional)
           New name for the connection.
         :param owner: str (optional)

@@ -5,11 +5,11 @@
 .. py:class:: SchemasAPI
 
     A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace. A schema
-    organizes tables, views and functions. To access (or list) a table or view in a schema, users must have
+    organizes tables, views, and functions. To access (or list) a table or view in a schema, users must have
     the USE_SCHEMA data permission on the schema and its parent catalog, and they must have the SELECT
     permission on the table or view.
 
-    .. py:method:: create(name: str, catalog_name: str [, comment: Optional[str], properties: Optional[Dict[str, str]], storage_root: Optional[str]]) -> SchemaInfo
+    .. py:method:: create(name: str, catalog_name: str [, comment: Optional[str], custom_max_retention_hours: Optional[int], properties: Optional[Dict[str, str]], storage_root: Optional[str]]) -> SchemaInfo
 
 
         Usage:
@@ -39,6 +39,8 @@
           Name of parent catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the schema.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param storage_root: str (optional)
@@ -133,17 +135,19 @@
           Whether to include schemas in the response for which the principal can only access selective
           metadata for
         :param max_results: int (optional)
-          Maximum number of schemas to return. If not set, all the schemas are returned (not recommended). -
-          when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of schemas to return. If not set, all the schemas are returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
         :returns: Iterator over :class:`SchemaInfo`
         
 
-    .. py:method:: update(full_name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> SchemaInfo
+    .. py:method:: update(full_name: str [, comment: Optional[str], custom_max_retention_hours: Optional[int], enable_predictive_optimization: Optional[EnablePredictiveOptimization], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> SchemaInfo
 
 
         Usage:
@@ -167,14 +171,16 @@
             w.schemas.delete(full_name=created.full_name)
 
         Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If
-        the caller is a metastore admin, only the __owner__ field can be changed in the update. If the
-        __name__ field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
+        the caller is a metastore admin, only the **owner** field can be changed in the update. If the
+        **name** field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
         privilege on the parent catalog.
 
         :param full_name: str
           Full name of the schema.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the schema.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param new_name: str (optional)

@@ -72,17 +72,26 @@ class AutoTaggingConfigAutoTaggingMode(Enum):
 @dataclass
 class CatalogConfig:
     """Data Classification configuration for a Unity Catalog catalog. This message follows the "At Most
-    One Resource" pattern: at most one CatalogConfig exists per catalog. - Full CRUD operations are
-    supported: Create enables Data Classification, Delete disables it - It has no unique identifier
-    of its own and uses its parent catalog's identifier (catalog_name)"""
+    One Resource" pattern: at most one CatalogConfig exists per catalog.
+
+    - Full CRUD operations are supported: Create enables Data Classification, Delete disables it
+    - It has no unique identifier of its own and uses its parent catalog's identifier (catalog_name)"""
 
     auto_tag_configs: Optional[List[AutoTaggingConfig]] = None
     """List of auto-tagging configurations for this catalog. Empty list means no auto-tagging is
     enabled."""
 
+    excluded_schemas: Optional[CatalogConfigSchemaNames] = None
+    """Schemas to exclude from the scan, each named relative to the parent catalog. If specified, all
+    schemas except the specified ones will be scanned. Mutually exclusive with ``included_schemas``:
+    only one may be set per request. If neither ``included_schemas`` nor ``excluded_schemas`` is
+    set, all schemas are scanned."""
+
     included_schemas: Optional[CatalogConfigSchemaNames] = None
-    """Schemas to include in the scan. Empty list is not supported as it results in a no-op scan. If
-    `included_schemas` is not set, all schemas are scanned."""
+    """Schemas to include in the scan, each named relative to the parent catalog. If specified, only
+    listed schemas will be scanned. Mutually exclusive with ``excluded_schemas``: only one may be
+    set per request. If neither ``included_schemas`` nor ``excluded_schemas`` is set, all schemas
+    are scanned."""
 
     name: Optional[str] = None
     """Resource name in the format: catalogs/{catalog_name}/config."""
@@ -92,6 +101,8 @@ class CatalogConfig:
         body = {}
         if self.auto_tag_configs:
             body["auto_tag_configs"] = [v.as_dict() for v in self.auto_tag_configs]
+        if self.excluded_schemas:
+            body["excluded_schemas"] = self.excluded_schemas.as_dict()
         if self.included_schemas:
             body["included_schemas"] = self.included_schemas.as_dict()
         if self.name is not None:
@@ -103,6 +114,8 @@ class CatalogConfig:
         body = {}
         if self.auto_tag_configs:
             body["auto_tag_configs"] = self.auto_tag_configs
+        if self.excluded_schemas:
+            body["excluded_schemas"] = self.excluded_schemas
         if self.included_schemas:
             body["included_schemas"] = self.included_schemas
         if self.name is not None:
@@ -114,6 +127,7 @@ class CatalogConfig:
         """Deserializes the CatalogConfig from a dictionary."""
         return cls(
             auto_tag_configs=_repeated_dict(d, "auto_tag_configs", AutoTaggingConfig),
+            excluded_schemas=_from_dict(d, "excluded_schemas", CatalogConfigSchemaNames),
             included_schemas=_from_dict(d, "included_schemas", CatalogConfigSchemaNames),
             name=d.get("name", None),
         )
@@ -124,6 +138,7 @@ class CatalogConfigSchemaNames:
     """Wrapper message for a list of schema names."""
 
     names: List[str]
+    """Schema names, each relative to the parent catalog. Must not be empty."""
 
     def as_dict(self) -> dict:
         """Serializes the CatalogConfigSchemaNames into a dictionary suitable for use as a JSON request body."""
@@ -156,8 +171,9 @@ class DataClassificationAPI:
     def create_catalog_config(self, parent: str, catalog_config: CatalogConfig) -> CatalogConfig:
         """Create Data Classification configuration for a catalog.
 
-        Creates a new config resource, which enables Data Classification for the specified catalog. - The
-        config must not already exist for the catalog.
+        Creates a new config resource, which enables Data Classification for the specified catalog.
+
+        - The config must not already exist for the catalog.
 
         :param parent: str
           Parent resource in the format: catalogs/{catalog_name}
@@ -221,9 +237,11 @@ class DataClassificationAPI:
         return CatalogConfig.from_dict(res)
 
     def update_catalog_config(self, name: str, catalog_config: CatalogConfig, update_mask: FieldMask) -> CatalogConfig:
-        """Update the Data Classification configuration for a catalog. - The config must already exist for the
-        catalog. - Updates fields specified in the update_mask. Use update_mask field to perform partial
-        updates of the configuration.
+        """Update the Data Classification configuration for a catalog.
+
+        - The config must already exist for the catalog.
+        - Updates fields specified in the update_mask. Use update_mask field to perform partial updates of the
+          configuration.
 
         :param name: str
           Resource name in the format: catalogs/{catalog_name}/config.

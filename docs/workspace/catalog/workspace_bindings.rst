@@ -4,20 +4,25 @@
 
 .. py:class:: WorkspaceBindingsAPI
 
-    A securable in Databricks can be configured as __OPEN__ or __ISOLATED__. An __OPEN__ securable can be
-    accessed from any workspace, while an __ISOLATED__ securable can only be accessed from a configured list
+    A securable in Databricks can be configured as **OPEN** or **ISOLATED**. An **OPEN** securable can be
+    accessed from any workspace, while an **ISOLATED** securable can only be accessed from a configured list
     of workspaces. This API allows you to configure (bind) securables to workspaces.
 
-    NOTE: The __isolation_mode__ is configured for the securable itself (using its Update method) and the
-    workspace bindings are only consulted when the securable's __isolation_mode__ is set to __ISOLATED__.
+    NOTE: The **isolation_mode** is configured for the securable itself (using its Update method) and the
+    workspace bindings are only consulted when the securable's **isolation_mode** is set to **ISOLATED**.
 
     A securable's workspace bindings can be configured by a metastore admin or the owner of the securable.
 
-    The original path (/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}) is deprecated. Please use
-    the new path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which introduces the
-    ability to bind a securable in READ_ONLY mode (catalogs only).
+    The original path (/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}) is deprecated. Use the new
+    path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}), which introduces the ability to
+    bind a securable in READ_ONLY mode (catalogs only).
 
-    Securable types that support binding: - catalog - storage_credential - credential - external_location
+    Securable types that support binding:
+
+    - catalog
+    - storage_credential
+    - credential
+    - external_location
 
     .. py:method:: get(name: str) -> GetCatalogWorkspaceBindingsResponse
 
@@ -66,10 +71,13 @@
         :param securable_name: str
           The name of the securable.
         :param max_results: int (optional)
-          Maximum number of workspace bindings to return. - When set to 0, the page length is set to a server
-          configured value (recommended); - When set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - When set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all the workspace bindings are returned (not recommended).
+          Maximum number of workspace bindings to return.
+
+          - When set to 0, the page length is set to a server configured value (recommended);
+          - When set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - When set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all the workspace bindings are returned (not recommended).
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 

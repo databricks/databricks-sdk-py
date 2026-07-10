@@ -13,9 +13,9 @@
     **About resource IDs and names**
 
     Resources are identified by hierarchical resource names like
-    `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`. The `name` field on each resource
-    contains this full path and is output-only. Note that `name` refers to this resource path, not the
-    user-visible `display_name`.
+    ``projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}``. The ``name`` field on each
+    resource contains this full path and is output-only. Note that ``name`` refers to this resource path, not
+    the user-visible ``display_name``.
 
     .. py:method:: create_branch(parent: str, branch: Branch, branch_id: str [, replace_existing: Optional[bool]]) -> CreateBranchOperation
 
@@ -28,8 +28,8 @@
         :param branch_id: str
           The ID to use for the Branch. This becomes the final component of the branch's resource name. The ID
           is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, `development` becomes
-          `projects/my-app/branches/development`.
+          lowercase letters, numbers, and hyphens. For example, ``development`` becomes
+          ``projects/my-app/branches/development``.
         :param replace_existing: bool (optional)
           If true, update the branch if it already exists instead of returning an error.
 
@@ -48,7 +48,19 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_database(parent: str, database: Database [, database_id: Optional[str]]) -> CreateDatabaseOperation
+    .. py:method:: create_data_api(parent: str, data_api: DataApi) -> CreateDataApiOperation
+
+        Enable Data API for a database.
+
+        :param parent: str
+          Parent database: projects/{project_id}/branches/{branch_id}/databases/{database_id}
+        :param data_api: :class:`DataApi`
+          The Data API configuration to create.
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: create_database(parent: str, database: Database [, database_id: Optional[str], replace_existing: Optional[bool]]) -> CreateDatabaseOperation
 
         Create a Database.
 
@@ -66,6 +78,8 @@
           RFC-1123
 
           If database_id is not specified in the request, it is generated automatically.
+        :param replace_existing: bool (optional)
+          If true, update the database if it already exists instead of returning an error.
 
         :returns: :class:`Operation`
         
@@ -81,8 +95,8 @@
         :param endpoint_id: str
           The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.
           The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, `primary` becomes
-          `projects/my-app/branches/development/endpoints/primary`.
+          lowercase letters, numbers, and hyphens. For example, ``primary`` becomes
+          ``projects/my-app/branches/development/endpoints/primary``.
         :param replace_existing: bool (optional)
           If true, update the endpoint if it already exists instead of returning an error.
 
@@ -99,12 +113,12 @@
         :param project_id: str
           The ID to use for the Project. This becomes the final component of the project's resource name. The
           ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, `my-app` becomes `projects/my-app`.
+          lowercase letters, numbers, and hyphens. For example, ``my-app`` becomes ``projects/my-app``.
 
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_role(parent: str, role: Role [, role_id: Optional[str]]) -> CreateRoleOperation
+    .. py:method:: create_role(parent: str, role: Role [, replace_existing: Optional[bool], role_id: Optional[str]]) -> CreateRoleOperation
 
         Creates a new Postgres role in the branch.
 
@@ -112,6 +126,13 @@
           The Branch where this Role is created. Format: projects/{project_id}/branches/{branch_id}
         :param role: :class:`Role`
           The desired specification of a Role.
+        :param replace_existing: bool (optional)
+          If true, update the role if it already exists instead of returning an error.
+
+          When the role already exists, the provided ``role`` spec fully replaces the existing one:
+          ``membership_roles`` is overwritten, not merged. Leaving ``membership_roles`` empty clears all of
+          the role's existing memberships, including ``DATABRICKS_SUPERUSER``. Always send the complete
+          desired list of memberships when using this field.
         :param role_id: str (optional)
           The ID to use for the Role, which will become the final component of the role's resource name. This
           ID becomes the role in Postgres.
@@ -138,8 +159,8 @@
 
           synced_table_id represents both of the following:
 
-          1. An online VIEW virtual table in the Unity Catalog accessible via the Lakehouse Federation. 2.
-          Postgres table named "{table}" in schema "{schema}" in the connected Postgres database
+          1. An online VIEW virtual table in the Unity Catalog accessible via the Lakehouse Federation.
+          2. Postgres table named "{table}" in schema "{schema}" in the connected Postgres database
 
         :returns: :class:`Operation`
         
@@ -164,6 +185,16 @@
           The full resource path of the catalog to delete.
 
           Format: "catalogs/{catalog_id}".
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: delete_data_api(name: str) -> DeleteDataApiOperation
+
+        Disable Data API for a database.
+
+        :param name: str
+          Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
 
         :returns: :class:`Operation`
         
@@ -229,7 +260,7 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: generate_database_credential(endpoint: str [, claims: Optional[List[RequestedClaims]]]) -> DatabaseCredential
+    .. py:method:: generate_database_credential(endpoint: str [, claims: Optional[List[RequestedClaims]], expire_time: Optional[Timestamp], ttl: Optional[Duration]]) -> DatabaseCredential
 
         Generate OAuth credentials for a Postgres database.
 
@@ -238,6 +269,12 @@
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param claims: List[:class:`RequestedClaims`] (optional)
           The returned token will be scoped to UC tables with the specified permissions.
+        :param expire_time: Timestamp (optional)
+          Timestamp in UTC of when this credential should expire. Must be at least 300 seconds (5 minutes) and
+          at most 1 hour from the current time.
+        :param ttl: Duration (optional)
+          The requested time-to-live for the generated credential token. Must be at least 300 seconds (5
+          minutes) and at most 3600 seconds (1 hour).
 
         :returns: :class:`DatabaseCredential`
         
@@ -262,6 +299,16 @@
           Format: "catalogs/{catalog_id}".
 
         :returns: :class:`Catalog`
+        
+
+    .. py:method:: get_data_api(name: str) -> DataApi
+
+        Get Data API configuration for a database.
+
+        :param name: str
+          Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+
+        :returns: :class:`DataApi`
         
 
     .. py:method:: get_database(name: str) -> Database
@@ -437,8 +484,22 @@
         :param branch: :class:`Branch`
           The Branch to update.
 
-          The branch's `name` field is used to identify the branch to update. Format:
+          The branch's ``name`` field is used to identify the branch to update. Format:
           projects/{project_id}/branches/{branch_id}
+        :param update_mask: FieldMask
+          The list of fields to update. If unspecified, all fields will be updated when possible.
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: update_data_api(name: str, data_api: DataApi, update_mask: FieldMask) -> UpdateDataApiOperation
+
+        Update Data API configuration for a database.
+
+        :param name: str
+          Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+        :param data_api: :class:`DataApi`
+          The Data API configuration to update. The data_api's ``name`` field identifies the resource.
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
 
@@ -455,7 +516,7 @@
         :param database: :class:`Database`
           The Database to update.
 
-          The database's `name` field is used to identify the database to update. Format:
+          The database's ``name`` field is used to identify the database to update. Format:
           projects/{project_id}/branches/{branch_id}/databases/{database_id}
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
@@ -474,7 +535,7 @@
         :param endpoint: :class:`Endpoint`
           The Endpoint to update.
 
-          The endpoint's `name` field is used to identify the endpoint to update. Format:
+          The endpoint's ``name`` field is used to identify the endpoint to update. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
@@ -491,7 +552,8 @@
         :param project: :class:`Project`
           The Project to update.
 
-          The project's `name` field is used to identify the project to update. Format: projects/{project_id}
+          The project's ``name`` field is used to identify the project to update. Format:
+          projects/{project_id}
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
 
@@ -508,7 +570,7 @@
         :param role: :class:`Role`
           The Postgres Role to update.
 
-          The role's `name` field is used to identify the role to update. Format:
+          The role's ``name`` field is used to identify the role to update. Format:
           projects/{project_id}/branches/{branch_id}/roles/{role_id}
         :param update_mask: FieldMask
           The list of fields to update in Postgres Role. If unspecified, all fields will be updated when

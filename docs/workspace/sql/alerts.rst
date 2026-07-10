@@ -6,7 +6,7 @@
 
     The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
-    notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
+    notification destinations if the condition was met. Alerts can be scheduled using the ``sql_task`` type of
     the Jobs API, e.g. :method:jobs/create.
 
     .. py:method:: create( [, alert: Optional[CreateAlertRequestAlert], auto_resolve_display_name: Optional[bool]]) -> Alert
@@ -196,14 +196,14 @@
         :param id: str
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
         :param alert: :class:`UpdateAlertRequestAlert` (optional)
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the

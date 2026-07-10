@@ -49,10 +49,10 @@ class App:
     budget_policy_id: Optional[str] = None
 
     compute_max_instances: Optional[int] = None
-    """Maximum number of app instances. Must be set together with `compute_min_instances`."""
+    """Maximum number of app instances. Must be set together with ``compute_min_instances``."""
 
     compute_min_instances: Optional[int] = None
-    """Minimum number of app instances. Must be set together with `compute_max_instances`."""
+    """Minimum number of app instances. Must be set together with ``compute_max_instances``."""
 
     compute_size: Optional[ComputeSize] = None
 
@@ -441,7 +441,7 @@ class AppDeployment:
 
     source_code_path: Optional[str] = None
     """The workspace file system path of the source code used to create the app deployment. This is
-    different from `deployment_artifacts.source_code_path`, which is the path used by the deployed
+    different from ``deployment_artifacts.source_code_path``, which is the path used by the deployed
     app. The former refers to the original source code location of the app in the workspace during
     deployment creation, whereas the latter provides a system generated stable snapshotted source
     code path used by the deployment."""
@@ -1641,10 +1641,10 @@ class AppUpdate:
     budget_policy_id: Optional[str] = None
 
     compute_max_instances: Optional[int] = None
-    """Maximum number of app instances. Must be set together with `compute_min_instances`."""
+    """Maximum number of app instances. Must be set together with ``compute_min_instances``."""
 
     compute_min_instances: Optional[int] = None
-    """Minimum number of app instances. Must be set together with `compute_max_instances`."""
+    """Minimum number of app instances. Must be set together with ``compute_max_instances``."""
 
     compute_size: Optional[ComputeSize] = None
 
@@ -1776,6 +1776,9 @@ class ApplicationStatus:
     message: Optional[str] = None
     """Application status message"""
 
+    running_instances: Optional[int] = None
+    """The number of running instances of this application."""
+
     state: Optional[ApplicationState] = None
     """State of the application."""
 
@@ -1784,6 +1787,8 @@ class ApplicationStatus:
         body = {}
         if self.message is not None:
             body["message"] = self.message
+        if self.running_instances is not None:
+            body["running_instances"] = self.running_instances
         if self.state is not None:
             body["state"] = self.state.value
         return body
@@ -1793,6 +1798,8 @@ class ApplicationStatus:
         body = {}
         if self.message is not None:
             body["message"] = self.message
+        if self.running_instances is not None:
+            body["running_instances"] = self.running_instances
         if self.state is not None:
             body["state"] = self.state
         return body
@@ -1800,12 +1807,17 @@ class ApplicationStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ApplicationStatus:
         """Deserializes the ApplicationStatus from a dictionary."""
-        return cls(message=d.get("message", None), state=_enum(d, "state", ApplicationState))
+        return cls(
+            message=d.get("message", None),
+            running_instances=d.get("running_instances", None),
+            state=_enum(d, "state", ApplicationState),
+        )
 
 
 class ComputeSize(Enum):
     LARGE = "LARGE"
     MEDIUM = "MEDIUM"
+    XLARGE = "XLARGE"
 
 
 class ComputeState(Enum):
@@ -2380,8 +2392,8 @@ class Operation:
     """This resource represents a long-running operation that is the result of a network API call."""
 
     done: Optional[bool] = None
-    """If the value is `false`, it means the operation is still in progress. If `true`, the operation
-    is completed, and either `error` or `response` is available."""
+    """If the value is ``false``, it means the operation is still in progress. If ``true``, the
+    operation is completed, and either ``error`` or ``response`` is available."""
 
     error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
     """The error result of the operation in case of failure or cancellation."""
@@ -2393,8 +2405,8 @@ class Operation:
 
     name: Optional[str] = None
     """The server-assigned name, which is only unique within the same service that originally returns
-    it. If you use the default HTTP mapping, the `name` should be a resource name ending with
-    `operations/{unique_id}`."""
+    it. If you use the default HTTP mapping, the ``name`` should be a resource name ending with
+    ``operations/{unique_id}``."""
 
     response: Optional[dict] = None
     """The normal, successful response of the operation."""
@@ -2996,14 +3008,14 @@ class AppsAPI:
         :param app_name: str
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
         :param app: :class:`App` (optional)
 
         :returns:
@@ -3420,6 +3432,7 @@ class AppsAPI:
           See :method:wait_get_app_active for more details.
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3429,7 +3442,7 @@ class AppsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
+        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", body=body, headers=headers)
         return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response["name"])
 
     def start_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
@@ -3446,6 +3459,7 @@ class AppsAPI:
           See :method:wait_get_app_stopped for more details.
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3455,7 +3469,7 @@ class AppsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
+        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", body=body, headers=headers)
         return Wait(self.wait_get_app_stopped, response=App.from_dict(op_response), name=op_response["name"])
 
     def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
@@ -3549,14 +3563,14 @@ class AppsAPI:
         :param space: :class:`Space`
         :param update_mask: FieldMask
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`Operation`
         """

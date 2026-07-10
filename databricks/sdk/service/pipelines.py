@@ -453,8 +453,9 @@ class DeletePipelineResponse:
 
 
 class DeploymentKind(Enum):
-    """The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a
-    Databricks Asset Bundle."""
+    """The deployment method that manages the pipeline:
+
+    - BUNDLE: The pipeline is managed by a Databricks Asset Bundle."""
 
     BUNDLE = "BUNDLE"
 
@@ -842,7 +843,7 @@ class GetPipelineResponse:
     """Status of the latest updates for the pipeline. Ordered with the newest update first."""
 
     name: Optional[str] = None
-    """A human friendly identifier for the pipeline, taken from the `spec`."""
+    """A human friendly identifier for the pipeline, taken from the ``spec``."""
 
     parameters: Optional[Dict[str, str]] = None
     """Key/value map of default parameters to use for pipeline execution. Maximum total size: 10k
@@ -853,14 +854,14 @@ class GetPipelineResponse:
 
     run_as: Optional[RunAs] = None
     """The user or service principal that the pipeline runs as, if specified in the request. This field
-    indicates the explicit configuration of `run_as` for the pipeline. To find the value in all
-    cases, explicit or implicit, use `run_as_user_name`."""
+    indicates the explicit configuration of ``run_as`` for the pipeline. To find the value in all
+    cases, explicit or implicit, use ``run_as_user_name``."""
 
     run_as_user_name: Optional[str] = None
     """Username of the user that the pipeline will run on behalf of."""
 
     spec: Optional[PipelineSpec] = None
-    """The pipeline specification. This field is not returned when called by `ListPipelines`."""
+    """The pipeline specification. This field is not returned when called by ``ListPipelines``."""
 
     state: Optional[PipelineState] = None
     """The pipeline state."""
@@ -1255,8 +1256,8 @@ class IngestionPipelineDefinition:
 
     ingest_from_uc_foreign_catalog: Optional[bool] = None
     """Immutable. If set to true, the pipeline will ingest tables from the UC foreign catalogs directly
-    without the need to specify a UC connection or ingestion gateway. The `source_catalog` fields in
-    objects of IngestionConfig are interpreted as the UC foreign catalogs to ingest from."""
+    without the need to specify a UC connection or ingestion gateway. The ``source_catalog`` fields
+    in objects of IngestionConfig are interpreted as the UC foreign catalogs to ingest from."""
 
     ingestion_gateway_id: Optional[str] = None
     """Identifier for the gateway that is used by this ingestion pipeline to communicate with the
@@ -1363,12 +1364,12 @@ class IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig:
     the table to be read and ingested incrementally through structured streaming. The columns are
     allowed to have repeated values but have to be non-decreasing. If the source data is merged into
     the destination (e.g., using SCD Type 1 or Type 2), these columns will implicitly define the
-    `sequence_by` behavior. You can still explicitly set `sequence_by` to override this default."""
+    ``sequence_by`` behavior. You can still explicitly set ``sequence_by`` to override this default."""
 
     deletion_condition: Optional[str] = None
     """Specifies a SQL WHERE condition that specifies that the source row has been deleted. This is
     sometimes referred to as "soft-deletes". For example: "Operation = 'DELETE'" or "is_deleted =
-    true". This field is orthogonal to `hard_deletion_sync_interval_in_seconds`, one for
+    true". This field is orthogonal to ``hard_deletion_sync_interval_in_seconds``, one for
     soft-deletes and the other for hard-deletes. See also the
     hard_deletion_sync_min_interval_in_seconds field for handling of "hard deletes" where the source
     rows are physically removed from the table."""
@@ -1417,7 +1418,7 @@ class IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig:
 class IngestionPipelineDefinitionWorkdayReportParameters:
     incremental: Optional[bool] = None
     """(Optional) Marks the report as incremental. This field is deprecated and should not be used. Use
-    `parameters` instead. The incremental behavior is now controlled by the `parameters` field."""
+    ``parameters`` instead. The incremental behavior is now controlled by the ``parameters`` field."""
 
     parameters: Optional[Dict[str, str]] = None
     """Parameters for the Workday report. Each key represents the parameter name (e.g., "start_date",
@@ -1427,7 +1428,7 @@ class IngestionPipelineDefinitionWorkdayReportParameters:
 
     report_parameters: Optional[List[IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue]] = None
     """(Optional) Additional custom parameters for Workday Report This field is deprecated and should
-    not be used. Use `parameters` instead."""
+    not be used. Use ``parameters`` instead."""
 
     def as_dict(self) -> dict:
         """Serializes the IngestionPipelineDefinitionWorkdayReportParameters into a dictionary suitable for use as a JSON request body."""
@@ -1469,10 +1470,12 @@ class IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
     """Key for the report parameter, can be a column name or other metadata"""
 
     value: Optional[str] = None
-    """Value for the report parameter. Possible values it can take are these sql functions: 1.
-    coalesce(current_offset(), date("YYYY-MM-DD")) -> if current_offset() is null, then the passed
-    date, else current_offset() 2. current_date() 3. date_sub(current_date(), x) -> subtract x (some
-    non-negative integer) days from current date"""
+    """Value for the report parameter. Possible values it can take are these sql functions:
+    
+    1. coalesce(current_offset(), date("YYYY-MM-DD")) -> if current_offset() is null, then the
+       passed date, else current_offset()
+    2. current_date()
+    3. date_sub(current_date(), x) -> subtract x (some non-negative integer) days from current date"""
 
     def as_dict(self) -> dict:
         """Serializes the IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue into a dictionary suitable for use as a JSON request body."""
@@ -1836,31 +1839,34 @@ class MetaMarketingOptions:
     """Meta Marketing (Meta Ads) specific options for ingestion"""
 
     action_attribution_windows: Optional[List[str]] = None
-    """(Optional) Action attribution windows for insights reporting (e.g. "28d_click", "1d_view")"""
+    """(Optional, DEPRECATED — use custom_report_options.action_attribution_windows) Action
+    attribution windows for insights reporting (e.g. "28d_click", "1d_view")"""
 
     action_breakdowns: Optional[List[str]] = None
-    """(Optional) Action breakdowns to configure for data aggregation"""
+    """(Optional, DEPRECATED — use custom_report_options.action_breakdowns) Action breakdowns"""
 
     action_report_time: Optional[str] = None
-    """(Optional) Timing used to report action statistics (impression, conversion, mixed, or lifetime)"""
+    """(Optional, DEPRECATED — use custom_report_options.action_report_time) Timing used to report
+    action statistics (impression, conversion, mixed, or lifetime)"""
 
     breakdowns: Optional[List[str]] = None
-    """(Optional) Breakdowns to configure for data aggregation"""
+    """(Optional, DEPRECATED — use custom_report_options.breakdowns) Breakdowns to configure"""
 
     custom_insights_lookback_window: Optional[int] = None
     """(Optional) Window in days to revisit data during sync to capture updated conversion data from
-    the API."""
+    the API, shared by prebuilt and custom reports."""
 
     level: Optional[str] = None
-    """(Optional) Granularity of data to pull (account, ad, adset, campaign)"""
+    """(Optional, DEPRECATED — use custom_report_options.level) Granularity of data to pull (account,
+    ad, adset, campaign)"""
 
     start_date: Optional[str] = None
     """(Optional) Start date in yyyy-MM-dd format (e.g. 2025-01-15). Data added after this date will be
-    ingested"""
+    ingested, shared by prebuilt and custom reports."""
 
     time_increment: Optional[str] = None
-    """(Optional) Value in string by which to aggregate statistics (can take all_days, monthly or
-    number of days)"""
+    """(Optional, DEPRECATED — use custom_report_options.time_increment) Value in string by which to
+    aggregate statistics (can take all_days, monthly or number of days)"""
 
     def as_dict(self) -> dict:
         """Serializes the MetaMarketingOptions into a dictionary suitable for use as a JSON request body."""
@@ -1950,9 +1956,10 @@ class Notifications:
     """A list of alerts that trigger the sending of notifications to the configured destinations. The
     supported alerts are:
     
-    * `on-update-success`: A pipeline update completes successfully. * `on-update-failure`: Each
-    time a pipeline update fails. * `on-update-fatal-failure`: A pipeline update fails with a
-    non-retryable (fatal) error. * `on-flow-failure`: A single data flow fails."""
+    - ``on-update-success``: A pipeline update completes successfully.
+    - ``on-update-failure``: Each time a pipeline update fails.
+    - ``on-update-fatal-failure``: A pipeline update fails with a non-retryable (fatal) error.
+    - ``on-flow-failure``: A single data flow fails."""
 
     email_recipients: Optional[List[str]] = None
     """A list of email addresses notified when a configured alert is triggered."""
@@ -2513,18 +2520,17 @@ class PipelineCluster:
     cluster_log_conf: Optional[compute.ClusterLogConf] = None
     """The configuration for delivering spark logs to a long-term storage destination. Only dbfs
     destinations are supported. Only one destination can be specified for one cluster. If the conf
-    is given, the logs will be delivered to the destination every `5 mins`. The destination of
-    driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is
-    `$destination/$clusterId/executor`."""
+    is given, the logs will be delivered to the destination every ``5 mins``. The destination of
+    driver logs is ``$destination/$clusterId/driver``, while the destination of executor logs is
+    ``$destination/$clusterId/executor``."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
-    instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+    instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
     - Currently, Databricks allows at most 45 custom tags
-    
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
-    tags"""
+      tags"""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -2532,7 +2538,7 @@ class PipelineCluster:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above."""
+    type will be set as the same value as ``node_type_id`` defined above."""
 
     enable_local_disk_encryption: Optional[bool] = None
     """Whether to enable local disk encryption for the cluster."""
@@ -2543,16 +2549,16 @@ class PipelineCluster:
 
     init_scripts: Optional[List[compute.InitScriptInfo]] = None
     """The configuration for storing init scripts. Any number of destinations can be specified. The
-    scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
-    init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
+    scripts are executed sequentially in the order provided. If ``cluster_log_conf`` is specified,
+    init script logs are sent to ``<destination>/<cluster-ID>/init_scripts``."""
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
 
     label: Optional[str] = None
-    """A label for the cluster specification, either `default` to configure the default cluster, or
-    `maintenance` to configure the maintenance cluster. This field is optional. The default value is
-    `default`."""
+    """A label for the cluster specification, either ``default`` to configure the default cluster, or
+    ``maintenance`` to configure the maintenance cluster. This field is optional. The default value
+    is ``default``."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -2562,13 +2568,13 @@ class PipelineCluster:
 
     num_workers: Optional[int] = None
     """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+    ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
     
     Note: When reading the properties of a cluster, this field reflects the desired number of
     workers rather than the actual current number of workers. For instance, if a cluster is resized
     from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
-    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
-    new nodes are provisioned."""
+    workers, whereas the workers listed in ``spark_info`` will gradually increase from 5 to 10 as
+    the new nodes are provisioned."""
 
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
@@ -2579,21 +2585,21 @@ class PipelineCluster:
 
     spark_env_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs.
-    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
-    while launching the driver and workers.
+    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., ``export
+    X='Y'``) while launching the driver and workers.
     
-    In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
-    to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
+    In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them
+    to ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures that all default
     databricks managed environmental variables are included as well.
     
-    Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-    "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-    -Dspark.shuffle.service.enabled=true"}`"""
+    Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+    "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+    -Dspark.shuffle.service.enabled=true"}``"""
 
     ssh_public_keys: Optional[List[str]] = None
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
-    private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
-    be specified."""
+    private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys
+    can be specified."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelineCluster into a dictionary suitable for use as a JSON request body."""
@@ -2714,14 +2720,14 @@ class PipelineClusterAutoscale:
     initial number of workers the cluster will have after creation."""
 
     max_workers: int
-    """The maximum number of workers to which the cluster can scale up when overloaded. `max_workers`
-    must be strictly greater than `min_workers`."""
+    """The maximum number of workers to which the cluster can scale up when overloaded. ``max_workers``
+    must be strictly greater than ``min_workers``."""
 
     mode: Optional[PipelineClusterAutoscaleMode] = None
     """Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating
     cluster resources based on workload volume, with minimal impact to the data processing latency
-    of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy
-    autoscaling feature is used for `maintenance` clusters."""
+    of your pipelines. Enhanced Autoscaling is available for ``updates`` clusters only. The legacy
+    autoscaling feature is used for ``maintenance`` clusters."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelineClusterAutoscale into a dictionary suitable for use as a JSON request body."""
@@ -2758,8 +2764,8 @@ class PipelineClusterAutoscale:
 class PipelineClusterAutoscaleMode(Enum):
     """Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating
     cluster resources based on workload volume, with minimal impact to the data processing latency
-    of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy
-    autoscaling feature is used for `maintenance` clusters."""
+    of your pipelines. Enhanced Autoscaling is available for ``updates`` clusters only. The legacy
+    autoscaling feature is used for ``maintenance`` clusters."""
 
     ENHANCED = "ENHANCED"
     LEGACY = "LEGACY"
@@ -2771,15 +2777,15 @@ class PipelineDeployment:
     """The deployment method that manages the pipeline."""
 
     deployment_id: Optional[str] = None
-    """ID of the deployment that manages this pipeline. Only set when `kind` is `BUNDLE`. Used to look
-    up deployment metadata from the Deployment Metadata service."""
+    """ID of the deployment that manages this pipeline. Only set when ``kind`` is ``BUNDLE``. Used to
+    look up deployment metadata from the Deployment Metadata service."""
 
     metadata_file_path: Optional[str] = None
     """The path to the file containing metadata about the deployment."""
 
     version_id: Optional[str] = None
-    """ID of the version of the deployment that produced this pipeline. Only set when `kind` is
-    `BUNDLE`. Identifies a specific snapshot of the deployment in the Deployment Metadata service."""
+    """ID of the version of the deployment that produced this pipeline. Only set when ``kind`` is
+    ``BUNDLE``. Identifies a specific snapshot of the deployment in the Deployment Metadata service."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelineDeployment into a dictionary suitable for use as a JSON request body."""
@@ -2926,7 +2932,7 @@ class PipelineLibrary:
 
     glob: Optional[PathPattern] = None
     """The unified field to include source codes. Each entry can be a notebook path, a file path, or a
-    folder path that ends `/**`. This field cannot be used together with `notebook` or `file`."""
+    folder path that ends ``/**``. This field cannot be used together with ``notebook`` or ``file``."""
 
     jar: Optional[str] = None
     """URI of the jar to be installed. Currently only DBFS is supported."""
@@ -3115,9 +3121,9 @@ class PipelineSpec:
     """Budget policy of this pipeline."""
 
     catalog: Optional[str] = None
-    """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
-    tables in this pipeline are published to a `target` schema inside `catalog` (for example,
-    `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity
+    """A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified,
+    tables in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
+    ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
     Catalog."""
 
     channel: Optional[str] = None
@@ -3130,7 +3136,7 @@ class PipelineSpec:
     """String-String configuration for this pipeline execution."""
 
     continuous: Optional[bool] = None
-    """Whether the pipeline is continuous or triggered. This replaces `trigger`."""
+    """Whether the pipeline is continuous or triggered. This replaces ``trigger``."""
 
     deployment: Optional[PipelineDeployment] = None
     """Deployment type of this pipeline."""
@@ -3186,6 +3192,9 @@ class PipelineSpec:
     serverless: Optional[bool] = None
     """Whether serverless compute is enabled for this pipeline."""
 
+    serverless_compute_id: Optional[str] = None
+    """Serverless compute ID specified by the user for serverless pipelines."""
+
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
 
@@ -3195,12 +3204,12 @@ class PipelineSpec:
     pipeline."""
 
     target: Optional[str] = None
-    """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
-    must be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is
-    deprecated for pipeline creation in favor of the `schema` field."""
+    """Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or
+    ``target`` must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy
+    field is deprecated for pipeline creation in favor of the ``schema`` field."""
 
     trigger: Optional[PipelineTrigger] = None
-    """Which pipeline trigger to use. Deprecated: Use `continuous` instead."""
+    """Which pipeline trigger to use. Deprecated: Use ``continuous`` instead."""
 
     usage_policy_id: Optional[str] = None
     """Usage policy of this pipeline."""
@@ -3254,6 +3263,8 @@ class PipelineSpec:
             body["schema"] = self.schema
         if self.serverless is not None:
             body["serverless"] = self.serverless
+        if self.serverless_compute_id is not None:
+            body["serverless_compute_id"] = self.serverless_compute_id
         if self.storage is not None:
             body["storage"] = self.storage
         if self.tags:
@@ -3315,6 +3326,8 @@ class PipelineSpec:
             body["schema"] = self.schema
         if self.serverless is not None:
             body["serverless"] = self.serverless
+        if self.serverless_compute_id is not None:
+            body["serverless_compute_id"] = self.serverless_compute_id
         if self.storage is not None:
             body["storage"] = self.storage
         if self.tags:
@@ -3354,6 +3367,7 @@ class PipelineSpec:
             root_path=d.get("root_path", None),
             schema=d.get("schema", None),
             serverless=d.get("serverless", None),
+            serverless_compute_id=d.get("serverless_compute_id", None),
             storage=d.get("storage", None),
             tags=d.get("tags", None),
             target=d.get("target", None),
@@ -3519,7 +3533,7 @@ class PipelinesEnvironment:
     and their included packages, see
     https://docs.databricks.com/aws/en/release-notes/serverless/environment-version/
     
-    The value should be a string representing the environment version number, for example: `"4"`."""
+    The value should be a string representing the environment version number, for example: ``"4"``."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelinesEnvironment into a dictionary suitable for use as a JSON request body."""
@@ -3621,8 +3635,8 @@ class ReplaceWhereOverride:
     """Name of the flow to apply this override to."""
 
     predicate_override: Optional[str] = None
-    """SQL predicate string to use as replace_where condition. Example: `date = '2024-10-10' AND city =
-    'xyz'`"""
+    """SQL predicate string to use as replace_where condition. Example: ``date = '2024-10-10' AND city
+    = 'xyz'``"""
 
     def as_dict(self) -> dict:
         """Serializes the ReplaceWhereOverride into a dictionary suitable for use as a JSON request body."""
@@ -3853,12 +3867,12 @@ class RunAs:
     principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
     the pipeline.
 
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
+    Only ``user_name`` or ``service_principal_name`` can be specified. If both are specified, an
+    error is thrown."""
 
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    ``servicePrincipal/user`` role."""
 
     user_name: Optional[str] = None
     """The email of an active workspace user. Users can only set this field to their own email."""
@@ -4385,17 +4399,31 @@ class TableSpecificConfig:
     "auto_full_refresh_policy": { "enabled": true, "min_interval_hours": 23, } } If unspecified,
     auto full refresh is disabled."""
 
+    clustering_columns: Optional[List[str]] = None
+    """List of column names to use for clustering the destination table. When specified, the
+    destination Delta table will be clustered by these columns. This can improve query performance
+    when filtering on these columns. Note: clustering_columns in table specific configuration will
+    override the pipeline definition. Note: we can only provide enable_auto_clustering or
+    clustering_columns, added as separate fields as we cannot have repeated field in oneof."""
+
+    enable_auto_clustering: Optional[bool] = None
+    """Whether to enable auto clustering on the destination table. When enabled, Delta will
+    automatically optimize the data layout based on the clustering columns for improved query
+    performance. Note: enable_auto_clustering in table specific configuration will override the
+    pipeline definition. Note: we can only provide enable_auto_clustering or clustering_columns,
+    added as separate fields as we cannot have repeated field in oneof."""
+
     exclude_columns: Optional[List[str]] = None
     """A list of column names to be excluded for the ingestion. When not specified, include_columns
     fully controls what columns to be ingested. When specified, all other columns including future
     ones will be automatically included for ingestion. This field in mutually exclusive with
-    `include_columns`."""
+    ``include_columns``."""
 
     include_columns: Optional[List[str]] = None
     """A list of column names to be included for the ingestion. When not specified, all columns except
     ones in exclude_columns will be included. Future columns will be automatically included. When
     specified, all other future columns will be automatically excluded from ingestion. This field in
-    mutually exclusive with `exclude_columns`."""
+    mutually exclusive with ``exclude_columns``."""
 
     primary_keys: Optional[List[str]] = None
     """The primary key of the table used to apply changes."""
@@ -4418,6 +4446,13 @@ class TableSpecificConfig:
     """The column names specifying the logical order of events in the source data. Spark Declarative
     Pipelines uses this sequencing to handle change events that arrive out of order."""
 
+    table_properties: Optional[Dict[str, str]] = None
+    """Table properties to set on the destination table. These are key-value pairs that configure
+    various Delta table behaviors or any user defined properties. Example:
+    {"delta.feature.variantType": "supported", "delta.enableTypeWidening": "true"} Note:
+    table_properties in table specific configuration will override the table_properties of the
+    pipeline definition."""
+
     workday_report_parameters: Optional[IngestionPipelineDefinitionWorkdayReportParameters] = None
     """(Optional) Additional custom parameters for Workday Report"""
 
@@ -4426,6 +4461,10 @@ class TableSpecificConfig:
         body = {}
         if self.auto_full_refresh_policy:
             body["auto_full_refresh_policy"] = self.auto_full_refresh_policy.as_dict()
+        if self.clustering_columns:
+            body["clustering_columns"] = [v for v in self.clustering_columns]
+        if self.enable_auto_clustering is not None:
+            body["enable_auto_clustering"] = self.enable_auto_clustering
         if self.exclude_columns:
             body["exclude_columns"] = [v for v in self.exclude_columns]
         if self.include_columns:
@@ -4442,6 +4481,8 @@ class TableSpecificConfig:
             body["scd_type"] = self.scd_type.value
         if self.sequence_by:
             body["sequence_by"] = [v for v in self.sequence_by]
+        if self.table_properties:
+            body["table_properties"] = self.table_properties
         if self.workday_report_parameters:
             body["workday_report_parameters"] = self.workday_report_parameters.as_dict()
         return body
@@ -4451,6 +4492,10 @@ class TableSpecificConfig:
         body = {}
         if self.auto_full_refresh_policy:
             body["auto_full_refresh_policy"] = self.auto_full_refresh_policy
+        if self.clustering_columns:
+            body["clustering_columns"] = self.clustering_columns
+        if self.enable_auto_clustering is not None:
+            body["enable_auto_clustering"] = self.enable_auto_clustering
         if self.exclude_columns:
             body["exclude_columns"] = self.exclude_columns
         if self.include_columns:
@@ -4467,6 +4512,8 @@ class TableSpecificConfig:
             body["scd_type"] = self.scd_type
         if self.sequence_by:
             body["sequence_by"] = self.sequence_by
+        if self.table_properties:
+            body["table_properties"] = self.table_properties
         if self.workday_report_parameters:
             body["workday_report_parameters"] = self.workday_report_parameters
         return body
@@ -4476,6 +4523,8 @@ class TableSpecificConfig:
         """Deserializes the TableSpecificConfig from a dictionary."""
         return cls(
             auto_full_refresh_policy=_from_dict(d, "auto_full_refresh_policy", AutoFullRefreshPolicy),
+            clustering_columns=d.get("clustering_columns", None),
+            enable_auto_clustering=d.get("enable_auto_clustering", None),
             exclude_columns=d.get("exclude_columns", None),
             include_columns=d.get("include_columns", None),
             primary_keys=d.get("primary_keys", None),
@@ -4488,6 +4537,7 @@ class TableSpecificConfig:
             salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
             scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
             sequence_by=d.get("sequence_by", None),
+            table_properties=d.get("table_properties", None),
             workday_report_parameters=_from_dict(
                 d, "workday_report_parameters", IngestionPipelineDefinitionWorkdayReportParameters
             ),
@@ -4507,32 +4557,27 @@ class TikTokAdsOptions:
     """TikTok Ads specific options for ingestion"""
 
     data_level: Optional[TikTokAdsOptionsTikTokDataLevel] = None
-    """(Optional) Data level for the report. If not specified, defaults to AUCTION_CAMPAIGN."""
+    """Deprecated. Use custom_report_options.data_level instead."""
 
     dimensions: Optional[List[str]] = None
-    """(Optional) Dimensions to include in the report. Examples: "campaign_id", "adgroup_id", "ad_id",
-    "stat_time_day", "stat_time_hour" If not specified, defaults to campaign_id."""
+    """Deprecated. Use custom_report_options.dimensions instead."""
 
     lookback_window_days: Optional[int] = None
     """(Optional) Number of days to look back for report tables during incremental sync to capture
-    late-arriving conversions and attribution data. If not specified, defaults to 7 days."""
+    late-arriving conversions and attribution data."""
 
     metrics: Optional[List[str]] = None
-    """(Optional) Metrics to include in the report. Examples: "spend", "impressions", "clicks",
-    "conversion", "cpc" If not specified, defaults to basic metrics (spend, impressions, clicks,
-    etc.)"""
+    """Deprecated. Use custom_report_options.metrics instead."""
 
     query_lifetime: Optional[bool] = None
-    """(Optional) Whether to request lifetime metrics (all-time aggregated data). When true, the report
-    returns all-time data. If not specified, defaults to false."""
+    """Deprecated. Use custom_report_options.query_lifetime instead."""
 
     report_type: Optional[TikTokAdsOptionsTikTokReportType] = None
-    """(Optional) Report type for the TikTok Ads API. If not specified, defaults to BASIC."""
+    """Deprecated. Use custom_report_options.report_type instead."""
 
     sync_start_date: Optional[str] = None
     """(Optional) Start date for the initial sync of report tables in YYYY-MM-DD format. This
-    determines the earliest date from which to sync historical data. If not specified, defaults to 1
-    year of historical data for daily reports and 30 days for hourly reports."""
+    determines the earliest date from which to sync historical data."""
 
     def as_dict(self) -> dict:
         """Serializes the TikTokAdsOptions into a dictionary suitable for use as a JSON request body."""
@@ -4983,7 +5028,7 @@ class PipelinesAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def apply_environment(self, pipeline_id: str) -> ApplyEnvironmentRequestResponse:
-        """* Applies the current pipeline environment onto the pipeline compute. The environment applied can be
+        """Applies the current pipeline environment onto the pipeline compute. The environment applied can be
         used by subsequent dev-mode updates.
 
         :param pipeline_id: str
@@ -5032,6 +5077,7 @@ class PipelinesAPI:
         root_path: Optional[str] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
+        serverless_compute_id: Optional[str] = None,
         storage: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
@@ -5049,9 +5095,10 @@ class PipelinesAPI:
         :param budget_policy_id: str (optional)
           Budget policy of this pipeline.
         :param catalog: str (optional)
-          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
-          in this pipeline are published to a `target` schema inside `catalog` (for example,
-          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+          A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified, tables
+          in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
+          ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
+          Catalog.
         :param channel: str (optional)
           SDP Release Channel that specifies which version to use.
         :param clone_mode: :class:`CloneMode` (optional)
@@ -5061,7 +5108,7 @@ class PipelinesAPI:
         :param configuration: Dict[str,str] (optional)
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
-          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+          Whether the pipeline is continuous or triggered. This replaces ``trigger``.
         :param deployment: :class:`PipelineDeployment` (optional)
           Deployment type of this pipeline.
         :param development: bool (optional)
@@ -5102,17 +5149,19 @@ class PipelinesAPI:
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
+        :param serverless_compute_id: str (optional)
+          Serverless compute ID specified by the user for serverless pipelines.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
           A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
           are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
-          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
-          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
-          for pipeline creation in favor of the `schema` field.
+          Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or ``target``
+          must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy field is
+          deprecated for pipeline creation in favor of the ``schema`` field.
         :param trigger: :class:`PipelineTrigger` (optional)
-          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+          Which pipeline trigger to use. Deprecated: Use ``continuous`` instead.
         :param usage_policy_id: str (optional)
           Usage policy of this pipeline.
 
@@ -5172,6 +5221,8 @@ class PipelinesAPI:
             body["schema"] = schema
         if serverless is not None:
             body["serverless"] = serverless
+        if serverless_compute_id is not None:
+            body["serverless_compute_id"] = serverless_compute_id
         if storage is not None:
             body["storage"] = storage
         if tags is not None:
@@ -5224,6 +5275,7 @@ class PipelinesAPI:
         run_as: Optional[RunAs] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
+        serverless_compute_id: Optional[str] = None,
         storage: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
@@ -5238,9 +5290,10 @@ class PipelinesAPI:
         :param budget_policy_id: str (optional)
           Budget policy of this pipeline.
         :param catalog: str (optional)
-          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
-          in this pipeline are published to a `target` schema inside `catalog` (for example,
-          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+          A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified, tables
+          in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
+          ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
+          Catalog.
         :param channel: str (optional)
           SDP Release Channel that specifies which version to use.
         :param clusters: List[:class:`PipelineCluster`] (optional)
@@ -5248,7 +5301,7 @@ class PipelinesAPI:
         :param configuration: Dict[str,str] (optional)
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
-          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+          Whether the pipeline is continuous or triggered. This replaces ``trigger``.
         :param deployment: :class:`PipelineDeployment` (optional)
           Deployment type of this pipeline.
         :param development: bool (optional)
@@ -5291,17 +5344,19 @@ class PipelinesAPI:
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
+        :param serverless_compute_id: str (optional)
+          Serverless compute ID specified by the user for serverless pipelines.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
           A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
           are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
-          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
-          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
-          for pipeline creation in favor of the `schema` field.
+          Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or ``target``
+          must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy field is
+          deprecated for pipeline creation in favor of the ``schema`` field.
         :param trigger: :class:`PipelineTrigger` (optional)
-          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+          Which pipeline trigger to use. Deprecated: Use ``continuous`` instead.
         :param usage_policy_id: str (optional)
           Usage policy of this pipeline.
 
@@ -5363,6 +5418,8 @@ class PipelinesAPI:
             body["schema"] = schema
         if serverless is not None:
             body["serverless"] = serverless
+        if serverless_compute_id is not None:
+            body["serverless_compute_id"] = serverless_compute_id
         if storage is not None:
             body["storage"] = storage
         if tags is not None:
@@ -5511,8 +5568,12 @@ class PipelinesAPI:
           The pipeline to return events for.
         :param filter: str (optional)
           Criteria to select a subset of results, expressed using a SQL-like syntax. The supported filters
-          are: 1. level='INFO' (or WARN or ERROR) 2. level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp
-          > 'TIMESTAMP' (or >=,<,<=,=)
+          are:
+
+          1. level='INFO' (or WARN or ERROR)
+          2. level in ('INFO', 'WARN')
+          3. id='[event-id]'
+          4. timestamp > 'TIMESTAMP' (or >=,<,<=,=)
 
           Composite expressions are supported, for example: level in ('ERROR', 'WARN') AND timestamp>
           '2021-07-22T06:37:33.083Z'
@@ -5570,9 +5631,9 @@ class PipelinesAPI:
         :param filter: str (optional)
           Select a subset of results based on the specified criteria. The supported filters are:
 
-          * `notebook='<path>'` to select pipelines that reference the provided notebook path. * `name LIKE
-          '[pattern]'` to select pipelines with a name that matches pattern. Wildcards are supported, for
-          example: `name LIKE '%shopping%'`
+          - ``notebook='<path>'`` to select pipelines that reference the provided notebook path.
+          - ``name LIKE '[pattern]'`` to select pipelines with a name that matches pattern. Wildcards are
+            supported, for example: ``name LIKE '%shopping%'``
 
           Composite filters are not supported. This field is optional.
         :param max_results: int (optional)
@@ -5817,6 +5878,7 @@ class PipelinesAPI:
         run_as: Optional[RunAs] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
+        serverless_compute_id: Optional[str] = None,
         storage: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
@@ -5832,9 +5894,10 @@ class PipelinesAPI:
         :param budget_policy_id: str (optional)
           Budget policy of this pipeline.
         :param catalog: str (optional)
-          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
-          in this pipeline are published to a `target` schema inside `catalog` (for example,
-          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+          A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified, tables
+          in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
+          ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
+          Catalog.
         :param channel: str (optional)
           SDP Release Channel that specifies which version to use.
         :param clusters: List[:class:`PipelineCluster`] (optional)
@@ -5842,7 +5905,7 @@ class PipelinesAPI:
         :param configuration: Dict[str,str] (optional)
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
-          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+          Whether the pipeline is continuous or triggered. This replaces ``trigger``.
         :param deployment: :class:`PipelineDeployment` (optional)
           Deployment type of this pipeline.
         :param development: bool (optional)
@@ -5887,17 +5950,19 @@ class PipelinesAPI:
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
+        :param serverless_compute_id: str (optional)
+          Serverless compute ID specified by the user for serverless pipelines.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
           A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
           are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
-          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
-          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
-          for pipeline creation in favor of the `schema` field.
+          Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or ``target``
+          must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy field is
+          deprecated for pipeline creation in favor of the ``schema`` field.
         :param trigger: :class:`PipelineTrigger` (optional)
-          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+          Which pipeline trigger to use. Deprecated: Use ``continuous`` instead.
         :param usage_policy_id: str (optional)
           Usage policy of this pipeline.
 
@@ -5959,6 +6024,8 @@ class PipelinesAPI:
             body["schema"] = schema
         if serverless is not None:
             body["serverless"] = serverless
+        if serverless_compute_id is not None:
+            body["serverless_compute_id"] = serverless_compute_id
         if storage is not None:
             body["storage"] = storage
         if tags is not None:

@@ -30,10 +30,12 @@
     .. py:method:: cluster_status(cluster_id: str) -> Iterator[LibraryFullStatus]
 
         Get the status of libraries on a cluster. A status is returned for all libraries installed on this
-        cluster via the API or the libraries UI. The order of returned libraries is as follows: 1. Libraries
-        set to be installed on this cluster, in the order that the libraries were added to the cluster, are
-        returned first. 2. Libraries that were previously requested to be installed on this cluster or, but
-        are now marked for removal, in no particular order, are returned last.
+        cluster via the API or the libraries UI. The order of returned libraries is as follows:
+
+        1. Libraries set to be installed on this cluster, in the order that the libraries were added to the
+           cluster, are returned first.
+        2. Libraries that were previously requested to be installed on this cluster or, but are now marked for
+           removal, in no particular order, are returned last.
 
         :param cluster_id: str
           Unique identifier of the cluster whose status should be retrieved.

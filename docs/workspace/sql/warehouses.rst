@@ -40,7 +40,10 @@
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
 
-          Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+          Supported values:
+
+          - Must be == 0 or >= 10 mins
+          - 0 indicates no autostop.
 
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
@@ -50,8 +53,19 @@
           to run larger queries on it. If you want to increase the number of concurrent queries, please tune
           max_num_clusters.
 
-          Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
-          4X-Large - 5X-Large
+          Supported values:
+
+          - 2X-Small
+          - X-Small
+          - Small
+          - Medium
+          - Large
+          - X-Large
+          - 2X-Large
+          - 3X-Large
+          - 4X-Large
+          - 5X-Large
+          - Auto
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)
@@ -65,7 +79,10 @@
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
-          Supported values: - Must be >= min_num_clusters - Must be <= 40.
+          Supported values:
+
+          - Must be >= min_num_clusters
+          - Must be <= 40.
 
           Defaults to min_clusters if unset.
         :param min_num_clusters: int (optional)
@@ -73,23 +90,31 @@
           will ensure that a larger number of clusters are always running and therefore may reduce the cold
           start time for new queries. This is similar to reserved vs. revocable cores in a resource manager.
 
-          Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
+          Supported values:
+
+          - Must be > 0
+          - Must be <= min(max_num_clusters, 30)
 
           Defaults to 1
         :param name: str (optional)
           Logical name for the cluster.
 
-          Supported values: - Must be unique within an org. - Must be less than 100 characters.
+          Supported values:
+
+          - Must be unique within an org.
+          - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
           Configurations whether the endpoint should use spot instances.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
 
-          Supported values: - Number of tags < 45.
+          Supported values:
+
+          - Number of tags < 45.
         :param warehouse_type: :class:`CreateWarehouseRequestWarehouseType` (optional)
-          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
-          also set the field `enable_serverless_compute` to `true`.
+          Warehouse type: ``PRO`` or ``CLASSIC``. If you want to use serverless compute, you must set to
+          ``PRO`` and also set the field ``enable_serverless_compute`` to ``true``.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
@@ -179,7 +204,10 @@
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
 
-          Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+          Supported values:
+
+          - Must be == 0 or >= 10 mins
+          - 0 indicates no autostop.
 
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
@@ -189,8 +217,19 @@
           to run larger queries on it. If you want to increase the number of concurrent queries, please tune
           max_num_clusters.
 
-          Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
-          4X-Large - 5X-Large
+          Supported values:
+
+          - 2X-Small
+          - X-Small
+          - Small
+          - Medium
+          - Large
+          - X-Large
+          - 2X-Large
+          - 3X-Large
+          - 4X-Large
+          - 5X-Large
+          - Auto
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)
@@ -204,7 +243,10 @@
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
-          Supported values: - Must be >= min_num_clusters - Must be <= 40.
+          Supported values:
+
+          - Must be >= min_num_clusters
+          - Must be <= 40.
 
           Defaults to min_clusters if unset.
         :param min_num_clusters: int (optional)
@@ -212,23 +254,31 @@
           will ensure that a larger number of clusters are always running and therefore may reduce the cold
           start time for new queries. This is similar to reserved vs. revocable cores in a resource manager.
 
-          Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
+          Supported values:
+
+          - Must be > 0
+          - Must be <= min(max_num_clusters, 30)
 
           Defaults to 1
         :param name: str (optional)
           Logical name for the cluster.
 
-          Supported values: - Must be unique within an org. - Must be less than 100 characters.
+          Supported values:
+
+          - Must be unique within an org.
+          - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
           Configurations whether the endpoint should use spot instances.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
 
-          Supported values: - Number of tags < 45.
+          Supported values:
+
+          - Number of tags < 45.
         :param warehouse_type: :class:`EditWarehouseRequestWarehouseType` (optional)
-          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
-          also set the field `enable_serverless_compute` to `true`.
+          Warehouse type: ``PRO`` or ``CLASSIC``. If you want to use serverless compute, you must set to
+          ``PRO`` and also set the field ``enable_serverless_compute`` to ``true``.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
@@ -337,11 +387,11 @@
         :param page_size: int (optional)
           The max number of warehouses to return.
         :param page_token: str (optional)
-          A page token, received from a previous `ListWarehouses` call. Provide this to retrieve the
+          A page token, received from a previous ``ListWarehouses`` call. Provide this to retrieve the
           subsequent page; otherwise the first will be retrieved.
 
-          When paginating, all other parameters provided to `ListWarehouses` must match the call that provided
-          the page token.
+          When paginating, all other parameters provided to ``ListWarehouses`` must match the call that
+          provided the page token.
         :param run_as_user_id: int (optional)
           Deprecated: this field is ignored by the server. Service Principal which will be used to fetch the
           list of endpoints. If not specified, SQL Gateway will use the user from the session header.
@@ -359,10 +409,10 @@
           unspecified, at most 100 overrides will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListDefaultWarehouseOverrides` call. Provide this to
+          A page token, received from a previous ``ListDefaultWarehouseOverrides`` call. Provide this to
           retrieve the subsequent page.
 
-          When paginating, all other parameters provided to `ListDefaultWarehouseOverrides` must match the
+          When paginating, all other parameters provided to ``ListDefaultWarehouseOverrides`` must match the
           call that provided the page token.
 
         :returns: Iterator over :class:`DefaultWarehouseOverride`
@@ -461,7 +511,7 @@
           fields are applied.
         :param allow_missing: bool (optional)
           If set to true, and the override is not found, a new override will be created. In this situation,
-          `update_mask` is ignored and all fields are applied. Defaults to false.
+          ``update_mask`` is ignored and all fields are applied. Defaults to false.
 
         :returns: :class:`DefaultWarehouseOverride`
         

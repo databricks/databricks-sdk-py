@@ -35,8 +35,10 @@ class AccessControl:
     group_name: Optional[str] = None
 
     permission_level: Optional[PermissionLevel] = None
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
-    * `CAN_MANAGE`: Can manage the query"""
+    """- ``CAN_VIEW``: Can view the query
+    - ``CAN_RUN``: Can run the query
+    - ``CAN_EDIT``: Can edit the query
+    - ``CAN_MANAGE``: Can manage the query"""
 
     user_name: Optional[str] = None
 
@@ -92,15 +94,13 @@ class Alert:
     """The timestamp indicating when the alert was created."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See [here] for custom templating instructions.
-    
-    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+    """Custom body of alert notification, if it exists. See `here
+    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
 
     custom_subject: Optional[str] = None
     """Custom subject of alert notification, if it exists. This can include email subject entries and
-    Slack notification headers, for example. See [here] for custom templating instructions.
-    
-    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+    Slack notification headers, for example. See `here
+    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
 
     display_name: Optional[str] = None
     """The display name of the alert."""
@@ -426,22 +426,20 @@ class AlertOptions:
     """Name of column in the query result to compare in alert evaluation."""
 
     op: str
-    """Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`, `!=`"""
+    """Operator used to compare in alert evaluation: ``>``, ``>=``, ``<``, ``<=``, ``==``, ``!=``"""
 
     value: Any
     """Value used to compare in alert evaluation. Supported types include strings (eg. 'foobar'),
     floats (eg. 123.4), and booleans (true)."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See [here] for custom templating instructions.
-    
-    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+    """Custom body of alert notification, if it exists. See `here
+    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
 
     custom_subject: Optional[str] = None
     """Custom subject of alert notification, if it exists. This includes email subject, Slack
-    notification header, etc. See [here] for custom templating instructions.
-    
-    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+    notification header, etc. See `here <https://docs.databricks.com/sql/user/alerts/index.html>`__
+    for custom templating instructions."""
 
     empty_result_state: Optional[AlertOptionsEmptyResultState] = None
     """State that alert evaluates to when query result is empty."""
@@ -517,9 +515,7 @@ class AlertQuery:
 
     data_source_id: Optional[str] = None
     """Data source ID maps to the ID of the data source used by the resource and is distinct from the
-    warehouse ID. [Learn more]
-    
-    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
+    warehouse ID. `Learn more <https://docs.databricks.com/api/workspace/datasources/list>`__"""
 
     description: Optional[str] = None
     """General description that conveys additional information about this query such as usage notes."""
@@ -529,8 +525,8 @@ class AlertQuery:
 
     is_archived: Optional[bool] = None
     """Indicates whether the query is trashed. Trashed queries can't be used in dashboards, or appear
-    in search results. If this boolean is `true`, the `options` property for this query includes a
-    `moved_to_trash_at` timestamp. Trashed queries are permanently deleted after 30 days."""
+    in search results. If this boolean is ``true``, the ``options`` property for this query includes
+    a ``moved_to_trash_at`` timestamp. Trashed queries are permanently deleted after 30 days."""
 
     is_draft: Optional[bool] = None
     """Whether the query is a draft. Draft queries only appear in list views for their owners.
@@ -538,7 +534,7 @@ class AlertQuery:
 
     is_safe: Optional[bool] = None
     """Text parameter types are not safe from SQL injection for all types of data source. Set this
-    Boolean parameter to `true` if a query either does not use any text type parameters or uses a
+    Boolean parameter to ``true`` if a query either does not use any text type parameters or uses a
     data source type where text type parameters are handled safely."""
 
     name: Optional[str] = None
@@ -688,15 +684,17 @@ class AlertV2:
 
     run_as: Optional[AlertV2RunAs] = None
     """Specifies the identity that will be used to run the alert. This field allows you to configure
-    alerts to run as a specific user or service principal. - For user identity: Set `user_name` to
-    the email of an active workspace user. Users can only set this to their own email. - For service
-    principal: Set `service_principal_name` to the application ID. Requires the
-    `servicePrincipal/user` role. If not specified, the alert will run as the request user."""
+    alerts to run as a specific user or service principal.
+    
+    - For user identity: Set ``user_name`` to the email of an active workspace user. Users can only
+      set this to their own email.
+    - For service principal: Set ``service_principal_name`` to the application ID. Requires the
+      ``servicePrincipal/user`` role. If not specified, the alert will run as the request user."""
 
     run_as_user_name: Optional[str] = None
     """The run as username or application ID of service principal. On Create and Update, this field can
     be set to application ID of an active service principal. Setting this field requires the
-    servicePrincipal/user role. Deprecated: Use `run_as` field instead. This field will be removed
+    servicePrincipal/user role. Deprecated: Use ``run_as`` field instead. This field will be removed
     in a future release."""
 
     update_time: Optional[str] = None
@@ -808,8 +806,8 @@ class AlertV2Evaluation:
     """Operator used for comparison in alert evaluation."""
 
     empty_result_state: Optional[AlertEvaluationState] = None
-    """Alert state if result is empty. Please avoid setting this field to be `UNKNOWN` because
-    `UNKNOWN` state is planned to be deprecated."""
+    """Alert state if result is empty. Please avoid setting this field to be ``UNKNOWN`` because
+    ``UNKNOWN`` state is planned to be deprecated."""
 
     last_evaluated_at: Optional[str] = None
     """Timestamp of the last evaluation."""
@@ -958,7 +956,7 @@ class AlertV2OperandColumn:
     name: str
 
     aggregation: Optional[Aggregation] = None
-    """If not set, the behavior is equivalent to using `First row` in the UI."""
+    """If not set, the behavior is equivalent to using ``First row`` in the UI."""
 
     display: Optional[str] = None
 
@@ -1036,7 +1034,7 @@ class AlertV2OperandValue:
 class AlertV2RunAs:
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    ``servicePrincipal/user`` role."""
 
     user_name: Optional[str] = None
     """The email of an active workspace user. Can only set this field to their own email."""
@@ -1098,7 +1096,7 @@ class AlertV2Subscription:
 @dataclass
 class BaseChunkInfo:
     byte_count: Optional[int] = None
-    """The number of bytes in the result chunk. This field is not available when using `INLINE`
+    """The number of bytes in the result chunk. This field is not available when using ``INLINE``
     disposition."""
 
     chunk_index: Optional[int] = None
@@ -1150,7 +1148,7 @@ class BaseChunkInfo:
 @dataclass
 class Channel:
     """Configures the channel name and DBSQL version of the warehouse. CHANNEL_NAME_CUSTOM should be
-    chosen only when `dbsql_version` is specified."""
+    chosen only when ``dbsql_version`` is specified."""
 
     dbsql_version: Optional[str] = None
 
@@ -1430,15 +1428,13 @@ class CreateAlertRequestAlert:
     """Trigger conditions of the alert."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See [here] for custom templating instructions.
-    
-    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+    """Custom body of alert notification, if it exists. See `here
+    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
 
     custom_subject: Optional[str] = None
     """Custom subject of alert notification, if it exists. This can include email subject entries and
-    Slack notification headers, for example. See [here] for custom templating instructions.
-    
-    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+    Slack notification headers, for example. See `here
+    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
 
     display_name: Optional[str] = None
     """The display name of the alert."""
@@ -1771,15 +1767,15 @@ class Dashboard:
 
     dashboard_filters_enabled: Optional[bool] = None
     """In the web application, query filters that share a name are coupled to a single selection box if
-    this value is `true`."""
+    this value is ``true``."""
 
     id: Optional[str] = None
     """The ID for this dashboard."""
 
     is_archived: Optional[bool] = None
     """Indicates whether a dashboard is trashed. Trashed dashboards won't appear in list views. If this
-    boolean is `true`, the `options` property for this dashboard includes a `moved_to_trash_at`
-    timestamp. Items in trash are permanently deleted after 30 days."""
+    boolean is ``true``, the ``options`` property for this dashboard includes a
+    ``moved_to_trash_at`` timestamp. Items in trash are permanently deleted after 30 days."""
 
     is_draft: Optional[bool] = None
     """Whether a dashboard is a draft. Draft dashboards only appear in list views for their owners."""
@@ -1797,12 +1793,14 @@ class Dashboard:
     """The identifier of the workspace folder containing the object."""
 
     permission_tier: Optional[PermissionLevel] = None
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
-    * `CAN_MANAGE`: Can manage the query"""
+    """- ``CAN_VIEW``: Can view the query
+    - ``CAN_RUN``: Can run the query
+    - ``CAN_EDIT``: Can edit the query
+    - ``CAN_MANAGE``: Can manage the query"""
 
     slug: Optional[str] = None
-    """URL slug. Usually mirrors the query name with dashes (`-`) instead of spaces. Appears in the URL
-    for this query."""
+    """URL slug. Usually mirrors the query name with dashes (``-``) instead of spaces. Appears in the
+    URL for this query."""
 
     tags: Optional[List[str]] = None
 
@@ -1921,8 +1919,8 @@ class Dashboard:
 @dataclass
 class DashboardOptions:
     moved_to_trash_at: Optional[str] = None
-    """The timestamp when this dashboard was moved to trash. Only present when the `is_archived`
-    property is `true`. Trashed items are deleted after thirty days."""
+    """The timestamp when this dashboard was moved to trash. Only present when the ``is_archived``
+    property is ``true``. Trashed items are deleted after thirty days."""
 
     def as_dict(self) -> dict:
         """Serializes the DashboardOptions into a dictionary suitable for use as a JSON request body."""
@@ -1950,9 +1948,7 @@ class DataSource:
 
     id: Optional[str] = None
     """Data source ID maps to the ID of the data source used by the resource and is distinct from the
-    warehouse ID. [Learn more]
-    
-    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
+    warehouse ID. `Learn more <https://docs.databricks.com/api/workspace/datasources/list>`__"""
 
     name: Optional[str] = None
     """The string name of this data source / SQL warehouse as it appears in the Databricks SQL web
@@ -1971,7 +1967,7 @@ class DataSource:
     """Reserved for internal use."""
 
     type: Optional[str] = None
-    """The type of data source. For SQL warehouses, this will be `databricks_internal`."""
+    """The type of data source. For SQL warehouses, this will be ``databricks_internal``."""
 
     view_only: Optional[bool] = None
     """Reserved for internal use."""
@@ -2442,7 +2438,10 @@ class EndpointInfo:
     """The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries)
     before it is automatically stopped.
     
-    Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+    Supported values:
+    
+    - Must be == 0 or >= 10 mins
+    - 0 indicates no autostop.
     
     Defaults to 120 mins"""
 
@@ -2454,8 +2453,19 @@ class EndpointInfo:
     you to run larger queries on it. If you want to increase the number of concurrent queries,
     please tune max_num_clusters.
     
-    Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large
-    - 4X-Large - 5X-Large"""
+    Supported values:
+    
+    - 2X-Small
+    - X-Small
+    - Small
+    - Medium
+    - Large
+    - X-Large
+    - 2X-Large
+    - 3X-Large
+    - 4X-Large
+    - 5X-Large
+    - Auto"""
 
     creator_name: Optional[str] = None
     """warehouse creator name"""
@@ -2483,7 +2493,10 @@ class EndpointInfo:
     max_num_clusters: Optional[int] = None
     """Maximum number of clusters that the autoscaler will create to handle concurrent queries.
     
-    Supported values: - Must be >= min_num_clusters - Must be <= 40.
+    Supported values:
+    
+    - Must be >= min_num_clusters
+    - Must be <= 40.
     
     Defaults to min_clusters if unset."""
 
@@ -2493,14 +2506,20 @@ class EndpointInfo:
     the cold start time for new queries. This is similar to reserved vs. revocable cores in a
     resource manager.
     
-    Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
+    Supported values:
+    
+    - Must be > 0
+    - Must be <= min(max_num_clusters, 30)
     
     Defaults to 1"""
 
     name: Optional[str] = None
     """Logical name for the cluster.
     
-    Supported values: - Must be unique within an org. - Must be less than 100 characters."""
+    Supported values:
+    
+    - Must be unique within an org.
+    - Must be less than 100 characters."""
 
     num_active_sessions: Optional[int] = None
     """Deprecated. current number of active sessions for the warehouse"""
@@ -2521,11 +2540,13 @@ class EndpointInfo:
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
     volumes) associated with this SQL warehouse.
     
-    Supported values: - Number of tags < 45."""
+    Supported values:
+    
+    - Number of tags < 45."""
 
     warehouse_type: Optional[EndpointInfoWarehouseType] = None
-    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`."""
+    """Warehouse type: ``PRO`` or ``CLASSIC``. If you want to use serverless compute, you must set to
+    ``PRO`` and also set the field ``enable_serverless_compute`` to ``true``."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointInfo into a dictionary suitable for use as a JSON request body."""
@@ -2748,12 +2769,12 @@ class EnumValue:
 
 
 class ExecuteStatementRequestOnWaitTimeout(Enum):
-    """When `wait_timeout > 0s`, the call will block up to the specified time. If the statement
-    execution doesn't finish within this time, `on_wait_timeout` determines whether the execution
-    should continue or be canceled. When set to `CONTINUE`, the statement execution continues
+    """When ``wait_timeout > 0s``, the call will block up to the specified time. If the statement
+    execution doesn't finish within this time, ``on_wait_timeout`` determines whether the execution
+    should continue or be canceled. When set to ``CONTINUE``, the statement execution continues
     asynchronously and the call returns a statement ID which can be used for polling with
-    :method:statementexecution/getStatement. When set to `CANCEL`, the statement execution is
-    canceled and the call returns with a `CANCELED` state."""
+    :method:statementexecution/getStatement. When set to ``CANCEL``, the statement execution is
+    canceled and the call returns with a ``CANCELED`` state."""
 
     CANCEL = "CANCEL"
     CONTINUE = "CONTINUE"
@@ -2762,7 +2783,7 @@ class ExecuteStatementRequestOnWaitTimeout(Enum):
 @dataclass
 class ExternalLink:
     byte_count: Optional[int] = None
-    """The number of bytes in the result chunk. This field is not available when using `INLINE`
+    """The number of bytes in the result chunk. This field is not available when using ``INLINE``
     disposition."""
 
     chunk_index: Optional[int] = None
@@ -2770,7 +2791,7 @@ class ExternalLink:
 
     expiration: Optional[str] = None
     """Indicates the date-time that the given external link will expire and becomes invalid, after
-    which point a new `external_link` must be requested."""
+    which point a new ``external_link`` must be requested."""
 
     external_link: Optional[str] = None
     """A URL pointing to a chunk of result data, hosted by an external service, with a short expiration
@@ -2778,20 +2799,20 @@ class ExternalLink:
     sensitive and the client should not expose this URL in a log."""
 
     http_headers: Optional[Dict[str, str]] = None
-    """HTTP headers that must be included with a GET request to the `external_link`. Each header is
+    """HTTP headers that must be included with a GET request to the ``external_link``. Each header is
     provided as a key-value pair. Headers are typically used to pass a decryption key to the
     external service. The values of these headers should be considered sensitive and the client
     should not expose these values in a log."""
 
     next_chunk_index: Optional[int] = None
-    """When fetching, provides the `chunk_index` for the _next_ chunk. If absent, indicates there are
+    """When fetching, provides the ``chunk_index`` for the *next* chunk. If absent, indicates there are
     no more chunks. The next chunk can be fetched with a
     :method:statementexecution/getstatementresultchunkn request."""
 
     next_chunk_internal_link: Optional[str] = None
-    """When fetching, provides a link to fetch the _next_ chunk. If absent, indicates there are no more
-    chunks. This link is an absolute `path` to be joined with your `$DATABRICKS_HOST`, and should be
-    treated as an opaque link. This is an alternative to using `next_chunk_index`."""
+    """When fetching, provides a link to fetch the *next* chunk. If absent, indicates there are no more
+    chunks. This link is an absolute ``path`` to be joined with your ``$DATABRICKS_HOST``, and
+    should be treated as an opaque link. This is an alternative to using ``next_chunk_index``."""
 
     row_count: Optional[int] = None
     """The number of rows within the result chunk."""
@@ -3057,7 +3078,10 @@ class GetWarehouseResponse:
     """The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries)
     before it is automatically stopped.
     
-    Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+    Supported values:
+    
+    - Must be == 0 or >= 10 mins
+    - 0 indicates no autostop.
     
     Defaults to 120 mins"""
 
@@ -3069,8 +3093,19 @@ class GetWarehouseResponse:
     you to run larger queries on it. If you want to increase the number of concurrent queries,
     please tune max_num_clusters.
     
-    Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large
-    - 4X-Large - 5X-Large"""
+    Supported values:
+    
+    - 2X-Small
+    - X-Small
+    - Small
+    - Medium
+    - Large
+    - X-Large
+    - 2X-Large
+    - 3X-Large
+    - 4X-Large
+    - 5X-Large
+    - Auto"""
 
     creator_name: Optional[str] = None
     """warehouse creator name"""
@@ -3098,7 +3133,10 @@ class GetWarehouseResponse:
     max_num_clusters: Optional[int] = None
     """Maximum number of clusters that the autoscaler will create to handle concurrent queries.
     
-    Supported values: - Must be >= min_num_clusters - Must be <= 40.
+    Supported values:
+    
+    - Must be >= min_num_clusters
+    - Must be <= 40.
     
     Defaults to min_clusters if unset."""
 
@@ -3108,14 +3146,20 @@ class GetWarehouseResponse:
     the cold start time for new queries. This is similar to reserved vs. revocable cores in a
     resource manager.
     
-    Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
+    Supported values:
+    
+    - Must be > 0
+    - Must be <= min(max_num_clusters, 30)
     
     Defaults to 1"""
 
     name: Optional[str] = None
     """Logical name for the cluster.
     
-    Supported values: - Must be unique within an org. - Must be less than 100 characters."""
+    Supported values:
+    
+    - Must be unique within an org.
+    - Must be less than 100 characters."""
 
     num_active_sessions: Optional[int] = None
     """Deprecated. current number of active sessions for the warehouse"""
@@ -3136,11 +3180,13 @@ class GetWarehouseResponse:
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
     volumes) associated with this SQL warehouse.
     
-    Supported values: - Number of tags < 45."""
+    Supported values:
+    
+    - Number of tags < 45."""
 
     warehouse_type: Optional[GetWarehouseResponseWarehouseType] = None
-    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`."""
+    """Warehouse type: ``PRO`` or ``CLASSIC``. If you want to use serverless compute, you must set to
+    ``PRO`` and also set the field ``enable_serverless_compute`` to ``true``."""
 
     def as_dict(self) -> dict:
         """Serializes the GetWarehouseResponse into a dictionary suitable for use as a JSON request body."""
@@ -3402,11 +3448,12 @@ class LegacyAlert:
 
     rearm: Optional[int] = None
     """Number of seconds after being triggered before the alert rearms itself and can be triggered
-    again. If `null`, alert will never be triggered again."""
+    again. If ``null``, alert will never be triggered again."""
 
     state: Optional[LegacyAlertState] = None
-    """State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated
-    and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions)."""
+    """State of the alert. Possible values are: ``unknown`` (yet to be evaluated), ``triggered``
+    (evaluated and fulfilled trigger conditions), or ``ok`` (evaluated and did not fulfill trigger
+    conditions)."""
 
     updated_at: Optional[str] = None
     """Timestamp when the alert was last updated."""
@@ -3501,9 +3548,7 @@ class LegacyQuery:
 
     data_source_id: Optional[str] = None
     """Data source ID maps to the ID of the data source used by the resource and is distinct from the
-    warehouse ID. [Learn more]
-    
-    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
+    warehouse ID. `Learn more <https://docs.databricks.com/api/workspace/datasources/list>`__"""
 
     description: Optional[str] = None
     """General description that conveys additional information about this query such as usage notes."""
@@ -3513,8 +3558,8 @@ class LegacyQuery:
 
     is_archived: Optional[bool] = None
     """Indicates whether the query is trashed. Trashed queries can't be used in dashboards, or appear
-    in search results. If this boolean is `true`, the `options` property for this query includes a
-    `moved_to_trash_at` timestamp. Trashed queries are permanently deleted after 30 days."""
+    in search results. If this boolean is ``true``, the ``options`` property for this query includes
+    a ``moved_to_trash_at`` timestamp. Trashed queries are permanently deleted after 30 days."""
 
     is_draft: Optional[bool] = None
     """Whether the query is a draft. Draft queries only appear in list views for their owners.
@@ -3526,7 +3571,7 @@ class LegacyQuery:
 
     is_safe: Optional[bool] = None
     """Text parameter types are not safe from SQL injection for all types of data source. Set this
-    Boolean parameter to `true` if a query either does not use any text type parameters or uses a
+    Boolean parameter to ``true`` if a query either does not use any text type parameters or uses a
     data source type where text type parameters are handled safely."""
 
     last_modified_by: Optional[User] = None
@@ -3547,8 +3592,10 @@ class LegacyQuery:
     """The identifier of the workspace folder containing the object."""
 
     permission_tier: Optional[PermissionLevel] = None
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
-    * `CAN_MANAGE`: Can manage the query"""
+    """- ``CAN_VIEW``: Can view the query
+    - ``CAN_RUN``: Can run the query
+    - ``CAN_EDIT``: Can edit the query
+    - ``CAN_MANAGE``: Can manage the query"""
 
     query: Optional[str] = None
     """The text of the query to be run."""
@@ -3557,8 +3604,8 @@ class LegacyQuery:
     """A SHA-256 hash of the query text along with the authenticated user ID."""
 
     run_as_role: Optional[RunAsRole] = None
-    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
+    """Sets the **Run as** role for the object. Must be set to one of ``"viewer"`` (signifying "run as
+    viewer" behavior) or ``"owner"`` (signifying "run as owner" behavior)"""
 
     tags: Optional[List[str]] = None
 
@@ -3712,7 +3759,7 @@ class LegacyQuery:
 @dataclass
 class LegacyVisualization:
     """The visualization description API changes frequently and is unsupported. You can duplicate a
-    visualization by copying description objects received _from the API_ and then using them to
+    visualization by copying description objects received *from the API* and then using them to
     create a new one with a POST request to the same endpoint. Databricks does not recommend
     constructing ad-hoc visualizations entirely in JSON."""
 
@@ -3842,15 +3889,13 @@ class ListAlertsResponseAlert:
     """The timestamp indicating when the alert was created."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See [here] for custom templating instructions.
-    
-    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+    """Custom body of alert notification, if it exists. See `here
+    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
 
     custom_subject: Optional[str] = None
     """Custom subject of alert notification, if it exists. This can include email subject entries and
-    Slack notification headers, for example. See [here] for custom templating instructions.
-    
-    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+    Slack notification headers, for example. See `here
+    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
 
     display_name: Optional[str] = None
     """The display name of the alert."""
@@ -4009,8 +4054,8 @@ class ListDefaultWarehouseOverridesResponse:
     """The default warehouse overrides in the workspace."""
 
     next_page_token: Optional[str] = None
-    """A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
+    """A token, which can be sent as ``page_token`` to retrieve the next page. If this field is
+    omitted, there are no subsequent pages."""
 
     def as_dict(self) -> dict:
         """Serializes the ListDefaultWarehouseOverridesResponse into a dictionary suitable for use as a JSON request body."""
@@ -4349,8 +4394,8 @@ class ListVisualizationsForQueryResponse:
 @dataclass
 class ListWarehousesResponse:
     next_page_token: Optional[str] = None
-    """A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted,
-    there are no subsequent pages."""
+    """A token, which can be sent as ``page_token`` to retrieve the next page. If this field is
+    omitted, there are no subsequent pages."""
 
     warehouses: Optional[List[EndpointInfo]] = None
     """A list of warehouses and their configurations."""
@@ -4601,8 +4646,10 @@ class ParameterType(Enum):
 
 
 class PermissionLevel(Enum):
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
-    * `CAN_MANAGE`: Can manage the query"""
+    """- ``CAN_VIEW``: Can view the query
+    - ``CAN_RUN``: Can run the query
+    - ``CAN_EDIT``: Can edit the query
+    - ``CAN_MANAGE``: Can manage the query"""
 
     CAN_EDIT = "CAN_EDIT"
     CAN_MANAGE = "CAN_MANAGE"
@@ -4828,7 +4875,7 @@ class QueryFilter:
 
     statuses: Optional[List[QueryStatus]] = None
     """A list of statuses (QUEUED, RUNNING, CANCELED, FAILED, FINISHED) to match query results.
-    Corresponds to the `status` field in the response. Filtering for multiple statuses is not
+    Corresponds to the ``status`` field in the response. Filtering for multiple statuses is not
     recommended. Instead, opt to filter by a single status multiple times and then combine the
     results."""
 
@@ -4899,7 +4946,7 @@ class QueryInfo:
     wall-clock time."""
 
     endpoint_id: Optional[str] = None
-    """Alias for `warehouse_id`."""
+    """Alias for ``warehouse_id``."""
 
     error_message: Optional[str] = None
     """Message describing why the query could not complete."""
@@ -4961,9 +5008,11 @@ class QueryInfo:
     status: Optional[QueryStatus] = None
     """Query status with one the following values:
     
-    - `QUEUED`: Query has been received and queued. - `RUNNING`: Query has started. - `CANCELED`:
-    Query has been cancelled by the user. - `FAILED`: Query has failed. - `FINISHED`: Query has
-    completed."""
+    - ``QUEUED``: Query has been received and queued.
+    - ``RUNNING``: Query has started.
+    - ``CANCELED``: Query has been cancelled by the user.
+    - ``FAILED``: Query has failed.
+    - ``FINISHED``: Query has completed."""
 
     user_id: Optional[int] = None
     """The ID of the user who ran the query."""
@@ -5245,7 +5294,7 @@ class QueryMetrics:
     """Time spent fetching the query results after the execution finished, in milliseconds."""
 
     result_from_cache: Optional[bool] = None
-    """`true` if the query result was fetched from cache, `false` otherwise."""
+    """``true`` if the query result was fetched from cache, ``false`` otherwise."""
 
     rows_produced_count: Optional[int] = None
     """Total number of rows returned by the query."""
@@ -5446,8 +5495,8 @@ class QueryOptions:
     """The name of the catalog to execute this query in."""
 
     moved_to_trash_at: Optional[str] = None
-    """The timestamp when this query was moved to trash. Only present when the `is_archived` property
-    is `true`. Trashed items are deleted after thirty days."""
+    """The timestamp when this query was moved to trash. Only present when the ``is_archived`` property
+    is ``true``. Trashed items are deleted after thirty days."""
 
     parameters: Optional[List[Parameter]] = None
 
@@ -5494,11 +5543,11 @@ class QueryOptions:
 @dataclass
 class QueryParameter:
     date_range_value: Optional[DateRangeValue] = None
-    """Date-range query parameter value. Can only specify one of `dynamic_date_range_value` or
-    `date_range_value`."""
+    """Date-range query parameter value. Can only specify one of ``dynamic_date_range_value`` or
+    ``date_range_value``."""
 
     date_value: Optional[DateValue] = None
-    """Date query parameter value. Can only specify one of `dynamic_date_value` or `date_value`."""
+    """Date query parameter value. Can only specify one of ``dynamic_date_value`` or ``date_value``."""
 
     enum_value: Optional[EnumValue] = None
     """Dropdown query parameter value."""
@@ -5616,7 +5665,7 @@ class QueryStatus(Enum):
 
 @dataclass
 class QueryTag:
-    """* A query execution can be annotated with an optional key-value pair to allow users to attribute
+    """- A query execution can be annotated with an optional key-value pair to allow users to attribute
     the executions by key and optional value to filter by. QueryTag is the user-facing
     representation."""
 
@@ -5702,34 +5751,34 @@ class RestoreResponse:
 
 @dataclass
 class ResultData:
-    """Contains the result data of a single chunk when using `INLINE` disposition. When using
-    `EXTERNAL_LINKS` disposition, the array `external_links` is used instead to provide URLs to the
-    result data in cloud storage. Exactly one of these alternatives is used. (While the
-    `external_links` array prepares the API to return multiple links in a single response. Currently
-    only a single link is returned.)"""
+    """Contains the result data of a single chunk when using ``INLINE`` disposition. When using
+    ``EXTERNAL_LINKS`` disposition, the array ``external_links`` is used instead to provide URLs to
+    the result data in cloud storage. Exactly one of these alternatives is used. (While the
+    ``external_links`` array prepares the API to return multiple links in a single response.
+    Currently only a single link is returned.)"""
 
     byte_count: Optional[int] = None
-    """The number of bytes in the result chunk. This field is not available when using `INLINE`
+    """The number of bytes in the result chunk. This field is not available when using ``INLINE``
     disposition."""
 
     chunk_index: Optional[int] = None
     """The position within the sequence of result set chunks."""
 
     data_array: Optional[List[List[str]]] = None
-    """The `JSON_ARRAY` format is an array of arrays of values, where each non-null value is formatted
-    as a string. Null values are encoded as JSON `null`."""
+    """The ``JSON_ARRAY`` format is an array of arrays of values, where each non-null value is
+    formatted as a string. Null values are encoded as JSON ``null``."""
 
     external_links: Optional[List[ExternalLink]] = None
 
     next_chunk_index: Optional[int] = None
-    """When fetching, provides the `chunk_index` for the _next_ chunk. If absent, indicates there are
+    """When fetching, provides the ``chunk_index`` for the *next* chunk. If absent, indicates there are
     no more chunks. The next chunk can be fetched with a
     :method:statementexecution/getstatementresultchunkn request."""
 
     next_chunk_internal_link: Optional[str] = None
-    """When fetching, provides a link to fetch the _next_ chunk. If absent, indicates there are no more
-    chunks. This link is an absolute `path` to be joined with your `$DATABRICKS_HOST`, and should be
-    treated as an opaque link. This is an alternative to using `next_chunk_index`."""
+    """When fetching, provides a link to fetch the *next* chunk. If absent, indicates there are no more
+    chunks. This link is an absolute ``path`` to be joined with your ``$DATABRICKS_HOST``, and
+    should be treated as an opaque link. This is an alternative to using ``next_chunk_index``."""
 
     row_count: Optional[int] = None
     """The number of rows within the result chunk."""
@@ -5806,7 +5855,7 @@ class ResultManifest:
     schema: Optional[ResultSchema] = None
 
     total_byte_count: Optional[int] = None
-    """The total number of bytes in the result set. This field is not available when using `INLINE`
+    """The total number of bytes in the result set. This field is not available when using ``INLINE``
     disposition."""
 
     total_chunk_count: Optional[int] = None
@@ -5816,7 +5865,7 @@ class ResultManifest:
     """The total number of rows in the result set."""
 
     truncated: Optional[bool] = None
-    """Indicates whether the result is truncated due to `row_limit` or `byte_limit`."""
+    """Indicates whether the result is truncated due to ``row_limit`` or ``byte_limit``."""
 
     def as_dict(self) -> dict:
         """Serializes the ResultManifest into a dictionary suitable for use as a JSON request body."""
@@ -6043,11 +6092,7 @@ class SpotInstancePolicy(Enum):
     +-------+--------------------------------------+--------------------------------+ | AWS | On
     Demand Driver with Spot Executors | On Demand Driver and Executors | | AZURE | On Demand Driver
     and Executors | On Demand Driver and Executors |
-    +-------+--------------------------------------+--------------------------------+
-
-    While including "spot" in the enum name may limit the the future extensibility of this field
-    because it limits this enum to denoting "spot or not", this is the field that PM recommends
-    after discussion with customers per SC-48783."""
+    +-------+--------------------------------------+--------------------------------+"""
 
     COST_OPTIMIZED = "COST_OPTIMIZED"
     POLICY_UNSPECIFIED = "POLICY_UNSPECIFIED"
@@ -6073,7 +6118,7 @@ class StartWarehouseResponse:
 
 
 class State(Enum):
-    """* State of a warehouse."""
+    """State of a warehouse."""
 
     DELETED = "DELETED"
     DELETING = "DELETING"
@@ -6089,12 +6134,11 @@ class StatementParameterListItem:
     """The name of a parameter marker to be substituted in the statement."""
 
     type: Optional[str] = None
-    """The data type, given as a string. For example: `INT`, `STRING`, `DECIMAL(10,2)`. If no type is
-    given the type is assumed to be `STRING`. Complex types, such as `ARRAY`, `MAP`, and `STRUCT`
-    are not supported. For valid types, refer to the section [Data types] of the SQL language
-    reference.
-    
-    [Data types]: https://docs.databricks.com/sql/language-manual/functions/cast.html"""
+    """The data type, given as a string. For example: ``INT``, ``STRING``, ``DECIMAL(10,2)``. If no
+    type is given the type is assumed to be ``STRING``. Complex types, such as ``ARRAY``, ``MAP``,
+    and ``STRUCT`` are not supported. For valid types, refer to the section `Data types
+    <https://docs.databricks.com/sql/language-manual/functions/cast.html>`__ of the SQL language
+    reference."""
 
     value: Optional[str] = None
     """The value to substitute, represented as a string. If omitted, the value is interpreted as NULL."""
@@ -6193,14 +6237,18 @@ class StatementStatus:
 
     sql_state: Optional[str] = None
     """SQLSTATE error code returned when the statement execution fails. Only populated when the
-    statement status is `FAILED`."""
+    statement status is ``FAILED``."""
 
     state: Optional[StatementState] = None
-    """Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running -
-    `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution
-    failed; reason for failure described in accompanying error message - `CANCELED`: user canceled;
-    can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`:
-    execution successful, and statement closed; result no longer available for fetch"""
+    """Statement execution state:
+    
+    - ``PENDING``: waiting for warehouse
+    - ``RUNNING``: running
+    - ``SUCCEEDED``: execution was successful, result data available for fetch
+    - ``FAILED``: execution failed; reason for failure described in accompanying error message
+    - ``CANCELED``: user canceled; can come from explicit cancel call, or timeout with
+      ``on_wait_timeout=CANCEL``
+    - ``CLOSED``: execution successful, and statement closed; result no longer available for fetch"""
 
     def as_dict(self) -> dict:
         """Serializes the StatementStatus into a dictionary suitable for use as a JSON request body."""
@@ -6678,15 +6726,13 @@ class UpdateAlertRequestAlert:
     """Trigger conditions of the alert."""
 
     custom_body: Optional[str] = None
-    """Custom body of alert notification, if it exists. See [here] for custom templating instructions.
-    
-    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+    """Custom body of alert notification, if it exists. See `here
+    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
 
     custom_subject: Optional[str] = None
     """Custom subject of alert notification, if it exists. This can include email subject entries and
-    Slack notification headers, for example. See [here] for custom templating instructions.
-    
-    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+    Slack notification headers, for example. See `here
+    <https://docs.databricks.com/sql/user/alerts/index.html>`__ for custom templating instructions."""
 
     display_name: Optional[str] = None
     """The display name of the alert."""
@@ -7293,12 +7339,12 @@ class WarehousePermissionsDescription:
 
 @dataclass
 class WarehouseTypePair:
-    """* Configuration values to enable or disable the access to specific warehouse types in the
+    """Configuration values to enable or disable the access to specific warehouse types in the
     workspace."""
 
     enabled: Optional[bool] = None
-    """If set to false the specific warehouse type will not be be allowed as a value for warehouse_type
-    in CreateWarehouse and EditWarehouse"""
+    """If set to false the specific warehouse type will not be allowed as a value for warehouse_type in
+    CreateWarehouse and EditWarehouse"""
 
     warehouse_type: Optional[WarehouseTypePairWarehouseType] = None
 
@@ -7343,7 +7389,7 @@ class Widget:
 
     visualization: Optional[LegacyVisualization] = None
     """The visualization description API changes frequently and is unsupported. You can duplicate a
-    visualization by copying description objects received _from the API_ and then using them to
+    visualization by copying description objects received *from the API* and then using them to
     create a new one with a POST request to the same endpoint. Databricks does not recommend
     constructing ad-hoc visualizations entirely in JSON."""
 
@@ -7529,7 +7575,7 @@ class WidgetPosition:
 class AlertsAPI:
     """The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
-    notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
+    notification destinations if the condition was met. Alerts can be scheduled using the ``sql_task`` type of
     the Jobs API, e.g. :method:jobs/create."""
 
     def __init__(self, api_client):
@@ -7651,14 +7697,14 @@ class AlertsAPI:
         :param id: str
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
         :param alert: :class:`UpdateAlertRequestAlert` (optional)
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
@@ -7690,12 +7736,11 @@ class AlertsAPI:
 class AlertsLegacyAPI:
     """The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
-    notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
+    notification destinations if the condition was met. Alerts can be scheduled using the ``sql_task`` type of
     the Jobs API, e.g. :method:jobs/create.
 
-    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
-
-    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. `Learn more
+    <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -7712,9 +7757,8 @@ class AlertsLegacyAPI:
         """Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
         condition of its result, and notifies users or notification destinations if the condition was met.
 
-        **Warning**: This API is deprecated. Please use :method:alerts/create instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:alerts/create instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param name: str
           Name of the alert.
@@ -7726,7 +7770,7 @@ class AlertsLegacyAPI:
           The identifier of the workspace folder containing the object.
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
-          If `null`, alert will never be triggered again.
+          If ``null``, alert will never be triggered again.
 
         :returns: :class:`LegacyAlert`
         """
@@ -7758,9 +7802,8 @@ class AlertsLegacyAPI:
         """Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike
         queries and dashboards, alerts cannot be moved to the trash.
 
-        **Warning**: This API is deprecated. Please use :method:alerts/delete instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:alerts/delete instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param alert_id: str
 
@@ -7780,9 +7823,8 @@ class AlertsLegacyAPI:
     def get(self, alert_id: str) -> LegacyAlert:
         """Gets an alert.
 
-        **Warning**: This API is deprecated. Please use :method:alerts/get instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:alerts/get instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param alert_id: str
 
@@ -7803,9 +7845,8 @@ class AlertsLegacyAPI:
     def list(self) -> Iterator[LegacyAlert]:
         """Gets a list of alerts.
 
-        **Warning**: This API is deprecated. Please use :method:alerts/list instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:alerts/list instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
 
         :returns: Iterator over :class:`LegacyAlert`
@@ -7825,9 +7866,8 @@ class AlertsLegacyAPI:
     def update(self, alert_id: str, name: str, options: AlertOptions, query_id: str, *, rearm: Optional[int] = None):
         """Updates an alert.
 
-        **Warning**: This API is deprecated. Please use :method:alerts/update instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:alerts/update instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param alert_id: str
         :param name: str
@@ -7838,7 +7878,7 @@ class AlertsLegacyAPI:
           Query ID.
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
-          If `null`, alert will never be triggered again.
+          If ``null``, alert will never be triggered again.
 
 
         """
@@ -7975,14 +8015,14 @@ class AlertsV2API:
         :param alert: :class:`AlertV2`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`AlertV2`
         """
@@ -8029,9 +8069,9 @@ class DashboardWidgetsAPI:
           Width of a widget
         :param text: str (optional)
           If this is a textbox widget, the application displays this text. This field is ignored if the widget
-          contains a visualization in the `visualization` field.
+          contains a visualization in the ``visualization`` field.
         :param visualization_id: str (optional)
-          Query Vizualization ID returned by :method:queryvisualizations/create.
+          Query Visualization ID returned by :method:queryvisualizations/create.
 
         :returns: :class:`Widget`
         """
@@ -8099,9 +8139,9 @@ class DashboardWidgetsAPI:
           Width of a widget
         :param text: str (optional)
           If this is a textbox widget, the application displays this text. This field is ignored if the widget
-          contains a visualization in the `visualization` field.
+          contains a visualization in the ``visualization`` field.
         :param visualization_id: str (optional)
-          Query Vizualization ID returned by :method:queryvisualizations/create.
+          Query Visualization ID returned by :method:queryvisualizations/create.
 
         :returns: :class:`Widget`
         """
@@ -8134,12 +8174,11 @@ class DashboardsAPI:
     """In general, there is little need to modify dashboards using the API. However, it can be useful to use
     dashboard objects to look-up a collection of related query IDs. The API can also be used to duplicate
     multiple dashboards at once since you can get a dashboard definition with a GET request and then POST it
-    to create a new one. Dashboards can be scheduled using the `sql_task` type of the Jobs API, e.g.
+    to create a new one. Dashboards can be scheduled using the ``sql_task`` type of the Jobs API, e.g.
     :method:jobs/create.
 
-    **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
-
-    [Learn more]: https://docs.databricks.com/en/dashboards/"""
+    **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
+    <https://docs.databricks.com/en/dashboards/>`__"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -8148,9 +8187,8 @@ class DashboardsAPI:
         """Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot
         be shared.
 
-        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/dashboards/
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
+        <https://docs.databricks.com/en/dashboards/>`__
 
         :param dashboard_id: str
 
@@ -8170,9 +8208,8 @@ class DashboardsAPI:
     def get(self, dashboard_id: str) -> Dashboard:
         """Returns a JSON representation of a dashboard object, including its visualization and query objects.
 
-        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/dashboards/
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
+        <https://docs.databricks.com/en/dashboards/>`__
 
         :param dashboard_id: str
 
@@ -8203,9 +8240,8 @@ class DashboardsAPI:
         **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
         degradation, or a temporary ban.
 
-        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/dashboards/
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
+        <https://docs.databricks.com/en/dashboards/>`__
 
         :param order: :class:`ListOrder` (optional)
           Name of dashboard attribute to order by.
@@ -8249,9 +8285,8 @@ class DashboardsAPI:
     def restore(self, dashboard_id: str):
         """A restored dashboard appears in list views and searches and can be shared.
 
-        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/dashboards/
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
+        <https://docs.databricks.com/en/dashboards/>`__
 
         :param dashboard_id: str
 
@@ -8281,16 +8316,15 @@ class DashboardsAPI:
 
         **Note**: You cannot undo this operation.
 
-        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/dashboards/
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. `Learn more
+        <https://docs.databricks.com/en/dashboards/>`__
 
         :param dashboard_id: str
         :param name: str (optional)
           The title of this dashboard that appears in list views and at the top of the dashboard page.
         :param run_as_role: :class:`RunAsRole` (optional)
-          Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-          viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+          Sets the **Run as** role for the object. Must be set to one of ``"viewer"`` (signifying "run as
+          viewer" behavior) or ``"owner"`` (signifying "run as owner" behavior)
         :param tags: List[str] (optional)
 
         :returns: :class:`Dashboard`
@@ -8318,28 +8352,26 @@ class DashboardsAPI:
 
 class DataSourcesAPI:
     """This API is provided to assist you in making new query objects. When creating a query object, you may
-    optionally specify a `data_source_id` for the SQL warehouse against which it will run. If you don't
-    already know the `data_source_id` for your desired SQL warehouse, this API will help you find it.
+    optionally specify a ``data_source_id`` for the SQL warehouse against which it will run. If you don't
+    already know the ``data_source_id`` for your desired SQL warehouse, this API will help you find it.
 
     This API does not support searches. It returns the full list of SQL warehouses in your workspace. We
-    advise you to use any text editor, REST client, or `grep` to search the response from this API for the
+    advise you to use any text editor, REST client, or ``grep`` to search the response from this API for the
     name of your SQL warehouse as it appears in Databricks SQL.
 
-    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
-
-    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. `Learn more
+    <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__"""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def list(self) -> Iterator[DataSource]:
         """Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this
-        API response are enumerated for clarity. However, you need only a SQL warehouse's `id` to create new
+        API response are enumerated for clarity. However, you need only a SQL warehouse's ``id`` to create new
         queries against it.
 
-        **Warning**: This API is deprecated. Please use :method:warehouses/list instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:warehouses/list instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
 
         :returns: Iterator over :class:`DataSource`
@@ -8364,15 +8396,13 @@ class DbsqlPermissionsAPI:
 
     There are three levels of permission:
 
-    - `CAN_VIEW`: Allows read-only access
+    - ``CAN_VIEW``: Allows read-only access
+    - ``CAN_RUN``: Allows read access and run access (superset of ``CAN_VIEW``)
+    - ``CAN_MANAGE``: Allows all actions: read, run, edit, delete, modify permissions (superset of
+      ``CAN_RUN``)
 
-    - `CAN_RUN`: Allows read access and run access (superset of `CAN_VIEW`)
-
-    - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify permissions (superset of `CAN_RUN`)
-
-    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
-
-    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. `Learn more
+    <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -8380,9 +8410,8 @@ class DbsqlPermissionsAPI:
     def get(self, object_type: ObjectTypePlural, object_id: str) -> GetResponse:
         """Gets a JSON representation of the access control list (ACL) for a specified object.
 
-        **Warning**: This API is deprecated. Please use :method:workspace/getpermissions instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:workspace/getpermissions instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param object_type: :class:`ObjectTypePlural`
           The type of object permissions to check.
@@ -8413,9 +8442,8 @@ class DbsqlPermissionsAPI:
         """Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
         ACL.
 
-        **Warning**: This API is deprecated. Please use :method:workspace/setpermissions instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:workspace/setpermissions instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param object_type: :class:`ObjectTypePlural`
           The type of object permission to set.
@@ -8449,9 +8477,8 @@ class DbsqlPermissionsAPI:
         """Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
 
         **Warning**: This API is deprecated. For queries and alerts, please use :method:queries/update and
-        :method:alerts/update respectively instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        :method:alerts/update respectively instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param object_type: :class:`OwnableObjectType`
           The type of object on which to change ownership.
@@ -8487,7 +8514,7 @@ class DbsqlPermissionsAPI:
 class QueriesAPI:
     """The queries API can be used to perform CRUD operations on queries. A query is a Databricks SQL object that
     includes the target SQL warehouse, query text, name, description, tags, and parameters. Queries can be
-    scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create."""
+    scheduled using the ``sql_task`` type of the Jobs API, e.g. :method:jobs/create."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -8642,14 +8669,14 @@ class QueriesAPI:
         :param id: str
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
           alert's display name conflicts with an existing alert's display name.
@@ -8681,11 +8708,10 @@ class QueriesAPI:
 class QueriesLegacyAPI:
     """These endpoints are used for CRUD operations on query definitions. Query definitions include the target
     SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
-    scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
+    scheduled using the ``sql_task`` type of the Jobs API, e.g. :method:jobs/create.
 
-    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
-
-    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. `Learn more
+    <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -8705,36 +8731,33 @@ class QueriesLegacyAPI:
         """Creates a new query definition. Queries created with this endpoint belong to the authenticated user
         making the request.
 
-        The `data_source_id` field specifies the ID of the SQL warehouse to run this query against. You can
+        The ``data_source_id`` field specifies the ID of the SQL warehouse to run this query against. You can
         use the Data Sources API to see a complete list of available SQL warehouses. Or you can copy the
-        `data_source_id` from an existing query.
+        ``data_source_id`` from an existing query.
 
         **Note**: You cannot add a visualization until you create the query.
 
-        **Warning**: This API is deprecated. Please use :method:queries/create instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:queries/create instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param data_source_id: str (optional)
           Data source ID maps to the ID of the data source used by the resource and is distinct from the
-          warehouse ID. [Learn more]
-
-          [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
+          warehouse ID. `Learn more <https://docs.databricks.com/api/workspace/datasources/list>`__
         :param description: str (optional)
           General description that conveys additional information about this query such as usage notes.
         :param name: str (optional)
           The title of this query that appears in list views, widget headings, and on the query page.
         :param options: Any (optional)
-          Exclusively used for storing a list parameter definitions. A parameter is an object with `title`,
-          `name`, `type`, and `value` properties. The `value` field here is the default value. It can be
-          overridden at runtime.
+          Exclusively used for storing a list parameter definitions. A parameter is an object with ``title``,
+          ``name``, ``type``, and ``value`` properties. The ``value`` field here is the default value. It can
+          be overridden at runtime.
         :param parent: str (optional)
           The identifier of the workspace folder containing the object.
         :param query: str (optional)
           The text of the query to be run.
         :param run_as_role: :class:`RunAsRole` (optional)
-          Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-          viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+          Sets the **Run as** role for the object. Must be set to one of ``"viewer"`` (signifying "run as
+          viewer" behavior) or ``"owner"`` (signifying "run as owner" behavior)
         :param tags: List[str] (optional)
 
         :returns: :class:`LegacyQuery`
@@ -8773,9 +8796,8 @@ class QueriesLegacyAPI:
         """Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
         they cannot be used for alerts. The trash is deleted after 30 days.
 
-        **Warning**: This API is deprecated. Please use :method:queries/delete instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:queries/delete instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param query_id: str
 
@@ -8796,9 +8818,8 @@ class QueriesLegacyAPI:
         """Retrieve a query object definition along with contextual permissions information about the currently
         authenticated user.
 
-        **Warning**: This API is deprecated. Please use :method:queries/get instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:queries/get instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param query_id: str
 
@@ -8829,24 +8850,19 @@ class QueriesLegacyAPI:
         **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
         degradation, or a temporary ban.
 
-        **Warning**: This API is deprecated. Please use :method:queries/list instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:queries/list instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param order: str (optional)
-          Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order
+          Name of query attribute to order by. Default sort order is ascending. Append a dash (``-``) to order
           descending instead.
 
-          - `name`: The name of the query.
-
-          - `created_at`: The timestamp the query was created.
-
-          - `runtime`: The time it took to run this query. This is blank for parameterized queries. A blank
-          value is treated as the highest value for sorting.
-
-          - `executed_at`: The timestamp when the query was last run.
-
-          - `created_by`: The user name of the user that created the query.
+          - ``name``: The name of the query.
+          - ``created_at``: The timestamp the query was created.
+          - ``runtime``: The time it took to run this query. This is blank for parameterized queries. A blank
+            value is treated as the highest value for sorting.
+          - ``executed_at``: The timestamp when the query was last run.
+          - ``created_by``: The user name of the user that created the query.
         :param page: int (optional)
           Page number to retrieve.
         :param page_size: int (optional)
@@ -8888,9 +8904,8 @@ class QueriesLegacyAPI:
         """Restore a query that has been moved to the trash. A restored query appears in list views and searches.
         You can use restored queries for alerts.
 
-        **Warning**: This API is deprecated. Please see the latest version. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please see the latest version. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param query_id: str
 
@@ -8923,29 +8938,26 @@ class QueriesLegacyAPI:
 
         **Note**: You cannot undo this operation.
 
-        **Warning**: This API is deprecated. Please use :method:queries/update instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:queries/update instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param query_id: str
         :param data_source_id: str (optional)
           Data source ID maps to the ID of the data source used by the resource and is distinct from the
-          warehouse ID. [Learn more]
-
-          [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
+          warehouse ID. `Learn more <https://docs.databricks.com/api/workspace/datasources/list>`__
         :param description: str (optional)
           General description that conveys additional information about this query such as usage notes.
         :param name: str (optional)
           The title of this query that appears in list views, widget headings, and on the query page.
         :param options: Any (optional)
-          Exclusively used for storing a list parameter definitions. A parameter is an object with `title`,
-          `name`, `type`, and `value` properties. The `value` field here is the default value. It can be
-          overridden at runtime.
+          Exclusively used for storing a list parameter definitions. A parameter is an object with ``title``,
+          ``name``, ``type``, and ``value`` properties. The ``value`` field here is the default value. It can
+          be overridden at runtime.
         :param query: str (optional)
           The text of the query to be run.
         :param run_as_role: :class:`RunAsRole` (optional)
-          Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-          viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+          Sets the **Run as** role for the object. Must be set to one of ``"viewer"`` (signifying "run as
+          viewer" behavior) or ``"owner"`` (signifying "run as owner" behavior)
         :param tags: List[str] (optional)
 
         :returns: :class:`LegacyQuery`
@@ -9003,7 +9015,7 @@ class QueryHistoryAPI:
         :param filter_by: :class:`QueryFilter` (optional)
           An optional filter object to limit query history results. Accepts parameters such as user IDs,
           endpoint IDs, and statuses to narrow the returned data. In a URL, the parameters of this filter are
-          specified with dot notation. For example: `filter_by.statement_ids`.
+          specified with dot notation. For example: ``filter_by.statement_ids``.
         :param include_metrics: bool (optional)
           Whether to include the query metrics with each query. Only use this for a small subset of queries
           (max_results). Defaults to false.
@@ -9094,14 +9106,14 @@ class QueryVisualizationsAPI:
         :param id: str
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
         :param visualization: :class:`UpdateVisualizationRequestVisualization` (optional)
 
         :returns: :class:`Visualization`
@@ -9126,12 +9138,11 @@ class QueryVisualizationsAPI:
 
 
 class QueryVisualizationsLegacyAPI:
-    """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries
+    """This is an evolving API that facilitates the addition and removal of visualizations from existing queries
     within the Databricks Workspace. Data structures may change over time.
 
-    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
-
-    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. `Learn more
+    <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -9141,10 +9152,8 @@ class QueryVisualizationsLegacyAPI:
     ) -> LegacyVisualization:
         """Creates visualization in the query.
 
-        **Warning**: This API is deprecated. Please use :method:queryvisualizations/create instead. [Learn
-        more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/create instead. `Learn
+        more <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param options: Any
           The options object varies widely from one visualization type to the next and is unsupported.
@@ -9187,10 +9196,8 @@ class QueryVisualizationsLegacyAPI:
     def delete(self, id: str):
         """Removes a visualization from the query.
 
-        **Warning**: This API is deprecated. Please use :method:queryvisualizations/delete instead. [Learn
-        more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/delete instead. `Learn
+        more <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param id: str
           Widget ID returned by :method:queryvisualizations/create
@@ -9222,10 +9229,8 @@ class QueryVisualizationsLegacyAPI:
     ) -> LegacyVisualization:
         """Updates visualization in the query.
 
-        **Warning**: This API is deprecated. Please use :method:queryvisualizations/update instead. [Learn
-        more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/update instead. `Learn
+        more <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param created_at: str (optional)
         :param description: str (optional)
@@ -9306,7 +9311,8 @@ class StatementExecutionAPI:
 
     **Getting started**
 
-    We suggest beginning with the [Databricks SQL Statement Execution API tutorial].
+    We suggest beginning with the `Databricks SQL Statement Execution API tutorial
+    <https://docs.databricks.com/sql/api/sql-execution-tutorial.html>`__.
 
     **Overview of statement execution and result fetching**
 
@@ -9319,71 +9325,73 @@ class StatementExecutionAPI:
     :method:statementexecution/getStatement request.
 
     You can specify whether the call should behave synchronously, asynchronously or start synchronously with a
-    fallback to asynchronous execution. This is controlled with the `wait_timeout` and `on_wait_timeout`
-    settings. If `wait_timeout` is set between 5-50 seconds (default: 10s), the call waits for results up to
-    the specified timeout; when set to `0s`, the call is asynchronous and responds immediately with a
-    statement ID. The `on_wait_timeout` setting specifies what should happen when the timeout is reached while
-    the statement execution has not yet finished. This can be set to either `CONTINUE`, to fallback to
-    asynchronous mode, or it can be set to `CANCEL`, which cancels the statement.
+    fallback to asynchronous execution. This is controlled with the ``wait_timeout`` and ``on_wait_timeout``
+    settings. If ``wait_timeout`` is set between 5-50 seconds (default: 10s), the call waits for results up to
+    the specified timeout; when set to ``0s``, the call is asynchronous and responds immediately with a
+    statement ID. The ``on_wait_timeout`` setting specifies what should happen when the timeout is reached
+    while the statement execution has not yet finished. This can be set to either ``CONTINUE``, to fallback to
+    asynchronous mode, or it can be set to ``CANCEL``, which cancels the statement.
 
-    In summary: - **Synchronous mode** (`wait_timeout=30s` and `on_wait_timeout=CANCEL`): The call waits up to
-    30 seconds; if the statement execution finishes within this time, the result data is returned directly in
-    the response. If the execution takes longer than 30 seconds, the execution is canceled and the call
-    returns with a `CANCELED` state. - **Asynchronous mode** (`wait_timeout=0s` and `on_wait_timeout` is
-    ignored): The call doesn't wait for the statement to finish but returns directly with a statement ID. The
-    status of the statement execution can be polled by issuing :method:statementexecution/getStatement with
-    the statement ID. Once the execution has succeeded, this call also returns the result and metadata in the
-    response. - **[Default] Hybrid mode** (`wait_timeout=10s` and `on_wait_timeout=CONTINUE`): The call waits
-    for up to 10 seconds; if the statement execution finishes within this time, the result data is returned
-    directly in the response. If the execution takes longer than 10 seconds, a statement ID is returned. The
-    statement ID can be used to fetch status and results in the same way as in the asynchronous mode.
+    In summary:
+
+    - **Synchronous mode** (``wait_timeout=30s`` and ``on_wait_timeout=CANCEL``): The call waits up to 30
+      seconds; if the statement execution finishes within this time, the result data is returned directly in
+      the response. If the execution takes longer than 30 seconds, the execution is canceled and the call
+      returns with a ``CANCELED`` state.
+    - **Asynchronous mode** (``wait_timeout=0s`` and ``on_wait_timeout`` is ignored): The call doesn't wait
+      for the statement to finish but returns directly with a statement ID. The status of the statement
+      execution can be polled by issuing :method:statementexecution/getStatement with the statement ID. Once
+      the execution has succeeded, this call also returns the result and metadata in the response.
+    - **[Default] Hybrid mode** (``wait_timeout=10s`` and ``on_wait_timeout=CONTINUE``): The call waits for up
+      to 10 seconds; if the statement execution finishes within this time, the result data is returned
+      directly in the response. If the execution takes longer than 10 seconds, a statement ID is returned. The
+      statement ID can be used to fetch status and results in the same way as in the asynchronous mode.
 
     Depending on the size, the result can be split into multiple chunks. If the statement execution is
     successful, the statement response contains a manifest and the first chunk of the result. The manifest
     contains schema information and provides metadata for each chunk in the result. Result chunks can be
     retrieved by index with :method:statementexecution/getStatementResultChunkN which may be called in any
     order and in parallel. For sequential fetching, each chunk, apart from the last, also contains a
-    `next_chunk_index` and `next_chunk_internal_link` that point to the next chunk.
+    ``next_chunk_index`` and ``next_chunk_internal_link`` that point to the next chunk.
 
     A statement can be canceled with :method:statementexecution/cancelExecution.
 
     **Fetching result data: format and disposition**
 
-    To specify the format of the result data, use the `format` field, which can be set to one of the following
-    options: `JSON_ARRAY` (JSON), `ARROW_STREAM` ([Apache Arrow Columnar]), or `CSV`.
+    To specify the format of the result data, use the ``format`` field, which can be set to one of the
+    following options: ``JSON_ARRAY`` (JSON), ``ARROW_STREAM`` (`Apache Arrow Columnar
+    <https://arrow.apache.org/overview/>`__), or ``CSV``.
 
-    There are two ways to receive statement results, controlled by the `disposition` setting, which can be
-    either `INLINE` or `EXTERNAL_LINKS`:
+    There are two ways to receive statement results, controlled by the ``disposition`` setting, which can be
+    either ``INLINE`` or ``EXTERNAL_LINKS``:
 
-    - `INLINE`: In this mode, the result data is directly included in the response. It's best suited for
-    smaller results. This mode can only be used with the `JSON_ARRAY` format.
+    - ``INLINE``: In this mode, the result data is directly included in the response. It's best suited for
+      smaller results. This mode can only be used with the ``JSON_ARRAY`` format.
+    - ``EXTERNAL_LINKS``: In this mode, the response provides links that can be used to download the result
+      data in chunks separately. This approach is ideal for larger results and offers higher throughput. This
+      mode can be used with all the formats: ``JSON_ARRAY``, ``ARROW_STREAM``, and ``CSV``.
 
-    - `EXTERNAL_LINKS`: In this mode, the response provides links that can be used to download the result data
-    in chunks separately. This approach is ideal for larger results and offers higher throughput. This mode
-    can be used with all the formats: `JSON_ARRAY`, `ARROW_STREAM`, and `CSV`.
-
-    By default, the API uses `format=JSON_ARRAY` and `disposition=INLINE`.
+    By default, the API uses ``format=JSON_ARRAY`` and ``disposition=INLINE``.
 
     **Limits and limitations**
 
     Note: The byte limit for INLINE disposition is based on internal storage metrics and will not exactly
     match the byte count of the actual payload.
 
-    - Statements with `disposition=INLINE` are limited to 25 MiB and will fail when this limit is exceeded. -
-    Statements with `disposition=EXTERNAL_LINKS` are limited to 100 GiB. Result sets larger than this limit
-    will be truncated. Truncation is indicated by the `truncated` field in the result manifest. - The maximum
-    query text size is 16 MiB. - Cancelation might silently fail. A successful response from a cancel request
-    indicates that the cancel request was successfully received and sent to the processing engine. However, an
-    outstanding statement might have already completed execution when the cancel request arrives. Polling for
-    status until a terminal state is reached is a reliable way to determine the final state. - Wait timeouts
-    are approximate, occur server-side, and cannot account for things such as caller delays and network
-    latency from caller to service. - To guarantee that the statement is kept alive, you must poll at least
-    once every 15 minutes. - The results are only available for one hour after success; polling does not
-    extend this. - The SQL Execution API must be used for the entire lifecycle of the statement. For example,
-    you cannot use the Jobs API to execute the command, and then the SQL Execution API to cancel it.
-
-    [Apache Arrow Columnar]: https://arrow.apache.org/overview/
-    [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html"""
+    - Statements with ``disposition=INLINE`` are limited to 25 MiB and will fail when this limit is exceeded.
+    - Statements with ``disposition=EXTERNAL_LINKS`` are limited to 100 GiB. Result sets larger than this
+      limit will be truncated. Truncation is indicated by the ``truncated`` field in the result manifest.
+    - The maximum query text size is 16 MiB.
+    - Cancelation might silently fail. A successful response from a cancel request indicates that the cancel
+      request was successfully received and sent to the processing engine. However, an outstanding statement
+      might have already completed execution when the cancel request arrives. Polling for status until a
+      terminal state is reached is a reliable way to determine the final state.
+    - Wait timeouts are approximate, occur server-side, and cannot account for things such as caller delays
+      and network latency from caller to service.
+    - To guarantee that the statement is kept alive, you must poll at least once every 15 minutes.
+    - The results are only available for one hour after success; polling does not extend this.
+    - The SQL Execution API must be used for the entire lifecycle of the statement. For example, you cannot
+      use the Jobs API to execute the command, and then the SQL Execution API to cancel it."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -9399,6 +9407,7 @@ class StatementExecutionAPI:
 
         """
 
+        body = {}
         headers = {
             "Content-Type": "application/json",
         }
@@ -9407,7 +9416,7 @@ class StatementExecutionAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        self._api.do("POST", f"/api/2.0/sql/statements/{statement_id}/cancel", headers=headers)
+        self._api.do("POST", f"/api/2.0/sql/statements/{statement_id}/cancel", body=body, headers=headers)
 
     def execute_statement(
         self,
@@ -9429,181 +9438,184 @@ class StatementExecutionAPI:
 
         **Use case: small result sets with INLINE + JSON_ARRAY**
 
-        For flows that generate small and predictable result sets (<= 25 MiB), `INLINE` responses of
-        `JSON_ARRAY` result data are typically the simplest way to execute and fetch result data.
+        For flows that generate small and predictable result sets (<= 25 MiB), ``INLINE`` responses of
+        ``JSON_ARRAY`` result data are typically the simplest way to execute and fetch result data.
 
         **Use case: large result sets with EXTERNAL_LINKS**
 
-        Using `EXTERNAL_LINKS` to fetch result data allows you to fetch large result sets efficiently. The
-        main differences from using `INLINE` disposition are that the result data is accessed with URLs, and
-        that there are 3 supported formats: `JSON_ARRAY`, `ARROW_STREAM` and `CSV` compared to only
-        `JSON_ARRAY` with `INLINE`.
+        Using ``EXTERNAL_LINKS`` to fetch result data allows you to fetch large result sets efficiently. The
+        main differences from using ``INLINE`` disposition are that the result data is accessed with URLs, and
+        that there are 3 supported formats: ``JSON_ARRAY``, ``ARROW_STREAM`` and ``CSV`` compared to only
+        ``JSON_ARRAY`` with ``INLINE``.
 
         ** URLs**
 
         External links point to data stored within your workspace's internal storage, in the form of a URL.
-        The URLs are valid for only a short period, <= 15 minutes. Alongside each `external_link` is an
-        expiration field indicating the time at which the URL is no longer valid. In `EXTERNAL_LINKS` mode,
+        The URLs are valid for only a short period, <= 15 minutes. Alongside each ``external_link`` is an
+        expiration field indicating the time at which the URL is no longer valid. In ``EXTERNAL_LINKS`` mode,
         chunks can be resolved and fetched multiple times and in parallel.
 
-        ----
+        **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
+        ``EXTERNAL_LINKS`` disposition.**
 
-        ### **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
-        `EXTERNAL_LINKS` disposition.**
-
-        When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is generated, which can be used to
+        When you use the ``EXTERNAL_LINKS`` disposition, a short-lived, URL is generated, which can be used to
         download the results directly from . As a short-lived is embedded in this URL, you should protect the
         URL.
 
-        Because URLs are already generated with embedded temporary s, you must not set an `Authorization`
+        Because URLs are already generated with embedded temporary s, you must not set an ``Authorization``
         header in the download requests.
 
-        The `EXTERNAL_LINKS` disposition can be disabled upon request by creating a support case.
+        The ``EXTERNAL_LINKS`` disposition can be disabled upon request by creating a support case.
 
-        See also [Security best practices].
+        See also `Security best practices
+        <https://docs.databricks.com/sql/admin/sql-execution-tutorial.html#security-best-practices>`__.
 
-        ----
-
-        StatementResponse contains `statement_id` and `status`; other fields might be absent or present
+        StatementResponse contains ``statement_id`` and ``status``; other fields might be absent or present
         depending on context. If the SQL warehouse fails to execute the provided statement, a 200 response is
-        returned with `status.state` set to `FAILED` (in contrast to a failure when accepting the request,
-        which results in a non-200 response). Details of the error can be found at `status.error` in case of
+        returned with ``status.state`` set to ``FAILED`` (in contrast to a failure when accepting the request,
+        which results in a non-200 response). Details of the error can be found at ``status.error`` in case of
         execution failures.
 
-        [Security best practices]: https://docs.databricks.com/sql/admin/sql-execution-tutorial.html#security-best-practices
-
         :param statement: str
-          The SQL statement to execute. The statement can optionally be parameterized, see `parameters`. The
+          The SQL statement to execute. The statement can optionally be parameterized, see ``parameters``. The
           maximum query text size is 16 MiB.
         :param warehouse_id: str
-          Warehouse upon which to execute a statement. See also [What are SQL warehouses?]
-
-          [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html
+          Warehouse upon which to execute a statement. See also `What are SQL warehouses?
+          <https://docs.databricks.com/sql/admin/warehouse-type.html>`__
         :param byte_limit: int (optional)
           Applies the given byte limit to the statement's result size. Byte counts are based on internal data
-          representations and might not match the final size in the requested `format`. If the result was
-          truncated due to the byte limit, then `truncated` in the response is set to `true`. When using
-          `EXTERNAL_LINKS` disposition, a default `byte_limit` of 100 GiB is applied if `byte_limit` is not
-          explicitly set.
+          representations and might not match the final size in the requested ``format``. If the result was
+          truncated due to the byte limit, then ``truncated`` in the response is set to ``true``. When using
+          ``EXTERNAL_LINKS`` disposition, a default ``byte_limit`` of 100 GiB is applied if ``byte_limit`` is
+          not explicitly set.
         :param catalog: str (optional)
-          Sets default catalog for statement execution, similar to [`USE CATALOG`] in SQL.
-
-          [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
+          Sets default catalog for statement execution, similar to `USE CATALOG
+          <https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html>`__ in SQL.
         :param disposition: :class:`Disposition` (optional)
-          The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
+          The fetch disposition provides two modes of fetching results: ``INLINE`` and ``EXTERNAL_LINKS``.
 
-          Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
+          Statements executed with ``INLINE`` disposition will return result data inline, in ``JSON_ARRAY``
           format, in a series of chunks. If a given statement produces a result set with a size larger than 25
           MiB, that statement execution is aborted, and no result set will be available.
 
           **NOTE** Byte limits are computed based upon internal representations of the result set data, and
           might not match the sizes visible in JSON responses.
 
-          Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
-          URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
+          Statements executed with ``EXTERNAL_LINKS`` disposition will return result data as external links:
+          URLs that point to cloud storage internal to the workspace. Using ``EXTERNAL_LINKS`` disposition
           allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
           resulting links have two important properties:
 
-          1. They point to resources _external_ to the Databricks compute; therefore any associated
-          authentication information (typically a personal access token, OAuth token, or similar) _must be
-          removed_ when fetching from these links.
-
+          1. They point to resources *external* to the Databricks compute; therefore any associated
+             authentication information (typically a personal access token, OAuth token, or similar) *must be
+             removed* when fetching from these links.
           2. These are URLs with a specific expiration, indicated in the response. The behavior when
-          attempting to use an expired link is cloud specific.
+             attempting to use an expired link is cloud specific.
         :param format: :class:`Format` (optional)
-          Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
-          `CSV`.
+          Statement execution supports three result formats: ``JSON_ARRAY`` (default), ``ARROW_STREAM``, and
+          ``CSV``.
 
-          Important: The formats `ARROW_STREAM` and `CSV` are supported only with `EXTERNAL_LINKS`
-          disposition. `JSON_ARRAY` is supported in `INLINE` and `EXTERNAL_LINKS` disposition.
+          Important: The formats ``ARROW_STREAM`` and ``CSV`` are supported only with ``EXTERNAL_LINKS``
+          disposition. ``JSON_ARRAY`` is supported in ``INLINE`` and ``EXTERNAL_LINKS`` disposition.
 
-          When specifying `format=JSON_ARRAY`, result data will be formatted as an array of arrays of values,
-          where each value is either the *string representation* of a value, or `null`. For example, the
-          output of `SELECT concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)` would
-          look like this:
+          When specifying ``format=JSON_ARRAY``, result data will be formatted as an array of arrays of
+          values, where each value is either the *string representation* of a value, or ``null``. For example,
+          the output of ``SELECT concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM range(3)``
+          would look like this:
 
-          ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null ], ] ```
+          .. code-block::
 
-          When specifying `format=JSON_ARRAY` and `disposition=EXTERNAL_LINKS`, each chunk in the result
+             [
+             [ "id-1", "1", null ],
+             [ "id-2", "2", null ],
+             [ "id-3", "3", null ],
+             ]
+
+          When specifying ``format=JSON_ARRAY`` and ``disposition=EXTERNAL_LINKS``, each chunk in the result
           contains compact JSON with no indentation or extra whitespace.
 
-          When specifying `format=ARROW_STREAM` and `disposition=EXTERNAL_LINKS`, each chunk in the result
-          will be formatted as Apache Arrow Stream. See the [Apache Arrow streaming format].
+          When specifying ``format=ARROW_STREAM`` and ``disposition=EXTERNAL_LINKS``, each chunk in the result
+          will be formatted as Apache Arrow Stream. See the `Apache Arrow streaming format
+          <https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format>`__.
 
-          When specifying `format=CSV` and `disposition=EXTERNAL_LINKS`, each chunk in the result will be a
-          CSV according to [RFC 4180] standard. All the columns values will have *string representation*
-          similar to the `JSON_ARRAY` format, and `null` values will be encoded as “null”. Only the first
-          chunk in the result would contain a header row with column names. For example, the output of `SELECT
-          concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM range(3)` would look like this:
+          When specifying ``format=CSV`` and ``disposition=EXTERNAL_LINKS``, each chunk in the result will be
+          a CSV according to `RFC 4180 <https://www.rfc-editor.org/rfc/rfc4180>`__ standard. All the columns
+          values will have *string representation* similar to the ``JSON_ARRAY`` format, and ``null`` values
+          will be encoded as “null”. Only the first chunk in the result would contain a header row with
+          column names. For example, the output of ``SELECT concat('id-', id) AS strCol, id AS intCol, null as
+          nullCol FROM range(3)`` would look like this:
 
-          ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
+          .. code-block::
 
-          [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
-          [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
+             strCol,intCol,nullCol
+             id-1,1,null
+             id-2,2,null
+             id-3,3,null
         :param on_wait_timeout: :class:`ExecuteStatementRequestOnWaitTimeout` (optional)
-          When `wait_timeout > 0s`, the call will block up to the specified time. If the statement execution
-          doesn't finish within this time, `on_wait_timeout` determines whether the execution should continue
-          or be canceled. When set to `CONTINUE`, the statement execution continues asynchronously and the
-          call returns a statement ID which can be used for polling with
-          :method:statementexecution/getStatement. When set to `CANCEL`, the statement execution is canceled
-          and the call returns with a `CANCELED` state.
+          When ``wait_timeout > 0s``, the call will block up to the specified time. If the statement execution
+          doesn't finish within this time, ``on_wait_timeout`` determines whether the execution should
+          continue or be canceled. When set to ``CONTINUE``, the statement execution continues asynchronously
+          and the call returns a statement ID which can be used for polling with
+          :method:statementexecution/getStatement. When set to ``CANCEL``, the statement execution is canceled
+          and the call returns with a ``CANCELED`` state.
         :param parameters: List[:class:`StatementParameterListItem`] (optional)
           A list of parameters to pass into a SQL statement containing parameter markers. A parameter consists
-          of a name, a value, and optionally a type. To represent a NULL value, the `value` field may be
-          omitted or set to `null` explicitly. If the `type` field is omitted, the value is interpreted as a
-          string.
+          of a name, a value, and optionally a type. To represent a NULL value, the ``value`` field may be
+          omitted or set to ``null`` explicitly. If the ``type`` field is omitted, the value is interpreted as
+          a string.
 
           If the type is given, parameters will be checked for type correctness according to the given type. A
-          value is correct if the provided string can be converted to the requested type using the `cast`
-          function. The exact semantics are described in the section [`cast` function] of the SQL language
+          value is correct if the provided string can be converted to the requested type using the ``cast``
+          function. The exact semantics are described in the section `cast function
+          <https://docs.databricks.com/sql/language-manual/functions/cast.html>`__ of the SQL language
           reference.
 
-          For example, the following statement contains two parameters, `my_name` and `my_date`:
+          For example, the following statement contains two parameters, ``my_name`` and ``my_date``:
 
-          ``` SELECT * FROM my_table WHERE name = :my_name AND date = :my_date ```
+          .. code-block::
+
+             SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
 
           The parameters can be passed in the request body as follows:
 
-          ` { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
+          ``{ ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
           "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value":
-          "2020-01-01", "type": "DATE" } ] } `
+          "2020-01-01", "type": "DATE" } ] }``
 
-          Currently, positional parameters denoted by a `?` marker are not supported by the Databricks SQL
+          Currently, positional parameters denoted by a ``?`` marker are not supported by the Databricks SQL
           Statement Execution API.
 
-          Also see the section [Parameter markers] of the SQL language reference.
-
-          [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
-          [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+          Also see the section `Parameter markers
+          <https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html>`__ of the SQL
+          language reference.
         :param query_tags: List[:class:`QueryTag`] (optional)
           An array of query tags to annotate a SQL statement. A query tag consists of a non-empty key and,
-          optionally, a value. To represent a NULL value, either omit the `value` field or manually set it to
-          `null` or white space. Refer to the SQL language reference for the format specification of query
-          tags. There's no significance to the order of tags. Only one value per key will be recorded. A
+          optionally, a value. To represent a NULL value, either omit the ``value`` field or manually set it
+          to ``null`` or white space. Refer to the SQL language reference for the format specification of
+          query tags. There's no significance to the order of tags. Only one value per key will be recorded. A
           sequence in excess of 20 query tags will be coerced to 20. Example:
 
           { ..., "query_tags": [ { "key": "team", "value": "eng" }, { "key": "some key only tag" } ] }
         :param row_limit: int (optional)
-          Applies the given row limit to the statement's result set, but unlike the `LIMIT` clause in SQL, it
-          also sets the `truncated` field in the response to indicate whether the result was trimmed due to
-          the limit or not.
+          Applies the given row limit to the statement's result set, but unlike the ``LIMIT`` clause in SQL,
+          it also sets the ``truncated`` field in the response to indicate whether the result was trimmed due
+          to the limit or not.
         :param schema: str (optional)
-          Sets default schema for statement execution, similar to [`USE SCHEMA`] in SQL.
-
-          [`USE SCHEMA`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-schema.html
+          Sets default schema for statement execution, similar to `USE SCHEMA
+          <https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-schema.html>`__ in SQL.
         :param wait_timeout: str (optional)
-          The time in seconds the call will wait for the statement's result set as `Ns`, where `N` can be set
-          to 0 or to a value between 5 and 50.
+          The time in seconds the call will wait for the statement's result set as ``Ns``, where ``N`` can be
+          set to 0 or to a value between 5 and 50.
 
-          When set to `0s`, the statement will execute in asynchronous mode and the call will not wait for the
-          execution to finish. In this case, the call returns directly with `PENDING` state and a statement ID
-          which can be used for polling with :method:statementexecution/getStatement.
+          When set to ``0s``, the statement will execute in asynchronous mode and the call will not wait for
+          the execution to finish. In this case, the call returns directly with ``PENDING`` state and a
+          statement ID which can be used for polling with :method:statementexecution/getStatement.
 
           When set between 5 and 50 seconds, the call will behave synchronously up to this timeout and wait
           for the statement execution to finish. If the execution finishes within this time, the call returns
-          immediately with a manifest and result data (or a `FAILED` state in case of an execution error). If
-          the statement takes longer to execute, `on_wait_timeout` determines what should happen after the
-          timeout is reached.
+          immediately with a manifest and result data (or a ``FAILED`` state in case of an execution error).
+          If the statement takes longer to execute, ``on_wait_timeout`` determines what should happen after
+          the timeout is reached.
 
         :returns: :class:`StatementResponse`
         """
@@ -9646,12 +9658,12 @@ class StatementExecutionAPI:
         return StatementResponse.from_dict(res)
 
     def get_statement(self, statement_id: str) -> StatementResponse:
-        """This request can be used to poll for the statement's status. StatementResponse contains `statement_id`
-        and `status`; other fields might be absent or present depending on context. When the `status.state`
-        field is `SUCCEEDED` it will also return the result manifest and the first chunk of the result data.
-        When the statement is in the terminal states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200
-        with the state set. After at least 12 hours in terminal state, the statement is removed from the
-        warehouse and further calls will receive an HTTP 404 response.
+        """This request can be used to poll for the statement's status. StatementResponse contains
+        ``statement_id`` and ``status``; other fields might be absent or present depending on context. When
+        the ``status.state`` field is ``SUCCEEDED`` it will also return the result manifest and the first
+        chunk of the result data. When the statement is in the terminal states ``CANCELED``, ``CLOSED`` or
+        ``FAILED``, it returns HTTP 200 with the state set. After at least 12 hours in terminal state, the
+        statement is removed from the warehouse and further calls will receive an HTTP 404 response.
 
         **NOTE** This call currently might take up to 5 seconds to get the latest status and result.
 
@@ -9674,13 +9686,13 @@ class StatementExecutionAPI:
         return StatementResponse.from_dict(res)
 
     def get_statement_result_chunk_n(self, statement_id: str, chunk_index: int) -> ResultData:
-        """After the statement execution has `SUCCEEDED`, this request can be used to fetch any chunk by index.
-        Whereas the first chunk with `chunk_index=0` is typically fetched with
+        """After the statement execution has ``SUCCEEDED``, this request can be used to fetch any chunk by index.
+        Whereas the first chunk with ``chunk_index=0`` is typically fetched with
         :method:statementexecution/executeStatement or :method:statementexecution/getStatement, this request
-        can be used to fetch subsequent chunks. The response structure is identical to the nested `result`
+        can be used to fetch subsequent chunks. The response structure is identical to the nested ``result``
         element described in the :method:statementexecution/getStatement request, and similarly includes the
-        `next_chunk_index` and `next_chunk_internal_link` fields for simple iteration through the result set.
-        Depending on `disposition`, the response returns chunks of data either inline, or as links.
+        ``next_chunk_index`` and ``next_chunk_internal_link`` fields for simple iteration through the result
+        set. Depending on ``disposition``, the response returns chunks of data either inline, or as links.
 
         :param statement_id: str
           The statement ID is returned upon successfully submitting a SQL statement, and is a required
@@ -9795,7 +9807,10 @@ class WarehousesAPI:
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
 
-          Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+          Supported values:
+
+          - Must be == 0 or >= 10 mins
+          - 0 indicates no autostop.
 
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
@@ -9805,8 +9820,19 @@ class WarehousesAPI:
           to run larger queries on it. If you want to increase the number of concurrent queries, please tune
           max_num_clusters.
 
-          Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
-          4X-Large - 5X-Large
+          Supported values:
+
+          - 2X-Small
+          - X-Small
+          - Small
+          - Medium
+          - Large
+          - X-Large
+          - 2X-Large
+          - 3X-Large
+          - 4X-Large
+          - 5X-Large
+          - Auto
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)
@@ -9820,7 +9846,10 @@ class WarehousesAPI:
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
-          Supported values: - Must be >= min_num_clusters - Must be <= 40.
+          Supported values:
+
+          - Must be >= min_num_clusters
+          - Must be <= 40.
 
           Defaults to min_clusters if unset.
         :param min_num_clusters: int (optional)
@@ -9828,23 +9857,31 @@ class WarehousesAPI:
           will ensure that a larger number of clusters are always running and therefore may reduce the cold
           start time for new queries. This is similar to reserved vs. revocable cores in a resource manager.
 
-          Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
+          Supported values:
+
+          - Must be > 0
+          - Must be <= min(max_num_clusters, 30)
 
           Defaults to 1
         :param name: str (optional)
           Logical name for the cluster.
 
-          Supported values: - Must be unique within an org. - Must be less than 100 characters.
+          Supported values:
+
+          - Must be unique within an org.
+          - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
           Configurations whether the endpoint should use spot instances.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
 
-          Supported values: - Number of tags < 45.
+          Supported values:
+
+          - Number of tags < 45.
         :param warehouse_type: :class:`CreateWarehouseRequestWarehouseType` (optional)
-          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
-          also set the field `enable_serverless_compute` to `true`.
+          Warehouse type: ``PRO`` or ``CLASSIC``. If you want to use serverless compute, you must set to
+          ``PRO`` and also set the field ``enable_serverless_compute`` to ``true``.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
@@ -10028,7 +10065,10 @@ class WarehousesAPI:
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
 
-          Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+          Supported values:
+
+          - Must be == 0 or >= 10 mins
+          - 0 indicates no autostop.
 
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
@@ -10038,8 +10078,19 @@ class WarehousesAPI:
           to run larger queries on it. If you want to increase the number of concurrent queries, please tune
           max_num_clusters.
 
-          Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
-          4X-Large - 5X-Large
+          Supported values:
+
+          - 2X-Small
+          - X-Small
+          - Small
+          - Medium
+          - Large
+          - X-Large
+          - 2X-Large
+          - 3X-Large
+          - 4X-Large
+          - 5X-Large
+          - Auto
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)
@@ -10053,7 +10104,10 @@ class WarehousesAPI:
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
-          Supported values: - Must be >= min_num_clusters - Must be <= 40.
+          Supported values:
+
+          - Must be >= min_num_clusters
+          - Must be <= 40.
 
           Defaults to min_clusters if unset.
         :param min_num_clusters: int (optional)
@@ -10061,23 +10115,31 @@ class WarehousesAPI:
           will ensure that a larger number of clusters are always running and therefore may reduce the cold
           start time for new queries. This is similar to reserved vs. revocable cores in a resource manager.
 
-          Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
+          Supported values:
+
+          - Must be > 0
+          - Must be <= min(max_num_clusters, 30)
 
           Defaults to 1
         :param name: str (optional)
           Logical name for the cluster.
 
-          Supported values: - Must be unique within an org. - Must be less than 100 characters.
+          Supported values:
+
+          - Must be unique within an org.
+          - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
           Configurations whether the endpoint should use spot instances.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
 
-          Supported values: - Number of tags < 45.
+          Supported values:
+
+          - Number of tags < 45.
         :param warehouse_type: :class:`EditWarehouseRequestWarehouseType` (optional)
-          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
-          also set the field `enable_serverless_compute` to `true`.
+          Warehouse type: ``PRO`` or ``CLASSIC``. If you want to use serverless compute, you must set to
+          ``PRO`` and also set the field ``enable_serverless_compute`` to ``true``.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
@@ -10270,11 +10332,11 @@ class WarehousesAPI:
         :param page_size: int (optional)
           The max number of warehouses to return.
         :param page_token: str (optional)
-          A page token, received from a previous `ListWarehouses` call. Provide this to retrieve the
+          A page token, received from a previous ``ListWarehouses`` call. Provide this to retrieve the
           subsequent page; otherwise the first will be retrieved.
 
-          When paginating, all other parameters provided to `ListWarehouses` must match the call that provided
-          the page token.
+          When paginating, all other parameters provided to ``ListWarehouses`` must match the call that
+          provided the page token.
         :param run_as_user_id: int (optional)
           Deprecated: this field is ignored by the server. Service Principal which will be used to fetch the
           list of endpoints. If not specified, SQL Gateway will use the user from the session header.
@@ -10317,10 +10379,10 @@ class WarehousesAPI:
           unspecified, at most 100 overrides will be returned. The maximum value is 1000; values above 1000
           will be coerced to 1000.
         :param page_token: str (optional)
-          A page token, received from a previous `ListDefaultWarehouseOverrides` call. Provide this to
+          A page token, received from a previous ``ListDefaultWarehouseOverrides`` call. Provide this to
           retrieve the subsequent page.
 
-          When paginating, all other parameters provided to `ListDefaultWarehouseOverrides` must match the
+          When paginating, all other parameters provided to ``ListDefaultWarehouseOverrides`` must match the
           call that provided the page token.
 
         :returns: Iterator over :class:`DefaultWarehouseOverride`
@@ -10466,7 +10528,6 @@ class WarehousesAPI:
 
         headers = {
             "Accept": "application/json",
-            "Content-Type": "application/json",
         }
 
         cfg = self._api._cfg
@@ -10492,7 +10553,6 @@ class WarehousesAPI:
 
         headers = {
             "Accept": "application/json",
-            "Content-Type": "application/json",
         }
 
         cfg = self._api._cfg
@@ -10529,7 +10589,7 @@ class WarehousesAPI:
           fields are applied.
         :param allow_missing: bool (optional)
           If set to true, and the override is not found, a new override will be created. In this situation,
-          `update_mask` is ignored and all fields are applied. Defaults to false.
+          ``update_mask`` is ignored and all fields are applied. Defaults to false.
 
         :returns: :class:`DefaultWarehouseOverride`
         """

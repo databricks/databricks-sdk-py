@@ -4,12 +4,12 @@
 
 .. py:class:: VolumesAPI
 
-    Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing and processing
+    Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing, and processing
     files. Use cases include running machine learning on unstructured data such as image, audio, video, or PDF
     files, organizing data sets during the data exploration stages in data science, working with libraries
     that require access to the local file system on cluster machines, storing library and config files of
-    arbitrary formats such as .whl or .txt centrally and providing secure access across workspaces to it, or
-    transforming and querying non-tabular data files in ETL.
+    arbitrary formats such as .whl or .txt centrally and providing secure access to those files across
+    workspaces, or transforming and querying non-tabular data files in ETL.
 
     .. py:method:: create(catalog_name: str, schema_name: str, name: str, volume_type: VolumeType [, comment: Optional[str], storage_location: Optional[str]]) -> VolumeInfo
 
@@ -64,15 +64,19 @@
         created in the specified external location, while a managed volume will be located in the default
         location which is specified by the parent schema, or the parent catalog, or the Metastore.
 
-        For the volume creation to succeed, the user must satisfy following conditions: - The caller must be a
-        metastore admin, or be the owner of the parent catalog and schema, or have the **USE_CATALOG**
-        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema. - The caller
-        must have **CREATE VOLUME** privilege on the parent schema.
+        For the volume creation to succeed, the user must satisfy following conditions:
 
-        For an external volume, following conditions also need to satisfy - The caller must have **CREATE
-        EXTERNAL VOLUME** privilege on the external location. - There are no other tables, nor volumes
-        existing in the specified storage location. - The specified storage location is not under the location
-        of other tables, nor volumes, or catalogs or schemas.
+        - The caller must be a metastore admin, or be the owner of the parent catalog and schema, or have the
+          **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent
+          schema.
+        - The caller must have **CREATE VOLUME** privilege on the parent schema.
+
+        For an external volume, following conditions also need to satisfy
+
+        - The caller must have **CREATE EXTERNAL VOLUME** privilege on the external location.
+        - There are no other tables, nor volumes existing in the specified storage location.
+        - The specified storage location is not under the location of other tables, nor volumes, or catalogs
+          or schemas.
 
         :param catalog_name: str
           The name of the catalog where the schema and the volume are
@@ -83,9 +87,8 @@
         :param volume_type: :class:`VolumeType`
           The type of the volume. An external volume is located in the specified external location. A managed
           volume is located in the default location which is specified by the parent schema, or the parent
-          catalog, or the Metastore. [Learn more]
-
-          [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
+          catalog, or the Metastore. `Learn more
+          <https://docs.databricks.com/aws/en/volumes/managed-vs-external>`__
         :param comment: str (optional)
           The comment attached to the volume
         :param storage_location: str (optional)
@@ -155,11 +158,13 @@
         :param max_results: int (optional)
           Maximum number of volumes to return (page length).
 
-          If not set, the page length is set to a server configured value (10000, as of 1/29/2024). - when set
-          to a value greater than 0, the page length is the minimum of this value and a server configured
-          value (10000, as of 1/29/2024); - when set to 0, the page length is set to a server configured value
-          (10000, as of 1/29/2024) (recommended); - when set to a value less than 0, an invalid parameter
-          error is returned;
+          If not set, the page length is set to a server configured value (10000, as of 1/29/2024).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (10000, as of 1/29/2024);
+          - when set to 0, the page length is set to a server configured value (10000, as of 1/29/2024)
+            (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
 
           Note: this parameter controls only the maximum number of volumes to return. The actual number of
           volumes returned in a page may be smaller than this value, including 0, even if there are more

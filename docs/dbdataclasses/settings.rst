@@ -297,6 +297,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode
 
+   The restriction mode for private access. In ALLOW_ALL_REGISTERED_ENDPOINTS mode, requests arriving through any endpoint registered to the account are allowed, and deny rules and allow rules cannot be set. In RESTRICTED_ACCESS mode, access is restricted based on deny rules and allow rules; requests that do not match any allow rule are denied.
+
    .. py:attribute:: ALLOW_ALL_REGISTERED_ENDPOINTS
       :value: "ALLOW_ALL_REGISTERED_ENDPOINTS"
 
@@ -548,6 +550,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination
+   :members:
+   :undoc-members:
+
 .. autoclass:: EgressNetworkPolicyNetworkAccessPolicyInternetDestination
    :members:
    :undoc-members:
@@ -722,7 +728,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: ListType
 
    Type of IP access list. Valid values are as follows and are case-sensitive:
-   * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or range. IP addresses in the block list are excluded even if they are included in an allow list.
+   - ``ALLOW``: An allow list. Include this IP or range. - ``BLOCK``: A block list. Exclude this IP or range. IP addresses in the block list are excluded even if they are included in an allow list.
 
    .. py:attribute:: ALLOW
       :value: "ALLOW"
@@ -930,7 +936,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TokenType
 
-   The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported.
+   The type of token request. As of now, only ``AZURE_ACTIVE_DIRECTORY_TOKEN`` is supported.
 
    .. py:attribute:: ARCLIGHT_AZURE_EXCHANGE_TOKEN
       :value: "ARCLIGHT_AZURE_EXCHANGE_TOKEN"

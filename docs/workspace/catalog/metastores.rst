@@ -42,8 +42,8 @@
             # cleanup
             w.metastores.delete(id=created.metastore_id, force=True)
 
-        Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
-        overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
+        Creates a new metastore assignment. If an assignment for the same **workspace_id** exists, it will be
+        overwritten by the new **metastore_id** and **default_catalog_name**. The caller must be an account
         admin.
 
         :param workspace_id: int
@@ -80,8 +80,8 @@
             w.metastores.delete(id=created.metastore_id, force=True)
 
         Creates a new metastore based on a provided name and optional storage root path. By default (if the
-        __owner__ field is not set), the owner of the new metastore is the user calling the
-        __createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is
+        **owner** field is not set), the owner of the new metastore is the user calling the
+        **createMetastore** API. If the **owner** field is set to the empty string (**""**), the ownership is
         assigned to the System User instead.
 
         :param name: str
@@ -89,7 +89,7 @@
         :param external_access_enabled: bool (optional)
           Whether to allow non-DBR clients to directly access entities under the metastore.
         :param region: str (optional)
-          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+          Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``).
         :param storage_root: str (optional)
           The storage root URL for metastore
 
@@ -173,7 +173,7 @@
             
             all = w.metastores.list()
 
-        Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
+        Gets an array of the available metastores (as **MetastoreInfo** objects). The caller must be an admin
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
 
         NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
@@ -184,13 +184,16 @@
         absent, which is the only indication that the end of results has been reached.
 
         :param max_results: int (optional)
-          Maximum number of metastores to return. - when set to a value greater than 0, the page length is the
-          minimum of this value and a server configured value; - when set to 0, the page length is set to a
-          server configured value (recommended); - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all the metastores are returned (not recommended). - Note: The number of
-          returned metastores might be less than the specified max_results size, even zero. The only
-          definitive indication that no further metastores can be fetched is when the next_page_token is unset
-          from the response.
+          Maximum number of metastores to return.
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all the metastores are returned (not recommended).
+          - Note: The number of returned metastores might be less than the specified max_results size, even
+            zero. The only definitive indication that no further metastores can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -277,7 +280,7 @@
             # cleanup
             w.metastores.delete(id=created.metastore_id, force=True)
 
-        Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
+        Updates information for a specific metastore. The caller must be a metastore admin. If the **owner**
         field is set to the empty string (**""**), the ownership is updated to the System User.
 
         :param id: str
@@ -296,7 +299,7 @@
         :param owner: str (optional)
           The owner of the metastore.
         :param privilege_model_version: str (optional)
-          Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`).
+          Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``).
         :param storage_root_credential_id: str (optional)
           UUID of storage credential to access the metastore storage_root.
 
@@ -305,9 +308,9 @@
 
     .. py:method:: update_assignment(workspace_id: int [, default_catalog_name: Optional[str], metastore_id: Optional[str]])
 
-        Updates a metastore assignment. This operation can be used to update __metastore_id__ or
-        __default_catalog_name__ for a specified Workspace, if the Workspace is already assigned a metastore.
-        The caller must be an account admin to update __metastore_id__; otherwise, the caller can be a
+        Updates a metastore assignment. This operation can be used to update **metastore_id** or
+        **default_catalog_name** for a specified Workspace, if the Workspace is already assigned a metastore.
+        The caller must be an account admin to update **metastore_id**; otherwise, the caller can be a
         Workspace admin.
 
         :param workspace_id: int

@@ -6,7 +6,7 @@
 
     The queries API can be used to perform CRUD operations on queries. A query is a Databricks SQL object that
     includes the target SQL warehouse, query text, name, description, tags, and parameters. Queries can be
-    scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
+    scheduled using the ``sql_task`` type of the Jobs API, e.g. :method:jobs/create.
 
     .. py:method:: create( [, auto_resolve_display_name: Optional[bool], query: Optional[CreateQueryRequestQuery]]) -> Query
 
@@ -29,7 +29,7 @@
                     display_name=f"sdk-{time.time_ns()}",
                     warehouse_id=srcs[0].warehouse_id,
                     description="test query from Go SDK",
-                    query_text="SHOW TABLES",
+                    query_text="SELECT 1",
                 )
             )
             
@@ -159,14 +159,14 @@
         :param id: str
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
           alert's display name conflicts with an existing alert's display name.

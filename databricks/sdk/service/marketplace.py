@@ -847,7 +847,6 @@ class FileParent:
     file_parent_type: Optional[FileParentType] = None
 
     parent_id: Optional[str] = None
-    """TODO make the following fields required"""
 
     def as_dict(self) -> dict:
         """Serializes the FileParent into a dictionary suitable for use as a JSON request body."""
@@ -1702,7 +1701,7 @@ class ListingDetail:
 
     pricing_model: Optional[str] = None
     """What the pricing model is (e.g. paid, subscription, paid upfront); should only be present if
-    cost is paid TODO: Not used yet, should deprecate if we will never use it"""
+    cost is paid"""
 
     privacy_policy_link: Optional[str] = None
 
@@ -1715,9 +1714,10 @@ class ListingDetail:
     """Listing tags - Simple key value pair to annotate listings. When should I use tags vs dedicated
     fields? Using tags avoids the need to add new columns in the database for new annotations.
     However, this should be used sparingly since tags are stored as key value pair. Use tags only:
-    1. If the field is optional and won't need to have NOT NULL integrity check 2. The value is
-    fairly fixed, static and low cardinality (eg. enums). 3. The value won't be used in filters or
-    joins with other tables."""
+    
+    1. If the field is optional and won't need to have NOT NULL integrity check
+    2. The value is fairly fixed, static and low cardinality (eg. enums).
+    3. The value won't be used in filters or joins with other tables."""
 
     terms_of_service: Optional[str] = None
 
@@ -2968,7 +2968,7 @@ class ConsumerFulfillmentsAPI:
     def list(
         self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ListingFulfillment]:
-        """Get all listings fulfillments associated with a listing. A _fulfillment_ is a potential installation.
+        """Get all listings fulfillments associated with a listing. A *fulfillment* is a potential installation.
         Standard installations contain metadata about the attached share or git repo. Only one of these fields
         will be present. Personalized installations contain metadata about the attached share or git repo, as
         well as the Delta Sharing recipient type.
@@ -3163,9 +3163,10 @@ class ConsumerInstallationsAPI:
         rotate_token: Optional[bool] = None,
     ) -> UpdateInstallationResponse:
         """This is a update API that will update the part of the fields defined in the installation table as well
-        as interact with external services according to the fields not included in the installation table 1.
-        the token will be rotate if the rotateToken flag is true 2. the token will be forcibly rotate if the
-        rotateToken flag is true and the tokenInfo field is empty
+        as interact with external services according to the fields not included in the installation table
+
+        1. the token will be rotate if the rotateToken flag is true
+        2. the token will be forcibly rotate if the rotateToken flag is true and the tokenInfo field is empty
 
         :param listing_id: str
         :param installation_id: str
@@ -4280,13 +4281,14 @@ class ProviderProviderAnalyticsDashboardsAPI:
         self._api = api_client
 
     def create(self) -> ProviderAnalyticsDashboard:
-        """Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the
+        """Create provider analytics dashboard. Returns Marketplace specific ``id``. Not to be confused with the
         Lakeview dashboard id.
 
 
         :returns: :class:`ProviderAnalyticsDashboard`
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -4296,7 +4298,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", "/api/2.0/marketplace-provider/analytics_dashboard", headers=headers)
+        res = self._api.do("POST", "/api/2.0/marketplace-provider/analytics_dashboard", body=body, headers=headers)
         return ProviderAnalyticsDashboard.from_dict(res)
 
     def get(self) -> ListProviderAnalyticsDashboardResponse:

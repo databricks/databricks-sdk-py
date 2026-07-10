@@ -135,13 +135,13 @@
         :param page_size: int (optional)
           The number of dashboards to return per page.
         :param page_token: str (optional)
-          A page token, received from a previous `ListDashboards` call. This token can be used to retrieve the
-          subsequent page.
+          A page token, received from a previous ``ListDashboards`` call. This token can be used to retrieve
+          the subsequent page.
         :param show_trashed: bool (optional)
           The flag to include dashboards located in the trash. If unspecified, only active dashboards will be
           returned.
         :param view: :class:`DashboardView` (optional)
-          `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.
+          ``DASHBOARD_VIEW_BASIC`` only includes summary metadata from the dashboard.
 
         :returns: Iterator over :class:`Dashboard`
         
@@ -155,7 +155,7 @@
         :param page_size: int (optional)
           The number of schedules to return per page.
         :param page_token: str (optional)
-          A page token, received from a previous `ListSchedules` call. Use this to retrieve the subsequent
+          A page token, received from a previous ``ListSchedules`` call. Use this to retrieve the subsequent
           page.
 
         :returns: Iterator over :class:`Schedule`
@@ -172,8 +172,8 @@
         :param page_size: int (optional)
           The number of subscriptions to return per page.
         :param page_token: str (optional)
-          A page token, received from a previous `ListSubscriptions` call. Use this to retrieve the subsequent
-          page.
+          A page token, received from a previous ``ListSubscriptions`` call. Use this to retrieve the
+          subsequent page.
 
         :returns: Iterator over :class:`Subscription`
         
@@ -218,8 +218,7 @@
           UUID identifying the dashboard.
         :param etag: str (optional)
           The etag for the dashboard. Optionally, it can be provided to verify that the dashboard has not been
-          modified from its last retrieval. TODO(TSE-3937): update to new non-CMK-encrypted label when
-          available
+          modified from its last retrieval.
 
         :returns: :class:`RevertDashboardResponse`
         

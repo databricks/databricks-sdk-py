@@ -10,7 +10,7 @@
     permission on the table, and they must have the USE_CATALOG permission on its parent catalog and the
     USE_SCHEMA permission on its parent schema.
 
-    A table can be managed or external. From an API perspective, a __VIEW__ is a particular kind of table
+    A table can be managed or external. From an API perspective, a **VIEW** is a particular kind of table
     (rather than a managed or external table).
 
     .. py:method:: create(name: str, catalog_name: str, schema_name: str, table_type: TableType, data_source_format: DataSourceFormat, storage_location: str [, columns: Optional[List[ColumnInfo]], properties: Optional[Dict[str, str]]]) -> TableInfo
@@ -45,7 +45,7 @@
         :param storage_location: str
           Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
         :param columns: List[:class:`ColumnInfo`] (optional)
-          The array of __ColumnInfo__ definitions of the table's columns.
+          The array of **ColumnInfo** definitions of the table's columns.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
 
@@ -68,11 +68,15 @@
     .. py:method:: exists(full_name: str) -> TableExistsResponse
 
         Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
-        of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
-        owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
-        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
-        and either be the table owner or have the **SELECT** privilege on the table. * Have **BROWSE**
-        privilege on the parent catalog * Have **BROWSE** privilege on the parent schema
+        of the following requirements:
+
+        - Be a metastore admin
+        - Be the owner of the parent catalog
+        - Be the owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog
+        - Have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+          parent schema, and either be the table owner or have the **SELECT** privilege on the table.
+        - Have **BROWSE** privilege on the parent catalog
+        - Have **BROWSE** privilege on the parent schema
 
         :param full_name: str
           Full name of the table.
@@ -121,10 +125,13 @@
             w.tables.delete(full_name=table_full_name)
 
         Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
-        following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
-        the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
-        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
-        and either be the table owner or have the **SELECT** privilege on the table.
+        following requirements:
+
+        - Be a metastore admin
+        - Be the owner of the parent catalog
+        - Be the owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog
+        - Have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+          parent schema, and either be the table owner or have the **SELECT** privilege on the table.
 
         :param full_name: str
           Full name of the table.
@@ -187,10 +194,12 @@
         :param include_manifest_capabilities: bool (optional)
           Whether to include a manifest containing table capabilities in the response.
         :param max_results: int (optional)
-          Maximum number of tables to return. If not set, all the tables are returned (not recommended). -
-          when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of tables to return. If not set, all the tables are returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param omit_columns: bool (optional)
           Whether to omit the columns of the table from the response or not.
         :param omit_properties: bool (optional)
@@ -230,11 +239,12 @@
         Gets an array of summaries for tables for a schema and catalog within the metastore. The table
         summaries returned are either:
 
-        * summaries for tables (within the current metastore and parent catalog and schema), when the user is
-        a metastore admin, or: * summaries for tables and schemas (within the current metastore and parent
-        catalog) for which the user has ownership or the **SELECT** privilege on the table and ownership or
-        **USE_SCHEMA** privilege on the schema, provided that the user also has ownership or the
-        **USE_CATALOG** privilege on the parent catalog.
+        - summaries for tables (within the current metastore and parent catalog and schema), when the user is
+          a metastore admin, or:
+        - summaries for tables and schemas (within the current metastore and parent catalog) for which the
+          user has ownership or the **SELECT** privilege on the table and ownership or **USE_SCHEMA**
+          privilege on the schema, provided that the user also has ownership or the **USE_CATALOG** privilege
+          on the parent catalog.
 
         There is no guarantee of a specific ordering of the elements in the array.
 
@@ -248,10 +258,13 @@
           Whether to include a manifest containing table capabilities in the response.
         :param max_results: int (optional)
           Maximum number of summaries for tables to return. If not set, the page length is set to a server
-          configured value (10000, as of 1/5/2024). - when set to a value greater than 0, the page length is
-          the minimum of this value and a server configured value (10000, as of 1/5/2024); - when set to 0,
-          the page length is set to a server configured value (10000, as of 1/5/2024) (recommended); - when
-          set to a value less than 0, an invalid parameter error is returned;
+          configured value (10000, as of 1/5/2024).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (10000, as of 1/5/2024);
+          - when set to 0, the page length is set to a server configured value (10000, as of 1/5/2024)
+            (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
         :param schema_name_pattern: str (optional)
