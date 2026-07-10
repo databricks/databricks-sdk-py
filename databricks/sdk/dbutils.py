@@ -7,7 +7,8 @@ import re
 import threading
 from collections import namedtuple
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from .core import ApiClient, Config, DatabricksError
 from .mixins import compute as compute_ext
@@ -15,6 +16,11 @@ from .mixins import files as dbfs_ext
 from .service import compute, workspace
 
 _LOG = logging.getLogger("databricks.sdk")
+
+
+def _as_str(path: Union[str, Path]) -> str:
+    """Convert a pathlib.Path to str; leave plain strings untouched."""
+    return str(path) if isinstance(path, Path) else path
 
 
 class FileInfo(namedtuple("FileInfo", ["path", "name", "size", "modificationTime"])):
@@ -45,17 +51,17 @@ class _FsUtil:
         self._dbfs = dbfs_ext
         self._proxy_factory = proxy_factory
 
-    def cp(self, from_: str, to: str, recurse: bool = False) -> bool:
+    def cp(self, from_: Union[str, Path], to: Union[str, Path], recurse: bool = False) -> bool:
         """Copies a file or directory, possibly across FileSystems"""
-        self._dbfs.copy(from_, to, recursive=recurse)
+        self._dbfs.copy(_as_str(from_), _as_str(to), recursive=recurse)
         return True
 
-    def head(self, file: str, maxBytes: int = 65536) -> str:
+    def head(self, file: Union[str, Path], maxBytes: int = 65536) -> str:
         """Returns up to the first 'maxBytes' bytes of the given file as a String encoded in UTF-8"""
-        with self._dbfs.download(file) as f:
+        with self._dbfs.download(_as_str(file)) as f:
             return f.read(maxBytes).decode("utf8")
 
-    def ls(self, dir: str) -> List[FileInfo]:
+    def ls(self, dir: Union[str, Path]) -> List[FileInfo]:
         """Lists the contents of a directory"""
         return [
             FileInfo(
@@ -64,34 +70,34 @@ class _FsUtil:
                 f.file_size,
                 f.modification_time,
             )
-            for f in self._dbfs.list(dir)
+            for f in self._dbfs.list(_as_str(dir))
         ]
 
-    def mkdirs(self, dir: str) -> bool:
+    def mkdirs(self, dir: Union[str, Path]) -> bool:
         """Creates the given directory if it does not exist, also creating any necessary parent directories"""
-        self._dbfs.mkdirs(dir)
+        self._dbfs.mkdirs(_as_str(dir))
         return True
 
-    def mv(self, from_: str, to: str, recurse: bool = False) -> bool:
+    def mv(self, from_: Union[str, Path], to: Union[str, Path], recurse: bool = False) -> bool:
         """Moves a file or directory, possibly across FileSystems"""
-        self._dbfs.move_(from_, to, recursive=recurse, overwrite=True)
+        self._dbfs.move_(_as_str(from_), _as_str(to), recursive=recurse, overwrite=True)
         return True
 
-    def put(self, file: str, contents: str, overwrite: bool = False) -> bool:
+    def put(self, file: Union[str, Path], contents: str, overwrite: bool = False) -> bool:
         """Writes the given String out to a file, encoded in UTF-8"""
-        with self._dbfs.open(file, write=True, overwrite=overwrite) as f:
+        with self._dbfs.open(_as_str(file), write=True, overwrite=overwrite) as f:
             f.write(contents.encode("utf8"))
         return True
 
-    def rm(self, dir: str, recurse: bool = False) -> bool:
+    def rm(self, dir: Union[str, Path], recurse: bool = False) -> bool:
         """Removes a file or directory"""
-        self._dbfs.delete(dir, recursive=recurse)
+        self._dbfs.delete(_as_str(dir), recursive=recurse)
         return True
 
     def mount(
         self,
-        source: str,
-        mount_point: str,
+        source: Union[str, Path],
+        mount_point: Union[str, Path],
         encryption_type: str = None,
         owner: str = None,
         extra_configs: Dict[str, str] = None,
@@ -105,17 +111,17 @@ class _FsUtil:
             kwargs["owner"] = owner
         if extra_configs:
             kwargs["extra_configs"] = extra_configs
-        return fs.mount(source, mount_point, **kwargs)
+        return fs.mount(_as_str(source), _as_str(mount_point), **kwargs)
 
-    def unmount(self, mount_point: str) -> bool:
+    def unmount(self, mount_point: Union[str, Path]) -> bool:
         """Deletes a DBFS mount point"""
         fs = self._proxy_factory("fs")
-        return fs.unmount(mount_point)
+        return fs.unmount(_as_str(mount_point))
 
     def updateMount(
         self,
-        source: str,
-        mount_point: str,
+        source: Union[str, Path],
+        mount_point: Union[str, Path],
         encryption_type: str = None,
         owner: str = None,
         extra_configs: Dict[str, str] = None,
@@ -129,7 +135,7 @@ class _FsUtil:
             kwargs["owner"] = owner
         if extra_configs:
             kwargs["extra_configs"] = extra_configs
-        return fs.updateMount(source, mount_point, **kwargs)
+        return fs.updateMount(_as_str(source), _as_str(mount_point), **kwargs)
 
     def mounts(self) -> List[MountInfo]:
         """Displays information about what is mounted within DBFS"""

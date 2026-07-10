@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest as pytest
 
 from databricks.sdk.dbutils import FileInfo as DBUtilsFileInfo
@@ -305,6 +307,99 @@ def test_dbutils_credentials_get_service_credential_provider(config, mocker):
     dbutils = RemoteDbUtils(config)
 
     dbutils.credentials.getServiceCredentialsProvider("creds")
+
+
+def test_fs_ls_accepts_path_object(dbutils, mocker):
+    inner = mocker.patch(
+        "databricks.sdk.service.files.DbfsAPI.list",
+        return_value=[FileInfo(path="a/b", file_size=10, modification_time=20)],
+    )
+    mocker.patch(
+        "databricks.sdk.service.files.DbfsAPI.get_status",
+        side_effect=[
+            FileInfo(path="a", is_dir=True, file_size=5),
+            FileInfo(path="a/b", is_dir=False, file_size=5),
+        ],
+    )
+
+    result = dbutils.fs.ls(Path("a"))
+
+    inner.assert_called_with("a")
+    assert len(result) == 1
+    assert result[0] == DBUtilsFileInfo("a/b", "b", 10, 20)
+
+
+def test_fs_cp_accepts_path_objects(dbutils, mocker):
+    inner = mocker.patch("databricks.sdk.mixins.files.DbfsExt.copy")
+
+    dbutils.fs.cp(Path("a"), Path("b"), recurse=True)
+
+    inner.assert_called_with("a", "b", recursive=True)
+
+
+def test_fs_head_accepts_path_object(dbutils, mocker):
+    mocker.patch(
+        "databricks.sdk.service.files.DbfsAPI.read",
+        return_value=ReadResponse(data="aGVsbG8=", bytes_read=5),
+    )
+    mocker.patch(
+        "databricks.sdk.service.files.DbfsAPI.get_status",
+        return_value=FileInfo(path="a", is_dir=False, file_size=5),
+    )
+
+    result = dbutils.fs.head(Path("a"))
+
+    assert result == "hello"
+
+
+def test_fs_mkdirs_accepts_path_object(dbutils, mocker):
+    inner = mocker.patch("databricks.sdk.service.files.DbfsAPI.mkdirs")
+
+    dbutils.fs.mkdirs(Path("a"))
+
+    inner.assert_called_with("a")
+
+
+def test_fs_mv_accepts_path_objects(dbutils, mocker):
+    inner = mocker.patch("databricks.sdk.mixins.files.DbfsExt.move_")
+
+    dbutils.fs.mv(Path("a"), Path("b"))
+
+    inner.assert_called_with("a", "b", recursive=False, overwrite=True)
+
+
+def test_fs_put_accepts_path_object(dbutils, mocker):
+    class _MockOpen:
+        _written = None
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *ignored):
+            pass
+
+        def write(self, contents):
+            self._written = contents
+
+    mock_open = _MockOpen()
+    inner = mocker.patch("databricks.sdk.mixins.files.DbfsExt.open", return_value=mock_open)
+
+    dbutils.fs.put(Path("a"), "b")
+
+    inner.assert_called_with("a", overwrite=False, write=True)
+    assert mock_open._written == b"b"
+
+
+def test_fs_rm_accepts_path_object(dbutils, mocker):
+    inner = mocker.patch("databricks.sdk.service.files.DbfsAPI.delete")
+    mocker.patch(
+        "databricks.sdk.service.files.DbfsAPI.get_status",
+        return_value=FileInfo(path="a", is_dir=False, file_size=5),
+    )
+
+    dbutils.fs.rm(Path("a"))
+
+    inner.assert_called_with("a", recursive=False)
 
 
 def test_dbutils_adds_user_agent(config):
