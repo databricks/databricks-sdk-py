@@ -7,6 +7,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import (
+    UnknownEnumValue,
     _duration,
     _enum,
     _escape_multi_segment_path_parameter,
@@ -31,7 +32,19 @@ def test_enum():
 
 
 def test_enum_unknown():
-    assert _enum({"field": "c"}, "field", A) is None
+    # Unknown values are preserved (not dropped to None) so data the server sent isn't lost.
+    result = _enum({"field": "c"}, "field", A)
+    assert isinstance(result, UnknownEnumValue)
+    assert result.value == "c"
+
+
+def test_enum_missing_field():
+    assert _enum({}, "field", A) is None
+
+
+def test_enum_unknown_roundtrips_through_value():
+    # as_dict() emits `self.field.value`; the wrapper must expose .value to round-trip.
+    assert _enum({"field": "c"}, "field", A).value == "c"
 
 
 def test_repeated_enum():
@@ -39,7 +52,8 @@ def test_repeated_enum():
 
 
 def test_repeated_enum_unknown():
-    assert _repeated_enum({"field": ["a", "c"]}, "field", A) == [A.a]
+    result = _repeated_enum({"field": ["a", "c"]}, "field", A)
+    assert result == [A.a, UnknownEnumValue("c")]
 
 
 @dataclass

@@ -21,30 +21,56 @@ def _repeated_dict(d: Dict[str, any], field: str, cls: Type) -> any:
     return [from_dict(v) for v in d[field]]
 
 
-def _get_enum_value(cls: Type, value: str) -> Optional[Type]:
-    return next(
+class UnknownEnumValue:
+    """Wraps an enum value sent by the server that this version of the SDK does not know.
+
+    Generated enums are produced from a versioned OpenAPI spec and can lag behind the
+    service (e.g. a newly released SQL warehouse type). Previously such values were
+    coerced to ``None``, which then dropped the field entirely from ``as_dict()`` and
+    silently lost data the server actually returned. Preserving the raw value keeps it
+    accessible to callers and lets it round-trip through ``as_dict()`` via ``.value``,
+    while remaining clearly distinguishable from a known enum member.
+    """
+
+    def __init__(self, value: str):
+        self.value = value
+
+    def __eq__(self, other):
+        if isinstance(other, UnknownEnumValue):
+            return self.value == other.value
+        return NotImplemented
+
+    def __hash__(self):
+        return hash(self.value)
+
+    def __repr__(self):
+        return f"UnknownEnumValue({self.value!r})"
+
+
+def _get_enum_value(cls: Type, value: str) -> any:
+    member = next(
         (v for v in getattr(cls, "__members__").values() if v.value == value),
         None,
     )
+    if member is not None:
+        return member
+    # The server returned a value this SDK version doesn't know about. Preserve it
+    # rather than dropping it, so the field still appears in as_dict() output.
+    return UnknownEnumValue(value)
 
 
 def _enum(d: Dict[str, any], field: str, cls: Type) -> any:
-    """Unknown enum values are returned as None."""
+    """Unknown enum values are preserved as an UnknownEnumValue wrapper (was: dropped to None)."""
     if field not in d or not d[field]:
         return None
     return _get_enum_value(cls, d[field])
 
 
 def _repeated_enum(d: Dict[str, any], field: str, cls: Type) -> any:
-    """For now, unknown enum values are not included in the response."""
+    """Unknown enum values are preserved as UnknownEnumValue wrappers (was: silently skipped)."""
     if field not in d or not d[field]:
         return None
-    res = []
-    for e in d[field]:
-        val = _get_enum_value(cls, e)
-        if val:
-            res.append(val)
-    return res
+    return [_get_enum_value(cls, e) for e in d[field]]
 
 
 def _escape_multi_segment_path_parameter(param: str) -> str:
