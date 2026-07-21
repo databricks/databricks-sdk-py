@@ -1,10 +1,13 @@
 databricks/sdk/__init__.py linguist-generated=true
 databricks/sdk/errors/overrides.py linguist-generated=true
 databricks/sdk/errors/platform.py linguist-generated=true
+databricks/sdk/service/__init__.py linguist-generated=true
+databricks/sdk/service/_internal.py linguist-generated=true
 databricks/sdk/service/agentbricks.py linguist-generated=true
 databricks/sdk/service/aisearch.py linguist-generated=true
 databricks/sdk/service/apps.py linguist-generated=true
 databricks/sdk/service/billing.py linguist-generated=true
+databricks/sdk/service/bundle.py linguist-generated=true
 databricks/sdk/service/bundledeployments.py linguist-generated=true
 databricks/sdk/service/catalog.py linguist-generated=true
 databricks/sdk/service/cleanrooms.py linguist-generated=true

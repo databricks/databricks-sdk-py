@@ -3710,6 +3710,37 @@ class LastNFunction:
 
 
 @dataclass
+class LifetimeWindow:
+    """A window that spans the entire lifetime of a data source, accumulating from the source's start
+    rather than over a bounded duration. All fields are optional; an empty message denotes the
+    continuous, fully-accurate variant."""
+
+    slide_duration: Optional[Duration] = None
+    """The slide duration for the discrete (offline) variant: the value updates only at these
+    boundaries. Must be positive when set. When absent, the window is continuous (the value is as
+    fresh as the pipeline delivers)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LifetimeWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.slide_duration is not None:
+            body["slide_duration"] = self.slide_duration.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LifetimeWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.slide_duration is not None:
+            body["slide_duration"] = self.slide_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LifetimeWindow:
+        """Deserializes the LifetimeWindow from a dictionary."""
+        return cls(slide_duration=_duration(d, "slide_duration"))
+
+
+@dataclass
 class LineageContext:
     """Lineage context information for tracking where an API was invoked. This will allow us to track
     lineage, which currently uses caller entity information for use across the Lineage Client and
@@ -4563,47 +4594,6 @@ class LoggedModelTag:
     def from_dict(cls, d: Dict[str, Any]) -> LoggedModelTag:
         """Deserializes the LoggedModelTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
-
-
-@dataclass
-class LongRollingWindow:
-    """A long (multi-day) rolling window served via the hybrid batch + streaming path. The batch
-    pipeline maintains daily partial aggregates for the bulk of the window while the streaming
-    pipeline maintains the most recent day(s), and serving merges them on read. Distinct from
-    RollingWindow so the control plane can explicitly identify long rolling window features rather
-    than inferring hybrid behavior from window_duration."""
-
-    window_duration: Duration
-    """The duration of the rolling window. Must be positive and span more than two days, so that both
-    the batch (N-1 day) and stale-path (N-2 day) partial aggregates are well defined. The duration
-    need not be a whole number of days (e.g. 3 days 15 minutes is allowed)."""
-
-    delay: Optional[Duration] = None
-    """The delay applied to the end of the rolling window (must be non-negative). For example, delay=1d
-    shifts the window end 1 day before the evaluation time."""
-
-    def as_dict(self) -> dict:
-        """Serializes the LongRollingWindow into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.delay is not None:
-            body["delay"] = self.delay.ToJsonString()
-        if self.window_duration is not None:
-            body["window_duration"] = self.window_duration.ToJsonString()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the LongRollingWindow into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.delay is not None:
-            body["delay"] = self.delay
-        if self.window_duration is not None:
-            body["window_duration"] = self.window_duration
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> LongRollingWindow:
-        """Deserializes the LongRollingWindow from a dictionary."""
-        return cls(delay=_duration(d, "delay"), window_duration=_duration(d, "window_duration"))
 
 
 @dataclass
@@ -6438,12 +6428,13 @@ class RollingWindow:
     ContinuousWindow: ``delay`` is the non-negative counterpart of the legacy non-positive
     ``ContinuousWindow.offset``."""
 
-    window_duration: Duration
-    """The duration of the rolling window (must be positive)."""
-
     delay: Optional[Duration] = None
     """The delay applied to the end of the rolling window (must be non-negative). For example, delay=1d
     shifts the window end 1 day before the evaluation time."""
+
+    window_duration: Optional[Duration] = None
+    """The duration of the rolling window. Must be positive when set; absent means lifetime (aggregate
+    over the entity's entire history)."""
 
     def as_dict(self) -> dict:
         """Serializes the RollingWindow into a dictionary suitable for use as a JSON request body."""
@@ -6743,6 +6734,48 @@ class RunTag:
     def from_dict(cls, d: Dict[str, Any]) -> RunTag:
         """Deserializes the RunTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class SawtoothWindow:
+    """A sawtooth window served via the hybrid batch + streaming path. The batch pipeline maintains
+    daily partial aggregates for the bulk of the window while the streaming pipeline maintains the
+    most recent day(s), and serving merges them on read. Same field shape as RollingWindow, but a
+    distinct type so the control plane can explicitly identify hybrid (sawtooth) features rather
+    than inferring hybrid behavior from window_duration."""
+
+    delay: Optional[Duration] = None
+    """The delay applied to the end of the window (must be non-negative). For example, delay=1d shifts
+    the window end 1 day before the evaluation time."""
+
+    window_duration: Optional[Duration] = None
+    """The duration of the window. Must be positive and span more than two days when set, so that both
+    the batch (N-1 day) and stale-path (N-2 day) partial aggregates are well defined. The duration
+    need not be a whole number of days (e.g. 3 days 15 minutes is allowed). Absent means lifetime
+    (aggregate over the entity's entire history)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SawtoothWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay.ToJsonString()
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SawtoothWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SawtoothWindow:
+        """Deserializes the SawtoothWindow from a dictionary."""
+        return cls(delay=_duration(d, "delay"), window_duration=_duration(d, "window_duration"))
 
 
 class ScalarDataType(Enum):
@@ -7188,11 +7221,12 @@ class SetTagResponse:
 
 @dataclass
 class SlidingWindow:
-    window_duration: str
-    """The duration of the sliding window."""
-
     slide_duration: str
     """The slide duration (interval by which windows advance, must be positive and less than duration)."""
+
+    window_duration: Optional[str] = None
+    """The duration of the sliding window. Must be positive when set; absent means lifetime (aggregate
+    over the entity's entire history)."""
 
     def as_dict(self) -> dict:
         """Serializes the SlidingWindow into a dictionary suitable for use as a JSON request body."""
@@ -7476,31 +7510,52 @@ class StreamSource:
     full_name: str
     """Three-part full name of the Stream (catalog.schema.stream)."""
 
+    dataframe_schema: Optional[str] = None
+    """Schema of the resulting dataframe after transformations, in Spark StructType JSON format (from
+    df.schema.json()). Any subsequent functions operate against this dataframe."""
+
     filter_condition: Optional[str] = None
     """The filter condition applied to the source data before aggregation."""
+
+    transformation_sql: Optional[str] = None
+    """The pipeline runs these SQL statements immediately after conversion into the schema specified on
+    the Stream object."""
 
     def as_dict(self) -> dict:
         """Serializes the StreamSource into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
+        if self.transformation_sql is not None:
+            body["transformation_sql"] = self.transformation_sql
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the StreamSource into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
         if self.filter_condition is not None:
             body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
+        if self.transformation_sql is not None:
+            body["transformation_sql"] = self.transformation_sql
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StreamSource:
         """Deserializes the StreamSource from a dictionary."""
-        return cls(filter_condition=d.get("filter_condition", None), full_name=d.get("full_name", None))
+        return cls(
+            dataframe_schema=d.get("dataframe_schema", None),
+            filter_condition=d.get("filter_condition", None),
+            full_name=d.get("full_name", None),
+            transformation_sql=d.get("transformation_sql", None),
+        )
 
 
 @dataclass
@@ -7705,10 +7760,13 @@ class TestRegistryWebhookResponse:
 class TimeWindow:
     continuous: Optional[ContinuousWindow] = None
 
-    long_rolling: Optional[LongRollingWindow] = None
-    """A long (multi-day) rolling window served via the hybrid batch + streaming path."""
+    lifetime: Optional[LifetimeWindow] = None
+    """A window that spans the entire lifetime of the data source."""
 
     rolling: Optional[RollingWindow] = None
+
+    sawtooth: Optional[SawtoothWindow] = None
+    """A sawtooth window served via the hybrid batch + streaming path."""
 
     sliding: Optional[SlidingWindow] = None
 
@@ -7719,10 +7777,12 @@ class TimeWindow:
         body = {}
         if self.continuous:
             body["continuous"] = self.continuous.as_dict()
-        if self.long_rolling:
-            body["long_rolling"] = self.long_rolling.as_dict()
+        if self.lifetime:
+            body["lifetime"] = self.lifetime.as_dict()
         if self.rolling:
             body["rolling"] = self.rolling.as_dict()
+        if self.sawtooth:
+            body["sawtooth"] = self.sawtooth.as_dict()
         if self.sliding:
             body["sliding"] = self.sliding.as_dict()
         if self.tumbling:
@@ -7734,10 +7794,12 @@ class TimeWindow:
         body = {}
         if self.continuous:
             body["continuous"] = self.continuous
-        if self.long_rolling:
-            body["long_rolling"] = self.long_rolling
+        if self.lifetime:
+            body["lifetime"] = self.lifetime
         if self.rolling:
             body["rolling"] = self.rolling
+        if self.sawtooth:
+            body["sawtooth"] = self.sawtooth
         if self.sliding:
             body["sliding"] = self.sliding
         if self.tumbling:
@@ -7749,8 +7811,9 @@ class TimeWindow:
         """Deserializes the TimeWindow from a dictionary."""
         return cls(
             continuous=_from_dict(d, "continuous", ContinuousWindow),
-            long_rolling=_from_dict(d, "long_rolling", LongRollingWindow),
+            lifetime=_from_dict(d, "lifetime", LifetimeWindow),
             rolling=_from_dict(d, "rolling", RollingWindow),
+            sawtooth=_from_dict(d, "sawtooth", SawtoothWindow),
             sliding=_from_dict(d, "sliding", SlidingWindow),
             tumbling=_from_dict(d, "tumbling", TumblingWindow),
         )
@@ -7914,16 +7977,23 @@ class UcTraceLocation:
     schema: str
     """The name of the Unity Catalog schema within ``catalog``."""
 
+    effective_table_prefix: Optional[str] = None
+    """The trace-table prefix actually in effect: ``table_prefix`` if it was set on creation, otherwise
+    the server-generated default."""
+
     table_prefix: Optional[str] = None
     """The prefix for the trace tables, which are named ``{catalog}.{schema}.{table_prefix}_otel_*``.
     May only contain letters, digits, and underscores, and may be at most 238 characters. When
-    unset, a server-generated prefix derived from the experiment ID is used."""
+    unset, a server-generated prefix derived from the experiment ID is used and this field stays
+    empty on read; the resolved value is always available in ``effective_table_prefix``."""
 
     def as_dict(self) -> dict:
         """Serializes the UcTraceLocation into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog is not None:
             body["catalog"] = self.catalog
+        if self.effective_table_prefix is not None:
+            body["effective_table_prefix"] = self.effective_table_prefix
         if self.schema is not None:
             body["schema"] = self.schema
         if self.table_prefix is not None:
@@ -7935,6 +8005,8 @@ class UcTraceLocation:
         body = {}
         if self.catalog is not None:
             body["catalog"] = self.catalog
+        if self.effective_table_prefix is not None:
+            body["effective_table_prefix"] = self.effective_table_prefix
         if self.schema is not None:
             body["schema"] = self.schema
         if self.table_prefix is not None:
@@ -7945,7 +8017,10 @@ class UcTraceLocation:
     def from_dict(cls, d: Dict[str, Any]) -> UcTraceLocation:
         """Deserializes the UcTraceLocation from a dictionary."""
         return cls(
-            catalog=d.get("catalog", None), schema=d.get("schema", None), table_prefix=d.get("table_prefix", None)
+            catalog=d.get("catalog", None),
+            effective_table_prefix=d.get("effective_table_prefix", None),
+            schema=d.get("schema", None),
+            table_prefix=d.get("table_prefix", None),
         )
 
 

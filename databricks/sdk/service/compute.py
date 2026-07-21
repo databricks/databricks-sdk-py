@@ -5484,6 +5484,25 @@ class InstancePoolAzureAttributes:
     availability: Optional[InstancePoolAzureAttributesAvailability] = None
     """Availability type used for the spot nodes."""
 
+    capacity_reservation_group: Optional[str] = None
+    """The Azure capacity reservation group resource ID to use for launching VMs in this pool. When
+    specified, VMs will be launched using the provided capacity reservation.
+    
+    NOTE: Omitting this field will clear any existing configured capacity reservation group on the
+    pool.
+    
+    Capacity reservations can only be specified when the workspace uses injected vnet (i.e. customer
+    defined vnet not managed by databricks). Ensure the databricks-login-prod Enterprise Application
+    is granted the following four permissions:
+    
+    1. Microsoft.Compute/capacityReservationGroups/read
+    2. Microsoft.Compute/capacityReservationGroups/deploy/action
+    3. Microsoft.Compute/capacityReservationGroups/capacityReservations/read
+    4. Microsoft.Compute/capacityReservationGroups/capacityReservations/deploy/action
+    
+    Format:
+    ``/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/capacityReservationGroups/{capacityReservationGroupName}``"""
+
     spot_bid_max_price: Optional[float] = None
     """With variable pricing, you have option to set a max price, in US dollars (USD) For example, the
     value 2 would be a max price of $2.00 USD per hour. If you set the max price to be -1, the VM
@@ -5495,6 +5514,8 @@ class InstancePoolAzureAttributes:
         body = {}
         if self.availability is not None:
             body["availability"] = self.availability.value
+        if self.capacity_reservation_group is not None:
+            body["capacity_reservation_group"] = self.capacity_reservation_group
         if self.spot_bid_max_price is not None:
             body["spot_bid_max_price"] = self.spot_bid_max_price
         return body
@@ -5504,6 +5525,8 @@ class InstancePoolAzureAttributes:
         body = {}
         if self.availability is not None:
             body["availability"] = self.availability
+        if self.capacity_reservation_group is not None:
+            body["capacity_reservation_group"] = self.capacity_reservation_group
         if self.spot_bid_max_price is not None:
             body["spot_bid_max_price"] = self.spot_bid_max_price
         return body
@@ -5513,6 +5536,7 @@ class InstancePoolAzureAttributes:
         """Deserializes the InstancePoolAzureAttributes from a dictionary."""
         return cls(
             availability=_enum(d, "availability", InstancePoolAzureAttributesAvailability),
+            capacity_reservation_group=d.get("capacity_reservation_group", None),
             spot_bid_max_price=d.get("spot_bid_max_price", None),
         )
 

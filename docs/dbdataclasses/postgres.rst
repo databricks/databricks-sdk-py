@@ -58,6 +58,34 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CdfConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: CdfConfigOperationMetadata
+   :members:
+   :undoc-members:
+
+.. py:class:: CdfState
+
+   The replication state of a single replicated table (CdfStatus).
+
+   .. py:attribute:: CDF_STATE_SKIPPED
+      :value: "CDF_STATE_SKIPPED"
+
+   .. py:attribute:: CDF_STATE_SNAPSHOTTING
+      :value: "CDF_STATE_SNAPSHOTTING"
+
+   .. py:attribute:: CDF_STATE_STREAMING
+      :value: "CDF_STATE_STREAMING"
+
+   .. py:attribute:: CDF_STATE_TERMINATED
+      :value: "CDF_STATE_TERMINATED"
+
+.. autoclass:: CdfStatus
+   :members:
+   :undoc-members:
+
 .. autoclass:: DataApi
    :members:
    :undoc-members:
@@ -416,6 +444,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListBranchesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListCdfConfigsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListCdfStatusesResponse
    :members:
    :undoc-members:
 

@@ -1,5 +1,50 @@
 # Version changelog
 
+## Release v0.122.0 (2026-07-21)
+
+### API Changes
+* Add `list_clean_room_task_runs_handler()` method for [w.clean_room_task_runs](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cleanrooms/clean_room_task_runs.html) workspace-level service.
+* Add `create_cdf_config()`, `delete_cdf_config()`, `get_cdf_config()`, `get_cdf_status()`, `list_cdf_configs()` and `list_cdf_statuses()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `initial_parent_path` field for `databricks.sdk.service.bundledeployments.Deployment`.
+* Add `parent` field for `databricks.sdk.service.catalog.CreateConnection`.
+* Add `parent` field for `databricks.sdk.service.catalog.ListConnectionsRequest`.
+* Add `enable_shared_output` field for `databricks.sdk.service.cleanrooms.CleanRoom`.
+* Add `jar_analysis` field for `databricks.sdk.service.cleanrooms.CleanRoomAsset`.
+* Add `description` and `environment_version` fields for `databricks.sdk.service.cleanrooms.CleanRoomAssetNotebook`.
+* Add `shared_output_schema_expiration_time` and `shared_output_schema_name` fields for `databricks.sdk.service.cleanrooms.CleanRoomNotebookTaskRun`.
+* Add `enable_shared_output` and `package_provider_collaborator_alias` fields for `databricks.sdk.service.cleanrooms.CleanRoomRemoteDetail`.
+* Add `jar_analysis_review` field for `databricks.sdk.service.cleanrooms.CreateCleanRoomAssetReviewRequest`.
+* Add `jar_analysis_review_state` and `jar_analysis_reviews` fields for `databricks.sdk.service.cleanrooms.CreateCleanRoomAssetReviewResponse`.
+* Add `capacity_reservation_group` field for `databricks.sdk.service.compute.InstancePoolAzureAttributes`.
+* Add `effective_workspace_id` field for `databricks.sdk.service.disasterrecovery.StableUrl`.
+* Add `performance_target` field for `databricks.sdk.service.jobs.SubmitRun`.
+* Add `dataframe_schema` and `transformation_sql` fields for `databricks.sdk.service.ml.StreamSource`.
+* Add `lifetime` and `sawtooth` fields for `databricks.sdk.service.ml.TimeWindow`.
+* Add `effective_table_prefix` field for `databricks.sdk.service.ml.UcTraceLocation`.
+* Add `aws_vpc_endpoint_info` and `gcp_psc_endpoint_info` fields for `databricks.sdk.service.networking.Endpoint`.
+* Add `reddit_ads_options` field for `databricks.sdk.service.pipelines.ConnectorOptions`.
+* Add `custom_report_options` field for `databricks.sdk.service.pipelines.GoogleAdsOptions`.
+* Add `custom_report_options` field for `databricks.sdk.service.pipelines.MetaMarketingOptions`.
+* Add `source_metadata_column` field for `databricks.sdk.service.pipelines.TableSpecificConfig`.
+* Add `custom_report_options` field for `databricks.sdk.service.pipelines.TikTokAdsOptions`.
+* Add `table_names` and `telemetry_profile_id` fields for `databricks.sdk.service.serving.TelemetryConfig`.
+* Add `git_cli_enabled` field for `databricks.sdk.service.workspace.GetRepoResponse`.
+* Add `jdbc` enum value for `databricks.sdk.service.catalog.ConnectionType`.
+* Add `jar_analysis` enum value for `databricks.sdk.service.cleanrooms.CleanRoomAssetAssetType`.
+* Add `minutes` enum value for `databricks.sdk.service.jobs.PeriodicTriggerConfigurationTimeUnit`.
+* Add `ksa_ecc_ccc_dcc` enum value for `databricks.sdk.service.settings.ComplianceStandard`.
+* [Breaking] Change `create_workspace_assignment_detail()`, `delete_workspace_assignment_detail()`, `get_workspace_access_detail()`, `get_workspace_assignment_detail()`, `list_workspace_assignment_details()`, `resolve_group()`, `resolve_service_principal()`, `resolve_user()` and `update_workspace_assignment_detail()` methods for [a.account_iam_v2](https://databricks-sdk-py.readthedocs.io/en/latest/account/iamv2/account_iam_v2.html) account-level service. Method path has changed.
+* [Breaking] Change `create_workspace_assignment_detail_proxy()`, `delete_workspace_assignment_detail_proxy()`, `get_workspace_access_detail_local()`, `get_workspace_assignment_detail_proxy()`, `list_workspace_assignment_details_proxy()`, `resolve_group_proxy()`, `resolve_service_principal_proxy()`, `resolve_user_proxy()` and `update_workspace_assignment_detail_proxy()` methods for [w.workspace_iam_v2](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/iamv2/workspace_iam_v2.html) workspace-level service. Method path has changed.
+* [Breaking] Change `internal_id` field for `databricks.sdk.service.iamv2.Group` to type `str` dataclass.
+* [Breaking] Change `internal_id` field for `databricks.sdk.service.iamv2.ServicePrincipal` to type `str` dataclass.
+* [Breaking] Change `internal_id` field for `databricks.sdk.service.iamv2.User` to type `str` dataclass.
+* Change `window_duration` field for `databricks.sdk.service.ml.RollingWindow` to no longer be required.
+* [Breaking] Change `window_duration` field for `databricks.sdk.service.ml.RollingWindow` to no longer be required.
+* Change `window_duration` field for `databricks.sdk.service.ml.SlidingWindow` to no longer be required.
+* [Breaking] Change `window_duration` field for `databricks.sdk.service.ml.SlidingWindow` to no longer be required.
+* [Breaking] Remove `code_source_path` field for `databricks.sdk.service.jobs.AiRuntimeTask`.
+* [Breaking] Remove `long_rolling` field for `databricks.sdk.service.ml.TimeWindow`.
+
 ## Release v0.121.0 (2026-07-09)
 
 ### API Changes

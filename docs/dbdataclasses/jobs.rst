@@ -167,7 +167,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ComputeSpecAcceleratorType
 
-   Customer-facing AcceleratorType: hardware accelerator type for the AiRuntime workload. Per-node accelerator count is encoded in the value name (e.g. ``GPU_8xH100`` means 8 H100s per node).
+   Hardware accelerator type for the AiRuntime workload. Per-node accelerator count is encoded in the value name (e.g. ``GPU_8xH100`` means 8 H100s per node).
 
    .. py:attribute:: GPU_1X_A10
       :value: "GPU_1X_A10"
@@ -605,6 +605,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: HOURS
       :value: "HOURS"
+
+   .. py:attribute:: MINUTES
+      :value: "MINUTES"
 
    .. py:attribute:: WEEKS
       :value: "WEEKS"

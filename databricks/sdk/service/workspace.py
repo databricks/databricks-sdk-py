@@ -548,6 +548,10 @@ class GetRepoResponse:
     branch: Optional[str] = None
     """Branch that the local version of the repo is checked out to."""
 
+    git_cli_enabled: Optional[bool] = None
+    """Whether the Git CLI is enabled for this Git folder (repo). When true, Git commands can be run
+    directly against this Git folder using the Git CLI."""
+
     head_commit_id: Optional[str] = None
     """SHA-1 hash representing the commit ID of the current HEAD of the repo."""
 
@@ -573,6 +577,8 @@ class GetRepoResponse:
         body = {}
         if self.branch is not None:
             body["branch"] = self.branch
+        if self.git_cli_enabled is not None:
+            body["git_cli_enabled"] = self.git_cli_enabled
         if self.head_commit_id is not None:
             body["head_commit_id"] = self.head_commit_id
         if self.id is not None:
@@ -592,6 +598,8 @@ class GetRepoResponse:
         body = {}
         if self.branch is not None:
             body["branch"] = self.branch
+        if self.git_cli_enabled is not None:
+            body["git_cli_enabled"] = self.git_cli_enabled
         if self.head_commit_id is not None:
             body["head_commit_id"] = self.head_commit_id
         if self.id is not None:
@@ -611,6 +619,7 @@ class GetRepoResponse:
         """Deserializes the GetRepoResponse from a dictionary."""
         return cls(
             branch=d.get("branch", None),
+            git_cli_enabled=d.get("git_cli_enabled", None),
             head_commit_id=d.get("head_commit_id", None),
             id=d.get("id", None),
             path=d.get("path", None),
@@ -2100,6 +2109,10 @@ class ReposAPI:
     def list(self, *, next_page_token: Optional[str] = None, path_prefix: Optional[str] = None) -> Iterator[RepoInfo]:
         """Returns repos that the calling user has Manage permissions on. Use ``next_page_token`` to iterate
         through additional pages.
+
+        Deprecated: This operation does not return a complete list of the repos in the workspace, because
+        repos with the Git CLI enabled are not included in its results. Instead, use the Repos and Workspace
+        APIs to find repos and their associated metadata in the workspace.
 
         :param next_page_token: str (optional)
           Token used to get the next page of results. If not specified, returns the first page of results as

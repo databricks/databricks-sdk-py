@@ -821,7 +821,9 @@ class Filter:
     """The policy creator user id to be filtered on. If unspecified, all policies will be returned."""
 
     creator_user_name: Optional[str] = None
-    """The policy creator user name to be filtered on. If unspecified, all policies will be returned."""
+    """Deprecated: Do not use this field in new integrations. Creator filtering will be removed in a
+    future version. The policy creator user name to be filtered on. If unspecified, all policies
+    will be returned."""
 
     policy_name: Optional[str] = None
     """The partial name of policies to be filtered on. If unspecified, all policies will be returned."""

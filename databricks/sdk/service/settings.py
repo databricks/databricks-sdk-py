@@ -702,6 +702,7 @@ class ComplianceStandard(Enum):
     IRAP_PROTECTED = "IRAP_PROTECTED"
     ISMAP = "ISMAP"
     ITAR_EAR = "ITAR_EAR"
+    KSA_ECC_CCC_DCC = "KSA_ECC_CCC_DCC"
     K_FSI = "K_FSI"
     NONE = "NONE"
     PCI_DSS = "PCI_DSS"

@@ -50,14 +50,6 @@ class AiRuntimeTask:
     workloads (driver + worker, parameter server, separate eval node, etc.) with multiple entries
     are the eventual intent but not yet supported."""
 
-    code_source_path: Optional[str] = None
-    """Optional workspace or UC volume path of the uploaded code-source archive. The CLI packages the
-    user's local code directory into an archive and populates this. Customers calling the Jobs API
-    directly should upload their archive to the workspace or a UC volume first and supply the
-    resulting path here.
-    
-    When set, the training node exposes the value via the ``$CODE_SOURCE`` environment variable."""
-
     mlflow_experiment_directory: Optional[str] = None
     """Optional workspace directory under which the MLflow experiment named in ``experiment`` is
     created. Must start with ``/Workspace``. Set this when running as a service principal that has
@@ -71,8 +63,6 @@ class AiRuntimeTask:
     def as_dict(self) -> dict:
         """Serializes the AiRuntimeTask into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.code_source_path is not None:
-            body["code_source_path"] = self.code_source_path
         if self.deployments:
             body["deployments"] = [v.as_dict() for v in self.deployments]
         if self.experiment is not None:
@@ -86,8 +76,6 @@ class AiRuntimeTask:
     def as_shallow_dict(self) -> dict:
         """Serializes the AiRuntimeTask into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.code_source_path is not None:
-            body["code_source_path"] = self.code_source_path
         if self.deployments:
             body["deployments"] = self.deployments
         if self.experiment is not None:
@@ -102,7 +90,6 @@ class AiRuntimeTask:
     def from_dict(cls, d: Dict[str, Any]) -> AiRuntimeTask:
         """Deserializes the AiRuntimeTask from a dictionary."""
         return cls(
-            code_source_path=d.get("code_source_path", None),
             deployments=_repeated_dict(d, "deployments", DeploymentSpec),
             experiment=d.get("experiment", None),
             mlflow_experiment_directory=d.get("mlflow_experiment_directory", None),
@@ -1117,8 +1104,8 @@ class ComputeSpec:
 
 
 class ComputeSpecAcceleratorType(Enum):
-    """Customer-facing AcceleratorType: hardware accelerator type for the AiRuntime workload. Per-node
-    accelerator count is encoded in the value name (e.g. ``GPU_8xH100`` means 8 H100s per node)."""
+    """Hardware accelerator type for the AiRuntime workload. Per-node accelerator count is encoded in
+    the value name (e.g. ``GPU_8xH100`` means 8 H100s per node)."""
 
     GPU_1X_A10 = "GPU_1xA10"
     GPU_1X_H100 = "GPU_1xH100"
@@ -1875,9 +1862,23 @@ class DeploymentSpec:
     use multiple entries."""
 
     command_path: str
-    """Workspace path of the bash script to execute on each node in this deployment. The CLI uploads
-    the user's script and populates this. Customers calling the Jobs API directly should upload
-    their script to the workspace first and supply the resulting path here."""
+    """Workspace path of the script to run on each node in this deployment. Upload the script to this
+    path and supply the path here. When the task runs, the file at this path is run on each node; if
+    it fails, the task fails with its exit code.
+    
+    Example script contents:
+    
+    Plain Python:
+    
+    python train.py --epochs 10
+    
+    Multi-GPU via accelerate:
+    
+    accelerate launch train.py --config config.yaml
+    
+    Distributed via torchrun:
+    
+    torchrun --nproc_per_node=8 train.py"""
 
     compute: ComputeSpec
     """Compute resources allocated to each node in this deployment."""
@@ -4246,6 +4247,7 @@ class PeriodicTriggerConfiguration:
 class PeriodicTriggerConfigurationTimeUnit(Enum):
     DAYS = "DAYS"
     HOURS = "HOURS"
+    MINUTES = "MINUTES"
     WEEKS = "WEEKS"
 
 
@@ -5186,9 +5188,8 @@ class ResolvedValues:
 
 @dataclass
 class ResolvedValuesAiRuntimeTaskResolvedValues:
-    """Resolved env_vars for an AiRuntimeTask after dynamic-value substitution. Mirrors the task's
-    ``resolved_parameters_field`` (env_vars) so Jobs can expand ``{{tasks.<key>.values.<name>}}``
-    references before submission."""
+    """Resolved values for an AiRuntimeTask after dynamic-value substitution, so Jobs can expand
+    ``{{tasks.<key>.values.<name>}}`` references before submission."""
 
     def as_dict(self) -> dict:
         """Serializes the ResolvedValuesAiRuntimeTaskResolvedValues into a dictionary suitable for use as a JSON request body."""
@@ -10697,6 +10698,7 @@ class JobsAPI:
         health: Optional[JobsHealthRules] = None,
         idempotency_token: Optional[str] = None,
         notification_settings: Optional[JobNotificationSettings] = None,
+        performance_target: Optional[PerformanceTarget] = None,
         queue: Optional[QueueSettings] = None,
         run_as: Optional[JobRunAs] = None,
         run_name: Optional[str] = None,
@@ -10749,6 +10751,14 @@ class JobsAPI:
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
           ``email_notifications`` and ``webhook_notifications`` for this run.
+        :param performance_target: :class:`PerformanceTarget` (optional)
+          The performance mode on a serverless one-time run. This field determines the level of compute
+          performance or cost-efficiency for the run. The performance target does not apply to tasks that run
+          on Serverless GPU compute.
+
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
+            optimized cluster performance.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the one-time run.
         :param run_as: :class:`JobRunAs` (optional)
@@ -10787,6 +10797,8 @@ class JobsAPI:
             body["idempotency_token"] = idempotency_token
         if notification_settings is not None:
             body["notification_settings"] = notification_settings.as_dict()
+        if performance_target is not None:
+            body["performance_target"] = performance_target.value
         if queue is not None:
             body["queue"] = queue.as_dict()
         if run_as is not None:
@@ -10828,6 +10840,7 @@ class JobsAPI:
         health: Optional[JobsHealthRules] = None,
         idempotency_token: Optional[str] = None,
         notification_settings: Optional[JobNotificationSettings] = None,
+        performance_target: Optional[PerformanceTarget] = None,
         queue: Optional[QueueSettings] = None,
         run_as: Optional[JobRunAs] = None,
         run_name: Optional[str] = None,
@@ -10846,6 +10859,7 @@ class JobsAPI:
             health=health,
             idempotency_token=idempotency_token,
             notification_settings=notification_settings,
+            performance_target=performance_target,
             queue=queue,
             run_as=run_as,
             run_name=run_name,

@@ -187,6 +187,8 @@ class ConnectorOptions:
 
     outlook_options: Optional[OutlookOptions] = None
 
+    reddit_ads_options: Optional[RedditAdsOptions] = None
+
     sharepoint_options: Optional[SharepointOptions] = None
 
     smartsheet_options: Optional[SmartsheetOptions] = None
@@ -212,6 +214,8 @@ class ConnectorOptions:
             body["meta_ads_options"] = self.meta_ads_options.as_dict()
         if self.outlook_options:
             body["outlook_options"] = self.outlook_options.as_dict()
+        if self.reddit_ads_options:
+            body["reddit_ads_options"] = self.reddit_ads_options.as_dict()
         if self.sharepoint_options:
             body["sharepoint_options"] = self.sharepoint_options.as_dict()
         if self.smartsheet_options:
@@ -239,6 +243,8 @@ class ConnectorOptions:
             body["meta_ads_options"] = self.meta_ads_options
         if self.outlook_options:
             body["outlook_options"] = self.outlook_options
+        if self.reddit_ads_options:
+            body["reddit_ads_options"] = self.reddit_ads_options
         if self.sharepoint_options:
             body["sharepoint_options"] = self.sharepoint_options
         if self.smartsheet_options:
@@ -260,6 +266,7 @@ class ConnectorOptions:
             kafka_options=_from_dict(d, "kafka_options", KafkaOptions),
             meta_ads_options=_from_dict(d, "meta_ads_options", MetaMarketingOptions),
             outlook_options=_from_dict(d, "outlook_options", OutlookOptions),
+            reddit_ads_options=_from_dict(d, "reddit_ads_options", RedditAdsOptions),
             sharepoint_options=_from_dict(d, "sharepoint_options", SharepointOptions),
             smartsheet_options=_from_dict(d, "smartsheet_options", SmartsheetOptions),
             tiktok_ads_options=_from_dict(d, "tiktok_ads_options", TikTokAdsOptions),
@@ -1019,6 +1026,70 @@ class GoogleAdsConfig:
 
 
 @dataclass
+class GoogleAdsCustomReportOptions:
+    """User-defined custom report for the Google Ads connector. Mirrors the resource + fields +
+    segments + metrics model that Google Ads GAQL exposes. The customer account this report runs
+    against is supplied by the source schema (namespace), not by this message. The whole message is
+    gated by the parent GoogleAdsOptions.custom_report_options stage; per-field stage annotations
+    are intentionally omitted. Only supported on table-type objects: a custom report requires a
+    destination table, so it cannot be specified at the schema/source level."""
+
+    resource: str
+    """(Required) Google Ads resource to query (e.g. "ad_group_ad", "keyword_view",
+    "search_term_view"). Must be a resource that has metrics. Values are validated against Google
+    Ads' field-service catalog at pipeline plan time."""
+
+    metrics: Optional[List[str]] = None
+    """(Optional) Metric fields to select (e.g. "metrics.clicks", "metrics.cost_micros"). Multiple
+    values are joined into the GAQL SELECT clause."""
+
+    resource_fields: Optional[List[str]] = None
+    """(Optional) Resource fields to select, in fully-qualified GAQL form (e.g. "ad_group_ad.ad.id",
+    "ad_group_ad.status"). Multiple values are joined into the GAQL SELECT clause."""
+
+    segments: Optional[List[str]] = None
+    """(Optional) Segment fields to select (e.g. "segments.date", "segments.device"). Must include at
+    least one of segments.date, segments.week, or segments.month — that segment is used as the
+    incremental cursor for the table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GoogleAdsCustomReportOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metrics:
+            body["metrics"] = [v for v in self.metrics]
+        if self.resource is not None:
+            body["resource"] = self.resource
+        if self.resource_fields:
+            body["resource_fields"] = [v for v in self.resource_fields]
+        if self.segments:
+            body["segments"] = [v for v in self.segments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GoogleAdsCustomReportOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metrics:
+            body["metrics"] = self.metrics
+        if self.resource is not None:
+            body["resource"] = self.resource
+        if self.resource_fields:
+            body["resource_fields"] = self.resource_fields
+        if self.segments:
+            body["segments"] = self.segments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GoogleAdsCustomReportOptions:
+        """Deserializes the GoogleAdsCustomReportOptions from a dictionary."""
+        return cls(
+            metrics=d.get("metrics", None),
+            resource=d.get("resource", None),
+            resource_fields=d.get("resource_fields", None),
+            segments=d.get("segments", None),
+        )
+
+
+@dataclass
 class GoogleAdsOptions:
     """Google Ads specific options for ingestion (object-level). When set, these values override the
     corresponding fields in GoogleAdsConfig (source_configurations)."""
@@ -1027,6 +1098,12 @@ class GoogleAdsOptions:
     """(Optional at this level) Manager Account ID (also called MCC Account ID) used to list and access
     customer accounts under this manager account. Overrides GoogleAdsConfig.manager_account_id from
     source_configurations when set."""
+
+    custom_report_options: Optional[GoogleAdsCustomReportOptions] = None
+    """(Optional) Custom report definition. When set, the table is treated as a user-defined Google Ads
+    custom report: the connector synthesizes a GAQL query from the resource, fields, segments, and
+    metrics specified here. When unset, the table must match one of the connector's prebuilt
+    sources."""
 
     lookback_window_days: Optional[int] = None
     """(Optional) Number of days to look back for report tables to capture late-arriving data. If not
@@ -1040,6 +1117,8 @@ class GoogleAdsOptions:
     def as_dict(self) -> dict:
         """Serializes the GoogleAdsOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options.as_dict()
         if self.lookback_window_days is not None:
             body["lookback_window_days"] = self.lookback_window_days
         if self.manager_account_id is not None:
@@ -1051,6 +1130,8 @@ class GoogleAdsOptions:
     def as_shallow_dict(self) -> dict:
         """Serializes the GoogleAdsOptions into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options
         if self.lookback_window_days is not None:
             body["lookback_window_days"] = self.lookback_window_days
         if self.manager_account_id is not None:
@@ -1063,6 +1144,7 @@ class GoogleAdsOptions:
     def from_dict(cls, d: Dict[str, Any]) -> GoogleAdsOptions:
         """Deserializes the GoogleAdsOptions from a dictionary."""
         return cls(
+            custom_report_options=_from_dict(d, "custom_report_options", GoogleAdsCustomReportOptions),
             lookback_window_days=d.get("lookback_window_days", None),
             manager_account_id=d.get("manager_account_id", None),
             sync_start_date=d.get("sync_start_date", None),
@@ -1856,6 +1938,11 @@ class MetaMarketingOptions:
     """(Optional) Window in days to revisit data during sync to capture updated conversion data from
     the API, shared by prebuilt and custom reports."""
 
+    custom_report_options: Optional[MetaMarketingOptionsMetaMarketingCustomReportOptions] = None
+    """(Optional) Per-table custom report definition. When set, defines the shape of the insights call
+    for this table (level/fields/breakdowns/action_breakdowns/etc.). Supersedes the deprecated flat
+    report-shape fields above."""
+
     level: Optional[str] = None
     """(Optional, DEPRECATED — use custom_report_options.level) Granularity of data to pull (account,
     ad, adset, campaign)"""
@@ -1881,6 +1968,8 @@ class MetaMarketingOptions:
             body["breakdowns"] = [v for v in self.breakdowns]
         if self.custom_insights_lookback_window is not None:
             body["custom_insights_lookback_window"] = self.custom_insights_lookback_window
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options.as_dict()
         if self.level is not None:
             body["level"] = self.level
         if self.start_date is not None:
@@ -1902,6 +1991,8 @@ class MetaMarketingOptions:
             body["breakdowns"] = self.breakdowns
         if self.custom_insights_lookback_window is not None:
             body["custom_insights_lookback_window"] = self.custom_insights_lookback_window
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options
         if self.level is not None:
             body["level"] = self.level
         if self.start_date is not None:
@@ -1919,8 +2010,83 @@ class MetaMarketingOptions:
             action_report_time=d.get("action_report_time", None),
             breakdowns=d.get("breakdowns", None),
             custom_insights_lookback_window=d.get("custom_insights_lookback_window", None),
+            custom_report_options=_from_dict(
+                d, "custom_report_options", MetaMarketingOptionsMetaMarketingCustomReportOptions
+            ),
             level=d.get("level", None),
             start_date=d.get("start_date", None),
+            time_increment=d.get("time_increment", None),
+        )
+
+
+@dataclass
+class MetaMarketingOptionsMetaMarketingCustomReportOptions:
+    """Defines the shape of a single Meta Ads custom report (one /insights call shape). start_date,
+    custom_insights_lookback_window live on MetaMarketingOptions, not here. Metrics are not
+    customer-selectable; the connector returns a fixed standard metric set."""
+
+    action_attribution_windows: Optional[List[str]] = None
+    """(Optional) Action attribution windows for insights reporting (e.g. "28d_click", "1d_view")"""
+
+    action_breakdowns: Optional[List[str]] = None
+    """(Optional) Action breakdowns to configure for data aggregation"""
+
+    action_report_time: Optional[str] = None
+    """(Optional) Timing used to report action statistics (impression, conversion, mixed, or lifetime)"""
+
+    breakdowns: Optional[List[str]] = None
+    """(Optional) Breakdowns to configure for data aggregation"""
+
+    level: Optional[str] = None
+    """(Optional) Granularity of data to pull (account, ad, adset, campaign)"""
+
+    time_increment: Optional[str] = None
+    """(Optional) Value in string by which to aggregate statistics (all_days, monthly or number of
+    days)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetaMarketingOptionsMetaMarketingCustomReportOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.action_attribution_windows:
+            body["action_attribution_windows"] = [v for v in self.action_attribution_windows]
+        if self.action_breakdowns:
+            body["action_breakdowns"] = [v for v in self.action_breakdowns]
+        if self.action_report_time is not None:
+            body["action_report_time"] = self.action_report_time
+        if self.breakdowns:
+            body["breakdowns"] = [v for v in self.breakdowns]
+        if self.level is not None:
+            body["level"] = self.level
+        if self.time_increment is not None:
+            body["time_increment"] = self.time_increment
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetaMarketingOptionsMetaMarketingCustomReportOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.action_attribution_windows:
+            body["action_attribution_windows"] = self.action_attribution_windows
+        if self.action_breakdowns:
+            body["action_breakdowns"] = self.action_breakdowns
+        if self.action_report_time is not None:
+            body["action_report_time"] = self.action_report_time
+        if self.breakdowns:
+            body["breakdowns"] = self.breakdowns
+        if self.level is not None:
+            body["level"] = self.level
+        if self.time_increment is not None:
+            body["time_increment"] = self.time_increment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetaMarketingOptionsMetaMarketingCustomReportOptions:
+        """Deserializes the MetaMarketingOptionsMetaMarketingCustomReportOptions from a dictionary."""
+        return cls(
+            action_attribution_windows=d.get("action_attribution_windows", None),
+            action_breakdowns=d.get("action_breakdowns", None),
+            action_report_time=d.get("action_report_time", None),
+            breakdowns=d.get("breakdowns", None),
+            level=d.get("level", None),
             time_increment=d.get("time_increment", None),
         )
 
@@ -3628,6 +3794,92 @@ class PublishingMode(Enum):
 
 
 @dataclass
+class RedditAdsOptions:
+    """Reddit Ads specific options for ingestion"""
+
+    custom_report_options: Optional[RedditAdsOptionsRedditAdsCustomReportOptions] = None
+    """(Optional) Custom report definition. When set, the table is treated as a user-defined Reddit Ads
+    custom report. When unset, the table must match one of the connector's prebuilt sources."""
+
+    lookback_window_days: Optional[int] = None
+    """(Optional) Number of days to look back for report tables during incremental sync to capture
+    late-arriving conversions and attribution data. If not specified, defaults to 30 days."""
+
+    sync_start_date: Optional[str] = None
+    """(Optional) Start date for the initial sync of report tables in YYYY-MM-DD format. This
+    determines the earliest date from which to sync historical data. If not specified, defaults to 2
+    years ago."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RedditAdsOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options.as_dict()
+        if self.lookback_window_days is not None:
+            body["lookback_window_days"] = self.lookback_window_days
+        if self.sync_start_date is not None:
+            body["sync_start_date"] = self.sync_start_date
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RedditAdsOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options
+        if self.lookback_window_days is not None:
+            body["lookback_window_days"] = self.lookback_window_days
+        if self.sync_start_date is not None:
+            body["sync_start_date"] = self.sync_start_date
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RedditAdsOptions:
+        """Deserializes the RedditAdsOptions from a dictionary."""
+        return cls(
+            custom_report_options=_from_dict(d, "custom_report_options", RedditAdsOptionsRedditAdsCustomReportOptions),
+            lookback_window_days=d.get("lookback_window_days", None),
+            sync_start_date=d.get("sync_start_date", None),
+        )
+
+
+@dataclass
+class RedditAdsOptionsRedditAdsCustomReportOptions:
+    """User-defined custom report for the Reddit Ads connector. Applies only to the custom_report table
+    — prebuilt tables ignore this."""
+
+    breakdowns: Optional[List[str]] = None
+    """(Optional) Breakdown dimensions to group report data by. Examples: CAMPAIGN_ID, DATE, COUNTRY,
+    REGION, AD_ID. Must include at least one time dimension (DATE or HOUR)."""
+
+    fields: Optional[List[str]] = None
+    """(Optional) Fields to include in the report (maps to the Reddit Ads API ``fields`` parameter).
+    Examples: IMPRESSIONS, CLICKS, SPEND, CPC, CTR."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RedditAdsOptionsRedditAdsCustomReportOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.breakdowns:
+            body["breakdowns"] = [v for v in self.breakdowns]
+        if self.fields:
+            body["fields"] = [v for v in self.fields]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RedditAdsOptionsRedditAdsCustomReportOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.breakdowns:
+            body["breakdowns"] = self.breakdowns
+        if self.fields:
+            body["fields"] = self.fields
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RedditAdsOptionsRedditAdsCustomReportOptions:
+        """Deserializes the RedditAdsOptionsRedditAdsCustomReportOptions from a dictionary."""
+        return cls(breakdowns=d.get("breakdowns", None), fields=d.get("fields", None))
+
+
+@dataclass
 class ReplaceWhereOverride:
     """Specifies a replace_where predicate override for a replace where flow."""
 
@@ -4446,6 +4698,10 @@ class TableSpecificConfig:
     """The column names specifying the logical order of events in the source data. Spark Declarative
     Pipelines uses this sequencing to handle change events that arrive out of order."""
 
+    source_metadata_column: Optional[str] = None
+    """(Optional) Name of the struct column added to each ingested record to hold per row source
+    metadata."""
+
     table_properties: Optional[Dict[str, str]] = None
     """Table properties to set on the destination table. These are key-value pairs that configure
     various Delta table behaviors or any user defined properties. Example:
@@ -4481,6 +4737,8 @@ class TableSpecificConfig:
             body["scd_type"] = self.scd_type.value
         if self.sequence_by:
             body["sequence_by"] = [v for v in self.sequence_by]
+        if self.source_metadata_column is not None:
+            body["source_metadata_column"] = self.source_metadata_column
         if self.table_properties:
             body["table_properties"] = self.table_properties
         if self.workday_report_parameters:
@@ -4512,6 +4770,8 @@ class TableSpecificConfig:
             body["scd_type"] = self.scd_type
         if self.sequence_by:
             body["sequence_by"] = self.sequence_by
+        if self.source_metadata_column is not None:
+            body["source_metadata_column"] = self.source_metadata_column
         if self.table_properties:
             body["table_properties"] = self.table_properties
         if self.workday_report_parameters:
@@ -4537,6 +4797,7 @@ class TableSpecificConfig:
             salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
             scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
             sequence_by=d.get("sequence_by", None),
+            source_metadata_column=d.get("source_metadata_column", None),
             table_properties=d.get("table_properties", None),
             workday_report_parameters=_from_dict(
                 d, "workday_report_parameters", IngestionPipelineDefinitionWorkdayReportParameters
@@ -4555,6 +4816,12 @@ class TableSpecificConfigScdType(Enum):
 @dataclass
 class TikTokAdsOptions:
     """TikTok Ads specific options for ingestion"""
+
+    custom_report_options: Optional[TikTokAdsOptionsTikTokAdsCustomReportOptions] = None
+    """(Optional) Custom report definition. When set, the table is treated as a user-defined TikTok Ads
+    custom report: the connector synthesizes a report request from the dimensions, metrics, report
+    type, and data level specified here. Supersedes the deprecated top-level
+    dimensions/metrics/report_type/ data_level/query_lifetime fields above."""
 
     data_level: Optional[TikTokAdsOptionsTikTokDataLevel] = None
     """Deprecated. Use custom_report_options.data_level instead."""
@@ -4582,6 +4849,8 @@ class TikTokAdsOptions:
     def as_dict(self) -> dict:
         """Serializes the TikTokAdsOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options.as_dict()
         if self.data_level is not None:
             body["data_level"] = self.data_level.value
         if self.dimensions:
@@ -4601,6 +4870,8 @@ class TikTokAdsOptions:
     def as_shallow_dict(self) -> dict:
         """Serializes the TikTokAdsOptions into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options
         if self.data_level is not None:
             body["data_level"] = self.data_level
         if self.dimensions:
@@ -4621,6 +4892,7 @@ class TikTokAdsOptions:
     def from_dict(cls, d: Dict[str, Any]) -> TikTokAdsOptions:
         """Deserializes the TikTokAdsOptions from a dictionary."""
         return cls(
+            custom_report_options=_from_dict(d, "custom_report_options", TikTokAdsOptionsTikTokAdsCustomReportOptions),
             data_level=_enum(d, "data_level", TikTokAdsOptionsTikTokDataLevel),
             dimensions=d.get("dimensions", None),
             lookback_window_days=d.get("lookback_window_days", None),
@@ -4628,6 +4900,71 @@ class TikTokAdsOptions:
             query_lifetime=d.get("query_lifetime", None),
             report_type=_enum(d, "report_type", TikTokAdsOptionsTikTokReportType),
             sync_start_date=d.get("sync_start_date", None),
+        )
+
+
+@dataclass
+class TikTokAdsOptionsTikTokAdsCustomReportOptions:
+    """User-defined custom report for the TikTok Ads connector. Groups the dimensions + metrics +
+    report type + data level that define a TikTok Ads custom report request."""
+
+    data_level: Optional[TikTokAdsOptionsTikTokDataLevel] = None
+    """(Optional) Data level for the report. If not specified, defaults to AUCTION_CAMPAIGN."""
+
+    dimensions: Optional[List[str]] = None
+    """(Optional) Dimensions to include in the report (e.g. "campaign_id", "adgroup_id", "ad_id",
+    "stat_time_day", "stat_time_hour")."""
+
+    metrics: Optional[List[str]] = None
+    """(Optional) Metrics to include in the report (e.g. "spend", "impressions", "clicks",
+    "conversion", "cpc")."""
+
+    query_lifetime: Optional[bool] = None
+    """(Optional) Whether to request lifetime metrics (all-time aggregated data). When true, the report
+    returns all-time data. If not specified, defaults to false."""
+
+    report_type: Optional[TikTokAdsOptionsTikTokReportType] = None
+    """(Optional) Report type for the TikTok Ads API. If not specified, defaults to BASIC."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TikTokAdsOptionsTikTokAdsCustomReportOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_level is not None:
+            body["data_level"] = self.data_level.value
+        if self.dimensions:
+            body["dimensions"] = [v for v in self.dimensions]
+        if self.metrics:
+            body["metrics"] = [v for v in self.metrics]
+        if self.query_lifetime is not None:
+            body["query_lifetime"] = self.query_lifetime
+        if self.report_type is not None:
+            body["report_type"] = self.report_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TikTokAdsOptionsTikTokAdsCustomReportOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_level is not None:
+            body["data_level"] = self.data_level
+        if self.dimensions:
+            body["dimensions"] = self.dimensions
+        if self.metrics:
+            body["metrics"] = self.metrics
+        if self.query_lifetime is not None:
+            body["query_lifetime"] = self.query_lifetime
+        if self.report_type is not None:
+            body["report_type"] = self.report_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TikTokAdsOptionsTikTokAdsCustomReportOptions:
+        """Deserializes the TikTokAdsOptionsTikTokAdsCustomReportOptions from a dictionary."""
+        return cls(
+            data_level=_enum(d, "data_level", TikTokAdsOptionsTikTokDataLevel),
+            dimensions=d.get("dimensions", None),
+            metrics=d.get("metrics", None),
+            query_lifetime=d.get("query_lifetime", None),
+            report_type=_enum(d, "report_type", TikTokAdsOptionsTikTokReportType),
         )
 
 

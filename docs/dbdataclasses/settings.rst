@@ -161,6 +161,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ITAR_EAR
       :value: "ITAR_EAR"
 
+   .. py:attribute:: KSA_ECC_CCC_DCC
+      :value: "KSA_ECC_CCC_DCC"
+
    .. py:attribute:: K_FSI
       :value: "K_FSI"
 

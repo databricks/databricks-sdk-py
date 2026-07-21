@@ -46,7 +46,7 @@ class Group:
     group_name: Optional[str] = None
     """Display name of the group."""
 
-    internal_id: Optional[int] = None
+    internal_id: Optional[str] = None
     """Internal group ID of the group in Databricks."""
 
     def as_dict(self) -> dict:
@@ -225,7 +225,7 @@ class ServicePrincipal:
     external_id: Optional[str] = None
     """ExternalId of the service principal in the customer's IdP."""
 
-    internal_id: Optional[int] = None
+    internal_id: Optional[str] = None
     """Internal service principal ID of the service principal in Databricks."""
 
     def as_dict(self) -> dict:
@@ -297,7 +297,7 @@ class User:
 
     full_name: Optional[UserFullName] = None
 
-    internal_id: Optional[int] = None
+    internal_id: Optional[str] = None
     """Internal userId of the user in Databricks."""
 
     username: Optional[str] = None
@@ -570,7 +570,7 @@ class AccountIamV2API:
 
         res = self._api.do(
             "POST",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspaceAssignmentDetails",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignment-details",
             body=body,
             headers=headers,
         )
@@ -596,7 +596,7 @@ class AccountIamV2API:
 
         self._api.do(
             "DELETE",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspaceAssignmentDetails/{principal_id}",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignment-details/{principal_id}",
             headers=headers,
         )
 
@@ -630,7 +630,7 @@ class AccountIamV2API:
 
         res = self._api.do(
             "GET",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspaceAccessDetails/{principal_id}",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-access-details/{principal_id}",
             query=query,
             headers=headers,
         )
@@ -654,7 +654,7 @@ class AccountIamV2API:
 
         res = self._api.do(
             "GET",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspaceAssignmentDetails/{principal_id}",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignment-details/{principal_id}",
             headers=headers,
         )
         return WorkspaceAssignmentDetail.from_dict(res)
@@ -689,7 +689,7 @@ class AccountIamV2API:
 
         res = self._api.do(
             "GET",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspaceAssignmentDetails",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignment-details",
             query=query,
             headers=headers,
         )
@@ -716,7 +716,7 @@ class AccountIamV2API:
 
         res = self._api.do(
             "POST",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/groups/resolveByExternalId",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/groups/resolve-by-external-id",
             body=body,
             headers=headers,
         )
@@ -743,7 +743,7 @@ class AccountIamV2API:
 
         res = self._api.do(
             "POST",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/servicePrincipals/resolveByExternalId",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/service-principals/resolve-by-external-id",
             body=body,
             headers=headers,
         )
@@ -770,7 +770,7 @@ class AccountIamV2API:
 
         res = self._api.do(
             "POST",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/users/resolveByExternalId",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/users/resolve-by-external-id",
             body=body,
             headers=headers,
         )
@@ -810,7 +810,7 @@ class AccountIamV2API:
 
         res = self._api.do(
             "PATCH",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspaceAssignmentDetails/{principal_id}",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspace-assignment-details/{principal_id}",
             query=query,
             body=body,
             headers=headers,
@@ -849,7 +849,7 @@ class WorkspaceIamV2API:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", "/api/2.0/identity/workspaceAssignmentDetails", body=body, headers=headers)
+        res = self._api.do("POST", "/api/2.0/identity/workspace-assignment-details", body=body, headers=headers)
         return WorkspaceAssignmentDetail.from_dict(res)
 
     def delete_workspace_assignment_detail_proxy(self, principal_id: int):
@@ -872,7 +872,7 @@ class WorkspaceIamV2API:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        self._api.do("DELETE", f"/api/2.0/identity/workspaceAssignmentDetails/{principal_id}", headers=headers)
+        self._api.do("DELETE", f"/api/2.0/identity/workspace-assignment-details/{principal_id}", headers=headers)
 
     def get_workspace_access_detail_local(
         self, principal_id: int, *, view: Optional[WorkspaceAccessDetailView] = None
@@ -905,7 +905,7 @@ class WorkspaceIamV2API:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
-            "GET", f"/api/2.0/identity/workspaceAccessDetails/{principal_id}", query=query, headers=headers
+            "GET", f"/api/2.0/identity/workspace-access-details/{principal_id}", query=query, headers=headers
         )
         return WorkspaceAccessDetail.from_dict(res)
 
@@ -927,7 +927,7 @@ class WorkspaceIamV2API:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.0/identity/workspaceAssignmentDetails/{principal_id}", headers=headers)
+        res = self._api.do("GET", f"/api/2.0/identity/workspace-assignment-details/{principal_id}", headers=headers)
         return WorkspaceAssignmentDetail.from_dict(res)
 
     def list_workspace_assignment_details_proxy(
@@ -960,7 +960,7 @@ class WorkspaceIamV2API:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", "/api/2.0/identity/workspaceAssignmentDetails", query=query, headers=headers)
+        res = self._api.do("GET", "/api/2.0/identity/workspace-assignment-details", query=query, headers=headers)
         return ListWorkspaceAssignmentDetailsResponse.from_dict(res)
 
     def resolve_group_proxy(self, external_id: str) -> ResolveGroupResponse:
@@ -986,7 +986,7 @@ class WorkspaceIamV2API:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", "/api/2.0/identity/groups/resolveByExternalId", body=body, headers=headers)
+        res = self._api.do("POST", "/api/2.0/identity/groups/resolve-by-external-id", body=body, headers=headers)
         return ResolveGroupResponse.from_dict(res)
 
     def resolve_service_principal_proxy(self, external_id: str) -> ResolveServicePrincipalResponse:
@@ -1013,7 +1013,7 @@ class WorkspaceIamV2API:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
-            "POST", "/api/2.0/identity/servicePrincipals/resolveByExternalId", body=body, headers=headers
+            "POST", "/api/2.0/identity/service-principals/resolve-by-external-id", body=body, headers=headers
         )
         return ResolveServicePrincipalResponse.from_dict(res)
 
@@ -1040,7 +1040,7 @@ class WorkspaceIamV2API:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", "/api/2.0/identity/users/resolveByExternalId", body=body, headers=headers)
+        res = self._api.do("POST", "/api/2.0/identity/users/resolve-by-external-id", body=body, headers=headers)
         return ResolveUserResponse.from_dict(res)
 
     def update_workspace_assignment_detail_proxy(
@@ -1076,7 +1076,7 @@ class WorkspaceIamV2API:
 
         res = self._api.do(
             "PATCH",
-            f"/api/2.0/identity/workspaceAssignmentDetails/{principal_id}",
+            f"/api/2.0/identity/workspace-assignment-details/{principal_id}",
             query=query,
             body=body,
             headers=headers,

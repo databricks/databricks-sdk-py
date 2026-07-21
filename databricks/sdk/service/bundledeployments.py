@@ -55,6 +55,13 @@ class Deployment:
     git_info: Optional[GitInfo] = None
     """Git provenance of the deployment's source, derived from the latest version."""
 
+    initial_parent_path: Optional[str] = None
+    """The workspace path of the folder where the deployment is initially created. Includes a leading
+    slash and no trailing slash. On create, the deployment is registered as a typed
+    BUNDLE_DEPLOYMENT tree node under this folder, which must already exist. This field is input
+    only and is not returned in create, get, or list responses. The service rejects create requests
+    that omit it."""
+
     last_version_id: Optional[str] = None
     """The version_id of the most recent deployment version."""
 
@@ -91,6 +98,8 @@ class Deployment:
             body["display_name"] = self.display_name
         if self.git_info:
             body["git_info"] = self.git_info.as_dict()
+        if self.initial_parent_path is not None:
+            body["initial_parent_path"] = self.initial_parent_path
         if self.last_version_id is not None:
             body["last_version_id"] = self.last_version_id
         if self.name is not None:
@@ -122,6 +131,8 @@ class Deployment:
             body["display_name"] = self.display_name
         if self.git_info:
             body["git_info"] = self.git_info
+        if self.initial_parent_path is not None:
+            body["initial_parent_path"] = self.initial_parent_path
         if self.last_version_id is not None:
             body["last_version_id"] = self.last_version_id
         if self.name is not None:
@@ -147,6 +158,7 @@ class Deployment:
             destroyed_by=d.get("destroyed_by", None),
             display_name=d.get("display_name", None),
             git_info=_from_dict(d, "git_info", GitInfo),
+            initial_parent_path=d.get("initial_parent_path", None),
             last_version_id=d.get("last_version_id", None),
             name=d.get("name", None),
             status=_enum(d, "status", DeploymentStatus),
@@ -923,7 +935,8 @@ class BundleDeploymentsAPI:
         resource name. If a deployment with the same ID already exists, the server returns ``ALREADY_EXISTS``.
 
         :param deployment: :class:`Deployment`
-          The deployment to create.
+          The deployment to create. Caller must set ``initial_parent_path``; every other field is populated by
+          the service.
         :param deployment_id: str
           The ID to use for the deployment, which will become the final component of the deployment's resource
           name (i.e. ``deployments/{deployment_id}``).

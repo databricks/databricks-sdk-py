@@ -143,6 +143,10 @@
         Returns repos that the calling user has Manage permissions on. Use ``next_page_token`` to iterate
         through additional pages.
 
+        Deprecated: This operation does not return a complete list of the repos in the workspace, because
+        repos with the Git CLI enabled are not included in its results. Instead, use the Repos and Workspace
+        APIs to find repos and their associated metadata in the workspace.
+
         :param next_page_token: str (optional)
           Token used to get the next page of results. If not specified, returns the first page of results as
           well as a next page token if there are more results.

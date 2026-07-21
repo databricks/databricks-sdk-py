@@ -65,7 +65,6 @@
           - 3X-Large
           - 4X-Large
           - 5X-Large
-          - Auto
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)
@@ -229,7 +228,6 @@
           - 3X-Large
           - 4X-Large
           - 5X-Large
-          - Auto
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)

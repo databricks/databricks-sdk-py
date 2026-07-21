@@ -82,7 +82,7 @@
             
             notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            export_response = w.workspace.export(format=workspace.ExportFormat.SOURCE, path=notebook)
+            export_response = w.workspace.export_(format=workspace.ExportFormat.SOURCE, path=notebook)
 
         Exports an object or the contents of an entire directory.
 
@@ -188,7 +188,7 @@
                 content=base64.b64encode(("CREATE LIVE TABLE dlt_sample AS SELECT 1").encode()).decode(),
                 format=workspace.ImportFormat.SOURCE,
                 language=workspace.Language.SQL,
-                overwrite=True,
+                overwrite=true_,
                 path=notebook_path,
             )
 

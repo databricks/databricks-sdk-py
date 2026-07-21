@@ -12,7 +12,7 @@
     on cloud storage. You can create different types of connections, and each connection has a unique set of
     configuration options to support credential management and other settings.
 
-    .. py:method:: create(name: str, connection_type: ConnectionType, options: Dict[str, str] [, comment: Optional[str], environment_settings: Optional[EnvironmentSettings], properties: Optional[Dict[str, str]], read_only: Optional[bool]]) -> ConnectionInfo
+    .. py:method:: create(name: str, connection_type: ConnectionType, options: Dict[str, str] [, comment: Optional[str], environment_settings: Optional[EnvironmentSettings], parent: Optional[str], properties: Optional[Dict[str, str]], read_only: Optional[bool]]) -> ConnectionInfo
 
 
         Usage:
@@ -55,6 +55,9 @@
           User-provided free-form text description.
         :param environment_settings: :class:`EnvironmentSettings` (optional)
           [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
+        :param parent: str (optional)
+          Parent schema for schema-level connections, in format "schemas/{catalog}.{schema}". Absent for
+          metastore-level (L1) connections.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
@@ -120,7 +123,7 @@
         :returns: :class:`ConnectionInfo`
         
 
-    .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ConnectionInfo]
+    .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str], parent: Optional[str]]) -> Iterator[ConnectionInfo]
 
 
         Usage:
@@ -153,6 +156,9 @@
           - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
+        :param parent: str (optional)
+          Optional. Parent schema filter for listing schema-level connections, in format
+          "schemas/{catalog}.{schema}".
 
         :returns: Iterator over :class:`ConnectionInfo`
         

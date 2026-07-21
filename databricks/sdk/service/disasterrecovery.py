@@ -312,6 +312,13 @@ class StableUrl:
     """The workspace this stable URL is initially bound to. Used only in Create requests to associate
     the stable URL with a workspace. Not returned in responses."""
 
+    effective_workspace_id: Optional[str] = None
+    """The workspace this stable URL currently routes to. Set to ``initial_workspace_id`` at creation,
+    advanced to the failover group's primary while attached (including across a failover), and
+    preserved when the stable URL is detached from its failover group. Read this to see where an
+    unattached stable URL points: after a failover followed by a detach it reflects the
+    post-failover primary, not ``initial_workspace_id``."""
+
     failover_group_name: Optional[str] = None
     """Fully qualified resource name of the FailoverGroup this stable URL is currently linked to, in
     the format ``accounts/{account_id}/failover-groups/{failover_group_id}``. Empty when the stable
@@ -333,6 +340,8 @@ class StableUrl:
     def as_dict(self) -> dict:
         """Serializes the StableUrl into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.effective_workspace_id is not None:
+            body["effective_workspace_id"] = self.effective_workspace_id
         if self.failover_group_name is not None:
             body["failover_group_name"] = self.failover_group_name
         if self.initial_workspace_id is not None:
@@ -348,6 +357,8 @@ class StableUrl:
     def as_shallow_dict(self) -> dict:
         """Serializes the StableUrl into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.effective_workspace_id is not None:
+            body["effective_workspace_id"] = self.effective_workspace_id
         if self.failover_group_name is not None:
             body["failover_group_name"] = self.failover_group_name
         if self.initial_workspace_id is not None:
@@ -364,6 +375,7 @@ class StableUrl:
     def from_dict(cls, d: Dict[str, Any]) -> StableUrl:
         """Deserializes the StableUrl from a dictionary."""
         return cls(
+            effective_workspace_id=d.get("effective_workspace_id", None),
             failover_group_name=d.get("failover_group_name", None),
             initial_workspace_id=d.get("initial_workspace_id", None),
             name=d.get("name", None),
