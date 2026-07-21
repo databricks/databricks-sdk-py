@@ -565,6 +565,200 @@ class CatalogOperationMetadata:
 
 
 @dataclass
+class CdfConfig:
+    """A Lakebase CDF configuration (CdfConfig): one per Postgres schema per database, replicating that
+    schema's tables into a Unity Catalog schema. Immutable once created."""
+
+    catalog: str
+    """The Unity Catalog catalog that replicated tables are written into. Set at creation; the
+    CdfConfig is immutable."""
+
+    schema: str
+    """The Unity Catalog schema that replicated tables are written into. Set at creation; the CdfConfig
+    is immutable."""
+
+    postgres_schema: str
+    """The Postgres schema this CdfConfig replicates from. Unique within the parent database. Set at
+    creation; the CdfConfig is immutable."""
+
+    cdf_config_id: Optional[str] = None
+    """The user-specified id; equals the final segment of ``name``. Defaults to the Postgres schema
+    name for configs without an explicit id."""
+
+    create_time: Optional[Timestamp] = None
+    """When the CdfConfig was created."""
+
+    name: Optional[str] = None
+    """Output only. The full resource name of the CdfConfig. Format:
+    projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CdfConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.cdf_config_id is not None:
+            body["cdf_config_id"] = self.cdf_config_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.postgres_schema is not None:
+            body["postgres_schema"] = self.postgres_schema
+        if self.schema is not None:
+            body["schema"] = self.schema
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CdfConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.cdf_config_id is not None:
+            body["cdf_config_id"] = self.cdf_config_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.postgres_schema is not None:
+            body["postgres_schema"] = self.postgres_schema
+        if self.schema is not None:
+            body["schema"] = self.schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CdfConfig:
+        """Deserializes the CdfConfig from a dictionary."""
+        return cls(
+            catalog=d.get("catalog", None),
+            cdf_config_id=d.get("cdf_config_id", None),
+            create_time=_timestamp(d, "create_time"),
+            name=d.get("name", None),
+            postgres_schema=d.get("postgres_schema", None),
+            schema=d.get("schema", None),
+        )
+
+
+@dataclass
+class CdfConfigOperationMetadata:
+    """Metadata for CdfConfig long-running operations. Intentionally empty today; fields (e.g.
+    progress) may be added as the operation contract grows."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CdfConfigOperationMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CdfConfigOperationMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CdfConfigOperationMetadata:
+        """Deserializes the CdfConfigOperationMetadata from a dictionary."""
+        return cls()
+
+
+class CdfState(Enum):
+    """The replication state of a single replicated table (CdfStatus)."""
+
+    CDF_STATE_SKIPPED = "CDF_STATE_SKIPPED"
+    CDF_STATE_SNAPSHOTTING = "CDF_STATE_SNAPSHOTTING"
+    CDF_STATE_STREAMING = "CDF_STATE_STREAMING"
+    CDF_STATE_TERMINATED = "CDF_STATE_TERMINATED"
+
+
+@dataclass
+class CdfStatus:
+    """The read-only replication status of a single Postgres table replicated under a CdfConfig. One
+    status exists per replicated table. It is created automatically and cannot be modified."""
+
+    committed_lsn: Optional[str] = None
+    """The high-watermark Log Sequence Number (LSN) committed to Delta Lake."""
+
+    create_time: Optional[Timestamp] = None
+    """When replication for this table was first established."""
+
+    last_sync_time: Optional[Timestamp] = None
+    """The last time changes for this table were written to Delta Lake."""
+
+    name: Optional[str] = None
+    """Output only. The full resource name of the CdfStatus. Format:
+    projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}/cdf-statuses/{cdf_status}
+    The {cdf_status} segment is the Postgres table name."""
+
+    postgres_table: Optional[str] = None
+    """The Postgres table being replicated."""
+
+    state: Optional[CdfState] = None
+    """The current replication state of this table."""
+
+    status_detail: Optional[str] = None
+    """Human-readable detail for the current state (e.g. the skip/error reason). Empty for healthy
+    states."""
+
+    uc_table: Optional[str] = None
+    """The Unity Catalog table receiving replicated data."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CdfStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.committed_lsn is not None:
+            body["committed_lsn"] = self.committed_lsn
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.last_sync_time is not None:
+            body["last_sync_time"] = self.last_sync_time.ToJsonString()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.postgres_table is not None:
+            body["postgres_table"] = self.postgres_table
+        if self.state is not None:
+            body["state"] = self.state.value
+        if self.status_detail is not None:
+            body["status_detail"] = self.status_detail
+        if self.uc_table is not None:
+            body["uc_table"] = self.uc_table
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CdfStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.committed_lsn is not None:
+            body["committed_lsn"] = self.committed_lsn
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.last_sync_time is not None:
+            body["last_sync_time"] = self.last_sync_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.postgres_table is not None:
+            body["postgres_table"] = self.postgres_table
+        if self.state is not None:
+            body["state"] = self.state
+        if self.status_detail is not None:
+            body["status_detail"] = self.status_detail
+        if self.uc_table is not None:
+            body["uc_table"] = self.uc_table
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CdfStatus:
+        """Deserializes the CdfStatus from a dictionary."""
+        return cls(
+            committed_lsn=d.get("committed_lsn", None),
+            create_time=_timestamp(d, "create_time"),
+            last_sync_time=_timestamp(d, "last_sync_time"),
+            name=d.get("name", None),
+            postgres_table=d.get("postgres_table", None),
+            state=_enum(d, "state", CdfState),
+            status_detail=d.get("status_detail", None),
+            uc_table=d.get("uc_table", None),
+        )
+
+
+@dataclass
 class DataApi:
     """DataApi represents the Data API (PostgREST) configuration for a Database. At most one DataApi
     per database. Create enables Data API, Delete disables it."""
@@ -1873,6 +2067,80 @@ class ListBranchesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListBranchesResponse:
         """Deserializes the ListBranchesResponse from a dictionary."""
         return cls(branches=_repeated_dict(d, "branches", Branch), next_page_token=d.get("next_page_token", None))
+
+
+@dataclass
+class ListCdfConfigsResponse:
+    """Response to a ListCdfConfigs request, containing a page of CdfConfigs and a token for fetching
+    the next page."""
+
+    cdf_configs: Optional[List[CdfConfig]] = None
+    """The CdfConfigs under the parent database."""
+
+    next_page_token: Optional[str] = None
+    """Token to retrieve the next page of results; empty when there are no more."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListCdfConfigsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cdf_configs:
+            body["cdf_configs"] = [v.as_dict() for v in self.cdf_configs]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListCdfConfigsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cdf_configs:
+            body["cdf_configs"] = self.cdf_configs
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListCdfConfigsResponse:
+        """Deserializes the ListCdfConfigsResponse from a dictionary."""
+        return cls(
+            cdf_configs=_repeated_dict(d, "cdf_configs", CdfConfig), next_page_token=d.get("next_page_token", None)
+        )
+
+
+@dataclass
+class ListCdfStatusesResponse:
+    """Response to a ListCdfStatuses request, containing a page of replicated table statuses and a
+    token for fetching the next page."""
+
+    cdf_statuses: Optional[List[CdfStatus]] = None
+    """The replicated tables under the parent CdfConfig."""
+
+    next_page_token: Optional[str] = None
+    """Token to retrieve the next page of results; empty when there are no more."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListCdfStatusesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cdf_statuses:
+            body["cdf_statuses"] = [v.as_dict() for v in self.cdf_statuses]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListCdfStatusesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cdf_statuses:
+            body["cdf_statuses"] = self.cdf_statuses
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListCdfStatusesResponse:
+        """Deserializes the ListCdfStatusesResponse from a dictionary."""
+        return cls(
+            cdf_statuses=_repeated_dict(d, "cdf_statuses", CdfStatus), next_page_token=d.get("next_page_token", None)
+        )
 
 
 @dataclass
@@ -3343,8 +3611,8 @@ class SyncedTableSyncedTableSpecTypeOverride:
     """PostgreSQL-specific target type to use for the column."""
 
     size: Optional[int] = None
-    """Size parameter for the target type. Required when pg_type is PG_SPECIFIC_TYPE_VECTOR or
-    PG_SPECIFIC_TYPE_HALFVEC (specifies the vector dimension, e.g., 1024)."""
+    """Size parameter for the target type, for types that take one (e.g. vector dimension, varchar
+    length). Required when the chosen pg_type needs a size."""
 
     def as_dict(self) -> dict:
         """Serializes the SyncedTableSyncedTableSpecTypeOverride into a dictionary suitable for use as a JSON request body."""
@@ -3562,6 +3830,43 @@ class PostgresAPI:
         res = self._api.do("POST", "/api/2.0/postgres/catalogs", query=query, body=body, headers=headers)
         operation = Operation.from_dict(res)
         return CreateCatalogOperation(self, operation)
+
+    def create_cdf_config(
+        self, parent: str, cdf_config: CdfConfig, *, cdf_config_id: Optional[str] = None
+    ) -> CreateCdfConfigOperation:
+        """Create a CDF configuration that materializes the change data feed for all tables in a Postgres schema
+        as open-format Delta tables in Unity Catalog. Once created, each table's change history is
+        continuously written to its corresponding Lakehouse table.
+
+        :param parent: str
+          The parent database under which to create the CdfConfig. Format:
+          projects/{project}/branches/{branch}/databases/{database}
+        :param cdf_config: :class:`CdfConfig`
+          The CdfConfig to create. The catalog, schema, and postgres_schema fields are required; all other
+          fields are output only and ignored on input.
+        :param cdf_config_id: str (optional)
+          The user-specified id for the CdfConfig, forming the final segment of its resource name. Must match
+          the pattern ``[a-z][a-z0-9_]{0,62}``. Defaults to the Postgres schema name when omitted.
+
+        :returns: :class:`Operation`
+        """
+
+        body = cdf_config.as_dict()
+        query = {}
+        if cdf_config_id is not None:
+            query["cdf_config_id"] = cdf_config_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/postgres/{parent}/cdf-configs", query=query, body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return CreateCdfConfigOperation(self, operation)
 
     def create_data_api(self, parent: str, data_api: DataApi) -> CreateDataApiOperation:
         """Enable Data API for a database.
@@ -3840,6 +4145,36 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return DeleteCatalogOperation(self, operation)
 
+    def delete_cdf_config(self, name: str, *, force: Optional[bool] = None) -> DeleteCdfConfigOperation:
+        """Delete a CDF configuration and stop materializing the change data feed. When force=true, also drops
+        the Delta tables in Unity Catalog. When force=false (default), the existing tables are preserved at
+        their last state.
+
+        :param name: str
+          The resource name of the CdfConfig to delete. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+        :param force: bool (optional)
+          When true, also drops the replicated Delta tables in Unity Catalog. When false (the default), the
+          replicated tables are preserved at their last synced state.
+
+        :returns: :class:`Operation`
+        """
+
+        query = {}
+        if force is not None:
+            query["force"] = force
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", query=query, headers=headers)
+        operation = Operation.from_dict(res)
+        return DeleteCdfConfigOperation(self, operation)
+
     def delete_data_api(self, name: str) -> DeleteDataApiOperation:
         """Disable Data API for a database.
 
@@ -4071,6 +4406,50 @@ class PostgresAPI:
         res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
         return Catalog.from_dict(res)
 
+    def get_cdf_config(self, name: str) -> CdfConfig:
+        """Get a single Lakebase CDF configuration, including the source Postgres schema, target Unity Catalog
+        schema, and the identity under which writes are authorized.
+
+        :param name: str
+          The resource name of the CdfConfig to retrieve. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+
+        :returns: :class:`CdfConfig`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return CdfConfig.from_dict(res)
+
+    def get_cdf_status(self, name: str) -> CdfStatus:
+        """Get the CDF status of a single table within a Lakebase CDF configuration, including its current state
+        and the last committed position in the feed.
+
+        :param name: str
+          The resource name of the CdfStatus to retrieve. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}/cdf-statuses/{cdf_status}
+
+        :returns: :class:`CdfStatus`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/postgres/{name}", headers=headers)
+        return CdfStatus.from_dict(res)
+
     def get_data_api(self, name: str) -> DataApi:
         """Get Data API configuration for a database.
 
@@ -4260,6 +4639,84 @@ class PostgresAPI:
             if "branches" in json:
                 for v in json["branches"]:
                     yield Branch.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_cdf_configs(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[CdfConfig]:
+        """List all CDF configurations for a Lakebase database. Each configuration maps a Postgres schema to a
+        Unity Catalog schema where the change data feed is materialized.
+
+        :param parent: str
+          The parent database to list CdfConfigs for. Format:
+          projects/{project}/branches/{branch}/databases/{database}
+        :param page_size: int (optional)
+          Maximum number of CdfConfigs to return.
+        :param page_token: str (optional)
+          Pagination token returned by a previous ListCdfConfigs call. Empty on the first page.
+
+        :returns: Iterator over :class:`CdfConfig`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/postgres/{parent}/cdf-configs", query=query, headers=headers)
+            if "cdf_configs" in json:
+                for v in json["cdf_configs"]:
+                    yield CdfConfig.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_cdf_statuses(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[CdfStatus]:
+        """List the per-table CDF statuses within a Lakebase CDF configuration. Each status shows whether a
+        table's change data feed is snapshotting, streaming, or skipped.
+
+        :param parent: str
+          The parent CdfConfig to list CdfStatuses for. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+        :param page_size: int (optional)
+          Maximum number of CdfStatuses to return.
+        :param page_token: str (optional)
+          Pagination token returned by a previous ListCdfStatuses call. Empty on the first page.
+
+        :returns: Iterator over :class:`CdfStatus`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.0/postgres/{parent}/cdf-statuses", query=query, headers=headers)
+            if "cdf_statuses" in json:
+                for v in json["cdf_statuses"]:
+                    yield CdfStatus.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -4805,6 +5262,83 @@ class CreateCatalogOperation:
             return None
 
         return CatalogOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class CreateCdfConfigOperation:
+    """Long-running operation for create_cdf_config"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> CdfConfig:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`CdfConfig`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            cdf_config = CdfConfig.from_dict(operation.response)
+
+            return cdf_config, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> CdfConfigOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`CdfConfigOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return CdfConfigOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.
@@ -5417,6 +5951,81 @@ class DeleteCatalogOperation:
             return None
 
         return CatalogOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class DeleteCdfConfigOperation:
+    """Long-running operation for delete_cdf_config"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> CdfConfigOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`CdfConfigOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return CdfConfigOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

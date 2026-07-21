@@ -1863,6 +1863,7 @@ class ConnectionType(Enum):
     HIVE_METASTORE = "HIVE_METASTORE"
     HTTP = "HTTP"
     HUBSPOT = "HUBSPOT"
+    JDBC = "JDBC"
     META_MARKETING = "META_MARKETING"
     MYSQL = "MYSQL"
     ORACLE = "ORACLE"
@@ -11988,6 +11989,7 @@ class ConnectionsAPI:
         *,
         comment: Optional[str] = None,
         environment_settings: Optional[EnvironmentSettings] = None,
+        parent: Optional[str] = None,
         properties: Optional[Dict[str, str]] = None,
         read_only: Optional[bool] = None,
     ) -> ConnectionInfo:
@@ -12006,6 +12008,9 @@ class ConnectionsAPI:
           User-provided free-form text description.
         :param environment_settings: :class:`EnvironmentSettings` (optional)
           [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
+        :param parent: str (optional)
+          Parent schema for schema-level connections, in format "schemas/{catalog}.{schema}". Absent for
+          metastore-level (L1) connections.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
@@ -12025,6 +12030,8 @@ class ConnectionsAPI:
             body["name"] = name
         if options is not None:
             body["options"] = options
+        if parent is not None:
+            body["parent"] = parent
         if properties is not None:
             body["properties"] = properties
         if read_only is not None:
@@ -12080,7 +12087,9 @@ class ConnectionsAPI:
         res = self._api.do("GET", f"/api/2.1/unity-catalog/connections/{name}", headers=headers)
         return ConnectionInfo.from_dict(res)
 
-    def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ConnectionInfo]:
+    def list(
+        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None, parent: Optional[str] = None
+    ) -> Iterator[ConnectionInfo]:
         """List all connections.
 
         NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
@@ -12100,6 +12109,9 @@ class ConnectionsAPI:
           - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
+        :param parent: str (optional)
+          Optional. Parent schema filter for listing schema-level connections, in format
+          "schemas/{catalog}.{schema}".
 
         :returns: Iterator over :class:`ConnectionInfo`
         """
@@ -12109,6 +12121,8 @@ class ConnectionsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
+        if parent is not None:
+            query["parent"] = parent
         headers = {
             "Accept": "application/json",
         }
@@ -16041,11 +16055,9 @@ class RfaAPI:
     ) -> AccessRequestDestinations:
         """Updates the access request destinations for the given securable. The caller must be a metastore admin,
         the owner of the securable, or a user that has the **MANAGE** privilege on the securable in order to
-        assign destinations. Destinations cannot be updated for securables underneath schemas (tables,
-        volumes, functions, and models). For these securable types, destinations are inherited from the parent
-        securable. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft Teams, and
-        Generic Webhook destinations) can be assigned to a securable. If a URL destination is assigned, no
-        other destinations can be set.
+        assign destinations. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft
+        Teams, and Generic Webhook destinations) can be assigned to a securable. If a URL destination is
+        assigned, no other destinations can be set.
 
         The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
         "connection", "credential", "function", "registered_model", and "volume".

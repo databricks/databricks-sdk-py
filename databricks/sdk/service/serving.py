@@ -3940,11 +3940,23 @@ class TelemetryConfig:
     inference_table_config: Optional[TelemetryInferenceTableConfig] = None
     """Configuration for inference table payload logging, including sampling."""
 
+    table_names: Optional[UnityCatalogTableNames] = None
+    """The Unity Catalog tables to which endpoint telemetry (logs, traces, and metrics) is exported.
+    Provide this to create a new telemetry profile for the endpoint from the given tables."""
+
+    telemetry_profile_id: Optional[str] = None
+    """The ID of an existing telemetry profile to apply to this endpoint. Provide this to reuse a
+    telemetry profile that has already been created, instead of specifying table_names."""
+
     def as_dict(self) -> dict:
         """Serializes the TelemetryConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inference_table_config:
             body["inference_table_config"] = self.inference_table_config.as_dict()
+        if self.table_names:
+            body["table_names"] = self.table_names.as_dict()
+        if self.telemetry_profile_id is not None:
+            body["telemetry_profile_id"] = self.telemetry_profile_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3952,12 +3964,20 @@ class TelemetryConfig:
         body = {}
         if self.inference_table_config:
             body["inference_table_config"] = self.inference_table_config
+        if self.table_names:
+            body["table_names"] = self.table_names
+        if self.telemetry_profile_id is not None:
+            body["telemetry_profile_id"] = self.telemetry_profile_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TelemetryConfig:
         """Deserializes the TelemetryConfig from a dictionary."""
-        return cls(inference_table_config=_from_dict(d, "inference_table_config", TelemetryInferenceTableConfig))
+        return cls(
+            inference_table_config=_from_dict(d, "inference_table_config", TelemetryInferenceTableConfig),
+            table_names=_from_dict(d, "table_names", UnityCatalogTableNames),
+            telemetry_profile_id=d.get("telemetry_profile_id", None),
+        )
 
 
 @dataclass
@@ -4018,6 +4038,61 @@ class TrafficConfig:
     def from_dict(cls, d: Dict[str, Any]) -> TrafficConfig:
         """Deserializes the TrafficConfig from a dictionary."""
         return cls(routes=_repeated_dict(d, "routes", Route))
+
+
+@dataclass
+class UnityCatalogTableNames:
+    annotations_table: Optional[str] = None
+    """The full three-level Unity Catalog name (catalog.schema.table) of the table that receives
+    exported annotations."""
+
+    logs_table: Optional[str] = None
+    """The full three-level Unity Catalog name (catalog.schema.table) of the table that receives
+    exported logs."""
+
+    metrics_table: Optional[str] = None
+    """The full three-level Unity Catalog name (catalog.schema.table) of the table that receives
+    exported metrics."""
+
+    traces_table: Optional[str] = None
+    """The full three-level Unity Catalog name (catalog.schema.table) of the table that receives
+    exported traces (spans)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UnityCatalogTableNames into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.annotations_table is not None:
+            body["annotations_table"] = self.annotations_table
+        if self.logs_table is not None:
+            body["logs_table"] = self.logs_table
+        if self.metrics_table is not None:
+            body["metrics_table"] = self.metrics_table
+        if self.traces_table is not None:
+            body["traces_table"] = self.traces_table
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UnityCatalogTableNames into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.annotations_table is not None:
+            body["annotations_table"] = self.annotations_table
+        if self.logs_table is not None:
+            body["logs_table"] = self.logs_table
+        if self.metrics_table is not None:
+            body["metrics_table"] = self.metrics_table
+        if self.traces_table is not None:
+            body["traces_table"] = self.traces_table
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UnityCatalogTableNames:
+        """Deserializes the UnityCatalogTableNames from a dictionary."""
+        return cls(
+            annotations_table=d.get("annotations_table", None),
+            logs_table=d.get("logs_table", None),
+            metrics_table=d.get("metrics_table", None),
+            traces_table=d.get("traces_table", None),
+        )
 
 
 @dataclass

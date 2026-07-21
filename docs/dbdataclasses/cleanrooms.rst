@@ -25,6 +25,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FOREIGN_TABLE
       :value: "FOREIGN_TABLE"
 
+   .. py:attribute:: JAR_ANALYSIS
+      :value: "JAR_ANALYSIS"
+
    .. py:attribute:: NOTEBOOK_FILE
       :value: "NOTEBOOK_FILE"
 
@@ -42,6 +45,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CleanRoomAssetForeignTableLocalDetails
+   :members:
+   :undoc-members:
+
+.. autoclass:: CleanRoomAssetJarAnalysis
    :members:
    :undoc-members:
 
@@ -92,6 +99,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: CleanRoomCollaborator
    :members:
    :undoc-members:
+
+.. autoclass:: CleanRoomJarAnalysisReview
+   :members:
+   :undoc-members:
+
+.. py:class:: CleanRoomJarAnalysisReviewJarAnalysisReviewState
+
+   .. py:attribute:: APPROVED
+      :value: "APPROVED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: REJECTED
+      :value: "REJECTED"
+
+.. py:class:: CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason
+
+   .. py:attribute:: AUTO_APPROVED
+      :value: "AUTO_APPROVED"
 
 .. autoclass:: CleanRoomNotebookReview
    :members:
@@ -153,6 +180,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PROVISIONING
       :value: "PROVISIONING"
 
+.. autoclass:: CleanRoomTaskRun
+   :members:
+   :undoc-members:
+
+.. autoclass:: CleanRoomTaskRunCleanRoomTaskAnalysisDetails
+   :members:
+   :undoc-members:
+
+.. autoclass:: CleanRoomTaskRunOutputInfo
+   :members:
+   :undoc-members:
+
+.. py:class:: CleanRoomTaskType
+
+   .. py:attribute:: JAR
+      :value: "JAR"
+
+   .. py:attribute:: NOTEBOOK
+      :value: "NOTEBOOK"
+
 .. autoclass:: CollaboratorJobRunInfo
    :members:
    :undoc-members:
@@ -173,6 +220,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: JarAnalysisVersionReview
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListCleanRoomAssetRevisionsResponse
    :members:
    :undoc-members:
@@ -186,6 +237,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListCleanRoomNotebookTaskRunsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListCleanRoomTaskRunsResponse
    :members:
    :undoc-members:
 

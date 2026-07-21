@@ -48,11 +48,9 @@
 
         Updates the access request destinations for the given securable. The caller must be a metastore admin,
         the owner of the securable, or a user that has the **MANAGE** privilege on the securable in order to
-        assign destinations. Destinations cannot be updated for securables underneath schemas (tables,
-        volumes, functions, and models). For these securable types, destinations are inherited from the parent
-        securable. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft Teams, and
-        Generic Webhook destinations) can be assigned to a securable. If a URL destination is assigned, no
-        other destinations can be set.
+        assign destinations. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft
+        Teams, and Generic Webhook destinations) can be assigned to a securable. If a URL destination is
+        assigned, no other destinations can be set.
 
         The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
         "connection", "credential", "function", "registered_model", and "volume".

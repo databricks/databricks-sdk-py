@@ -48,6 +48,25 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: create_cdf_config(parent: str, cdf_config: CdfConfig [, cdf_config_id: Optional[str]]) -> CreateCdfConfigOperation
+
+        Create a CDF configuration that materializes the change data feed for all tables in a Postgres schema
+        as open-format Delta tables in Unity Catalog. Once created, each table's change history is
+        continuously written to its corresponding Lakehouse table.
+
+        :param parent: str
+          The parent database under which to create the CdfConfig. Format:
+          projects/{project}/branches/{branch}/databases/{database}
+        :param cdf_config: :class:`CdfConfig`
+          The CdfConfig to create. The catalog, schema, and postgres_schema fields are required; all other
+          fields are output only and ignored on input.
+        :param cdf_config_id: str (optional)
+          The user-specified id for the CdfConfig, forming the final segment of its resource name. Must match
+          the pattern ``[a-z][a-z0-9_]{0,62}``. Defaults to the Postgres schema name when omitted.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: create_data_api(parent: str, data_api: DataApi) -> CreateDataApiOperation
 
         Enable Data API for a database.
@@ -189,6 +208,22 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: delete_cdf_config(name: str [, force: Optional[bool]]) -> DeleteCdfConfigOperation
+
+        Delete a CDF configuration and stop materializing the change data feed. When force=true, also drops
+        the Delta tables in Unity Catalog. When force=false (default), the existing tables are preserved at
+        their last state.
+
+        :param name: str
+          The resource name of the CdfConfig to delete. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+        :param force: bool (optional)
+          When true, also drops the replicated Delta tables in Unity Catalog. When false (the default), the
+          replicated tables are preserved at their last synced state.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: delete_data_api(name: str) -> DeleteDataApiOperation
 
         Disable Data API for a database.
@@ -301,6 +336,30 @@
         :returns: :class:`Catalog`
         
 
+    .. py:method:: get_cdf_config(name: str) -> CdfConfig
+
+        Get a single Lakebase CDF configuration, including the source Postgres schema, target Unity Catalog
+        schema, and the identity under which writes are authorized.
+
+        :param name: str
+          The resource name of the CdfConfig to retrieve. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+
+        :returns: :class:`CdfConfig`
+        
+
+    .. py:method:: get_cdf_status(name: str) -> CdfStatus
+
+        Get the CDF status of a single table within a Lakebase CDF configuration, including its current state
+        and the last committed position in the feed.
+
+        :param name: str
+          The resource name of the CdfStatus to retrieve. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}/cdf-statuses/{cdf_status}
+
+        :returns: :class:`CdfStatus`
+        
+
     .. py:method:: get_data_api(name: str) -> DataApi
 
         Get Data API configuration for a database.
@@ -392,6 +451,38 @@
           alongside active branches. Purged branches are never returned.
 
         :returns: Iterator over :class:`Branch`
+        
+
+    .. py:method:: list_cdf_configs(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[CdfConfig]
+
+        List all CDF configurations for a Lakebase database. Each configuration maps a Postgres schema to a
+        Unity Catalog schema where the change data feed is materialized.
+
+        :param parent: str
+          The parent database to list CdfConfigs for. Format:
+          projects/{project}/branches/{branch}/databases/{database}
+        :param page_size: int (optional)
+          Maximum number of CdfConfigs to return.
+        :param page_token: str (optional)
+          Pagination token returned by a previous ListCdfConfigs call. Empty on the first page.
+
+        :returns: Iterator over :class:`CdfConfig`
+        
+
+    .. py:method:: list_cdf_statuses(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[CdfStatus]
+
+        List the per-table CDF statuses within a Lakebase CDF configuration. Each status shows whether a
+        table's change data feed is snapshotting, streaming, or skipped.
+
+        :param parent: str
+          The parent CdfConfig to list CdfStatuses for. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+        :param page_size: int (optional)
+          Maximum number of CdfStatuses to return.
+        :param page_token: str (optional)
+          Pagination token returned by a previous ListCdfStatuses call. Empty on the first page.
+
+        :returns: Iterator over :class:`CdfStatus`
         
 
     .. py:method:: list_databases(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Database]

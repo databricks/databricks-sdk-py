@@ -213,6 +213,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GoogleAdsCustomReportOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: GoogleAdsOptions
    :members:
    :undoc-members:
@@ -360,6 +364,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "STABLE"
 
 .. autoclass:: MetaMarketingOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetaMarketingOptionsMetaMarketingCustomReportOptions
    :members:
    :undoc-members:
 
@@ -554,6 +562,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: LEGACY_PUBLISHING_MODE
       :value: "LEGACY_PUBLISHING_MODE"
 
+.. autoclass:: RedditAdsOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: RedditAdsOptionsRedditAdsCustomReportOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: ReplaceWhereOverride
    :members:
    :undoc-members:
@@ -679,6 +695,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "SCD_TYPE_2"
 
 .. autoclass:: TikTokAdsOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: TikTokAdsOptionsTikTokAdsCustomReportOptions
    :members:
    :undoc-members:
 

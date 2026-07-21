@@ -1,7 +1,8 @@
 from typing import Any, BinaryIO, Iterator, Optional, Union
 
+from databricks.sdk.service.workspace import ExportFormat, ImportFormat, Language, ObjectInfo, ObjectType, WorkspaceAPI
+
 from ..core import DatabricksError
-from ..service.workspace import ExportFormat, ImportFormat, Language, ObjectInfo, ObjectType, WorkspaceAPI
 
 
 def _fqcn(x: Any) -> str:

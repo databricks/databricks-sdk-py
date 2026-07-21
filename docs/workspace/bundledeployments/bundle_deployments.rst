@@ -37,7 +37,8 @@
         resource name. If a deployment with the same ID already exists, the server returns ``ALREADY_EXISTS``.
 
         :param deployment: :class:`Deployment`
-          The deployment to create.
+          The deployment to create. Caller must set ``initial_parent_path``; every other field is populated by
+          the service.
         :param deployment_id: str
           The ID to use for the deployment, which will become the final component of the deployment's resource
           name (i.e. ``deployments/{deployment_id}``).

@@ -28,15 +28,16 @@ import requests
 import requests.adapters
 from requests import RequestException
 
+from databricks.sdk.service import files
+from databricks.sdk.service._internal import _escape_multi_segment_path_parameter
+from databricks.sdk.service.files import DownloadResponse
+
 from .._base_client import _BaseClient, _RawResponse, _StreamingResponse
 from .._property import _cached_property
 from ..config import Config
 from ..errors import AlreadyExists, InternalError, NotFound, PermissionDenied
 from ..errors.mapper import _error_mapper
 from ..retries import retried
-from ..service import files
-from ..service._internal import _escape_multi_segment_path_parameter
-from ..service.files import DownloadResponse
 from .files_utils import CreateDownloadUrlResponse, _ConcatenatedInputStream, _PresignedUrlDistributor
 
 if TYPE_CHECKING:

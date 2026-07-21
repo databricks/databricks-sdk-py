@@ -533,6 +533,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: LifetimeWindow
+   :members:
+   :undoc-members:
+
 .. autoclass:: LineageContext
    :members:
    :undoc-members:
@@ -643,10 +647,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "LOGGED_MODEL_UPLOAD_FAILED"
 
 .. autoclass:: LoggedModelTag
-   :members:
-   :undoc-members:
-
-.. autoclass:: LongRollingWindow
    :members:
    :undoc-members:
 
@@ -984,6 +984,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RunTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: SawtoothWindow
    :members:
    :undoc-members:
 

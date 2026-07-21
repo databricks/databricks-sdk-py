@@ -361,21 +361,23 @@
                 w.clusters.ensure_cluster_is_running(os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
             )
             
-            run = w.jobs.submit(
-                run_name=f"sdk-{time.time_ns()}",
+            created_job = w.jobs.create(
+                name=f"sdk-{time.time_ns()}",
                 tasks=[
-                    jobs.SubmitTask(
+                    jobs.Task(
+                        description="test",
                         existing_cluster_id=cluster_id,
                         notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                        task_key=f"sdk-{time.time_ns()}",
+                        task_key="test",
+                        timeout_seconds=0,
                     )
                 ],
-            ).result()
+            )
             
-            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
+            by_id = w.jobs.get(job_id=created_job.job_id)
             
             # cleanup
-            w.jobs.delete_run(run_id=run.run_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Get a single job.
 
@@ -524,37 +526,11 @@
 
         .. code-block::
 
-            import os
-            import time
-            
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import jobs
             
             w = WorkspaceClient()
             
-            notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
-            
-            cluster_id = (
-                w.clusters.ensure_cluster_is_running(os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
-            )
-            
-            created_job = w.jobs.create(
-                name=f"sdk-{time.time_ns()}",
-                tasks=[
-                    jobs.Task(
-                        description="test",
-                        existing_cluster_id=cluster_id,
-                        notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                        task_key="test",
-                        timeout_seconds=0,
-                    )
-                ],
-            )
-            
-            run_list = w.jobs.list_runs(job_id=created_job.job_id)
-            
-            # cleanup
-            w.jobs.delete(job_id=created_job.job_id)
+            job_list = w.jobs.list(expand_tasks=False)
 
         List jobs.
 
@@ -1039,7 +1015,7 @@
         :returns: :class:`JobPermissions`
         
 
-    .. py:method:: submit( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
+    .. py:method:: submit( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
 
 
         Usage:
@@ -1118,6 +1094,14 @@
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
           ``email_notifications`` and ``webhook_notifications`` for this run.
+        :param performance_target: :class:`PerformanceTarget` (optional)
+          The performance mode on a serverless one-time run. This field determines the level of compute
+          performance or cost-efficiency for the run. The performance target does not apply to tasks that run
+          on Serverless GPU compute.
+
+          - ``STANDARD``: Enables cost-efficient execution of serverless workloads.
+          - ``PERFORMANCE_OPTIMIZED``: Prioritizes fast startup and execution times through rapid scaling and
+            optimized cluster performance.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the one-time run.
         :param run_as: :class:`JobRunAs` (optional)
@@ -1139,7 +1123,7 @@
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
+    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
 
 
     .. py:method:: update(job_id: int [, fields_to_remove: Optional[List[str]], new_settings: Optional[JobSettings]])

@@ -313,6 +313,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: HUBSPOT
       :value: "HUBSPOT"
 
+   .. py:attribute:: JDBC
+      :value: "JDBC"
+
    .. py:attribute:: META_MARKETING
       :value: "META_MARKETING"
 

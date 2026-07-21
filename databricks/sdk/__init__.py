@@ -595,7 +595,7 @@ class WorkspaceClient:
 
     @property
     def clean_room_task_runs(self) -> pkg_cleanrooms.CleanRoomTaskRunsAPI:
-        """Clean room task runs are the executions of notebooks in a clean room."""
+        """Clean room task runs are the executions of notebooks and JAR analyses in a clean room."""
         return self._clean_room_task_runs
 
     @property
