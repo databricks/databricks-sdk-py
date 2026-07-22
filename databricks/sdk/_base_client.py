@@ -38,6 +38,29 @@ def _fix_host_if_needed(host: Optional[str]) -> Optional[str]:
     return urllib.parse.urlunparse((o.scheme, netloc, path, o.params, o.query, o.fragment))
 
 
+class _CredentialStrippingSession(requests.Session):
+    """A requests session that also strips Databricks credential headers on a cross-host redirect.
+
+    requests.Session.rebuild_auth() already removes the standard sensitive headers
+    (Authorization, Cookie, etc.) when a redirect changes host. The Databricks cloud-provider
+    token headers are custom, so requests does not know to strip them. Extend rebuild_auth to
+    drop them on the same host-change condition, so a cross-host redirect cannot forward the
+    caller's Azure/GCP token to a different host.
+    """
+
+    _sensitive_cross_host_headers = (
+        "X-Databricks-Azure-SP-Management-Token",
+        "X-Databricks-GCP-SA-Access-Token",
+        "X-Databricks-Azure-Workspace-Resource-Id",
+    )
+
+    def rebuild_auth(self, prepared_request, response):
+        super().rebuild_auth(prepared_request, response)
+        if self.should_strip_auth(response.request.url, prepared_request.url):
+            for header in self._sensitive_cross_host_headers:
+                prepared_request.headers.pop(header, None)
+
+
 class _BaseClient:
     def __init__(
         self,
@@ -80,7 +103,7 @@ class _BaseClient:
         self._user_agent_base = user_agent_base or useragent.to_string()
         self._header_factory = header_factory
         self._clock = clock or RealClock()
-        self._session = requests.Session()
+        self._session = _CredentialStrippingSession()
         self._session.auth = self._authenticate
         self._streaming_buffer_size = streaming_buffer_size
 

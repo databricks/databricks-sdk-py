@@ -561,3 +561,56 @@ def test_rewind_seekable_stream(test_case: RetryTestCase, failure: Tuple[Callabl
         do()
 
     assert session._received_requests == [test_case._expected_result for _ in range(expected_attempts_made)]
+
+
+def _prep(url, headers):
+    req = PreparedRequest()
+    req.prepare(method="GET", url=url, headers=headers)
+    return req
+
+
+def test_credential_stripping_session_drops_cloud_tokens_on_cross_host_redirect():
+    from databricks.sdk._base_client import _CredentialStrippingSession
+
+    session = _CredentialStrippingSession()
+    original = _prep("https://tenant.cloud.databricks.com/api/2.0/preview/scim/v2/Me", {})
+    response = Response()
+    response.request = original
+
+    redirected = _prep(
+        "https://attacker.example/api/2.0/preview/scim/v2/Me",
+        {
+            "Authorization": "Bearer pat-token",
+            "X-Databricks-Azure-SP-Management-Token": "azure-arm-token",
+            "X-Databricks-GCP-SA-Access-Token": "gcp-sa-token",
+        },
+    )
+    session.rebuild_auth(redirected, response)
+
+    # requests strips Authorization on host change; we additionally strip the custom cloud headers.
+    assert "Authorization" not in redirected.headers
+    assert "X-Databricks-Azure-SP-Management-Token" not in redirected.headers
+    assert "X-Databricks-GCP-SA-Access-Token" not in redirected.headers
+
+
+def test_credential_stripping_session_keeps_cloud_tokens_on_same_host_redirect():
+    from databricks.sdk._base_client import _CredentialStrippingSession
+
+    session = _CredentialStrippingSession()
+    original = _prep("https://tenant.cloud.databricks.com/first", {})
+    response = Response()
+    response.request = original
+
+    redirected = _prep(
+        "https://tenant.cloud.databricks.com/second",
+        {
+            "Authorization": "Bearer pat-token",
+            "X-Databricks-Azure-SP-Management-Token": "azure-arm-token",
+            "X-Databricks-GCP-SA-Access-Token": "gcp-sa-token",
+        },
+    )
+    session.rebuild_auth(redirected, response)
+
+    assert redirected.headers["Authorization"] == "Bearer pat-token"
+    assert redirected.headers["X-Databricks-Azure-SP-Management-Token"] == "azure-arm-token"
+    assert redirected.headers["X-Databricks-GCP-SA-Access-Token"] == "gcp-sa-token"
