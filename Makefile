@@ -5,18 +5,16 @@ install:
 	uv sync --locked
 
 fmt:
-	uv run black databricks tests
-	uv run autoflake -ri databricks tests
-	uv run isort databricks tests
+	uv run ruff format databricks tests
+	uv run ruff check --fix-only databricks tests
 
 fmte:
-	uv run black examples
-	uv run autoflake -ri examples
-	uv run isort examples
+	uv run ruff format examples
+	uv run ruff check --fix-only examples
 
 lint:
-	uv run pycodestyle databricks
-	uv run autoflake --check-diff --quiet --recursive databricks
+	uv run ruff check databricks tests
+	uv run ruff format --check databricks tests
 
 test:
 	uv run pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests

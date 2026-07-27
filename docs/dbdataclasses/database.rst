@@ -186,6 +186,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: SyncedTableSpecPgSpecificType
+
+   PostgreSQL-specific target types that can override the default Delta-to-PG mapping.
+
+   .. py:attribute:: PG_SPECIFIC_TYPE_VECTOR
+      :value: "PG_SPECIFIC_TYPE_VECTOR"
+
+.. autoclass:: SyncedTableSpecTypeOverride
+   :members:
+   :undoc-members:
+
 .. py:class:: SyncedTableState
 
    The state of a synced table.

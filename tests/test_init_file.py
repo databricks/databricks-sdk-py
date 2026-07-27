@@ -1,4 +1,9 @@
 import hashlib
+import pathlib
+
+# databricks/__init__.py lives one directory above this test, regardless
+# of where pytest was invoked from.
+_INIT_FILE = pathlib.Path(__file__).parent.parent / "databricks" / "__init__.py"
 
 
 def test_init_file_contents():
@@ -7,7 +12,7 @@ def test_init_file_contents():
 
     Also see https://github.com/databricks/databricks-sdk-py/issues/343#issuecomment-1866029118.
     """
-    with open("databricks/__init__.py") as f:
+    with open(_INIT_FILE) as f:
         init_file_contents = f.read()
 
     # This hash is the expected hash of the contents of `src/databricks/__init__.py`.

@@ -7,8 +7,9 @@
     'Disabling legacy access' has the following impacts:
 
     1. Disables direct access to Hive Metastores from the workspace. However, you can still access a Hive
-    Metastore through Hive Metastore federation. 2. Disables fallback mode on external location access from
-    the workspace. 3. Disables Databricks Runtime versions prior to 13.3LTS.
+       Metastore through Hive Metastore federation.
+    2. Disables fallback mode on external location access from the workspace.
+    3. Disables Databricks Runtime versions prior to 13.3LTS.
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteDisableLegacyAccessResponse
 
@@ -47,14 +48,14 @@
         :param setting: :class:`DisableLegacyAccess`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`DisableLegacyAccess`
         

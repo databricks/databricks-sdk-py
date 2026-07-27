@@ -5,7 +5,7 @@
 .. py:class:: SystemSchemasAPI
 
     A system schema is a schema that lives within the system catalog. A system schema may contain information
-    about customer usage of Unity Catalog such as audit-logs, billing-logs, lineage information, etc.
+    about customer usage of Unity Catalog such as audit logs, billing logs, and lineage information.
 
     .. py:method:: disable(metastore_id: str, schema_name: str)
 
@@ -50,10 +50,13 @@
         :param metastore_id: str
           The ID for the metastore in which the system schema resides.
         :param max_results: int (optional)
-          Maximum number of schemas to return. - When set to 0, the page length is set to a server configured
-          value (recommended); - When set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - When set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all the schemas are returned (not recommended).
+          Maximum number of schemas to return.
+
+          - When set to 0, the page length is set to a server configured value (recommended);
+          - When set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - When set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all the schemas are returned (not recommended).
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 

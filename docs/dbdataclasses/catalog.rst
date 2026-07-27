@@ -283,16 +283,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 123
-
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
+
+   .. py:attribute:: CONFLUENCE
+      :value: "CONFLUENCE"
 
    .. py:attribute:: DATABRICKS
       :value: "DATABRICKS"
 
+   .. py:attribute:: DYNAMICS365
+      :value: "DYNAMICS365"
+
    .. py:attribute:: GA4_RAW_DATA
       :value: "GA4_RAW_DATA"
+
+   .. py:attribute:: GITHUB
+      :value: "GITHUB"
 
    .. py:attribute:: GLUE
       :value: "GLUE"
@@ -303,11 +310,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: HTTP
       :value: "HTTP"
 
+   .. py:attribute:: HUBSPOT
+      :value: "HUBSPOT"
+
+   .. py:attribute:: JDBC
+      :value: "JDBC"
+
+   .. py:attribute:: META_MARKETING
+      :value: "META_MARKETING"
+
    .. py:attribute:: MYSQL
       :value: "MYSQL"
 
    .. py:attribute:: ORACLE
       :value: "ORACLE"
+
+   .. py:attribute:: OUTLOOK
+      :value: "OUTLOOK"
 
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
@@ -327,6 +346,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SERVICENOW
       :value: "SERVICENOW"
 
+   .. py:attribute:: SMARTSHEET
+      :value: "SMARTSHEET"
+
    .. py:attribute:: SNOWFLAKE
       :value: "SNOWFLAKE"
 
@@ -344,6 +366,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
+
+   .. py:attribute:: ZENDESK
+      :value: "ZENDESK"
 
 .. autoclass:: ContinuousUpdateStatus
    :members:
@@ -423,8 +448,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "STORAGE"
 
 .. py:class:: CredentialType
-
-   Next Id: 18
 
    .. py:attribute:: ANY_STATIC_CREDENTIAL
       :value: "ANY_STATIC_CREDENTIAL"
@@ -700,6 +723,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnvironmentSettings
+   :members:
+   :undoc-members:
+
 .. autoclass:: ExternalLineageExternalMetadata
    :members:
    :undoc-members:
@@ -914,6 +941,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListEffectivePrivilegeAssignmentsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListEntityTagAssignmentsResponse
    :members:
    :undoc-members:
@@ -943,6 +974,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListPoliciesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListPrivilegeAssignmentsResponse
    :members:
    :undoc-members:
 
@@ -1083,7 +1118,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: MonitorMetricType
 
-   Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``, ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics
+   Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``, ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the two consecutive time windows.
+   - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics
 
    .. py:attribute:: CUSTOM_METRIC_TYPE_AGGREGATE
       :value: "CUSTOM_METRIC_TYPE_AGGREGATE"
@@ -1409,6 +1445,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: READ_FILES
       :value: "READ_FILES"
 
+   .. py:attribute:: READ_METADATA
+      :value: "READ_METADATA"
+
    .. py:attribute:: READ_PRIVATE_FILES
       :value: "READ_PRIVATE_FILES"
 
@@ -1526,8 +1565,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: SecurableKind
-
-   Latest kind: TOOLSET_EXTERNAL_MCP = 318; Next id: 319
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
@@ -2095,7 +2132,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: WorkspaceBindingBindingType
 
-   Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation` enum in `credentials_common.proto`.
+   Using ``BINDING_TYPE_`` prefix here to avoid conflict with ``TableOperation`` enum in ``credentials_common.proto``.
 
    .. py:attribute:: BINDING_TYPE_READ_ONLY
       :value: "BINDING_TYPE_READ_ONLY"

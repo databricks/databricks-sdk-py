@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -13,8 +16,12 @@ from google.protobuf.timestamp_pb2 import Timestamp
 from databricks.sdk.common import lro
 from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.retries import RetryError, poll
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _timestamp)
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _timestamp,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -125,6 +132,46 @@ class DefaultWorkspaceBaseEnvironment:
             gpu_workspace_base_environment=d.get("gpu_workspace_base_environment", None),
             name=d.get("name", None),
         )
+
+
+@dataclass
+class EnvironmentSpec:
+    """Environment specification for a WorkspaceBaseEnvironment. Contains the environment version and
+    dependencies configuration."""
+
+    dependencies: Optional[List[str]] = None
+    """List of pip dependencies, as supported by the version of pip in this environment. Each
+    dependency is a valid pip requirements file line per
+    https://pip.pypa.io/en/stable/reference/requirements-file-format/. Allowed dependencies include
+    a requirement specifier, an archive URL, a local project path (such as WSFS or UC Volumes in
+    Databricks), or a VCS project URL."""
+
+    environment_version: Optional[str] = None
+    """Environment version used by the environment. Each version comes with a specific Python version
+    and a set of Python packages. The version is a string, consisting of an integer."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnvironmentSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dependencies:
+            body["dependencies"] = [v for v in self.dependencies]
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnvironmentSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dependencies:
+            body["dependencies"] = self.dependencies
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnvironmentSpec:
+        """Deserializes the EnvironmentSpec from a dictionary."""
+        return cls(dependencies=d.get("dependencies", None), environment_version=d.get("environment_version", None))
 
 
 class ErrorCode(Enum):
@@ -255,8 +302,8 @@ class Operation:
     """This resource represents a long-running operation that is the result of a network API call."""
 
     done: Optional[bool] = None
-    """If the value is `false`, it means the operation is still in progress. If `true`, the operation
-    is completed, and either `error` or `response` is available."""
+    """If the value is ``false``, it means the operation is still in progress. If ``true``, the
+    operation is completed, and either ``error`` or ``response`` is available."""
 
     error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
     """The error result of the operation in case of failure or cancellation."""
@@ -268,8 +315,8 @@ class Operation:
 
     name: Optional[str] = None
     """The server-assigned name, which is only unique within the same service that originally returns
-    it. If you use the default HTTP mapping, the `name` should be a resource name ending with
-    `operations/{unique_id}`."""
+    it. If you use the default HTTP mapping, the ``name`` should be a resource name ending with
+    ``operations/{unique_id}``."""
 
     response: Optional[dict] = None
     """The normal, successful response of the operation."""
@@ -349,6 +396,9 @@ class WorkspaceBaseEnvironment:
     """The resource name of the workspace base environment. Format:
     workspace-base-environments/{workspace-base-environment}"""
 
+    spec: Optional[EnvironmentSpec] = None
+    """The environment specification containing version and dependencies."""
+
     status: Optional[WorkspaceBaseEnvironmentCacheStatus] = None
     """The status of the materialized workspace base environment."""
 
@@ -376,6 +426,8 @@ class WorkspaceBaseEnvironment:
             body["message"] = self.message
         if self.name is not None:
             body["name"] = self.name
+        if self.spec:
+            body["spec"] = self.spec.as_dict()
         if self.status is not None:
             body["status"] = self.status.value
         if self.update_time is not None:
@@ -403,6 +455,8 @@ class WorkspaceBaseEnvironment:
             body["message"] = self.message
         if self.name is not None:
             body["name"] = self.name
+        if self.spec:
+            body["spec"] = self.spec
         if self.status is not None:
             body["status"] = self.status
         if self.update_time is not None:
@@ -422,6 +476,7 @@ class WorkspaceBaseEnvironment:
             last_updated_user_id=d.get("last_updated_user_id", None),
             message=d.get("message", None),
             name=d.get("name", None),
+            spec=_from_dict(d, "spec", EnvironmentSpec),
             status=_enum(d, "status", WorkspaceBaseEnvironmentCacheStatus),
             update_time=_timestamp(d, "update_time"),
         )
@@ -507,7 +562,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", "/api/environments/v1/workspace-base-environments", query=query, body=body, headers=headers
@@ -533,7 +588,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/environments/v1/{name}", headers=headers)
 
@@ -554,7 +609,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/environments/v1/{name}", headers=headers)
         return DefaultWorkspaceBaseEnvironment.from_dict(res)
@@ -574,7 +629,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/environments/v1/{name}", headers=headers)
         return Operation.from_dict(res)
@@ -595,7 +650,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/environments/v1/{name}", headers=headers)
         return WorkspaceBaseEnvironment.from_dict(res)
@@ -604,6 +659,17 @@ class EnvironmentsAPI:
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[WorkspaceBaseEnvironment]:
         """Lists all WorkspaceBaseEnvironments in the workspace.
+
+        Databricks provides the following base environments:
+
+        - ``workspace-base-environments/databricks_ai_...``: includes popular AI and deep learning packages
+          for serverless GPU compute.
+        - ``workspace-base-environments/databricks_ml_...``: includes popular ML packages for serverless
+          compute.
+
+        Databricks-provided base environments are versioned. For example,
+        ``workspace-base-environments/databricks_ml_v5`` corresponds to the ML environment built on
+        environment version 5.
 
         :param page_size: int (optional)
           The maximum number of environments to return per page. Default is 1000.
@@ -624,7 +690,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/environments/v1/workspace-base-environments", query=query, headers=headers)
@@ -648,6 +714,7 @@ class EnvironmentsAPI:
         :returns: :class:`Operation`
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -655,9 +722,9 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/environments/v1/{name}/refresh", headers=headers)
+        res = self._api.do("POST", f"/api/environments/v1/{name}/refresh", body=body, headers=headers)
         operation = Operation.from_dict(res)
         return RefreshWorkspaceBaseEnvironmentOperation(self, operation)
 
@@ -694,7 +761,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/environments/v1/{name}", query=query, body=body, headers=headers)
         return DefaultWorkspaceBaseEnvironment.from_dict(res)
@@ -716,6 +783,7 @@ class EnvironmentsAPI:
         """
 
         body = workspace_base_environment.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -723,7 +791,7 @@ class EnvironmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/environments/v1/{name}", body=body, headers=headers)
         operation = Operation.from_dict(res)

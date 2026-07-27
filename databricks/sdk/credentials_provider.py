@@ -1,5 +1,6 @@
 import abc
 import base64
+import dataclasses
 import functools
 import io
 import json
@@ -12,7 +13,7 @@ import sys
 import threading
 import time
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Union
 
 import google.auth  # type: ignore
 import requests
@@ -24,6 +25,9 @@ from databricks.sdk.oauth import get_azure_entra_id_workspace_endpoints
 
 from . import azure, oauth, oidc, oidc_token_supplier
 from .client_types import ClientType
+
+if TYPE_CHECKING:
+    from .config import Config
 
 CredentialsProvider = Callable[[], Dict[str, str]]
 
@@ -158,10 +162,12 @@ def runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     # This import MUST be after the "DATABRICKS_RUNTIME_VERSION" check
     # above, so that we are not throwing import errors when not in
     # runtime and no config variables are set.
-    from databricks.sdk.runtime import (init_runtime_legacy_auth,
-                                        init_runtime_native_auth,
-                                        init_runtime_native_unified,
-                                        init_runtime_repl_auth)
+    from databricks.sdk.runtime import (
+        init_runtime_legacy_auth,
+        init_runtime_native_auth,
+        init_runtime_native_unified,
+        init_runtime_repl_auth,
+    )
 
     # Try the unified provider first (returns host, account_id, workspace_id, inner).
     if init_runtime_native_unified is not None:
@@ -662,6 +668,45 @@ def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
+@dataclasses.dataclass(order=True)
+class CliVersion:
+    """Semver version triple of the Databricks CLI.
+
+    Three sentinel states in the (major, minor, patch) tuple:
+      * `(-1, -1, -1)` — the default, meaning version detection failed. It
+        compares less than every real release so every feature gate fails.
+      * `(0, 0, 0)` — the CLI's default dev build, emitted when the binary
+        was built without version metadata. See `is_default_dev_build`.
+      * anything else — a real CLI version.
+
+    Prerelease tags (e.g. "-rc.1", "-dev+commit") are deliberately ignored:
+    for our purposes the base triple is sufficient, and feature gates are
+    release-based so a prerelease of a version with a flag is assumed to
+    have the flag too.
+    """
+
+    major: int = -1
+    minor: int = -1
+    patch: int = -1
+
+    @property
+    def is_default_dev_build(self) -> bool:
+        """True when the CLI reports (0, 0, 0), i.e. its default dev build.
+
+        Narrowly matches the CLI's "no version injected" marker: its version
+        metadata stays at the zero defaults. A version the user explicitly
+        set (e.g. v1.0.0-dev) is intentional and is not flagged here.
+        """
+        return (self.major, self.minor, self.patch) == (0, 0, 0)
+
+    def __str__(self) -> str:
+        if self == CliVersion():
+            return "unknown"
+        if self.is_default_dev_build:
+            return "v0.0.0-dev"
+        return f"v{self.major}.{self.minor}.{self.patch}"
+
+
 class CliTokenSource(oauth.Refreshable):
     def __init__(
         self,
@@ -670,15 +715,9 @@ class CliTokenSource(oauth.Refreshable):
         access_token_field: str,
         expiry_field: str,
         disable_async: bool = True,
-        fallback_cmd: Optional[List[str]] = None,
     ):
         super().__init__(disable_async=disable_async)
         self._cmd = cmd
-        # fallback_cmd is tried when the primary command fails with "unknown flag: --profile",
-        # indicating the CLI is too old to support --profile. Can be removed once support
-        # for CLI versions predating --profile is dropped.
-        # See: https://github.com/databricks/databricks-sdk-go/pull/1497
-        self._fallback_cmd = fallback_cmd
         self._token_type_field = token_type_field
         self._access_token_field = access_token_field
         self._expiry_field = expiry_field
@@ -713,16 +752,7 @@ class CliTokenSource(oauth.Refreshable):
             raise IOError(f"cannot get access token: {message}") from e
 
     def refresh(self) -> oauth.Token:
-        try:
-            return self._exec_cli_command(self._cmd)
-        except IOError as e:
-            if self._fallback_cmd is not None and "unknown flag: --profile" in str(e):
-                logger.warning(
-                    "Databricks CLI does not support --profile flag. Falling back to --host. "
-                    "Please upgrade your CLI to the latest version."
-                )
-                return self._exec_cli_command(self._fallback_cmd)
-            raise
+        return self._exec_cli_command(self._cmd)
 
 
 def _run_subprocess(
@@ -911,16 +941,7 @@ class DatabricksCliTokenSource(CliTokenSource):
         elif cli_path.count("/") == 0:
             cli_path = self.__class__._find_executable(cli_path)
 
-        fallback_cmd = None
-        if cfg.profile:
-            # When profile is set, use --profile as the primary command.
-            # The profile contains the full config (host, account_id, etc.).
-            args = ["auth", "token", "--profile", cfg.profile]
-            # Build a --host fallback for older CLIs that don't support --profile.
-            if cfg.host:
-                fallback_cmd = [cli_path, *self.__class__._build_host_args(cfg)]
-        else:
-            args = self.__class__._build_host_args(cfg)
+        cmd = self.__class__._resolve_cli_command(cli_path, cfg)
 
         # get_scopes() defaults to ["all-apis"] when nothing is configured, which would
         # cause false-positive mismatches against every token that wasn't issued with
@@ -930,12 +951,11 @@ class DatabricksCliTokenSource(CliTokenSource):
         self._host = cfg.host
 
         super().__init__(
-            cmd=[cli_path, *args],
+            cmd=cmd,
             token_type_field="token_type",
             access_token_field="access_token",
             expiry_field="expiry",
             disable_async=cfg.disable_async_token_refresh,
-            fallback_cmd=fallback_cmd,
         )
 
     def refresh(self) -> oauth.Token:
@@ -993,15 +1013,181 @@ class DatabricksCliTokenSource(CliTokenSource):
                 f"Scopes default to all-apis."
             )
 
+    # --profile support added in CLI v0.207.1: https://github.com/databricks/cli/pull/855
+    _CLI_VERSION_FOR_PROFILE = CliVersion(0, 207, 1)
+
+    # --force-refresh support added in CLI v0.296.0: https://github.com/databricks/cli/pull/4767
+    _CLI_VERSION_FOR_FORCE_REFRESH = CliVersion(0, 296, 0)
+
     @staticmethod
-    def _build_host_args(cfg: "Config") -> List[str]:
-        """Build CLI arguments using --host (legacy path)."""
-        args = ["auth", "token", "--host", cfg.host]
-        # This is here to support older versions of the Databricks CLI, so we need to keep the client type check.
-        # This won't work for unified hosts, but it is not supposed to.
+    def _parse_cli_version(output: str) -> CliVersion:
+        """Parse the JSON output of `databricks version --output json`.
+
+        Takes Major/Minor/Patch from the JSON's pre-parsed numeric fields. The
+        `Prerelease` JSON field and the `Version` string are intentionally
+        ignored: for our feature-gate purposes the base triple is sufficient,
+        and the (0, 0, 0) case already identifies the default dev build (a
+        CLI built without version metadata leaves these fields at their zero
+        defaults).
+
+        Returns CliVersion() (unknown, (-1, -1, -1)) on failure so that an
+        unparseable version disables every feature gate.
+        """
+        try:
+            data = json.loads(output)
+            return CliVersion(
+                int(data["Major"]),
+                int(data["Minor"]),
+                int(data["Patch"]),
+            )
+        except (json.JSONDecodeError, KeyError, TypeError, ValueError) as e:
+            logger.debug(f"Failed to parse Databricks CLI version from output: {output!r} ({e})")
+            return CliVersion()
+
+    @staticmethod
+    @functools.lru_cache(maxsize=8)
+    def _probe_cli_version(cli_path: str) -> "CliVersion":
+        """Run `databricks version --output json` and return the parsed CliVersion.
+
+        Cached by `cli_path` for the Python process lifetime: a successful probe
+        against an immutable binary doesn't need to be repeated. Subprocess-level
+        failures (timeout, OSError, CalledProcessError) raise out instead of
+        returning a sentinel, so transient errors are NOT cached and the next
+        caller retries — see `_get_cli_version` for the catching wrapper.
+
+        The 5-second timeout prevents a hung CLI (first-run disk scan, antivirus,
+        stdin wait) from wedging SDK init indefinitely.
+        """
+        out = _run_subprocess(
+            [cli_path, "version", "--output", "json"],
+            capture_output=True,
+            check=True,
+            timeout=5,
+        )
+        return DatabricksCliTokenSource._parse_cli_version(out.stdout.decode())
+
+    @staticmethod
+    def _get_cli_version(cli_path: str) -> "CliVersion":
+        """Probe wrapper that catches subprocess failures and returns CliVersion().
+
+        The catch is intentionally outside the cached helper so a transient failure
+        (timeout, AV scan, sandbox quota, etc.) does not pin every subsequent
+        DatabricksCliTokenSource to the conservative fallback for the rest of the
+        process lifetime.
+        """
+        try:
+            return DatabricksCliTokenSource._probe_cli_version(cli_path)
+        except Exception as e:
+            logger.warning(f"Failed to detect Databricks CLI version: {e}. Falling back to conservative flag set.")
+            return CliVersion()
+
+    @staticmethod
+    def _resolve_cli_command(cli_path: str, cfg: "Config") -> List[str]:
+        """Detect CLI version and build the auth-token command.
+
+        Raises IOError with a precise message when no usable command can be
+        built (missing profile/host, or --profile-unsupported CLI with no host
+        fallback configured). IOError matches the exception type already
+        handled by the `databricks_cli()` credential-chain strategy, so
+        graceful-skip behaviour is preserved.
+        """
+        version = DatabricksCliTokenSource._get_cli_version(cli_path)
+        if version.is_default_dev_build:
+            # A default-marker dev build has no injected version, so every
+            # feature gate fails via at_least. Surface an informational hint so
+            # users know why their feature flags aren't taking effect.
+            logger.info(
+                f"Databricks CLI {version} is a development build; feature detection will use "
+                "conservative fallbacks. Rebuild the CLI with an explicit version to enable "
+                "capability-based flag selection."
+            )
+        try:
+            return DatabricksCliTokenSource._build_cli_command(cli_path, cfg, version)
+        except IOError as e:
+            raise IOError(f"cannot configure CLI token source: {e}") from e
+
+    @staticmethod
+    def _build_cli_command(cli_path: str, cfg: "Config", version: CliVersion) -> List[str]:
+        """Build the full CLI command, including capability-gated flags.
+
+        Delegates the profile/host decision to _build_core_cli_command and
+        appends --force-refresh when supported.
+        """
+        cmd = DatabricksCliTokenSource._build_core_cli_command(cli_path, cfg, version)
+        if version >= DatabricksCliTokenSource._CLI_VERSION_FOR_FORCE_REFRESH:
+            cmd.append("--force-refresh")
+        elif version == CliVersion() or version.is_default_dev_build:
+            # Detection failed or no version metadata — we can't prove the CLI
+            # lacks --force-refresh, just failed to confirm it. Upstream has
+            # already logged the underlying cause, so use softer wording.
+            logger.warning(
+                f"Could not confirm --force-refresh support for Databricks CLI {version} "
+                f"(requires >= {DatabricksCliTokenSource._CLI_VERSION_FOR_FORCE_REFRESH}). "
+                "The CLI's token cache may provide stale tokens."
+            )
+        else:
+            logger.warning(
+                f"Databricks CLI {version} does not support --force-refresh "
+                f"(requires >= {DatabricksCliTokenSource._CLI_VERSION_FOR_FORCE_REFRESH}). "
+                "The CLI's token cache may provide stale tokens."
+            )
+        return cmd
+
+    @staticmethod
+    def _build_core_cli_command(cli_path: str, cfg: "Config", version: CliVersion) -> List[str]:
+        """Build the base `auth token` command without capability-gated flags.
+
+        Falls back to --host when --profile is either not configured or not
+        supported by the installed CLI. Raises IOError describing which
+        piece of configuration is missing when no command can be built.
+        """
+        if not cfg.profile:
+            try:
+                return DatabricksCliTokenSource._build_host_command(cli_path, cfg)
+            except IOError as e:
+                raise IOError(f"neither profile nor host is configured: {e}") from e
+
+        # Flag --profile is a global flag and is recognized for all
+        # commands even the ones that do not support it. Only use --profile
+        # in CLI versions that are known to support it in `auth token`.
+        if version < DatabricksCliTokenSource._CLI_VERSION_FOR_PROFILE:
+            # For the unknown (detection failed) and dev-build (no version
+            # metadata) cases we can't actually prove the CLI lacks --profile;
+            # we just failed to confirm it. Log accordingly.
+            if version == CliVersion() or version.is_default_dev_build:
+                logger.warning(
+                    f"Could not confirm --profile support for Databricks CLI {version} "
+                    f"(requires >= {DatabricksCliTokenSource._CLI_VERSION_FOR_PROFILE}). "
+                    "Falling back to --host."
+                )
+            else:
+                logger.warning(
+                    f"Databricks CLI {version} does not support --profile "
+                    f"(requires >= {DatabricksCliTokenSource._CLI_VERSION_FOR_PROFILE}). "
+                    "Falling back to --host."
+                )
+            try:
+                return DatabricksCliTokenSource._build_host_command(cli_path, cfg)
+            except IOError as e:
+                raise IOError(
+                    f"Databricks CLI {version} does not support --profile "
+                    f"(requires >= {DatabricksCliTokenSource._CLI_VERSION_FOR_PROFILE}) "
+                    f"and no host fallback is configured: {e}"
+                ) from e
+
+        return [cli_path, "auth", "token", "--profile", cfg.profile]
+
+    @staticmethod
+    def _build_host_command(cli_path: str, cfg: "Config") -> List[str]:
+        """Build the --host based auth token command. Raises when cfg.host is unset."""
+        if not cfg.host:
+            raise IOError("host is not set")
+        cmd = [cli_path, "auth", "token", "--host", cfg.host]
+        # Older Databricks CLIs need --account-id for account-scoped calls;
+        # unified hosts don't use this path.
         if cfg.client_type == ClientType.ACCOUNT:
-            args += ["--account-id", cfg.account_id]
-        return args
+            cmd += ["--account-id", cfg.account_id]
+        return cmd
 
     @staticmethod
     def _find_executable(name) -> str:
@@ -1099,7 +1285,7 @@ class MetadataServiceTokenSource(oauth.Refreshable):
             raise ValueError("Metadata Service returned invalid expiry")
         try:
             expiry = datetime.fromtimestamp(json_resp["expires_on"])
-        except:
+        except Exception:
             raise ValueError("Metadata Service returned invalid expiry")
 
         return oauth.Token(access_token=access_token, token_type=token_type, expiry=expiry)

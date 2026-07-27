@@ -11,7 +11,7 @@
 
         Cancels a currently running command within an execution context.
 
-        The command ID is obtained from a prior successful call to __execute__.
+        The command ID is obtained from a prior successful call to **execute**.
 
         :param cluster_id: str (optional)
         :param command_id: str (optional)
@@ -29,7 +29,7 @@
 
         Gets the status of and, if available, the results from a currently executing command.
 
-        The command ID is obtained from a prior successful call to __execute__.
+        The command ID is obtained from a prior successful call to **execute**.
 
         :param cluster_id: str
         :param context_id: str

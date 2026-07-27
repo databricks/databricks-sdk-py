@@ -7,6 +7,10 @@
 [![codecov](https://codecov.io/gh/databricks/databricks-sdk-py/branch/main/graph/badge.svg?token=GU63K7WDBE)](https://codecov.io/gh/databricks/databricks-sdk-py)
 [![lines of code](https://tokei.rs/b1/github/databricks/databricks-sdk-py)]([https://codecov.io/github/databricks/databricks-sdk-py](https://github.com/databricks/databricks-sdk-py))
 
+> This repository is a read-only mirror, published from Databricks'
+> internal repository with each release. Pull requests are reviewed
+> here but merged internally (see [CONTRIBUTING.md](CONTRIBUTING.md)).
+
 [Beta](https://docs.databricks.com/release-notes/release-types.html): This SDK is supported for production use cases, 
 but we do expect future releases to have some interface changes; see [Interface stability](#interface-stability). 
 We are keen to hear feedback from you on these SDKs. Please [file issues](https://github.com/databricks/databricks-sdk-py/issues), and we will address them. 
@@ -226,7 +230,7 @@ w = WorkspaceClient(host=input('Databricks Workspace URL: '),
                     azure_client_secret=input('AAD Client Secret: '))
 ```
 
-Please see more examples in [this document](./docs/azure-ad.md).
+For more Azure authentication examples, see the [Authentication Types Reference](./docs/auth-types-reference.md#azure-service-principal).
 
 ### Google Cloud Platform native authentication
 
@@ -276,7 +280,7 @@ For all authentication methods, you can override the default behavior in client 
 
 | Argument                | Description | Environment variable   |
 |-------------------------|-------------|------------------------|
-| `auth_type`             | _(String)_ When multiple auth attributes are available in the environment, use the auth type specified by this argument. This argument also holds the currently selected auth. | `DATABRICKS_AUTH_TYPE` |
+| `auth_type`             | _(String)_ When multiple auth attributes are available in the environment, use the auth type specified by this argument. This argument also holds the currently selected auth. When set explicitly, the SDK only attempts that authentication method, skipping automatic detection of others. See the [Authentication Types Reference](./docs/auth-types-reference.md) for all valid values, required parameters, and usage examples. | `DATABRICKS_AUTH_TYPE` |
 | `http_timeout_seconds`  | _(Integer)_ Number of seconds for HTTP timeout. Default is _60_. | _(None)_               |
 | `retry_timeout_seconds` | _(Integer)_ Number of seconds to keep retrying HTTP requests. Default is _300 (5 minutes)_. | _(None)_               |
 | `debug_truncate_bytes`  | _(Integer)_ Truncate JSON fields in debug logs above this limit. Default is 96. | `DATABRICKS_DEBUG_TRUNCATE_BYTES` |

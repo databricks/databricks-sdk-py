@@ -11,11 +11,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: ActivityAction
 
    An action that a user (with sufficient permissions) could take on an activity or comment.
-   For activities, valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
-   * `REJECT_TRANSITION_REQUEST`: Reject a transition request
-   * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
-   For comments, valid values are: * `EDIT_COMMENT`: Edit the comment
-   * `DELETE_COMMENT`: Delete the comment
+   For activities, valid values are:
+   - ``APPROVE_TRANSITION_REQUEST``: Approve a transition request - ``REJECT_TRANSITION_REQUEST``: Reject a transition request - ``CANCEL_TRANSITION_REQUEST``: Cancel (delete) a transition request
+   For comments, valid values are:
+   - ``EDIT_COMMENT``: Edit the comment - ``DELETE_COMMENT``: Delete the comment
 
    .. py:attribute:: APPROVE_TRANSITION_REQUEST
       :value: "APPROVE_TRANSITION_REQUEST"
@@ -34,12 +33,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ActivityType
 
-   Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage transition.
-   * `REQUESTED_TRANSITION`: User requested the corresponding stage transition.
-   * `CANCELLED_REQUEST`: User cancelled an existing transition request.
-   * `APPROVED_REQUEST`: User approved the corresponding stage transition.
-   * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
-   * `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model versions in a stage.
+   Type of activity. Valid values are:
+   - ``APPLIED_TRANSITION``: User applied the corresponding stage transition. - ``REQUESTED_TRANSITION``: User requested the corresponding stage transition. - ``CANCELLED_REQUEST``: User cancelled an existing transition request. - ``APPROVED_REQUEST``: User approved the corresponding stage transition. - ``REJECTED_REQUEST``: User rejected the coressponding stage transition. - ``SYSTEM_TRANSITION``: For events performed as a side effect, such as archiving existing model versions in a stage.
 
    .. py:attribute:: APPLIED_TRANSITION
       :value: "APPLIED_TRANSITION"
@@ -105,11 +100,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: CommentActivityAction
 
    An action that a user (with sufficient permissions) could take on an activity or comment.
-   For activities, valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
-   * `REJECT_TRANSITION_REQUEST`: Reject a transition request
-   * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
-   For comments, valid values are: * `EDIT_COMMENT`: Edit the comment
-   * `DELETE_COMMENT`: Delete the comment
+   For activities, valid values are:
+   - ``APPROVE_TRANSITION_REQUEST``: Approve a transition request - ``REJECT_TRANSITION_REQUEST``: Reject a transition request - ``CANCEL_TRANSITION_REQUEST``: Cancel (delete) a transition request
+   For comments, valid values are:
+   - ``EDIT_COMMENT``: Edit the comment - ``DELETE_COMMENT``: Delete the comment
 
    .. py:attribute:: APPROVE_TRANSITION_REQUEST
       :value: "APPROVE_TRANSITION_REQUEST"
@@ -175,6 +169,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CreateWebhookResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: CronSchedule
    :members:
    :undoc-members:
 
@@ -246,6 +244,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DirectMtlsConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: DirectSchemas
+   :members:
+   :undoc-members:
+
 .. autoclass:: EntityColumn
    :members:
    :undoc-members:
@@ -291,6 +297,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ExperimentTraceLocation
+   :members:
+   :undoc-members:
+
 .. autoclass:: Feature
    :members:
    :undoc-members:
@@ -331,7 +341,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: FirstDistinctFunction
+   :members:
+   :undoc-members:
+
 .. autoclass:: FirstFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: FirstNFunction
    :members:
    :undoc-members:
 
@@ -463,6 +481,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: IngestionConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: IngestionDestination
+   :members:
+   :undoc-members:
+
 .. autoclass:: InputTag
    :members:
    :undoc-members:
@@ -487,7 +513,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: KafkaStreamConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: KafkaSubscriptionMode
+   :members:
+   :undoc-members:
+
+.. autoclass:: LastDistinctFunction
+   :members:
+   :undoc-members:
+
 .. autoclass:: LastFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: LastNFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: LifetimeWindow
    :members:
    :undoc-members:
 
@@ -532,6 +578,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListRegistryWebhooks
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListStreamsResponse
    :members:
    :undoc-members:
 
@@ -657,9 +707,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ModelVersionStatus
 
-   The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register a new model version is pending as server performs background tasks.
-   * `FAILED_REGISTRATION`: Request to register a new model version has failed.
-   * `READY`: Model version is ready for use.
+   The status of the model version. Valid values are:
+   - ``PENDING_REGISTRATION``: Request to register a new model version is pending as server performs background tasks. - ``FAILED_REGISTRATION``: Request to register a new model version has failed. - ``READY``: Model version is ready for use.
 
    .. py:attribute:: FAILED_REGISTRATION
       :value: "FAILED_REGISTRATION"
@@ -671,6 +720,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "READY"
 
 .. autoclass:: ModelVersionTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: MtlsConfig
    :members:
    :undoc-members:
 
@@ -732,6 +785,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CAN_READ
       :value: "CAN_READ"
 
+.. autoclass:: ProtoSchemaSpec
+   :members:
+   :undoc-members:
+
 .. autoclass:: PublishSpec
    :members:
    :undoc-members:
@@ -792,7 +849,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RegistryEmailSubscriptionType
 
-   .. note:: Experimental: This entity may change or be removed in a future release without warning. Email subscription types for registry notifications: - `ALL_EVENTS`: Subscribed to all events. - `DEFAULT`: Default subscription type. - `SUBSCRIBED`: Subscribed to notifications. - `UNSUBSCRIBED`: Not subscribed to notifications.
+   .. note:: Experimental: This entity may change or be removed in a future release without warning. Email subscription types for registry notifications:
+   - ``ALL_EVENTS``: Subscribed to all events. - ``DEFAULT``: Default subscription type. - ``SUBSCRIBED``: Subscribed to notifications. - ``UNSUBSCRIBED``: Not subscribed to notifications.
 
    .. py:attribute:: ALL_EVENTS
       :value: "ALL_EVENTS"
@@ -850,9 +908,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RegistryWebhookStatus
 
-   Enable or disable triggering the webhook, or put the webhook into test mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
-   * `DISABLED`: Webhook is not triggered.
-   * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real event.
+   Enable or disable triggering the webhook, or put the webhook into test mode. The default is ``ACTIVE``:
+   - ``ACTIVE``: Webhook is triggered when an associated event happens. - ``DISABLED``: Webhook is not triggered. - ``TEST_MODE``: Webhook can be triggered through the test endpoint, but is not triggered on a real event.
 
    .. py:attribute:: ACTIVE
       :value: "ACTIVE"
@@ -884,6 +941,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RestoreRunsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: RollingWindow
    :members:
    :undoc-members:
 
@@ -923,6 +984,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RunTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: SawtoothWindow
    :members:
    :undoc-members:
 
@@ -995,6 +1060,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SecretScopeReference
+   :members:
+   :undoc-members:
+
 .. autoclass:: SetExperimentTagResponse
    :members:
    :undoc-members:
@@ -1021,9 +1090,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: Status
 
-   The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register a new model version is pending as server performs background tasks.
-   * `FAILED_REGISTRATION`: Request to register a new model version has failed.
-   * `READY`: Model version is ready for use.
+   The status of the model version. Valid values are:
+   - ``PENDING_REGISTRATION``: Request to register a new model version is pending as server performs background tasks. - ``FAILED_REGISTRATION``: Request to register a new model version has failed. - ``READY``: Model version is ready for use.
 
    .. py:attribute:: FAILED_REGISTRATION
       :value: "FAILED_REGISTRATION"
@@ -1042,11 +1110,47 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Stream
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamConnectionConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamSchemaConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamSource
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamSourceConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamingMode
+   :members:
+   :undoc-members:
+
+.. py:class:: StreamingModeStreamingModeType
+
+   .. py:attribute:: STREAMING_MODE_TYPE_MBM
+      :value: "STREAMING_MODE_TYPE_MBM"
+
+   .. py:attribute:: STREAMING_MODE_TYPE_RTM
+      :value: "STREAMING_MODE_TYPE_RTM"
+
 .. autoclass:: SubscriptionMode
    :members:
    :undoc-members:
 
 .. autoclass:: SumFunction
+   :members:
+   :undoc-members:
+
+.. autoclass:: TableTrigger
    :members:
    :undoc-members:
 
@@ -1071,6 +1175,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TumblingWindow
+   :members:
+   :undoc-members:
+
+.. autoclass:: UcTraceLocation
    :members:
    :undoc-members:
 

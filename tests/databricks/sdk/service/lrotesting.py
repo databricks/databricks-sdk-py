@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -9,7 +12,10 @@ from typing import Any, Dict, List, Optional
 
 from databricks.sdk.common import lro
 from databricks.sdk.retries import RetryError, poll
-from databricks.sdk.service._internal import _enum, _from_dict
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -157,8 +163,8 @@ class Operation:
     """This resource represents a long-running operation that is the result of a network API call."""
 
     done: Optional[bool] = None
-    """If the value is `false`, it means the operation is still in progress. If `true`, the operation
-    is completed, and either `error` or `response` is available."""
+    """If the value is ``false``, it means the operation is still in progress. If ``true``, the
+    operation is completed, and either ``error`` or ``response`` is available."""
 
     error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
     """The error result of the operation in case of failure or cancellation."""
@@ -170,8 +176,8 @@ class Operation:
 
     name: Optional[str] = None
     """The server-assigned name, which is only unique within the same service that originally returns
-    it. If you use the default HTTP mapping, the `name` should be a resource name ending with
-    `operations/{unique_id}`."""
+    it. If you use the default HTTP mapping, the ``name`` should be a resource name ending with
+    ``operations/{unique_id}``."""
 
     response: Optional[dict] = None
     """The normal, successful response of the operation."""
@@ -293,19 +299,24 @@ class LroTestingAPI:
         self._api = api_client
 
     def cancel_operation(self, name: str):
-
         headers = {
             "Accept": "application/json",
         }
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/lro-testing/operations/{name}/cancel", headers=headers)
 
     def create_test_resource(self, resource: TestResource) -> CreateTestResourceOperation:
-        """Simple method to create test resource for LRO testing
+        """Simple method to create test resource for LRO testing.
+
+        Example:
+
+        .. code-block:: python
+
+           op = w.lro_testing.create_test_resource(resource=resource)
 
         :param resource: :class:`TestResource`
           The resource to create
@@ -314,6 +325,7 @@ class LroTestingAPI:
         """
 
         body = resource.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -321,35 +333,33 @@ class LroTestingAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/lro-testing/resources", body=body, headers=headers)
         operation = Operation.from_dict(res)
         return CreateTestResourceOperation(self, operation)
 
     def delete_test_resource(self, resource_id: str) -> DeleteTestResourceOperation:
-
         headers = {
             "Accept": "application/json",
         }
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("DELETE", f"/api/2.0/lro-testing/resources/{resource_id}", headers=headers)
         operation = Operation.from_dict(res)
         return DeleteTestResourceOperation(self, operation)
 
     def get_operation(self, name: str) -> Operation:
-
         headers = {
             "Accept": "application/json",
         }
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/lro-testing/operations/{name}", headers=headers)
         return Operation.from_dict(res)
@@ -369,7 +379,7 @@ class LroTestingAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/lro-testing/resources/{resource_id}", headers=headers)
         return TestResource.from_dict(res)

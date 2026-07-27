@@ -18,6 +18,13 @@ from packages import Package, PACKAGES
 
 __dir__ = os.path.dirname(__file__)
 __examples__ = Path(f'{__dir__}/../examples').absolute()
+# Root the generated .rst is written under. Defaults to this docs/ directory so
+# the in-place `make docs` / update-sdk `post_generate` flow is unchanged; the
+# Bazel docs-generation rule sets DATABRICKS_DOCS_OUTPUT_DIR to a writable output
+# directory (Bazel action outputs can't be written into the read-only source
+# tree). Only output paths use __out__; inputs (examples, the _openapi_sha
+# fallback) still read from __dir__.
+__out__ = os.environ.get('DATABRICKS_DOCS_OUTPUT_DIR', __dir__)
 
 
 @dataclass
@@ -357,7 +364,7 @@ class Generator:
             os.makedirs(folder)
 
     def write_dataclass_docs(self):
-        self._make_folder_if_not_exists(f'{__dir__}/dbdataclasses')
+        self._make_folder_if_not_exists(f'{__out__}/dbdataclasses')
         all_packages = []
         for pkg in self.packages:
             try:
@@ -368,10 +375,10 @@ class Generator:
             all_packages.append(pkg.name)
             all_members = [name for name, _ in inspect.getmembers(module, predicate=self._should_document)]
             doc = DataclassesDoc(package=pkg, dataclasses=sorted(all_members))
-            with open(f'{__dir__}/dbdataclasses/{pkg.name}.rst', 'w') as f:
+            with open(f'{__out__}/dbdataclasses/{pkg.name}.rst', 'w') as f:
                 f.write(doc.as_rst())
         all = "\n   ".join(sorted(all_packages))
-        with open(f'{__dir__}/dbdataclasses/index.rst', 'w') as f:
+        with open(f'{__out__}/dbdataclasses/index.rst', 'w') as f:
             f.write(f'''
 Dataclasses
 ===========
@@ -400,8 +407,8 @@ Dataclasses
             client_services.append(svc.service_name)
             package = svc.tag.package.name
             package_to_services[package].append((svc.service_name, svc.client_prefix + "." + svc.service_name))
-            self._make_folder_if_not_exists(f'{__dir__}/{folder}/{package}')
-            with open(f'{__dir__}/{folder}/{package}/{svc.service_name}.rst', 'w') as f:
+            self._make_folder_if_not_exists(f'{__out__}/{folder}/{package}')
+            with open(f'{__out__}/{folder}/{package}/{svc.service_name}.rst', 'w') as f:
                 f.write(svc.as_rst())
         ordered_packages = []
         for pkg in self.packages:
@@ -416,8 +423,8 @@ Dataclasses
 
     def _write_client_packages(self, folder: str, label: str, description: str, packages: list[str]):
         """Writes out the top-level index for the APIs supported by a client."""
-        self._make_folder_if_not_exists(f'{__dir__}/{folder}')
-        with open(f'{__dir__}/{folder}/index.rst', 'w') as f:
+        self._make_folder_if_not_exists(f'{__out__}/{folder}')
+        with open(f'{__out__}/{folder}/index.rst', 'w') as f:
             all = "\n   ".join([f'{name}/index' for name in sorted(packages)])
             f.write(f'''
 {label}
@@ -432,8 +439,8 @@ Dataclasses
 
     def _write_client_package_doc(self, folder: str, pkg: Package, services: list[str]):
         """Writes out the index for a single package supported by a client."""
-        self._make_folder_if_not_exists(f'{__dir__}/{folder}/{pkg.name}')
-        with open(f'{__dir__}/{folder}/{pkg.name}/index.rst', 'w') as f:
+        self._make_folder_if_not_exists(f'{__out__}/{folder}/{pkg.name}')
+        with open(f'{__out__}/{folder}/{pkg.name}/index.rst', 'w') as f:
             all = "\n   ".join(services)
             f.write(f'''
 {pkg.label}

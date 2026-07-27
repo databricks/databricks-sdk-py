@@ -74,7 +74,7 @@
 
         The returned models are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the model versions. A regular user needs to be the owner or have
-        the **EXECUTE** privilege on the parent registered model to recieve the model versions in the
+        the **EXECUTE** privilege on the parent registered model to receive the model versions in the
         response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 
@@ -92,10 +92,13 @@
           metadata for
         :param max_results: int (optional)
           Maximum number of model versions to return. If not set, the page length is set to a server
-          configured value (100, as of 1/3/2024). - when set to a value greater than 0, the page length is the
-          minimum of this value and a server configured value(1000, as of 1/3/2024); - when set to 0, the page
-          length is set to a server configured value (100, as of 1/3/2024) (recommended); - when set to a
-          value less than 0, an invalid parameter error is returned;
+          configured value (100, as of 1/3/2024).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value(1000, as of 1/3/2024);
+          - when set to 0, the page length is set to a server configured value (100, as of 1/3/2024)
+            (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 

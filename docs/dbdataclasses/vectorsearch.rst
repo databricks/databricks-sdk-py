@@ -103,9 +103,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: STORAGE_OPTIMIZED
       :value: "STORAGE_OPTIMIZED"
 
+.. autoclass:: FacetResultData
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetVectorSearchEndpointPermissionLevelsResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: IndexSubtype
 
-   The subtype of the vector search index, determining the indexing and retrieval strategy. - `VECTOR`: Not supported. Use `HYBRID` instead. - `FULL_TEXT`: An index that uses full-text search without vector embeddings. - `HYBRID`: An index that uses vector embeddings for similarity search and hybrid search.
+   The subtype of the AI Search index, determining the indexing and retrieval strategy.
+   - ``VECTOR``: Not supported. Use ``HYBRID`` instead. - ``FULL_TEXT``: An index that uses full-text search without vector embeddings. - ``HYBRID``: An index that uses vector embeddings for similarity search and hybrid search.
 
    .. py:attribute:: FULL_TEXT
       :value: "FULL_TEXT"
@@ -158,7 +167,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PipelineType
 
-   Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system stops processing after successfully refreshing the source table in the pipeline once, ensuring the table is updated based on the data available when the update started. - `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it arrives in the source table to keep vector index fresh.
+   Pipeline execution mode.
+   - ``TRIGGERED``: If the pipeline uses the triggered execution mode, the system stops processing after successfully refreshing the source table in the pipeline once, ensuring the table is updated based on the data available when the update started. - ``CONTINUOUS``: If the pipeline uses continuous execution, the pipeline processes new data as it arrives in the source table to keep vector index fresh.
 
    .. py:attribute:: CONTINUOUS
       :value: "CONTINUOUS"
@@ -250,10 +260,44 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: VectorIndexType
 
-   There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
+   There are 2 types of AI Search indexes:
+   - ``DELTA_SYNC``: An index that automatically syncs with a source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta Table changes. - ``DIRECT_ACCESS``: An index that supports direct read and write of vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
 
    .. py:attribute:: DELTA_SYNC
       :value: "DELTA_SYNC"
 
    .. py:attribute:: DIRECT_ACCESS
       :value: "DIRECT_ACCESS"
+
+.. autoclass:: VectorSearchEndpointAccessControlRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: VectorSearchEndpointAccessControlResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: VectorSearchEndpointPermission
+   :members:
+   :undoc-members:
+
+.. py:class:: VectorSearchEndpointPermissionLevel
+
+   Permission level
+
+   .. py:attribute:: CAN_CREATE
+      :value: "CAN_CREATE"
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_USE
+      :value: "CAN_USE"
+
+.. autoclass:: VectorSearchEndpointPermissions
+   :members:
+   :undoc-members:
+
+.. autoclass:: VectorSearchEndpointPermissionsDescription
+   :members:
+   :undoc-members:

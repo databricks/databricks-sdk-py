@@ -1,16 +1,19 @@
 import base64
+import html
 import json
 import logging
 import os
+import re
 import threading
 from collections import namedtuple
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional
 
+from databricks.sdk.service import compute, workspace
+
 from .core import ApiClient, Config, DatabricksError
 from .mixins import compute as compute_ext
 from .mixins import files as dbfs_ext
-from .service import compute, workspace
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -24,7 +27,6 @@ class MountInfo(namedtuple("MountInfo", ["mountPoint", "source", "encryptionType
 
 
 class SecretScope(namedtuple("SecretScope", ["name"])):
-
     def getName(self):
         return self.name
 
@@ -208,7 +210,6 @@ class _JobsUtil:
 
 
 class RemoteDbUtils:
-
     def __init__(self, config: "Config" = None):
         # Create a shallow copy of the config to allow the use of a custom
         # user-agent while avoiding modifying the original config.
@@ -286,7 +287,6 @@ def not_supported_method_err_msg(methodName):
 
 
 class _OverrideProxyUtil:
-
     @classmethod
     def new(cls, path: str):
         if path in cls.not_supported_override_paths:
@@ -386,12 +386,7 @@ class _ProxyUtil:
         )
 
 
-import html
-import re
-
-
 class _ProxyCall:
-
     def __init__(
         self,
         *,
@@ -431,7 +426,7 @@ class _ProxyCall:
         if not self._is_failed(results):
             return
         if results.cause:
-            _LOG.debug(f'{self._ascii_escape_re.sub("", results.cause)}')
+            _LOG.debug(f"{self._ascii_escape_re.sub('', results.cause)}")
 
         summary = self._tag_re.sub("", results.summary)
         summary = html.unescape(summary)

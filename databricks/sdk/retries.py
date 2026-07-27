@@ -28,7 +28,6 @@ def retried(
         clock = RealClock()
 
     def decorator(func):
-
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             deadline = clock.time() + timeout.total_seconds()

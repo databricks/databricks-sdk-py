@@ -4,6 +4,10 @@ Knowledge Assistants
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.knowledgeassistants`` module.
 
 .. py:currentmodule:: databricks.sdk.service.knowledgeassistants
+.. autoclass:: Example
+   :members:
+   :undoc-members:
+
 .. autoclass:: FileTableSpec
    :members:
    :undoc-members:
@@ -79,6 +83,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: UPDATING
       :value: "UPDATING"
+
+.. autoclass:: ListExamplesResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: ListKnowledgeAssistantsResponse
    :members:

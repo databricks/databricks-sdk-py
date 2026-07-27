@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -13,9 +16,14 @@ from typing import Any, Callable, Dict, Iterator, List, Optional
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum,
-                                              _timestamp)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+    _timestamp,
+)
 
 from ..errors import OperationFailed
 
@@ -794,14 +802,14 @@ class AzureManagedIdentity:
 
     access_connector_id: str
     """The Azure resource ID of the Azure Databricks Access Connector. Use the format
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}``."""
 
     credential_id: Optional[str] = None
     """The Databricks internal ID that represents this managed identity."""
 
     managed_identity_id: Optional[str] = None
     """The Azure resource ID of the managed identity. Use the format,
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}``
     This is only available for user-assgined identities. For system-assigned identities, the
     access_connector_id is used to identify the identity. If this field is not provided, then we
     assume the AzureManagedIdentity is using the system-assigned identity."""
@@ -844,11 +852,11 @@ class AzureManagedIdentityRequest:
 
     access_connector_id: str
     """The Azure resource ID of the Azure Databricks Access Connector. Use the format
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}``."""
 
     managed_identity_id: Optional[str] = None
     """The Azure resource ID of the managed identity. Use the format,
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}``
     This is only available for user-assgined identities. For system-assigned identities, the
     access_connector_id is used to identify the identity. If this field is not provided, then we
     assume the AzureManagedIdentity is using the system-assigned identity."""
@@ -886,14 +894,14 @@ class AzureManagedIdentityResponse:
 
     access_connector_id: str
     """The Azure resource ID of the Azure Databricks Access Connector. Use the format
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}``."""
 
     credential_id: Optional[str] = None
     """The Databricks internal ID that represents this managed identity."""
 
     managed_identity_id: Optional[str] = None
     """The Azure resource ID of the managed identity. Use the format,
-    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
+    ``/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}``
     This is only available for user-assgined identities. For system-assigned identities, the
     access_connector_id is used to identify the identity. If this field is not provided, then we
     assume the AzureManagedIdentity is using the system-assigned identity."""
@@ -1120,6 +1128,9 @@ class CatalogInfo:
     created_by: Optional[str] = None
     """Username of catalog creator."""
 
+    custom_max_retention_hours: Optional[int] = None
+    """Custom maximum retention period in hours for the catalog"""
+
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
 
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
@@ -1188,6 +1199,8 @@ class CatalogInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = self.custom_max_retention_hours
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag.as_dict()
         if self.enable_predictive_optimization is not None:
@@ -1241,6 +1254,8 @@ class CatalogInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = self.custom_max_retention_hours
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag
         if self.enable_predictive_optimization is not None:
@@ -1289,6 +1304,7 @@ class CatalogInfo:
             connection_name=d.get("connection_name", None),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
+            custom_max_retention_hours=d.get("custom_max_retention_hours", None),
             effective_predictive_optimization_flag=_from_dict(
                 d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
             ),
@@ -1313,7 +1329,6 @@ class CatalogInfo:
 
 
 class CatalogIsolationMode(Enum):
-
     ISOLATED = "ISOLATED"
     OPEN = "OPEN"
 
@@ -1615,7 +1630,6 @@ class ColumnRelationship:
 
 
 class ColumnTypeName(Enum):
-
     ARRAY = "ARRAY"
     BINARY = "BINARY"
     BOOLEAN = "BOOLEAN"
@@ -1647,7 +1661,7 @@ class ConnectionDependency:
     """A connection that is dependent on a SQL object."""
 
     connection_name: Optional[str] = None
-    """Full name of the dependent connection, in the form of __connection_name__."""
+    """Full name of the dependent connection, in the form of **connection_name**."""
 
     def as_dict(self) -> dict:
         """Serializes the ConnectionDependency into a dictionary suitable for use as a JSON request body."""
@@ -1688,6 +1702,9 @@ class ConnectionInfo:
 
     credential_type: Optional[CredentialType] = None
     """The type of credential."""
+
+    environment_settings: Optional[EnvironmentSettings] = None
+    """[Create,Update:OPT] Connection environment settings as EnvironmentSettings object."""
 
     full_name: Optional[str] = None
     """Full name of connection."""
@@ -1738,6 +1755,8 @@ class ConnectionInfo:
             body["created_by"] = self.created_by
         if self.credential_type is not None:
             body["credential_type"] = self.credential_type.value
+        if self.environment_settings:
+            body["environment_settings"] = self.environment_settings.as_dict()
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -1779,6 +1798,8 @@ class ConnectionInfo:
             body["created_by"] = self.created_by
         if self.credential_type is not None:
             body["credential_type"] = self.credential_type
+        if self.environment_settings:
+            body["environment_settings"] = self.environment_settings
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -1815,6 +1836,7 @@ class ConnectionInfo:
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             credential_type=_enum(d, "credential_type", CredentialType),
+            environment_settings=_from_dict(d, "environment_settings", EnvironmentSettings),
             full_name=d.get("full_name", None),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -1831,28 +1853,35 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 123"""
-
     BIGQUERY = "BIGQUERY"
+    CONFLUENCE = "CONFLUENCE"
     DATABRICKS = "DATABRICKS"
+    DYNAMICS365 = "DYNAMICS365"
     GA4_RAW_DATA = "GA4_RAW_DATA"
+    GITHUB = "GITHUB"
     GLUE = "GLUE"
     HIVE_METASTORE = "HIVE_METASTORE"
     HTTP = "HTTP"
+    HUBSPOT = "HUBSPOT"
+    JDBC = "JDBC"
+    META_MARKETING = "META_MARKETING"
     MYSQL = "MYSQL"
     ORACLE = "ORACLE"
+    OUTLOOK = "OUTLOOK"
     POSTGRESQL = "POSTGRESQL"
     POWER_BI = "POWER_BI"
     REDSHIFT = "REDSHIFT"
     SALESFORCE = "SALESFORCE"
     SALESFORCE_DATA_CLOUD = "SALESFORCE_DATA_CLOUD"
     SERVICENOW = "SERVICENOW"
+    SMARTSHEET = "SMARTSHEET"
     SNOWFLAKE = "SNOWFLAKE"
     SQLDW = "SQLDW"
     SQLSERVER = "SQLSERVER"
     TERADATA = "TERADATA"
     UNKNOWN_CONNECTION_TYPE = "UNKNOWN_CONNECTION_TYPE"
     WORKDAY_RAAS = "WORKDAY_RAAS"
+    ZENDESK = "ZENDESK"
 
 
 @dataclass
@@ -1906,7 +1935,7 @@ class ContinuousUpdateStatus:
 @dataclass
 class CreateAccessRequest:
     behalf_of: Optional[Principal] = None
-    """Optional. The principal this request is for. Empty `behalf_of` defaults to the requester's
+    """Optional. The principal this request is for. Empty ``behalf_of`` defaults to the requester's
     identity.
     
     Principals must be unique across the API call."""
@@ -1999,7 +2028,7 @@ class CreateAccountsMetastore:
     """Whether to allow non-DBR clients to directly access entities under the metastore."""
 
     region: Optional[str] = None
-    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
+    """Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``)."""
 
     storage_root: Optional[str] = None
     """The storage root URL for metastore"""
@@ -2319,23 +2348,19 @@ class CreateFunction:
 
 
 class CreateFunctionParameterStyle(Enum):
-
     S = "S"
 
 
 class CreateFunctionRoutineBody(Enum):
-
     EXTERNAL = "EXTERNAL"
     SQL = "SQL"
 
 
 class CreateFunctionSecurityType(Enum):
-
     DEFINER = "DEFINER"
 
 
 class CreateFunctionSqlDataAccess(Enum):
-
     CONTAINS_SQL = "CONTAINS_SQL"
     NO_SQL = "NO_SQL"
     READS_SQL_DATA = "READS_SQL_DATA"
@@ -2449,7 +2474,7 @@ class CredentialDependency:
     """A credential that is dependent on a SQL object."""
 
     credential_name: Optional[str] = None
-    """Full name of the dependent credential, in the form of __credential_name__."""
+    """Full name of the dependent credential, in the form of **credential_name**."""
 
     def as_dict(self) -> dict:
         """Serializes the CredentialDependency into a dictionary suitable for use as a JSON request body."""
@@ -2638,14 +2663,11 @@ class CredentialInfo:
 
 
 class CredentialPurpose(Enum):
-
     SERVICE = "SERVICE"
     STORAGE = "STORAGE"
 
 
 class CredentialType(Enum):
-    """Next Id: 18"""
-
     ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
     EDGEGRID_AKAMAI = "EDGEGRID_AKAMAI"
@@ -2966,7 +2988,7 @@ class DeleteTableConstraintResponse:
 @dataclass
 class DeltaRuntimePropertiesKvPairs:
     """Properties pertaining to the current state of the delta table as given by the commit server.
-    This does not contain **delta.*** (input) properties in __TableInfo.properties__."""
+    This does not contain **delta.*** (input) properties in **TableInfo.properties**."""
 
     delta_runtime_properties: Dict[str, str]
     """A map of key-value properties attached to the securable."""
@@ -2992,15 +3014,14 @@ class DeltaRuntimePropertiesKvPairs:
 
 
 class DeltaSharingScopeEnum(Enum):
-
     INTERNAL = "INTERNAL"
     INTERNAL_AND_EXTERNAL = "INTERNAL_AND_EXTERNAL"
 
 
 @dataclass
 class Dependency:
-    """A dependency of a SQL object. One of the following fields must be defined: __table__,
-    __function__, __connection__, __credential__, __volume__, or __secret__."""
+    """A dependency of a SQL object. One of the following fields must be defined: **table**,
+    **function**, **connection**, **credential**, **volume**, or **secret**."""
 
     connection: Optional[ConnectionDependency] = None
 
@@ -3075,7 +3096,6 @@ class DependencyList:
 
 
 class DestinationType(Enum):
-
     EMAIL = "EMAIL"
     GENERIC_WEBHOOK = "GENERIC_WEBHOOK"
     MICROSOFT_TEAMS = "MICROSOFT_TEAMS"
@@ -3105,7 +3125,7 @@ class DisableResponse:
 class EffectivePermissionsList:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     privilege_assignments: Optional[List[EffectivePrivilegeAssignment]] = None
     """The privileges conveyed to each principal (either directly or via inheritance)"""
@@ -3183,7 +3203,6 @@ class EffectivePredictiveOptimizationFlag:
 
 
 class EffectivePredictiveOptimizationFlagInheritedFromType(Enum):
-
     CATALOG = "CATALOG"
     SCHEMA = "SCHEMA"
 
@@ -3266,7 +3285,6 @@ class EffectivePrivilegeAssignment:
 
 
 class EnablePredictiveOptimization(Enum):
-
     DISABLE = "DISABLE"
     ENABLE = "ENABLE"
     INHERIT = "INHERIT"
@@ -3437,6 +3455,38 @@ class EntityTagAssignment:
             tag_value=d.get("tag_value", None),
             update_time=_timestamp(d, "update_time"),
             updated_by=d.get("updated_by", None),
+        )
+
+
+@dataclass
+class EnvironmentSettings:
+    environment_version: Optional[str] = None
+
+    java_dependencies: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EnvironmentSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
+        if self.java_dependencies:
+            body["java_dependencies"] = [v for v in self.java_dependencies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnvironmentSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
+        if self.java_dependencies:
+            body["java_dependencies"] = self.java_dependencies
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnvironmentSettings:
+        """Deserializes the EnvironmentSettings from a dictionary."""
+        return cls(
+            environment_version=d.get("environment_version", None), java_dependencies=d.get("java_dependencies", None)
         )
 
 
@@ -4000,18 +4050,18 @@ class ExternalLocationInfo:
     """Name of the storage credential used with this location."""
 
     effective_enable_file_events: Optional[bool] = None
-    """The effective value of `enable_file_events` after applying server-side defaults."""
+    """The effective value of ``enable_file_events`` after applying server-side defaults."""
 
     effective_file_event_queue: Optional[FileEventQueue] = None
     """The effective file event queue configuration after applying server-side defaults. Always
     populated when a queue is provisioned, regardless of whether the user explicitly set
-    `enable_file_events`. Use this field instead of `file_event_queue` for reading the actual queue
-    state."""
+    ``enable_file_events``. Use this field instead of ``file_event_queue`` for reading the actual
+    queue state."""
 
     enable_file_events: Optional[bool] = None
-    """Whether to enable file events on this external location. Default to `true`. Set to `false` to
-    disable file events. The actual applied value may differ due to server-side defaults; check
-    `effective_enable_file_events` for the effective state."""
+    """Whether to enable file events on this external location. Default to ``true``. Set to ``false``
+    to disable file events. The actual applied value may differ due to server-side defaults; check
+    ``effective_enable_file_events`` for the effective state."""
 
     encryption_details: Optional[EncryptionDetails] = None
 
@@ -4021,7 +4071,7 @@ class ExternalLocationInfo:
     sufficient."""
 
     file_event_queue: Optional[FileEventQueue] = None
-    """File event queue settings. If `enable_file_events` is not `false`, must be defined and have
+    """File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
     exactly one of the documented properties."""
 
     isolation_mode: Optional[IsolationMode] = None
@@ -4494,7 +4544,7 @@ class FunctionDependency:
 
     function_full_name: str
     """Full name of the dependent function, in the form of
-    __catalog_name__.__schema_name__.__function_name__."""
+    **catalog_name**.**schema_name**.**function_name**."""
 
     def as_dict(self) -> dict:
         """Serializes the FunctionDependency into a dictionary suitable for use as a JSON request body."""
@@ -4780,23 +4830,19 @@ class FunctionInfo:
 
 
 class FunctionInfoParameterStyle(Enum):
-
     S = "S"
 
 
 class FunctionInfoRoutineBody(Enum):
-
     EXTERNAL = "EXTERNAL"
     SQL = "SQL"
 
 
 class FunctionInfoSecurityType(Enum):
-
     DEFINER = "DEFINER"
 
 
 class FunctionInfoSqlDataAccess(Enum):
-
     CONTAINS_SQL = "CONTAINS_SQL"
     NO_SQL = "NO_SQL"
     READS_SQL_DATA = "READS_SQL_DATA"
@@ -4942,12 +4988,10 @@ class FunctionParameterInfos:
 
 
 class FunctionParameterMode(Enum):
-
     IN = "IN"
 
 
 class FunctionParameterType(Enum):
-
     COLUMN = "COLUMN"
     PARAM = "PARAM"
 
@@ -5313,7 +5357,7 @@ class GetCatalogWorkspaceBindingsResponse:
 @dataclass
 class GetMetastoreSummaryResponse:
     cloud: Optional[str] = None
-    """Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`)."""
+    """Cloud vendor of the metastore home shard (e.g., ``aws``, ``azure``, ``gcp``)."""
 
     created_at: Optional[int] = None
     """Time at which this metastore was created, in epoch milliseconds."""
@@ -5338,7 +5382,8 @@ class GetMetastoreSummaryResponse:
     """Whether to allow non-DBR clients to directly access entities under the metastore."""
 
     global_metastore_id: Optional[str] = None
-    """Globally unique metastore ID across clouds and regions, of the form `cloud:region:metastore_id`."""
+    """Globally unique metastore ID across clouds and regions, of the form
+    ``cloud:region:metastore_id``."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of metastore."""
@@ -5350,10 +5395,10 @@ class GetMetastoreSummaryResponse:
     """The owner of the metastore."""
 
     privilege_model_version: Optional[str] = None
-    """Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)."""
+    """Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``)."""
 
     region: Optional[str] = None
-    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
+    """Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``)."""
 
     storage_root: Optional[str] = None
     """The storage root URL for metastore"""
@@ -5492,7 +5537,7 @@ class GetMetastoreSummaryResponse:
 class GetPermissionsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     privilege_assignments: Optional[List[PrivilegeAssignment]] = None
     """The privileges assigned to each principal"""
@@ -5556,7 +5601,7 @@ class GetWorkspaceBindingsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the GetWorkspaceBindingsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5585,13 +5630,11 @@ class GetWorkspaceBindingsResponse:
 
 
 class IsolationMode(Enum):
-
     ISOLATION_MODE_ISOLATED = "ISOLATION_MODE_ISOLATED"
     ISOLATION_MODE_OPEN = "ISOLATION_MODE_OPEN"
 
 
 class LineageDirection(Enum):
-
     DOWNSTREAM = "DOWNSTREAM"
     UPSTREAM = "UPSTREAM"
 
@@ -5656,7 +5699,7 @@ class ListCatalogsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListCatalogsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5689,7 +5732,7 @@ class ListConnectionsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListConnectionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5723,7 +5766,7 @@ class ListCredentialsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListCredentialsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5748,6 +5791,44 @@ class ListCredentialsResponse:
         """Deserializes the ListCredentialsResponse from a dictionary."""
         return cls(
             credentials=_repeated_dict(d, "credentials", CredentialInfo), next_page_token=d.get("next_page_token", None)
+        )
+
+
+@dataclass
+class ListEffectivePrivilegeAssignmentsResponse:
+    effective_privilege_assignments: Optional[List[EffectivePrivilegeAssignment]] = None
+    """The effective privilege assignments for the securable (and optional principal)."""
+
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    **page_token** should be set to this value for the next request (for the next page of results)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListEffectivePrivilegeAssignmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.effective_privilege_assignments:
+            body["effective_privilege_assignments"] = [v.as_dict() for v in self.effective_privilege_assignments]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListEffectivePrivilegeAssignmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.effective_privilege_assignments:
+            body["effective_privilege_assignments"] = self.effective_privilege_assignments
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListEffectivePrivilegeAssignmentsResponse:
+        """Deserializes the ListEffectivePrivilegeAssignmentsResponse from a dictionary."""
+        return cls(
+            effective_privilege_assignments=_repeated_dict(
+                d, "effective_privilege_assignments", EffectivePrivilegeAssignment
+            ),
+            next_page_token=d.get("next_page_token", None),
         )
 
 
@@ -5826,7 +5907,7 @@ class ListExternalLocationsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListExternalLocationsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5895,7 +5976,7 @@ class ListFunctionsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListFunctionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5930,7 +6011,7 @@ class ListMetastoresResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListMetastoresResponse into a dictionary suitable for use as a JSON request body."""
@@ -5964,7 +6045,7 @@ class ListModelVersionsResponse:
 
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListModelVersionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5996,7 +6077,7 @@ class ListModelVersionsResponse:
 @dataclass
 class ListPoliciesResponse:
     next_page_token: Optional[str] = None
-    """Optional opaque token for continuing pagination. `page_token` should be set to this value for
+    """Optional opaque token for continuing pagination. ``page_token`` should be set to this value for
     the next request to retrieve the next page of results."""
 
     policies: Optional[List[PolicyInfo]] = None
@@ -6027,10 +6108,45 @@ class ListPoliciesResponse:
 
 
 @dataclass
+class ListPrivilegeAssignmentsResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    **page_token** should be set to this value for the next request (for the next page of results)."""
+
+    privilege_assignments: Optional[List[PrivilegeAssignment]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListPrivilegeAssignmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.privilege_assignments:
+            body["privilege_assignments"] = [v.as_dict() for v in self.privilege_assignments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListPrivilegeAssignmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.privilege_assignments:
+            body["privilege_assignments"] = self.privilege_assignments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListPrivilegeAssignmentsResponse:
+        """Deserializes the ListPrivilegeAssignmentsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment),
+        )
+
+
+@dataclass
 class ListQuotasResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request."""
+    **page_token** should be set to this value for the next request."""
 
     quotas: Optional[List[QuotaInfo]] = None
     """An array of returned QuotaInfos."""
@@ -6098,7 +6214,7 @@ class ListRegisteredModelsResponse:
 class ListSchemasResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     schemas: Optional[List[SchemaInfo]] = None
     """An array of schema information objects."""
@@ -6166,7 +6282,7 @@ class ListSecretsResponse:
 class ListStorageCredentialsResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     storage_credentials: Optional[List[StorageCredentialInfo]] = None
 
@@ -6201,7 +6317,7 @@ class ListStorageCredentialsResponse:
 class ListSystemSchemasResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     schemas: Optional[List[SystemSchemaInfo]] = None
     """An array of system schema information objects."""
@@ -6236,7 +6352,7 @@ class ListSystemSchemasResponse:
 class ListTableSummariesResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     tables: Optional[List[TableSummary]] = None
     """List of table summaries."""
@@ -6269,7 +6385,7 @@ class ListTableSummariesResponse:
 class ListTablesResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
+    **page_token** should be set to this value for the next request (for the next page of results)."""
 
     tables: Optional[List[TableInfo]] = None
     """An array of table information objects."""
@@ -6302,7 +6418,7 @@ class ListTablesResponse:
 class ListVolumesResponseContent:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request to retrieve the next page of
+    **page_token** should be set to this value for the next request to retrieve the next page of
     results."""
 
     volumes: Optional[List[VolumeInfo]] = None
@@ -6416,7 +6532,7 @@ class MetastoreAssignment:
 @dataclass
 class MetastoreInfo:
     cloud: Optional[str] = None
-    """Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`)."""
+    """Cloud vendor of the metastore home shard (e.g., ``aws``, ``azure``, ``gcp``)."""
 
     created_at: Optional[int] = None
     """Time at which this metastore was created, in epoch milliseconds."""
@@ -6441,7 +6557,8 @@ class MetastoreInfo:
     """Whether to allow non-DBR clients to directly access entities under the metastore."""
 
     global_metastore_id: Optional[str] = None
-    """Globally unique metastore ID across clouds and regions, of the form `cloud:region:metastore_id`."""
+    """Globally unique metastore ID across clouds and regions, of the form
+    ``cloud:region:metastore_id``."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of metastore."""
@@ -6453,10 +6570,10 @@ class MetastoreInfo:
     """The owner of the metastore."""
 
     privilege_model_version: Optional[str] = None
-    """Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)."""
+    """Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``)."""
 
     region: Optional[str] = None
-    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
+    """Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``)."""
 
     storage_root: Optional[str] = None
     """The storage root URL for metastore"""
@@ -6757,7 +6874,6 @@ class ModelVersionInfo:
 
 
 class ModelVersionInfoStatus(Enum):
-
     FAILED_REGISTRATION = "FAILED_REGISTRATION"
     MODEL_VERSION_STATUS_UNKNOWN = "MODEL_VERSION_STATUS_UNKNOWN"
     PENDING_REGISTRATION = "PENDING_REGISTRATION"
@@ -6767,9 +6883,8 @@ class ModelVersionInfoStatus(Enum):
 @dataclass
 class MonitorCronSchedule:
     quartz_cron_expression: str
-    """The expression that determines when to run the monitor. See [examples].
-    
-    [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html"""
+    """The expression that determines when to run the monitor. See `examples
+    <https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html>`__."""
 
     timezone_id: str
     """The timezone id (e.g., ``PST``) in which to evaluate the quartz expression."""
@@ -6948,7 +7063,6 @@ class MonitorInferenceLog:
 
 
 class MonitorInferenceLogProblemType(Enum):
-
     PROBLEM_TYPE_CLASSIFICATION = "PROBLEM_TYPE_CLASSIFICATION"
     PROBLEM_TYPE_REGRESSION = "PROBLEM_TYPE_REGRESSION"
 
@@ -6960,18 +7074,18 @@ class MonitorInfo:
     {catalog}.{schema}"""
 
     table_name: str
-    """[Create:ERR Update:IGN] UC table to monitor. Format: `catalog.schema.table_name`"""
+    """[Create:ERR Update:IGN] UC table to monitor. Format: ``catalog.schema.table_name``"""
 
     status: MonitorInfoStatus
     """[Create:ERR Update:IGN] The monitor status."""
 
     profile_metrics_table_name: str
     """[Create:ERR Update:IGN] Table that stores profile metrics data. Format:
-    `catalog.schema.table_name`."""
+    ``catalog.schema.table_name``."""
 
     drift_metrics_table_name: str
     """[Create:ERR Update:IGN] Table that stores drift metrics data. Format:
-    `catalog.schema.table_name`."""
+    ``catalog.schema.table_name``."""
 
     monitor_version: int
     """[Create:ERR Update:IGN] Represents the current monitor configuration version in use. The version
@@ -6984,7 +7098,7 @@ class MonitorInfo:
 
     baseline_table_name: Optional[str] = None
     """[Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the
-    data in the monitored `table_name`. The baseline table and the monitored table shall have the
+    data in the monitored ``table_name``. The baseline table and the monitored table shall have the
     same schema."""
 
     custom_metrics: Optional[List[MonitorMetric]] = None
@@ -7011,10 +7125,10 @@ class MonitorInfo:
     slicing_exprs: Optional[List[str]] = None
     """[Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
     data is grouped by each expression independently, resulting in a separate slice for each
-    predicate and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will
-    generate the following slices: two slices for `col_2 > 10` (True and False), and one slice per
-    unique value in `col1`. For high-cardinality columns, only the top 100 unique values by
-    frequency will generate slices."""
+    predicate and its complements. For example ``slicing_exprs=[“col_1”, “col_2 > 10”]``
+    will generate the following slices: two slices for ``col_2 > 10`` (True and False), and one
+    slice per unique value in ``col1``. For high-cardinality columns, only the top 100 unique values
+    by frequency will generate slices."""
 
     snapshot: Optional[MonitorSnapshot] = None
     """Configuration for monitoring snapshot tables."""
@@ -7130,7 +7244,6 @@ class MonitorInfo:
 
 
 class MonitorInfoStatus(Enum):
-
     MONITOR_STATUS_ACTIVE = "MONITOR_STATUS_ACTIVE"
     MONITOR_STATUS_DELETE_PENDING = "MONITOR_STATUS_DELETE_PENDING"
     MONITOR_STATUS_ERROR = "MONITOR_STATUS_ERROR"
@@ -7146,10 +7259,9 @@ class MonitorMetric:
     """Name of the metric in the output tables."""
 
     definition: str
-    """Jinja template for a SQL expression that specifies how to compute the metric. See [create metric
-    definition].
-    
-    [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition"""
+    """Jinja template for a SQL expression that specifies how to compute the metric. See `create metric
+    definition
+    <https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition>`__."""
 
     input_columns: List[str]
     """A list of column names in the input table the metric should be computed for. Can use
@@ -7163,9 +7275,11 @@ class MonitorMetric:
     ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and
     ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the
     ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the
-    two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing
-    columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
-    metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
+    two consecutive time windows.
+    
+    - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table
+    - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics
+    - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
 
     def as_dict(self) -> dict:
         """Serializes the MonitorMetric into a dictionary suitable for use as a JSON request body."""
@@ -7214,9 +7328,11 @@ class MonitorMetricType(Enum):
     ``\"CUSTOM_METRIC_TYPE_DRIFT\"``. The ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"`` and
     ``\"CUSTOM_METRIC_TYPE_DERIVED\"`` metrics are computed on a single table, whereas the
     ``\"CUSTOM_METRIC_TYPE_DRIFT\"`` compare metrics across baseline and input table, or across the
-    two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing
-    columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
-    metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
+    two consecutive time windows.
+
+    - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table
+    - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics
+    - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
 
     CUSTOM_METRIC_TYPE_AGGREGATE = "CUSTOM_METRIC_TYPE_AGGREGATE"
     CUSTOM_METRIC_TYPE_DERIVED = "CUSTOM_METRIC_TYPE_DERIVED"
@@ -7337,7 +7453,6 @@ class MonitorRefreshInfoState(Enum):
 
 
 class MonitorRefreshInfoTrigger(Enum):
-
     MANUAL = "MANUAL"
     SCHEDULE = "SCHEDULE"
     UNKNOWN_TRIGGER = "UNKNOWN_TRIGGER"
@@ -7925,7 +8040,6 @@ class OptionSpecOptionType(Enum):
 
 
 class PathOperation(Enum):
-
     PATH_CREATE_TABLE = "PATH_CREATE_TABLE"
     PATH_READ = "PATH_READ"
     PATH_READ_WRITE = "PATH_READ_WRITE"
@@ -8079,14 +8193,14 @@ class PolicyInfo:
     update."""
 
     for_securable_type: SecurableType
-    """Type of securables that the policy should take effect on. Only `TABLE` is supported at this
+    """Type of securables that the policy should take effect on. Only ``TABLE`` is supported at this
     moment. Required on create and optional on update."""
 
     policy_type: PolicyType
     """Type of the policy. Required on create."""
 
     column_mask: Optional[ColumnMaskOptions] = None
-    """Options for column mask policies. Valid only if `policy_type` is `POLICY_TYPE_COLUMN_MASK`.
+    """Options for column mask policies. Valid only if ``policy_type`` is ``POLICY_TYPE_COLUMN_MASK``.
     Required on create and optional on update. When specified on update, the new options will
     replace the existing options as a whole."""
 
@@ -8107,22 +8221,22 @@ class PolicyInfo:
 
     match_columns: Optional[List[MatchColumn]] = None
     """Optional list of condition expressions used to match table columns. Only valid when
-    `for_securable_type` is `TABLE`. When specified, the policy only applies to tables whose columns
-    satisfy all match conditions."""
+    ``for_securable_type`` is ``TABLE``. When specified, the policy only applies to tables whose
+    columns satisfy all match conditions."""
 
     name: Optional[str] = None
-    """Name of the policy. Required on create and optional on update. To rename the policy, set `name`
-    to a different value on update."""
+    """Name of the policy. Required on create and optional on update. To rename the policy, set
+    ``name`` to a different value on update."""
 
     on_securable_fullname: Optional[str] = None
     """Full name of the securable on which the policy is defined. Required on create."""
 
     on_securable_type: Optional[SecurableType] = None
-    """Type of the securable on which the policy is defined. Only `CATALOG`, `SCHEMA` and `TABLE` are
-    supported at this moment. Required on create."""
+    """Type of the securable on which the policy is defined. Only ``CATALOG``, ``SCHEMA`` and ``TABLE``
+    are supported at this moment. Required on create."""
 
     row_filter: Optional[RowFilterOptions] = None
-    """Options for row filter policies. Valid only if `policy_type` is `POLICY_TYPE_ROW_FILTER`.
+    """Options for row filter policies. Valid only if ``policy_type`` is ``POLICY_TYPE_ROW_FILTER``.
     Required on create and optional on update. When specified on update, the new options will
     replace the existing options as a whole."""
 
@@ -8238,7 +8352,6 @@ class PolicyInfo:
 
 
 class PolicyType(Enum):
-
     POLICY_TYPE_COLUMN_MASK = "POLICY_TYPE_COLUMN_MASK"
     POLICY_TYPE_ROW_FILTER = "POLICY_TYPE_ROW_FILTER"
 
@@ -8326,14 +8439,12 @@ class Principal:
 
 
 class PrincipalType(Enum):
-
     GROUP_PRINCIPAL = "GROUP_PRINCIPAL"
     SERVICE_PRINCIPAL = "SERVICE_PRINCIPAL"
     USER_PRINCIPAL = "USER_PRINCIPAL"
 
 
 class Privilege(Enum):
-
     ACCESS = "ACCESS"
     ALL_PRIVILEGES = "ALL_PRIVILEGES"
     APPLY_TAG = "APPLY_TAG"
@@ -8368,6 +8479,7 @@ class Privilege(Enum):
     MODIFY = "MODIFY"
     MODIFY_CLEAN_ROOM = "MODIFY_CLEAN_ROOM"
     READ_FILES = "READ_FILES"
+    READ_METADATA = "READ_METADATA"
     READ_PRIVATE_FILES = "READ_PRIVATE_FILES"
     READ_VOLUME = "READ_VOLUME"
     REFRESH = "REFRESH"
@@ -8389,8 +8501,8 @@ class Privilege(Enum):
 @dataclass
 class PrivilegeAssignment:
     principal: Optional[str] = None
-    """The principal (user email address or group name). For deleted principals, `principal` is empty
-    while `principal_id` is populated."""
+    """The principal (user email address or group name). For deleted principals, ``principal`` is empty
+    while ``principal_id`` is populated."""
 
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
@@ -8447,7 +8559,6 @@ class ProvisioningInfo:
 
 
 class ProvisioningInfoState(Enum):
-
     ACTIVE = "ACTIVE"
     DEGRADED = "DEGRADED"
     DELETING = "DELETING"
@@ -8866,8 +8977,6 @@ class RowFilterOptions:
 
 @dataclass
 class SchemaInfo:
-    """Next ID: 45"""
-
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
@@ -8887,13 +8996,16 @@ class SchemaInfo:
     created_by: Optional[str] = None
     """Username of schema creator."""
 
+    custom_max_retention_hours: Optional[int] = None
+    """Custom maximum retention period in hours for the schema."""
+
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
 
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
     """Whether predictive optimization should be enabled for this object and objects under it."""
 
     full_name: Optional[str] = None
-    """Full name of schema, in form of __catalog_name__.__schema_name__."""
+    """Full name of schema, in form of **catalog_name**.**schema_name**."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of parent metastore."""
@@ -8937,6 +9049,8 @@ class SchemaInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = self.custom_max_retention_hours
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag.as_dict()
         if self.enable_predictive_optimization is not None:
@@ -8978,6 +9092,8 @@ class SchemaInfo:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = self.custom_max_retention_hours
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag
         if self.enable_predictive_optimization is not None:
@@ -9014,6 +9130,7 @@ class SchemaInfo:
             comment=d.get("comment", None),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
+            custom_max_retention_hours=d.get("custom_max_retention_hours", None),
             effective_predictive_optimization_flag=_from_dict(
                 d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
             ),
@@ -9052,10 +9169,6 @@ class Secret:
     value. The maximum size is 60 KiB (pre-encryption). Accepted content includes passwords, tokens,
     keys, and other sensitive credential data."""
 
-    browse_only: Optional[bool] = None
-    """Indicates whether the principal is limited to retrieving metadata for the associated object
-    through the **BROWSE** privilege when **include_browse** is enabled in the request."""
-
     comment: Optional[str] = None
     """User-provided free-form text description of the secret."""
 
@@ -9078,8 +9191,6 @@ class Secret:
     longer be used and may be displayed as a warning in the UI. It is purely informational and does
     not trigger any automatic actions or affect the secret's lifecycle."""
 
-    external_secret_id: Optional[str] = None
-
     full_name: Optional[str] = None
     """The three-level (fully qualified) name of the secret, in the form of
     **catalog_name.schema_name.secret_name**."""
@@ -9100,8 +9211,6 @@ class Secret:
     def as_dict(self) -> dict:
         """Serializes the Secret into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.catalog_name is not None:
             body["catalog_name"] = self.catalog_name
         if self.comment is not None:
@@ -9116,8 +9225,6 @@ class Secret:
             body["effective_value"] = self.effective_value
         if self.expire_time is not None:
             body["expire_time"] = self.expire_time.ToJsonString()
-        if self.external_secret_id is not None:
-            body["external_secret_id"] = self.external_secret_id
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -9139,8 +9246,6 @@ class Secret:
     def as_shallow_dict(self) -> dict:
         """Serializes the Secret into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.catalog_name is not None:
             body["catalog_name"] = self.catalog_name
         if self.comment is not None:
@@ -9155,8 +9260,6 @@ class Secret:
             body["effective_value"] = self.effective_value
         if self.expire_time is not None:
             body["expire_time"] = self.expire_time
-        if self.external_secret_id is not None:
-            body["external_secret_id"] = self.external_secret_id
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -9179,7 +9282,6 @@ class Secret:
     def from_dict(cls, d: Dict[str, Any]) -> Secret:
         """Deserializes the Secret from a dictionary."""
         return cls(
-            browse_only=d.get("browse_only", None),
             catalog_name=d.get("catalog_name", None),
             comment=d.get("comment", None),
             create_time=_timestamp(d, "create_time"),
@@ -9187,7 +9289,6 @@ class Secret:
             effective_owner=d.get("effective_owner", None),
             effective_value=d.get("effective_value", None),
             expire_time=_timestamp(d, "expire_time"),
-            external_secret_id=d.get("external_secret_id", None),
             full_name=d.get("full_name", None),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -9247,8 +9348,6 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: TOOLSET_EXTERNAL_MCP = 318; Next id: 319"""
-
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
     TABLE_DELTASHARING = "TABLE_DELTASHARING"
@@ -9437,7 +9536,6 @@ class SecurableType(Enum):
 
 
 class SpecialDestination(Enum):
-
     SPECIAL_DESTINATION_CATALOG_OWNER = "SPECIAL_DESTINATION_CATALOG_OWNER"
     SPECIAL_DESTINATION_CONNECTION_OWNER = "SPECIAL_DESTINATION_CONNECTION_OWNER"
     SPECIAL_DESTINATION_CREDENTIAL_OWNER = "SPECIAL_DESTINATION_CREDENTIAL_OWNER"
@@ -9484,7 +9582,6 @@ class SseEncryptionDetails:
 
 
 class SseEncryptionDetailsAlgorithm(Enum):
-
     AWS_SSE_KMS = "AWS_SSE_KMS"
     AWS_SSE_S3 = "AWS_SSE_S3"
 
@@ -9692,7 +9789,6 @@ class SystemSchemaInfo:
 
 
 class SystemType(Enum):
-
     AMAZON_REDSHIFT = "AMAZON_REDSHIFT"
     AZURE_SYNAPSE = "AZURE_SYNAPSE"
     CONFLUENT = "CONFLUENT"
@@ -9721,7 +9817,7 @@ class SystemType(Enum):
 @dataclass
 class TableConstraint:
     """A table constraint, as defined by *one* of the following fields being set:
-    __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__."""
+    **primary_key_constraint**, **foreign_key_constraint**, **named_table_constraint**."""
 
     foreign_key_constraint: Optional[ForeignKeyConstraint] = None
 
@@ -9767,7 +9863,7 @@ class TableDependency:
 
     table_full_name: str
     """Full name of the dependent table, in the form of
-    __catalog_name__.__schema_name__.__table_name__."""
+    **catalog_name**.**schema_name**.**table_name**."""
 
     def as_dict(self) -> dict:
         """Serializes the TableDependency into a dictionary suitable for use as a JSON request body."""
@@ -9827,7 +9923,7 @@ class TableInfo:
     """Name of parent catalog."""
 
     columns: Optional[List[ColumnInfo]] = None
-    """The array of __ColumnInfo__ definitions of the table's columns."""
+    """The array of **ColumnInfo** definitions of the table's columns."""
 
     comment: Optional[str] = None
     """User-provided free-form text description."""
@@ -9857,7 +9953,7 @@ class TableInfo:
     encryption_details: Optional[EncryptionDetails] = None
 
     full_name: Optional[str] = None
-    """Full name of table, in form of __catalog_name__.__schema_name__.__table_name__"""
+    """Full name of table, in form of **catalog_name**.**schema_name**.**table_name**"""
 
     metastore_id: Optional[str] = None
     """Unique identifier of parent metastore."""
@@ -9893,7 +9989,7 @@ class TableInfo:
     """Storage root URL for table (for **MANAGED**, **EXTERNAL** tables)."""
 
     table_constraints: Optional[List[TableConstraint]] = None
-    """List of table constraints. Note: this field is not set in the output of the __listTables__ API."""
+    """List of table constraints. Note: this field is not set in the output of the **listTables** API."""
 
     table_id: Optional[str] = None
     """The unique identifier of the table."""
@@ -9907,15 +10003,16 @@ class TableInfo:
     """Username of user who last modified the table."""
 
     view_definition: Optional[str] = None
-    """View definition SQL (when __table_type__ is **VIEW**, **MATERIALIZED_VIEW**, or
+    """View definition SQL (when **table_type** is **VIEW**, **MATERIALIZED_VIEW**, or
     **STREAMING_TABLE**)"""
 
     view_dependencies: Optional[DependencyList] = None
-    """View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**, **STREAMING_TABLE**) -
-    when DependencyList is None, the dependency is not provided; - when DependencyList is an empty
-    list, the dependency is provided but is empty; - when DependencyList is not an empty list,
-    dependencies are provided and recorded. Note: this field is not set in the output of the
-    __listTables__ API."""
+    """View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**, **STREAMING_TABLE**)
+    
+    - when DependencyList is None, the dependency is not provided;
+    - when DependencyList is an empty list, the dependency is provided but is empty;
+    - when DependencyList is not an empty list, dependencies are provided and recorded. Note: this
+      field is not set in the output of the **listTables** API."""
 
     def as_dict(self) -> dict:
         """Serializes the TableInfo into a dictionary suitable for use as a JSON request body."""
@@ -10104,7 +10201,6 @@ class TableInfo:
 
 
 class TableOperation(Enum):
-
     READ = "READ"
     READ_WRITE = "READ_WRITE"
 
@@ -10198,7 +10294,6 @@ class TableSummary:
 
 
 class TableType(Enum):
-
     EXTERNAL = "EXTERNAL"
     EXTERNAL_SHALLOW_CLONE = "EXTERNAL_SHALLOW_CLONE"
     FOREIGN = "FOREIGN"
@@ -10260,6 +10355,8 @@ class TemporaryCredentials:
 
     gcp_oauth_token: Optional[GcpOauthToken] = None
 
+    r2_temp_credentials: Optional[R2Credentials] = None
+
     def as_dict(self) -> dict:
         """Serializes the TemporaryCredentials into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -10271,6 +10368,8 @@ class TemporaryCredentials:
             body["expiration_time"] = self.expiration_time
         if self.gcp_oauth_token:
             body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
+        if self.r2_temp_credentials:
+            body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -10284,6 +10383,8 @@ class TemporaryCredentials:
             body["expiration_time"] = self.expiration_time
         if self.gcp_oauth_token:
             body["gcp_oauth_token"] = self.gcp_oauth_token
+        if self.r2_temp_credentials:
+            body["r2_temp_credentials"] = self.r2_temp_credentials
         return body
 
     @classmethod
@@ -10294,6 +10395,7 @@ class TemporaryCredentials:
             azure_aad=_from_dict(d, "azure_aad", AzureActiveDirectoryToken),
             expiration_time=d.get("expiration_time", None),
             gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
+            r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
         )
 
 
@@ -10382,7 +10484,7 @@ class UpdateAccountsMetastore:
     """The owner of the metastore."""
 
     privilege_model_version: Optional[str] = None
-    """Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)."""
+    """Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``)."""
 
     storage_root_credential_id: Optional[str] = None
     """UUID of storage credential to access the metastore storage_root."""
@@ -10941,9 +11043,8 @@ class VolumeInfo:
     volume_type: Optional[VolumeType] = None
     """The type of the volume. An external volume is located in the specified external location. A
     managed volume is located in the default location which is specified by the parent schema, or
-    the parent catalog, or the Metastore. [Learn more]
-    
-    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
+    the parent catalog, or the Metastore. `Learn more
+    <https://docs.databricks.com/aws/en/volumes/managed-vs-external>`__"""
 
     def as_dict(self) -> dict:
         """Serializes the VolumeInfo into a dictionary suitable for use as a JSON request body."""
@@ -11048,13 +11149,11 @@ class VolumeInfo:
 
 
 class VolumeOperation(Enum):
-
     READ_VOLUME = "READ_VOLUME"
     WRITE_VOLUME = "WRITE_VOLUME"
 
 
 class VolumeType(Enum):
-
     EXTERNAL = "EXTERNAL"
     MANAGED = "MANAGED"
 
@@ -11094,8 +11193,8 @@ class WorkspaceBinding:
 
 
 class WorkspaceBindingBindingType(Enum):
-    """Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation` enum in
-    `credentials_common.proto`."""
+    """Using ``BINDING_TYPE_`` prefix here to avoid conflict with ``TableOperation`` enum in
+    ``credentials_common.proto``."""
 
     BINDING_TYPE_READ_ONLY = "BINDING_TYPE_READ_ONLY"
     BINDING_TYPE_READ_WRITE = "BINDING_TYPE_READ_WRITE"
@@ -11355,11 +11454,13 @@ class AccountStorageCredentialsAPI:
         credential_info: Optional[CreateAccountsStorageCredential] = None,
         skip_validation: Optional[bool] = None,
     ) -> AccountsCreateStorageCredentialInfo:
-        """Creates a new storage credential. The request object is specific to the cloud: - **AwsIamRole** for
-        AWS credentials - **AzureServicePrincipal** for Azure credentials - **GcpServiceAccountKey** for GCP
-        credentials
+        """Creates a new storage credential. The request object is specific to the cloud:
 
-        The caller must be a metastore admin and have the `CREATE_STORAGE_CREDENTIAL` privilege on the
+        - **AwsIamRole** for AWS credentials
+        - **AzureServicePrincipal** for Azure credentials
+        - **GcpServiceAccountKey** for GCP credentials
+
+        The caller must be a metastore admin and have the ``CREATE_STORAGE_CREDENTIAL`` privilege on the
         metastore.
 
         :param metastore_id: str
@@ -11507,8 +11608,8 @@ class AccountStorageCredentialsAPI:
 
 
 class ArtifactAllowlistsAPI:
-    """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so
-    that users can leverage these artifacts on compute configured with shared access mode."""
+    """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the ``allowlist`` in UC so
+    that users can use these artifacts on compute configured with shared access mode."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -11529,7 +11630,7 @@ class ArtifactAllowlistsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}", headers=headers)
         return ArtifactAllowlistInfo.from_dict(res)
@@ -11577,7 +11678,7 @@ class ArtifactAllowlistsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}", body=body, headers=headers
@@ -11602,6 +11703,7 @@ class CatalogsAPI:
         *,
         comment: Optional[str] = None,
         connection_name: Optional[str] = None,
+        custom_max_retention_hours: Optional[int] = None,
         managed_encryption_settings: Optional[EncryptionSettings] = None,
         options: Optional[Dict[str, str]] = None,
         properties: Optional[Dict[str, str]] = None,
@@ -11618,6 +11720,8 @@ class CatalogsAPI:
           User-provided free-form text description.
         :param connection_name: str (optional)
           The name of the connection to an external data source.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the catalog
         :param managed_encryption_settings: :class:`EncryptionSettings` (optional)
           Control CMK encryption for managed catalog data
         :param options: Dict[str,str] (optional)
@@ -11641,6 +11745,8 @@ class CatalogsAPI:
             body["comment"] = comment
         if connection_name is not None:
             body["connection_name"] = connection_name
+        if custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = custom_max_retention_hours
         if managed_encryption_settings is not None:
             body["managed_encryption_settings"] = managed_encryption_settings.as_dict()
         if name is not None:
@@ -11662,7 +11768,7 @@ class CatalogsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/catalogs", body=body, headers=headers)
         return CatalogInfo.from_dict(res)
@@ -11688,7 +11794,7 @@ class CatalogsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, headers=headers)
 
@@ -11714,7 +11820,7 @@ class CatalogsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, headers=headers)
         return CatalogInfo.from_dict(res)
@@ -11746,13 +11852,16 @@ class CatalogsAPI:
           Whether to include catalogs not bound to the workspace. Effective only if the user has permission to
           update the catalog–workspace binding.
         :param max_results: int (optional)
-          Maximum number of catalogs to return. - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all valid catalogs are returned (not recommended). - Note: The number of
-          returned catalogs might be less than the specified max_results size, even zero. The only definitive
-          indication that no further catalogs can be fetched is when the next_page_token is unset from the
-          response.
+          Maximum number of catalogs to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid catalogs are returned (not recommended).
+          - Note: The number of returned catalogs might be less than the specified max_results size, even
+            zero. The only definitive indication that no further catalogs can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -11774,7 +11883,7 @@ class CatalogsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -11792,6 +11901,7 @@ class CatalogsAPI:
         name: str,
         *,
         comment: Optional[str] = None,
+        custom_max_retention_hours: Optional[int] = None,
         enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
         isolation_mode: Optional[CatalogIsolationMode] = None,
         managed_encryption_settings: Optional[EncryptionSettings] = None,
@@ -11807,6 +11917,8 @@ class CatalogsAPI:
           The name of the catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the catalog
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`CatalogIsolationMode` (optional)
@@ -11828,6 +11940,8 @@ class CatalogsAPI:
         body = {}
         if comment is not None:
             body["comment"] = comment
+        if custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = custom_max_retention_hours
         if enable_predictive_optimization is not None:
             body["enable_predictive_optimization"] = enable_predictive_optimization.value
         if isolation_mode is not None:
@@ -11849,21 +11963,20 @@ class CatalogsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/catalogs/{name}", body=body, headers=headers)
         return CatalogInfo.from_dict(res)
 
 
 class ConnectionsAPI:
-    """Connections allow for creating a connection to an external data source.
+    """A connection represents an external data source for use within Databricks.
 
-    A connection is an abstraction of an external data source that can be connected from Databricks Compute.
-    Creating a connection object is the first step to managing external data sources within Unity Catalog,
-    with the second step being creating a data object (catalog, schema, or table) using the connection. Data
-    objects derived from a connection can be written to or read from similar to other Unity Catalog data
-    objects based on cloud storage. Users may create different types of connections with each connection
-    having a unique set of configuration options to support credential management and other settings."""
+    Creating a connection object is the first step to managing external data sources within Unity Catalog. The
+    second step is creating a data object (catalog, schema, or table) using the connection. Data objects
+    derived from a connection can be written to or read from similar to other Unity Catalog data objects based
+    on cloud storage. You can create different types of connections, and each connection has a unique set of
+    configuration options to support credential management and other settings."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -11875,6 +11988,8 @@ class ConnectionsAPI:
         options: Dict[str, str],
         *,
         comment: Optional[str] = None,
+        environment_settings: Optional[EnvironmentSettings] = None,
+        parent: Optional[str] = None,
         properties: Optional[Dict[str, str]] = None,
         read_only: Optional[bool] = None,
     ) -> ConnectionInfo:
@@ -11891,6 +12006,11 @@ class ConnectionsAPI:
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param environment_settings: :class:`EnvironmentSettings` (optional)
+          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
+        :param parent: str (optional)
+          Parent schema for schema-level connections, in format "schemas/{catalog}.{schema}". Absent for
+          metastore-level (L1) connections.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
@@ -11904,10 +12024,14 @@ class ConnectionsAPI:
             body["comment"] = comment
         if connection_type is not None:
             body["connection_type"] = connection_type.value
+        if environment_settings is not None:
+            body["environment_settings"] = environment_settings.as_dict()
         if name is not None:
             body["name"] = name
         if options is not None:
             body["options"] = options
+        if parent is not None:
+            body["parent"] = parent
         if properties is not None:
             body["properties"] = properties
         if read_only is not None:
@@ -11919,7 +12043,7 @@ class ConnectionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/connections", body=body, headers=headers)
         return ConnectionInfo.from_dict(res)
@@ -11939,7 +12063,7 @@ class ConnectionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/connections/{name}", headers=headers)
 
@@ -11958,12 +12082,14 @@ class ConnectionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/connections/{name}", headers=headers)
         return ConnectionInfo.from_dict(res)
 
-    def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ConnectionInfo]:
+    def list(
+        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None, parent: Optional[str] = None
+    ) -> Iterator[ConnectionInfo]:
         """List all connections.
 
         NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
@@ -11974,12 +12100,18 @@ class ConnectionsAPI:
         absent, which is the only indication that the end of results has been reached.
 
         :param max_results: int (optional)
-          Maximum number of connections to return. - If not set, all connections are returned (not
-          recommended). - when set to a value greater than 0, the page length is the minimum of this value and
-          a server configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of connections to return.
+
+          - If not set, all connections are returned (not recommended).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
+        :param parent: str (optional)
+          Optional. Parent schema filter for listing schema-level connections, in format
+          "schemas/{catalog}.{schema}".
 
         :returns: Iterator over :class:`ConnectionInfo`
         """
@@ -11989,13 +12121,15 @@ class ConnectionsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
+        if parent is not None:
+            query["parent"] = parent
         headers = {
             "Accept": "application/json",
         }
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -12009,7 +12143,13 @@ class ConnectionsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self, name: str, options: Dict[str, str], *, new_name: Optional[str] = None, owner: Optional[str] = None
+        self,
+        name: str,
+        options: Dict[str, str],
+        *,
+        environment_settings: Optional[EnvironmentSettings] = None,
+        new_name: Optional[str] = None,
+        owner: Optional[str] = None,
     ) -> ConnectionInfo:
         """Updates the connection that matches the supplied name.
 
@@ -12017,6 +12157,8 @@ class ConnectionsAPI:
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
+        :param environment_settings: :class:`EnvironmentSettings` (optional)
+          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param new_name: str (optional)
           New name for the connection.
         :param owner: str (optional)
@@ -12026,6 +12168,8 @@ class ConnectionsAPI:
         """
 
         body = {}
+        if environment_settings is not None:
+            body["environment_settings"] = environment_settings.as_dict()
         if new_name is not None:
             body["new_name"] = new_name
         if options is not None:
@@ -12039,7 +12183,7 @@ class ConnectionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/connections/{name}", body=body, headers=headers)
         return ConnectionInfo.from_dict(res)
@@ -12050,7 +12194,7 @@ class CredentialsAPI:
     tenant. Each credential is subject to Unity Catalog access-control policies that control which users and
     groups can access the credential.
 
-    To create credentials, you must be a Databricks account admin or have the `CREATE SERVICE CREDENTIAL`
+    To create credentials, you must be a Databricks account admin or have the ``CREATE SERVICE CREDENTIAL``
     privilege. The user who creates the credential can delegate ownership to another user or group to manage
     permissions on it."""
 
@@ -12126,7 +12270,7 @@ class CredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/credentials", body=body, headers=headers)
         return CredentialInfo.from_dict(res)
@@ -12153,7 +12297,7 @@ class CredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/credentials/{name_arg}", query=query, headers=headers)
 
@@ -12189,7 +12333,7 @@ class CredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/temporary-service-credentials", body=body, headers=headers)
         return TemporaryCredentials.from_dict(res)
@@ -12210,7 +12354,7 @@ class CredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/credentials/{name_arg}", headers=headers)
         return CredentialInfo.from_dict(res)
@@ -12223,7 +12367,7 @@ class CredentialsAPI:
         page_token: Optional[str] = None,
         purpose: Optional[CredentialPurpose] = None,
     ) -> Iterator[CredentialInfo]:
-        """Gets an array of credentials (as __CredentialInfo__ objects).
+        """Gets an array of credentials (as **CredentialInfo** objects).
 
         The array is limited to only the credentials that the caller has permission to access. If the caller
         is a metastore admin, retrieval of credentials is unrestricted. There is no guarantee of a specific
@@ -12237,10 +12381,13 @@ class CredentialsAPI:
           Whether to include credentials not bound to the workspace. Effective only if the user has permission
           to update the credential–workspace binding.
         :param max_results: int (optional)
-          Maximum number of credentials to return. - If not set, the default max page size is used. - When set
-          to a value greater than 0, the page length is the minimum of this value and a server-configured
-          value. - When set to 0, the page length is set to a server-configured value (recommended). - When
-          set to a value less than 0, an invalid parameter error is returned.
+          Maximum number of credentials to return.
+
+          - If not set, the default max page size is used.
+          - When set to a value greater than 0, the page length is the minimum of this value and a
+            server-configured value.
+          - When set to 0, the page length is set to a server-configured value (recommended).
+          - When set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Opaque token to retrieve the next page of results.
         :param purpose: :class:`CredentialPurpose` (optional)
@@ -12264,7 +12411,7 @@ class CredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/credentials", query=query, headers=headers)
@@ -12293,8 +12440,8 @@ class CredentialsAPI:
     ) -> CredentialInfo:
         """Updates a service or storage credential on the metastore.
 
-        The caller must be the owner of the credential or a metastore admin or have the `MANAGE` permission.
-        If the caller is a metastore admin, only the __owner__ field can be changed.
+        The caller must be the owner of the credential or a metastore admin or have the ``MANAGE`` permission.
+        If the caller is a metastore admin, only the **owner** field can be changed.
 
         :param name_arg: str
           Name of the credential.
@@ -12356,7 +12503,7 @@ class CredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/credentials/{name_arg}", body=body, headers=headers)
         return CredentialInfo.from_dict(res)
@@ -12375,13 +12522,13 @@ class CredentialsAPI:
     ) -> ValidateCredentialResponse:
         """Validates a credential.
 
-        For service credentials (purpose is **SERVICE**), either the __credential_name__ or the cloud-specific
+        For service credentials (purpose is **SERVICE**), either the **credential_name** or the cloud-specific
         credential must be provided.
 
-        For storage credentials (purpose is **STORAGE**), at least one of __external_location_name__ and
-        __url__ need to be provided. If only one of them is provided, it will be used for validation. And if
-        both are provided, the __url__ will be used for validation, and __external_location_name__ will be
-        ignored when checking overlapping urls. Either the __credential_name__ or the cloud-specific
+        For storage credentials (purpose is **STORAGE**), at least one of **external_location_name** and
+        **url** need to be provided. If only one of them is provided, it will be used for validation. And if
+        both are provided, the **url** will be used for validation, and **external_location_name** will be
+        ignored when checking overlapping urls. Either the **credential_name** or the cloud-specific
         credential must be provided.
 
         The caller must be a metastore admin or the credential owner or have the required permission on the
@@ -12430,7 +12577,7 @@ class CredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/validate-credentials", body=body, headers=headers)
         return ValidateCredentialResponse.from_dict(res)
@@ -12438,9 +12585,9 @@ class CredentialsAPI:
 
 class EntityTagAssignmentsAPI:
     """Tags are attributes that include keys and optional values that you can use to organize and categorize
-    entities in Unity Catalog. Entity tagging is currently supported on catalogs, schemas, tables (including
-    views), columns, volumes. With these APIs, users can create, update, delete, and list tag assignments
-    across Unity Catalog entities"""
+    entities in Unity Catalog. Entity tagging is supported on catalogs, schemas, tables (including views),
+    columns, and volumes. With these APIs, you can create, update, delete, and list tag assignments across
+    Unity Catalog entities."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -12448,14 +12595,15 @@ class EntityTagAssignmentsAPI:
     def create(self, tag_assignment: EntityTagAssignment) -> EntityTagAssignment:
         """Creates a tag assignment for an Unity Catalog entity.
 
-        To add tags to Unity Catalog entities, you must own the entity or have the following privileges: -
-        **APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the
-        entity's parent catalog
+        To add tags to Unity Catalog entities, you must own the entity or have the following privileges:
+
+        - **APPLY TAG** on the entity
+        - **USE SCHEMA** on the entity's parent schema
+        - **USE CATALOG** on the entity's parent catalog
 
         To add a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
-        permission on the tag policy. See [Manage tag policy permissions].
-
-        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+        permission on the tag policy. See `Manage tag policy permissions
+        <https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions>`__.
 
         :param tag_assignment: :class:`EntityTagAssignment`
 
@@ -12463,6 +12611,7 @@ class EntityTagAssignmentsAPI:
         """
 
         body = tag_assignment.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -12470,7 +12619,7 @@ class EntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/entity-tag-assignments", body=body, headers=headers)
         return EntityTagAssignment.from_dict(res)
@@ -12479,13 +12628,14 @@ class EntityTagAssignmentsAPI:
         """Deletes a tag assignment for an Unity Catalog entity by its key.
 
         To delete tags from Unity Catalog entities, you must own the entity or have the following privileges:
-        - **APPLY TAG** on the entity - **USE_SCHEMA** on the entity's parent schema - **USE_CATALOG** on the
-        entity's parent catalog
+
+        - **APPLY TAG** on the entity
+        - **USE_SCHEMA** on the entity's parent schema
+        - **USE_CATALOG** on the entity's parent catalog
 
         To delete a governed tag from Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
-        permission on the tag policy. See [Manage tag policy permissions].
-
-        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+        permission on the tag policy. See `Manage tag policy permissions
+        <https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions>`__.
 
         :param entity_type: str
           The type of the entity to which the tag is assigned.
@@ -12503,7 +12653,7 @@ class EntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE",
@@ -12530,7 +12680,7 @@ class EntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -12571,7 +12721,7 @@ class EntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -12592,14 +12742,15 @@ class EntityTagAssignmentsAPI:
     ) -> EntityTagAssignment:
         """Updates an existing tag assignment for an Unity Catalog entity.
 
-        To update tags to Unity Catalog entities, you must own the entity or have the following privileges: -
-        **APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the
-        entity's parent catalog
+        To update tags to Unity Catalog entities, you must own the entity or have the following privileges:
+
+        - **APPLY TAG** on the entity
+        - **USE SCHEMA** on the entity's parent schema
+        - **USE CATALOG** on the entity's parent catalog
 
         To update a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
-        permission on the tag policy. See [Manage tag policy permissions].
-
-        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+        permission on the tag policy. See `Manage tag policy permissions
+        <https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions>`__.
 
         :param entity_type: str
           The type of the entity to which the tag is assigned.
@@ -12610,14 +12761,14 @@ class EntityTagAssignmentsAPI:
         :param tag_assignment: :class:`EntityTagAssignment`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`EntityTagAssignment`
         """
@@ -12633,7 +12784,7 @@ class EntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -12668,6 +12819,7 @@ class ExternalLineageAPI:
         """
 
         body = external_lineage_relationship.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -12675,7 +12827,7 @@ class ExternalLineageAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/lineage-tracking/external-lineage", body=body, headers=headers)
         return ExternalLineageRelationship.from_dict(res)
@@ -12698,7 +12850,7 @@ class ExternalLineageAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/lineage-tracking/external-lineage", query=query, headers=headers)
 
@@ -12716,7 +12868,7 @@ class ExternalLineageAPI:
         :param object_info: :class:`ExternalLineageObject`
           The object to query external lineage relationships for. Since this field is a query parameter,
           please flatten the nested fields. For example, if the object is a table, the query parameter should
-          look like: `object_info.table.name=main.sales.customers`
+          look like: ``object_info.table.name=main.sales.customers``
         :param lineage_direction: :class:`LineageDirection`
           The lineage direction to filter on.
         :param page_size: int (optional)
@@ -12743,7 +12895,7 @@ class ExternalLineageAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/lineage-tracking/external-lineage", query=query, headers=headers)
@@ -12763,14 +12915,14 @@ class ExternalLineageAPI:
         :param external_lineage_relationship: :class:`UpdateRequestExternalLineage`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`ExternalLineageRelationship`
         """
@@ -12786,7 +12938,7 @@ class ExternalLineageAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/lineage-tracking/external-lineage", query=query, body=body, headers=headers
@@ -12838,23 +12990,23 @@ class ExternalLocationsAPI:
         :param comment: str (optional)
           User-provided free-form text description.
         :param effective_enable_file_events: bool (optional)
-          The effective value of `enable_file_events` after applying server-side defaults.
+          The effective value of ``enable_file_events`` after applying server-side defaults.
         :param effective_file_event_queue: :class:`FileEventQueue` (optional)
           The effective file event queue configuration after applying server-side defaults. Always populated
-          when a queue is provisioned, regardless of whether the user explicitly set `enable_file_events`. Use
-          this field instead of `file_event_queue` for reading the actual queue state.
+          when a queue is provisioned, regardless of whether the user explicitly set ``enable_file_events``.
+          Use this field instead of ``file_event_queue`` for reading the actual queue state.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          Whether to enable file events on this external location. Default to ``true``. Set to ``false`` to
           disable file events. The actual applied value may differ due to server-side defaults; check
-          `effective_enable_file_events` for the effective state.
+          ``effective_enable_file_events`` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
-          one of the documented properties.
+          File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
+          exactly one of the documented properties.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -12895,7 +13047,7 @@ class ExternalLocationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/external-locations", body=body, headers=headers)
         return ExternalLocationInfo.from_dict(res)
@@ -12921,7 +13073,7 @@ class ExternalLocationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/external-locations/{name}", query=query, headers=headers)
 
@@ -12947,7 +13099,7 @@ class ExternalLocationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/external-locations/{name}", query=query, headers=headers)
         return ExternalLocationInfo.from_dict(res)
@@ -12960,7 +13112,7 @@ class ExternalLocationsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ExternalLocationInfo]:
-        """Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
+        """Gets an array of external locations (**ExternalLocationInfo** objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
         the external location. There is no guarantee of a specific ordering of the elements in the array.
 
@@ -12979,9 +13131,12 @@ class ExternalLocationsAPI:
           permission to update the location–workspace binding.
         :param max_results: int (optional)
           Maximum number of external locations to return. If not set, all the external locations are returned
-          (not recommended). - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -13003,7 +13158,7 @@ class ExternalLocationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -13047,23 +13202,23 @@ class ExternalLocationsAPI:
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
         :param effective_enable_file_events: bool (optional)
-          The effective value of `enable_file_events` after applying server-side defaults.
+          The effective value of ``enable_file_events`` after applying server-side defaults.
         :param effective_file_event_queue: :class:`FileEventQueue` (optional)
           The effective file event queue configuration after applying server-side defaults. Always populated
-          when a queue is provisioned, regardless of whether the user explicitly set `enable_file_events`. Use
-          this field instead of `file_event_queue` for reading the actual queue state.
+          when a queue is provisioned, regardless of whether the user explicitly set ``enable_file_events``.
+          Use this field instead of ``file_event_queue`` for reading the actual queue state.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          Whether to enable file events on this external location. Default to ``true``. Set to ``false`` to
           disable file events. The actual applied value may differ due to server-side defaults; check
-          `effective_enable_file_events` for the effective state.
+          ``effective_enable_file_events`` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
-          one of the documented properties.
+          File event queue settings. If ``enable_file_events`` is not ``false``, must be defined and have
+          exactly one of the documented properties.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
@@ -13119,7 +13274,7 @@ class ExternalLocationsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/external-locations/{name}", body=body, headers=headers)
         return ExternalLocationInfo.from_dict(res)
@@ -13147,6 +13302,7 @@ class ExternalMetadataAPI:
         """
 
         body = external_metadata.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -13154,7 +13310,7 @@ class ExternalMetadataAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/lineage-tracking/external-metadata", body=body, headers=headers)
         return ExternalMetadata.from_dict(res)
@@ -13174,7 +13330,7 @@ class ExternalMetadataAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/lineage-tracking/external-metadata/{name}", headers=headers)
 
@@ -13193,7 +13349,7 @@ class ExternalMetadataAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/lineage-tracking/external-metadata/{name}", headers=headers)
         return ExternalMetadata.from_dict(res)
@@ -13226,7 +13382,7 @@ class ExternalMetadataAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/lineage-tracking/external-metadata", query=query, headers=headers)
@@ -13250,14 +13406,14 @@ class ExternalMetadataAPI:
         :param external_metadata: :class:`ExternalMetadata`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`ExternalMetadata`
         """
@@ -13273,7 +13429,7 @@ class ExternalMetadataAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/lineage-tracking/external-metadata/{name}", query=query, body=body, headers=headers
@@ -13286,7 +13442,7 @@ class FunctionsAPI:
 
     The function implementation can be any SQL expression or Query, and it can be invoked wherever a table
     reference is allowed in a query. In Unity Catalog, a function resides at the same level as a table, so it
-    can be referenced with the form __catalog_name__.__schema_name__.__function_name__."""
+    can be referenced with the form **catalog_name**.**schema_name**.**function_name**."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -13296,12 +13452,13 @@ class FunctionsAPI:
 
         Creates a new function
 
-        The user must have the following permissions in order for the function to be created: -
-        **USE_CATALOG** on the function's parent catalog - **USE_SCHEMA** and **CREATE_FUNCTION** on the
-        function's parent schema
+        The user must have the following permissions in order for the function to be created:
+
+        - **USE_CATALOG** on the function's parent catalog
+        - **USE_SCHEMA** and **CREATE_FUNCTION** on the function's parent schema
 
         :param function_info: :class:`CreateFunction`
-          Partial __FunctionInfo__ specifying the function to be created.
+          Partial **FunctionInfo** specifying the function to be created.
 
         :returns: :class:`FunctionInfo`
         """
@@ -13316,21 +13473,24 @@ class FunctionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/functions", body=body, headers=headers)
         return FunctionInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
         """Deletes the function that matches the supplied name. For the deletion to succeed, the user must
-        satisfy one of the following conditions: - Is the owner of the function's parent catalog - Is the
-        owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent catalog -
-        Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent catalog
-        and the **USE_SCHEMA** privilege on its parent schema
+        satisfy one of the following conditions:
+
+        - Is the owner of the function's parent catalog
+        - Is the owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent
+          catalog
+        - Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent
+          catalog and the **USE_SCHEMA** privilege on its parent schema
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__) .
+          **catalog_name**.**schema_name**.**function__name**) .
         :param force: bool (optional)
           Force deletion even if the function is notempty.
 
@@ -13344,21 +13504,23 @@ class FunctionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/functions/{name}", query=query, headers=headers)
 
     def get(self, name: str, *, include_browse: Optional[bool] = None) -> FunctionInfo:
         """Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must
-        satisfy one of the following requirements: - Is a metastore admin - Is an owner of the function's
-        parent catalog - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner
-        of the function - Have the **USE_CATALOG** privilege on the function's parent catalog, the
-        **USE_SCHEMA** privilege on the function's parent schema, and the **EXECUTE** privilege on the
-        function itself
+        satisfy one of the following requirements:
+
+        - Is a metastore admin
+        - Is an owner of the function's parent catalog
+        - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner of the function
+        - Have the **USE_CATALOG** privilege on the function's parent catalog, the **USE_SCHEMA** privilege on
+          the function's parent schema, and the **EXECUTE** privilege on the function itself
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__).
+          **catalog_name**.**schema_name**.**function__name**).
         :param include_browse: bool (optional)
           Whether to include functions in the response for which the principal can only access selective
           metadata for
@@ -13375,7 +13537,7 @@ class FunctionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/functions/{name}", query=query, headers=headers)
         return FunctionInfo.from_dict(res)
@@ -13411,9 +13573,11 @@ class FunctionsAPI:
           metadata for
         :param max_results: int (optional)
           Maximum number of functions to return. If not set, all the functions are returned (not recommended).
+
           - when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -13437,7 +13601,7 @@ class FunctionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -13453,14 +13617,18 @@ class FunctionsAPI:
     def update(self, name: str, *, owner: Optional[str] = None) -> FunctionInfo:
         """Updates the function that matches the supplied name. Only the owner of the function can be updated. If
         the user is not a metastore admin, the user must be a member of the group that is the new function
-        owner. - Is a metastore admin - Is the owner of the function's parent catalog - Is the owner of the
-        function's parent schema and has the **USE_CATALOG** privilege on its parent catalog - Is the owner of
-        the function itself and has the **USE_CATALOG** privilege on its parent catalog as well as the
-        **USE_SCHEMA** privilege on the function's parent schema.
+        owner.
+
+        - Is a metastore admin
+        - Is the owner of the function's parent catalog
+        - Is the owner of the function's parent schema and has the **USE_CATALOG** privilege on its parent
+          catalog
+        - Is the owner of the function itself and has the **USE_CATALOG** privilege on its parent catalog as
+          well as the **USE_SCHEMA** privilege on the function's parent schema.
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__).
+          **catalog_name**.**schema_name**.**function__name**).
         :param owner: str (optional)
           Username of current owner of the function.
 
@@ -13477,7 +13645,7 @@ class FunctionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/functions/{name}", body=body, headers=headers)
         return FunctionInfo.from_dict(res)
@@ -13489,10 +13657,9 @@ class GrantsAPI:
     schema that contains the object. Securable objects in Unity Catalog are hierarchical and privileges are
     inherited downward.
 
-    Securable objects in Unity Catalog are hierarchical and privileges are inherited downward. This means that
-    granting a privilege on the catalog automatically grants the privilege to all current and future objects
-    within the catalog. Similarly, privileges granted on a schema are inherited by all current and future
-    objects within that schema."""
+    This means that granting a privilege on the catalog automatically grants the privilege to all current and
+    future objects within the catalog. Similarly, privileges granted on a schema are inherited by all current
+    and future objects within that schema."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -13524,11 +13691,14 @@ class GrantsAPI:
           present in a single page response is guaranteed to contain all the privileges granted on the
           requested Securable for the respective principal.
 
-          If not set, all the permissions are returned. If set to - lesser than 0: invalid parameter error -
-          0: page length is set to a server configured value - lesser than 150 but greater than 0: invalid
-          parameter error (this is to ensure that server is able to return at least one complete
-          PrivilegeAssignment in a single page response) - greater than (or equal to) 150: page length is the
-          minimum of this value and a server configured value
+          If not set, all the permissions are returned. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete PrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
         :param principal: str (optional)
@@ -13550,7 +13720,7 @@ class GrantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/permissions/{securable_type}/{full_name}", query=query, headers=headers
@@ -13586,11 +13756,14 @@ class GrantsAPI:
           effective privileges granted on (or inherited by) the requested Securable for the respective
           principal.
 
-          If not set, all the effective permissions are returned. If set to - lesser than 0: invalid parameter
-          error - 0: page length is set to a server configured value - lesser than 150 but greater than 0:
-          invalid parameter error (this is to ensure that server is able to return at least one complete
-          EffectivePrivilegeAssignment in a single page response) - greater than (or equal to) 150: page
-          length is the minimum of this value and a server configured value
+          If not set, all the effective permissions are returned. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete EffectivePrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
         :param page_token: str (optional)
           Opaque token for the next page of results (pagination).
         :param principal: str (optional)
@@ -13613,7 +13786,7 @@ class GrantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -13623,8 +13796,147 @@ class GrantsAPI:
         )
         return EffectivePermissionsList.from_dict(res)
 
+    def list(
+        self,
+        securable_type: str,
+        full_name: str,
+        *,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        principal: Optional[str] = None,
+    ) -> Iterator[PrivilegeAssignment]:
+        """Lists the privilege assignments for a securable. Does not include inherited privileges. Paginated
+        version of Get Permissions API.
+
+        :param securable_type: str
+          Type of securable.
+        :param full_name: str
+          Full name of securable.
+        :param page_size: int (optional)
+          Specifies the maximum number of privilege assignments to return (page length). Every
+          PrivilegeAssignment present in a single page response is guaranteed to contain all the privileges
+          granted on the requested Securable for the respective principal.
+
+          If not set, page length is the server configured value. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete PrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+        :param principal: str (optional)
+          If provided, only the permissions for the specified principal (user or group) are returned.
+
+        :returns: Iterator over :class:`PrivilegeAssignment`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if principal is not None:
+            query["principal"] = principal
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/unity-catalog/privilege-assignments/{securable_type}/{full_name}",
+                query=query,
+                headers=headers,
+            )
+            if "privilege_assignments" in json:
+                for v in json["privilege_assignments"]:
+                    yield PrivilegeAssignment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_effective(
+        self,
+        securable_type: str,
+        full_name: str,
+        *,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        principal: Optional[str] = None,
+    ) -> Iterator[EffectivePrivilegeAssignment]:
+        """Lists the effective privilege assignments for a securable. Includes inherited privileges. Paginated
+        version of Get Effective Permissions API.
+
+        :param securable_type: str
+          Type of securable.
+        :param full_name: str
+          Full name of securable.
+        :param page_size: int (optional)
+          Specifies the maximum number of privilege assignments to return (page length). Every
+          EffectivePrivilegeAssignment present in a single page response is guaranteed to contain all the
+          effective privileges granted on (or inherited by) the requested Securable for the respective
+          principal.
+
+          If not set, a server-configured default is used. If set to
+
+          - lesser than 0: invalid parameter error
+          - 0: page length is set to a server configured value
+          - lesser than 150 but greater than 0: invalid parameter error (this is to ensure that server is able
+            to return at least one complete EffectivePrivilegeAssignment in a single page response)
+          - greater than (or equal to) 150: page length is the minimum of this value and a server configured
+            value
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+        :param principal: str (optional)
+          If provided, only the effective permissions for the specified principal (user or group) are
+          returned.
+
+        :returns: Iterator over :class:`EffectivePrivilegeAssignment`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if principal is not None:
+            query["principal"] = principal
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/unity-catalog/effective-privilege-assignments/{securable_type}/{full_name}",
+                query=query,
+                headers=headers,
+            )
+            if "effective_privilege_assignments" in json:
+                for v in json["effective_privilege_assignments"]:
+                    yield EffectivePrivilegeAssignment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def update(
-        self, securable_type: str, full_name: str, *, changes: Optional[List[PermissionsChange]] = None
+        self,
+        securable_type: str,
+        full_name: str,
+        *,
+        changes: Optional[List[PermissionsChange]] = None,
+        omit_permissions_in_response: Optional[bool] = None,
     ) -> UpdatePermissionsResponse:
         """Updates the permissions for a securable.
 
@@ -13634,6 +13946,8 @@ class GrantsAPI:
           Full name of securable.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permissions change objects.
+        :param omit_permissions_in_response: bool (optional)
+          Optional, default false. Specifies whether all the permissions should be returned in the response.
 
         :returns: :class:`UpdatePermissionsResponse`
         """
@@ -13641,6 +13955,8 @@ class GrantsAPI:
         body = {}
         if changes is not None:
             body["changes"] = [v.as_dict() for v in changes]
+        if omit_permissions_in_response is not None:
+            body["omit_permissions_in_response"] = omit_permissions_in_response
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -13648,7 +13964,7 @@ class GrantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.1/unity-catalog/permissions/{securable_type}/{full_name}", body=body, headers=headers
@@ -13673,8 +13989,8 @@ class MetastoresAPI:
         self._api = api_client
 
     def assign(self, workspace_id: int, metastore_id: str, default_catalog_name: str):
-        """Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
-        overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
+        """Creates a new metastore assignment. If an assignment for the same **workspace_id** exists, it will be
+        overwritten by the new **metastore_id** and **default_catalog_name**. The caller must be an account
         admin.
 
         :param workspace_id: int
@@ -13700,7 +14016,7 @@ class MetastoresAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", body=body, headers=headers)
 
@@ -13713,8 +14029,8 @@ class MetastoresAPI:
         storage_root: Optional[str] = None,
     ) -> MetastoreInfo:
         """Creates a new metastore based on a provided name and optional storage root path. By default (if the
-        __owner__ field is not set), the owner of the new metastore is the user calling the
-        __createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is
+        **owner** field is not set), the owner of the new metastore is the user calling the
+        **createMetastore** API. If the **owner** field is set to the empty string (**""**), the ownership is
         assigned to the System User instead.
 
         :param name: str
@@ -13722,7 +14038,7 @@ class MetastoresAPI:
         :param external_access_enabled: bool (optional)
           Whether to allow non-DBR clients to directly access entities under the metastore.
         :param region: str (optional)
-          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+          Cloud region which the metastore serves (e.g., ``us-west-2``, ``westus``).
         :param storage_root: str (optional)
           The storage root URL for metastore
 
@@ -13745,7 +14061,7 @@ class MetastoresAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/metastores", body=body, headers=headers)
         return MetastoreInfo.from_dict(res)
@@ -13763,7 +14079,7 @@ class MetastoresAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.1/unity-catalog/current-metastore-assignment", headers=headers)
         return MetastoreAssignment.from_dict(res)
@@ -13788,7 +14104,7 @@ class MetastoresAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/metastores/{id}", query=query, headers=headers)
 
@@ -13808,13 +14124,13 @@ class MetastoresAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/metastores/{id}", headers=headers)
         return MetastoreInfo.from_dict(res)
 
     def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[MetastoreInfo]:
-        """Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
+        """Gets an array of the available metastores (as **MetastoreInfo** objects). The caller must be an admin
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
 
         NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
@@ -13825,13 +14141,16 @@ class MetastoresAPI:
         absent, which is the only indication that the end of results has been reached.
 
         :param max_results: int (optional)
-          Maximum number of metastores to return. - when set to a value greater than 0, the page length is the
-          minimum of this value and a server configured value; - when set to 0, the page length is set to a
-          server configured value (recommended); - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all the metastores are returned (not recommended). - Note: The number of
-          returned metastores might be less than the specified max_results size, even zero. The only
-          definitive indication that no further metastores can be fetched is when the next_page_token is unset
-          from the response.
+          Maximum number of metastores to return.
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all the metastores are returned (not recommended).
+          - Note: The number of returned metastores might be less than the specified max_results size, even
+            zero. The only definitive indication that no further metastores can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -13849,7 +14168,7 @@ class MetastoresAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -13876,7 +14195,7 @@ class MetastoresAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.1/unity-catalog/metastore_summary", headers=headers)
         return GetMetastoreSummaryResponse.from_dict(res)
@@ -13901,7 +14220,7 @@ class MetastoresAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", query=query, headers=headers
@@ -13920,7 +14239,7 @@ class MetastoresAPI:
         privilege_model_version: Optional[str] = None,
         storage_root_credential_id: Optional[str] = None,
     ) -> MetastoreInfo:
-        """Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
+        """Updates information for a specific metastore. The caller must be a metastore admin. If the **owner**
         field is set to the empty string (**""**), the ownership is updated to the System User.
 
         :param id: str
@@ -13939,7 +14258,7 @@ class MetastoresAPI:
         :param owner: str (optional)
           The owner of the metastore.
         :param privilege_model_version: str (optional)
-          Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`).
+          Privilege model version of the metastore, of the form ``major.minor`` (e.g., ``1.0``).
         :param storage_root_credential_id: str (optional)
           UUID of storage credential to access the metastore storage_root.
 
@@ -13972,7 +14291,7 @@ class MetastoresAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/metastores/{id}", body=body, headers=headers)
         return MetastoreInfo.from_dict(res)
@@ -13980,9 +14299,9 @@ class MetastoresAPI:
     def update_assignment(
         self, workspace_id: int, *, default_catalog_name: Optional[str] = None, metastore_id: Optional[str] = None
     ):
-        """Updates a metastore assignment. This operation can be used to update __metastore_id__ or
-        __default_catalog_name__ for a specified Workspace, if the Workspace is already assigned a metastore.
-        The caller must be an account admin to update __metastore_id__; otherwise, the caller can be a
+        """Updates a metastore assignment. This operation can be used to update **metastore_id** or
+        **default_catalog_name** for a specified Workspace, if the Workspace is already assigned a metastore.
+        The caller must be an account admin to update **metastore_id**; otherwise, the caller can be a
         Workspace admin.
 
         :param workspace_id: int
@@ -14008,7 +14327,7 @@ class MetastoresAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", body=body, headers=headers)
 
@@ -14044,7 +14363,7 @@ class ModelVersionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}", headers=headers)
 
@@ -14086,7 +14405,7 @@ class ModelVersionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}", query=query, headers=headers
@@ -14119,7 +14438,7 @@ class ModelVersionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}", query=query, headers=headers
@@ -14139,7 +14458,7 @@ class ModelVersionsAPI:
 
         The returned models are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the model versions. A regular user needs to be the owner or have
-        the **EXECUTE** privilege on the parent registered model to recieve the model versions in the
+        the **EXECUTE** privilege on the parent registered model to receive the model versions in the
         response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 
@@ -14157,10 +14476,13 @@ class ModelVersionsAPI:
           metadata for
         :param max_results: int (optional)
           Maximum number of model versions to return. If not set, the page length is set to a server
-          configured value (100, as of 1/3/2024). - when set to a value greater than 0, the page length is the
-          minimum of this value and a server configured value(1000, as of 1/3/2024); - when set to 0, the page
-          length is set to a server configured value (100, as of 1/3/2024) (recommended); - when set to a
-          value less than 0, an invalid parameter error is returned;
+          configured value (100, as of 1/3/2024).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value(1000, as of 1/3/2024);
+          - when set to 0, the page length is set to a server configured value (100, as of 1/3/2024)
+            (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -14180,7 +14502,7 @@ class ModelVersionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -14310,7 +14632,7 @@ class ModelVersionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}", body=body, headers=headers
@@ -14365,6 +14687,7 @@ class OnlineTablesAPI:
         """
 
         body = table.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -14372,7 +14695,7 @@ class OnlineTablesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.0/online-tables", body=body, headers=headers)
         return Wait(
@@ -14399,7 +14722,7 @@ class OnlineTablesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/online-tables/{name}", headers=headers)
 
@@ -14418,7 +14741,7 @@ class OnlineTablesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/online-tables/{name}", headers=headers)
         return OnlineTable.from_dict(res)
@@ -14429,8 +14752,8 @@ class PoliciesAPI:
     in Unity Catalog. With ABAC policies, access is controlled in a hierarchical and scalable manner, based on
     data attributes rather than specific resources, enabling more flexible and comprehensive access control.
     ABAC policies in Unity Catalog support conditions on securable properties, governance tags, and
-    environment contexts. Callers must have the `MANAGE` privilege on a securable to view, create, update, or
-    delete ABAC policies."""
+    environment contexts. Callers must have the ``MANAGE`` privilege on a securable to view, create, update,
+    or delete ABAC policies."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -14445,6 +14768,7 @@ class PoliciesAPI:
         """
 
         body = policy_info.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -14452,7 +14776,7 @@ class PoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/policies", body=body, headers=headers)
         return PolicyInfo.from_dict(res)
@@ -14476,7 +14800,7 @@ class PoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "DELETE",
@@ -14504,7 +14828,7 @@ class PoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -14537,9 +14861,11 @@ class PoliciesAPI:
           Optional. Whether to include policies defined on parent securables. By default, the inherited
           policies are not included.
         :param max_results: int (optional)
-          Optional. Maximum number of policies to return on a single page (page length). - When not set or set
-          to 0, the page length is set to a server configured value (recommended); - When set to a value
-          greater than 0, the page length is the minimum of this value and a server configured value;
+          Optional. Maximum number of policies to return on a single page (page length).
+
+          - When not set or set to 0, the page length is set to a server configured value (recommended);
+          - When set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
         :param page_token: str (optional)
           Optional. Opaque pagination token to go to next page based on previous query.
 
@@ -14559,7 +14885,7 @@ class PoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -14593,12 +14919,14 @@ class PoliciesAPI:
         :param name: str
           Required. The name of the policy to update.
         :param policy_info: :class:`PolicyInfo`
-          Optional fields to update. This is the request body for updating a policy. Use `update_mask` field
-          to specify which fields in the request is to be updated. - If `update_mask` is empty or "*", all
-          specified fields will be updated. - If `update_mask` is specified, only the fields specified in the
-          `update_mask` will be updated. If a field is specified in `update_mask` and not set in the request,
-          the field will be cleared. Users can use the update mask to explicitly unset optional fields such as
-          `exception_principals` and `when_condition`.
+          Optional fields to update. This is the request body for updating a policy. Use ``update_mask`` field
+          to specify which fields in the request is to be updated.
+
+          - If ``update_mask`` is empty or "*", all specified fields will be updated.
+          - If ``update_mask`` is specified, only the fields specified in the ``update_mask`` will be updated.
+            If a field is specified in ``update_mask`` and not set in the request, the field will be cleared.
+            Users can use the update mask to explicitly unset optional fields such as ``exception_principals``
+            and ``when_condition``.
         :param update_mask: str (optional)
           Optional. The update mask field for specifying user intentions on which fields to update in the
           request.
@@ -14617,7 +14945,7 @@ class PoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -14647,23 +14975,28 @@ class QualityMonitorsAPI:
         already-initiated refresh job.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          UC table name in format ``catalog.schema.table_name``. table_name is case insensitive and spaces are
           disallowed.
         :param refresh_id: int
 
 
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
-            "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel", headers=headers
+            "POST",
+            f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel",
+            body=body,
+            headers=headers,
         )
 
     def create(
@@ -14688,16 +15021,22 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Creates a new
         monitor for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
-        table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
-        parent catalog, be an owner of the table's parent schema, and have **SELECT** access on the table. 3.
-        have the following permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on
-        the table's parent schema - be an owner of the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the table's parent schema, and
+           have **SELECT** access on the table
+        2. have **USE_CATALOG** on the table's parent catalog, be an owner of the table's parent schema, and
+           have **SELECT** access on the table.
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table.
 
         Workspace assets, such as the dashboard, will be created in the workspace where this call was made.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
         :param output_schema_name: str
           [Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
@@ -14707,7 +15046,7 @@ class QualityMonitorsAPI:
           data-monitoring assets. Normally prepopulated to a default user location via UI and Python APIs.
         :param baseline_table_name: str (optional)
           [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in
-          the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
+          the monitored ``table_name``. The baseline table and the monitored table shall have the same schema.
         :param custom_metrics: List[:class:`MonitorMetric`] (optional)
           [Create:OPT Update:OPT] Custom metrics.
         :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
@@ -14724,9 +15063,9 @@ class QualityMonitorsAPI:
         :param slicing_exprs: List[str] (optional)
           [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
           data is grouped by each expression independently, resulting in a separate slice for each predicate
-          and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
-          following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in
-          `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate
+          and its complements. For example ``slicing_exprs=[“col_1”, “col_2 > 10”]`` will generate the
+          following slices: two slices for ``col_2 > 10`` (True and False), and one slice per unique value in
+          ``col1``. For high-cardinality columns, only the top 100 unique values by frequency will generate
           slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
@@ -14775,7 +15114,7 @@ class QualityMonitorsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", body=body, headers=headers)
         return MonitorInfo.from_dict(res)
@@ -14784,10 +15123,15 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Deletes a monitor
         for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
@@ -14795,7 +15139,7 @@ class QualityMonitorsAPI:
         be manually cleaned up (if desired).
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
 
         :returns: :class:`DeleteMonitorResponse`
@@ -14807,7 +15151,7 @@ class QualityMonitorsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
         return DeleteMonitorResponse.from_dict(res)
@@ -14816,17 +15160,22 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets a monitor for
         the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema. 3. have the following
-        permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent
-        schema - **SELECT** privilege on the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema.
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - **SELECT** privilege on the table.
 
         The returned information includes configuration values, as well as information on assets created by
         the monitor. Some information (e.g., dashboard) may be filtered out if the caller is in a different
         workspace than where the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
 
         :returns: :class:`MonitorInfo`
@@ -14838,7 +15187,7 @@ class QualityMonitorsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
         return MonitorInfo.from_dict(res)
@@ -14847,10 +15196,15 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets info about a
         specific monitor refresh using the given refresh ID.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-        **SELECT** privilege on the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - **SELECT** privilege on the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
@@ -14868,7 +15222,7 @@ class QualityMonitorsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}", headers=headers
@@ -14879,15 +15233,20 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets an array
         containing the history of the most recent refreshes (up to 25) for this table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-        **SELECT** privilege on the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - **SELECT** privilege on the table.
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          UC table name in format ``catalog.schema.table_name``. table_name is case insensitive and spaces are
           disallowed.
 
         :returns: :class:`MonitorRefreshListResponse`
@@ -14899,7 +15258,7 @@ class QualityMonitorsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
         return MonitorRefreshListResponse.from_dict(res)
@@ -14910,16 +15269,21 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Regenerates the
         monitoring dashboard for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table
 
         The call must be made from the workspace where the monitor was created. The dashboard will be
         regenerated in the assets directory that was specified when the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
         :param warehouse_id: str (optional)
           Optional argument to specify the warehouse for dashboard regeneration. If not specified, the first
@@ -14938,7 +15302,7 @@ class QualityMonitorsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", f"/api/2.1/quality-monitoring/tables/{table_name}/monitor/dashboard", body=body, headers=headers
@@ -14949,29 +15313,38 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Queues a metric
         refresh on the monitor for the specified table. The refresh will execute in the background.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table
 
         Additionally, the call must be made from the workspace where the monitor was created.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          UC table name in format ``catalog.schema.table_name``. table_name is case insensitive and spaces are
           disallowed.
 
         :returns: :class:`MonitorRefreshInfo`
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
+        res = self._api.do(
+            "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", body=body, headers=headers
+        )
         return MonitorRefreshInfo.from_dict(res)
 
     def update(
@@ -14994,10 +15367,15 @@ class QualityMonitorsAPI:
         """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Updates a monitor
         for the specified table.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table.
+        The caller must either:
+
+        1. be an owner of the table's parent catalog
+        2. have **USE_CATALOG** on the table's parent catalog and be an owner of the table's parent schema
+        3. have the following permissions:
+
+        - **USE_CATALOG** on the table's parent catalog
+        - **USE_SCHEMA** on the table's parent schema
+        - be an owner of the table.
 
         Additionally, the call must be made from the workspace where the monitor was created, and the caller
         must be the original creator of the monitor.
@@ -15005,14 +15383,14 @@ class QualityMonitorsAPI:
         Certain configuration fields, such as output asset identifiers, cannot be updated.
 
         :param table_name: str
-          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          UC table name in format ``catalog.schema.table_name``. This field corresponds to the
           {full_table_name_arg} arg in the endpoint path.
         :param output_schema_name: str
           [Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
           {catalog}.{schema}
         :param baseline_table_name: str (optional)
           [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in
-          the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
+          the monitored ``table_name``. The baseline table and the monitored table shall have the same schema.
         :param custom_metrics: List[:class:`MonitorMetric`] (optional)
           [Create:OPT Update:OPT] Custom metrics.
         :param dashboard_id: str (optional)
@@ -15030,9 +15408,9 @@ class QualityMonitorsAPI:
         :param slicing_exprs: List[str] (optional)
           [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
           data is grouped by each expression independently, resulting in a separate slice for each predicate
-          and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
-          following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in
-          `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate
+          and its complements. For example ``slicing_exprs=[“col_1”, “col_2 > 10”]`` will generate the
+          following slices: two slices for ``col_2 > 10`` (True and False), and one slice per unique value in
+          ``col1``. For high-cardinality columns, only the top 100 unique values by frequency will generate
           slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
@@ -15074,7 +15452,7 @@ class QualityMonitorsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", body=body, headers=headers)
         return MonitorInfo.from_dict(res)
@@ -15087,24 +15465,25 @@ class RegisteredModelsAPI:
 
     An MLflow registered model resides in the third layer of Unity Catalog’s three-level namespace.
     Registered models contain model versions, which correspond to actual ML models (MLflow models). Creating
-    new model versions currently requires use of the MLflow Python client. Once model versions are created,
-    you can load them for batch inference using MLflow Python client APIs, or deploy them for real-time
-    serving using Databricks Model Serving.
+    new model versions requires use of the MLflow Python client. After model versions are created, you can
+    load them for batch inference using MLflow Python client APIs, or deploy them for real-time serving using
+    Databricks Model Serving.
 
     All operations on registered models and model versions require USE_CATALOG permissions on the enclosing
     catalog and USE_SCHEMA permissions on the enclosing schema. In addition, the following additional
     privileges are required for various operations:
 
-    * To create a registered model, users must additionally have the CREATE_MODEL permission on the target
-    schema. * To view registered model or model version metadata, model version data files, or invoke a model
-    version, users must additionally have the EXECUTE permission on the registered model * To update
-    registered model or model version tags, users must additionally have APPLY TAG permissions on the
-    registered model * To update other registered model or model version metadata (comments, aliases) create a
-    new model version, or update permissions on the registered model, users must be owners of the registered
-    model.
+    - To create a registered model, users must additionally have the CREATE_MODEL permission on the target
+      schema.
+    - To view registered model or model version metadata, model version data files, or invoke a model version,
+      users must additionally have the EXECUTE permission on the registered model
+    - To update registered model or model version tags, users must additionally have APPLY TAG permissions on
+      the registered model
+    - To update other registered model or model version metadata (comments, aliases) create a new model
+      version, or update permissions on the registered model, users must be owners of the registered model.
 
-    Note: The securable type for models is FUNCTION. When using REST APIs (e.g. tagging, grants) that specify
-    a securable type, use FUNCTION as the securable type."""
+    Note: The securable type for models is FUNCTION. When using REST APIs (for example, tagging, grants) that
+    specify a securable type, use FUNCTION as the securable type."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -15132,9 +15511,11 @@ class RegisteredModelsAPI:
         File storage for model versions in the registered model will be located in the default location which
         is specified by the parent schema, or the parent catalog, or the Metastore.
 
-        For registered model creation to succeed, the user must satisfy the following conditions: - The caller
-        must be a metastore admin, or be the owner of the parent catalog and schema, or have the
-        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        For registered model creation to succeed, the user must satisfy the following conditions:
+
+        - The caller must be a metastore admin, or be the owner of the parent catalog and schema, or have the
+          **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent
+          schema.
         - The caller must have the **CREATE MODEL** or **CREATE FUNCTION** privilege on the parent schema.
 
         :param aliases: List[:class:`RegisteredModelAlias`] (optional)
@@ -15206,7 +15587,7 @@ class RegisteredModelsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/models", body=body, headers=headers)
         return RegisteredModelInfo.from_dict(res)
@@ -15228,7 +15609,7 @@ class RegisteredModelsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}", headers=headers)
 
@@ -15251,7 +15632,7 @@ class RegisteredModelsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}", headers=headers)
 
@@ -15286,7 +15667,7 @@ class RegisteredModelsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/models/{full_name}", query=query, headers=headers)
         return RegisteredModelInfo.from_dict(res)
@@ -15305,7 +15686,7 @@ class RegisteredModelsAPI:
 
         The returned models are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the registered models. A regular user needs to be the owner or
-        have the **EXECUTE** privilege on the registered model to recieve the registered models in the
+        have the **EXECUTE** privilege on the registered model to receive the registered models in the
         response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 
@@ -15324,17 +15705,23 @@ class RegisteredModelsAPI:
         :param max_results: int (optional)
           Max number of registered models to return.
 
-          If both catalog and schema are specified: - when max_results is not specified, the page length is
-          set to a server configured value (10000, as of 4/2/2024). - when set to a value greater than 0, the
-          page length is the minimum of this value and a server configured value (10000, as of 4/2/2024); -
-          when set to 0, the page length is set to a server configured value (10000, as of 4/2/2024); - when
-          set to a value less than 0, an invalid parameter error is returned;
+          If both catalog and schema are specified:
 
-          If neither schema nor catalog is specified: - when max_results is not specified, the page length is
-          set to a server configured value (100, as of 4/2/2024). - when set to a value greater than 0, the
-          page length is the minimum of this value and a server configured value (1000, as of 4/2/2024); -
-          when set to 0, the page length is set to a server configured value (100, as of 4/2/2024); - when set
-          to a value less than 0, an invalid parameter error is returned;
+          - when max_results is not specified, the page length is set to a server configured value (10000, as
+            of 4/2/2024).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (10000, as of 4/2/2024);
+          - when set to 0, the page length is set to a server configured value (10000, as of 4/2/2024);
+          - when set to a value less than 0, an invalid parameter error is returned;
+
+          If neither schema nor catalog is specified:
+
+          - when max_results is not specified, the page length is set to a server configured value (100, as of
+            4/2/2024).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (1000, as of 4/2/2024);
+          - when set to 0, the page length is set to a server configured value (100, as of 4/2/2024);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque token to send for the next page of results (pagination).
         :param schema_name: str (optional)
@@ -15361,7 +15748,7 @@ class RegisteredModelsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/models", query=query, headers=headers)
@@ -15399,7 +15786,7 @@ class RegisteredModelsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}", body=body, headers=headers
@@ -15504,7 +15891,7 @@ class RegisteredModelsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/models/{full_name}", body=body, headers=headers)
         return RegisteredModelInfo.from_dict(res)
@@ -15514,10 +15901,8 @@ class ResourceQuotasAPI:
     """Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that
     can be created. Quotas are expressed in terms of a resource type and a parent (for example, tables per
     metastore or schemas per catalog). The resource quota APIs enable you to monitor your current usage and
-    limits. For more information on resource quotas see the [Unity Catalog documentation].
-
-    [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
-    """
+    limits. For more information on resource quotas see the `Unity Catalog documentation
+    <https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas>`__."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -15543,7 +15928,7 @@ class ResourceQuotasAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -15581,7 +15966,7 @@ class ResourceQuotasAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -15633,7 +16018,7 @@ class RfaAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/3.0/rfa/requests", body=body, headers=headers)
         return BatchCreateAccessRequestsResponse.from_dict(res)
@@ -15660,7 +16045,7 @@ class RfaAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/3.0/rfa/destinations/{securable_type}/{full_name}", headers=headers)
         return AccessRequestDestinations.from_dict(res)
@@ -15670,11 +16055,9 @@ class RfaAPI:
     ) -> AccessRequestDestinations:
         """Updates the access request destinations for the given securable. The caller must be a metastore admin,
         the owner of the securable, or a user that has the **MANAGE** privilege on the securable in order to
-        assign destinations. Destinations cannot be updated for securables underneath schemas (tables,
-        volumes, functions, and models). For these securable types, destinations are inherited from the parent
-        securable. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft Teams, and
-        Generic Webhook destinations) can be assigned to a securable. If a URL destination is assigned, no
-        other destinations can be set.
+        assign destinations. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft
+        Teams, and Generic Webhook destinations) can be assigned to a securable. If a URL destination is
+        assigned, no other destinations can be set.
 
         The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
         "connection", "credential", "function", "registered_model", and "volume".
@@ -15684,14 +16067,14 @@ class RfaAPI:
           **destination_id** and **destination_type** must be defined.
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`AccessRequestDestinations`
         """
@@ -15707,7 +16090,7 @@ class RfaAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/3.0/rfa/destinations", query=query, body=body, headers=headers)
         return AccessRequestDestinations.from_dict(res)
@@ -15715,7 +16098,7 @@ class RfaAPI:
 
 class SchemasAPI:
     """A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace. A schema
-    organizes tables, views and functions. To access (or list) a table or view in a schema, users must have
+    organizes tables, views, and functions. To access (or list) a table or view in a schema, users must have
     the USE_SCHEMA data permission on the schema and its parent catalog, and they must have the SELECT
     permission on the table or view."""
 
@@ -15728,6 +16111,7 @@ class SchemasAPI:
         catalog_name: str,
         *,
         comment: Optional[str] = None,
+        custom_max_retention_hours: Optional[int] = None,
         properties: Optional[Dict[str, str]] = None,
         storage_root: Optional[str] = None,
     ) -> SchemaInfo:
@@ -15740,6 +16124,8 @@ class SchemasAPI:
           Name of parent catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the schema.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param storage_root: str (optional)
@@ -15753,6 +16139,8 @@ class SchemasAPI:
             body["catalog_name"] = catalog_name
         if comment is not None:
             body["comment"] = comment
+        if custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = custom_max_retention_hours
         if name is not None:
             body["name"] = name
         if properties is not None:
@@ -15766,7 +16154,7 @@ class SchemasAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/schemas", body=body, headers=headers)
         return SchemaInfo.from_dict(res)
@@ -15792,7 +16180,7 @@ class SchemasAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/schemas/{full_name}", query=query, headers=headers)
 
@@ -15818,7 +16206,7 @@ class SchemasAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/schemas/{full_name}", query=query, headers=headers)
         return SchemaInfo.from_dict(res)
@@ -15849,10 +16237,12 @@ class SchemasAPI:
           Whether to include schemas in the response for which the principal can only access selective
           metadata for
         :param max_results: int (optional)
-          Maximum number of schemas to return. If not set, all the schemas are returned (not recommended). -
-          when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of schemas to return. If not set, all the schemas are returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -15874,7 +16264,7 @@ class SchemasAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -15892,20 +16282,23 @@ class SchemasAPI:
         full_name: str,
         *,
         comment: Optional[str] = None,
+        custom_max_retention_hours: Optional[int] = None,
         enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
         properties: Optional[Dict[str, str]] = None,
     ) -> SchemaInfo:
         """Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If
-        the caller is a metastore admin, only the __owner__ field can be changed in the update. If the
-        __name__ field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
+        the caller is a metastore admin, only the **owner** field can be changed in the update. If the
+        **name** field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
         privilege on the parent catalog.
 
         :param full_name: str
           Full name of the schema.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param custom_max_retention_hours: int (optional)
+          Custom maximum retention period in hours for the schema.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param new_name: str (optional)
@@ -15921,6 +16314,8 @@ class SchemasAPI:
         body = {}
         if comment is not None:
             body["comment"] = comment
+        if custom_max_retention_hours is not None:
+            body["custom_max_retention_hours"] = custom_max_retention_hours
         if enable_predictive_optimization is not None:
             body["enable_predictive_optimization"] = enable_predictive_optimization.value
         if new_name is not None:
@@ -15936,7 +16331,7 @@ class SchemasAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/schemas/{full_name}", body=body, headers=headers)
         return SchemaInfo.from_dict(res)
@@ -15969,6 +16364,7 @@ class SecretsUcAPI:
         """
 
         body = secret.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -15976,7 +16372,7 @@ class SecretsUcAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/secrets", body=body, headers=headers)
         return Secret.from_dict(res)
@@ -15999,11 +16395,11 @@ class SecretsUcAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/secrets/{full_name}", headers=headers)
 
-    def get_secret(self, full_name: str, *, include_browse: Optional[bool] = None) -> Secret:
+    def get_secret(self, full_name: str) -> Secret:
         """Gets a secret by its three-level (fully qualified) name.
 
         You must be a metastore admin, the owner of the secret, or have the **MANAGE** privilege on the
@@ -16015,32 +16411,25 @@ class SecretsUcAPI:
         :param full_name: str
           The three-level (fully qualified) name of the secret (for example,
           **catalog_name.schema_name.secret_name**).
-        :param include_browse: bool (optional)
-          Whether to include secrets in the response for which you only have the **BROWSE** privilege, which
-          limits access to metadata.
 
         :returns: :class:`Secret`
         """
 
-        query = {}
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         headers = {
             "Accept": "application/json",
         }
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/secrets/{full_name}", query=query, headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/secrets/{full_name}", headers=headers)
         return Secret.from_dict(res)
 
     def list_secrets(
         self,
         *,
         catalog_name: Optional[str] = None,
-        include_browse: Optional[bool] = None,
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         schema_name: Optional[str] = None,
@@ -16057,15 +16446,13 @@ class SecretsUcAPI:
         :param catalog_name: str (optional)
           The name of the catalog under which to list secrets. Both **catalog_name** and **schema_name** must
           be specified together.
-        :param include_browse: bool (optional)
-          Whether to include secrets in the response for which you only have the **BROWSE** privilege, which
-          limits access to metadata.
         :param page_size: int (optional)
           Maximum number of secrets to return.
 
-          - If not specified, at most 10000 secrets are returned. - If set to a value greater than 0, the page
-          length is the minimum of this value and 10000. - If set to 0, the page length is set to 10000. - If
-          set to a value less than 0, an invalid parameter error is returned.
+          - If not specified, at most 1000 secrets are returned.
+          - If set to a value greater than 0, the page length is the minimum of this value and 1000.
+          - If set to 0, the page length is set to 1000.
+          - If set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Opaque pagination token to go to the next page based on previous query. The maximum page length is
           determined by a server configured value.
@@ -16079,8 +16466,6 @@ class SecretsUcAPI:
         query = {}
         if catalog_name is not None:
             query["catalog_name"] = catalog_name
-        if include_browse is not None:
-            query["include_browse"] = include_browse
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:
@@ -16093,7 +16478,7 @@ class SecretsUcAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/secrets", query=query, headers=headers)
@@ -16120,8 +16505,12 @@ class SecretsUcAPI:
           The secret object containing the fields to update. Only fields specified in **update_mask** will be
           updated.
         :param update_mask: FieldMask
-          The field mask specifying which fields of the secret to update. Supported fields: **value**,
-          **comment**, **owner**, **expire_time**.
+          The field mask specifying which fields of the secret to update.
+
+          - If **update_mask** is **"*"**, all fields specified in **secret** are updated.
+          - If **update_mask** specifies one or more fields, only those fields are updated. Each specified
+            field must be set in **secret**. Supported fields: **value**, **comment**, **owner**,
+            **expire_time**. To change the secret name, delete and recreate the secret.
 
         :returns: :class:`Secret`
         """
@@ -16137,7 +16526,7 @@ class SecretsUcAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.1/unity-catalog/secrets/{full_name}", query=query, body=body, headers=headers
@@ -16228,7 +16617,7 @@ class StorageCredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/storage-credentials", body=body, headers=headers)
         return StorageCredentialInfo.from_dict(res)
@@ -16255,7 +16644,7 @@ class StorageCredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/storage-credentials/{name}", query=query, headers=headers)
 
@@ -16275,7 +16664,7 @@ class StorageCredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/storage-credentials/{name}", headers=headers)
         return StorageCredentialInfo.from_dict(res)
@@ -16287,7 +16676,7 @@ class StorageCredentialsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[StorageCredentialInfo]:
-        """Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
+        """Gets an array of storage credentials (as **StorageCredentialInfo** objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
         admin, retrieval of credentials is unrestricted. There is no guarantee of a specific ordering of the
         elements in the array.
@@ -16304,10 +16693,12 @@ class StorageCredentialsAPI:
           to update the credential–workspace binding.
         :param max_results: int (optional)
           Maximum number of storage credentials to return. If not set, all the storage credentials are
-          returned (not recommended). - when set to a value greater than 0, the page length is the minimum of
-          this value and a server configured value; - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value less than 0, an invalid parameter error is
-          returned;
+          returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -16327,7 +16718,7 @@ class StorageCredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -16425,7 +16816,7 @@ class StorageCredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/storage-credentials/{name}", body=body, headers=headers)
         return StorageCredentialInfo.from_dict(res)
@@ -16443,12 +16834,12 @@ class StorageCredentialsAPI:
         storage_credential_name: Optional[str] = None,
         url: Optional[str] = None,
     ) -> ValidateStorageCredentialResponse:
-        """Validates a storage credential. At least one of __external_location_name__ and __url__ need to be
+        """Validates a storage credential. At least one of **external_location_name** and **url** need to be
         provided. If only one of them is provided, it will be used for validation. And if both are provided,
-        the __url__ will be used for validation, and __external_location_name__ will be ignored when checking
+        the **url** will be used for validation, and **external_location_name** will be ignored when checking
         overlapping urls.
 
-        Either the __storage_credential_name__ or the cloud-specific credential must be provided.
+        Either the **storage_credential_name** or the cloud-specific credential must be provided.
 
         The caller must be a metastore admin or the storage credential owner or have the
         **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.
@@ -16501,7 +16892,7 @@ class StorageCredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/validate-storage-credentials", body=body, headers=headers)
         return ValidateStorageCredentialResponse.from_dict(res)
@@ -16509,7 +16900,7 @@ class StorageCredentialsAPI:
 
 class SystemSchemasAPI:
     """A system schema is a schema that lives within the system catalog. A system schema may contain information
-    about customer usage of Unity Catalog such as audit-logs, billing-logs, lineage information, etc."""
+    about customer usage of Unity Catalog such as audit logs, billing logs, and lineage information."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -16532,7 +16923,7 @@ class SystemSchemasAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE", f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}", headers=headers
@@ -16562,7 +16953,7 @@ class SystemSchemasAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "PUT",
@@ -16587,10 +16978,13 @@ class SystemSchemasAPI:
         :param metastore_id: str
           The ID for the metastore in which the system schema resides.
         :param max_results: int (optional)
-          Maximum number of schemas to return. - When set to 0, the page length is set to a server configured
-          value (recommended); - When set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - When set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all the schemas are returned (not recommended).
+          Maximum number of schemas to return.
+
+          - When set to 0, the page length is set to a server configured value (recommended);
+          - When set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - When set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all the schemas are returned (not recommended).
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -16608,7 +17002,7 @@ class SystemSchemasAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -16628,9 +17022,9 @@ class TableConstraintsAPI:
     """Primary key and foreign key constraints encode relationships between fields in tables.
 
     Primary and foreign keys are informational only and are not enforced. Foreign keys must reference a
-    primary key in another table. This primary key is the parent constraint of the foreign key and the table
+    primary key in another table. This primary key is the parent constraint of the foreign key, and the table
     this primary key is on is the parent table of the foreign key. Similarly, the foreign key is the child
-    constraint of its referenced primary key; the table of the foreign key is the child table of the primary
+    constraint of its referenced primary key. The table of the foreign key is the child table of the primary
     key.
 
     You can declare primary keys and foreign keys as part of the table specification during table creation.
@@ -16642,12 +17036,13 @@ class TableConstraintsAPI:
     def create(self, full_name_arg: str, constraint: TableConstraint) -> TableConstraint:
         """Creates a new table constraint.
 
-        For the table constraint creation to succeed, the user must satisfy both of these conditions: - the
-        user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
-        privilege on the table's parent schema, and be the owner of the table. - if the new constraint is a
-        __ForeignKeyConstraint__, the user must have the **USE_CATALOG** privilege on the referenced parent
-        table's catalog, the **USE_SCHEMA** privilege on the referenced parent table's schema, and be the
-        owner of the referenced parent table.
+        For the table constraint creation to succeed, the user must satisfy both of these conditions:
+
+        - the user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
+          privilege on the table's parent schema, and be the owner of the table.
+        - if the new constraint is a **ForeignKeyConstraint**, the user must have the **USE_CATALOG**
+          privilege on the referenced parent table's catalog, the **USE_SCHEMA** privilege on the referenced
+          parent table's schema, and be the owner of the referenced parent table.
 
         :param full_name_arg: str
           The full name of the table referenced by the constraint.
@@ -16668,7 +17063,7 @@ class TableConstraintsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/constraints", body=body, headers=headers)
         return TableConstraint.from_dict(res)
@@ -16676,12 +17071,13 @@ class TableConstraintsAPI:
     def delete(self, full_name: str, constraint_name: str, cascade: bool):
         """Deletes a table constraint.
 
-        For the table constraint deletion to succeed, the user must satisfy both of these conditions: - the
-        user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
-        privilege on the table's parent schema, and be the owner of the table. - if __cascade__ argument is
-        **true**, the user must have the following permissions on all of the child tables: the **USE_CATALOG**
-        privilege on the table's catalog, the **USE_SCHEMA** privilege on the table's schema, and be the owner
-        of the table.
+        For the table constraint deletion to succeed, the user must satisfy both of these conditions:
+
+        - the user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
+          privilege on the table's parent schema, and be the owner of the table.
+        - if **cascade** argument is **true**, the user must have the following permissions on all of the
+          child tables: the **USE_CATALOG** privilege on the table's catalog, the **USE_SCHEMA** privilege on
+          the table's schema, and be the owner of the table.
 
         :param full_name: str
           Full name of the table referenced by the constraint.
@@ -16705,7 +17101,7 @@ class TableConstraintsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/constraints/{full_name}", query=query, headers=headers)
 
@@ -16717,7 +17113,7 @@ class TablesAPI:
     permission on the table, and they must have the USE_CATALOG permission on its parent catalog and the
     USE_SCHEMA permission on its parent schema.
 
-    A table can be managed or external. From an API perspective, a __VIEW__ is a particular kind of table
+    A table can be managed or external. From an API perspective, a **VIEW** is a particular kind of table
     (rather than a managed or external table)."""
 
     def __init__(self, api_client):
@@ -16765,7 +17161,7 @@ class TablesAPI:
         :param storage_location: str
           Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
         :param columns: List[:class:`ColumnInfo`] (optional)
-          The array of __ColumnInfo__ definitions of the table's columns.
+          The array of **ColumnInfo** definitions of the table's columns.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
 
@@ -16796,7 +17192,7 @@ class TablesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/tables", body=body, headers=headers)
         return TableInfo.from_dict(res)
@@ -16819,17 +17215,21 @@ class TablesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{full_name}", headers=headers)
 
     def exists(self, full_name: str) -> TableExistsResponse:
         """Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
-        of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
-        owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
-        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
-        and either be the table owner or have the **SELECT** privilege on the table. * Have **BROWSE**
-        privilege on the parent catalog * Have **BROWSE** privilege on the parent schema
+        of the following requirements:
+
+        - Be a metastore admin
+        - Be the owner of the parent catalog
+        - Be the owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog
+        - Have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+          parent schema, and either be the table owner or have the **SELECT** privilege on the table.
+        - Have **BROWSE** privilege on the parent catalog
+        - Have **BROWSE** privilege on the parent schema
 
         :param full_name: str
           Full name of the table.
@@ -16843,7 +17243,7 @@ class TablesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}/exists", headers=headers)
         return TableExistsResponse.from_dict(res)
@@ -16857,10 +17257,13 @@ class TablesAPI:
         include_manifest_capabilities: Optional[bool] = None,
     ) -> TableInfo:
         """Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
-        following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
-        the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
-        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
-        and either be the table owner or have the **SELECT** privilege on the table.
+        following requirements:
+
+        - Be a metastore admin
+        - Be the owner of the parent catalog
+        - Be the owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog
+        - Have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the
+          parent schema, and either be the table owner or have the **SELECT** privilege on the table.
 
         :param full_name: str
           Full name of the table.
@@ -16888,7 +17291,7 @@ class TablesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}", query=query, headers=headers)
         return TableInfo.from_dict(res)
@@ -16931,10 +17334,12 @@ class TablesAPI:
         :param include_manifest_capabilities: bool (optional)
           Whether to include a manifest containing table capabilities in the response.
         :param max_results: int (optional)
-          Maximum number of tables to return. If not set, all the tables are returned (not recommended). -
-          when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+          Maximum number of tables to return. If not set, all the tables are returned (not recommended).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param omit_columns: bool (optional)
           Whether to omit the columns of the table from the response or not.
         :param omit_properties: bool (optional)
@@ -16973,7 +17378,7 @@ class TablesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -16999,11 +17404,12 @@ class TablesAPI:
         """Gets an array of summaries for tables for a schema and catalog within the metastore. The table
         summaries returned are either:
 
-        * summaries for tables (within the current metastore and parent catalog and schema), when the user is
-        a metastore admin, or: * summaries for tables and schemas (within the current metastore and parent
-        catalog) for which the user has ownership or the **SELECT** privilege on the table and ownership or
-        **USE_SCHEMA** privilege on the schema, provided that the user also has ownership or the
-        **USE_CATALOG** privilege on the parent catalog.
+        - summaries for tables (within the current metastore and parent catalog and schema), when the user is
+          a metastore admin, or:
+        - summaries for tables and schemas (within the current metastore and parent catalog) for which the
+          user has ownership or the **SELECT** privilege on the table and ownership or **USE_SCHEMA**
+          privilege on the schema, provided that the user also has ownership or the **USE_CATALOG** privilege
+          on the parent catalog.
 
         There is no guarantee of a specific ordering of the elements in the array.
 
@@ -17017,10 +17423,13 @@ class TablesAPI:
           Whether to include a manifest containing table capabilities in the response.
         :param max_results: int (optional)
           Maximum number of summaries for tables to return. If not set, the page length is set to a server
-          configured value (10000, as of 1/5/2024). - when set to a value greater than 0, the page length is
-          the minimum of this value and a server configured value (10000, as of 1/5/2024); - when set to 0,
-          the page length is set to a server configured value (10000, as of 1/5/2024) (recommended); - when
-          set to a value less than 0, an invalid parameter error is returned;
+          configured value (10000, as of 1/5/2024).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (10000, as of 1/5/2024);
+          - when set to 0, the page length is set to a server configured value (10000, as of 1/5/2024)
+            (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
         :param schema_name_pattern: str (optional)
@@ -17050,7 +17459,7 @@ class TablesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/table-summaries", query=query, headers=headers)
@@ -17085,34 +17494,31 @@ class TablesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.1/unity-catalog/tables/{full_name}", body=body, headers=headers)
 
 
 class TemporaryPathCredentialsAPI:
-    """Temporary Path Credentials refer to short-lived, downscoped credentials used to access external cloud
-    storage locations registered in Databricks. These credentials are employed to provide secure and
-    time-limited access to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud
-    provider has its own type of credentials: AWS uses temporary session tokens via AWS Security Token Service
-    (STS), Azure utilizes Shared Access Signatures (SAS) for its data storage services, and Google Cloud
-    supports temporary credentials through OAuth 2.0.
+    """Temporary Path Credentials are short-lived, downscoped credentials used to access external cloud storage
+    locations registered in Databricks. These credentials provide secure and time-limited access to data in
+    cloud environments such as AWS, Azure, and Google Cloud. Each cloud provider has its own type of
+    credentials: AWS uses temporary session tokens through AWS Security Token Service (STS), Azure uses Shared
+    Access Signatures (SAS) for its data storage services, and Google Cloud supports temporary credentials
+    through OAuth 2.0.
 
     Temporary path credentials ensure that data access is limited in scope and duration, reducing the risk of
-    unauthorized access or misuse. To use the temporary path credentials API, a metastore admin needs to
-    enable the external_access_enabled flag (off by default) at the metastore level. A user needs to be
-    granted the EXTERNAL USE LOCATION permission by external location owner. For requests on existing external
-    tables, user also needs to be granted the EXTERNAL USE SCHEMA permission at the schema level by catalog
-    owner.
+    unauthorized access or misuse. To use the temporary path credentials API, a metastore admin must enable
+    the external_access_enabled flag (off by default) at the metastore level. A user must be granted the
+    EXTERNAL USE LOCATION permission by the external location owner. For requests on existing external tables
+    and external volumes, the user must also be granted the EXTERNAL USE SCHEMA permission at the schema level
+    by the catalog owner.
 
-    Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by catalog owner
+    Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by the catalog owner
     explicitly and is not included in schema ownership or ALL PRIVILEGES on the schema for security reasons.
-    Similarly, EXTERNAL USE LOCATION is an external location level permission that can only be granted by
+    Similarly, EXTERNAL USE LOCATION is an external location level permission that can only be granted by the
     external location owner explicitly and is not included in external location ownership or ALL PRIVILEGES on
-    the external location for security reasons.
-
-    This API only supports temporary path credentials for external locations and external tables, and volumes
-    will be supported in the future."""
+    the external location for security reasons."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -17155,26 +17561,26 @@ class TemporaryPathCredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/unity-catalog/temporary-path-credentials", body=body, headers=headers)
         return GenerateTemporaryPathCredentialResponse.from_dict(res)
 
 
 class TemporaryTableCredentialsAPI:
-    """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage
-    locations where table data is stored in Databricks. These credentials are employed to provide secure and
-    time-limited access to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud
-    provider has its own type of credentials: AWS uses temporary session tokens via AWS Security Token Service
-    (STS), Azure utilizes Shared Access Signatures (SAS) for its data storage services, and Google Cloud
-    supports temporary credentials through OAuth 2.0.
+    """Temporary Table Credentials are short-lived, downscoped credentials used to access cloud storage locations
+    where table data is stored in Databricks. These credentials provide secure and time-limited access to data
+    in cloud environments such as AWS, Azure, and Google Cloud. Each cloud provider has its own type of
+    credentials: AWS uses temporary session tokens through AWS Security Token Service (STS), Azure uses Shared
+    Access Signatures (SAS) for its data storage services, and Google Cloud supports temporary credentials
+    through OAuth 2.0.
 
     Temporary table credentials ensure that data access is limited in scope and duration, reducing the risk of
-    unauthorized access or misuse. To use the temporary table credentials API, a metastore admin needs to
-    enable the external_access_enabled flag (off by default) at the metastore level, and user needs to be
-    granted the EXTERNAL USE SCHEMA permission at the schema level by catalog owner. Note that EXTERNAL USE
-    SCHEMA is a schema level permission that can only be granted by catalog owner explicitly and is not
-    included in schema ownership or ALL PRIVILEGES on the schema for security reasons."""
+    unauthorized access or misuse. To use the temporary table credentials API, a metastore admin must enable
+    the external_access_enabled flag (off by default) at the metastore level, and the user must be granted the
+    EXTERNAL USE SCHEMA permission at the schema level by the catalog owner. Note that EXTERNAL USE SCHEMA is
+    a schema level permission that can only be granted by the catalog owner explicitly and is not included in
+    schema ownership or ALL PRIVILEGES on the schema for security reasons."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -17208,26 +17614,26 @@ class TemporaryTableCredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/unity-catalog/temporary-table-credentials", body=body, headers=headers)
         return GenerateTemporaryTableCredentialResponse.from_dict(res)
 
 
 class TemporaryVolumeCredentialsAPI:
-    """Temporary Volume Credentials refer to short-lived, downscoped credentials used to access cloud storage
-    locations where volume data is stored in Databricks. These credentials are employed to provide secure and
-    time-limited access to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud
-    provider has its own type of credentials: AWS uses temporary session tokens via AWS Security Token Service
-    (STS), Azure utilizes Shared Access Signatures (SAS) for its data storage services, and Google Cloud
-    supports temporary credentials through OAuth 2.0.
+    """Temporary Volume Credentials are short-lived, downscoped credentials used to access cloud storage
+    locations where volume data is stored in Databricks. These credentials provide secure and time-limited
+    access to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud provider has its own
+    type of credentials: AWS uses temporary session tokens through AWS Security Token Service (STS), Azure
+    uses Shared Access Signatures (SAS) for its data storage services, and Google Cloud supports temporary
+    credentials through OAuth 2.0.
 
     Temporary volume credentials ensure that data access is limited in scope and duration, reducing the risk
-    of unauthorized access or misuse. To use the temporary volume credentials API, a metastore admin needs to
-    enable the external_access_enabled flag (off by default) at the metastore level, and user needs to be
-    granted the EXTERNAL USE SCHEMA permission at the schema level by catalog owner. Note that EXTERNAL USE
-    SCHEMA is a schema level permission that can only be granted by catalog owner explicitly and is not
-    included in schema ownership or ALL PRIVILEGES on the schema for security reasons."""
+    of unauthorized access or misuse. To use the temporary volume credentials API, a metastore admin must
+    enable the external_access_enabled flag (off by default) at the metastore level, and the user must be
+    granted the EXTERNAL USE SCHEMA permission at the schema level by the catalog owner. Note that EXTERNAL
+    USE SCHEMA is a schema level permission that can only be granted by the catalog owner explicitly and is
+    not included in schema ownership or ALL PRIVILEGES on the schema for security reasons."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -17261,19 +17667,19 @@ class TemporaryVolumeCredentialsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/unity-catalog/temporary-volume-credentials", body=body, headers=headers)
         return GenerateTemporaryVolumeCredentialResponse.from_dict(res)
 
 
 class VolumesAPI:
-    """Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing and processing
+    """Volumes are a Unity Catalog (UC) capability for accessing, storing, governing, organizing, and processing
     files. Use cases include running machine learning on unstructured data such as image, audio, video, or PDF
     files, organizing data sets during the data exploration stages in data science, working with libraries
     that require access to the local file system on cluster machines, storing library and config files of
-    arbitrary formats such as .whl or .txt centrally and providing secure access across workspaces to it, or
-    transforming and querying non-tabular data files in ETL."""
+    arbitrary formats such as .whl or .txt centrally and providing secure access to those files across
+    workspaces, or transforming and querying non-tabular data files in ETL."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -17294,15 +17700,19 @@ class VolumesAPI:
         created in the specified external location, while a managed volume will be located in the default
         location which is specified by the parent schema, or the parent catalog, or the Metastore.
 
-        For the volume creation to succeed, the user must satisfy following conditions: - The caller must be a
-        metastore admin, or be the owner of the parent catalog and schema, or have the **USE_CATALOG**
-        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema. - The caller
-        must have **CREATE VOLUME** privilege on the parent schema.
+        For the volume creation to succeed, the user must satisfy following conditions:
 
-        For an external volume, following conditions also need to satisfy - The caller must have **CREATE
-        EXTERNAL VOLUME** privilege on the external location. - There are no other tables, nor volumes
-        existing in the specified storage location. - The specified storage location is not under the location
-        of other tables, nor volumes, or catalogs or schemas.
+        - The caller must be a metastore admin, or be the owner of the parent catalog and schema, or have the
+          **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent
+          schema.
+        - The caller must have **CREATE VOLUME** privilege on the parent schema.
+
+        For an external volume, following conditions also need to satisfy
+
+        - The caller must have **CREATE EXTERNAL VOLUME** privilege on the external location.
+        - There are no other tables, nor volumes existing in the specified storage location.
+        - The specified storage location is not under the location of other tables, nor volumes, or catalogs
+          or schemas.
 
         :param catalog_name: str
           The name of the catalog where the schema and the volume are
@@ -17313,9 +17723,8 @@ class VolumesAPI:
         :param volume_type: :class:`VolumeType`
           The type of the volume. An external volume is located in the specified external location. A managed
           volume is located in the default location which is specified by the parent schema, or the parent
-          catalog, or the Metastore. [Learn more]
-
-          [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
+          catalog, or the Metastore. `Learn more
+          <https://docs.databricks.com/aws/en/volumes/managed-vs-external>`__
         :param comment: str (optional)
           The comment attached to the volume
         :param storage_location: str (optional)
@@ -17344,7 +17753,7 @@ class VolumesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/volumes", body=body, headers=headers)
         return VolumeInfo.from_dict(res)
@@ -17366,7 +17775,7 @@ class VolumesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/volumes/{name}", headers=headers)
 
@@ -17403,11 +17812,13 @@ class VolumesAPI:
         :param max_results: int (optional)
           Maximum number of volumes to return (page length).
 
-          If not set, the page length is set to a server configured value (10000, as of 1/29/2024). - when set
-          to a value greater than 0, the page length is the minimum of this value and a server configured
-          value (10000, as of 1/29/2024); - when set to 0, the page length is set to a server configured value
-          (10000, as of 1/29/2024) (recommended); - when set to a value less than 0, an invalid parameter
-          error is returned;
+          If not set, the page length is set to a server configured value (10000, as of 1/29/2024).
+
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (10000, as of 1/29/2024);
+          - when set to 0, the page length is set to a server configured value (10000, as of 1/29/2024)
+            (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
 
           Note: this parameter controls only the maximum number of volumes to return. The actual number of
           volumes returned in a page may be smaller than this value, including 0, even if there are more
@@ -17436,7 +17847,7 @@ class VolumesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/volumes", query=query, headers=headers)
@@ -17472,7 +17883,7 @@ class VolumesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/volumes/{name}", query=query, headers=headers)
         return VolumeInfo.from_dict(res)
@@ -17514,27 +17925,32 @@ class VolumesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/volumes/{name}", body=body, headers=headers)
         return VolumeInfo.from_dict(res)
 
 
 class WorkspaceBindingsAPI:
-    """A securable in Databricks can be configured as __OPEN__ or __ISOLATED__. An __OPEN__ securable can be
-    accessed from any workspace, while an __ISOLATED__ securable can only be accessed from a configured list
+    """A securable in Databricks can be configured as **OPEN** or **ISOLATED**. An **OPEN** securable can be
+    accessed from any workspace, while an **ISOLATED** securable can only be accessed from a configured list
     of workspaces. This API allows you to configure (bind) securables to workspaces.
 
-    NOTE: The __isolation_mode__ is configured for the securable itself (using its Update method) and the
-    workspace bindings are only consulted when the securable's __isolation_mode__ is set to __ISOLATED__.
+    NOTE: The **isolation_mode** is configured for the securable itself (using its Update method) and the
+    workspace bindings are only consulted when the securable's **isolation_mode** is set to **ISOLATED**.
 
     A securable's workspace bindings can be configured by a metastore admin or the owner of the securable.
 
-    The original path (/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}) is deprecated. Please use
-    the new path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which introduces the
-    ability to bind a securable in READ_ONLY mode (catalogs only).
+    The original path (/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}) is deprecated. Use the new
+    path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}), which introduces the ability to
+    bind a securable in READ_ONLY mode (catalogs only).
 
-    Securable types that support binding: - catalog - storage_credential - credential - external_location"""
+    Securable types that support binding:
+
+    - catalog
+    - storage_credential
+    - credential
+    - external_location"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -17555,7 +17971,7 @@ class WorkspaceBindingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}", headers=headers)
         return GetCatalogWorkspaceBindingsResponse.from_dict(res)
@@ -17584,10 +18000,13 @@ class WorkspaceBindingsAPI:
         :param securable_name: str
           The name of the securable.
         :param max_results: int (optional)
-          Maximum number of workspace bindings to return. - When set to 0, the page length is set to a server
-          configured value (recommended); - When set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - When set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all the workspace bindings are returned (not recommended).
+          Maximum number of workspace bindings to return.
+
+          - When set to 0, the page length is set to a server configured value (recommended);
+          - When set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - When set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all the workspace bindings are returned (not recommended).
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -17605,7 +18024,7 @@ class WorkspaceBindingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -17655,7 +18074,7 @@ class WorkspaceBindingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}", body=body, headers=headers
@@ -17700,7 +18119,7 @@ class WorkspaceBindingsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}", body=body, headers=headers

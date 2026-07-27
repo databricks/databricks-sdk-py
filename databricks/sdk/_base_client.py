@@ -4,8 +4,7 @@ import urllib.parse
 from abc import ABC, abstractmethod
 from datetime import timedelta
 from types import TracebackType
-from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
-                    Optional, Type, Union)
+from typing import Any, BinaryIO, Callable, Dict, Iterable, Iterator, List, Optional, Type, Union
 
 import requests
 import requests.adapters
@@ -40,7 +39,6 @@ def _fix_host_if_needed(host: Optional[str]) -> Optional[str]:
 
 
 class _BaseClient:
-
     def __init__(
         self,
         debug_truncate_bytes: Optional[int] = None,
@@ -117,7 +115,7 @@ class _BaseClient:
         # See: https://github.com/databricks/databricks-sdk-py/issues/142
         if query is None:
             return None
-        with_fixed_bools = {k: v if type(v) != bool else ("true" if v else "false") for k, v in query.items()}
+        with_fixed_bools = {k: v if type(v) is not bool else ("true" if v else "false") for k, v in query.items()}
 
         # Query parameters may be nested, e.g.
         # {'filter_by': {'user_ids': [123, 456]}}
@@ -246,13 +244,13 @@ class _BaseClient:
             #
             # return a simple string for debug log readability, as `raise TimeoutError(...) from err`
             # will bubble up the original exception in case we reach max retries.
-            return f"cannot connect"
+            return "cannot connect"
         if isinstance(err, requests.Timeout):
             # corresponds to `TLS handshake timeout` and `i/o timeout` in Go.
             #
             # return a simple string for debug log readability, as `raise TimeoutError(...) from err`
             # will bubble up the original exception in case we reach max retries.
-            return f"timeout"
+            return "timeout"
         if isinstance(err, DatabricksError):
             message = str(err)
             transient_error_string_matches = [
@@ -309,7 +307,6 @@ class _BaseClient:
 
 
 class _RawResponse(ABC):
-
     @abstractmethod
     # follows Response signature: https://github.com/psf/requests/blob/main/src/requests/models.py#L799
     def iter_content(self, chunk_size: int = 1, decode_unicode: bool = False):

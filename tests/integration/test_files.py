@@ -41,7 +41,6 @@ def test_dbfs_io(w, random):
 
 @pytest.fixture
 def junk(w, random):
-
     def inner(path: str, size=256) -> bytes:
         to_write = random(size).encode()
         with w.dbfs.open(path, write=True) as f:
@@ -54,7 +53,6 @@ def junk(w, random):
 
 @pytest.fixture
 def ls(w):
-
     def inner(root: str, recursive=False) -> List[str]:
         return [f.path.removeprefix(root) for f in w.dbfs.list(root, recursive=recursive)]
 
@@ -365,7 +363,7 @@ def test_files_api_download_benchmark(ucws, files_api, random):
                     total += end - start
                 avg_time = total / count
                 logging.info(
-                    f"[chunk_size=%s] Average time to download: %f seconds",
+                    "[chunk_size=%s] Average time to download: %f seconds",
                     str(chunk_size_kb) + "kb" if chunk_size_kb else "None",
                     avg_time,
                 )
@@ -376,7 +374,7 @@ def test_files_api_download_benchmark(ucws, files_api, random):
                 if best[1] is None or v < best[1]:
                     best = (k, v)
                 logging.info(
-                    f"[chunk_size=%s] Average time to download: %f seconds",
+                    "[chunk_size=%s] Average time to download: %f seconds",
                     str(k) + "kb" if k else "None",
                     v,
                 )

@@ -6,21 +6,19 @@
 
     The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
-    notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
+    notification destinations if the condition was met. Alerts can be scheduled using the ``sql_task`` type of
     the Jobs API, e.g. :method:jobs/create.
 
-    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
-
-    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. `Learn more
+    <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
     .. py:method:: create(name: str, options: AlertOptions, query_id: str [, parent: Optional[str], rearm: Optional[int]]) -> LegacyAlert
 
         Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
         condition of its result, and notifies users or notification destinations if the condition was met.
 
-        **Warning**: This API is deprecated. Please use :method:alerts/create instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:alerts/create instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param name: str
           Name of the alert.
@@ -32,7 +30,7 @@
           The identifier of the workspace folder containing the object.
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
-          If `null`, alert will never be triggered again.
+          If ``null``, alert will never be triggered again.
 
         :returns: :class:`LegacyAlert`
         
@@ -42,9 +40,8 @@
         Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike
         queries and dashboards, alerts cannot be moved to the trash.
 
-        **Warning**: This API is deprecated. Please use :method:alerts/delete instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:alerts/delete instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param alert_id: str
 
@@ -55,9 +52,8 @@
 
         Gets an alert.
 
-        **Warning**: This API is deprecated. Please use :method:alerts/get instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:alerts/get instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param alert_id: str
 
@@ -68,9 +64,8 @@
 
         Gets a list of alerts.
 
-        **Warning**: This API is deprecated. Please use :method:alerts/list instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:alerts/list instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
 
         :returns: Iterator over :class:`LegacyAlert`
@@ -80,9 +75,8 @@
 
         Updates an alert.
 
-        **Warning**: This API is deprecated. Please use :method:alerts/update instead. [Learn more]
-
-        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+        **Warning**: This API is deprecated. Please use :method:alerts/update instead. `Learn more
+        <https://docs.databricks.com/en/sql/dbsql-api-latest.html>`__
 
         :param alert_id: str
         :param name: str
@@ -93,7 +87,7 @@
           Query ID.
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
-          If `null`, alert will never be triggered again.
+          If ``null``, alert will never be triggered again.
 
 
         

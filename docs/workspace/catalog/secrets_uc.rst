@@ -40,7 +40,7 @@
 
         
 
-    .. py:method:: get_secret(full_name: str [, include_browse: Optional[bool]]) -> Secret
+    .. py:method:: get_secret(full_name: str) -> Secret
 
         Gets a secret by its three-level (fully qualified) name.
 
@@ -53,14 +53,11 @@
         :param full_name: str
           The three-level (fully qualified) name of the secret (for example,
           **catalog_name.schema_name.secret_name**).
-        :param include_browse: bool (optional)
-          Whether to include secrets in the response for which you only have the **BROWSE** privilege, which
-          limits access to metadata.
 
         :returns: :class:`Secret`
         
 
-    .. py:method:: list_secrets( [, catalog_name: Optional[str], include_browse: Optional[bool], page_size: Optional[int], page_token: Optional[str], schema_name: Optional[str]]) -> Iterator[Secret]
+    .. py:method:: list_secrets( [, catalog_name: Optional[str], page_size: Optional[int], page_token: Optional[str], schema_name: Optional[str]]) -> Iterator[Secret]
 
         Lists secrets in Unity Catalog.
 
@@ -74,15 +71,13 @@
         :param catalog_name: str (optional)
           The name of the catalog under which to list secrets. Both **catalog_name** and **schema_name** must
           be specified together.
-        :param include_browse: bool (optional)
-          Whether to include secrets in the response for which you only have the **BROWSE** privilege, which
-          limits access to metadata.
         :param page_size: int (optional)
           Maximum number of secrets to return.
 
-          - If not specified, at most 10000 secrets are returned. - If set to a value greater than 0, the page
-          length is the minimum of this value and 10000. - If set to 0, the page length is set to 10000. - If
-          set to a value less than 0, an invalid parameter error is returned.
+          - If not specified, at most 1000 secrets are returned.
+          - If set to a value greater than 0, the page length is the minimum of this value and 1000.
+          - If set to 0, the page length is set to 1000.
+          - If set to a value less than 0, an invalid parameter error is returned.
         :param page_token: str (optional)
           Opaque pagination token to go to the next page based on previous query. The maximum page length is
           determined by a server configured value.
@@ -110,8 +105,12 @@
           The secret object containing the fields to update. Only fields specified in **update_mask** will be
           updated.
         :param update_mask: FieldMask
-          The field mask specifying which fields of the secret to update. Supported fields: **value**,
-          **comment**, **owner**, **expire_time**.
+          The field mask specifying which fields of the secret to update.
+
+          - If **update_mask** is **"*"**, all fields specified in **secret** are updated.
+          - If **update_mask** specifies one or more fields, only those fields are updated. Each specified
+            field must be set in **secret**. Supported fields: **value**, **comment**, **owner**,
+            **expire_time**. To change the secret name, delete and recreate the secret.
 
         :returns: :class:`Secret`
         

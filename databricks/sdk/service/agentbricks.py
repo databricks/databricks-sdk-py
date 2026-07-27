@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -7,7 +10,11 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -204,6 +211,7 @@ class AgentBricksAPI:
 
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -211,9 +219,9 @@ class AgentBricksAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize/cancel", headers=headers)
+        self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize/cancel", body=body, headers=headers)
 
     def create_custom_llm(
         self,
@@ -261,7 +269,7 @@ class AgentBricksAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/custom-llms", body=body, headers=headers)
         return CustomLlm.from_dict(res)
@@ -281,7 +289,7 @@ class AgentBricksAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/custom-llms/{id}", headers=headers)
 
@@ -300,7 +308,7 @@ class AgentBricksAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/custom-llms/{id}", headers=headers)
         return CustomLlm.from_dict(res)
@@ -314,6 +322,7 @@ class AgentBricksAPI:
         :returns: :class:`CustomLlm`
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -321,9 +330,9 @@ class AgentBricksAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize", headers=headers)
+        res = self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize", body=body, headers=headers)
         return CustomLlm.from_dict(res)
 
     def update_custom_llm(self, id: str, custom_llm: CustomLlm, update_mask: str) -> CustomLlm:
@@ -335,17 +344,17 @@ class AgentBricksAPI:
           The CustomLlm containing the fields which should be updated.
         :param update_mask: str
           The list of the CustomLlm fields to update. These should correspond to the values (or lack thereof)
-          present in `custom_llm`.
+          present in ``custom_llm``.
 
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`CustomLlm`
         """
@@ -362,7 +371,7 @@ class AgentBricksAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/custom-llms/{id}", body=body, headers=headers)
         return CustomLlm.from_dict(res)

@@ -8,7 +8,7 @@
 
     The function implementation can be any SQL expression or Query, and it can be invoked wherever a table
     reference is allowed in a query. In Unity Catalog, a function resides at the same level as a table, so it
-    can be referenced with the form __catalog_name__.__schema_name__.__function_name__.
+    can be referenced with the form **catalog_name**.**schema_name**.**function_name**.
 
     .. py:method:: create(function_info: CreateFunction) -> FunctionInfo
 
@@ -16,12 +16,13 @@
 
         Creates a new function
 
-        The user must have the following permissions in order for the function to be created: -
-        **USE_CATALOG** on the function's parent catalog - **USE_SCHEMA** and **CREATE_FUNCTION** on the
-        function's parent schema
+        The user must have the following permissions in order for the function to be created:
+
+        - **USE_CATALOG** on the function's parent catalog
+        - **USE_SCHEMA** and **CREATE_FUNCTION** on the function's parent schema
 
         :param function_info: :class:`CreateFunction`
-          Partial __FunctionInfo__ specifying the function to be created.
+          Partial **FunctionInfo** specifying the function to be created.
 
         :returns: :class:`FunctionInfo`
         
@@ -29,14 +30,17 @@
     .. py:method:: delete(name: str [, force: Optional[bool]])
 
         Deletes the function that matches the supplied name. For the deletion to succeed, the user must
-        satisfy one of the following conditions: - Is the owner of the function's parent catalog - Is the
-        owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent catalog -
-        Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent catalog
-        and the **USE_SCHEMA** privilege on its parent schema
+        satisfy one of the following conditions:
+
+        - Is the owner of the function's parent catalog
+        - Is the owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent
+          catalog
+        - Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent
+          catalog and the **USE_SCHEMA** privilege on its parent schema
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__) .
+          **catalog_name**.**schema_name**.**function__name**) .
         :param force: bool (optional)
           Force deletion even if the function is notempty.
 
@@ -46,15 +50,17 @@
     .. py:method:: get(name: str [, include_browse: Optional[bool]]) -> FunctionInfo
 
         Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must
-        satisfy one of the following requirements: - Is a metastore admin - Is an owner of the function's
-        parent catalog - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner
-        of the function - Have the **USE_CATALOG** privilege on the function's parent catalog, the
-        **USE_SCHEMA** privilege on the function's parent schema, and the **EXECUTE** privilege on the
-        function itself
+        satisfy one of the following requirements:
+
+        - Is a metastore admin
+        - Is an owner of the function's parent catalog
+        - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner of the function
+        - Have the **USE_CATALOG** privilege on the function's parent catalog, the **USE_SCHEMA** privilege on
+          the function's parent schema, and the **EXECUTE** privilege on the function itself
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__).
+          **catalog_name**.**schema_name**.**function__name**).
         :param include_browse: bool (optional)
           Whether to include functions in the response for which the principal can only access selective
           metadata for
@@ -86,9 +92,11 @@
           metadata for
         :param max_results: int (optional)
           Maximum number of functions to return. If not set, all the functions are returned (not recommended).
+
           - when set to a value greater than 0, the page length is the minimum of this value and a server
-          configured value; - when set to 0, the page length is set to a server configured value
-          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+            configured value;
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -99,14 +107,18 @@
 
         Updates the function that matches the supplied name. Only the owner of the function can be updated. If
         the user is not a metastore admin, the user must be a member of the group that is the new function
-        owner. - Is a metastore admin - Is the owner of the function's parent catalog - Is the owner of the
-        function's parent schema and has the **USE_CATALOG** privilege on its parent catalog - Is the owner of
-        the function itself and has the **USE_CATALOG** privilege on its parent catalog as well as the
-        **USE_SCHEMA** privilege on the function's parent schema.
+        owner.
+
+        - Is a metastore admin
+        - Is the owner of the function's parent catalog
+        - Is the owner of the function's parent schema and has the **USE_CATALOG** privilege on its parent
+          catalog
+        - Is the owner of the function itself and has the **USE_CATALOG** privilege on its parent catalog as
+          well as the **USE_SCHEMA** privilege on the function's parent schema.
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__).
+          **catalog_name**.**schema_name**.**function__name**).
         :param owner: str (optional)
           Username of current owner of the function.
 

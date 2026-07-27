@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -7,7 +10,11 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -306,7 +313,7 @@ class ValidityCheckConfiguration:
 
 class QualityMonitorV2API:
     """Deprecated: Please use the Data Quality Monitoring API instead (REST: /api/data-quality/v1/monitors).
-    Manage data quality of UC objects (currently support `schema`)."""
+    Manage data quality of UC objects (currently support ``schema``)."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -321,6 +328,7 @@ class QualityMonitorV2API:
         """
 
         body = quality_monitor.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -328,7 +336,7 @@ class QualityMonitorV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/quality-monitors", body=body, headers=headers)
         return QualityMonitor.from_dict(res)
@@ -351,7 +359,7 @@ class QualityMonitorV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/quality-monitors/{object_type}/{object_id}", headers=headers)
 
@@ -373,7 +381,7 @@ class QualityMonitorV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/quality-monitors/{object_type}/{object_id}", headers=headers)
         return QualityMonitor.from_dict(res)
@@ -401,7 +409,7 @@ class QualityMonitorV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/quality-monitors", query=query, headers=headers)
@@ -428,6 +436,7 @@ class QualityMonitorV2API:
         """
 
         body = quality_monitor.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -435,7 +444,7 @@ class QualityMonitorV2API:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/quality-monitors/{object_type}/{object_id}", body=body, headers=headers)
         return QualityMonitor.from_dict(res)

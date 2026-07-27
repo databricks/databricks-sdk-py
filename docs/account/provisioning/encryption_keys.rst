@@ -8,9 +8,9 @@
     encapsulates the AWS KMS key information and some information about how the key configuration can be used.
     There are two possible uses for key configurations:
 
-    * Managed services: A key configuration can be used to encrypt a workspace's notebook and secret data in
-    the control plane, as well as Databricks SQL queries and query history. * Storage: A key configuration can
-    be used to encrypt a workspace's DBFS and EBS data in the data plane.
+    - Managed services: A key configuration can be used to encrypt a workspace's notebook and secret data in
+      the control plane, as well as Databricks SQL queries and query history.
+    - Storage: A key configuration can be used to encrypt a workspace's DBFS and EBS data in the data plane.
 
     In both of these cases, the key configuration's ID is used when creating a new workspace. This Preview
     feature is available if your account is on the E2 version of the platform. Updating a running workspace
@@ -18,7 +18,7 @@
     have an older workspace, it might not be on the E2 version of the platform. If you are not sure, contact
     your Databricks representative.
 
-    .. py:method:: create(use_cases: List[KeyUseCase] [, aws_key_info: Optional[CreateAwsKeyInfo], gcp_key_info: Optional[CreateGcpKeyInfo]]) -> CustomerManagedKey
+    .. py:method:: create(use_cases: List[KeyUseCase] [, aws_key_info: Optional[CreateAwsKeyInfo], azure_key_info: Optional[CreateAzureKeyInfo], gcp_key_info: Optional[CreateGcpKeyInfo]]) -> CustomerManagedKey
 
 
         Usage:
@@ -58,16 +58,16 @@
         custom plan that allows multiple workspaces per account.
 
         **GCP only**: To create a customer-managed key on GCP, you must include the
-        `X-Databricks-GCP-SA-Access-Token` HTTP header in your request. This header must contain a Google
-        Cloud OAuth access token with the `cloud-platform` scope. The Google identity associated with the
-        token must also have the `setIamPermissions` and `getIamPermissions` IAM permissions on the key
-        resource. For details on obtaining this token, see [Authenticate with Google ID tokens].
-
-        [Authenticate with Google ID tokens]: https://docs.databricks.com/gcp/en/dev-tools/auth/authentication-google-id.html
+        ``X-Databricks-GCP-SA-Access-Token`` HTTP header in your request. This header must contain a Google
+        Cloud OAuth access token with the ``cloud-platform`` scope. The Google identity associated with the
+        token must also have the ``setIamPermissions`` and ``getIamPermissions`` IAM permissions on the key
+        resource. For details on obtaining this token, see `Authenticate with Google ID tokens
+        <https://docs.databricks.com/gcp/en/dev-tools/auth/authentication-google-id.html>`__.
 
         :param use_cases: List[:class:`KeyUseCase`]
           The cases that the key can be used for.
         :param aws_key_info: :class:`CreateAwsKeyInfo` (optional)
+        :param azure_key_info: :class:`CreateAzureKeyInfo` (optional)
         :param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)
 
         :returns: :class:`CustomerManagedKey`

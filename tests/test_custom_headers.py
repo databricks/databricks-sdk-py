@@ -101,7 +101,7 @@ def test_request_headers_override_custom_headers(requests_mock):
     )
 
     # Make a request with header override
-    response = api_client.do("GET", "/api/2.0/clusters/list", headers={"X-Custom-Header": "overridden-value"})
+    api_client.do("GET", "/api/2.0/clusters/list", headers={"X-Custom-Header": "overridden-value"})
 
     # Verify the request header overrode the custom header
     assert requests_mock.last_request.headers["X-Custom-Header"] == "overridden-value"

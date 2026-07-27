@@ -29,18 +29,16 @@
             # cleanup
             a.vpc_endpoints.delete(vpc_endpoint_id=created.vpc_endpoint_id)
 
-        Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to
-        communicate privately with Databricks over [AWS PrivateLink].
+        Creates a VPC endpoint configuration, which represents a `VPC endpoint
+        <https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html>`__ object in AWS used to
+        communicate privately with Databricks over `AWS PrivateLink <https://aws.amazon.com/privatelink>`__.
 
-        After you create the VPC endpoint configuration, the Databricks [endpoint service] automatically
-        accepts the VPC endpoint.
+        After you create the VPC endpoint configuration, the Databricks `endpoint service
+        <https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html>`__
+        automatically accepts the VPC endpoint.
 
-        Before configuring PrivateLink, read the [Databricks article about PrivateLink].
-
-        [AWS PrivateLink]: https://aws.amazon.com/privatelink
-        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-        [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html
-        [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html
+        Before configuring PrivateLink, read the `Databricks article about PrivateLink
+        <https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html>`__.
 
         :param aws_vpc_endpoint_id: str (optional)
           The ID of the VPC endpoint object in AWS.
@@ -89,11 +87,9 @@
             # cleanup
             a.vpc_endpoints.delete(vpc_endpoint_id=created.vpc_endpoint_id)
 
-        Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate
-        privately with Databricks over [AWS PrivateLink].
-
-        [AWS PrivateLink]: https://aws.amazon.com/privatelink
-        [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
+        Gets a VPC endpoint configuration, which represents a `VPC endpoint
+        <https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html>`__ object in AWS used to
+        communicate privately with Databricks over `AWS PrivateLink <https://aws.amazon.com/privatelink>`__.
 
         :param vpc_endpoint_id: str
           Databricks VPC endpoint ID.

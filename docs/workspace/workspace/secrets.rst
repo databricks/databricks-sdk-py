@@ -47,7 +47,10 @@
         .. code::
 
         { "scope": "my-simple-databricks-scope", "initial_manage_principal": "users" "scope_backend_type":
-        "databricks|azure_keyvault", # below is only required if scope type is azure_keyvault
+        "databricks|azure_keyvault",
+
+        below is only required if scope type is azure_keyvault
+
         "backend_azure_keyvault": { "resource_id":
         "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxx/providers/Microsoft.KeyVault/vaults/xxxx",
         "tenant_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "dns_name": "https://xxxx.vault.azure.net/", } }
@@ -365,9 +368,9 @@
         scope point. In general, a user or group will use the most powerful permission available to them, and
         permissions are ordered as follows:
 
-        * ``MANAGE`` - Allowed to change ACLs, and read and write to this secret scope. * ``WRITE`` - Allowed
-        to read and write to this secret scope. * ``READ`` - Allowed to read this secret scope and list what
-        secrets are available.
+        - ``MANAGE`` - Allowed to change ACLs, and read and write to this secret scope.
+        - ``WRITE`` - Allowed to read and write to this secret scope.
+        - ``READ`` - Allowed to read this secret scope and list what secrets are available.
 
         Note that in general, secret values can only be read from within a command on a cluster (for example,
         through a notebook). There is no API to read the actual secret value material outside of a cluster.

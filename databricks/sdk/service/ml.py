@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -10,9 +13,19 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from google.protobuf.duration_pb2 import Duration
+from google.protobuf.timestamp_pb2 import Timestamp
+
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    Wait,
+    _duration,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+    _timestamp,
+)
 
 from ..errors import OperationFailed
 
@@ -38,13 +51,10 @@ class Activity:
     from_stage: Optional[str] = None
     """Source stage of the transition (if the activity is stage transition related). Valid values are:
     
-    * `None`: The initial stage of a model version.
-    
-    * `Staging`: Staging or pre-production stage.
-    
-    * `Production`: Production stage.
-    
-    * `Archived`: Archived stage."""
+    - ``None``: The initial stage of a model version.
+    - ``Staging``: Staging or pre-production stage.
+    - ``Production``: Production stage.
+    - ``Archived``: Archived stage."""
 
     id: Optional[str] = None
     """Unique identifier for the object."""
@@ -53,20 +63,17 @@ class Activity:
     """Time of the object at last update, as a Unix timestamp in milliseconds."""
 
     system_comment: Optional[str] = None
-    """Comment made by system, for example explaining an activity of type `SYSTEM_TRANSITION`. It
+    """Comment made by system, for example explaining an activity of type ``SYSTEM_TRANSITION``. It
     usually describes a side effect, such as a version being archived as part of another version's
     stage transition, and may not be returned for some activity types."""
 
     to_stage: Optional[str] = None
     """Target stage of the transition (if the activity is stage transition related). Valid values are:
     
-    * `None`: The initial stage of a model version.
-    
-    * `Staging`: Staging or pre-production stage.
-    
-    * `Production`: Production stage.
-    
-    * `Archived`: Archived stage."""
+    - ``None``: The initial stage of a model version.
+    - ``Staging``: Staging or pre-production stage.
+    - ``Production``: Production stage.
+    - ``Archived``: Archived stage."""
 
     user_id: Optional[str] = None
     """The username of the user that created the object."""
@@ -136,15 +143,16 @@ class Activity:
 class ActivityAction(Enum):
     """An action that a user (with sufficient permissions) could take on an activity or comment.
 
-    For activities, valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
+    For activities, valid values are:
 
-    * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+    - ``APPROVE_TRANSITION_REQUEST``: Approve a transition request
+    - ``REJECT_TRANSITION_REQUEST``: Reject a transition request
+    - ``CANCEL_TRANSITION_REQUEST``: Cancel (delete) a transition request
 
-    * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+    For comments, valid values are:
 
-    For comments, valid values are: * `EDIT_COMMENT`: Edit the comment
-
-    * `DELETE_COMMENT`: Delete the comment"""
+    - ``EDIT_COMMENT``: Edit the comment
+    - ``DELETE_COMMENT``: Delete the comment"""
 
     APPROVE_TRANSITION_REQUEST = "APPROVE_TRANSITION_REQUEST"
     CANCEL_TRANSITION_REQUEST = "CANCEL_TRANSITION_REQUEST"
@@ -154,19 +162,15 @@ class ActivityAction(Enum):
 
 
 class ActivityType(Enum):
-    """Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage
-    transition.
+    """Type of activity. Valid values are:
 
-    * `REQUESTED_TRANSITION`: User requested the corresponding stage transition.
-
-    * `CANCELLED_REQUEST`: User cancelled an existing transition request.
-
-    * `APPROVED_REQUEST`: User approved the corresponding stage transition.
-
-    * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
-
-    * `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model
-    versions in a stage."""
+    - ``APPLIED_TRANSITION``: User applied the corresponding stage transition.
+    - ``REQUESTED_TRANSITION``: User requested the corresponding stage transition.
+    - ``CANCELLED_REQUEST``: User cancelled an existing transition request.
+    - ``APPROVED_REQUEST``: User approved the corresponding stage transition.
+    - ``REJECTED_REQUEST``: User rejected the coressponding stage transition.
+    - ``SYSTEM_TRANSITION``: For events performed as a side effect, such as archiving existing model
+      versions in a stage."""
 
     APPLIED_TRANSITION = "APPLIED_TRANSITION"
     APPROVED_REQUEST = "APPROVED_REQUEST"
@@ -191,7 +195,15 @@ class AggregationFunction:
 
     first: Optional[FirstFunction] = None
 
+    first_distinct: Optional[FirstDistinctFunction] = None
+
+    first_n: Optional[FirstNFunction] = None
+
     last: Optional[LastFunction] = None
+
+    last_distinct: Optional[LastDistinctFunction] = None
+
+    last_n: Optional[LastNFunction] = None
 
     max: Optional[MaxFunction] = None
 
@@ -223,8 +235,16 @@ class AggregationFunction:
             body["count_function"] = self.count_function.as_dict()
         if self.first:
             body["first"] = self.first.as_dict()
+        if self.first_distinct:
+            body["first_distinct"] = self.first_distinct.as_dict()
+        if self.first_n:
+            body["first_n"] = self.first_n.as_dict()
         if self.last:
             body["last"] = self.last.as_dict()
+        if self.last_distinct:
+            body["last_distinct"] = self.last_distinct.as_dict()
+        if self.last_n:
+            body["last_n"] = self.last_n.as_dict()
         if self.max:
             body["max"] = self.max.as_dict()
         if self.min:
@@ -256,8 +276,16 @@ class AggregationFunction:
             body["count_function"] = self.count_function
         if self.first:
             body["first"] = self.first
+        if self.first_distinct:
+            body["first_distinct"] = self.first_distinct
+        if self.first_n:
+            body["first_n"] = self.first_n
         if self.last:
             body["last"] = self.last
+        if self.last_distinct:
+            body["last_distinct"] = self.last_distinct
+        if self.last_n:
+            body["last_n"] = self.last_n
         if self.max:
             body["max"] = self.max
         if self.min:
@@ -285,7 +313,11 @@ class AggregationFunction:
             avg=_from_dict(d, "avg", AvgFunction),
             count_function=_from_dict(d, "count_function", CountFunction),
             first=_from_dict(d, "first", FirstFunction),
+            first_distinct=_from_dict(d, "first_distinct", FirstDistinctFunction),
+            first_n=_from_dict(d, "first_n", FirstNFunction),
             last=_from_dict(d, "last", LastFunction),
+            last_distinct=_from_dict(d, "last_distinct", LastDistinctFunction),
+            last_n=_from_dict(d, "last_n", LastNFunction),
             max=_from_dict(d, "max", MaxFunction),
             min=_from_dict(d, "min", MinFunction),
             stddev_pop=_from_dict(d, "stddev_pop", StddevPopFunction),
@@ -399,6 +431,9 @@ class ApproxPercentileFunction:
 
 @dataclass
 class AuthConfig:
+    mtls_config: Optional[MtlsConfig] = None
+    """Mutual-TLS authentication. See MtlsConfig."""
+
     uc_service_credential_name: Optional[str] = None
     """Name of the Unity Catalog service credential. This value will be set under the option
     databricks.serviceCredential"""
@@ -406,6 +441,8 @@ class AuthConfig:
     def as_dict(self) -> dict:
         """Serializes the AuthConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.mtls_config:
+            body["mtls_config"] = self.mtls_config.as_dict()
         if self.uc_service_credential_name is not None:
             body["uc_service_credential_name"] = self.uc_service_credential_name
         return body
@@ -413,6 +450,8 @@ class AuthConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the AuthConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.mtls_config:
+            body["mtls_config"] = self.mtls_config
         if self.uc_service_credential_name is not None:
             body["uc_service_credential_name"] = self.uc_service_credential_name
         return body
@@ -420,7 +459,10 @@ class AuthConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AuthConfig:
         """Deserializes the AuthConfig from a dictionary."""
-        return cls(uc_service_credential_name=d.get("uc_service_credential_name", None))
+        return cls(
+            mtls_config=_from_dict(d, "mtls_config", MtlsConfig),
+            uc_service_credential_name=d.get("uc_service_credential_name", None),
+        )
 
 
 @dataclass
@@ -429,9 +471,9 @@ class AvgFunction:
 
     input: str
     """The input column from which the average is computed. For Kafka sources, use dot-prefixed path
-    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. TODO(FS-939):
-    Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility but is
-    deprecated; migrate to dot notation."""
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. Colon-prefixed
+    notation (e.g., "value:amount") is supported for backwards compatibility but is deprecated;
+    migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the AvgFunction into a dictionary suitable for use as a JSON request body."""
@@ -455,14 +497,20 @@ class AvgFunction:
 
 @dataclass
 class BackfillSource:
+    delta_table_name: Optional[str] = None
+    """The full three-part name (catalog, schema, name) of the Delta table containing the historical
+    data to backfill."""
+
     delta_table_source: Optional[DeltaTableSource] = None
-    """The Delta table source containing the historic data to backfill. Only the delta table name is
-    used for backfill, the entity columns and timeseries column are ignored as they are defined by
-    the associated KafkaSource."""
+    """Deprecated: Use delta_table_name instead. Kept for backwards compatibility. The Delta table
+    source containing the historical data to backfill. Only the delta table name is used for
+    backfill, other fields are ignored."""
 
     def as_dict(self) -> dict:
         """Serializes the BackfillSource into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.delta_table_name is not None:
+            body["delta_table_name"] = self.delta_table_name
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source.as_dict()
         return body
@@ -470,6 +518,8 @@ class BackfillSource:
     def as_shallow_dict(self) -> dict:
         """Serializes the BackfillSource into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.delta_table_name is not None:
+            body["delta_table_name"] = self.delta_table_name
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source
         return body
@@ -477,7 +527,10 @@ class BackfillSource:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> BackfillSource:
         """Deserializes the BackfillSource from a dictionary."""
-        return cls(delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource))
+        return cls(
+            delta_table_name=d.get("delta_table_name", None),
+            delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
+        )
 
 
 @dataclass
@@ -564,15 +617,16 @@ class ColumnSelection:
 class CommentActivityAction(Enum):
     """An action that a user (with sufficient permissions) could take on an activity or comment.
 
-    For activities, valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
+    For activities, valid values are:
 
-    * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+    - ``APPROVE_TRANSITION_REQUEST``: Approve a transition request
+    - ``REJECT_TRANSITION_REQUEST``: Reject a transition request
+    - ``CANCEL_TRANSITION_REQUEST``: Cancel (delete) a transition request
 
-    * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+    For comments, valid values are:
 
-    For comments, valid values are: * `EDIT_COMMENT`: Edit the comment
-
-    * `DELETE_COMMENT`: Delete the comment"""
+    - ``EDIT_COMMENT``: Edit the comment
+    - ``DELETE_COMMENT``: Delete the comment"""
 
     APPROVE_TRANSITION_REQUEST = "APPROVE_TRANSITION_REQUEST"
     CANCEL_TRANSITION_REQUEST = "CANCEL_TRANSITION_REQUEST"
@@ -653,6 +707,8 @@ class CommentObject:
 
 @dataclass
 class ContinuousWindow:
+    """Deprecated: use RollingWindow with ``delay`` instead."""
+
     window_duration: str
     """The duration of the continuous window (must be positive)."""
 
@@ -689,9 +745,9 @@ class CountFunction:
 
     input: str
     """The input column from which the count is computed. For Kafka sources, use dot-prefixed path
-    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. TODO(FS-939):
-    Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility but is
-    deprecated; migrate to dot notation."""
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. Colon-prefixed
+    notation (e.g., "value:amount") is supported for backwards compatibility but is deprecated;
+    migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the CountFunction into a dictionary suitable for use as a JSON request body."""
@@ -962,6 +1018,33 @@ class CreateWebhookResponse:
 
 
 @dataclass
+class CronSchedule:
+    """A cron-based schedule trigger for the materialization pipeline."""
+
+    cron_expression: Optional[str] = None
+    """The cron expression defining the schedule (e.g., "0 0 * * *" for daily at midnight)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cron_expression is not None:
+            body["cron_expression"] = self.cron_expression
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CronSchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cron_expression is not None:
+            body["cron_expression"] = self.cron_expression
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
+        """Deserializes the CronSchedule from a dictionary."""
+        return cls(cron_expression=d.get("cron_expression", None))
+
+
+@dataclass
 class DataSource:
     """Specifies the data source backing a feature. Exactly one source type must be set."""
 
@@ -974,6 +1057,9 @@ class DataSource:
     request_source: Optional[RequestSource] = None
     """A request-time data source."""
 
+    stream_source: Optional[StreamSource] = None
+    """A Stream data source."""
+
     def as_dict(self) -> dict:
         """Serializes the DataSource into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -983,6 +1069,8 @@ class DataSource:
             body["kafka_source"] = self.kafka_source.as_dict()
         if self.request_source:
             body["request_source"] = self.request_source.as_dict()
+        if self.stream_source:
+            body["stream_source"] = self.stream_source.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -994,6 +1082,8 @@ class DataSource:
             body["kafka_source"] = self.kafka_source
         if self.request_source:
             body["request_source"] = self.request_source
+        if self.stream_source:
+            body["stream_source"] = self.stream_source
         return body
 
     @classmethod
@@ -1003,6 +1093,7 @@ class DataSource:
             delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
             kafka_source=_from_dict(d, "kafka_source", KafkaSource),
             request_source=_from_dict(d, "request_source", RequestSource),
+            stream_source=_from_dict(d, "stream_source", StreamSource),
         )
 
 
@@ -1387,7 +1478,7 @@ class DeltaTableSource:
     transformation_sql: Optional[str] = None
     """A single SQL SELECT expression applied after filter_condition. Should contains all the columns
     needed (eg. "SELECT *, col_a + col_b AS col_c FROM x.y.z WHERE col_a > 0" would have
-    `transformation_sql` "*, col_a + col_b AS col_c") If transformation_sql is not provided, all
+    ``transformation_sql`` "*, col_a + col_b AS col_c") If transformation_sql is not provided, all
     columns of the delta table are present in the DataSource dataframe."""
 
     def as_dict(self) -> dict:
@@ -1438,14 +1529,91 @@ class DeltaTableSource:
 
 
 @dataclass
+class DirectMtlsConfig:
+    """Direct connection configs for mTLS, as Kafka Connections do not support mTLS yet . Temporarily
+    used until UC Kafka Connections gain mTLS support."""
+
+    bootstrap_servers: str
+    """A comma-separated list of host:port pairs for the Kafka bootstrap servers."""
+
+    mtls_config: MtlsConfig
+    """Mutual-TLS authentication configuration."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DirectMtlsConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bootstrap_servers is not None:
+            body["bootstrap_servers"] = self.bootstrap_servers
+        if self.mtls_config:
+            body["mtls_config"] = self.mtls_config.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DirectMtlsConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.bootstrap_servers is not None:
+            body["bootstrap_servers"] = self.bootstrap_servers
+        if self.mtls_config:
+            body["mtls_config"] = self.mtls_config
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DirectMtlsConfig:
+        """Deserializes the DirectMtlsConfig from a dictionary."""
+        return cls(
+            bootstrap_servers=d.get("bootstrap_servers", None), mtls_config=_from_dict(d, "mtls_config", MtlsConfig)
+        )
+
+
+@dataclass
+class DirectSchemas:
+    """Schema definitions provided directly on the Stream, as opposed to referencing a schema registry.
+    In a future milestone, we will support schema registries through a UC Connection."""
+
+    key_schema: Optional[SchemaConfig] = None
+    """Schema for the message key. This is only used for Kafka streams. For Kafka, at least one of
+    payload_schema or key_schema must be specified."""
+
+    payload_schema: Optional[SchemaConfig] = None
+    """Schema for the message payload. For Kafka, this is the value schema. Unless the platform
+    supports another schema (e.g. keys for Kafka), this must be specified."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DirectSchemas into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key_schema:
+            body["key_schema"] = self.key_schema.as_dict()
+        if self.payload_schema:
+            body["payload_schema"] = self.payload_schema.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DirectSchemas into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key_schema:
+            body["key_schema"] = self.key_schema
+        if self.payload_schema:
+            body["payload_schema"] = self.payload_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DirectSchemas:
+        """Deserializes the DirectSchemas from a dictionary."""
+        return cls(
+            key_schema=_from_dict(d, "key_schema", SchemaConfig),
+            payload_schema=_from_dict(d, "payload_schema", SchemaConfig),
+        )
+
+
+@dataclass
 class EntityColumn:
     name: str
     """The name of the entity column. For Kafka sources, use dot-prefixed path notation to reference
     fields within the key or value schema (e.g., "value.user_id", "key.partition_key"). For nested
     fields, the leaf node name (e.g., "user_id" from "value.trip_details.user_id") is what will be
-    present in materialized tables and expected to match at query time. TODO(FS-939): Colon-prefixed
-    notation (e.g., "value:user_id") is supported for backwards compatibility but is deprecated;
-    migrate to dot notation."""
+    present in materialized tables and expected to match at query time. Colon-prefixed notation
+    (e.g., "value:user_id") is supported for backwards compatibility but is deprecated; migrate to
+    dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the EntityColumn into a dictionary suitable for use as a JSON request body."""
@@ -1493,6 +1661,10 @@ class Experiment:
     tags: Optional[List[ExperimentTag]] = None
     """Tags: Additional metadata key-value pairs."""
 
+    trace_location: Optional[ExperimentTraceLocation] = None
+    """The location where the experiment's traces are stored. Unset when traces are stored in the
+    default MLflow backend. This field cannot be updated after the experiment is created."""
+
     def as_dict(self) -> dict:
         """Serializes the Experiment into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1510,6 +1682,8 @@ class Experiment:
             body["name"] = self.name
         if self.tags:
             body["tags"] = [v.as_dict() for v in self.tags]
+        if self.trace_location:
+            body["trace_location"] = self.trace_location.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1529,6 +1703,8 @@ class Experiment:
             body["name"] = self.name
         if self.tags:
             body["tags"] = self.tags
+        if self.trace_location:
+            body["trace_location"] = self.trace_location
         return body
 
     @classmethod
@@ -1542,6 +1718,7 @@ class Experiment:
             lifecycle_stage=d.get("lifecycle_stage", None),
             name=d.get("name", None),
             tags=_repeated_dict(d, "tags", ExperimentTag),
+            trace_location=_from_dict(d, "trace_location", ExperimentTraceLocation),
         )
 
 
@@ -1810,15 +1987,53 @@ class ExperimentTag:
 
 
 @dataclass
+class ExperimentTraceLocation:
+    """The storage location for an experiment's traces."""
+
+    uc_trace_location: Optional[UcTraceLocation] = None
+    """A Unity Catalog schema where the experiment's traces are stored as Delta tables."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExperimentTraceLocation into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.uc_trace_location:
+            body["uc_trace_location"] = self.uc_trace_location.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExperimentTraceLocation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.uc_trace_location:
+            body["uc_trace_location"] = self.uc_trace_location
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentTraceLocation:
+        """Deserializes the ExperimentTraceLocation from a dictionary."""
+        return cls(uc_trace_location=_from_dict(d, "uc_trace_location", UcTraceLocation))
+
+
+@dataclass
 class Feature:
     full_name: str
-    """The full three-part name (catalog, schema, name) of the feature."""
+    """The full three-part name (catalog, schema, name) of the feature. This is the feature's resource
+    identifier; the catalog_name, schema_name, and name fields below are OUTPUT_ONLY decomposed
+    views of this value."""
 
     source: DataSource
     """The data source of the feature."""
 
     function: Function
     """The function by which the feature is computed."""
+
+    catalog_name: Optional[str] = None
+    """Name of parent catalog."""
+
+    created_at: Optional[Timestamp] = None
+    """Time at which this feature was created."""
+
+    created_by: Optional[str] = None
+    """Username of the feature creator."""
 
     description: Optional[str] = None
     """The description of the feature."""
@@ -1841,6 +2056,12 @@ class Feature:
     values may lead to inaccurate lineage tracking or unexpected behavior. This field will be set by
     feature-engineering client and should be left unset by SDK and terraform users."""
 
+    name: Optional[str] = None
+    """Name of the feature, extracted from the full three-part name (catalog.schema.name)."""
+
+    schema_name: Optional[str] = None
+    """Name of parent schema relative to its parent catalog."""
+
     time_window: Optional[TimeWindow] = None
     """Deprecated: Use Function.aggregation_function.time_window instead. Kept for backwards
     compatibility. The time window in which the feature is computed."""
@@ -1851,6 +2072,12 @@ class Feature:
     def as_dict(self) -> dict:
         """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.created_at is not None:
+            body["created_at"] = self.created_at.ToJsonString()
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
         if self.description is not None:
             body["description"] = self.description
         if self.entities:
@@ -1865,6 +2092,10 @@ class Feature:
             body["inputs"] = [v for v in self.inputs]
         if self.lineage_context:
             body["lineage_context"] = self.lineage_context.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
         if self.source:
             body["source"] = self.source.as_dict()
         if self.time_window:
@@ -1876,6 +2107,12 @@ class Feature:
     def as_shallow_dict(self) -> dict:
         """Serializes the Feature into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
         if self.description is not None:
             body["description"] = self.description
         if self.entities:
@@ -1890,6 +2127,10 @@ class Feature:
             body["inputs"] = self.inputs
         if self.lineage_context:
             body["lineage_context"] = self.lineage_context
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
         if self.source:
             body["source"] = self.source
         if self.time_window:
@@ -1902,6 +2143,9 @@ class Feature:
     def from_dict(cls, d: Dict[str, Any]) -> Feature:
         """Deserializes the Feature from a dictionary."""
         return cls(
+            catalog_name=d.get("catalog_name", None),
+            created_at=_timestamp(d, "created_at"),
+            created_by=d.get("created_by", None),
             description=d.get("description", None),
             entities=_repeated_dict(d, "entities", EntityColumn),
             filter_condition=d.get("filter_condition", None),
@@ -1909,6 +2153,8 @@ class Feature:
             function=_from_dict(d, "function", Function),
             inputs=d.get("inputs", None),
             lineage_context=_from_dict(d, "lineage_context", LineageContext),
+            name=d.get("name", None),
+            schema_name=d.get("schema_name", None),
             source=_from_dict(d, "source", DataSource),
             time_window=_from_dict(d, "time_window", TimeWindow),
             timeseries_column=_from_dict(d, "timeseries_column", TimeseriesColumn),
@@ -2207,6 +2453,40 @@ class FinalizeLoggedModelResponse:
 
 
 @dataclass
+class FirstDistinctFunction:
+    """Returns the first N distinct values, ordered by the feature's timeseries column."""
+
+    input: str
+    """The input column from which the first N distinct values are returned."""
+
+    n: int
+    """The number of distinct values to return."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FirstDistinctFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        if self.n is not None:
+            body["n"] = self.n
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FirstDistinctFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        if self.n is not None:
+            body["n"] = self.n
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FirstDistinctFunction:
+        """Deserializes the FirstDistinctFunction from a dictionary."""
+        return cls(input=d.get("input", None), n=d.get("n", None))
+
+
+@dataclass
 class FirstFunction:
     """Returns the first value."""
 
@@ -2231,6 +2511,40 @@ class FirstFunction:
     def from_dict(cls, d: Dict[str, Any]) -> FirstFunction:
         """Deserializes the FirstFunction from a dictionary."""
         return cls(input=d.get("input", None))
+
+
+@dataclass
+class FirstNFunction:
+    """Returns the first N values, ordered by the feature's timeseries column."""
+
+    input: str
+    """The input column from which the first N values are returned."""
+
+    n: int
+    """The number of values to return."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FirstNFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        if self.n is not None:
+            body["n"] = self.n
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FirstNFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        if self.n is not None:
+            body["n"] = self.n
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FirstNFunction:
+        """Deserializes the FirstNFunction from a dictionary."""
+        return cls(input=d.get("input", None), n=d.get("n", None))
 
 
 @dataclass
@@ -2307,7 +2621,6 @@ class ForecastingExperiment:
 
 
 class ForecastingExperimentState(Enum):
-
     CANCELLED = "CANCELLED"
     FAILED = "FAILED"
     PENDING = "PENDING"
@@ -2501,8 +2814,8 @@ class GetExperimentResponse:
 @dataclass
 class GetLatestVersionsResponse:
     model_versions: Optional[List[ModelVersion]] = None
-    """Latest version models for each requests stage. Only return models with current `READY` status.
-    If no `stages` provided, returns the latest version for each stage, including `"None"`."""
+    """Latest version models for each requests stage. Only return models with current ``READY`` status.
+    If no ``stages`` provided, returns the latest version for each stage, including ``"None"``."""
 
     def as_dict(self) -> dict:
         """Serializes the GetLatestVersionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -2552,7 +2865,7 @@ class GetLoggedModelResponse:
 @dataclass
 class GetMetricHistoryResponse:
     metrics: Optional[List[Metric]] = None
-    """All logged values for this metric if `max_results` is not specified in the request or if the
+    """All logged values for this metric if ``max_results`` is not specified in the request or if the
     total count of metrics returned is less than the service level pagination threshold. Otherwise,
     this is one page of results."""
 
@@ -2714,8 +3027,8 @@ class HttpUrlSpec:
 
     authorization: Optional[str] = None
     """Value of the authorization header that should be sent in the request sent by the wehbook. It
-    should be of the form `"<auth type> <credentials>"`. If set to an empty string, no authorization
-    header will be included in the request."""
+    should be of the form ``"<auth type> <credentials>"``. If set to an empty string, no
+    authorization header will be included in the request."""
 
     enable_ssl_verification: Optional[bool] = None
     """Enable/disable SSL certificate validation. Default is true. For self-signed certificates, this
@@ -2799,6 +3112,113 @@ class HttpUrlSpecWithoutSecret:
     def from_dict(cls, d: Dict[str, Any]) -> HttpUrlSpecWithoutSecret:
         """Deserializes the HttpUrlSpecWithoutSecret from a dictionary."""
         return cls(enable_ssl_verification=d.get("enable_ssl_verification", None), url=d.get("url", None))
+
+
+@dataclass
+class IngestionConfig:
+    """Configuration for the Databricks-managed ingestion pipeline. Groups the ingestion destination
+    (required) and optional backfill source."""
+
+    ingestion_destination: IngestionDestination
+    """Destination for the Databricks-managed Delta table that holds an offline copy of the streaming
+    data for querying and training. This table contains both 1) forward-filled data from the Stream
+    and 2) backfilled data from the BackfillSource (if provided). This table is created and managed
+    by Databricks and is deleted when the Stream is deleted."""
+
+    backfill_job_id: Optional[int] = None
+    """The ID of the Databricks Job that performs the historical backfill of the ingestion Delta table."""
+
+    backfill_source: Optional[BackfillSource] = None
+    """A user-provided source for backfilling data. Historical data is used when creating a training
+    set from streaming features linked to this Stream. The backfill data stored in this location
+    will be copied into the ingestion table for offline querying and training. The schema for this
+    source must match exactly that of the key and payload schemas specified for this Stream."""
+
+    deduplication_columns: Optional[List[str]] = None
+    """Column paths used to identify duplicate rows during ingestion; only one row per distinct
+    combination of these values is kept. Use dot notation for nested fields (e.g.
+    ``value.user_id``). Empty list means every column is compared."""
+
+    ingestion_job_id: Optional[int] = None
+    """The ID of the Databricks Job that performs the forward-fill ingestion."""
+
+    ingestion_pipeline_id: Optional[str] = None
+    """The ID of the SDP pipeline that continuously copies new events from the streaming source into
+    the ingestion Delta table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the IngestionConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.backfill_job_id is not None:
+            body["backfill_job_id"] = self.backfill_job_id
+        if self.backfill_source:
+            body["backfill_source"] = self.backfill_source.as_dict()
+        if self.deduplication_columns:
+            body["deduplication_columns"] = [v for v in self.deduplication_columns]
+        if self.ingestion_destination:
+            body["ingestion_destination"] = self.ingestion_destination.as_dict()
+        if self.ingestion_job_id is not None:
+            body["ingestion_job_id"] = self.ingestion_job_id
+        if self.ingestion_pipeline_id is not None:
+            body["ingestion_pipeline_id"] = self.ingestion_pipeline_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IngestionConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.backfill_job_id is not None:
+            body["backfill_job_id"] = self.backfill_job_id
+        if self.backfill_source:
+            body["backfill_source"] = self.backfill_source
+        if self.deduplication_columns:
+            body["deduplication_columns"] = self.deduplication_columns
+        if self.ingestion_destination:
+            body["ingestion_destination"] = self.ingestion_destination
+        if self.ingestion_job_id is not None:
+            body["ingestion_job_id"] = self.ingestion_job_id
+        if self.ingestion_pipeline_id is not None:
+            body["ingestion_pipeline_id"] = self.ingestion_pipeline_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> IngestionConfig:
+        """Deserializes the IngestionConfig from a dictionary."""
+        return cls(
+            backfill_job_id=d.get("backfill_job_id", None),
+            backfill_source=_from_dict(d, "backfill_source", BackfillSource),
+            deduplication_columns=d.get("deduplication_columns", None),
+            ingestion_destination=_from_dict(d, "ingestion_destination", IngestionDestination),
+            ingestion_job_id=d.get("ingestion_job_id", None),
+            ingestion_pipeline_id=d.get("ingestion_pipeline_id", None),
+        )
+
+
+@dataclass
+class IngestionDestination:
+    """Destination for the Databricks-managed Delta table that holds an offline copy of the streaming
+    data for querying and training."""
+
+    delta_table_name: Optional[str] = None
+    """The full three-part name (catalog, schema, name) of the Delta table to be created for ingestion."""
+
+    def as_dict(self) -> dict:
+        """Serializes the IngestionDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delta_table_name is not None:
+            body["delta_table_name"] = self.delta_table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IngestionDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delta_table_name is not None:
+            body["delta_table_name"] = self.delta_table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> IngestionDestination:
+        """Deserializes the IngestionDestination from a dictionary."""
+        return cls(delta_table_name=d.get("delta_table_name", None))
 
 
 @dataclass
@@ -2970,6 +3390,9 @@ class KafkaConfig:
     """Catch-all for miscellaneous options. Keys should be source options or Kafka consumer options
     (kafka.*)"""
 
+    ingestion_config: Optional[IngestionConfig] = None
+    """Configuration for ingesting Kafka data into a Databricks-managed Delta table."""
+
     key_schema: Optional[SchemaConfig] = None
     """Schema configuration for extracting message keys from topics. At least one of key_schema and
     value_schema must be provided."""
@@ -2989,6 +3412,8 @@ class KafkaConfig:
             body["bootstrap_servers"] = self.bootstrap_servers
         if self.extra_options:
             body["extra_options"] = self.extra_options
+        if self.ingestion_config:
+            body["ingestion_config"] = self.ingestion_config.as_dict()
         if self.key_schema:
             body["key_schema"] = self.key_schema.as_dict()
         if self.name is not None:
@@ -3010,6 +3435,8 @@ class KafkaConfig:
             body["bootstrap_servers"] = self.bootstrap_servers
         if self.extra_options:
             body["extra_options"] = self.extra_options
+        if self.ingestion_config:
+            body["ingestion_config"] = self.ingestion_config
         if self.key_schema:
             body["key_schema"] = self.key_schema
         if self.name is not None:
@@ -3028,6 +3455,7 @@ class KafkaConfig:
             backfill_source=_from_dict(d, "backfill_source", BackfillSource),
             bootstrap_servers=d.get("bootstrap_servers", None),
             extra_options=d.get("extra_options", None),
+            ingestion_config=_from_dict(d, "ingestion_config", IngestionConfig),
             key_schema=_from_dict(d, "key_schema", SchemaConfig),
             name=d.get("name", None),
             subscription_mode=_from_dict(d, "subscription_mode", SubscriptionMode),
@@ -3090,6 +3518,137 @@ class KafkaSource:
 
 
 @dataclass
+class KafkaStreamConfig:
+    """Kafka-specific configuration for a Stream."""
+
+    subscription_mode: KafkaSubscriptionMode
+    """Options to configure which Kafka topics to pull data from."""
+
+    extra_options: Optional[Dict[str, str]] = None
+    """Optional Kafka source or consumer options, validated against a server-side allowlist at request
+    time. Allowed keys:
+    
+    - ``maxOffsetsPerTrigger``
+    - ``startingOffsets``
+    - ``includeHeaders``
+    - ``kafka.request.timeout.ms``
+    - ``kafka.session.timeout.ms``
+    - ``kafka.max.partition.fetch.bytes`` The following keys are ingestion-only and are stripped
+      before being forwarded to the materialization pipeline:
+    - ``maxOffsetsPerTrigger``
+    - ``startingOffsets`` Auth and connection details belong on the parent Stream's
+      ``connection_config``, not here."""
+
+    def as_dict(self) -> dict:
+        """Serializes the KafkaStreamConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.extra_options:
+            body["extra_options"] = self.extra_options
+        if self.subscription_mode:
+            body["subscription_mode"] = self.subscription_mode.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the KafkaStreamConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.extra_options:
+            body["extra_options"] = self.extra_options
+        if self.subscription_mode:
+            body["subscription_mode"] = self.subscription_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> KafkaStreamConfig:
+        """Deserializes the KafkaStreamConfig from a dictionary."""
+        return cls(
+            extra_options=d.get("extra_options", None),
+            subscription_mode=_from_dict(d, "subscription_mode", KafkaSubscriptionMode),
+        )
+
+
+@dataclass
+class KafkaSubscriptionMode:
+    """Subscription mode for Kafka topic selection, matching standard Spark Structured Streaming
+    options."""
+
+    assign: Optional[str] = None
+    """A JSON string that contains the specific topic-partitions to consume from. For example, for
+    '{"topicA":[0,1],"topicB":[2,4]}', topicA's 0'th and 1st partitions will be consumed from."""
+
+    subscribe: Optional[str] = None
+    """A comma-separated list of Kafka topics to read from. For example, 'topicA,topicB,topicC'."""
+
+    subscribe_pattern: Optional[str] = None
+    """A regular expression matching topics to subscribe to. For example, 'topic.*' will subscribe to
+    all topics starting with 'topic'."""
+
+    def as_dict(self) -> dict:
+        """Serializes the KafkaSubscriptionMode into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.assign is not None:
+            body["assign"] = self.assign
+        if self.subscribe is not None:
+            body["subscribe"] = self.subscribe
+        if self.subscribe_pattern is not None:
+            body["subscribe_pattern"] = self.subscribe_pattern
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the KafkaSubscriptionMode into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.assign is not None:
+            body["assign"] = self.assign
+        if self.subscribe is not None:
+            body["subscribe"] = self.subscribe
+        if self.subscribe_pattern is not None:
+            body["subscribe_pattern"] = self.subscribe_pattern
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> KafkaSubscriptionMode:
+        """Deserializes the KafkaSubscriptionMode from a dictionary."""
+        return cls(
+            assign=d.get("assign", None),
+            subscribe=d.get("subscribe", None),
+            subscribe_pattern=d.get("subscribe_pattern", None),
+        )
+
+
+@dataclass
+class LastDistinctFunction:
+    """Returns the last N distinct values, ordered by the feature's timeseries column."""
+
+    input: str
+    """The input column from which the last N distinct values are returned."""
+
+    n: int
+    """The number of distinct values to return."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LastDistinctFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        if self.n is not None:
+            body["n"] = self.n
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LastDistinctFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        if self.n is not None:
+            body["n"] = self.n
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LastDistinctFunction:
+        """Deserializes the LastDistinctFunction from a dictionary."""
+        return cls(input=d.get("input", None), n=d.get("n", None))
+
+
+@dataclass
 class LastFunction:
     """Returns the last value."""
 
@@ -3114,6 +3673,71 @@ class LastFunction:
     def from_dict(cls, d: Dict[str, Any]) -> LastFunction:
         """Deserializes the LastFunction from a dictionary."""
         return cls(input=d.get("input", None))
+
+
+@dataclass
+class LastNFunction:
+    """Returns the last N values, ordered by the feature's timeseries column."""
+
+    input: str
+    """The input column from which the last N values are returned."""
+
+    n: int
+    """The number of values to return."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LastNFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        if self.n is not None:
+            body["n"] = self.n
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LastNFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input is not None:
+            body["input"] = self.input
+        if self.n is not None:
+            body["n"] = self.n
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LastNFunction:
+        """Deserializes the LastNFunction from a dictionary."""
+        return cls(input=d.get("input", None), n=d.get("n", None))
+
+
+@dataclass
+class LifetimeWindow:
+    """A window that spans the entire lifetime of a data source, accumulating from the source's start
+    rather than over a bounded duration. All fields are optional; an empty message denotes the
+    continuous, fully-accurate variant."""
+
+    slide_duration: Optional[Duration] = None
+    """The slide duration for the discrete (offline) variant: the value updates only at these
+    boundaries. Must be positive when set. When absent, the window is continuous (the value is as
+    fresh as the pipeline delivers)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LifetimeWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.slide_duration is not None:
+            body["slide_duration"] = self.slide_duration.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LifetimeWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.slide_duration is not None:
+            body["slide_duration"] = self.slide_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LifetimeWindow:
+        """Deserializes the LifetimeWindow from a dictionary."""
+        return cls(slide_duration=_duration(d, "slide_duration"))
 
 
 @dataclass
@@ -3154,7 +3778,7 @@ class LineageContext:
 
 @dataclass
 class LinkedFeature:
-    """Feature for model version. ([ML-57150] Renamed from Feature to LinkedFeature)"""
+    """Feature for model version."""
 
     feature_name: Optional[str] = None
     """Feature name"""
@@ -3513,6 +4137,48 @@ class ListRegistryWebhooks:
         return cls(
             next_page_token=d.get("next_page_token", None), webhooks=_repeated_dict(d, "webhooks", RegistryWebhook)
         )
+
+
+@dataclass
+class ListStreamsResponse:
+    """Response to a ListStreamsRequest.
+
+    NOTE: Results are post-filtered by access permission on each stream's ingestion table. This
+    means:
+
+    - Returned results may be fewer than page_size (including zero)
+    - Page token points to next unfiltered batch, not next filtered batch, and may point to an item
+      that will be filtered out Callers should paginate until next_page_token is empty to retrieve
+      all accessible streams."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of results for this query."""
+
+    streams: Optional[List[Stream]] = None
+    """List of Streams."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListStreamsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.streams:
+            body["streams"] = [v.as_dict() for v in self.streams]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListStreamsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.streams:
+            body["streams"] = self.streams
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListStreamsResponse:
+        """Deserializes the ListStreamsResponse from a dictionary."""
+        return cls(next_page_token=d.get("next_page_token", None), streams=_repeated_dict(d, "streams", Stream))
 
 
 @dataclass
@@ -3939,7 +4605,11 @@ class MaterializedFeature:
 
     cron_schedule: Optional[str] = None
     """The quartz cron expression that defines the schedule of the materialization pipeline. The
-    schedule is evaluated in the UTC timezone."""
+    schedule is evaluated in the UTC timezone. Hidden from GraphQL: superseded by the ``trigger``
+    oneof (cron_schedule_trigger), so not exposed to Catalog Explorer."""
+
+    cron_schedule_trigger: Optional[CronSchedule] = None
+    """A cron-based schedule trigger for the materialization pipeline."""
 
     is_online: Optional[bool] = None
     """True if this is an online materialized feature. False if it is an offline materialized feature."""
@@ -3949,24 +4619,37 @@ class MaterializedFeature:
     pipeline has not run yet, this field will be null."""
 
     materialized_feature_id: Optional[str] = None
-    """Unique identifier for the materialized feature."""
+    """Server-assigned unique identifier for the materialized feature."""
 
     offline_store_config: Optional[OfflineStoreConfig] = None
+    """Destination for writing feature values to an offline Delta table."""
 
     online_store_config: Optional[OnlineStoreConfig] = None
+    """Destination for writing feature values to an online Lakebase table."""
 
     pipeline_schedule_state: Optional[MaterializedFeaturePipelineScheduleState] = None
-    """The schedule state of the materialization pipeline."""
+    """The schedule state of the materialization pipeline. Hidden from GraphQL: being deprecated, so
+    not exposed to Catalog Explorer."""
+
+    streaming_mode: Optional[StreamingMode] = None
+    """The Structured Streaming trigger mode used for materialization. Real-time mode (RTM) targets
+    sub-second latency for operational workloads; micro-batch mode (MBM) favors cost efficiency for
+    ETL and analytics workloads."""
 
     table_name: Optional[str] = None
     """The fully qualified Unity Catalog path to the table containing the materialized feature (Delta
     table or Lakebase table). Output only."""
+
+    table_trigger: Optional[TableTrigger] = None
+    """A trigger that fires when the upstream source table changes."""
 
     def as_dict(self) -> dict:
         """Serializes the MaterializedFeature into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cron_schedule is not None:
             body["cron_schedule"] = self.cron_schedule
+        if self.cron_schedule_trigger:
+            body["cron_schedule_trigger"] = self.cron_schedule_trigger.as_dict()
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
         if self.is_online is not None:
@@ -3981,8 +4664,12 @@ class MaterializedFeature:
             body["online_store_config"] = self.online_store_config.as_dict()
         if self.pipeline_schedule_state is not None:
             body["pipeline_schedule_state"] = self.pipeline_schedule_state.value
+        if self.streaming_mode:
+            body["streaming_mode"] = self.streaming_mode.as_dict()
         if self.table_name is not None:
             body["table_name"] = self.table_name
+        if self.table_trigger:
+            body["table_trigger"] = self.table_trigger.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3990,6 +4677,8 @@ class MaterializedFeature:
         body = {}
         if self.cron_schedule is not None:
             body["cron_schedule"] = self.cron_schedule
+        if self.cron_schedule_trigger:
+            body["cron_schedule_trigger"] = self.cron_schedule_trigger
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
         if self.is_online is not None:
@@ -4004,8 +4693,12 @@ class MaterializedFeature:
             body["online_store_config"] = self.online_store_config
         if self.pipeline_schedule_state is not None:
             body["pipeline_schedule_state"] = self.pipeline_schedule_state
+        if self.streaming_mode:
+            body["streaming_mode"] = self.streaming_mode
         if self.table_name is not None:
             body["table_name"] = self.table_name
+        if self.table_trigger:
+            body["table_trigger"] = self.table_trigger
         return body
 
     @classmethod
@@ -4013,6 +4706,7 @@ class MaterializedFeature:
         """Deserializes the MaterializedFeature from a dictionary."""
         return cls(
             cron_schedule=d.get("cron_schedule", None),
+            cron_schedule_trigger=_from_dict(d, "cron_schedule_trigger", CronSchedule),
             feature_name=d.get("feature_name", None),
             is_online=d.get("is_online", None),
             last_materialization_time=d.get("last_materialization_time", None),
@@ -4020,12 +4714,13 @@ class MaterializedFeature:
             offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
             online_store_config=_from_dict(d, "online_store_config", OnlineStoreConfig),
             pipeline_schedule_state=_enum(d, "pipeline_schedule_state", MaterializedFeaturePipelineScheduleState),
+            streaming_mode=_from_dict(d, "streaming_mode", StreamingMode),
             table_name=d.get("table_name", None),
+            table_trigger=_from_dict(d, "table_trigger", TableTrigger),
         )
 
 
 class MaterializedFeaturePipelineScheduleState(Enum):
-
     ACTIVE = "ACTIVE"
     PAUSED = "PAUSED"
     SNAPSHOT = "SNAPSHOT"
@@ -4176,26 +4871,26 @@ class MinFunction:
 @dataclass
 class Model:
     creation_timestamp: Optional[int] = None
-    """Timestamp recorded when this `registered_model` was created."""
+    """Timestamp recorded when this ``registered_model`` was created."""
 
     description: Optional[str] = None
-    """Description of this `registered_model`."""
+    """Description of this ``registered_model``."""
 
     last_updated_timestamp: Optional[int] = None
-    """Timestamp recorded when metadata for this `registered_model` was last updated."""
+    """Timestamp recorded when metadata for this ``registered_model`` was last updated."""
 
     latest_versions: Optional[List[ModelVersion]] = None
-    """Collection of latest model versions for each stage. Only contains models with current `READY`
+    """Collection of latest model versions for each stage. Only contains models with current ``READY``
     status."""
 
     name: Optional[str] = None
     """Unique name for the model."""
 
     tags: Optional[List[ModelTag]] = None
-    """Tags: Additional metadata key-value pairs for this `registered_model`."""
+    """Tags: Additional metadata key-value pairs for this ``registered_model``."""
 
     user_id: Optional[str] = None
-    """User that created this `registered_model`"""
+    """User that created this ``registered_model``"""
 
     def as_dict(self) -> dict:
         """Serializes the Model into a dictionary suitable for use as a JSON request body."""
@@ -4438,41 +5133,41 @@ class ModelTag:
 @dataclass
 class ModelVersion:
     creation_timestamp: Optional[int] = None
-    """Timestamp recorded when this `model_version` was created."""
+    """Timestamp recorded when this ``model_version`` was created."""
 
     current_stage: Optional[str] = None
-    """Current stage for this `model_version`."""
+    """Current stage for this ``model_version``."""
 
     description: Optional[str] = None
-    """Description of this `model_version`."""
+    """Description of this ``model_version``."""
 
     last_updated_timestamp: Optional[int] = None
-    """Timestamp recorded when metadata for this `model_version` was last updated."""
+    """Timestamp recorded when metadata for this ``model_version`` was last updated."""
 
     name: Optional[str] = None
     """Unique name of the model"""
 
     run_id: Optional[str] = None
-    """MLflow run ID used when creating `model_version`, if `source` was generated by an experiment run
-    stored in MLflow tracking server."""
+    """MLflow run ID used when creating ``model_version``, if ``source`` was generated by an experiment
+    run stored in MLflow tracking server."""
 
     run_link: Optional[str] = None
     """Run Link: Direct link to the run that generated this version"""
 
     source: Optional[str] = None
-    """URI indicating the location of the source model artifacts, used when creating `model_version`"""
+    """URI indicating the location of the source model artifacts, used when creating ``model_version``"""
 
     status: Optional[ModelVersionStatus] = None
-    """Current status of `model_version`"""
+    """Current status of ``model_version``"""
 
     status_message: Optional[str] = None
-    """Details on current `status`, if it is pending or failed."""
+    """Details on current ``status``, if it is pending or failed."""
 
     tags: Optional[List[ModelVersionTag]] = None
-    """Tags: Additional metadata key-value pairs for this `model_version`."""
+    """Tags: Additional metadata key-value pairs for this ``model_version``."""
 
     user_id: Optional[str] = None
-    """User that created this `model_version`."""
+    """User that created this ``model_version``."""
 
     version: Optional[str] = None
     """Model's version number."""
@@ -4574,7 +5269,7 @@ class ModelVersionDatabricks:
     Users get subscribed by interacting with the model version."""
 
     feature_list: Optional[FeatureList] = None
-    """Feature lineage of `model_version`."""
+    """Feature lineage of ``model_version``."""
 
     last_updated_timestamp: Optional[int] = None
     """Time of the object at last update, as a Unix timestamp in milliseconds."""
@@ -4583,8 +5278,8 @@ class ModelVersionDatabricks:
     """Name of the model."""
 
     open_requests: Optional[List[Activity]] = None
-    """Open requests for this `model_versions`. Gap in sequence number is intentional and is done in
-    order to match field sequence numbers of `ModelVersion` proto message"""
+    """Open requests for this ``model_versions``. Gap in sequence number is intentional and is done in
+    order to match field sequence numbers of ``ModelVersion`` proto message"""
 
     permission_level: Optional[PermissionLevel] = None
 
@@ -4717,12 +5412,12 @@ class ModelVersionDatabricks:
 
 
 class ModelVersionStatus(Enum):
-    """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
-    a new model version is pending as server performs background tasks.
+    """The status of the model version. Valid values are:
 
-    * `FAILED_REGISTRATION`: Request to register a new model version has failed.
-
-    * `READY`: Model version is ready for use."""
+    - ``PENDING_REGISTRATION``: Request to register a new model version is pending as server
+      performs background tasks.
+    - ``FAILED_REGISTRATION``: Request to register a new model version has failed.
+    - ``READY``: Model version is ready for use."""
 
     FAILED_REGISTRATION = "FAILED_REGISTRATION"
     PENDING_REGISTRATION = "PENDING_REGISTRATION"
@@ -4759,6 +5454,98 @@ class ModelVersionTag:
     def from_dict(cls, d: Dict[str, Any]) -> ModelVersionTag:
         """Deserializes the ModelVersionTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class MtlsConfig:
+    """Mutual-TLS (mTLS) authentication configuration. The keystore (client certificate + private key)
+    and truststore (CAs trusted to verify the broker) live as JKS files on Unity Catalog volumes,
+    with their passwords stored in Databricks secret scopes. This matches the SSL setup pattern
+    documented at
+    https://docs.databricks.com/en/connect/streaming/kafka/authentication#use-ssl-to-connect-databricks-to-kafka.
+
+    At materialization time, the generated PySpark code passes the JKS file paths and resolved
+    passwords through to the Kafka SSL options (kafka.ssl.keystore.location,
+    kafka.ssl.keystore.password, kafka.ssl.key.password, kafka.ssl.truststore.location,
+    kafka.ssl.truststore.password). Passwords are resolved on the Spark cluster via
+    dbutils.secrets.get; this message stores only references, never password values."""
+
+    keystore_location: str
+    """Unity Catalog volume path to the JKS keystore file containing the client certificate and private
+    key. e.g. "/Volumes/<catalog>/<schema>/<volume>/client.jks". The materialization compute must
+    have read permission on this volume."""
+
+    keystore_password_ref: SecretScopeReference
+    """Secret-scope reference for the JKS keystore password."""
+
+    key_password_ref: SecretScopeReference
+    """Secret-scope reference for the private key password. Often the same value as the keystore
+    password (keytool's default), but provided as a separate field because Apache Kafka requires it
+    as a distinct option (kafka.ssl.key.password)."""
+
+    truststore_location: str
+    """Unity Catalog volume path to the JKS truststore file containing the CA certificate(s) trusted to
+    verify the Kafka broker's server certificate. e.g.
+    "/Volumes/<catalog>/<schema>/<volume>/truststore.jks"."""
+
+    truststore_password_ref: SecretScopeReference
+    """Secret-scope reference for the JKS truststore password."""
+
+    disable_hostname_verification: Optional[bool] = None
+    """Set to true only when the broker certificate's SAN intentionally does not match the connection
+    endpoint — for example when reaching the cluster through a PrivateLink endpoint whose DNS name
+    is not in the broker certificate. Skipping the hostname check removes a defense against
+    man-in-the-middle attacks; do not enable casually. mTLS client authentication is unaffected by
+    this option.
+    
+    See the Apache Kafka SSL security guide for background on this check:
+    https://kafka.apache.org/42/security/encryption-and-authentication-using-ssl/#host-name-verification"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MtlsConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disable_hostname_verification is not None:
+            body["disable_hostname_verification"] = self.disable_hostname_verification
+        if self.key_password_ref:
+            body["key_password_ref"] = self.key_password_ref.as_dict()
+        if self.keystore_location is not None:
+            body["keystore_location"] = self.keystore_location
+        if self.keystore_password_ref:
+            body["keystore_password_ref"] = self.keystore_password_ref.as_dict()
+        if self.truststore_location is not None:
+            body["truststore_location"] = self.truststore_location
+        if self.truststore_password_ref:
+            body["truststore_password_ref"] = self.truststore_password_ref.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MtlsConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disable_hostname_verification is not None:
+            body["disable_hostname_verification"] = self.disable_hostname_verification
+        if self.key_password_ref:
+            body["key_password_ref"] = self.key_password_ref
+        if self.keystore_location is not None:
+            body["keystore_location"] = self.keystore_location
+        if self.keystore_password_ref:
+            body["keystore_password_ref"] = self.keystore_password_ref
+        if self.truststore_location is not None:
+            body["truststore_location"] = self.truststore_location
+        if self.truststore_password_ref:
+            body["truststore_password_ref"] = self.truststore_password_ref
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MtlsConfig:
+        """Deserializes the MtlsConfig from a dictionary."""
+        return cls(
+            disable_hostname_verification=d.get("disable_hostname_verification", None),
+            key_password_ref=_from_dict(d, "key_password_ref", SecretScopeReference),
+            keystore_location=d.get("keystore_location", None),
+            keystore_password_ref=_from_dict(d, "keystore_password_ref", SecretScopeReference),
+            truststore_location=d.get("truststore_location", None),
+            truststore_password_ref=_from_dict(d, "truststore_password_ref", SecretScopeReference),
+        )
 
 
 @dataclass
@@ -4941,7 +5728,6 @@ class OnlineStoreConfig:
 
 
 class OnlineStoreState(Enum):
-
     AVAILABLE = "AVAILABLE"
     DELETING = "DELETING"
     FAILING_OVER = "FAILING_OVER"
@@ -4997,6 +5783,46 @@ class PermissionLevel(Enum):
 
 
 @dataclass
+class ProtoSchemaSpec:
+    """A Protocol Buffer schema paired with the name of the message within it that describes the Kafka
+    payload. A .proto file may declare multiple messages; message_name disambiguates."""
+
+    schema_text: str
+    """The raw .proto file text (proto2 and proto3 syntax supported, see
+    https://protobuf.dev/programming-guides/proto3/ and
+    https://protobuf.dev/programming-guides/proto2/)."""
+
+    message_name: str
+    """The fully-qualified name of the message within schema_text that describes the Kafka payload
+    (e.g. "Event" or "com.example.Event" if schema_text declares a package). Identifies which
+    message is used to decode each Kafka record — a .proto file may declare multiple messages but
+    only one represents the payload. Must not be empty."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ProtoSchemaSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.message_name is not None:
+            body["message_name"] = self.message_name
+        if self.schema_text is not None:
+            body["schema_text"] = self.schema_text
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ProtoSchemaSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.message_name is not None:
+            body["message_name"] = self.message_name
+        if self.schema_text is not None:
+            body["schema_text"] = self.schema_text
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ProtoSchemaSpec:
+        """Deserializes the ProtoSchemaSpec from a dictionary."""
+        return cls(message_name=d.get("message_name", None), schema_text=d.get("schema_text", None))
+
+
+@dataclass
 class PublishSpec:
     online_store: str
     """The name of the target online store."""
@@ -5040,7 +5866,6 @@ class PublishSpec:
 
 
 class PublishSpecPublishMode(Enum):
-
     CONTINUOUS = "CONTINUOUS"
     SNAPSHOT = "SNAPSHOT"
     TRIGGERED = "TRIGGERED"
@@ -5312,9 +6137,12 @@ class RegisteredModelPermissionsDescription:
 
 class RegistryEmailSubscriptionType(Enum):
     """.. note:: Experimental: This entity may change or be removed in a future release without
-    warning. Email subscription types for registry notifications: - `ALL_EVENTS`: Subscribed to all
-    events. - `DEFAULT`: Default subscription type. - `SUBSCRIBED`: Subscribed to notifications. -
-    `UNSUBSCRIBED`: Not subscribed to notifications."""
+    warning. Email subscription types for registry notifications:
+
+    - ``ALL_EVENTS``: Subscribed to all events.
+    - ``DEFAULT``: Default subscription type.
+    - ``SUBSCRIBED``: Subscribed to notifications.
+    - ``UNSUBSCRIBED``: Not subscribed to notifications."""
 
     ALL_EVENTS = "ALL_EVENTS"
     DEFAULT = "DEFAULT"
@@ -5331,34 +6159,24 @@ class RegistryWebhook:
     """User-specified description for the webhook."""
 
     events: Optional[List[RegistryWebhookEvent]] = None
-    """Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
-    created for the associated model.
+    """Events that can trigger a registry webhook:
     
-    * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
-    
-    * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-    
-    * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-    
-    * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
-    specified for a registry-wide webhook, which can be created by not specifying a model name in
-    the create request.
-    
-    * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-    
-    * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-    
-    * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-    
-    * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-    
-    * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
-    staging.
-    
-    * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned
-    to production.
-    
-    * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived."""
+    - ``MODEL_VERSION_CREATED``: A new model version was created for the associated model.
+    - ``MODEL_VERSION_TRANSITIONED_STAGE``: A model version’s stage was changed.
+    - ``TRANSITION_REQUEST_CREATED``: A user requested a model version’s stage be transitioned.
+    - ``COMMENT_CREATED``: A user wrote a comment on a registered model.
+    - ``REGISTERED_MODEL_CREATED``: A new registered model was created. This event type can only be
+      specified for a registry-wide webhook, which can be created by not specifying a model name in
+      the create request.
+    - ``MODEL_VERSION_TAG_SET``: A user set a tag on the model version.
+    - ``MODEL_VERSION_TRANSITIONED_TO_STAGING``: A model version was transitioned to staging.
+    - ``MODEL_VERSION_TRANSITIONED_TO_PRODUCTION``: A model version was transitioned to production.
+    - ``MODEL_VERSION_TRANSITIONED_TO_ARCHIVED``: A model version was archived.
+    - ``TRANSITION_REQUEST_TO_STAGING_CREATED``: A user requested a model version be transitioned to
+      staging.
+    - ``TRANSITION_REQUEST_TO_PRODUCTION_CREATED``: A user requested a model version be transitioned
+      to production.
+    - ``TRANSITION_REQUEST_TO_ARCHIVED_CREATED``: A user requested a model version be archived."""
 
     http_url_spec: Optional[HttpUrlSpecWithoutSecret] = None
 
@@ -5438,7 +6256,6 @@ class RegistryWebhook:
 
 
 class RegistryWebhookEvent(Enum):
-
     COMMENT_CREATED = "COMMENT_CREATED"
     MODEL_VERSION_CREATED = "MODEL_VERSION_CREATED"
     MODEL_VERSION_TAG_SET = "MODEL_VERSION_TAG_SET"
@@ -5455,12 +6272,12 @@ class RegistryWebhookEvent(Enum):
 
 class RegistryWebhookStatus(Enum):
     """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
-    `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+    ``ACTIVE``:
 
-    * `DISABLED`: Webhook is not triggered.
-
-    * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
-    real event."""
+    - ``ACTIVE``: Webhook is triggered when an associated event happens.
+    - ``DISABLED``: Webhook is not triggered.
+    - ``TEST_MODE``: Webhook can be triggered through the test endpoint, but is not triggered on a
+      real event."""
 
     ACTIVE = "ACTIVE"
     DISABLED = "DISABLED"
@@ -5603,6 +6420,44 @@ class RestoreRunsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> RestoreRunsResponse:
         """Deserializes the RestoreRunsResponse from a dictionary."""
         return cls(runs_restored=d.get("runs_restored", None))
+
+
+@dataclass
+class RollingWindow:
+    """A rolling time window with an optional delay. This is the SQL-spec-aligned replacement for
+    ContinuousWindow: ``delay`` is the non-negative counterpart of the legacy non-positive
+    ``ContinuousWindow.offset``."""
+
+    delay: Optional[Duration] = None
+    """The delay applied to the end of the rolling window (must be non-negative). For example, delay=1d
+    shifts the window end 1 day before the evaluation time."""
+
+    window_duration: Optional[Duration] = None
+    """The duration of the rolling window. Must be positive when set; absent means lifetime (aggregate
+    over the entity's entire history)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RollingWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay.ToJsonString()
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RollingWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RollingWindow:
+        """Deserializes the RollingWindow from a dictionary."""
+        return cls(delay=_duration(d, "delay"), window_duration=_duration(d, "window_duration"))
 
 
 @dataclass
@@ -5881,6 +6736,48 @@ class RunTag:
         return cls(key=d.get("key", None), value=d.get("value", None))
 
 
+@dataclass
+class SawtoothWindow:
+    """A sawtooth window served via the hybrid batch + streaming path. The batch pipeline maintains
+    daily partial aggregates for the bulk of the window while the streaming pipeline maintains the
+    most recent day(s), and serving merges them on read. Same field shape as RollingWindow, but a
+    distinct type so the control plane can explicitly identify hybrid (sawtooth) features rather
+    than inferring hybrid behavior from window_duration."""
+
+    delay: Optional[Duration] = None
+    """The delay applied to the end of the window (must be non-negative). For example, delay=1d shifts
+    the window end 1 day before the evaluation time."""
+
+    window_duration: Optional[Duration] = None
+    """The duration of the window. Must be positive and span more than two days when set, so that both
+    the batch (N-1 day) and stale-path (N-2 day) partial aggregates are well defined. The duration
+    need not be a whole number of days (e.g. 3 days 15 minutes is allowed). Absent means lifetime
+    (aggregate over the entity's entire history)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SawtoothWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay.ToJsonString()
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SawtoothWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delay is not None:
+            body["delay"] = self.delay
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SawtoothWindow:
+        """Deserializes the SawtoothWindow from a dictionary."""
+        return cls(delay=_duration(d, "delay"), window_duration=_duration(d, "window_duration"))
+
+
 class ScalarDataType(Enum):
     """Scalar data types for request-time field definitions. Only flat (non-nested) types are
     supported."""
@@ -5900,27 +6797,45 @@ class ScalarDataType(Enum):
 
 @dataclass
 class SchemaConfig:
+    avro_schema: Optional[str] = None
+    """Avro schema in JSON format (https://avro.apache.org/docs/current/specification/)."""
+
     json_schema: Optional[str] = None
     """Schema of the JSON object in standard IETF JSON schema format (https://json-schema.org/)."""
+
+    proto_schema: Optional[ProtoSchemaSpec] = None
+    """Protocol Buffer schema with its payload message name."""
 
     def as_dict(self) -> dict:
         """Serializes the SchemaConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.avro_schema is not None:
+            body["avro_schema"] = self.avro_schema
         if self.json_schema is not None:
             body["json_schema"] = self.json_schema
+        if self.proto_schema:
+            body["proto_schema"] = self.proto_schema.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SchemaConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.avro_schema is not None:
+            body["avro_schema"] = self.avro_schema
         if self.json_schema is not None:
             body["json_schema"] = self.json_schema
+        if self.proto_schema:
+            body["proto_schema"] = self.proto_schema
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SchemaConfig:
         """Deserializes the SchemaConfig from a dictionary."""
-        return cls(json_schema=d.get("json_schema", None))
+        return cls(
+            avro_schema=d.get("avro_schema", None),
+            json_schema=d.get("json_schema", None),
+            proto_schema=_from_dict(d, "proto_schema", ProtoSchemaSpec),
+        )
 
 
 @dataclass
@@ -6180,6 +7095,41 @@ class SearchRunsResponse:
 
 
 @dataclass
+class SecretScopeReference:
+    """Reference to an entry in a Databricks secret scope. The referenced value is fetched on the Spark
+    cluster at materialization time via dbutils.secrets.get(scope, key)."""
+
+    scope: str
+    """The Databricks secret scope name."""
+
+    key: str
+    """The key within the scope."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SecretScopeReference into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.scope is not None:
+            body["scope"] = self.scope
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SecretScopeReference into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.scope is not None:
+            body["scope"] = self.scope
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SecretScopeReference:
+        """Deserializes the SecretScopeReference from a dictionary."""
+        return cls(key=d.get("key", None), scope=d.get("scope", None))
+
+
+@dataclass
 class SetExperimentTagResponse:
     def as_dict(self) -> dict:
         """Serializes the SetExperimentTagResponse into a dictionary suitable for use as a JSON request body."""
@@ -6271,11 +7221,12 @@ class SetTagResponse:
 
 @dataclass
 class SlidingWindow:
-    window_duration: str
-    """The duration of the sliding window."""
-
     slide_duration: str
     """The slide duration (interval by which windows advance, must be positive and less than duration)."""
+
+    window_duration: Optional[str] = None
+    """The duration of the sliding window. Must be positive when set; absent means lifetime (aggregate
+    over the entity's entire history)."""
 
     def as_dict(self) -> dict:
         """Serializes the SlidingWindow into a dictionary suitable for use as a JSON request body."""
@@ -6302,12 +7253,12 @@ class SlidingWindow:
 
 
 class Status(Enum):
-    """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
-    a new model version is pending as server performs background tasks.
+    """The status of the model version. Valid values are:
 
-    * `FAILED_REGISTRATION`: Request to register a new model version has failed.
-
-    * `READY`: Model version is ready for use."""
+    - ``PENDING_REGISTRATION``: Request to register a new model version is pending as server
+      performs background tasks.
+    - ``FAILED_REGISTRATION``: Request to register a new model version has failed.
+    - ``READY``: Model version is ready for use."""
 
     FAILED_REGISTRATION = "FAILED_REGISTRATION"
     PENDING_REGISTRATION = "PENDING_REGISTRATION"
@@ -6321,8 +7272,8 @@ class StddevPopFunction:
     input: str
     """The input column from which the population standard deviation is computed. For Kafka sources,
     use dot-prefixed path notation (e.g., "value.amount"). For nested fields, the leaf node name is
-    used. TODO(FS-939): Colon-prefixed notation (e.g., "value:amount") is supported for backwards
-    compatibility but is deprecated; migrate to dot notation."""
+    used. Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility
+    but is deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the StddevPopFunction into a dictionary suitable for use as a JSON request body."""
@@ -6372,7 +7323,314 @@ class StddevSampFunction:
 
 
 @dataclass
+class Stream:
+    """A Stream is a governed UC entity representing an external streaming data source. The
+    source_config oneof determines the streaming platform source (e.g. Kafka, Kinesis, etc.)."""
+
+    name: str
+    """Full three-part (catalog.schema.stream) name of the stream."""
+
+    source_config: StreamSourceConfig
+    """Source-specific configuration. Determines the streaming platform source."""
+
+    connection_config: StreamConnectionConfig
+    """Specifies how to connect and authenticate to the stream platform."""
+
+    schema_config: StreamSchemaConfig
+    """Schema definitions for the stream. Currently only direct schemas are supported. In a future
+    milestone, we will support schema registries through a UC Connection."""
+
+    ingestion_config: IngestionConfig
+    """Configuration for streaming data ingestion: the managed table storing an offline copy of forward
+    fill data and optional historical backfill."""
+
+    browse_only: Optional[bool] = None
+    """Indicates whether the principal is limited to retrieving metadata for the associated object
+    through the BROWSE privilege when include_browse is enabled in the request."""
+
+    create_time: Optional[Timestamp] = None
+    """Time at which this Stream was created."""
+
+    created_by: Optional[str] = None
+    """Username of the Stream creator."""
+
+    description: Optional[str] = None
+    """User-provided description."""
+
+    update_time: Optional[Timestamp] = None
+    """Time at which this Stream was last modified."""
+
+    updated_by: Optional[str] = None
+    """Username of user who last modified the Stream."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Stream into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.connection_config:
+            body["connection_config"] = self.connection_config.as_dict()
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.description is not None:
+            body["description"] = self.description
+        if self.ingestion_config:
+            body["ingestion_config"] = self.ingestion_config.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema_config:
+            body["schema_config"] = self.schema_config.as_dict()
+        if self.source_config:
+            body["source_config"] = self.source_config.as_dict()
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Stream into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.browse_only is not None:
+            body["browse_only"] = self.browse_only
+        if self.connection_config:
+            body["connection_config"] = self.connection_config
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.description is not None:
+            body["description"] = self.description
+        if self.ingestion_config:
+            body["ingestion_config"] = self.ingestion_config
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema_config:
+            body["schema_config"] = self.schema_config
+        if self.source_config:
+            body["source_config"] = self.source_config
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Stream:
+        """Deserializes the Stream from a dictionary."""
+        return cls(
+            browse_only=d.get("browse_only", None),
+            connection_config=_from_dict(d, "connection_config", StreamConnectionConfig),
+            create_time=_timestamp(d, "create_time"),
+            created_by=d.get("created_by", None),
+            description=d.get("description", None),
+            ingestion_config=_from_dict(d, "ingestion_config", IngestionConfig),
+            name=d.get("name", None),
+            schema_config=_from_dict(d, "schema_config", StreamSchemaConfig),
+            source_config=_from_dict(d, "source_config", StreamSourceConfig),
+            update_time=_timestamp(d, "update_time"),
+            updated_by=d.get("updated_by", None),
+        )
+
+
+@dataclass
+class StreamConnectionConfig:
+    """Specifies how to connect and authenticate to the stream platform."""
+
+    direct_mtls_config: Optional[DirectMtlsConfig] = None
+    """Direct mTLS configuration for stream platform access. This is only used in the short term until
+    UC Kafka Connections support mTLS . Once UC Kafka Connections support mTLS, this will be
+    deprecated."""
+
+    uc_connection_name: Optional[str] = None
+    """Name of an existing UC Connection for stream platform access. Must be the correct type for the
+    streaming platform (e.g. a Kafka Connection for a Kafka Stream)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamConnectionConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direct_mtls_config:
+            body["direct_mtls_config"] = self.direct_mtls_config.as_dict()
+        if self.uc_connection_name is not None:
+            body["uc_connection_name"] = self.uc_connection_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamConnectionConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.direct_mtls_config:
+            body["direct_mtls_config"] = self.direct_mtls_config
+        if self.uc_connection_name is not None:
+            body["uc_connection_name"] = self.uc_connection_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamConnectionConfig:
+        """Deserializes the StreamConnectionConfig from a dictionary."""
+        return cls(
+            direct_mtls_config=_from_dict(d, "direct_mtls_config", DirectMtlsConfig),
+            uc_connection_name=d.get("uc_connection_name", None),
+        )
+
+
+@dataclass
+class StreamSchemaConfig:
+    """Schema definitions for the stream. Currently only direct schemas are supported. In a future
+    milestone, we will support schema registries through a UC Connection."""
+
+    direct_schemas: Optional[DirectSchemas] = None
+    """Schema definitions provided directly on the Stream."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamSchemaConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direct_schemas:
+            body["direct_schemas"] = self.direct_schemas.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamSchemaConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.direct_schemas:
+            body["direct_schemas"] = self.direct_schemas
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamSchemaConfig:
+        """Deserializes the StreamSchemaConfig from a dictionary."""
+        return cls(direct_schemas=_from_dict(d, "direct_schemas", DirectSchemas))
+
+
+@dataclass
+class StreamSource:
+    """A Stream entity used as a data source for a feature."""
+
+    full_name: str
+    """Three-part full name of the Stream (catalog.schema.stream)."""
+
+    dataframe_schema: Optional[str] = None
+    """Schema of the resulting dataframe after transformations, in Spark StructType JSON format (from
+    df.schema.json()). Any subsequent functions operate against this dataframe."""
+
+    filter_condition: Optional[str] = None
+    """The filter condition applied to the source data before aggregation."""
+
+    transformation_sql: Optional[str] = None
+    """The pipeline runs these SQL statements immediately after conversion into the schema specified on
+    the Stream object."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        if self.transformation_sql is not None:
+            body["transformation_sql"] = self.transformation_sql
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        if self.transformation_sql is not None:
+            body["transformation_sql"] = self.transformation_sql
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamSource:
+        """Deserializes the StreamSource from a dictionary."""
+        return cls(
+            dataframe_schema=d.get("dataframe_schema", None),
+            filter_condition=d.get("filter_condition", None),
+            full_name=d.get("full_name", None),
+            transformation_sql=d.get("transformation_sql", None),
+        )
+
+
+@dataclass
+class StreamSourceConfig:
+    """Source-specific configuration. Determines the streaming platform source."""
+
+    kafka_stream_config: Optional[KafkaStreamConfig] = None
+    """Configuration for Apache Kafka streams."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamSourceConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.kafka_stream_config:
+            body["kafka_stream_config"] = self.kafka_stream_config.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamSourceConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.kafka_stream_config:
+            body["kafka_stream_config"] = self.kafka_stream_config
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamSourceConfig:
+        """Deserializes the StreamSourceConfig from a dictionary."""
+        return cls(kafka_stream_config=_from_dict(d, "kafka_stream_config", KafkaStreamConfig))
+
+
+@dataclass
+class StreamingMode:
+    """The streaming mode configuration for a streaming materialization pipeline."""
+
+    freshness_target: Optional[str] = None
+    """The desired data freshness for feature materialization, expressed as a duration string (e.g. "1
+    minute")."""
+
+    mode: Optional[StreamingModeStreamingModeType] = None
+    """The type of streaming mode used by the materialization pipeline."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamingMode into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.freshness_target is not None:
+            body["freshness_target"] = self.freshness_target
+        if self.mode is not None:
+            body["mode"] = self.mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamingMode into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.freshness_target is not None:
+            body["freshness_target"] = self.freshness_target
+        if self.mode is not None:
+            body["mode"] = self.mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamingMode:
+        """Deserializes the StreamingMode from a dictionary."""
+        return cls(
+            freshness_target=d.get("freshness_target", None), mode=_enum(d, "mode", StreamingModeStreamingModeType)
+        )
+
+
+class StreamingModeStreamingModeType(Enum):
+    STREAMING_MODE_TYPE_MBM = "STREAMING_MODE_TYPE_MBM"
+    STREAMING_MODE_TYPE_RTM = "STREAMING_MODE_TYPE_RTM"
+
+
+@dataclass
 class SubscriptionMode:
+    """Deprecated: Use KafkaSubscriptionMode instead."""
+
     assign: Optional[str] = None
     """A JSON string that contains the specific topic-partitions to consume from. For example, for
     '{"topicA":[0,1],"topicB":[2,4]}', topicA's 0'th and 1st partitions will be consumed from."""
@@ -6422,9 +7680,9 @@ class SumFunction:
 
     input: str
     """The input column from which the sum is computed. For Kafka sources, use dot-prefixed path
-    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. TODO(FS-939):
-    Colon-prefixed notation (e.g., "value:amount") is supported for backwards compatibility but is
-    deprecated; migrate to dot notation."""
+    notation (e.g., "value.amount"). For nested fields, the leaf node name is used. Colon-prefixed
+    notation (e.g., "value:amount") is supported for backwards compatibility but is deprecated;
+    migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the SumFunction into a dictionary suitable for use as a JSON request body."""
@@ -6444,6 +7702,26 @@ class SumFunction:
     def from_dict(cls, d: Dict[str, Any]) -> SumFunction:
         """Deserializes the SumFunction from a dictionary."""
         return cls(input=d.get("input", None))
+
+
+@dataclass
+class TableTrigger:
+    """A trigger that fires when the upstream source table changes."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TableTrigger into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TableTrigger into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TableTrigger:
+        """Deserializes the TableTrigger from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -6482,6 +7760,14 @@ class TestRegistryWebhookResponse:
 class TimeWindow:
     continuous: Optional[ContinuousWindow] = None
 
+    lifetime: Optional[LifetimeWindow] = None
+    """A window that spans the entire lifetime of the data source."""
+
+    rolling: Optional[RollingWindow] = None
+
+    sawtooth: Optional[SawtoothWindow] = None
+    """A sawtooth window served via the hybrid batch + streaming path."""
+
     sliding: Optional[SlidingWindow] = None
 
     tumbling: Optional[TumblingWindow] = None
@@ -6491,6 +7777,12 @@ class TimeWindow:
         body = {}
         if self.continuous:
             body["continuous"] = self.continuous.as_dict()
+        if self.lifetime:
+            body["lifetime"] = self.lifetime.as_dict()
+        if self.rolling:
+            body["rolling"] = self.rolling.as_dict()
+        if self.sawtooth:
+            body["sawtooth"] = self.sawtooth.as_dict()
         if self.sliding:
             body["sliding"] = self.sliding.as_dict()
         if self.tumbling:
@@ -6502,6 +7794,12 @@ class TimeWindow:
         body = {}
         if self.continuous:
             body["continuous"] = self.continuous
+        if self.lifetime:
+            body["lifetime"] = self.lifetime
+        if self.rolling:
+            body["rolling"] = self.rolling
+        if self.sawtooth:
+            body["sawtooth"] = self.sawtooth
         if self.sliding:
             body["sliding"] = self.sliding
         if self.tumbling:
@@ -6513,6 +7811,9 @@ class TimeWindow:
         """Deserializes the TimeWindow from a dictionary."""
         return cls(
             continuous=_from_dict(d, "continuous", ContinuousWindow),
+            lifetime=_from_dict(d, "lifetime", LifetimeWindow),
+            rolling=_from_dict(d, "rolling", RollingWindow),
+            sawtooth=_from_dict(d, "sawtooth", SawtoothWindow),
             sliding=_from_dict(d, "sliding", SlidingWindow),
             tumbling=_from_dict(d, "tumbling", TumblingWindow),
         )
@@ -6525,8 +7826,8 @@ class TimeseriesColumn:
     reference fields within the key or value schema (e.g., "value.event_timestamp"). For nested
     fields, the leaf node name (e.g., "event_timestamp" from "value.event_details.event_timestamp")
     is what will be present in materialized tables and expected to match at query time.
-    TODO(FS-939): Colon-prefixed notation (e.g., "value:event_timestamp") is supported for backwards
-    compatibility but is deprecated; migrate to dot notation."""
+    Colon-prefixed notation (e.g., "value:event_timestamp") is supported for backwards compatibility
+    but is deprecated; migrate to dot notation."""
 
     def as_dict(self) -> dict:
         """Serializes the TimeseriesColumn into a dictionary suitable for use as a JSON request body."""
@@ -6565,13 +7866,10 @@ class TransitionRequest:
     to_stage: Optional[str] = None
     """Target stage of the transition (if the activity is stage transition related). Valid values are:
     
-    * `None`: The initial stage of a model version.
-    
-    * `Staging`: Staging or pre-production stage.
-    
-    * `Production`: Production stage.
-    
-    * `Archived`: Archived stage."""
+    - ``None``: The initial stage of a model version.
+    - ``Staging``: Staging or pre-production stage.
+    - ``Production``: Production stage.
+    - ``Archived``: Archived stage."""
 
     user_id: Optional[str] = None
     """The username of the user that created the object."""
@@ -6666,6 +7964,64 @@ class TumblingWindow:
     def from_dict(cls, d: Dict[str, Any]) -> TumblingWindow:
         """Deserializes the TumblingWindow from a dictionary."""
         return cls(window_duration=d.get("window_duration", None))
+
+
+@dataclass
+class UcTraceLocation:
+    """A Unity Catalog trace storage location. Traces are stored as Delta tables in the specified
+    catalog and schema."""
+
+    catalog: str
+    """The name of the Unity Catalog catalog."""
+
+    schema: str
+    """The name of the Unity Catalog schema within ``catalog``."""
+
+    effective_table_prefix: Optional[str] = None
+    """The trace-table prefix actually in effect: ``table_prefix`` if it was set on creation, otherwise
+    the server-generated default."""
+
+    table_prefix: Optional[str] = None
+    """The prefix for the trace tables, which are named ``{catalog}.{schema}.{table_prefix}_otel_*``.
+    May only contain letters, digits, and underscores, and may be at most 238 characters. When
+    unset, a server-generated prefix derived from the experiment ID is used and this field stays
+    empty on read; the resolved value is always available in ``effective_table_prefix``."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UcTraceLocation into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.effective_table_prefix is not None:
+            body["effective_table_prefix"] = self.effective_table_prefix
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.table_prefix is not None:
+            body["table_prefix"] = self.table_prefix
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UcTraceLocation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.effective_table_prefix is not None:
+            body["effective_table_prefix"] = self.effective_table_prefix
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.table_prefix is not None:
+            body["table_prefix"] = self.table_prefix
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UcTraceLocation:
+        """Deserializes the UcTraceLocation from a dictionary."""
+        return cls(
+            catalog=d.get("catalog", None),
+            effective_table_prefix=d.get("effective_table_prefix", None),
+            schema=d.get("schema", None),
+            table_prefix=d.get("table_prefix", None),
+        )
 
 
 @dataclass
@@ -6893,13 +8249,20 @@ class ExperimentsAPI:
         self._api = api_client
 
     def create_experiment(
-        self, name: str, *, artifact_location: Optional[str] = None, tags: Optional[List[ExperimentTag]] = None
+        self,
+        name: str,
+        *,
+        artifact_location: Optional[str] = None,
+        tags: Optional[List[ExperimentTag]] = None,
+        trace_location: Optional[ExperimentTraceLocation] = None,
     ) -> CreateExperimentResponse:
         """Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that
         another experiment with the same name does not already exist and fails if another experiment with the
         same name already exists.
 
-        Throws `RESOURCE_ALREADY_EXISTS` if an experiment with the given name exists.
+        Throws ``RESOURCE_ALREADY_EXISTS`` if an experiment with the given name exists. Note: In some
+        contexts, this error may be remapped to ``ALREADY_EXISTS``. To be safe, clients should check for both
+        error codes.
 
         :param name: str
           Experiment name.
@@ -6911,6 +8274,10 @@ class ExperimentsAPI:
           depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250
           bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to
           support up to 20 tags per request.
+        :param trace_location: :class:`ExperimentTraceLocation` (optional)
+          The location where the experiment's traces are stored. When set, the underlying storage is
+          provisioned and the experiment's traces are routed to it. When unset, traces are stored in the
+          default MLflow backend. This field cannot be updated after the experiment is created.
 
         :returns: :class:`CreateExperimentResponse`
         """
@@ -6922,6 +8289,8 @@ class ExperimentsAPI:
             body["name"] = name
         if tags is not None:
             body["tags"] = [v.as_dict() for v in tags]
+        if trace_location is not None:
+            body["trace_location"] = trace_location.as_dict()
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -6929,7 +8298,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/experiments/create", body=body, headers=headers)
         return CreateExperimentResponse.from_dict(res)
@@ -6982,7 +8351,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/logged-models", body=body, headers=headers)
         return CreateLoggedModelResponse.from_dict(res)
@@ -6997,8 +8366,8 @@ class ExperimentsAPI:
         user_id: Optional[str] = None,
     ) -> CreateRunResponse:
         """Creates a new run within an experiment. A run is usually a single execution of a machine learning or
-        data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric`, and `mlflowRunTag`
-        associated with a single execution.
+        data ETL pipeline. MLflow uses runs to track the ``mlflowParam``, ``mlflowMetric``, and
+        ``mlflowRunTag`` associated with a single execution.
 
         :param experiment_id: str (optional)
           ID of the associated experiment.
@@ -7033,7 +8402,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/runs/create", body=body, headers=headers)
         return CreateRunResponse.from_dict(res)
@@ -7058,7 +8427,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/experiments/delete", body=body, headers=headers)
 
@@ -7077,7 +8446,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
 
@@ -7098,7 +8467,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/mlflow/logged-models/{model_id}/tags/{tag_key}", headers=headers)
 
@@ -7121,7 +8490,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/delete", body=body, headers=headers)
 
@@ -7158,7 +8527,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/databricks/runs/delete-runs", body=body, headers=headers)
         return DeleteRunsResponse.from_dict(res)
@@ -7187,7 +8556,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/delete-tag", body=body, headers=headers)
 
@@ -7213,7 +8582,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/mlflow/logged-models/{model_id}", body=body, headers=headers)
         return FinalizeLoggedModelResponse.from_dict(res)
@@ -7225,7 +8594,7 @@ class ExperimentsAPI:
         deleted experiment share the same name. If multiple deleted experiments share the same name, the API
         will return one of them.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name exists.
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if no experiment with the specified name exists.
 
         :param experiment_name: str
           Name of the associated experiment.
@@ -7242,7 +8611,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/mlflow/experiments/get-by-name", query=query, headers=headers)
         return GetExperimentByNameResponse.from_dict(res)
@@ -7265,7 +8634,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/mlflow/experiments/get", query=query, headers=headers)
         return GetExperimentResponse.from_dict(res)
@@ -7291,8 +8660,8 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run from which to fetch metric values. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run from which to fetch metric values. This field will
-          be removed in a future MLflow version.
+          [Deprecated, use ``run_id`` instead] ID of the run from which to fetch metric values. This field
+          will be removed in a future MLflow version.
 
         :returns: Iterator over :class:`Metric`
         """
@@ -7314,7 +8683,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/metrics/get-history", query=query, headers=headers)
@@ -7340,7 +8709,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
         return GetLoggedModelResponse.from_dict(res)
@@ -7360,7 +8729,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/experiments/{experiment_id}/permissionLevels", headers=headers)
         return GetExperimentPermissionLevelsResponse.from_dict(res)
@@ -7380,7 +8749,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/experiments/{experiment_id}", headers=headers)
         return ExperimentPermissions.from_dict(res)
@@ -7394,7 +8763,7 @@ class ExperimentsAPI:
         :param run_id: str
           ID of the run to fetch. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run to fetch. This field will be removed in a future
+          [Deprecated, use ``run_id`` instead] ID of the run to fetch. This field will be removed in a future
           MLflow version.
 
         :returns: :class:`GetRunResponse`
@@ -7411,7 +8780,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/mlflow/runs/get", query=query, headers=headers)
         return GetRunResponse.from_dict(res)
@@ -7424,16 +8793,16 @@ class ExperimentsAPI:
         run_id: Optional[str] = None,
         run_uuid: Optional[str] = None,
     ) -> Iterator[FileInfo]:
-        """List artifacts for a run. Takes an optional `artifact_path` prefix which if specified, the response
+        """List artifacts for a run. Takes an optional ``artifact_path`` prefix which if specified, the response
         contains only artifacts with the specified prefix. A maximum of 1000 artifacts will be retrieved for
-        UC Volumes. Please call `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes,
-        which supports pagination. See [List directory contents | Files
+        UC Volumes. Please call ``/api/2.0/fs/directories{directory_path}`` for listing artifacts in UC
+        Volumes, which supports pagination. See [List directory contents | Files
         API](/api/workspace/files/listdirectorycontents).
 
         :param page_token: str (optional)
-          The token indicating the page of artifact results to fetch. `page_token` is not supported when
+          The token indicating the page of artifact results to fetch. ``page_token`` is not supported when
           listing artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes.
-          Please call `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which
+          Please call ``/api/2.0/fs/directories{directory_path}`` for listing artifacts in UC Volumes, which
           supports pagination. See [List directory contents | Files
           API](/api/workspace/files/listdirectorycontents).
         :param path: str (optional)
@@ -7441,8 +8810,8 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run whose artifacts to list. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run whose artifacts to list. This field will be removed
-          in a future MLflow version.
+          [Deprecated, use ``run_id`` instead] ID of the run whose artifacts to list. This field will be
+          removed in a future MLflow version.
 
         :returns: Iterator over :class:`FileInfo`
         """
@@ -7462,7 +8831,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/artifacts/list", query=query, headers=headers)
@@ -7483,8 +8852,8 @@ class ExperimentsAPI:
         """Gets a list of all experiments.
 
         :param max_results: int (optional)
-          Maximum number of experiments desired. If `max_results` is unspecified, return all experiments. If
-          `max_results` is too large, it'll be automatically capped at 1000. Callers of this endpoint are
+          Maximum number of experiments desired. If ``max_results`` is unspecified, return all experiments. If
+          ``max_results`` is too large, it'll be automatically capped at 1000. Callers of this endpoint are
           encouraged to pass max_results explicitly and leverage page_token to iterate through experiments.
         :param page_token: str (optional)
           Token indicating the page of experiments to fetch
@@ -7507,7 +8876,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/experiments/list", query=query, headers=headers)
@@ -7536,36 +8905,31 @@ class ExperimentsAPI:
 
         The overwrite behavior for metrics, params, and tags is as follows:
 
-        * Metrics: metric values are never overwritten. Logging a metric (key, value, timestamp) appends to
-        the set of values for the metric with the provided key.
+        - Metrics: metric values are never overwritten. Logging a metric (key, value, timestamp) appends to
+          the set of values for the metric with the provided key.
+        - Tags: tag values can be overwritten by successive writes to the same tag key. That is, if multiple
+          tag values with the same key are provided in the same API request, the last-provided tag value is
+          written. Logging the same tag (key, value) is permitted. Specifically, logging a tag is idempotent.
+        - Parameters: once written, param values cannot be changed (attempting to overwrite a param value will
+          result in an error). However, logging the same param (key, value) is permitted. Specifically,
+          logging a param is idempotent.
 
-        * Tags: tag values can be overwritten by successive writes to the same tag key. That is, if multiple
-        tag values with the same key are provided in the same API request, the last-provided tag value is
-        written. Logging the same tag (key, value) is permitted. Specifically, logging a tag is idempotent.
+        Request Limits
 
-        * Parameters: once written, param values cannot be changed (attempting to overwrite a param value will
-        result in an error). However, logging the same param (key, value) is permitted. Specifically, logging
-        a param is idempotent.
+        A single JSON-serialized API request may be up to 1 MB in size and contain:
 
-        Request Limits ------------------------------- A single JSON-serialized API request may be up to 1 MB
-        in size and contain:
-
-        * No more than 1000 metrics, params, and tags in total
-
-        * Up to 1000 metrics
-
-        * Up to 100 params
-
-        * Up to 100 tags
+        - No more than 1000 metrics, params, and tags in total
+        - Up to 1000 metrics
+        - Up to 100 params
+        - Up to 100 tags
 
         For example, a valid request might contain 900 metrics, 50 params, and 50 tags, but logging 900
         metrics, 50 params, and 51 tags is invalid.
 
         The following limits also apply to metric, param, and tag keys and values:
 
-        * Metric keys, param keys, and tag keys can be up to 250 characters in length
-
-        * Parameter and tag values can be up to 250 characters in length
+        - Metric keys, param keys, and tag keys can be up to 250 characters in length
+        - Parameter and tag values can be up to 250 characters in length
 
         :param metrics: List[:class:`Metric`] (optional)
           Metrics to log. A single request can contain up to 1000 metrics, and up to 1000 metrics, params, and
@@ -7598,7 +8962,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/log-batch", body=body, headers=headers)
 
@@ -7631,7 +8995,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/log-inputs", body=body, headers=headers)
 
@@ -7658,7 +9022,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/mlflow/logged-models/{model_id}/params", body=body, headers=headers)
 
@@ -7696,7 +9060,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run under which to log the metric. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run under which to log the metric. This field will be
+          [Deprecated, use ``run_id`` instead] ID of the run under which to log the metric. This field will be
           removed in a future MLflow version.
         :param step: int (optional)
           Step at which to log the metric
@@ -7730,7 +9094,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/log-metric", body=body, headers=headers)
 
@@ -7760,7 +9124,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/log-model", body=body, headers=headers)
 
@@ -7787,7 +9151,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/outputs", body=body, headers=headers)
 
@@ -7803,7 +9167,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run under which to log the param. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run under which to log the param. This field will be
+          [Deprecated, use ``run_id`` instead] ID of the run under which to log the param. This field will be
           removed in a future MLflow version.
 
 
@@ -7825,7 +9189,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/log-parameter", body=body, headers=headers)
 
@@ -7834,7 +9198,7 @@ class ExperimentsAPI:
         params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
         also restored.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was permanently deleted.
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if experiment was never created or was permanently deleted.
 
         :param experiment_id: str
           ID of the associated experiment.
@@ -7852,14 +9216,14 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/experiments/restore", body=body, headers=headers)
 
     def restore_run(self, run_id: str):
         """Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if the run was never created or was permanently deleted.
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if the run was never created or was permanently deleted.
 
         :param run_id: str
           ID of the run to restore.
@@ -7877,7 +9241,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/restore", body=body, headers=headers)
 
@@ -7914,7 +9278,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/databricks/runs/restore-runs", body=body, headers=headers)
         return RestoreRunsResponse.from_dict(res)
@@ -7964,7 +9328,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("POST", "/api/2.0/mlflow/experiments/search", body=body, headers=headers)
@@ -7989,7 +9353,7 @@ class ExperimentsAPI:
 
         :param datasets: List[:class:`SearchLoggedModelsDataset`] (optional)
           List of datasets on which to apply the metrics filter clauses. For example, a filter with
-          `metrics.accuracy > 0.9` and dataset info with name "test_dataset" means we will return all logged
+          ``metrics.accuracy > 0.9`` and dataset info with name "test_dataset" means we will return all logged
           models with accuracy > 0.9 on the test_dataset. Metric values from ANY dataset matching the criteria
           are considered. If no datasets are specified, then metrics across all datasets are considered in the
           filter.
@@ -8030,7 +9394,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/logged-models/search", body=body, headers=headers)
         return SearchLoggedModelsResponse.from_dict(res)
@@ -8047,7 +9411,7 @@ class ExperimentsAPI:
     ) -> Iterator[Run]:
         """Searches for runs that satisfy expressions.
 
-        Search expressions can use `mlflowMetric` and `mlflowParam` keys.
+        Search expressions can use ``mlflowMetric`` and ``mlflowParam`` keys.
 
         :param experiment_ids: List[str] (optional)
           List of experiment IDs to search over.
@@ -8056,20 +9420,20 @@ class ExperimentsAPI:
           syntax is a subset of SQL that supports ANDing together binary operations between a param, metric,
           or tag and a constant.
 
-          Example: `metrics.rmse < 1 and params.model_class = 'LogisticRegression'`
+          Example: ``metrics.rmse < 1 and params.model_class = 'LogisticRegression'``
 
           You can select columns with special characters (hyphen, space, period, etc.) by using double quotes:
-          `metrics."model class" = 'LinearRegression' and tags."user-name" = 'Tomas'`
+          ``metrics."model class" = 'LinearRegression' and tags."user-name" = 'Tomas'``
 
-          Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`.
+          Supported operators are ``=``, ``!=``, ``>``, ``>=``, ``<``, and ``<=``.
         :param max_results: int (optional)
           Maximum number of runs desired. Max threshold is 50000
         :param order_by: List[str] (optional)
           List of columns to be ordered by, including attributes, params, metrics, and tags with an optional
-          `"DESC"` or `"ASC"` annotation, where `"ASC"` is the default. Example: `["params.input DESC",
-          "metrics.alpha ASC", "metrics.rmse"]`. Tiebreaks are done by start_time `DESC` followed by `run_id`
-          for runs with the same start time (and this is the default ordering criterion if order_by is not
-          provided).
+          ``"DESC"`` or ``"ASC"`` annotation, where ``"ASC"`` is the default. Example: ``["params.input DESC",
+          "metrics.alpha ASC", "metrics.rmse"]``. Tiebreaks are done by start_time ``DESC`` followed by
+          ``run_id`` for runs with the same start time (and this is the default ordering criterion if order_by
+          is not provided).
         :param page_token: str (optional)
           Token for the current page of runs.
         :param run_view_type: :class:`ViewType` (optional)
@@ -8098,7 +9462,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("POST", "/api/2.0/mlflow/runs/search", body=body, headers=headers)
@@ -8136,7 +9500,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/experiments/set-experiment-tag", body=body, headers=headers)
 
@@ -8161,7 +9525,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/mlflow/logged-models/{model_id}/tags", body=body, headers=headers)
 
@@ -8188,7 +9552,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/permissions/experiments/{experiment_id}", body=body, headers=headers)
         return ExperimentPermissions.from_dict(res)
@@ -8203,7 +9567,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run under which to log the tag. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run under which to log the tag. This field will be
+          [Deprecated, use ``run_id`` instead] ID of the run under which to log the tag. This field will be
           removed in a future MLflow version.
 
 
@@ -8225,7 +9589,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/set-tag", body=body, headers=headers)
 
@@ -8252,7 +9616,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/experiments/update", body=body, headers=headers)
 
@@ -8278,7 +9642,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/experiments/{experiment_id}", body=body, headers=headers)
         return ExperimentPermissions.from_dict(res)
@@ -8301,7 +9665,7 @@ class ExperimentsAPI:
         :param run_name: str (optional)
           Updated name of the run.
         :param run_uuid: str (optional)
-          [Deprecated, use `run_id` instead] ID of the run to update. This field will be removed in a future
+          [Deprecated, use ``run_id`` instead] ID of the run to update. This field will be removed in a future
           MLflow version.
         :param status: :class:`UpdateRunStatus` (optional)
           Updated status of the run.
@@ -8327,7 +9691,7 @@ class ExperimentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/runs/update", body=body, headers=headers)
         return UpdateRunResponse.from_dict(res)
@@ -8360,7 +9724,7 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", "/api/2.0/feature-engineering/materialized-features:batchCreate", body=body, headers=headers
@@ -8377,6 +9741,7 @@ class FeatureEngineeringAPI:
         """
 
         body = feature.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -8384,7 +9749,7 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/feature-engineering/features", body=body, headers=headers)
         return Feature.from_dict(res)
@@ -8399,6 +9764,7 @@ class FeatureEngineeringAPI:
         """
 
         body = kafka_config.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -8406,7 +9772,7 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/feature-engineering/features/kafka-configs", body=body, headers=headers)
         return KafkaConfig.from_dict(res)
@@ -8421,6 +9787,7 @@ class FeatureEngineeringAPI:
         """
 
         body = materialized_feature.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -8428,10 +9795,33 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/feature-engineering/materialized-features", body=body, headers=headers)
         return MaterializedFeature.from_dict(res)
+
+    def create_stream(self, stream: Stream) -> Stream:
+        """Create a Stream, a governed UC entity representing an external streaming data source.
+
+        :param stream: :class:`Stream`
+          The Stream to create.
+
+        :returns: :class:`Stream`
+        """
+
+        body = stream.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/feature-engineering/streams", body=body, headers=headers)
+        return Stream.from_dict(res)
 
     def delete_feature(self, full_name: str):
         """Delete a Feature.
@@ -8448,7 +9838,7 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
 
@@ -8468,7 +9858,7 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/feature-engineering/features/kafka-configs/{name}", headers=headers)
 
@@ -8487,11 +9877,30 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE", f"/api/2.0/feature-engineering/materialized-features/{materialized_feature_id}", headers=headers
         )
+
+    def delete_stream(self, name: str):
+        """Delete a Stream by its full three-part name (catalog.schema.stream).
+
+        :param name: str
+          Full three-part name (catalog.schema.stream) of the Stream to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/feature-engineering/streams/{name}", headers=headers)
 
     def get_feature(self, full_name: str) -> Feature:
         """Get a Feature.
@@ -8508,7 +9917,7 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
         return Feature.from_dict(res)
@@ -8529,7 +9938,7 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/feature-engineering/features/kafka-configs/{name}", headers=headers)
         return KafkaConfig.from_dict(res)
@@ -8549,16 +9958,42 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/feature-engineering/materialized-features/{materialized_feature_id}", headers=headers
         )
         return MaterializedFeature.from_dict(res)
 
-    def list_features(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Feature]:
+    def get_stream(self, name: str) -> Stream:
+        """Get a Stream by its full three-part name (catalog.schema.stream).
+
+        :param name: str
+          Full three-part name (catalog.schema.stream) of the Stream to get.
+
+        :returns: :class:`Stream`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/feature-engineering/streams/{name}", headers=headers)
+        return Stream.from_dict(res)
+
+    def list_features(
+        self, catalog_name: str, schema_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[Feature]:
         """List Features.
 
+        :param catalog_name: str
+          Name of parent catalog for features of interest.
+        :param schema_name: str
+          Name of parent schema relative to its parent catalog.
         :param page_size: int (optional)
           The maximum number of results to return.
         :param page_token: str (optional)
@@ -8568,17 +10003,21 @@ class FeatureEngineeringAPI:
         """
 
         query = {}
+        if catalog_name is not None:
+            query["catalog_name"] = catalog_name
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
+        if schema_name is not None:
+            query["schema_name"] = schema_name
         headers = {
             "Accept": "application/json",
         }
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/feature-engineering/features", query=query, headers=headers)
@@ -8614,7 +10053,7 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -8657,7 +10096,7 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -8670,11 +10109,52 @@ class FeatureEngineeringAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def list_streams(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None, parent: Optional[str] = None
+    ) -> Iterator[Stream]:
+        """List Streams under a given catalog.schema parent.
+
+        :param page_size: int (optional)
+          The maximum number of results to return.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+        :param parent: str (optional)
+          Two-part name (catalog.schema) of the parent under which to list Streams.
+
+        :returns: Iterator over :class:`Stream`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if parent is not None:
+            query["parent"] = parent
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/feature-engineering/streams", query=query, headers=headers)
+            if "streams" in json:
+                for v in json["streams"]:
+                    yield Stream.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def update_feature(self, full_name: str, feature: Feature, update_mask: str) -> Feature:
         """Update a Feature.
 
         :param full_name: str
-          The full three-part name (catalog, schema, name) of the feature.
+          The full three-part name (catalog, schema, name) of the feature. This is the feature's resource
+          identifier; the catalog_name, schema_name, and name fields below are OUTPUT_ONLY decomposed views of
+          this value.
         :param feature: :class:`Feature`
           Feature to update.
         :param update_mask: str
@@ -8694,7 +10174,7 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/feature-engineering/features/{full_name}", query=query, body=body, headers=headers
@@ -8728,7 +10208,7 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -8745,7 +10225,7 @@ class FeatureEngineeringAPI:
         """Update a materialized feature (pause/resume).
 
         :param materialized_feature_id: str
-          Unique identifier for the materialized feature.
+          Server-assigned unique identifier for the materialized feature.
         :param materialized_feature: :class:`MaterializedFeature`
           The materialized feature to update.
         :param update_mask: str
@@ -8766,7 +10246,7 @@ class FeatureEngineeringAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -8776,6 +10256,37 @@ class FeatureEngineeringAPI:
             headers=headers,
         )
         return MaterializedFeature.from_dict(res)
+
+    def update_stream(self, name: str, stream: Stream, update_mask: FieldMask) -> Stream:
+        """Update a Stream. Only fields listed in ``update_mask`` are mutated.
+
+        :param name: str
+          Full three-part (catalog.schema.stream) name of the stream.
+        :param stream: :class:`Stream`
+          The Stream to update.
+        :param update_mask: FieldMask
+          The list of fields to update.
+
+        :returns: :class:`Stream`
+        """
+
+        body = stream.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/feature-engineering/streams/{name}", query=query, body=body, headers=headers
+        )
+        return Stream.from_dict(res)
 
 
 class FeatureStoreAPI:
@@ -8799,6 +10310,7 @@ class FeatureStoreAPI:
         """
 
         body = online_store.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -8806,7 +10318,7 @@ class FeatureStoreAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/feature-store/online-stores", body=body, headers=headers)
         return OnlineStore.from_dict(res)
@@ -8826,7 +10338,7 @@ class FeatureStoreAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/feature-store/online-stores/{name}", headers=headers)
 
@@ -8845,7 +10357,7 @@ class FeatureStoreAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/feature-store/online-tables/{online_table_name}", headers=headers)
 
@@ -8864,7 +10376,7 @@ class FeatureStoreAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/feature-store/online-stores/{name}", headers=headers)
         return OnlineStore.from_dict(res)
@@ -8893,7 +10405,7 @@ class FeatureStoreAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/feature-store/online-stores", query=query, headers=headers)
@@ -8925,7 +10437,7 @@ class FeatureStoreAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", f"/api/2.0/feature-store/tables/{source_table_name}/publish", body=body, headers=headers
@@ -8956,7 +10468,7 @@ class FeatureStoreAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/feature-store/online-stores/{name}", query=query, body=body, headers=headers
@@ -9055,8 +10567,10 @@ class ForecastingAPI:
         :param include_features: List[str] (optional)
           Specifies the list of feature columns to include in model training. These columns must exist in the
           training data and be of type string, numerical, or boolean. If not specified, no additional features
-          will be included. Note: Certain columns are automatically handled: - Automatically excluded:
-          split_column, target_column, custom_weights_column. - Automatically included: time_column.
+          will be included. Note: Certain columns are automatically handled:
+
+          - Automatically excluded: split_column, target_column, custom_weights_column.
+          - Automatically included: time_column.
         :param max_runtime: int (optional)
           The maximum duration for the experiment in minutes. The experiment stops automatically if it exceeds
           this limit.
@@ -9124,7 +10638,7 @@ class ForecastingAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.0/automl/create-forecasting-experiment", body=body, headers=headers)
         return Wait(
@@ -9190,7 +10704,7 @@ class ForecastingAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/automl/get-forecasting-experiment/{experiment_id}", headers=headers)
         return ForecastingExperiment.from_dict(res)
@@ -9214,6 +10728,7 @@ class MaterializedFeaturesAPI:
         """
 
         body = feature_tag.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -9221,7 +10736,7 @@ class MaterializedFeaturesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -9250,7 +10765,7 @@ class MaterializedFeaturesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE",
@@ -9275,7 +10790,7 @@ class MaterializedFeaturesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -9300,7 +10815,7 @@ class MaterializedFeaturesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -9335,7 +10850,7 @@ class MaterializedFeaturesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -9383,7 +10898,7 @@ class MaterializedFeaturesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -9419,13 +10934,10 @@ class ModelRegistryAPI:
         :param stage: str
           Target stage of the transition. Valid values are:
 
-          * `None`: The initial stage of a model version.
-
-          * `Staging`: Staging or pre-production stage.
-
-          * `Production`: Production stage.
-
-          * `Archived`: Archived stage.
+          - ``None``: The initial stage of a model version.
+          - ``Staging``: Staging or pre-production stage.
+          - ``Production``: Production stage.
+          - ``Archived``: Archived stage.
         :param archive_existing_versions: bool
           Specifies whether to archive all current model versions in the target stage.
         :param comment: str (optional)
@@ -9452,7 +10964,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/transition-requests/approve", body=body, headers=headers)
         return ApproveTransitionRequestResponse.from_dict(res)
@@ -9485,7 +10997,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/comments/create", body=body, headers=headers)
         return CreateCommentResponse.from_dict(res)
@@ -9494,7 +11006,7 @@ class ModelRegistryAPI:
         self, name: str, *, description: Optional[str] = None, tags: Optional[List[ModelTag]] = None
     ) -> CreateModelResponse:
         """Creates a new registered model with the name specified in the request body. Throws
-        `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
+        ``RESOURCE_ALREADY_EXISTS`` if a registered model with the given name exists.
 
         :param name: str
           Register models under this name
@@ -9520,7 +11032,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/registered-models/create", body=body, headers=headers)
         return CreateModelResponse.from_dict(res)
@@ -9544,7 +11056,7 @@ class ModelRegistryAPI:
         :param description: str (optional)
           Optional description for model version.
         :param run_id: str (optional)
-          MLflow run ID for correlation, if `source` was generated by an experiment run in MLflow tracking
+          MLflow run ID for correlation, if ``source`` was generated by an experiment run in MLflow tracking
           server
         :param run_link: str (optional)
           MLflow run link - this is the exact link of the run that generated this model version, potentially
@@ -9575,7 +11087,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/model-versions/create", body=body, headers=headers)
         return CreateModelVersionResponse.from_dict(res)
@@ -9592,13 +11104,10 @@ class ModelRegistryAPI:
         :param stage: str
           Target stage of the transition. Valid values are:
 
-          * `None`: The initial stage of a model version.
-
-          * `Staging`: Staging or pre-production stage.
-
-          * `Production`: Production stage.
-
-          * `Archived`: Archived stage.
+          - ``None``: The initial stage of a model version.
+          - ``Staging``: Staging or pre-production stage.
+          - ``Production``: Production stage.
+          - ``Archived``: Archived stage.
         :param comment: str (optional)
           User-provided comment on the action.
 
@@ -9621,7 +11130,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/transition-requests/create", body=body, headers=headers)
         return CreateTransitionRequestResponse.from_dict(res)
@@ -9639,34 +11148,24 @@ class ModelRegistryAPI:
         """**NOTE:** This endpoint is in Public Preview. Creates a registry webhook.
 
         :param events: List[:class:`RegistryWebhookEvent`]
-          Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
-          created for the associated model.
+          Events that can trigger a registry webhook:
 
-          * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
-
-          * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-
-          * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-
-          * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
-          specified for a registry-wide webhook, which can be created by not specifying a model name in the
-          create request.
-
-          * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-
-          * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
-          staging.
-
-          * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to
-          production.
-
-          * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
+          - ``MODEL_VERSION_CREATED``: A new model version was created for the associated model.
+          - ``MODEL_VERSION_TRANSITIONED_STAGE``: A model version’s stage was changed.
+          - ``TRANSITION_REQUEST_CREATED``: A user requested a model version’s stage be transitioned.
+          - ``COMMENT_CREATED``: A user wrote a comment on a registered model.
+          - ``REGISTERED_MODEL_CREATED``: A new registered model was created. This event type can only be
+            specified for a registry-wide webhook, which can be created by not specifying a model name in the
+            create request.
+          - ``MODEL_VERSION_TAG_SET``: A user set a tag on the model version.
+          - ``MODEL_VERSION_TRANSITIONED_TO_STAGING``: A model version was transitioned to staging.
+          - ``MODEL_VERSION_TRANSITIONED_TO_PRODUCTION``: A model version was transitioned to production.
+          - ``MODEL_VERSION_TRANSITIONED_TO_ARCHIVED``: A model version was archived.
+          - ``TRANSITION_REQUEST_TO_STAGING_CREATED``: A user requested a model version be transitioned to
+            staging.
+          - ``TRANSITION_REQUEST_TO_PRODUCTION_CREATED``: A user requested a model version be transitioned to
+            production.
+          - ``TRANSITION_REQUEST_TO_ARCHIVED_CREATED``: A user requested a model version be archived.
         :param description: str (optional)
           User-specified description for the webhook.
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
@@ -9678,12 +11177,12 @@ class ModelRegistryAPI:
           events across all versions of all registered models.
         :param status: :class:`RegistryWebhookStatus` (optional)
           Enable or disable triggering the webhook, or put the webhook into test mode. The default is
-          `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+          ``ACTIVE``:
 
-          * `DISABLED`: Webhook is not triggered.
-
-          * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
-          event.
+          - ``ACTIVE``: Webhook is triggered when an associated event happens.
+          - ``DISABLED``: Webhook is not triggered.
+          - ``TEST_MODE``: Webhook can be triggered through the test endpoint, but is not triggered on a real
+            event.
 
         :returns: :class:`CreateWebhookResponse`
         """
@@ -9708,7 +11207,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/registry-webhooks/create", body=body, headers=headers)
         return CreateWebhookResponse.from_dict(res)
@@ -9731,7 +11230,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/comments/delete", query=query, headers=headers)
 
@@ -9753,7 +11252,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/registered-models/delete", query=query, headers=headers)
 
@@ -9780,7 +11279,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/registered-models/delete-tag", query=query, headers=headers)
 
@@ -9806,7 +11305,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/model-versions/delete", query=query, headers=headers)
 
@@ -9837,7 +11336,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/model-versions/delete-tag", query=query, headers=headers)
 
@@ -9853,13 +11352,10 @@ class ModelRegistryAPI:
         :param stage: str
           Target stage of the transition request. Valid values are:
 
-          * `None`: The initial stage of a model version.
-
-          * `Staging`: Staging or pre-production stage.
-
-          * `Production`: Production stage.
-
-          * `Archived`: Archived stage.
+          - ``None``: The initial stage of a model version.
+          - ``Staging``: Staging or pre-production stage.
+          - ``Production``: Production stage.
+          - ``Archived``: Archived stage.
         :param creator: str
           Username of the user who created this request. Of the transition requests matching the specified
           details, only the one transition created by this user will be deleted.
@@ -9886,7 +11382,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("DELETE", "/api/2.0/mlflow/transition-requests/delete", query=query, headers=headers)
         return DeleteTransitionRequestResponse.from_dict(res)
@@ -9909,7 +11405,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/registry-webhooks/delete", query=query, headers=headers)
 
@@ -9936,18 +11432,16 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("POST", "/api/2.0/mlflow/registered-models/get-latest-versions", body=body, headers=headers)
         parsed = GetLatestVersionsResponse.from_dict(json).model_versions
         return parsed if parsed is not None else []
 
     def get_model(self, name: str) -> GetModelResponse:
-        """Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also
-        returns the model's Databricks workspace ID and the permission level of the requesting user on the
-        model.
-
-        [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel
+        """Get the details of a model. This is a Databricks workspace version of the `MLflow endpoint
+        <https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel>`__ that also returns the
+        model's Databricks workspace ID and the permission level of the requesting user on the model.
 
         :param name: str
           Registered model unique name identifier.
@@ -9964,7 +11458,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/mlflow/databricks/registered-models/get", query=query, headers=headers)
         return GetModelResponse.from_dict(res)
@@ -9991,7 +11485,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/mlflow/model-versions/get", query=query, headers=headers)
         return GetModelVersionResponse.from_dict(res)
@@ -10018,7 +11512,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/mlflow/model-versions/get-download-uri", query=query, headers=headers)
         return GetModelVersionDownloadUriResponse.from_dict(res)
@@ -10038,7 +11532,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/registered-models/{registered_model_id}/permissionLevels", headers=headers
@@ -10061,13 +11555,13 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/registered-models/{registered_model_id}", headers=headers)
         return RegisteredModelPermissions.from_dict(res)
 
     def list_models(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Model]:
-        """Lists all available registered models, up to the limit specified in __max_results__.
+        """Lists all available registered models, up to the limit specified in **max_results**.
 
         :param max_results: int (optional)
           Maximum number of registered models desired. Max threshold is 1000.
@@ -10088,7 +11582,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/registered-models/list", query=query, headers=headers)
@@ -10121,7 +11615,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/mlflow/transition-requests/list", query=query, headers=headers)
         parsed = ListTransitionRequestsResponse.from_dict(json).requests
@@ -10138,37 +11632,28 @@ class ModelRegistryAPI:
         """**NOTE:** This endpoint is in Public Preview. Lists all registry webhooks.
 
         :param events: List[:class:`RegistryWebhookEvent`] (optional)
-          Events that trigger the webhook. * `MODEL_VERSION_CREATED`: A new model version was created for the
-          associated model.
+          Events that trigger the webhook.
 
-          * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
+          - ``MODEL_VERSION_CREATED``: A new model version was created for the associated model.
+          - ``MODEL_VERSION_TRANSITIONED_STAGE``: A model version’s stage was changed.
+          - ``TRANSITION_REQUEST_CREATED``: A user requested a model version’s stage be transitioned.
+          - ``COMMENT_CREATED``: A user wrote a comment on a registered model.
+          - ``REGISTERED_MODEL_CREATED``: A new registered model was created. This event type can only be
+            specified for a registry-wide webhook, which can be created by not specifying a model name in the
+            create request.
+          - ``MODEL_VERSION_TAG_SET``: A user set a tag on the model version.
+          - ``MODEL_VERSION_TRANSITIONED_TO_STAGING``: A model version was transitioned to staging.
+          - ``MODEL_VERSION_TRANSITIONED_TO_PRODUCTION``: A model version was transitioned to production.
+          - ``MODEL_VERSION_TRANSITIONED_TO_ARCHIVED``: A model version was archived.
+          - ``TRANSITION_REQUEST_TO_STAGING_CREATED``: A user requested a model version be transitioned to
+            staging.
+          - ``TRANSITION_REQUEST_TO_PRODUCTION_CREATED``: A user requested a model version be transitioned to
+            production.
+          - ``TRANSITION_REQUEST_TO_ARCHIVED_CREATED``: A user requested a model version be archived.
 
-          * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-
-          * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-
-          * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
-          specified for a registry-wide webhook, which can be created by not specifying a model name in the
-          create request.
-
-          * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-
-          * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
-          staging.
-
-          * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to
-          production.
-
-          * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
-
-          If `events` is specified, any webhook with one or more of the specified trigger events is included
-          in the output. If `events` is not specified, webhooks of all event types are included in the output.
+          If ``events`` is specified, any webhook with one or more of the specified trigger events is included
+          in the output. If ``events`` is not specified, webhooks of all event types are included in the
+          output.
         :param max_results: int (optional)
         :param model_name: str (optional)
           Registered model name If not specified, all webhooks associated with the specified events are
@@ -10194,7 +11679,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/registry-webhooks/list", query=query, headers=headers)
@@ -10217,13 +11702,10 @@ class ModelRegistryAPI:
         :param stage: str
           Target stage of the transition. Valid values are:
 
-          * `None`: The initial stage of a model version.
-
-          * `Staging`: Staging or pre-production stage.
-
-          * `Production`: Production stage.
-
-          * `Archived`: Archived stage.
+          - ``None``: The initial stage of a model version.
+          - ``Staging``: Staging or pre-production stage.
+          - ``Production``: Production stage.
+          - ``Archived``: Archived stage.
         :param comment: str (optional)
           User-provided comment on the action.
 
@@ -10246,7 +11728,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/transition-requests/reject", body=body, headers=headers)
         return RejectTransitionRequestResponse.from_dict(res)
@@ -10257,7 +11739,7 @@ class ModelRegistryAPI:
         :param name: str
           Registered model unique name identifier.
         :param new_name: str (optional)
-          If provided, updates the name for this `registered_model`.
+          If provided, updates the name for this ``registered_model``.
 
         :returns: :class:`RenameModelResponse`
         """
@@ -10274,7 +11756,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/registered-models/rename", body=body, headers=headers)
         return RenameModelResponse.from_dict(res)
@@ -10287,7 +11769,7 @@ class ModelRegistryAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ModelVersion]:
-        """Searches for specific model versions based on the supplied __filter__.
+        """Searches for specific model versions based on the supplied **filter**.
 
         :param filter: str (optional)
           String filter condition, like "name='my-model-name'". Must be a single boolean condition, with
@@ -10319,7 +11801,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/model-versions/search", query=query, headers=headers)
@@ -10338,7 +11820,7 @@ class ModelRegistryAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[Model]:
-        """Search for registered models based on the specified __filter__.
+        """Search for registered models based on the specified **filter**.
 
         :param filter: str (optional)
           String filter condition, like "name LIKE 'my-model-name'". Interpreted in the backend automatically
@@ -10371,7 +11853,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/registered-models/search", query=query, headers=headers)
@@ -10389,8 +11871,8 @@ class ModelRegistryAPI:
           Unique name of the model.
         :param key: str
           Name of the tag. Maximum size depends on storage backend. If a tag with this name already exists,
-          its preexisting value will be replaced by the specified `value`. All storage backends are guaranteed
-          to support key values up to 250 bytes in size.
+          its preexisting value will be replaced by the specified ``value``. All storage backends are
+          guaranteed to support key values up to 250 bytes in size.
         :param value: str
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
@@ -10412,7 +11894,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/registered-models/set-tag", body=body, headers=headers)
 
@@ -10425,8 +11907,8 @@ class ModelRegistryAPI:
           Model version number.
         :param key: str
           Name of the tag. Maximum size depends on storage backend. If a tag with this name already exists,
-          its preexisting value will be replaced by the specified `value`. All storage backends are guaranteed
-          to support key values up to 250 bytes in size.
+          its preexisting value will be replaced by the specified ``value``. All storage backends are
+          guaranteed to support key values up to 250 bytes in size.
         :param value: str
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
@@ -10450,7 +11932,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/model-versions/set-tag", body=body, headers=headers)
 
@@ -10480,7 +11962,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/permissions/registered-models/{registered_model_id}", body=body, headers=headers
@@ -10495,8 +11977,8 @@ class ModelRegistryAPI:
         :param id: str
           Webhook ID
         :param event: :class:`RegistryWebhookEvent` (optional)
-          If `event` is specified, the test trigger uses the specified event. If `event` is not specified, the
-          test trigger uses a randomly chosen event associated with the webhook.
+          If ``event`` is specified, the test trigger uses the specified event. If ``event`` is not specified,
+          the test trigger uses a randomly chosen event associated with the webhook.
 
         :returns: :class:`TestRegistryWebhookResponse`
         """
@@ -10513,7 +11995,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/registry-webhooks/test", body=body, headers=headers)
         return TestRegistryWebhookResponse.from_dict(res)
@@ -10521,10 +12003,9 @@ class ModelRegistryAPI:
     def transition_stage(
         self, name: str, version: str, stage: str, archive_existing_versions: bool, *, comment: Optional[str] = None
     ) -> TransitionStageResponse:
-        """Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
-        that also accepts a comment associated with the transition to be recorded.
-
-        [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage
+        """Transition a model version's stage. This is a Databricks workspace version of the `MLflow endpoint
+        <https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage>`__ that also accepts
+        a comment associated with the transition to be recorded.
 
         :param name: str
           Name of the model.
@@ -10533,13 +12014,10 @@ class ModelRegistryAPI:
         :param stage: str
           Target stage of the transition. Valid values are:
 
-          * `None`: The initial stage of a model version.
-
-          * `Staging`: Staging or pre-production stage.
-
-          * `Production`: Production stage.
-
-          * `Archived`: Archived stage.
+          - ``None``: The initial stage of a model version.
+          - ``Staging``: Staging or pre-production stage.
+          - ``Production``: Production stage.
+          - ``Archived``: Archived stage.
         :param archive_existing_versions: bool
           Specifies whether to archive all current model versions in the target stage.
         :param comment: str (optional)
@@ -10566,7 +12044,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", "/api/2.0/mlflow/databricks/model-versions/transition-stage", body=body, headers=headers
@@ -10596,7 +12074,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/2.0/mlflow/comments/update", body=body, headers=headers)
         return UpdateCommentResponse.from_dict(res)
@@ -10607,7 +12085,7 @@ class ModelRegistryAPI:
         :param name: str
           Registered model unique name identifier.
         :param description: str (optional)
-          If provided, updates the description for this `registered_model`.
+          If provided, updates the description for this ``registered_model``.
 
         :returns: :class:`UpdateModelResponse`
         """
@@ -10624,7 +12102,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/2.0/mlflow/registered-models/update", body=body, headers=headers)
         return UpdateModelResponse.from_dict(res)
@@ -10639,7 +12117,7 @@ class ModelRegistryAPI:
         :param version: str
           Model version number
         :param description: str (optional)
-          If provided, updates the description for this `registered_model`.
+          If provided, updates the description for this ``registered_model``.
 
         :returns: :class:`UpdateModelVersionResponse`
         """
@@ -10658,7 +12136,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/2.0/mlflow/model-versions/update", body=body, headers=headers)
         return UpdateModelVersionResponse.from_dict(res)
@@ -10689,7 +12167,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/registered-models/{registered_model_id}", body=body, headers=headers
@@ -10713,34 +12191,24 @@ class ModelRegistryAPI:
         :param description: str (optional)
           User-specified description for the webhook.
         :param events: List[:class:`RegistryWebhookEvent`] (optional)
-          Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
-          created for the associated model.
+          Events that can trigger a registry webhook:
 
-          * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
-
-          * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-
-          * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-
-          * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
-          specified for a registry-wide webhook, which can be created by not specifying a model name in the
-          create request.
-
-          * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-
-          * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-
-          * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
-          staging.
-
-          * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to
-          production.
-
-          * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
+          - ``MODEL_VERSION_CREATED``: A new model version was created for the associated model.
+          - ``MODEL_VERSION_TRANSITIONED_STAGE``: A model version’s stage was changed.
+          - ``TRANSITION_REQUEST_CREATED``: A user requested a model version’s stage be transitioned.
+          - ``COMMENT_CREATED``: A user wrote a comment on a registered model.
+          - ``REGISTERED_MODEL_CREATED``: A new registered model was created. This event type can only be
+            specified for a registry-wide webhook, which can be created by not specifying a model name in the
+            create request.
+          - ``MODEL_VERSION_TAG_SET``: A user set a tag on the model version.
+          - ``MODEL_VERSION_TRANSITIONED_TO_STAGING``: A model version was transitioned to staging.
+          - ``MODEL_VERSION_TRANSITIONED_TO_PRODUCTION``: A model version was transitioned to production.
+          - ``MODEL_VERSION_TRANSITIONED_TO_ARCHIVED``: A model version was archived.
+          - ``TRANSITION_REQUEST_TO_STAGING_CREATED``: A user requested a model version be transitioned to
+            staging.
+          - ``TRANSITION_REQUEST_TO_PRODUCTION_CREATED``: A user requested a model version be transitioned to
+            production.
+          - ``TRANSITION_REQUEST_TO_ARCHIVED_CREATED``: A user requested a model version be archived.
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
         :param job_spec: :class:`JobSpec` (optional)
         :param status: :class:`RegistryWebhookStatus` (optional)
@@ -10768,7 +12236,7 @@ class ModelRegistryAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/2.0/mlflow/registry-webhooks/update", body=body, headers=headers)
         return UpdateWebhookResponse.from_dict(res)

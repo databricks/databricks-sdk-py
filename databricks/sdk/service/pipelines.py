@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -11,8 +14,13 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import compute
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 from ..errors import OperationFailed
 
@@ -108,6 +116,33 @@ class ClonePipelineResponse:
 
 
 @dataclass
+class ConfluenceConnectorOptions:
+    """Confluence specific options for ingestion"""
+
+    include_confluence_spaces: Optional[List[str]] = None
+    """(Optional) Spaces to filter Confluence data on"""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConfluenceConnectorOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.include_confluence_spaces:
+            body["include_confluence_spaces"] = [v for v in self.include_confluence_spaces]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConfluenceConnectorOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.include_confluence_spaces:
+            body["include_confluence_spaces"] = self.include_confluence_spaces
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConfluenceConnectorOptions:
+        """Deserializes the ConfluenceConnectorOptions from a dictionary."""
+        return cls(include_confluence_spaces=d.get("include_confluence_spaces", None))
+
+
+@dataclass
 class ConnectionParameters:
     source_catalog: Optional[str] = None
     """Source catalog for initial connection. This is necessary for schema exploration in some database
@@ -138,13 +173,21 @@ class ConnectionParameters:
 class ConnectorOptions:
     """Wrapper message for source-specific options to support multiple connector types"""
 
+    confluence_options: Optional[ConfluenceConnectorOptions] = None
+
     gdrive_options: Optional[GoogleDriveOptions] = None
 
     google_ads_options: Optional[GoogleAdsOptions] = None
 
     jira_options: Optional[JiraConnectorOptions] = None
 
+    kafka_options: Optional[KafkaOptions] = None
+
+    meta_ads_options: Optional[MetaMarketingOptions] = None
+
     outlook_options: Optional[OutlookOptions] = None
+
+    reddit_ads_options: Optional[RedditAdsOptions] = None
 
     sharepoint_options: Optional[SharepointOptions] = None
 
@@ -152,55 +195,82 @@ class ConnectorOptions:
 
     tiktok_ads_options: Optional[TikTokAdsOptions] = None
 
+    zendesk_support_options: Optional[ZendeskSupportOptions] = None
+
     def as_dict(self) -> dict:
         """Serializes the ConnectorOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.confluence_options:
+            body["confluence_options"] = self.confluence_options.as_dict()
         if self.gdrive_options:
             body["gdrive_options"] = self.gdrive_options.as_dict()
         if self.google_ads_options:
             body["google_ads_options"] = self.google_ads_options.as_dict()
         if self.jira_options:
             body["jira_options"] = self.jira_options.as_dict()
+        if self.kafka_options:
+            body["kafka_options"] = self.kafka_options.as_dict()
+        if self.meta_ads_options:
+            body["meta_ads_options"] = self.meta_ads_options.as_dict()
         if self.outlook_options:
             body["outlook_options"] = self.outlook_options.as_dict()
+        if self.reddit_ads_options:
+            body["reddit_ads_options"] = self.reddit_ads_options.as_dict()
         if self.sharepoint_options:
             body["sharepoint_options"] = self.sharepoint_options.as_dict()
         if self.smartsheet_options:
             body["smartsheet_options"] = self.smartsheet_options.as_dict()
         if self.tiktok_ads_options:
             body["tiktok_ads_options"] = self.tiktok_ads_options.as_dict()
+        if self.zendesk_support_options:
+            body["zendesk_support_options"] = self.zendesk_support_options.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ConnectorOptions into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.confluence_options:
+            body["confluence_options"] = self.confluence_options
         if self.gdrive_options:
             body["gdrive_options"] = self.gdrive_options
         if self.google_ads_options:
             body["google_ads_options"] = self.google_ads_options
         if self.jira_options:
             body["jira_options"] = self.jira_options
+        if self.kafka_options:
+            body["kafka_options"] = self.kafka_options
+        if self.meta_ads_options:
+            body["meta_ads_options"] = self.meta_ads_options
         if self.outlook_options:
             body["outlook_options"] = self.outlook_options
+        if self.reddit_ads_options:
+            body["reddit_ads_options"] = self.reddit_ads_options
         if self.sharepoint_options:
             body["sharepoint_options"] = self.sharepoint_options
         if self.smartsheet_options:
             body["smartsheet_options"] = self.smartsheet_options
         if self.tiktok_ads_options:
             body["tiktok_ads_options"] = self.tiktok_ads_options
+        if self.zendesk_support_options:
+            body["zendesk_support_options"] = self.zendesk_support_options
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ConnectorOptions:
         """Deserializes the ConnectorOptions from a dictionary."""
         return cls(
+            confluence_options=_from_dict(d, "confluence_options", ConfluenceConnectorOptions),
             gdrive_options=_from_dict(d, "gdrive_options", GoogleDriveOptions),
             google_ads_options=_from_dict(d, "google_ads_options", GoogleAdsOptions),
             jira_options=_from_dict(d, "jira_options", JiraConnectorOptions),
+            kafka_options=_from_dict(d, "kafka_options", KafkaOptions),
+            meta_ads_options=_from_dict(d, "meta_ads_options", MetaMarketingOptions),
             outlook_options=_from_dict(d, "outlook_options", OutlookOptions),
+            reddit_ads_options=_from_dict(d, "reddit_ads_options", RedditAdsOptions),
             sharepoint_options=_from_dict(d, "sharepoint_options", SharepointOptions),
             smartsheet_options=_from_dict(d, "smartsheet_options", SmartsheetOptions),
             tiktok_ads_options=_from_dict(d, "tiktok_ads_options", TikTokAdsOptions),
+            zendesk_support_options=_from_dict(d, "zendesk_support_options", ZendeskSupportOptions),
         )
 
 
@@ -390,8 +460,9 @@ class DeletePipelineResponse:
 
 
 class DeploymentKind(Enum):
-    """The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a
-    Databricks Asset Bundle."""
+    """The deployment method that manages the pipeline:
+
+    - BUNDLE: The pipeline is managed by a Databricks Asset Bundle."""
 
     BUNDLE = "BUNDLE"
 
@@ -649,7 +720,6 @@ class FileIngestionOptions:
 
 
 class FileIngestionOptionsFileFormat(Enum):
-
     AVRO = "AVRO"
     BINARYFILE = "BINARYFILE"
     CSV = "CSV"
@@ -662,8 +732,7 @@ class FileIngestionOptionsFileFormat(Enum):
 
 class FileIngestionOptionsSchemaEvolutionMode(Enum):
     """Based on
-    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#how-does-auto-loader-schema-evolution-work
-    """
+    https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader/schema#how-does-auto-loader-schema-evolution-work"""
 
     ADD_NEW_COLUMNS = "ADD_NEW_COLUMNS"
     ADD_NEW_COLUMNS_WITH_TYPE_WIDENING = "ADD_NEW_COLUMNS_WITH_TYPE_WIDENING"
@@ -781,21 +850,25 @@ class GetPipelineResponse:
     """Status of the latest updates for the pipeline. Ordered with the newest update first."""
 
     name: Optional[str] = None
-    """A human friendly identifier for the pipeline, taken from the `spec`."""
+    """A human friendly identifier for the pipeline, taken from the ``spec``."""
+
+    parameters: Optional[Dict[str, str]] = None
+    """Key/value map of default parameters to use for pipeline execution. Maximum total size: 10k
+    characters (JSON format)"""
 
     pipeline_id: Optional[str] = None
     """The ID of the pipeline."""
 
     run_as: Optional[RunAs] = None
     """The user or service principal that the pipeline runs as, if specified in the request. This field
-    indicates the explicit configuration of `run_as` for the pipeline. To find the value in all
-    cases, explicit or implicit, use `run_as_user_name`."""
+    indicates the explicit configuration of ``run_as`` for the pipeline. To find the value in all
+    cases, explicit or implicit, use ``run_as_user_name``."""
 
     run_as_user_name: Optional[str] = None
     """Username of the user that the pipeline will run on behalf of."""
 
     spec: Optional[PipelineSpec] = None
-    """The pipeline specification. This field is not returned when called by `ListPipelines`."""
+    """The pipeline specification. This field is not returned when called by ``ListPipelines``."""
 
     state: Optional[PipelineState] = None
     """The pipeline state."""
@@ -821,6 +894,8 @@ class GetPipelineResponse:
             body["latest_updates"] = [v.as_dict() for v in self.latest_updates]
         if self.name is not None:
             body["name"] = self.name
+        if self.parameters:
+            body["parameters"] = self.parameters
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
         if self.run_as:
@@ -854,6 +929,8 @@ class GetPipelineResponse:
             body["latest_updates"] = self.latest_updates
         if self.name is not None:
             body["name"] = self.name
+        if self.parameters:
+            body["parameters"] = self.parameters
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
         if self.run_as:
@@ -879,6 +956,7 @@ class GetPipelineResponse:
             last_modified=d.get("last_modified", None),
             latest_updates=_repeated_dict(d, "latest_updates", UpdateStateInfo),
             name=d.get("name", None),
+            parameters=d.get("parameters", None),
             pipeline_id=d.get("pipeline_id", None),
             run_as=_from_dict(d, "run_as", RunAs),
             run_as_user_name=d.get("run_as_user_name", None),
@@ -948,6 +1026,70 @@ class GoogleAdsConfig:
 
 
 @dataclass
+class GoogleAdsCustomReportOptions:
+    """User-defined custom report for the Google Ads connector. Mirrors the resource + fields +
+    segments + metrics model that Google Ads GAQL exposes. The customer account this report runs
+    against is supplied by the source schema (namespace), not by this message. The whole message is
+    gated by the parent GoogleAdsOptions.custom_report_options stage; per-field stage annotations
+    are intentionally omitted. Only supported on table-type objects: a custom report requires a
+    destination table, so it cannot be specified at the schema/source level."""
+
+    resource: str
+    """(Required) Google Ads resource to query (e.g. "ad_group_ad", "keyword_view",
+    "search_term_view"). Must be a resource that has metrics. Values are validated against Google
+    Ads' field-service catalog at pipeline plan time."""
+
+    metrics: Optional[List[str]] = None
+    """(Optional) Metric fields to select (e.g. "metrics.clicks", "metrics.cost_micros"). Multiple
+    values are joined into the GAQL SELECT clause."""
+
+    resource_fields: Optional[List[str]] = None
+    """(Optional) Resource fields to select, in fully-qualified GAQL form (e.g. "ad_group_ad.ad.id",
+    "ad_group_ad.status"). Multiple values are joined into the GAQL SELECT clause."""
+
+    segments: Optional[List[str]] = None
+    """(Optional) Segment fields to select (e.g. "segments.date", "segments.device"). Must include at
+    least one of segments.date, segments.week, or segments.month — that segment is used as the
+    incremental cursor for the table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GoogleAdsCustomReportOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metrics:
+            body["metrics"] = [v for v in self.metrics]
+        if self.resource is not None:
+            body["resource"] = self.resource
+        if self.resource_fields:
+            body["resource_fields"] = [v for v in self.resource_fields]
+        if self.segments:
+            body["segments"] = [v for v in self.segments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GoogleAdsCustomReportOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metrics:
+            body["metrics"] = self.metrics
+        if self.resource is not None:
+            body["resource"] = self.resource
+        if self.resource_fields:
+            body["resource_fields"] = self.resource_fields
+        if self.segments:
+            body["segments"] = self.segments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GoogleAdsCustomReportOptions:
+        """Deserializes the GoogleAdsCustomReportOptions from a dictionary."""
+        return cls(
+            metrics=d.get("metrics", None),
+            resource=d.get("resource", None),
+            resource_fields=d.get("resource_fields", None),
+            segments=d.get("segments", None),
+        )
+
+
+@dataclass
 class GoogleAdsOptions:
     """Google Ads specific options for ingestion (object-level). When set, these values override the
     corresponding fields in GoogleAdsConfig (source_configurations)."""
@@ -956,6 +1098,12 @@ class GoogleAdsOptions:
     """(Optional at this level) Manager Account ID (also called MCC Account ID) used to list and access
     customer accounts under this manager account. Overrides GoogleAdsConfig.manager_account_id from
     source_configurations when set."""
+
+    custom_report_options: Optional[GoogleAdsCustomReportOptions] = None
+    """(Optional) Custom report definition. When set, the table is treated as a user-defined Google Ads
+    custom report: the connector synthesizes a GAQL query from the resource, fields, segments, and
+    metrics specified here. When unset, the table must match one of the connector's prebuilt
+    sources."""
 
     lookback_window_days: Optional[int] = None
     """(Optional) Number of days to look back for report tables to capture late-arriving data. If not
@@ -969,6 +1117,8 @@ class GoogleAdsOptions:
     def as_dict(self) -> dict:
         """Serializes the GoogleAdsOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options.as_dict()
         if self.lookback_window_days is not None:
             body["lookback_window_days"] = self.lookback_window_days
         if self.manager_account_id is not None:
@@ -980,6 +1130,8 @@ class GoogleAdsOptions:
     def as_shallow_dict(self) -> dict:
         """Serializes the GoogleAdsOptions into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options
         if self.lookback_window_days is not None:
             body["lookback_window_days"] = self.lookback_window_days
         if self.manager_account_id is not None:
@@ -992,6 +1144,7 @@ class GoogleAdsOptions:
     def from_dict(cls, d: Dict[str, Any]) -> GoogleAdsOptions:
         """Deserializes the GoogleAdsOptions from a dictionary."""
         return cls(
+            custom_report_options=_from_dict(d, "custom_report_options", GoogleAdsCustomReportOptions),
             lookback_window_days=d.get("lookback_window_days", None),
             manager_account_id=d.get("manager_account_id", None),
             sync_start_date=d.get("sync_start_date", None),
@@ -1040,7 +1193,6 @@ class GoogleDriveOptions:
 
 
 class GoogleDriveOptionsGoogleDriveEntityType(Enum):
-
     FILE = "FILE"
     FILE_METADATA = "FILE_METADATA"
     PERMISSION = "PERMISSION"
@@ -1186,8 +1338,8 @@ class IngestionPipelineDefinition:
 
     ingest_from_uc_foreign_catalog: Optional[bool] = None
     """Immutable. If set to true, the pipeline will ingest tables from the UC foreign catalogs directly
-    without the need to specify a UC connection or ingestion gateway. The `source_catalog` fields in
-    objects of IngestionConfig are interpreted as the UC foreign catalogs to ingest from."""
+    without the need to specify a UC connection or ingestion gateway. The ``source_catalog`` fields
+    in objects of IngestionConfig are interpreted as the UC foreign catalogs to ingest from."""
 
     ingestion_gateway_id: Optional[str] = None
     """Identifier for the gateway that is used by this ingestion pipeline to communicate with the
@@ -1294,12 +1446,12 @@ class IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig:
     the table to be read and ingested incrementally through structured streaming. The columns are
     allowed to have repeated values but have to be non-decreasing. If the source data is merged into
     the destination (e.g., using SCD Type 1 or Type 2), these columns will implicitly define the
-    `sequence_by` behavior. You can still explicitly set `sequence_by` to override this default."""
+    ``sequence_by`` behavior. You can still explicitly set ``sequence_by`` to override this default."""
 
     deletion_condition: Optional[str] = None
     """Specifies a SQL WHERE condition that specifies that the source row has been deleted. This is
     sometimes referred to as "soft-deletes". For example: "Operation = 'DELETE'" or "is_deleted =
-    true". This field is orthogonal to `hard_deletion_sync_interval_in_seconds`, one for
+    true". This field is orthogonal to ``hard_deletion_sync_interval_in_seconds``, one for
     soft-deletes and the other for hard-deletes. See also the
     hard_deletion_sync_min_interval_in_seconds field for handling of "hard deletes" where the source
     rows are physically removed from the table."""
@@ -1348,7 +1500,7 @@ class IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig:
 class IngestionPipelineDefinitionWorkdayReportParameters:
     incremental: Optional[bool] = None
     """(Optional) Marks the report as incremental. This field is deprecated and should not be used. Use
-    `parameters` instead. The incremental behavior is now controlled by the `parameters` field."""
+    ``parameters`` instead. The incremental behavior is now controlled by the ``parameters`` field."""
 
     parameters: Optional[Dict[str, str]] = None
     """Parameters for the Workday report. Each key represents the parameter name (e.g., "start_date",
@@ -1358,7 +1510,7 @@ class IngestionPipelineDefinitionWorkdayReportParameters:
 
     report_parameters: Optional[List[IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue]] = None
     """(Optional) Additional custom parameters for Workday Report This field is deprecated and should
-    not be used. Use `parameters` instead."""
+    not be used. Use ``parameters`` instead."""
 
     def as_dict(self) -> dict:
         """Serializes the IngestionPipelineDefinitionWorkdayReportParameters into a dictionary suitable for use as a JSON request body."""
@@ -1400,10 +1552,12 @@ class IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
     """Key for the report parameter, can be a column name or other metadata"""
 
     value: Optional[str] = None
-    """Value for the report parameter. Possible values it can take are these sql functions: 1.
-    coalesce(current_offset(), date("YYYY-MM-DD")) -> if current_offset() is null, then the passed
-    date, else current_offset() 2. current_date() 3. date_sub(current_date(), x) -> subtract x (some
-    non-negative integer) days from current date"""
+    """Value for the report parameter. Possible values it can take are these sql functions:
+    
+    1. coalesce(current_offset(), date("YYYY-MM-DD")) -> if current_offset() is null, then the
+       passed date, else current_offset()
+    2. current_date()
+    3. date_sub(current_date(), x) -> subtract x (some non-negative integer) days from current date"""
 
     def as_dict(self) -> dict:
         """Serializes the IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue into a dictionary suitable for use as a JSON request body."""
@@ -1430,13 +1584,15 @@ class IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
 
 
 class IngestionSourceType(Enum):
-
     BIGQUERY = "BIGQUERY"
+    CONFLUENCE = "CONFLUENCE"
     DYNAMICS365 = "DYNAMICS365"
     FOREIGN_CATALOG = "FOREIGN_CATALOG"
     GA4_RAW_DATA = "GA4_RAW_DATA"
     GOOGLE_DRIVE = "GOOGLE_DRIVE"
+    JIRA = "JIRA"
     MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
+    META_MARKETING = "META_MARKETING"
     MYSQL = "MYSQL"
     NETSUITE = "NETSUITE"
     ORACLE = "ORACLE"
@@ -1447,6 +1603,7 @@ class IngestionSourceType(Enum):
     SQLSERVER = "SQLSERVER"
     TERADATA = "TERADATA"
     WORKDAY_RAAS = "WORKDAY_RAAS"
+    ZENDESK = "ZENDESK"
 
 
 @dataclass
@@ -1474,6 +1631,143 @@ class JiraConnectorOptions:
     def from_dict(cls, d: Dict[str, Any]) -> JiraConnectorOptions:
         """Deserializes the JiraConnectorOptions from a dictionary."""
         return cls(include_jira_spaces=d.get("include_jira_spaces", None))
+
+
+@dataclass
+class JsonTransformerOptions:
+    as_variant: Optional[bool] = None
+    """Parse the entire value as a single Variant column."""
+
+    schema: Optional[str] = None
+    """Inline schema string for JSON parsing (Spark DDL format)."""
+
+    schema_evolution_mode: Optional[FileIngestionOptionsSchemaEvolutionMode] = None
+    """(Optional) Schema evolution mode for schema inference."""
+
+    schema_file_path: Optional[str] = None
+    """Path to a schema file (.ddl)."""
+
+    schema_hints: Optional[str] = None
+    """(Optional) Schema hints as a comma-separated string of "column_name type" pairs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JsonTransformerOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.as_variant is not None:
+            body["as_variant"] = self.as_variant
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.schema_evolution_mode is not None:
+            body["schema_evolution_mode"] = self.schema_evolution_mode.value
+        if self.schema_file_path is not None:
+            body["schema_file_path"] = self.schema_file_path
+        if self.schema_hints is not None:
+            body["schema_hints"] = self.schema_hints
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JsonTransformerOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.as_variant is not None:
+            body["as_variant"] = self.as_variant
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.schema_evolution_mode is not None:
+            body["schema_evolution_mode"] = self.schema_evolution_mode
+        if self.schema_file_path is not None:
+            body["schema_file_path"] = self.schema_file_path
+        if self.schema_hints is not None:
+            body["schema_hints"] = self.schema_hints
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JsonTransformerOptions:
+        """Deserializes the JsonTransformerOptions from a dictionary."""
+        return cls(
+            as_variant=d.get("as_variant", None),
+            schema=d.get("schema", None),
+            schema_evolution_mode=_enum(d, "schema_evolution_mode", FileIngestionOptionsSchemaEvolutionMode),
+            schema_file_path=d.get("schema_file_path", None),
+            schema_hints=d.get("schema_hints", None),
+        )
+
+
+@dataclass
+class KafkaOptions:
+    client_config: Optional[Dict[str, str]] = None
+    """Undocumented backdoor mechanism for overriding parameters to pass to the Kafka client. This is
+    not supported and may break at any time."""
+
+    key_transformer: Optional[Transformer] = None
+    """(Optional) Transformer for the message key. If not specified, the key is left as raw bytes."""
+
+    max_offsets_per_trigger: Optional[int] = None
+    """Internal option to control the maximum number of offsets to process per trigger."""
+
+    starting_offset: Optional[str] = None
+    """(Optional) Where to begin reading when no checkpoint exists. Valid values: "latest" and
+    "earliest". Defaults to "latest"."""
+
+    topic_pattern: Optional[str] = None
+    """Java regex pattern to subscribe to matching topics. Only one of topics or topic_pattern must be
+    specified."""
+
+    topics: Optional[List[str]] = None
+    """Topics to subscribe to. Only one of topics or topic_pattern must be specified."""
+
+    value_transformer: Optional[Transformer] = None
+    """(Optional) Transformer for the message value. If not specified, the value is left as raw bytes."""
+
+    def as_dict(self) -> dict:
+        """Serializes the KafkaOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.client_config:
+            body["client_config"] = self.client_config
+        if self.key_transformer:
+            body["key_transformer"] = self.key_transformer.as_dict()
+        if self.max_offsets_per_trigger is not None:
+            body["max_offsets_per_trigger"] = self.max_offsets_per_trigger
+        if self.starting_offset is not None:
+            body["starting_offset"] = self.starting_offset
+        if self.topic_pattern is not None:
+            body["topic_pattern"] = self.topic_pattern
+        if self.topics:
+            body["topics"] = [v for v in self.topics]
+        if self.value_transformer:
+            body["value_transformer"] = self.value_transformer.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the KafkaOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.client_config:
+            body["client_config"] = self.client_config
+        if self.key_transformer:
+            body["key_transformer"] = self.key_transformer
+        if self.max_offsets_per_trigger is not None:
+            body["max_offsets_per_trigger"] = self.max_offsets_per_trigger
+        if self.starting_offset is not None:
+            body["starting_offset"] = self.starting_offset
+        if self.topic_pattern is not None:
+            body["topic_pattern"] = self.topic_pattern
+        if self.topics:
+            body["topics"] = self.topics
+        if self.value_transformer:
+            body["value_transformer"] = self.value_transformer
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> KafkaOptions:
+        """Deserializes the KafkaOptions from a dictionary."""
+        return cls(
+            client_config=d.get("client_config", None),
+            key_transformer=_from_dict(d, "key_transformer", Transformer),
+            max_offsets_per_trigger=d.get("max_offsets_per_trigger", None),
+            starting_offset=d.get("starting_offset", None),
+            topic_pattern=d.get("topic_pattern", None),
+            topics=d.get("topics", None),
+            value_transformer=_from_dict(d, "value_transformer", Transformer),
+        )
 
 
 @dataclass
@@ -1623,6 +1917,181 @@ class MaturityLevel(Enum):
 
 
 @dataclass
+class MetaMarketingOptions:
+    """Meta Marketing (Meta Ads) specific options for ingestion"""
+
+    action_attribution_windows: Optional[List[str]] = None
+    """(Optional, DEPRECATED — use custom_report_options.action_attribution_windows) Action
+    attribution windows for insights reporting (e.g. "28d_click", "1d_view")"""
+
+    action_breakdowns: Optional[List[str]] = None
+    """(Optional, DEPRECATED — use custom_report_options.action_breakdowns) Action breakdowns"""
+
+    action_report_time: Optional[str] = None
+    """(Optional, DEPRECATED — use custom_report_options.action_report_time) Timing used to report
+    action statistics (impression, conversion, mixed, or lifetime)"""
+
+    breakdowns: Optional[List[str]] = None
+    """(Optional, DEPRECATED — use custom_report_options.breakdowns) Breakdowns to configure"""
+
+    custom_insights_lookback_window: Optional[int] = None
+    """(Optional) Window in days to revisit data during sync to capture updated conversion data from
+    the API, shared by prebuilt and custom reports."""
+
+    custom_report_options: Optional[MetaMarketingOptionsMetaMarketingCustomReportOptions] = None
+    """(Optional) Per-table custom report definition. When set, defines the shape of the insights call
+    for this table (level/fields/breakdowns/action_breakdowns/etc.). Supersedes the deprecated flat
+    report-shape fields above."""
+
+    level: Optional[str] = None
+    """(Optional, DEPRECATED — use custom_report_options.level) Granularity of data to pull (account,
+    ad, adset, campaign)"""
+
+    start_date: Optional[str] = None
+    """(Optional) Start date in yyyy-MM-dd format (e.g. 2025-01-15). Data added after this date will be
+    ingested, shared by prebuilt and custom reports."""
+
+    time_increment: Optional[str] = None
+    """(Optional, DEPRECATED — use custom_report_options.time_increment) Value in string by which to
+    aggregate statistics (can take all_days, monthly or number of days)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetaMarketingOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.action_attribution_windows:
+            body["action_attribution_windows"] = [v for v in self.action_attribution_windows]
+        if self.action_breakdowns:
+            body["action_breakdowns"] = [v for v in self.action_breakdowns]
+        if self.action_report_time is not None:
+            body["action_report_time"] = self.action_report_time
+        if self.breakdowns:
+            body["breakdowns"] = [v for v in self.breakdowns]
+        if self.custom_insights_lookback_window is not None:
+            body["custom_insights_lookback_window"] = self.custom_insights_lookback_window
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options.as_dict()
+        if self.level is not None:
+            body["level"] = self.level
+        if self.start_date is not None:
+            body["start_date"] = self.start_date
+        if self.time_increment is not None:
+            body["time_increment"] = self.time_increment
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetaMarketingOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.action_attribution_windows:
+            body["action_attribution_windows"] = self.action_attribution_windows
+        if self.action_breakdowns:
+            body["action_breakdowns"] = self.action_breakdowns
+        if self.action_report_time is not None:
+            body["action_report_time"] = self.action_report_time
+        if self.breakdowns:
+            body["breakdowns"] = self.breakdowns
+        if self.custom_insights_lookback_window is not None:
+            body["custom_insights_lookback_window"] = self.custom_insights_lookback_window
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options
+        if self.level is not None:
+            body["level"] = self.level
+        if self.start_date is not None:
+            body["start_date"] = self.start_date
+        if self.time_increment is not None:
+            body["time_increment"] = self.time_increment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetaMarketingOptions:
+        """Deserializes the MetaMarketingOptions from a dictionary."""
+        return cls(
+            action_attribution_windows=d.get("action_attribution_windows", None),
+            action_breakdowns=d.get("action_breakdowns", None),
+            action_report_time=d.get("action_report_time", None),
+            breakdowns=d.get("breakdowns", None),
+            custom_insights_lookback_window=d.get("custom_insights_lookback_window", None),
+            custom_report_options=_from_dict(
+                d, "custom_report_options", MetaMarketingOptionsMetaMarketingCustomReportOptions
+            ),
+            level=d.get("level", None),
+            start_date=d.get("start_date", None),
+            time_increment=d.get("time_increment", None),
+        )
+
+
+@dataclass
+class MetaMarketingOptionsMetaMarketingCustomReportOptions:
+    """Defines the shape of a single Meta Ads custom report (one /insights call shape). start_date,
+    custom_insights_lookback_window live on MetaMarketingOptions, not here. Metrics are not
+    customer-selectable; the connector returns a fixed standard metric set."""
+
+    action_attribution_windows: Optional[List[str]] = None
+    """(Optional) Action attribution windows for insights reporting (e.g. "28d_click", "1d_view")"""
+
+    action_breakdowns: Optional[List[str]] = None
+    """(Optional) Action breakdowns to configure for data aggregation"""
+
+    action_report_time: Optional[str] = None
+    """(Optional) Timing used to report action statistics (impression, conversion, mixed, or lifetime)"""
+
+    breakdowns: Optional[List[str]] = None
+    """(Optional) Breakdowns to configure for data aggregation"""
+
+    level: Optional[str] = None
+    """(Optional) Granularity of data to pull (account, ad, adset, campaign)"""
+
+    time_increment: Optional[str] = None
+    """(Optional) Value in string by which to aggregate statistics (all_days, monthly or number of
+    days)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetaMarketingOptionsMetaMarketingCustomReportOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.action_attribution_windows:
+            body["action_attribution_windows"] = [v for v in self.action_attribution_windows]
+        if self.action_breakdowns:
+            body["action_breakdowns"] = [v for v in self.action_breakdowns]
+        if self.action_report_time is not None:
+            body["action_report_time"] = self.action_report_time
+        if self.breakdowns:
+            body["breakdowns"] = [v for v in self.breakdowns]
+        if self.level is not None:
+            body["level"] = self.level
+        if self.time_increment is not None:
+            body["time_increment"] = self.time_increment
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetaMarketingOptionsMetaMarketingCustomReportOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.action_attribution_windows:
+            body["action_attribution_windows"] = self.action_attribution_windows
+        if self.action_breakdowns:
+            body["action_breakdowns"] = self.action_breakdowns
+        if self.action_report_time is not None:
+            body["action_report_time"] = self.action_report_time
+        if self.breakdowns:
+            body["breakdowns"] = self.breakdowns
+        if self.level is not None:
+            body["level"] = self.level
+        if self.time_increment is not None:
+            body["time_increment"] = self.time_increment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetaMarketingOptionsMetaMarketingCustomReportOptions:
+        """Deserializes the MetaMarketingOptionsMetaMarketingCustomReportOptions from a dictionary."""
+        return cls(
+            action_attribution_windows=d.get("action_attribution_windows", None),
+            action_breakdowns=d.get("action_breakdowns", None),
+            action_report_time=d.get("action_report_time", None),
+            breakdowns=d.get("breakdowns", None),
+            level=d.get("level", None),
+            time_increment=d.get("time_increment", None),
+        )
+
+
+@dataclass
 class NotebookLibrary:
     path: Optional[str] = None
     """The absolute path of the source code."""
@@ -1653,9 +2122,10 @@ class Notifications:
     """A list of alerts that trigger the sending of notifications to the configured destinations. The
     supported alerts are:
     
-    * `on-update-success`: A pipeline update completes successfully. * `on-update-failure`: Each
-    time a pipeline update fails. * `on-update-fatal-failure`: A pipeline update fails with a
-    non-retryable (fatal) error. * `on-flow-failure`: A single data flow fails."""
+    - ``on-update-success``: A pipeline update completes successfully.
+    - ``on-update-failure``: Each time a pipeline update fails.
+    - ``on-update-fatal-failure``: A pipeline update fails with a non-retryable (fatal) error.
+    - ``on-flow-failure``: A single data flow fails."""
 
     email_recipients: Optional[List[str]] = None
     """A list of email addresses notified when a configured alert is triggered."""
@@ -2216,18 +2686,17 @@ class PipelineCluster:
     cluster_log_conf: Optional[compute.ClusterLogConf] = None
     """The configuration for delivering spark logs to a long-term storage destination. Only dbfs
     destinations are supported. Only one destination can be specified for one cluster. If the conf
-    is given, the logs will be delivered to the destination every `5 mins`. The destination of
-    driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is
-    `$destination/$clusterId/executor`."""
+    is given, the logs will be delivered to the destination every ``5 mins``. The destination of
+    driver logs is ``$destination/$clusterId/driver``, while the destination of executor logs is
+    ``$destination/$clusterId/executor``."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
-    instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+    instances and EBS volumes) with these tags in addition to ``default_tags``. Notes:
     
     - Currently, Databricks allows at most 45 custom tags
-    
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
-    tags"""
+      tags"""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -2235,7 +2704,7 @@ class PipelineCluster:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above."""
+    type will be set as the same value as ``node_type_id`` defined above."""
 
     enable_local_disk_encryption: Optional[bool] = None
     """Whether to enable local disk encryption for the cluster."""
@@ -2246,16 +2715,16 @@ class PipelineCluster:
 
     init_scripts: Optional[List[compute.InitScriptInfo]] = None
     """The configuration for storing init scripts. Any number of destinations can be specified. The
-    scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
-    init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
+    scripts are executed sequentially in the order provided. If ``cluster_log_conf`` is specified,
+    init script logs are sent to ``<destination>/<cluster-ID>/init_scripts``."""
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
 
     label: Optional[str] = None
-    """A label for the cluster specification, either `default` to configure the default cluster, or
-    `maintenance` to configure the maintenance cluster. This field is optional. The default value is
-    `default`."""
+    """A label for the cluster specification, either ``default`` to configure the default cluster, or
+    ``maintenance`` to configure the maintenance cluster. This field is optional. The default value
+    is ``default``."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -2265,13 +2734,13 @@ class PipelineCluster:
 
     num_workers: Optional[int] = None
     """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+    ``num_workers`` Executors for a total of ``num_workers`` + 1 Spark nodes.
     
     Note: When reading the properties of a cluster, this field reflects the desired number of
     workers rather than the actual current number of workers. For instance, if a cluster is resized
     from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
-    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
-    new nodes are provisioned."""
+    workers, whereas the workers listed in ``spark_info`` will gradually increase from 5 to 10 as
+    the new nodes are provisioned."""
 
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
@@ -2282,21 +2751,21 @@ class PipelineCluster:
 
     spark_env_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs.
-    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
-    while launching the driver and workers.
+    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., ``export
+    X='Y'``) while launching the driver and workers.
     
-    In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
-    to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
+    In order to specify an additional set of ``SPARK_DAEMON_JAVA_OPTS``, we recommend appending them
+    to ``$SPARK_DAEMON_JAVA_OPTS`` as shown in the example below. This ensures that all default
     databricks managed environmental variables are included as well.
     
-    Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-    "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-    -Dspark.shuffle.service.enabled=true"}`"""
+    Example Spark environment variables: ``{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+    "/local_disk0"}`` or ``{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+    -Dspark.shuffle.service.enabled=true"}``"""
 
     ssh_public_keys: Optional[List[str]] = None
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
-    private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
-    be specified."""
+    private keys can be used to login with the user name ``ubuntu`` on port ``2200``. Up to 10 keys
+    can be specified."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelineCluster into a dictionary suitable for use as a JSON request body."""
@@ -2417,14 +2886,14 @@ class PipelineClusterAutoscale:
     initial number of workers the cluster will have after creation."""
 
     max_workers: int
-    """The maximum number of workers to which the cluster can scale up when overloaded. `max_workers`
-    must be strictly greater than `min_workers`."""
+    """The maximum number of workers to which the cluster can scale up when overloaded. ``max_workers``
+    must be strictly greater than ``min_workers``."""
 
     mode: Optional[PipelineClusterAutoscaleMode] = None
     """Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating
     cluster resources based on workload volume, with minimal impact to the data processing latency
-    of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy
-    autoscaling feature is used for `maintenance` clusters."""
+    of your pipelines. Enhanced Autoscaling is available for ``updates`` clusters only. The legacy
+    autoscaling feature is used for ``maintenance`` clusters."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelineClusterAutoscale into a dictionary suitable for use as a JSON request body."""
@@ -2461,8 +2930,8 @@ class PipelineClusterAutoscale:
 class PipelineClusterAutoscaleMode(Enum):
     """Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating
     cluster resources based on workload volume, with minimal impact to the data processing latency
-    of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy
-    autoscaling feature is used for `maintenance` clusters."""
+    of your pipelines. Enhanced Autoscaling is available for ``updates`` clusters only. The legacy
+    autoscaling feature is used for ``maintenance`` clusters."""
 
     ENHANCED = "ENHANCED"
     LEGACY = "LEGACY"
@@ -2473,31 +2942,52 @@ class PipelineDeployment:
     kind: DeploymentKind
     """The deployment method that manages the pipeline."""
 
+    deployment_id: Optional[str] = None
+    """ID of the deployment that manages this pipeline. Only set when ``kind`` is ``BUNDLE``. Used to
+    look up deployment metadata from the Deployment Metadata service."""
+
     metadata_file_path: Optional[str] = None
     """The path to the file containing metadata about the deployment."""
+
+    version_id: Optional[str] = None
+    """ID of the version of the deployment that produced this pipeline. Only set when ``kind`` is
+    ``BUNDLE``. Identifies a specific snapshot of the deployment in the Deployment Metadata service."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelineDeployment into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.deployment_id is not None:
+            body["deployment_id"] = self.deployment_id
         if self.kind is not None:
             body["kind"] = self.kind.value
         if self.metadata_file_path is not None:
             body["metadata_file_path"] = self.metadata_file_path
+        if self.version_id is not None:
+            body["version_id"] = self.version_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PipelineDeployment into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.deployment_id is not None:
+            body["deployment_id"] = self.deployment_id
         if self.kind is not None:
             body["kind"] = self.kind
         if self.metadata_file_path is not None:
             body["metadata_file_path"] = self.metadata_file_path
+        if self.version_id is not None:
+            body["version_id"] = self.version_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineDeployment:
         """Deserializes the PipelineDeployment from a dictionary."""
-        return cls(kind=_enum(d, "kind", DeploymentKind), metadata_file_path=d.get("metadata_file_path", None))
+        return cls(
+            deployment_id=d.get("deployment_id", None),
+            kind=_enum(d, "kind", DeploymentKind),
+            metadata_file_path=d.get("metadata_file_path", None),
+            version_id=d.get("version_id", None),
+        )
 
 
 @dataclass
@@ -2608,7 +3098,7 @@ class PipelineLibrary:
 
     glob: Optional[PathPattern] = None
     """The unified field to include source codes. Each entry can be a notebook path, a file path, or a
-    folder path that ends `/**`. This field cannot be used together with `notebook` or `file`."""
+    folder path that ends ``/**``. This field cannot be used together with ``notebook`` or ``file``."""
 
     jar: Optional[str] = None
     """URI of the jar to be installed. Currently only DBFS is supported."""
@@ -2797,9 +3287,9 @@ class PipelineSpec:
     """Budget policy of this pipeline."""
 
     catalog: Optional[str] = None
-    """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
-    tables in this pipeline are published to a `target` schema inside `catalog` (for example,
-    `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity
+    """A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified,
+    tables in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
+    ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
     Catalog."""
 
     channel: Optional[str] = None
@@ -2812,7 +3302,7 @@ class PipelineSpec:
     """String-String configuration for this pipeline execution."""
 
     continuous: Optional[bool] = None
-    """Whether the pipeline is continuous or triggered. This replaces `trigger`."""
+    """Whether the pipeline is continuous or triggered. This replaces ``trigger``."""
 
     deployment: Optional[PipelineDeployment] = None
     """Deployment type of this pipeline."""
@@ -2868,6 +3358,9 @@ class PipelineSpec:
     serverless: Optional[bool] = None
     """Whether serverless compute is enabled for this pipeline."""
 
+    serverless_compute_id: Optional[str] = None
+    """Serverless compute ID specified by the user for serverless pipelines."""
+
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
 
@@ -2877,12 +3370,12 @@ class PipelineSpec:
     pipeline."""
 
     target: Optional[str] = None
-    """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
-    must be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is
-    deprecated for pipeline creation in favor of the `schema` field."""
+    """Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or
+    ``target`` must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy
+    field is deprecated for pipeline creation in favor of the ``schema`` field."""
 
     trigger: Optional[PipelineTrigger] = None
-    """Which pipeline trigger to use. Deprecated: Use `continuous` instead."""
+    """Which pipeline trigger to use. Deprecated: Use ``continuous`` instead."""
 
     usage_policy_id: Optional[str] = None
     """Usage policy of this pipeline."""
@@ -2936,6 +3429,8 @@ class PipelineSpec:
             body["schema"] = self.schema
         if self.serverless is not None:
             body["serverless"] = self.serverless
+        if self.serverless_compute_id is not None:
+            body["serverless_compute_id"] = self.serverless_compute_id
         if self.storage is not None:
             body["storage"] = self.storage
         if self.tags:
@@ -2997,6 +3492,8 @@ class PipelineSpec:
             body["schema"] = self.schema
         if self.serverless is not None:
             body["serverless"] = self.serverless
+        if self.serverless_compute_id is not None:
+            body["serverless_compute_id"] = self.serverless_compute_id
         if self.storage is not None:
             body["storage"] = self.storage
         if self.tags:
@@ -3036,6 +3533,7 @@ class PipelineSpec:
             root_path=d.get("root_path", None),
             schema=d.get("schema", None),
             serverless=d.get("serverless", None),
+            serverless_compute_id=d.get("serverless_compute_id", None),
             storage=d.get("storage", None),
             tags=d.get("tags", None),
             target=d.get("target", None),
@@ -3201,7 +3699,7 @@ class PipelinesEnvironment:
     and their included packages, see
     https://docs.databricks.com/aws/en/release-notes/serverless/environment-version/
     
-    The value should be a string representing the environment version number, for example: `"4"`."""
+    The value should be a string representing the environment version number, for example: ``"4"``."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelinesEnvironment into a dictionary suitable for use as a JSON request body."""
@@ -3296,6 +3794,92 @@ class PublishingMode(Enum):
 
 
 @dataclass
+class RedditAdsOptions:
+    """Reddit Ads specific options for ingestion"""
+
+    custom_report_options: Optional[RedditAdsOptionsRedditAdsCustomReportOptions] = None
+    """(Optional) Custom report definition. When set, the table is treated as a user-defined Reddit Ads
+    custom report. When unset, the table must match one of the connector's prebuilt sources."""
+
+    lookback_window_days: Optional[int] = None
+    """(Optional) Number of days to look back for report tables during incremental sync to capture
+    late-arriving conversions and attribution data. If not specified, defaults to 30 days."""
+
+    sync_start_date: Optional[str] = None
+    """(Optional) Start date for the initial sync of report tables in YYYY-MM-DD format. This
+    determines the earliest date from which to sync historical data. If not specified, defaults to 2
+    years ago."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RedditAdsOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options.as_dict()
+        if self.lookback_window_days is not None:
+            body["lookback_window_days"] = self.lookback_window_days
+        if self.sync_start_date is not None:
+            body["sync_start_date"] = self.sync_start_date
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RedditAdsOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options
+        if self.lookback_window_days is not None:
+            body["lookback_window_days"] = self.lookback_window_days
+        if self.sync_start_date is not None:
+            body["sync_start_date"] = self.sync_start_date
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RedditAdsOptions:
+        """Deserializes the RedditAdsOptions from a dictionary."""
+        return cls(
+            custom_report_options=_from_dict(d, "custom_report_options", RedditAdsOptionsRedditAdsCustomReportOptions),
+            lookback_window_days=d.get("lookback_window_days", None),
+            sync_start_date=d.get("sync_start_date", None),
+        )
+
+
+@dataclass
+class RedditAdsOptionsRedditAdsCustomReportOptions:
+    """User-defined custom report for the Reddit Ads connector. Applies only to the custom_report table
+    — prebuilt tables ignore this."""
+
+    breakdowns: Optional[List[str]] = None
+    """(Optional) Breakdown dimensions to group report data by. Examples: CAMPAIGN_ID, DATE, COUNTRY,
+    REGION, AD_ID. Must include at least one time dimension (DATE or HOUR)."""
+
+    fields: Optional[List[str]] = None
+    """(Optional) Fields to include in the report (maps to the Reddit Ads API ``fields`` parameter).
+    Examples: IMPRESSIONS, CLICKS, SPEND, CPC, CTR."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RedditAdsOptionsRedditAdsCustomReportOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.breakdowns:
+            body["breakdowns"] = [v for v in self.breakdowns]
+        if self.fields:
+            body["fields"] = [v for v in self.fields]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RedditAdsOptionsRedditAdsCustomReportOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.breakdowns:
+            body["breakdowns"] = self.breakdowns
+        if self.fields:
+            body["fields"] = self.fields
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RedditAdsOptionsRedditAdsCustomReportOptions:
+        """Deserializes the RedditAdsOptionsRedditAdsCustomReportOptions from a dictionary."""
+        return cls(breakdowns=d.get("breakdowns", None), fields=d.get("fields", None))
+
+
+@dataclass
 class ReplaceWhereOverride:
     """Specifies a replace_where predicate override for a replace where flow."""
 
@@ -3303,8 +3887,8 @@ class ReplaceWhereOverride:
     """Name of the flow to apply this override to."""
 
     predicate_override: Optional[str] = None
-    """SQL predicate string to use as replace_where condition. Example: `date = '2024-10-10' AND city =
-    'xyz'`"""
+    """SQL predicate string to use as replace_where condition. Example: ``date = '2024-10-10' AND city
+    = 'xyz'``"""
 
     def as_dict(self) -> dict:
         """Serializes the ReplaceWhereOverride into a dictionary suitable for use as a JSON request body."""
@@ -3494,7 +4078,8 @@ class RewindSpec:
     """If true, this is a dry run and we should emit the RewindSummary but not perform the rewind."""
 
     rewind_timestamp: Optional[str] = None
-    """The base timestamp to rewind to. Must be specified."""
+    """The base timestamp to rewind to. Exactly one of rewind_timestamp or rewind_point_id must be
+    specified."""
 
     def as_dict(self) -> dict:
         """Serializes the RewindSpec into a dictionary suitable for use as a JSON request body."""
@@ -3534,12 +4119,12 @@ class RunAs:
     principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
     the pipeline.
 
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
+    Only ``user_name`` or ``service_principal_name`` can be specified. If both are specified, an
+    error is thrown."""
 
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    ``servicePrincipal/user`` role."""
 
     user_name: Optional[str] = None
     """The email of an active workspace user. Users can only set this field to their own email."""
@@ -3761,7 +4346,6 @@ class SharepointOptions:
 
 
 class SharepointOptionsSharepointEntityType(Enum):
-
     FILE = "FILE"
     FILE_METADATA = "FILE_METADATA"
     LIST = "LIST"
@@ -4067,17 +4651,31 @@ class TableSpecificConfig:
     "auto_full_refresh_policy": { "enabled": true, "min_interval_hours": 23, } } If unspecified,
     auto full refresh is disabled."""
 
+    clustering_columns: Optional[List[str]] = None
+    """List of column names to use for clustering the destination table. When specified, the
+    destination Delta table will be clustered by these columns. This can improve query performance
+    when filtering on these columns. Note: clustering_columns in table specific configuration will
+    override the pipeline definition. Note: we can only provide enable_auto_clustering or
+    clustering_columns, added as separate fields as we cannot have repeated field in oneof."""
+
+    enable_auto_clustering: Optional[bool] = None
+    """Whether to enable auto clustering on the destination table. When enabled, Delta will
+    automatically optimize the data layout based on the clustering columns for improved query
+    performance. Note: enable_auto_clustering in table specific configuration will override the
+    pipeline definition. Note: we can only provide enable_auto_clustering or clustering_columns,
+    added as separate fields as we cannot have repeated field in oneof."""
+
     exclude_columns: Optional[List[str]] = None
     """A list of column names to be excluded for the ingestion. When not specified, include_columns
     fully controls what columns to be ingested. When specified, all other columns including future
     ones will be automatically included for ingestion. This field in mutually exclusive with
-    `include_columns`."""
+    ``include_columns``."""
 
     include_columns: Optional[List[str]] = None
     """A list of column names to be included for the ingestion. When not specified, all columns except
     ones in exclude_columns will be included. Future columns will be automatically included. When
     specified, all other future columns will be automatically excluded from ingestion. This field in
-    mutually exclusive with `exclude_columns`."""
+    mutually exclusive with ``exclude_columns``."""
 
     primary_keys: Optional[List[str]] = None
     """The primary key of the table used to apply changes."""
@@ -4100,6 +4698,17 @@ class TableSpecificConfig:
     """The column names specifying the logical order of events in the source data. Spark Declarative
     Pipelines uses this sequencing to handle change events that arrive out of order."""
 
+    source_metadata_column: Optional[str] = None
+    """(Optional) Name of the struct column added to each ingested record to hold per row source
+    metadata."""
+
+    table_properties: Optional[Dict[str, str]] = None
+    """Table properties to set on the destination table. These are key-value pairs that configure
+    various Delta table behaviors or any user defined properties. Example:
+    {"delta.feature.variantType": "supported", "delta.enableTypeWidening": "true"} Note:
+    table_properties in table specific configuration will override the table_properties of the
+    pipeline definition."""
+
     workday_report_parameters: Optional[IngestionPipelineDefinitionWorkdayReportParameters] = None
     """(Optional) Additional custom parameters for Workday Report"""
 
@@ -4108,6 +4717,10 @@ class TableSpecificConfig:
         body = {}
         if self.auto_full_refresh_policy:
             body["auto_full_refresh_policy"] = self.auto_full_refresh_policy.as_dict()
+        if self.clustering_columns:
+            body["clustering_columns"] = [v for v in self.clustering_columns]
+        if self.enable_auto_clustering is not None:
+            body["enable_auto_clustering"] = self.enable_auto_clustering
         if self.exclude_columns:
             body["exclude_columns"] = [v for v in self.exclude_columns]
         if self.include_columns:
@@ -4124,6 +4737,10 @@ class TableSpecificConfig:
             body["scd_type"] = self.scd_type.value
         if self.sequence_by:
             body["sequence_by"] = [v for v in self.sequence_by]
+        if self.source_metadata_column is not None:
+            body["source_metadata_column"] = self.source_metadata_column
+        if self.table_properties:
+            body["table_properties"] = self.table_properties
         if self.workday_report_parameters:
             body["workday_report_parameters"] = self.workday_report_parameters.as_dict()
         return body
@@ -4133,6 +4750,10 @@ class TableSpecificConfig:
         body = {}
         if self.auto_full_refresh_policy:
             body["auto_full_refresh_policy"] = self.auto_full_refresh_policy
+        if self.clustering_columns:
+            body["clustering_columns"] = self.clustering_columns
+        if self.enable_auto_clustering is not None:
+            body["enable_auto_clustering"] = self.enable_auto_clustering
         if self.exclude_columns:
             body["exclude_columns"] = self.exclude_columns
         if self.include_columns:
@@ -4149,6 +4770,10 @@ class TableSpecificConfig:
             body["scd_type"] = self.scd_type
         if self.sequence_by:
             body["sequence_by"] = self.sequence_by
+        if self.source_metadata_column is not None:
+            body["source_metadata_column"] = self.source_metadata_column
+        if self.table_properties:
+            body["table_properties"] = self.table_properties
         if self.workday_report_parameters:
             body["workday_report_parameters"] = self.workday_report_parameters
         return body
@@ -4158,6 +4783,8 @@ class TableSpecificConfig:
         """Deserializes the TableSpecificConfig from a dictionary."""
         return cls(
             auto_full_refresh_policy=_from_dict(d, "auto_full_refresh_policy", AutoFullRefreshPolicy),
+            clustering_columns=d.get("clustering_columns", None),
+            enable_auto_clustering=d.get("enable_auto_clustering", None),
             exclude_columns=d.get("exclude_columns", None),
             include_columns=d.get("include_columns", None),
             primary_keys=d.get("primary_keys", None),
@@ -4170,6 +4797,8 @@ class TableSpecificConfig:
             salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
             scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
             sequence_by=d.get("sequence_by", None),
+            source_metadata_column=d.get("source_metadata_column", None),
+            table_properties=d.get("table_properties", None),
             workday_report_parameters=_from_dict(
                 d, "workday_report_parameters", IngestionPipelineDefinitionWorkdayReportParameters
             ),
@@ -4188,37 +4817,40 @@ class TableSpecificConfigScdType(Enum):
 class TikTokAdsOptions:
     """TikTok Ads specific options for ingestion"""
 
+    custom_report_options: Optional[TikTokAdsOptionsTikTokAdsCustomReportOptions] = None
+    """(Optional) Custom report definition. When set, the table is treated as a user-defined TikTok Ads
+    custom report: the connector synthesizes a report request from the dimensions, metrics, report
+    type, and data level specified here. Supersedes the deprecated top-level
+    dimensions/metrics/report_type/ data_level/query_lifetime fields above."""
+
     data_level: Optional[TikTokAdsOptionsTikTokDataLevel] = None
-    """(Optional) Data level for the report. If not specified, defaults to AUCTION_CAMPAIGN."""
+    """Deprecated. Use custom_report_options.data_level instead."""
 
     dimensions: Optional[List[str]] = None
-    """(Optional) Dimensions to include in the report. Examples: "campaign_id", "adgroup_id", "ad_id",
-    "stat_time_day", "stat_time_hour" If not specified, defaults to campaign_id."""
+    """Deprecated. Use custom_report_options.dimensions instead."""
 
     lookback_window_days: Optional[int] = None
     """(Optional) Number of days to look back for report tables during incremental sync to capture
-    late-arriving conversions and attribution data. If not specified, defaults to 7 days."""
+    late-arriving conversions and attribution data."""
 
     metrics: Optional[List[str]] = None
-    """(Optional) Metrics to include in the report. Examples: "spend", "impressions", "clicks",
-    "conversion", "cpc" If not specified, defaults to basic metrics (spend, impressions, clicks,
-    etc.)"""
+    """Deprecated. Use custom_report_options.metrics instead."""
 
     query_lifetime: Optional[bool] = None
-    """(Optional) Whether to request lifetime metrics (all-time aggregated data). When true, the report
-    returns all-time data. If not specified, defaults to false."""
+    """Deprecated. Use custom_report_options.query_lifetime instead."""
 
     report_type: Optional[TikTokAdsOptionsTikTokReportType] = None
-    """(Optional) Report type for the TikTok Ads API. If not specified, defaults to BASIC."""
+    """Deprecated. Use custom_report_options.report_type instead."""
 
     sync_start_date: Optional[str] = None
     """(Optional) Start date for the initial sync of report tables in YYYY-MM-DD format. This
-    determines the earliest date from which to sync historical data. If not specified, defaults to 1
-    year of historical data for daily reports and 30 days for hourly reports."""
+    determines the earliest date from which to sync historical data."""
 
     def as_dict(self) -> dict:
         """Serializes the TikTokAdsOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options.as_dict()
         if self.data_level is not None:
             body["data_level"] = self.data_level.value
         if self.dimensions:
@@ -4238,6 +4870,8 @@ class TikTokAdsOptions:
     def as_shallow_dict(self) -> dict:
         """Serializes the TikTokAdsOptions into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.custom_report_options:
+            body["custom_report_options"] = self.custom_report_options
         if self.data_level is not None:
             body["data_level"] = self.data_level
         if self.dimensions:
@@ -4258,6 +4892,7 @@ class TikTokAdsOptions:
     def from_dict(cls, d: Dict[str, Any]) -> TikTokAdsOptions:
         """Deserializes the TikTokAdsOptions from a dictionary."""
         return cls(
+            custom_report_options=_from_dict(d, "custom_report_options", TikTokAdsOptionsTikTokAdsCustomReportOptions),
             data_level=_enum(d, "data_level", TikTokAdsOptionsTikTokDataLevel),
             dimensions=d.get("dimensions", None),
             lookback_window_days=d.get("lookback_window_days", None),
@@ -4265,6 +4900,71 @@ class TikTokAdsOptions:
             query_lifetime=d.get("query_lifetime", None),
             report_type=_enum(d, "report_type", TikTokAdsOptionsTikTokReportType),
             sync_start_date=d.get("sync_start_date", None),
+        )
+
+
+@dataclass
+class TikTokAdsOptionsTikTokAdsCustomReportOptions:
+    """User-defined custom report for the TikTok Ads connector. Groups the dimensions + metrics +
+    report type + data level that define a TikTok Ads custom report request."""
+
+    data_level: Optional[TikTokAdsOptionsTikTokDataLevel] = None
+    """(Optional) Data level for the report. If not specified, defaults to AUCTION_CAMPAIGN."""
+
+    dimensions: Optional[List[str]] = None
+    """(Optional) Dimensions to include in the report (e.g. "campaign_id", "adgroup_id", "ad_id",
+    "stat_time_day", "stat_time_hour")."""
+
+    metrics: Optional[List[str]] = None
+    """(Optional) Metrics to include in the report (e.g. "spend", "impressions", "clicks",
+    "conversion", "cpc")."""
+
+    query_lifetime: Optional[bool] = None
+    """(Optional) Whether to request lifetime metrics (all-time aggregated data). When true, the report
+    returns all-time data. If not specified, defaults to false."""
+
+    report_type: Optional[TikTokAdsOptionsTikTokReportType] = None
+    """(Optional) Report type for the TikTok Ads API. If not specified, defaults to BASIC."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TikTokAdsOptionsTikTokAdsCustomReportOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_level is not None:
+            body["data_level"] = self.data_level.value
+        if self.dimensions:
+            body["dimensions"] = [v for v in self.dimensions]
+        if self.metrics:
+            body["metrics"] = [v for v in self.metrics]
+        if self.query_lifetime is not None:
+            body["query_lifetime"] = self.query_lifetime
+        if self.report_type is not None:
+            body["report_type"] = self.report_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TikTokAdsOptionsTikTokAdsCustomReportOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_level is not None:
+            body["data_level"] = self.data_level
+        if self.dimensions:
+            body["dimensions"] = self.dimensions
+        if self.metrics:
+            body["metrics"] = self.metrics
+        if self.query_lifetime is not None:
+            body["query_lifetime"] = self.query_lifetime
+        if self.report_type is not None:
+            body["report_type"] = self.report_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TikTokAdsOptionsTikTokAdsCustomReportOptions:
+        """Deserializes the TikTokAdsOptionsTikTokAdsCustomReportOptions from a dictionary."""
+        return cls(
+            data_level=_enum(d, "data_level", TikTokAdsOptionsTikTokDataLevel),
+            dimensions=d.get("dimensions", None),
+            metrics=d.get("metrics", None),
+            query_lifetime=d.get("query_lifetime", None),
+            report_type=_enum(d, "report_type", TikTokAdsOptionsTikTokReportType),
         )
 
 
@@ -4286,6 +4986,47 @@ class TikTokAdsOptionsTikTokReportType(Enum):
     DSA = "DSA"
     GMV_MAX = "GMV_MAX"
     PLAYABLE_AD = "PLAYABLE_AD"
+
+
+@dataclass
+class Transformer:
+    """Specifies how to transform binary data into structured data."""
+
+    format: Optional[TransformerFormat] = None
+    """Required: the wire format of the data."""
+
+    json_options: Optional[JsonTransformerOptions] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the Transformer into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.format is not None:
+            body["format"] = self.format.value
+        if self.json_options:
+            body["json_options"] = self.json_options.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Transformer into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.format is not None:
+            body["format"] = self.format
+        if self.json_options:
+            body["json_options"] = self.json_options
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Transformer:
+        """Deserializes the Transformer from a dictionary."""
+        return cls(
+            format=_enum(d, "format", TransformerFormat),
+            json_options=_from_dict(d, "json_options", JsonTransformerOptions),
+        )
+
+
+class TransformerFormat(Enum):
+    JSON = "JSON"
+    STRING = "STRING"
 
 
 @dataclass
@@ -4547,6 +5288,34 @@ class UpdateStateInfoState(Enum):
     WAITING_FOR_RESOURCES = "WAITING_FOR_RESOURCES"
 
 
+@dataclass
+class ZendeskSupportOptions:
+    """Zendesk Support specific options for ingestion"""
+
+    start_date: Optional[str] = None
+    """(Optional) Start date in YYYY-MM-DD format for the initial sync. This determines the earliest
+    date from which to sync historical data."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ZendeskSupportOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.start_date is not None:
+            body["start_date"] = self.start_date
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ZendeskSupportOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.start_date is not None:
+            body["start_date"] = self.start_date
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ZendeskSupportOptions:
+        """Deserializes the ZendeskSupportOptions from a dictionary."""
+        return cls(start_date=d.get("start_date", None))
+
+
 class PipelinesAPI:
     """The Lakeflow Spark Declarative Pipelines API allows you to create, edit, delete, start, and view details
     about pipelines.
@@ -4596,7 +5365,7 @@ class PipelinesAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def apply_environment(self, pipeline_id: str) -> ApplyEnvironmentRequestResponse:
-        """* Applies the current pipeline environment onto the pipeline compute. The environment applied can be
+        """Applies the current pipeline environment onto the pipeline compute. The environment applied can be
         used by subsequent dev-mode updates.
 
         :param pipeline_id: str
@@ -4610,7 +5379,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/environment/apply", headers=headers)
         return ApplyEnvironmentRequestResponse.from_dict(res)
@@ -4645,6 +5414,7 @@ class PipelinesAPI:
         root_path: Optional[str] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
+        serverless_compute_id: Optional[str] = None,
         storage: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
@@ -4662,9 +5432,10 @@ class PipelinesAPI:
         :param budget_policy_id: str (optional)
           Budget policy of this pipeline.
         :param catalog: str (optional)
-          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
-          in this pipeline are published to a `target` schema inside `catalog` (for example,
-          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+          A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified, tables
+          in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
+          ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
+          Catalog.
         :param channel: str (optional)
           SDP Release Channel that specifies which version to use.
         :param clone_mode: :class:`CloneMode` (optional)
@@ -4674,7 +5445,7 @@ class PipelinesAPI:
         :param configuration: Dict[str,str] (optional)
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
-          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+          Whether the pipeline is continuous or triggered. This replaces ``trigger``.
         :param deployment: :class:`PipelineDeployment` (optional)
           Deployment type of this pipeline.
         :param development: bool (optional)
@@ -4715,17 +5486,19 @@ class PipelinesAPI:
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
+        :param serverless_compute_id: str (optional)
+          Serverless compute ID specified by the user for serverless pipelines.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
           A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
           are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
-          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
-          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
-          for pipeline creation in favor of the `schema` field.
+          Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or ``target``
+          must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy field is
+          deprecated for pipeline creation in favor of the ``schema`` field.
         :param trigger: :class:`PipelineTrigger` (optional)
-          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+          Which pipeline trigger to use. Deprecated: Use ``continuous`` instead.
         :param usage_policy_id: str (optional)
           Usage policy of this pipeline.
 
@@ -4785,6 +5558,8 @@ class PipelinesAPI:
             body["schema"] = schema
         if serverless is not None:
             body["serverless"] = serverless
+        if serverless_compute_id is not None:
+            body["serverless_compute_id"] = serverless_compute_id
         if storage is not None:
             body["storage"] = storage
         if tags is not None:
@@ -4802,7 +5577,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/clone", body=body, headers=headers)
         return ClonePipelineResponse.from_dict(res)
@@ -4830,12 +5605,14 @@ class PipelinesAPI:
         libraries: Optional[List[PipelineLibrary]] = None,
         name: Optional[str] = None,
         notifications: Optional[List[Notifications]] = None,
+        parameters: Optional[Dict[str, str]] = None,
         photon: Optional[bool] = None,
         restart_window: Optional[RestartWindow] = None,
         root_path: Optional[str] = None,
         run_as: Optional[RunAs] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
+        serverless_compute_id: Optional[str] = None,
         storage: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
@@ -4850,9 +5627,10 @@ class PipelinesAPI:
         :param budget_policy_id: str (optional)
           Budget policy of this pipeline.
         :param catalog: str (optional)
-          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
-          in this pipeline are published to a `target` schema inside `catalog` (for example,
-          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+          A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified, tables
+          in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
+          ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
+          Catalog.
         :param channel: str (optional)
           SDP Release Channel that specifies which version to use.
         :param clusters: List[:class:`PipelineCluster`] (optional)
@@ -4860,7 +5638,7 @@ class PipelinesAPI:
         :param configuration: Dict[str,str] (optional)
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
-          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+          Whether the pipeline is continuous or triggered. This replaces ``trigger``.
         :param deployment: :class:`PipelineDeployment` (optional)
           Deployment type of this pipeline.
         :param development: bool (optional)
@@ -4887,6 +5665,9 @@ class PipelinesAPI:
           Friendly identifier for this pipeline.
         :param notifications: List[:class:`Notifications`] (optional)
           List of notification settings for this pipeline.
+        :param parameters: Dict[str,str] (optional)
+          Key/value map of default parameters to use for pipeline execution. Maximum total size: 10k
+          characters (JSON format)
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
@@ -4900,17 +5681,19 @@ class PipelinesAPI:
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
+        :param serverless_compute_id: str (optional)
+          Serverless compute ID specified by the user for serverless pipelines.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
           A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
           are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
-          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
-          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
-          for pipeline creation in favor of the `schema` field.
+          Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or ``target``
+          must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy field is
+          deprecated for pipeline creation in favor of the ``schema`` field.
         :param trigger: :class:`PipelineTrigger` (optional)
-          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+          Which pipeline trigger to use. Deprecated: Use ``continuous`` instead.
         :param usage_policy_id: str (optional)
           Usage policy of this pipeline.
 
@@ -4958,6 +5741,8 @@ class PipelinesAPI:
             body["name"] = name
         if notifications is not None:
             body["notifications"] = [v.as_dict() for v in notifications]
+        if parameters is not None:
+            body["parameters"] = parameters
         if photon is not None:
             body["photon"] = photon
         if restart_window is not None:
@@ -4970,6 +5755,8 @@ class PipelinesAPI:
             body["schema"] = schema
         if serverless is not None:
             body["serverless"] = serverless
+        if serverless_compute_id is not None:
+            body["serverless_compute_id"] = serverless_compute_id
         if storage is not None:
             body["storage"] = storage
         if tags is not None:
@@ -4987,7 +5774,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/pipelines", body=body, headers=headers)
         return CreatePipelineResponse.from_dict(res)
@@ -5018,7 +5805,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/pipelines/{pipeline_id}", query=query, headers=headers)
 
@@ -5036,7 +5823,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}", headers=headers)
         return GetPipelineResponse.from_dict(res)
@@ -5056,7 +5843,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels", headers=headers)
         return GetPipelinePermissionLevelsResponse.from_dict(res)
@@ -5076,7 +5863,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/pipelines/{pipeline_id}", headers=headers)
         return PipelinePermissions.from_dict(res)
@@ -5098,7 +5885,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates/{update_id}", headers=headers)
         return GetUpdateResponse.from_dict(res)
@@ -5118,8 +5905,12 @@ class PipelinesAPI:
           The pipeline to return events for.
         :param filter: str (optional)
           Criteria to select a subset of results, expressed using a SQL-like syntax. The supported filters
-          are: 1. level='INFO' (or WARN or ERROR) 2. level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp
-          > 'TIMESTAMP' (or >=,<,<=,=)
+          are:
+
+          1. level='INFO' (or WARN or ERROR)
+          2. level in ('INFO', 'WARN')
+          3. id='[event-id]'
+          4. timestamp > 'TIMESTAMP' (or >=,<,<=,=)
 
           Composite expressions are supported, for example: level in ('ERROR', 'WARN') AND timestamp>
           '2021-07-22T06:37:33.083Z'
@@ -5153,7 +5944,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/events", query=query, headers=headers)
@@ -5177,9 +5968,9 @@ class PipelinesAPI:
         :param filter: str (optional)
           Select a subset of results based on the specified criteria. The supported filters are:
 
-          * `notebook='<path>'` to select pipelines that reference the provided notebook path. * `name LIKE
-          '[pattern]'` to select pipelines with a name that matches pattern. Wildcards are supported, for
-          example: `name LIKE '%shopping%'`
+          - ``notebook='<path>'`` to select pipelines that reference the provided notebook path.
+          - ``name LIKE '[pattern]'`` to select pipelines with a name that matches pattern. Wildcards are
+            supported, for example: ``name LIKE '%shopping%'``
 
           Composite filters are not supported. This field is optional.
         :param max_results: int (optional)
@@ -5211,7 +6002,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/pipelines", query=query, headers=headers)
@@ -5257,7 +6048,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, headers=headers)
         return ListUpdatesResponse.from_dict(res)
@@ -5285,7 +6076,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/permissions/pipelines/{pipeline_id}", body=body, headers=headers)
         return PipelinePermissions.from_dict(res)
@@ -5363,7 +6154,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/updates", body=body, headers=headers)
         return StartUpdateResponse.from_dict(res)
@@ -5385,7 +6176,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", headers=headers)
         return Wait(self.wait_get_pipeline_idle, pipeline_id=pipeline_id)
@@ -5417,12 +6208,14 @@ class PipelinesAPI:
         libraries: Optional[List[PipelineLibrary]] = None,
         name: Optional[str] = None,
         notifications: Optional[List[Notifications]] = None,
+        parameters: Optional[Dict[str, str]] = None,
         photon: Optional[bool] = None,
         restart_window: Optional[RestartWindow] = None,
         root_path: Optional[str] = None,
         run_as: Optional[RunAs] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
+        serverless_compute_id: Optional[str] = None,
         storage: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
@@ -5438,9 +6231,10 @@ class PipelinesAPI:
         :param budget_policy_id: str (optional)
           Budget policy of this pipeline.
         :param catalog: str (optional)
-          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
-          in this pipeline are published to a `target` schema inside `catalog` (for example,
-          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+          A catalog in Unity Catalog to publish data from this pipeline to. If ``target`` is specified, tables
+          in this pipeline are published to a ``target`` schema inside ``catalog`` (for example,
+          ``catalog``.``target``.``table``). If ``target`` is not specified, no data is published to Unity
+          Catalog.
         :param channel: str (optional)
           SDP Release Channel that specifies which version to use.
         :param clusters: List[:class:`PipelineCluster`] (optional)
@@ -5448,7 +6242,7 @@ class PipelinesAPI:
         :param configuration: Dict[str,str] (optional)
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
-          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+          Whether the pipeline is continuous or triggered. This replaces ``trigger``.
         :param deployment: :class:`PipelineDeployment` (optional)
           Deployment type of this pipeline.
         :param development: bool (optional)
@@ -5477,6 +6271,9 @@ class PipelinesAPI:
           Friendly identifier for this pipeline.
         :param notifications: List[:class:`Notifications`] (optional)
           List of notification settings for this pipeline.
+        :param parameters: Dict[str,str] (optional)
+          Key/value map of default parameters to use for pipeline execution. Maximum total size: 10k
+          characters (JSON format)
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
@@ -5490,17 +6287,19 @@ class PipelinesAPI:
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
+        :param serverless_compute_id: str (optional)
+          Serverless compute ID specified by the user for serverless pipelines.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param tags: Dict[str,str] (optional)
           A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
           are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
-          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
-          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
-          for pipeline creation in favor of the `schema` field.
+          Target schema (database) to add tables in this pipeline to. Exactly one of ``schema`` or ``target``
+          must be specified. To publish to Unity Catalog, also specify ``catalog``. This legacy field is
+          deprecated for pipeline creation in favor of the ``schema`` field.
         :param trigger: :class:`PipelineTrigger` (optional)
-          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+          Which pipeline trigger to use. Deprecated: Use ``continuous`` instead.
         :param usage_policy_id: str (optional)
           Usage policy of this pipeline.
 
@@ -5548,6 +6347,8 @@ class PipelinesAPI:
             body["name"] = name
         if notifications is not None:
             body["notifications"] = [v.as_dict() for v in notifications]
+        if parameters is not None:
+            body["parameters"] = parameters
         if photon is not None:
             body["photon"] = photon
         if restart_window is not None:
@@ -5560,6 +6361,8 @@ class PipelinesAPI:
             body["schema"] = schema
         if serverless is not None:
             body["serverless"] = serverless
+        if serverless_compute_id is not None:
+            body["serverless_compute_id"] = serverless_compute_id
         if storage is not None:
             body["storage"] = storage
         if tags is not None:
@@ -5577,7 +6380,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/pipelines/{pipeline_id}", body=body, headers=headers)
 
@@ -5603,7 +6406,7 @@ class PipelinesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/pipelines/{pipeline_id}", body=body, headers=headers)
         return PipelinePermissions.from_dict(res)

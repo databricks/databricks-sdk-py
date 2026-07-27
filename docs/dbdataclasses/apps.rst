@@ -417,6 +417,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MEDIUM
       :value: "MEDIUM"
 
+   .. py:attribute:: XLARGE
+      :value: "XLARGE"
+
 .. py:class:: ComputeState
 
    .. py:attribute:: ACTIVE
