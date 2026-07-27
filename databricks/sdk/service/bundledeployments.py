@@ -469,7 +469,7 @@ class Operation:
     """The type of the deployment resource this operation applies to. Derived from the ``resource_key``
     prefix (e.g. "jobs" → JOB); the caller does not set this field."""
 
-    state: Optional[any] = None
+    state: Optional[Any] = None
     """Serialized local config state after the operation. Should be unset for delete operations.
     Mutable: may be updated after creation via UpdateOperation. When updating, the caller must echo
     the last-observed ``sequence_id`` as a concurrency precondition."""
@@ -581,7 +581,7 @@ class Resource:
     """Resource identifier within the bundle (e.g. "jobs.foo", "pipelines.bar",
     "jobs.foo.permissions")."""
 
-    state: Optional[any] = None
+    state: Optional[Any] = None
     """Serialized local config state (what the CLI deployed)."""
 
     update_time: Optional[Timestamp] = None

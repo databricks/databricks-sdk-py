@@ -6,7 +6,7 @@ import os
 import pathlib
 import re
 import urllib.parse
-from typing import Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional
 
 import requests
 
@@ -49,7 +49,7 @@ class ConfigAttribute:
             return None
         return cfg._inner.get(self.name, None)
 
-    def __set__(self, cfg: "Config", value: any):
+    def __set__(self, cfg: "Config", value: Any):
         cfg._inner[self.name] = self.transform(value)
 
     def __repr__(self) -> str:
@@ -580,7 +580,7 @@ class Config:
             buf.append(f"Env: {', '.join(envs_used)}")
         return ". ".join(buf)
 
-    def to_dict(self) -> Dict[str, any]:
+    def to_dict(self) -> Dict[str, Any]:
         return self._inner
 
     @property
@@ -713,7 +713,7 @@ class Config:
         self.azure_tenant_id = path_segments[1]
         logger.debug(f"Loaded tenant ID: {self.azure_tenant_id}")
 
-    def _set_inner_config(self, keyword_args: Dict[str, any]):
+    def _set_inner_config(self, keyword_args: Dict[str, Any]):
         for attr in self.attributes():
             if attr.name not in keyword_args:
                 continue

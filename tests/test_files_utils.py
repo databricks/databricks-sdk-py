@@ -2,7 +2,7 @@ import logging
 import os
 from abc import ABC, abstractmethod
 from io import BytesIO, RawIOBase, UnsupportedOperation
-from typing import BinaryIO, Callable, List, Optional, Tuple
+from typing import Any, BinaryIO, Callable, List, Optional, Tuple
 
 import pytest
 
@@ -133,7 +133,7 @@ test_cases = [
 ]
 
 
-def verify(test_case: ConcatenatedInputStreamTestCase, apply: Callable[[BinaryIO], Tuple[any, bool]]):
+def verify(test_case: ConcatenatedInputStreamTestCase, apply: Callable[[BinaryIO], Tuple[Any, bool]]):
     """
     This method applies given function iteratively to both implementation under test
     and reference implementation of the stream, and verifies the result on each step is identical.
@@ -243,7 +243,7 @@ def test_seek(config, test_case: ConcatenatedInputStreamTestCase, seeks: List[Tu
         buf.seek(pos)
         return result
 
-    def safe_call(buf: BinaryIO, call: Callable[[BinaryIO], any]) -> (any, bool):
+    def safe_call(buf: BinaryIO, call: Callable[[BinaryIO], Any]) -> (Any, bool):
         """
         Calls the provided function on the buffer and returns the result.
         It is a wrapper to handle exceptions gracefully.

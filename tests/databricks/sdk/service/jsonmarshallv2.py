@@ -96,7 +96,7 @@ class OptionalFields:
 
     legacy_timestamp: Optional[str] = None
 
-    list_value: Optional[List[any]] = None
+    list_value: Optional[List[Any]] = None
 
     map: Optional[Dict[str, str]] = None
     """Lint disable reason: This is a dummy field used to test SDK Generation logic."""
@@ -111,13 +111,13 @@ class OptionalFields:
 
     optional_string: Optional[str] = None
 
-    struct: Optional[Dict[str, any]] = None
+    struct: Optional[Dict[str, Any]] = None
 
     test_enum: Optional[TestEnum] = None
 
     timestamp: Optional[Timestamp] = None
 
-    value: Optional[any] = None
+    value: Optional[Any] = None
 
     def as_dict(self) -> dict:
         """Serializes the OptionalFields into a dictionary suitable for use as a JSON request body."""
@@ -228,17 +228,17 @@ class RepeatedFields:
 
     repeated_int64: Optional[List[int]] = None
 
-    repeated_list_value: Optional[List[List[any]]] = None
+    repeated_list_value: Optional[List[List[Any]]] = None
 
     repeated_message: Optional[List[NestedMessage]] = None
 
     repeated_string: Optional[List[str]] = None
 
-    repeated_struct: Optional[List[Dict[str, any]]] = None
+    repeated_struct: Optional[List[Dict[str, Any]]] = None
 
     repeated_timestamp: Optional[List[Timestamp]] = None
 
-    repeated_value: Optional[List[any]] = None
+    repeated_value: Optional[List[Any]] = None
 
     test_repeated_enum: Optional[List[TestEnum]] = None
 
@@ -344,11 +344,11 @@ class RequiredFields:
 
     required_timestamp: Timestamp
 
-    required_value: any
+    required_value: Any
 
-    required_list_value: List[any]
+    required_list_value: List[Any]
 
-    required_struct: Dict[str, any]
+    required_struct: Dict[str, Any]
 
     def as_dict(self) -> dict:
         """Serializes the RequiredFields into a dictionary suitable for use as a JSON request body."""

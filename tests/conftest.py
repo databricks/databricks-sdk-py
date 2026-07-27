@@ -1,6 +1,7 @@
 import functools
 import os
 import platform
+from typing import Any
 
 import pytest as pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
@@ -22,7 +23,7 @@ def stub_host_metadata(mocker):
 
 
 @credentials_strategy("noop", [])
-def noop_credentials(_: any):
+def noop_credentials(_: Any):
     return lambda: {}
 
 

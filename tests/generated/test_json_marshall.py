@@ -423,7 +423,7 @@ def _fieldmask(d: str) -> FieldMask:
         "LegacyWellKnownTypes",
     ],
 )
-def test_python_marshall(from_dict_method: any, instance: Any, expected_json: str):
+def test_python_marshall(from_dict_method: Any, instance: Any, expected_json: str):
     """Test Python object to dict conversion"""
 
     result = instance.as_dict()
