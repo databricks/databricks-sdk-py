@@ -27,6 +27,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ARCHIVED
       :value: "ARCHIVED"
 
+   .. py:attribute:: DELETED
+      :value: "DELETED"
+
    .. py:attribute:: IMPORTING
       :value: "IMPORTING"
 
@@ -52,6 +55,50 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CatalogOperationMetadata
+   :members:
+   :undoc-members:
+
+.. autoclass:: CdfConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: CdfConfigOperationMetadata
+   :members:
+   :undoc-members:
+
+.. py:class:: CdfState
+
+   The replication state of a single replicated table (CdfStatus).
+
+   .. py:attribute:: CDF_STATE_SKIPPED
+      :value: "CDF_STATE_SKIPPED"
+
+   .. py:attribute:: CDF_STATE_SNAPSHOTTING
+      :value: "CDF_STATE_SNAPSHOTTING"
+
+   .. py:attribute:: CDF_STATE_STREAMING
+      :value: "CDF_STATE_STREAMING"
+
+   .. py:attribute:: CDF_STATE_TERMINATED
+      :value: "CDF_STATE_TERMINATED"
+
+.. autoclass:: CdfStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: DataApi
+   :members:
+   :undoc-members:
+
+.. autoclass:: DataApiDataApiSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: DataApiDataApiStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: DataApiOperationMetadata
    :members:
    :undoc-members:
 
@@ -133,7 +180,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EndpointType
 
-   The compute endpoint type. Either `read_write` or `read_only`.
+   The compute endpoint type. Either ``read_write`` or ``read_only``.
 
    .. py:attribute:: ENDPOINT_TYPE_READ_ONLY
       :value: "ENDPOINT_TYPE_READ_ONLY"
@@ -388,11 +435,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKSPACE_TEMPORARILY_UNAVAILABLE
       :value: "WORKSPACE_TEMPORARILY_UNAVAILABLE"
 
+.. autoclass:: InitialBranchSpec
+   :members:
+   :undoc-members:
+
 .. autoclass:: InitialEndpointSpec
    :members:
    :undoc-members:
 
 .. autoclass:: ListBranchesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListCdfConfigsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListCdfStatusesResponse
    :members:
    :undoc-members:
 
@@ -415,6 +474,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: NewPipelineSpec
    :members:
    :undoc-members:
+
+.. py:class:: OpenApiMode
+
+   Controls how the Data API exposes the OpenAPI documentation endpoint. Only IGNORE_PRIVILEGES and DISABLED are supported today; "follow-privileges" is not implemented yet (it may be added later as value 3 — adding new enum values is backward-compatible).
+
+   .. py:attribute:: OPEN_API_MODE_DISABLED
+      :value: "OPEN_API_MODE_DISABLED"
+
+   .. py:attribute:: OPEN_API_MODE_IGNORE_PRIVILEGES
+      :value: "OPEN_API_MODE_IGNORE_PRIVILEGES"
 
 .. autoclass:: Operation
    :members:
@@ -466,7 +535,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ProvisioningPhase
 
-   Copied from database_table_statuses.proto to decouple SDK packages.
+   The current phase of the data synchronization pipeline.
 
    .. py:attribute:: PROVISIONING_PHASE_INDEX_SCAN
       :value: "PROVISIONING_PHASE_INDEX_SCAN"
@@ -561,7 +630,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SyncedTableState
 
-   The state of a synced table. Copied from database_table_statuses.proto to decouple SDK packages.
+   The state of a synced table.
 
    .. py:attribute:: SYNCED_TABLE_OFFLINE
       :value: "SYNCED_TABLE_OFFLINE"
@@ -600,6 +669,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: SyncedTableSyncedTableSpecPgSpecificType
+
+   PostgreSQL-specific target types that can override the default Delta-to-PG mapping.
+
+   .. py:attribute:: PG_SPECIFIC_TYPE_VECTOR
+      :value: "PG_SPECIFIC_TYPE_VECTOR"
+
 .. py:class:: SyncedTableSyncedTableSpecSyncedTableSchedulingPolicy
 
    Scheduling policy of the synced table's underlying pipeline.
@@ -612,6 +688,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TRIGGERED
       :value: "TRIGGERED"
+
+.. autoclass:: SyncedTableSyncedTableSpecTypeOverride
+   :members:
+   :undoc-members:
 
 .. autoclass:: SyncedTableSyncedTableStatus
    :members:

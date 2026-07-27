@@ -13,9 +13,9 @@
     **About resource IDs and names**
 
     Resources are identified by hierarchical resource names like
-    `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`. The `name` field on each resource
-    contains this full path and is output-only. Note that `name` refers to this resource path, not the
-    user-visible `display_name`.
+    ``projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}``. The ``name`` field on each
+    resource contains this full path and is output-only. Note that ``name`` refers to this resource path, not
+    the user-visible ``display_name``.
 
     .. py:method:: create_branch(parent: str, branch: Branch, branch_id: str [, replace_existing: Optional[bool]]) -> CreateBranchOperation
 
@@ -28,8 +28,8 @@
         :param branch_id: str
           The ID to use for the Branch. This becomes the final component of the branch's resource name. The ID
           is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, `development` becomes
-          `projects/my-app/branches/development`.
+          lowercase letters, numbers, and hyphens. For example, ``development`` becomes
+          ``projects/my-app/branches/development``.
         :param replace_existing: bool (optional)
           If true, update the branch if it already exists instead of returning an error.
 
@@ -48,7 +48,38 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_database(parent: str, database: Database [, database_id: Optional[str]]) -> CreateDatabaseOperation
+    .. py:method:: create_cdf_config(parent: str, cdf_config: CdfConfig [, cdf_config_id: Optional[str]]) -> CreateCdfConfigOperation
+
+        Create a CDF configuration that materializes the change data feed for all tables in a Postgres schema
+        as open-format Delta tables in Unity Catalog. Once created, each table's change history is
+        continuously written to its corresponding Lakehouse table.
+
+        :param parent: str
+          The parent database under which to create the CdfConfig. Format:
+          projects/{project}/branches/{branch}/databases/{database}
+        :param cdf_config: :class:`CdfConfig`
+          The CdfConfig to create. The catalog, schema, and postgres_schema fields are required; all other
+          fields are output only and ignored on input.
+        :param cdf_config_id: str (optional)
+          The user-specified id for the CdfConfig, forming the final segment of its resource name. Must match
+          the pattern ``[a-z][a-z0-9_]{0,62}``. Defaults to the Postgres schema name when omitted.
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: create_data_api(parent: str, data_api: DataApi) -> CreateDataApiOperation
+
+        Enable Data API for a database.
+
+        :param parent: str
+          Parent database: projects/{project_id}/branches/{branch_id}/databases/{database_id}
+        :param data_api: :class:`DataApi`
+          The Data API configuration to create.
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: create_database(parent: str, database: Database [, database_id: Optional[str], replace_existing: Optional[bool]]) -> CreateDatabaseOperation
 
         Create a Database.
 
@@ -66,6 +97,8 @@
           RFC-1123
 
           If database_id is not specified in the request, it is generated automatically.
+        :param replace_existing: bool (optional)
+          If true, update the database if it already exists instead of returning an error.
 
         :returns: :class:`Operation`
         
@@ -81,8 +114,8 @@
         :param endpoint_id: str
           The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.
           The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, `primary` becomes
-          `projects/my-app/branches/development/endpoints/primary`.
+          lowercase letters, numbers, and hyphens. For example, ``primary`` becomes
+          ``projects/my-app/branches/development/endpoints/primary``.
         :param replace_existing: bool (optional)
           If true, update the endpoint if it already exists instead of returning an error.
 
@@ -99,12 +132,12 @@
         :param project_id: str
           The ID to use for the Project. This becomes the final component of the project's resource name. The
           ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
-          lowercase letters, numbers, and hyphens. For example, `my-app` becomes `projects/my-app`.
+          lowercase letters, numbers, and hyphens. For example, ``my-app`` becomes ``projects/my-app``.
 
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_role(parent: str, role: Role [, role_id: Optional[str]]) -> CreateRoleOperation
+    .. py:method:: create_role(parent: str, role: Role [, replace_existing: Optional[bool], role_id: Optional[str]]) -> CreateRoleOperation
 
         Creates a new Postgres role in the branch.
 
@@ -112,6 +145,13 @@
           The Branch where this Role is created. Format: projects/{project_id}/branches/{branch_id}
         :param role: :class:`Role`
           The desired specification of a Role.
+        :param replace_existing: bool (optional)
+          If true, update the role if it already exists instead of returning an error.
+
+          When the role already exists, the provided ``role`` spec fully replaces the existing one:
+          ``membership_roles`` is overwritten, not merged. Leaving ``membership_roles`` empty clears all of
+          the role's existing memberships, including ``DATABRICKS_SUPERUSER``. Always send the complete
+          desired list of memberships when using this field.
         :param role_id: str (optional)
           The ID to use for the Role, which will become the final component of the role's resource name. This
           ID becomes the role in Postgres.
@@ -138,18 +178,20 @@
 
           synced_table_id represents both of the following:
 
-          1. An online VIEW virtual table in the Unity Catalog accessible via the Lakehouse Federation. 2.
-          Postgres table named "{table}" in schema "{schema}" in the connected Postgres database
+          1. An online VIEW virtual table in the Unity Catalog accessible via the Lakehouse Federation.
+          2. Postgres table named "{table}" in schema "{schema}" in the connected Postgres database
 
         :returns: :class:`Operation`
         
 
-    .. py:method:: delete_branch(name: str) -> DeleteBranchOperation
+    .. py:method:: delete_branch(name: str [, purge: Optional[bool]]) -> DeleteBranchOperation
 
         Deletes the specified database branch.
 
         :param name: str
           The full resource path of the branch to delete. Format: projects/{project_id}/branches/{branch_id}
+        :param purge: bool (optional)
+          If true, permanently delete the branch; if false, soft delete.
 
         :returns: :class:`Operation`
         
@@ -162,6 +204,32 @@
           The full resource path of the catalog to delete.
 
           Format: "catalogs/{catalog_id}".
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: delete_cdf_config(name: str [, force: Optional[bool]]) -> DeleteCdfConfigOperation
+
+        Delete a CDF configuration and stop materializing the change data feed. When force=true, also drops
+        the Delta tables in Unity Catalog. When force=false (default), the existing tables are preserved at
+        their last state.
+
+        :param name: str
+          The resource name of the CdfConfig to delete. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+        :param force: bool (optional)
+          When true, also drops the replicated Delta tables in Unity Catalog. When false (the default), the
+          replicated tables are preserved at their last synced state.
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: delete_data_api(name: str) -> DeleteDataApiOperation
+
+        Disable Data API for a database.
+
+        :param name: str
+          Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
 
         :returns: :class:`Operation`
         
@@ -227,15 +295,21 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: generate_database_credential(endpoint: str [, claims: Optional[List[RequestedClaims]]]) -> DatabaseCredential
+    .. py:method:: generate_database_credential(endpoint: str [, claims: Optional[List[RequestedClaims]], expire_time: Optional[Timestamp], ttl: Optional[Duration]]) -> DatabaseCredential
 
         Generate OAuth credentials for a Postgres database.
 
         :param endpoint: str
-          This field is not yet supported. The endpoint for which this credential will be generated. Format:
+          The endpoint resource name for which this credential will be generated. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param claims: List[:class:`RequestedClaims`] (optional)
           The returned token will be scoped to UC tables with the specified permissions.
+        :param expire_time: Timestamp (optional)
+          Timestamp in UTC of when this credential should expire. Must be at least 300 seconds (5 minutes) and
+          at most 1 hour from the current time.
+        :param ttl: Duration (optional)
+          The requested time-to-live for the generated credential token. Must be at least 300 seconds (5
+          minutes) and at most 3600 seconds (1 hour).
 
         :returns: :class:`DatabaseCredential`
         
@@ -260,6 +334,40 @@
           Format: "catalogs/{catalog_id}".
 
         :returns: :class:`Catalog`
+        
+
+    .. py:method:: get_cdf_config(name: str) -> CdfConfig
+
+        Get a single Lakebase CDF configuration, including the source Postgres schema, target Unity Catalog
+        schema, and the identity under which writes are authorized.
+
+        :param name: str
+          The resource name of the CdfConfig to retrieve. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+
+        :returns: :class:`CdfConfig`
+        
+
+    .. py:method:: get_cdf_status(name: str) -> CdfStatus
+
+        Get the CDF status of a single table within a Lakebase CDF configuration, including its current state
+        and the last committed position in the feed.
+
+        :param name: str
+          The resource name of the CdfStatus to retrieve. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}/cdf-statuses/{cdf_status}
+
+        :returns: :class:`CdfStatus`
+        
+
+    .. py:method:: get_data_api(name: str) -> DataApi
+
+        Get Data API configuration for a database.
+
+        :param name: str
+          Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+
+        :returns: :class:`DataApi`
         
 
     .. py:method:: get_database(name: str) -> Database
@@ -322,13 +430,13 @@
         Get a Synced Table.
 
         :param name: str
-          Format: "synced_tables/{catalog}.{schema}.{table}", where (catalog, schema, table) are the entity
-          names in the Unity Catalog.
+          The Full resource name of the synced table. Format: "synced_tables/{catalog}.{schema}.{table}",
+          where (catalog, schema, table) are the entity names in the Unity Catalog.
 
         :returns: :class:`SyncedTable`
         
 
-    .. py:method:: list_branches(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Branch]
+    .. py:method:: list_branches(parent: str [, page_size: Optional[int], page_token: Optional[str], show_deleted: Optional[bool]]) -> Iterator[Branch]
 
         Returns a paginated list of database branches in the project.
 
@@ -338,8 +446,43 @@
           Upper bound for items returned. Cannot be negative.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
+        :param show_deleted: bool (optional)
+          Whether to include soft-deleted branches in the response. When true, deleted branches are included
+          alongside active branches. Purged branches are never returned.
 
         :returns: Iterator over :class:`Branch`
+        
+
+    .. py:method:: list_cdf_configs(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[CdfConfig]
+
+        List all CDF configurations for a Lakebase database. Each configuration maps a Postgres schema to a
+        Unity Catalog schema where the change data feed is materialized.
+
+        :param parent: str
+          The parent database to list CdfConfigs for. Format:
+          projects/{project}/branches/{branch}/databases/{database}
+        :param page_size: int (optional)
+          Maximum number of CdfConfigs to return.
+        :param page_token: str (optional)
+          Pagination token returned by a previous ListCdfConfigs call. Empty on the first page.
+
+        :returns: Iterator over :class:`CdfConfig`
+        
+
+    .. py:method:: list_cdf_statuses(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[CdfStatus]
+
+        List the per-table CDF statuses within a Lakebase CDF configuration. Each status shows whether a
+        table's change data feed is snapshotting, streaming, or skipped.
+
+        :param parent: str
+          The parent CdfConfig to list CdfStatuses for. Format:
+          projects/{project}/branches/{branch}/databases/{database}/cdf-configs/{cdf_config}
+        :param page_size: int (optional)
+          Maximum number of CdfStatuses to return.
+        :param page_token: str (optional)
+          Pagination token returned by a previous ListCdfStatuses call. Empty on the first page.
+
+        :returns: Iterator over :class:`CdfStatus`
         
 
     .. py:method:: list_databases(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Database]
@@ -401,6 +544,16 @@
         :returns: Iterator over :class:`Role`
         
 
+    .. py:method:: undelete_branch(name: str) -> UndeleteBranchOperation
+
+        Undeletes the specified database branch.
+
+        :param name: str
+          The full resource path of the branch to undelete. Format: projects/{project_id}/branches/{branch_id}
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: undelete_project(name: str) -> UndeleteProjectOperation
 
         Undeletes a soft-deleted project.
@@ -422,8 +575,22 @@
         :param branch: :class:`Branch`
           The Branch to update.
 
-          The branch's `name` field is used to identify the branch to update. Format:
+          The branch's ``name`` field is used to identify the branch to update. Format:
           projects/{project_id}/branches/{branch_id}
+        :param update_mask: FieldMask
+          The list of fields to update. If unspecified, all fields will be updated when possible.
+
+        :returns: :class:`Operation`
+        
+
+    .. py:method:: update_data_api(name: str, data_api: DataApi, update_mask: FieldMask) -> UpdateDataApiOperation
+
+        Update Data API configuration for a database.
+
+        :param name: str
+          Resource name: projects/{project_id}/branches/{branch_id}/databases/{database_id}/data-api
+        :param data_api: :class:`DataApi`
+          The Data API configuration to update. The data_api's ``name`` field identifies the resource.
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
 
@@ -440,7 +607,7 @@
         :param database: :class:`Database`
           The Database to update.
 
-          The database's `name` field is used to identify the database to update. Format:
+          The database's ``name`` field is used to identify the database to update. Format:
           projects/{project_id}/branches/{branch_id}/databases/{database_id}
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
@@ -459,7 +626,7 @@
         :param endpoint: :class:`Endpoint`
           The Endpoint to update.
 
-          The endpoint's `name` field is used to identify the endpoint to update. Format:
+          The endpoint's ``name`` field is used to identify the endpoint to update. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
@@ -476,7 +643,8 @@
         :param project: :class:`Project`
           The Project to update.
 
-          The project's `name` field is used to identify the project to update. Format: projects/{project_id}
+          The project's ``name`` field is used to identify the project to update. Format:
+          projects/{project_id}
         :param update_mask: FieldMask
           The list of fields to update. If unspecified, all fields will be updated when possible.
 
@@ -493,7 +661,7 @@
         :param role: :class:`Role`
           The Postgres Role to update.
 
-          The role's `name` field is used to identify the role to update. Format:
+          The role's ``name`` field is used to identify the role to update. Format:
           projects/{project_id}/branches/{branch_id}/roles/{role_id}
         :param update_mask: FieldMask
           The list of fields to update in Postgres Role. If unspecified, all fields will be updated when

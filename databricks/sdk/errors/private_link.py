@@ -3,8 +3,9 @@ from urllib import parse
 
 import requests
 
+from databricks.sdk.errors.platform import PermissionDenied
+
 from ..environments import Cloud, get_environment_for_hostname
-from .platform import PermissionDenied
 
 
 @dataclass

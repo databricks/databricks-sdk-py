@@ -11,16 +11,18 @@ from typing import Dict, Iterable, List, Optional
 import requests
 
 from . import useragent
-from ._base_client import _fix_host_if_needed
+from ._base_client import _BaseClient, _fix_host_if_needed
 from .client_types import ClientType, HostType
 from .clock import Clock, RealClock
-from .credentials_provider import (CredentialsStrategy, DefaultCredentials,
-                                   OAuthCredentialsProvider)
-from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
-                           DatabricksEnvironment, get_environment_for_hostname)
-from .oauth import (OidcEndpoints, Token,
-                    get_azure_entra_id_workspace_endpoints,
-                    get_endpoints_from_url, get_host_metadata)
+from .credentials_provider import CredentialsStrategy, DefaultCredentials, OAuthCredentialsProvider
+from .environments import ALL_ENVS, AzureEnvironment, Cloud, DatabricksEnvironment, get_environment_for_hostname
+from .oauth import (
+    OidcEndpoints,
+    Token,
+    get_azure_entra_id_workspace_endpoints,
+    get_endpoints_from_url,
+    get_host_metadata,
+)
 
 logger = logging.getLogger("databricks.sdk")
 
@@ -89,6 +91,9 @@ def with_user_agent_extra(key: str, value: str):
 class Config:
     host: str = ConfigAttribute(env="DATABRICKS_HOST")
     account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")
+    # Workspace identifier sent on workspace-scoped API calls so unified hosts
+    # can route to the right workspace. Accepts a classic numeric workspace ID
+    # or another workspace identifier format that the server understands.
     workspace_id: str = ConfigAttribute(env="DATABRICKS_WORKSPACE_ID")
 
     # Cloud provider. When set, is_aws/is_azure/is_gcp use this value directly
@@ -615,7 +620,7 @@ class Config:
         anno = inspect.get_annotations(cls)
         attrs = []
         for name, v in cls.__dict__.items():
-            if type(v) != ConfigAttribute:
+            if type(v) is not ConfigAttribute:
                 continue
             v.name = name
             v.transform = v._custom_transform if v._custom_transform else anno.get(name, str)
@@ -632,8 +637,17 @@ class Config:
         """
         if not self.host:
             return
+        # Host metadata is a best-effort discovery probe that falls back to the
+        # explicit configuration below on any failure. Build its client from the
+        # configured timeouts: otherwise it uses the default 300s retry budget,
+        # which blocks Config() initialization for ~5 minutes when the host is
+        # unreachable.
+        client = _BaseClient(
+            retry_timeout_seconds=self.retry_timeout_seconds,
+            http_timeout_seconds=self.http_timeout_seconds,
+        )
         try:
-            meta = get_host_metadata(self.host)
+            meta = get_host_metadata(self.host, client=client)
         except Exception as e:
             logger.warning(
                 f"Failed to automatically resolve config from host metadata: {e}. Falling back to explicit user provided configuration."
@@ -743,14 +757,14 @@ class Config:
 
         if requested_profile is not None:
             if requested_profile == _SETTINGS_SECTION:
-                raise ValueError(f"{_SETTINGS_SECTION} is a reserved section name" " and cannot be used as a profile")
+                raise ValueError(f"{_SETTINGS_SECTION} is a reserved section name and cannot be used as a profile")
             return requested_profile, False
 
         settings = ini_file._sections.get(_SETTINGS_SECTION, {})
         default_profile = settings.get("default_profile", "").strip()
         if default_profile:
             if default_profile == _SETTINGS_SECTION:
-                raise ValueError(f"{_SETTINGS_SECTION} is a reserved section name" " and cannot be used as a profile")
+                raise ValueError(f"{_SETTINGS_SECTION} is a reserved section name and cannot be used as a profile")
             return default_profile, False
 
         if ini_file.defaults():

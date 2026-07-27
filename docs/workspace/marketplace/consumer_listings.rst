@@ -25,7 +25,7 @@
         :returns: :class:`GetListingResponse`
         
 
-    .. py:method:: list( [, assets: Optional[List[AssetType]], categories: Optional[List[Category]], is_free: Optional[bool], is_private_exchange: Optional[bool], is_staff_pick: Optional[bool], page_size: Optional[int], page_token: Optional[str], provider_ids: Optional[List[str]], tags: Optional[List[ListingTag]]]) -> Iterator[Listing]
+    .. py:method:: list( [, assets: Optional[List[AssetType]], categories: Optional[List[Category]], is_free: Optional[bool], is_private_exchange: Optional[bool], is_staff_pick: Optional[bool], page_size: Optional[int], page_token: Optional[str], provider_ids: Optional[List[str]], tags: Optional[ListingTag]]) -> Iterator[Listing]
 
         List all published listings in the Databricks Marketplace that the consumer has access to.
 
@@ -43,8 +43,8 @@
         :param page_token: str (optional)
         :param provider_ids: List[str] (optional)
           Matches any of the following provider ids
-        :param tags: List[:class:`ListingTag`] (optional)
-          Matches any of the following tags
+        :param tags: :class:`ListingTag` (optional)
+          Matches listings with this tag
 
         :returns: Iterator over :class:`Listing`
         

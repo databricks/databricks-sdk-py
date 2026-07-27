@@ -33,7 +33,7 @@ class SharesExt(sharing.SharesAPI):
         }
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0

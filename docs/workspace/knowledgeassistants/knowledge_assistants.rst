@@ -6,6 +6,19 @@
 
     Manage Knowledge Assistants and related resources.
 
+    .. py:method:: create_example(parent: str, example: Example) -> Example
+
+        Creates an example for a Knowledge Assistant.
+
+        :param parent: str
+          Parent resource where this example will be created. Format:
+          knowledge-assistants/{knowledge_assistant_id}
+        :param example: :class:`Example`
+          The example to create under the parent Knowledge Assistant.
+
+        :returns: :class:`Example`
+        
+
     .. py:method:: create_knowledge_assistant(knowledge_assistant: KnowledgeAssistant) -> KnowledgeAssistant
 
         Creates a Knowledge Assistant.
@@ -28,6 +41,17 @@
         :returns: :class:`KnowledgeSource`
         
 
+    .. py:method:: delete_example(name: str)
+
+        Deletes an example from a Knowledge Assistant.
+
+        :param name: str
+          The resource name of the example to delete. Format:
+          knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
+
+
+        
+
     .. py:method:: delete_knowledge_assistant(name: str)
 
         Deletes a Knowledge Assistant.
@@ -48,6 +72,17 @@
           knowledge-assistants/{knowledge_assistant_id}/knowledge-sources/{knowledge_source_id}
 
 
+        
+
+    .. py:method:: get_example(name: str) -> Example
+
+        Gets an example from a Knowledge Assistant.
+
+        :param name: str
+          The resource name of the example. Format:
+          knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
+
+        :returns: :class:`Example`
         
 
     .. py:method:: get_knowledge_assistant(name: str) -> KnowledgeAssistant
@@ -92,6 +127,22 @@
         :returns: :class:`KnowledgeAssistantPermissions`
         
 
+    .. py:method:: list_examples(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Example]
+
+        Lists examples under a Knowledge Assistant.
+
+        :param parent: str
+          Parent resource to list from. Format: knowledge-assistants/{knowledge_assistant_id}
+        :param page_size: int (optional)
+          The maximum number of examples to return. If unspecified, at most 100 examples will be returned. The
+          maximum value is 100; values above 100 will be coerced to 100.
+        :param page_token: str (optional)
+          A page token, received from a previous ``ListExamples`` call. Provide this to retrieve the
+          subsequent page. If unspecified, the first page will be returned.
+
+        :returns: Iterator over :class:`Example`
+        
+
     .. py:method:: list_knowledge_assistants( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[KnowledgeAssistant]
 
         List Knowledge Assistants
@@ -100,8 +151,8 @@
           The maximum number of knowledge assistants to return. If unspecified, at most 100 knowledge
           assistants will be returned. The maximum value is 100; values above 100 will be coerced to 100.
         :param page_token: str (optional)
-          A page token, received from a previous `ListKnowledgeAssistants` call. Provide this to retrieve the
-          subsequent page. If unspecified, the first page will be returned.
+          A page token, received from a previous ``ListKnowledgeAssistants`` call. Provide this to retrieve
+          the subsequent page. If unspecified, the first page will be returned.
 
         :returns: Iterator over :class:`KnowledgeAssistant`
         
@@ -140,6 +191,24 @@
 
         
 
+    .. py:method:: update_example(name: str, example: Example, update_mask: FieldMask) -> Example
+
+        Updates an example in a Knowledge Assistant.
+
+        :param name: str
+          The resource name of the example to update. Format:
+          knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
+        :param example: :class:`Example`
+        :param update_mask: FieldMask
+          Comma-delimited list of fields to update on the example. Allowed values: ``question``,
+          ``guidelines``. Examples:
+
+          - ``question``
+          - ``question,guidelines``
+
+        :returns: :class:`Example`
+        
+
     .. py:method:: update_knowledge_assistant(name: str, knowledge_assistant: KnowledgeAssistant, update_mask: FieldMask) -> KnowledgeAssistant
 
         Updates a Knowledge Assistant.
@@ -151,8 +220,11 @@
           annotations on Knowledge Assistant fields describe create-time requirements and do not mean all
           those fields are required for update.
         :param update_mask: FieldMask
-          Comma-delimited list of fields to update on the Knowledge Assistant. Allowed values: `display_name`,
-          `description`, `instructions`. Examples: - `display_name` - `description,instructions`
+          Comma-delimited list of fields to update on the Knowledge Assistant. Allowed values:
+          ``display_name``, ``description``, ``instructions``. Examples:
+
+          - ``display_name``
+          - ``description,instructions``
 
         :returns: :class:`KnowledgeAssistant`
         
@@ -169,8 +241,11 @@
           annotations on Knowledge Source fields describe create-time requirements and do not mean all those
           fields are required for update.
         :param update_mask: FieldMask
-          Comma-delimited list of fields to update on the Knowledge Source. Allowed values: `display_name`,
-          `description`. Examples: - `display_name` - `display_name,description`
+          Comma-delimited list of fields to update on the Knowledge Source. Allowed values: ``display_name``,
+          ``description``. Examples:
+
+          - ``display_name``
+          - ``display_name,description``
 
         :returns: :class:`KnowledgeSource`
         

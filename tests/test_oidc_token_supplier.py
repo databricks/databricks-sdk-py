@@ -187,8 +187,8 @@ def test_azure_devops_oidc_constructor_validation(test_case: AzureDevOpsOIDCCons
 
         # Verify the exception message contains the expected text.
         if test_case.expected_exception_message:
-            assert test_case.expected_exception_message in str(
-                exc_info.value
+            assert (
+                test_case.expected_exception_message in str(exc_info.value)
             ), f"Exception message should contain '{test_case.expected_exception_message}', but got: {str(exc_info.value)}"
     else:
         # Test that constructor succeeds.

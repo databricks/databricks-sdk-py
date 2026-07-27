@@ -14,7 +14,7 @@
     Within Repos you can develop code in notebooks or other files and follow data science and engineering code
     development best practices using Git for version control, collaboration, and CI/CD.
 
-    .. py:method:: create(url: str, provider: str [, path: Optional[str], sparse_checkout: Optional[SparseCheckout]]) -> CreateRepoResponse
+    .. py:method:: create(url: str, provider: str [, git_credential_id: Optional[int], path: Optional[str], sparse_checkout: Optional[SparseCheckout]]) -> CreateRepoResponse
 
 
         Usage:
@@ -44,12 +44,17 @@
         :param url: str
           URL of the Git repository to be linked.
         :param provider: str
-          Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-          `gitLabEnterpriseEdition` and `awsCodeCommit`.
+          Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
+          ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
+          Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
+          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit`` (deprecated by AWS, not
+          accepting new customers).
+        :param git_credential_id: int (optional)
+          Git credential ID to use when cloning the repository. The Git credential must be configured for the
+          current user.
         :param path: str (optional)
           Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo
-          is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`.
+          is created in ``/Repos``, path must be in the format ``/Repos/{folder}/{repo-name}``.
         :param sparse_checkout: :class:`SparseCheckout` (optional)
           If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
           sparse checkout after the repo is created.
@@ -135,16 +140,20 @@
             
             all = w.repos.list(workspace.ListReposRequest())
 
-        Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate
+        Returns repos that the calling user has Manage permissions on. Use ``next_page_token`` to iterate
         through additional pages.
+
+        Deprecated: This operation does not return a complete list of the repos in the workspace, because
+        repos with the Git CLI enabled are not included in its results. Instead, use the Repos and Workspace
+        APIs to find repos and their associated metadata in the workspace.
 
         :param next_page_token: str (optional)
           Token used to get the next page of results. If not specified, returns the first page of results as
           well as a next page token if there are more results.
         :param path_prefix: str (optional)
           Filters repos that have paths starting with the given path prefix. If not provided or when provided
-          an effectively empty prefix (`/` or `/Workspace`) Git folders (repos) from `/Workspace/Repos` will
-          be served.
+          an effectively empty prefix (``/`` or ``/Workspace``) Git folders (repos) from ``/Workspace/Repos``
+          will be served.
 
         :returns: Iterator over :class:`RepoInfo`
         
@@ -161,7 +170,7 @@
         :returns: :class:`RepoPermissions`
         
 
-    .. py:method:: update(repo_id: int [, branch: Optional[str], sparse_checkout: Optional[SparseCheckoutUpdate], tag: Optional[str]])
+    .. py:method:: update(repo_id: int [, branch: Optional[str], dangerously_force_discard_all: Optional[bool], git_credential_id: Optional[int], sparse_checkout: Optional[SparseCheckoutUpdate], tag: Optional[str]])
 
 
         Usage:
@@ -194,6 +203,20 @@
           ID of the Git folder (repo) object in the workspace.
         :param branch: str (optional)
           Branch that the local version of the repo is checked out to.
+        :param dangerously_force_discard_all: bool (optional)
+          WARNING: DESTRUCTIVE AND IRREVERSIBLE. If true, permanently deletes ALL uncommitted changes in the
+          Git folder — staged, unstaged, and untracked files — before updating. Lost data CANNOT be
+          recovered.
+
+          NEVER use this on Git folders where users author or edit files. This flag is intended ONLY for
+          automated jobs that treat the Git folder as a read-only mirror of a remote branch and need to
+          force-sync it. If any user has uncommitted work in the Git folder, that work will be permanently
+          destroyed without warning.
+
+          Local commits that have been made but not yet pushed to the remote are preserved.
+        :param git_credential_id: int (optional)
+          Git credential ID to use for this update operation. The Git credential must be configured for the
+          current user.
         :param sparse_checkout: :class:`SparseCheckoutUpdate` (optional)
           If specified, update the sparse checkout settings. The update will fail if sparse checkout is not
           enabled for the repo.

@@ -6,9 +6,7 @@
 
     Registers personal access token for Databricks to do operations on behalf of the user.
 
-    See [more info].
-
-    [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+    See `more info <https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html>`__.
 
     .. py:method:: create(git_provider: str [, git_email: Optional[str], git_username: Optional[str], is_default_for_provider: Optional[bool], name: Optional[str], personal_access_token: Optional[str], principal_id: Optional[int]]) -> CreateCredentialsResponse
 
@@ -30,9 +28,11 @@
         the DELETE endpoint to delete existing credentials.
 
         :param git_provider: str
-          Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-          `gitLabEnterpriseEdition` and `awsCodeCommit`.
+          Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
+          ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
+          Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
+          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit`` (deprecated by AWS, not
+          accepting new customers).
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
           with the remote repository and also sets the author & committer identity for commits. Required for
@@ -49,9 +49,8 @@
           the name of the git credential, used for identification and ease of lookup
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
-          providers, support may exist for other types of scoped access tokens. [Learn more].
-
-          [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+          providers, support may exist for other types of scoped access tokens. `Learn more
+          <https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html>`__.
         :param principal_id: int (optional)
           The ID of the service principal whose credentials will be modified. Only service principal managers
           can perform this action.
@@ -153,9 +152,11 @@
         :param credential_id: int
           The ID for the corresponding credential to access.
         :param git_provider: str
-          Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-          `gitLabEnterpriseEdition` and `awsCodeCommit`.
+          Git provider. This field is case-insensitive. The available Git providers are ``gitHub``,
+          ``bitbucketCloud``, ``gitLab``, ``azureDevOpsServices`` (Azure DevOps Services, including Microsoft
+          Entra ID authentication), ``gitHubEnterprise``, ``bitbucketServer`` (Bitbucket Data Center),
+          ``gitLabEnterpriseEdition`` (GitLab Self-Managed), and ``awsCodeCommit`` (deprecated by AWS, not
+          accepting new customers).
         :param git_email: str (optional)
           The authenticating email associated with your Git provider user account. Used for authentication
           with the remote repository and also sets the author & committer identity for commits. Required for
@@ -172,9 +173,8 @@
           the name of the git credential, used for identification and ease of lookup
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
-          providers, support may exist for other types of scoped access tokens. [Learn more].
-
-          [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+          providers, support may exist for other types of scoped access tokens. `Learn more
+          <https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html>`__.
         :param principal_id: int (optional)
           The ID of the service principal whose credentials will be modified. Only service principal managers
           can perform this action.

@@ -3,7 +3,6 @@ import time
 
 
 class Clock(metaclass=abc.ABCMeta):
-
     @abc.abstractmethod
     def time(self) -> float:
         """

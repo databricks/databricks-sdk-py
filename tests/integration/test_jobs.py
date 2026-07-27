@@ -37,7 +37,7 @@ def test_submitting_jobs(w, random, env_or_skip):
 
     def print_status(run: jobs.Run):
         statuses = [f"{t.task_key}: {t.state.life_cycle_state}" for t in run.tasks]
-        logging.info(f'workflow intermediate status: {", ".join(statuses)}')
+        logging.info(f"workflow intermediate status: {', '.join(statuses)}")
 
     run = waiter.result(timeout=datetime.timedelta(minutes=15), callback=print_status)
 

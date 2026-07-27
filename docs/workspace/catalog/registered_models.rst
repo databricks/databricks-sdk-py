@@ -10,24 +10,25 @@
 
     An MLflow registered model resides in the third layer of Unity Catalog’s three-level namespace.
     Registered models contain model versions, which correspond to actual ML models (MLflow models). Creating
-    new model versions currently requires use of the MLflow Python client. Once model versions are created,
-    you can load them for batch inference using MLflow Python client APIs, or deploy them for real-time
-    serving using Databricks Model Serving.
+    new model versions requires use of the MLflow Python client. After model versions are created, you can
+    load them for batch inference using MLflow Python client APIs, or deploy them for real-time serving using
+    Databricks Model Serving.
 
     All operations on registered models and model versions require USE_CATALOG permissions on the enclosing
     catalog and USE_SCHEMA permissions on the enclosing schema. In addition, the following additional
     privileges are required for various operations:
 
-    * To create a registered model, users must additionally have the CREATE_MODEL permission on the target
-    schema. * To view registered model or model version metadata, model version data files, or invoke a model
-    version, users must additionally have the EXECUTE permission on the registered model * To update
-    registered model or model version tags, users must additionally have APPLY TAG permissions on the
-    registered model * To update other registered model or model version metadata (comments, aliases) create a
-    new model version, or update permissions on the registered model, users must be owners of the registered
-    model.
+    - To create a registered model, users must additionally have the CREATE_MODEL permission on the target
+      schema.
+    - To view registered model or model version metadata, model version data files, or invoke a model version,
+      users must additionally have the EXECUTE permission on the registered model
+    - To update registered model or model version tags, users must additionally have APPLY TAG permissions on
+      the registered model
+    - To update other registered model or model version metadata (comments, aliases) create a new model
+      version, or update permissions on the registered model, users must be owners of the registered model.
 
-    Note: The securable type for models is FUNCTION. When using REST APIs (e.g. tagging, grants) that specify
-    a securable type, use FUNCTION as the securable type.
+    Note: The securable type for models is FUNCTION. When using REST APIs (for example, tagging, grants) that
+    specify a securable type, use FUNCTION as the securable type.
 
     .. py:method:: create( [, aliases: Optional[List[RegisteredModelAlias]], browse_only: Optional[bool], catalog_name: Optional[str], comment: Optional[str], created_at: Optional[int], created_by: Optional[str], full_name: Optional[str], metastore_id: Optional[str], name: Optional[str], owner: Optional[str], schema_name: Optional[str], storage_location: Optional[str], updated_at: Optional[int], updated_by: Optional[str]]) -> RegisteredModelInfo
 
@@ -36,9 +37,11 @@
         File storage for model versions in the registered model will be located in the default location which
         is specified by the parent schema, or the parent catalog, or the Metastore.
 
-        For registered model creation to succeed, the user must satisfy the following conditions: - The caller
-        must be a metastore admin, or be the owner of the parent catalog and schema, or have the
-        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
+        For registered model creation to succeed, the user must satisfy the following conditions:
+
+        - The caller must be a metastore admin, or be the owner of the parent catalog and schema, or have the
+          **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent
+          schema.
         - The caller must have the **CREATE MODEL** or **CREATE FUNCTION** privilege on the parent schema.
 
         :param aliases: List[:class:`RegisteredModelAlias`] (optional)
@@ -130,7 +133,7 @@
 
         The returned models are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the registered models. A regular user needs to be the owner or
-        have the **EXECUTE** privilege on the registered model to recieve the registered models in the
+        have the **EXECUTE** privilege on the registered model to receive the registered models in the
         response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 
@@ -149,17 +152,23 @@
         :param max_results: int (optional)
           Max number of registered models to return.
 
-          If both catalog and schema are specified: - when max_results is not specified, the page length is
-          set to a server configured value (10000, as of 4/2/2024). - when set to a value greater than 0, the
-          page length is the minimum of this value and a server configured value (10000, as of 4/2/2024); -
-          when set to 0, the page length is set to a server configured value (10000, as of 4/2/2024); - when
-          set to a value less than 0, an invalid parameter error is returned;
+          If both catalog and schema are specified:
 
-          If neither schema nor catalog is specified: - when max_results is not specified, the page length is
-          set to a server configured value (100, as of 4/2/2024). - when set to a value greater than 0, the
-          page length is the minimum of this value and a server configured value (1000, as of 4/2/2024); -
-          when set to 0, the page length is set to a server configured value (100, as of 4/2/2024); - when set
-          to a value less than 0, an invalid parameter error is returned;
+          - when max_results is not specified, the page length is set to a server configured value (10000, as
+            of 4/2/2024).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (10000, as of 4/2/2024);
+          - when set to 0, the page length is set to a server configured value (10000, as of 4/2/2024);
+          - when set to a value less than 0, an invalid parameter error is returned;
+
+          If neither schema nor catalog is specified:
+
+          - when max_results is not specified, the page length is set to a server configured value (100, as of
+            4/2/2024).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value (1000, as of 4/2/2024);
+          - when set to 0, the page length is set to a server configured value (100, as of 4/2/2024);
+          - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque token to send for the next page of results (pagination).
         :param schema_name: str (optional)

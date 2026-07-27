@@ -5,7 +5,6 @@ from databricks.sdk.service.jobs import BaseJob, BaseRun, Job, RunType
 
 
 class JobsExt(jobs.JobsAPI):
-
     def list(
         self,
         *,

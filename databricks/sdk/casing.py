@@ -27,7 +27,6 @@ class _Name(object):
 
 
 class Casing(object):
-
     @staticmethod
     def to_header_case(name: str) -> str:
         """

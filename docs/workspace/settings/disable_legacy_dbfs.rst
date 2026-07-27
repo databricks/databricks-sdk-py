@@ -6,8 +6,8 @@
 
     Disabling legacy DBFS has the following implications:
 
-    1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation of new mounts). 2. Disables
-    Databricks Runtime versions prior to 13.3LTS.
+    1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation of new mounts).
+    2. Disables Databricks Runtime versions prior to 13.3LTS.
 
     When the setting is off, all DBFS functionality is enabled and no restrictions are imposed on Databricks
     Runtime versions. This setting can take up to 20 minutes to take effect and requires a manual restart of
@@ -50,14 +50,14 @@
         :param setting: :class:`DisableLegacyDbfs`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`DisableLegacyDbfs`
         

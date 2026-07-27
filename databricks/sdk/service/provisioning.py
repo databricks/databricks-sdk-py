@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -10,8 +13,13 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 from ..errors import OperationFailed
 
@@ -57,9 +65,9 @@ class AwsKeyInfo:
     """The AWS KMS key alias."""
 
     reuse_key_for_cluster_volumes: Optional[bool] = None
-    """This field applies only if the `use_cases` property includes `STORAGE`. If this is set to true
-    or omitted, the key is also used to encrypt cluster EBS volumes. If you do not want to use this
-    key for encrypting EBS volumes, set to false."""
+    """This field applies only if the ``use_cases`` property includes ``STORAGE``. If this is set to
+    true or omitted, the key is also used to encrypt cluster EBS volumes. If you do not want to use
+    this key for encrypting EBS volumes, set to false."""
 
     def as_dict(self) -> dict:
         """Serializes the AwsKeyInfo into a dictionary suitable for use as a JSON request body."""
@@ -235,9 +243,9 @@ class CreateAwsKeyInfo:
     """The AWS KMS key region."""
 
     reuse_key_for_cluster_volumes: Optional[bool] = None
-    """This field applies only if the `use_cases` property includes `STORAGE`. If this is set to true
-    or omitted, the key is also used to encrypt cluster EBS volumes. If you do not want to use this
-    key for encrypting EBS volumes, set to false."""
+    """This field applies only if the ``use_cases`` property includes ``STORAGE``. If this is set to
+    true or omitted, the key is also used to encrypt cluster EBS volumes. If you do not want to use
+    this key for encrypting EBS volumes, set to false."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateAwsKeyInfo into a dictionary suitable for use as a JSON request body."""
@@ -273,6 +281,75 @@ class CreateAwsKeyInfo:
             key_arn=d.get("key_arn", None),
             key_region=d.get("key_region", None),
             reuse_key_for_cluster_volumes=d.get("reuse_key_for_cluster_volumes", None),
+        )
+
+
+@dataclass
+class CreateAzureKeyInfo:
+    disk_encryption_set_id: Optional[str] = None
+    """The Disk Encryption Set id that is used to represent the key info used for Managed Disk BYOK use
+    case"""
+
+    key_access_configuration: Optional[KeyAccessConfiguration] = None
+    """The structure to store key access credential This is set if the Managed Identity is being used
+    to access the Azure Key Vault key."""
+
+    key_name: Optional[str] = None
+    """The name of the key in KeyVault."""
+
+    key_vault_uri: Optional[str] = None
+    """The base URI of the KeyVault."""
+
+    tenant_id: Optional[str] = None
+    """The tenant id where the KeyVault lives."""
+
+    version: Optional[str] = None
+    """The current key version."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateAzureKeyInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disk_encryption_set_id is not None:
+            body["disk_encryption_set_id"] = self.disk_encryption_set_id
+        if self.key_access_configuration:
+            body["key_access_configuration"] = self.key_access_configuration.as_dict()
+        if self.key_name is not None:
+            body["key_name"] = self.key_name
+        if self.key_vault_uri is not None:
+            body["key_vault_uri"] = self.key_vault_uri
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateAzureKeyInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disk_encryption_set_id is not None:
+            body["disk_encryption_set_id"] = self.disk_encryption_set_id
+        if self.key_access_configuration:
+            body["key_access_configuration"] = self.key_access_configuration
+        if self.key_name is not None:
+            body["key_name"] = self.key_name
+        if self.key_vault_uri is not None:
+            body["key_vault_uri"] = self.key_vault_uri
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateAzureKeyInfo:
+        """Deserializes the CreateAzureKeyInfo from a dictionary."""
+        return cls(
+            disk_encryption_set_id=d.get("disk_encryption_set_id", None),
+            key_access_configuration=_from_dict(d, "key_access_configuration", KeyAccessConfiguration),
+            key_name=d.get("key_name", None),
+            key_vault_uri=d.get("key_vault_uri", None),
+            tenant_id=d.get("tenant_id", None),
+            version=d.get("version", None),
         )
 
 
@@ -431,8 +508,7 @@ class Credential:
 
 class CustomerFacingComputeMode(Enum):
     """Corresponds to compute mode defined here:
-    https://src.dev.databricks.com/databricks/universe@9076536b18479afd639d1c1f9dd5a59f72215e69/-/blob/central/api/common.proto?L872
-    """
+    https://src.dev.databricks.com/databricks/universe@9076536b18479afd639d1c1f9dd5a59f72215e69/-/blob/central/api/common.proto?L872"""
 
     HYBRID = "HYBRID"
     SERVERLESS = "SERVERLESS"
@@ -463,7 +539,6 @@ class CustomerFacingGcpCloudResourceContainer:
 
 
 class CustomerFacingStorageMode(Enum):
-
     CUSTOMER_HOSTED = "CUSTOMER_HOSTED"
     DEFAULT_STORAGE = "DEFAULT_STORAGE"
 
@@ -541,7 +616,6 @@ class CustomerManagedKey:
 
 
 class EndpointUseCase(Enum):
-
     DATAPLANE_RELAY_ACCESS = "DATAPLANE_RELAY_ACCESS"
     GENERAL_ACCESS = "GENERAL_ACCESS"
     WORKSPACE_ACCESS = "WORKSPACE_ACCESS"
@@ -876,10 +950,10 @@ class GkeConfig:
 class GkeConfigConnectivityType(Enum):
     """Specifies the network connectivity types for the GKE nodes and the GKE master network.
 
-    Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the workspace. The GKE nodes
+    Set to ``PRIVATE_NODE_PUBLIC_MASTER`` for a private GKE cluster for the workspace. The GKE nodes
     will not have public IPs.
 
-    Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a public GKE cluster
+    Set to ``PUBLIC_NODE_PUBLIC_MASTER`` for a public GKE cluster. The nodes of a public GKE cluster
     have public IP addresses."""
 
     PRIVATE_NODE_PUBLIC_MASTER = "PRIVATE_NODE_PUBLIC_MASTER"
@@ -913,7 +987,6 @@ class KeyAccessConfiguration:
 
 
 class KeyUseCase(Enum):
-
     MANAGED_SERVICES = "MANAGED_SERVICES"
     STORAGE = "STORAGE"
 
@@ -1137,7 +1210,6 @@ class NetworkWarning:
 
 
 class PricingTier(Enum):
-
     COMMUNITY_EDITION = "COMMUNITY_EDITION"
     DEDICATED = "DEDICATED"
     ENTERPRISE = "ENTERPRISE"
@@ -1147,14 +1219,13 @@ class PricingTier(Enum):
 
 
 class PrivateAccessLevel(Enum):
-
     ACCOUNT = "ACCOUNT"
     ENDPOINT = "ENDPOINT"
 
 
 @dataclass
 class PrivateAccessSettings:
-    """*"""
+    """"""
 
     account_id: Optional[str] = None
     """The Databricks account ID that hosts the private access settings."""
@@ -1170,9 +1241,9 @@ class PrivateAccessSettings:
 
     private_access_level: Optional[PrivateAccessLevel] = None
     """The private access level controls which VPC endpoints can connect to the UI or API of any
-    workspace that attaches this private access settings object. `ACCOUNT` level access (the
+    workspace that attaches this private access settings object. ``ACCOUNT`` level access (the
     default) allows only VPC endpoints that are registered in your Databricks account connect to
-    your workspace. `ENDPOINT` level access allows only specified VPC endpoints connect to your
+    your workspace. ``ENDPOINT`` level access allows only specified VPC endpoints connect to your
     workspace. For details, see allowed_vpc_endpoint_ids."""
 
     private_access_settings_id: Optional[str] = None
@@ -1364,22 +1435,20 @@ class StsRole:
 
 @dataclass
 class VpcEndpoint:
-    """*"""
+    """"""
 
     account_id: Optional[str] = None
-    """The Databricks account ID that hosts the VPC endpoint configuration. TODO - This may signal an
-    OpenAPI diff; it does not show up in the generated spec"""
+    """The Databricks account ID that hosts the VPC endpoint configuration."""
 
     aws_account_id: Optional[str] = None
     """The AWS Account in which the VPC endpoint object exists."""
 
     aws_endpoint_service_id: Optional[str] = None
-    """The ID of the Databricks [endpoint service] that this VPC endpoint is connected to. For a list
-    of endpoint service IDs for each supported AWS region, see the [Databricks PrivateLink
-    documentation].
-    
-    [Databricks PrivateLink documentation]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-    [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html"""
+    """The ID of the Databricks `endpoint service
+    <https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html>`__ that this VPC
+    endpoint is connected to. For a list of endpoint service IDs for each supported AWS region, see
+    the `Databricks PrivateLink documentation
+    <https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html>`__."""
 
     aws_vpc_endpoint_id: Optional[str] = None
     """The ID of the VPC endpoint object in AWS."""
@@ -1391,10 +1460,9 @@ class VpcEndpoint:
     """The AWS region in which this VPC endpoint object exists."""
 
     state: Optional[str] = None
-    """The current state (such as `available` or `rejected`) of the VPC endpoint. Derived from AWS. For
-    the full set of values, see [AWS DescribeVpcEndpoint documentation].
-    
-    [AWS DescribeVpcEndpoint documentation]: https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-vpc-endpoints.html"""
+    """The current state (such as ``available`` or ``rejected``) of the VPC endpoint. Derived from AWS.
+    For the full set of values, see `AWS DescribeVpcEndpoint documentation
+    <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-vpc-endpoints.html>`__."""
 
     use_case: Optional[EndpointUseCase] = None
     """This enumeration represents the type of Databricks VPC endpoint service that was used when
@@ -1405,7 +1473,7 @@ class VpcEndpoint:
 
     vpc_endpoint_id: Optional[str] = None
     """Databricks VPC endpoint ID. This is the Databricks-specific name of the VPC endpoint. Do not
-    confuse this with the `aws_vpc_endpoint_id`, which is the ID within AWS of the VPC endpoint."""
+    confuse this with the ``aws_vpc_endpoint_id``, which is the ID within AWS of the VPC endpoint."""
 
     vpc_endpoint_name: Optional[str] = None
     """The human-readable name of the storage configuration."""
@@ -1478,7 +1546,6 @@ class VpcEndpoint:
 
 
 class VpcStatus(Enum):
-
     BROKEN = "BROKEN"
     UNATTACHED = "UNATTACHED"
     VALID = "VALID"
@@ -1486,7 +1553,6 @@ class VpcStatus(Enum):
 
 
 class WarningType(Enum):
-
     SECURITY_GROUP = "securityGroup"
     SUBNET = "subnet"
 
@@ -1501,7 +1567,7 @@ class Workspace:
     azure_workspace_info: Optional[AzureWorkspaceInfo] = None
 
     cloud: Optional[str] = None
-    """The cloud name. This field can have values like `azure`, `gcp`."""
+    """The cloud name. This field can have values like ``azure``, ``gcp``."""
 
     cloud_resource_container: Optional[CloudResourceContainer] = None
 
@@ -1531,7 +1597,7 @@ class Workspace:
 
     location: Optional[str] = None
     """The Google Cloud region of the workspace data plane in your Google account (for example,
-    `us-east4`)."""
+    ``us-east4``)."""
 
     managed_services_customer_managed_key_id: Optional[str] = None
     """ID of the key configuration for encrypting managed services."""
@@ -1539,7 +1605,7 @@ class Workspace:
     network: Optional[WorkspaceNetwork] = None
     """The network configuration for the workspace.
     
-    DEPRECATED. Use `network_id` instead."""
+    DEPRECATED. Use ``network_id`` instead."""
 
     network_connectivity_config_id: Optional[str] = None
     """The object ID of network connectivity config."""
@@ -1552,13 +1618,12 @@ class Workspace:
 
     private_access_settings_id: Optional[str] = None
     """ID of the workspace's private access settings object. Only used for PrivateLink. You must
-    specify this ID if you are using [AWS PrivateLink] for either front-end (user-to-workspace
-    connection), back-end (data plane to control plane connection), or both connection types.
+    specify this ID if you are using `AWS PrivateLink <https://aws.amazon.com/privatelink/>`__ for
+    either front-end (user-to-workspace connection), back-end (data plane to control plane
+    connection), or both connection types.
     
-    Before configuring PrivateLink, read the [Databricks article about PrivateLink].",
-    
-    [AWS PrivateLink]: https://aws.amazon.com/privatelink/
-    [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html"""
+    Before configuring PrivateLink, read the `Databricks article about PrivateLink
+    <https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html>`__.","""
 
     storage_configuration_id: Optional[str] = None
     """ID of the workspace's storage configuration object."""
@@ -1744,8 +1809,7 @@ class WorkspaceNetwork:
     gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None
     """The mutually exclusive network deployment modes. The option decides which network mode the
     workspace will use. The network config for GCP workspace with Databricks managed network. This
-    object is input-only and will not be provided when listing workspaces. See
-    go/gcp-byovpc-alpha-design for interface decisions."""
+    object is input-only and will not be provided when listing workspaces."""
 
     network_id: Optional[str] = None
     """The ID of the network object, if the workspace is a BYOVPC workspace. This should apply to
@@ -1790,8 +1854,7 @@ class WorkspaceStatus(Enum):
     transitions from status to status: NOT_PROVISIONED -> PROVISIONING -> CANCELLED PROVISIONING ->
     RUNNING -> FAILED -> CANCELLED (note that this transition is disallowed in the MultiWorkspace
     Project) RUNNING -> PROVISIONING -> BANNED -> CANCELLED FAILED -> PROVISIONING -> CANCELLED
-    BANNED -> RUNNING -> CANCELLED Note that a transition from any state to itself is also valid.
-    TODO(PLAT-5867): add a transition from CANCELLED to some other value (e.g. RECOVERING)"""
+    BANNED -> RUNNING -> CANCELLED Note that a transition from any state to itself is also valid."""
 
     BANNED = "BANNED"
     CANCELLING = "CANCELLING"
@@ -1816,13 +1879,11 @@ class CredentialsAPI:
         clusters. For your AWS IAM role, you need to trust the External ID (the Databricks Account API account
         ID) in the returned credential object, and configure the required access policy.
 
-        Save the response's `credentials_id` field, which is the ID for your new credential configuration
+        Save the response's ``credentials_id`` field, which is the ID for your new credential configuration
         object.
 
-        For information about how to create a new workspace with this API, see [Create a new workspace using
-        the Account API]
-
-        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
+        For information about how to create a new workspace with this API, see `Create a new workspace using
+        the Account API <http://docs.databricks.com/administration-guide/account-api/new-workspace.html>`__
 
         :param credentials_name: str
           The human-readable name of the credential configuration object.
@@ -1901,9 +1962,9 @@ class EncryptionKeysAPI:
     encapsulates the AWS KMS key information and some information about how the key configuration can be used.
     There are two possible uses for key configurations:
 
-    * Managed services: A key configuration can be used to encrypt a workspace's notebook and secret data in
-    the control plane, as well as Databricks SQL queries and query history. * Storage: A key configuration can
-    be used to encrypt a workspace's DBFS and EBS data in the data plane.
+    - Managed services: A key configuration can be used to encrypt a workspace's notebook and secret data in
+      the control plane, as well as Databricks SQL queries and query history.
+    - Storage: A key configuration can be used to encrypt a workspace's DBFS and EBS data in the data plane.
 
     In both of these cases, the key configuration's ID is used when creating a new workspace. This Preview
     feature is available if your account is on the E2 version of the platform. Updating a running workspace
@@ -1919,6 +1980,7 @@ class EncryptionKeysAPI:
         use_cases: List[KeyUseCase],
         *,
         aws_key_info: Optional[CreateAwsKeyInfo] = None,
+        azure_key_info: Optional[CreateAzureKeyInfo] = None,
         gcp_key_info: Optional[CreateGcpKeyInfo] = None,
     ) -> CustomerManagedKey:
         """Creates a customer-managed key configuration object for an account, specified by ID. This operation
@@ -1936,16 +1998,16 @@ class EncryptionKeysAPI:
         custom plan that allows multiple workspaces per account.
 
         **GCP only**: To create a customer-managed key on GCP, you must include the
-        `X-Databricks-GCP-SA-Access-Token` HTTP header in your request. This header must contain a Google
-        Cloud OAuth access token with the `cloud-platform` scope. The Google identity associated with the
-        token must also have the `setIamPermissions` and `getIamPermissions` IAM permissions on the key
-        resource. For details on obtaining this token, see [Authenticate with Google ID tokens].
-
-        [Authenticate with Google ID tokens]: https://docs.databricks.com/gcp/en/dev-tools/auth/authentication-google-id.html
+        ``X-Databricks-GCP-SA-Access-Token`` HTTP header in your request. This header must contain a Google
+        Cloud OAuth access token with the ``cloud-platform`` scope. The Google identity associated with the
+        token must also have the ``setIamPermissions`` and ``getIamPermissions`` IAM permissions on the key
+        resource. For details on obtaining this token, see `Authenticate with Google ID tokens
+        <https://docs.databricks.com/gcp/en/dev-tools/auth/authentication-google-id.html>`__.
 
         :param use_cases: List[:class:`KeyUseCase`]
           The cases that the key can be used for.
         :param aws_key_info: :class:`CreateAwsKeyInfo` (optional)
+        :param azure_key_info: :class:`CreateAzureKeyInfo` (optional)
         :param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)
 
         :returns: :class:`CustomerManagedKey`
@@ -1954,6 +2016,8 @@ class EncryptionKeysAPI:
         body = {}
         if aws_key_info is not None:
             body["aws_key_info"] = aws_key_info.as_dict()
+        if azure_key_info is not None:
+            body["azure_key_info"] = azure_key_info.as_dict()
         if gcp_key_info is not None:
             body["gcp_key_info"] = gcp_key_info.as_dict()
         if use_cases is not None:
@@ -2172,10 +2236,10 @@ class PrivateAccessAPI:
           internet, see IP access lists.
         :param private_access_level: :class:`PrivateAccessLevel` (optional)
           The private access level controls which VPC endpoints can connect to the UI or API of any workspace
-          that attaches this private access settings object. `ACCOUNT` level access (the default) allows only
-          VPC endpoints that are registered in your Databricks account connect to your workspace. `ENDPOINT`
-          level access allows only specified VPC endpoints connect to your workspace. For details, see
-          allowed_vpc_endpoint_ids.
+          that attaches this private access settings object. ``ACCOUNT`` level access (the default) allows
+          only VPC endpoints that are registered in your Databricks account connect to your workspace.
+          ``ENDPOINT`` level access allows only specified VPC endpoints connect to your workspace. For
+          details, see allowed_vpc_endpoint_ids.
         :param private_access_settings_name: str (optional)
           The human-readable name of the private access settings object.
         :param public_access_enabled: bool (optional)
@@ -2284,6 +2348,7 @@ class PrivateAccessAPI:
         """
 
         body = customer_facing_private_access_settings.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -2411,18 +2476,16 @@ class VpcEndpointsAPI:
         region: Optional[str] = None,
         vpc_endpoint_name: Optional[str] = None,
     ) -> VpcEndpoint:
-        """Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to
-        communicate privately with Databricks over [AWS PrivateLink].
+        """Creates a VPC endpoint configuration, which represents a `VPC endpoint
+        <https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html>`__ object in AWS used to
+        communicate privately with Databricks over `AWS PrivateLink <https://aws.amazon.com/privatelink>`__.
 
-        After you create the VPC endpoint configuration, the Databricks [endpoint service] automatically
-        accepts the VPC endpoint.
+        After you create the VPC endpoint configuration, the Databricks `endpoint service
+        <https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html>`__
+        automatically accepts the VPC endpoint.
 
-        Before configuring PrivateLink, read the [Databricks article about PrivateLink].
-
-        [AWS PrivateLink]: https://aws.amazon.com/privatelink
-        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-        [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html
-        [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html
+        Before configuring PrivateLink, read the `Databricks article about PrivateLink
+        <https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html>`__.
 
         :param aws_vpc_endpoint_id: str (optional)
           The ID of the VPC endpoint object in AWS.
@@ -2474,11 +2537,9 @@ class VpcEndpointsAPI:
         return VpcEndpoint.from_dict(res)
 
     def get(self, vpc_endpoint_id: str) -> VpcEndpoint:
-        """Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate
-        privately with Databricks over [AWS PrivateLink].
-
-        [AWS PrivateLink]: https://aws.amazon.com/privatelink
-        [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
+        """Gets a VPC endpoint configuration, which represents a `VPC endpoint
+        <https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html>`__ object in AWS used to
+        communicate privately with Databricks over `AWS PrivateLink <https://aws.amazon.com/privatelink>`__.
 
         :param vpc_endpoint_id: str
           Databricks VPC endpoint ID.
@@ -2594,7 +2655,8 @@ class WorkspacesAPI:
         information, you cannot reuse a Databricks Account API network configuration across workspaces.
 
         For information about how to create a new workspace with this API including error handling, see
-        [Create a new workspace using the Account API].
+        `Create a new workspace using the Account API
+        <http://docs.databricks.com/administration-guide/account-api/new-workspace.html>`__.
 
         Important: Customer-managed VPCs, PrivateLink, and customer-managed keys are supported on a limited
         set of deployment and subscription types. If you have questions about availability, contact your
@@ -2603,18 +2665,16 @@ class WorkspacesAPI:
         This operation is available only if your account is on the E2 version of the platform or on a select
         custom plan that allows multiple workspaces per account.
 
-        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-
         :param aws_region: str (optional)
         :param cloud: str (optional)
           DEPRECATED: This field is being ignored by the server and will be removed in the future. The cloud
-          name. This field always has the value `gcp`.
+          name. This field always has the value ``gcp``.
         :param cloud_resource_container: :class:`CloudResourceContainer` (optional)
         :param compute_mode: :class:`CustomerFacingComputeMode` (optional)
-          If the compute mode is `SERVERLESS`, a serverless workspace is created that comes pre-configured
+          If the compute mode is ``SERVERLESS``, a serverless workspace is created that comes pre-configured
           with serverless compute and default storage, providing a fully-managed, enterprise-ready SaaS
           experience. This means you don't need to provide any resources managed by you, such as credentials,
-          storage, or network. If the compute mode is `HYBRID` (which is the default option), a classic
+          storage, or network. If the compute mode is ``HYBRID`` (which is the default option), a classic
           workspace is created that uses customer-managed resources.
         :param credentials_id: str (optional)
           ID of the workspace's credential configuration object.
@@ -2642,7 +2702,7 @@ class WorkspacesAPI:
         :param gke_config: :class:`GkeConfig` (optional)
         :param location: str (optional)
           The Google Cloud region of the workspace data plane in your Google account (for example,
-          `us-east4`).
+          ``us-east4``).
         :param managed_services_customer_managed_key_id: str (optional)
           The ID of the workspace's managed services encryption key configuration object. This is used to help
           protect and control access to the workspace's notebooks, secrets, Databricks SQL queries, and query
@@ -2657,12 +2717,10 @@ class WorkspacesAPI:
         :param pricing_tier: :class:`PricingTier` (optional)
         :param private_access_settings_id: str (optional)
           ID of the workspace's private access settings object. Only used for PrivateLink. You must specify
-          this ID if you are using [AWS PrivateLink] for either front-end (user-to-workspace connection),
-          back-end (data plane to control plane connection), or both connection types. Before configuring
-          PrivateLink, read the [Databricks article about PrivateLink].",
-
-          [AWS PrivateLink]: https://aws.amazon.com/privatelink/
-          [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+          this ID if you are using `AWS PrivateLink <https://aws.amazon.com/privatelink/>`__ for either
+          front-end (user-to-workspace connection), back-end (data plane to control plane connection), or both
+          connection types. Before configuring PrivateLink, read the `Databricks article about PrivateLink
+          <https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html>`__.",
         :param storage_configuration_id: str (optional)
           ID of the workspace's storage configuration object.
         :param storage_customer_managed_key_id: str (optional)
@@ -2791,13 +2849,11 @@ class WorkspacesAPI:
 
     def get(self, workspace_id: int) -> Workspace:
         """Gets information including status for a Databricks workspace, specified by ID. In the response, the
-        `workspace_status` field indicates the current status. After initial workspace creation (which is
-        asynchronous), make repeated `GET` requests with the workspace ID and check its status. The workspace
-        becomes available when the status changes to `RUNNING`. For information about how to create a new
-        workspace with this API **including error handling**, see [Create a new workspace using the Account
-        API].
-
-        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
+        ``workspace_status`` field indicates the current status. After initial workspace creation (which is
+        asynchronous), make repeated ``GET`` requests with the workspace ID and check its status. The
+        workspace becomes available when the status changes to ``RUNNING``. For information about how to
+        create a new workspace with this API **including error handling**, see `Create a new workspace using
+        the Account API <http://docs.databricks.com/administration-guide/account-api/new-workspace.html>`__.
 
         :param workspace_id: int
 
@@ -2837,14 +2893,14 @@ class WorkspacesAPI:
         :param customer_facing_workspace: :class:`Workspace`
         :param update_mask: str (optional)
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns:
           Long-running operation waiter for :class:`Workspace`.

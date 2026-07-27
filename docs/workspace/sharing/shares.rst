@@ -100,13 +100,16 @@
         is no guarantee of a specific ordering of the elements in the array.
 
         :param max_results: int (optional)
-          Maximum number of shares to return. - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of
-          returned shares might be less than the specified max_results size, even zero. The only definitive
-          indication that no further shares can be fetched is when the next_page_token is unset from the
-          response.
+          Maximum number of shares to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid shares are returned (not recommended).
+          - Note: The number of returned shares might be less than the specified max_results size, even zero.
+            The only definitive indication that no further shares can be fetched is when the next_page_token
+            is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -121,13 +124,16 @@
         :param name: str
           The name of the Recipient.
         :param max_results: int (optional)
-          Maximum number of permissions to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
-          number of returned permissions might be less than the specified max_results size, even zero. The
-          only definitive indication that no further permissions can be fetched is when the next_page_token is
-          unset from the response.
+          Maximum number of permissions to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid permissions are returned (not recommended).
+          - Note: The number of returned permissions might be less than the specified max_results size, even
+            zero. The only definitive indication that no further permissions can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -189,12 +195,12 @@
         Updates the share with the changes and data objects in the request. The caller must be the owner of
         the share or a metastore admin.
 
-        When the caller is a metastore admin, only the __owner__ field can be updated.
+        When the caller is a metastore admin, only the **owner** field can be updated.
 
         In the case the share name is changed, **updateShare** requires that the caller is the owner of the
         share and has the CREATE_SHARE privilege.
 
-        If there are notebook files in the share, the __storage_root__ field cannot be updated.
+        If there are notebook files in the share, the **storage_root** field cannot be updated.
 
         For each table that is added through this method, the share owner must also have **SELECT** privilege
         on the table. This privilege must be maintained indefinitely for recipients to be able to access the

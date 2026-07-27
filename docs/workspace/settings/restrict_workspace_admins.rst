@@ -17,9 +17,9 @@
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteRestrictWorkspaceAdminsSettingResponse
 
         Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be
-        provided in `DELETE` requests (as a query parameter). The etag can be retrieved by making a `GET`
-        request before the DELETE request. If the setting is updated/deleted concurrently, `DELETE` fails with
-        409 and the request must be retried by using the fresh etag in the 409 response.
+        provided in ``DELETE`` requests (as a query parameter). The etag can be retrieved by making a ``GET``
+        request before the DELETE request. If the setting is updated/deleted concurrently, ``DELETE`` fails
+        with 409 and the request must be retried by using the fresh etag in the 409 response.
 
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
@@ -48,8 +48,8 @@
     .. py:method:: update(allow_missing: bool, setting: RestrictWorkspaceAdminsSetting, field_mask: str) -> RestrictWorkspaceAdminsSetting
 
         Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in
-        `PATCH` requests (as part of the setting field). The etag can be retrieved by making a GET request
-        before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the
+        ``PATCH`` requests (as part of the setting field). The etag can be retrieved by making a GET request
+        before the ``PATCH`` request. If the setting is updated concurrently, ``PATCH`` fails with 409 and the
         request must be retried by using the fresh etag in the 409 response.
 
         :param allow_missing: bool
@@ -57,14 +57,14 @@
         :param setting: :class:`RestrictWorkspaceAdminsSetting`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`RestrictWorkspaceAdminsSetting`
         

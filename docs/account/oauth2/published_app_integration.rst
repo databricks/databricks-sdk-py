@@ -11,7 +11,8 @@
 
         Create Published OAuth App Integration.
 
-        You can retrieve the published OAuth app integration via :method:PublishedAppIntegration/get.
+        You can retrieve the published OAuth app integration via `PublishedAppIntegration/get
+        <https://docs.databricks.com/api/account/publishedappintegration/get>`__.
 
         :param app_id: str (optional)
           App id of the OAuth published app integration. For example power-bi, tableau-deskop
@@ -24,7 +25,8 @@
     .. py:method:: delete(integration_id: str)
 
         Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app
-        integration via :method:PublishedAppIntegration/get.
+        integration via `PublishedAppIntegration/get
+        <https://docs.databricks.com/api/account/publishedappintegration/get>`__.
 
         :param integration_id: str
 
@@ -53,7 +55,8 @@
     .. py:method:: update(integration_id: str [, token_access_policy: Optional[TokenAccessPolicy]])
 
         Updates an existing published OAuth App Integration. You can retrieve the published OAuth app
-        integration via :method:PublishedAppIntegration/get.
+        integration via `PublishedAppIntegration/get
+        <https://docs.databricks.com/api/account/publishedappintegration/get>`__.
 
         :param integration_id: str
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)

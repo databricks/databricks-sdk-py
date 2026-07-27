@@ -338,7 +338,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: QueryEndpointResponseObject
 
-   The type of object returned by the __external/foundation model__ serving endpoint, one of [text_completion, chat.completion, list (of embeddings)].
+   The type of object returned by the **external/foundation model** serving endpoint, one of [text_completion, chat.completion, list (of embeddings)].
 
    .. py:attribute:: CHAT_COMPLETION
       :value: "CHAT_COMPLETION"
@@ -388,10 +388,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ServedModelInputWorkloadType
 
-   Please keep this in sync with with workload types in InferenceEndpointEntities.scala
+   Please keep this in sync with workload types in InferenceEndpointEntities.scala.
 
    .. py:attribute:: CPU
       :value: "CPU"
+
+   .. py:attribute:: CPU_LARGE
+      :value: "CPU_LARGE"
+
+   .. py:attribute:: CPU_MEDIUM
+      :value: "CPU_MEDIUM"
 
    .. py:attribute:: GPU_LARGE
       :value: "GPU_LARGE"
@@ -401,6 +407,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: GPU_SMALL
       :value: "GPU_SMALL"
+
+   .. py:attribute:: GPU_XLARGE
+      :value: "GPU_XLARGE"
 
    .. py:attribute:: MULTIGPU_MEDIUM
       :value: "MULTIGPU_MEDIUM"
@@ -492,10 +501,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ServingModelWorkloadType
 
-   Please keep this in sync with with workload types in InferenceEndpointEntities.scala
+   Please keep this in sync with workload types in InferenceEndpointEntities.scala.
 
    .. py:attribute:: CPU
       :value: "CPU"
+
+   .. py:attribute:: CPU_LARGE
+      :value: "CPU_LARGE"
+
+   .. py:attribute:: CPU_MEDIUM
+      :value: "CPU_MEDIUM"
 
    .. py:attribute:: GPU_LARGE
       :value: "GPU_LARGE"
@@ -506,10 +521,25 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GPU_SMALL
       :value: "GPU_SMALL"
 
+   .. py:attribute:: GPU_XLARGE
+      :value: "GPU_XLARGE"
+
    .. py:attribute:: MULTIGPU_MEDIUM
       :value: "MULTIGPU_MEDIUM"
 
+.. autoclass:: TelemetryConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: TelemetryInferenceTableConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: TrafficConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: UnityCatalogTableNames
    :members:
    :undoc-members:
 

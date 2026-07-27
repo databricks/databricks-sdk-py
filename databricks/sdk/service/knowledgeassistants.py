@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -10,13 +13,88 @@ from typing import Any, Dict, Iterator, List, Optional
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _timestamp)
+from databricks.sdk.service._internal import (
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _timestamp,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
 
 # all definitions in this file are in alphabetical order
+
+
+@dataclass
+class Example:
+    """An example associated with a Knowledge Assistant. Contains a question and guidelines for how the
+    assistant should respond."""
+
+    question: str
+    """The example question."""
+
+    create_time: Optional[Timestamp] = None
+    """Timestamp when this example was created."""
+
+    example_id: Optional[str] = None
+    """The universally unique identifier (UUID) of the example."""
+
+    guidelines: Optional[List[str]] = None
+    """Guidelines for answering the question. Optional — examples may be created with just a
+    question; the front-end form does not require guidelines."""
+
+    name: Optional[str] = None
+    """Full resource name: knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}"""
+
+    update_time: Optional[Timestamp] = None
+    """Timestamp when this example was last updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Example into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.example_id is not None:
+            body["example_id"] = self.example_id
+        if self.guidelines:
+            body["guidelines"] = [v for v in self.guidelines]
+        if self.name is not None:
+            body["name"] = self.name
+        if self.question is not None:
+            body["question"] = self.question
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Example into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.example_id is not None:
+            body["example_id"] = self.example_id
+        if self.guidelines:
+            body["guidelines"] = self.guidelines
+        if self.name is not None:
+            body["name"] = self.name
+        if self.question is not None:
+            body["question"] = self.question
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Example:
+        """Deserializes the Example from a dictionary."""
+        return cls(
+            create_time=_timestamp(d, "create_time"),
+            example_id=d.get("example_id", None),
+            guidelines=d.get("guidelines", None),
+            name=d.get("name", None),
+            question=d.get("question", None),
+            update_time=_timestamp(d, "update_time"),
+        )
 
 
 @dataclass
@@ -180,7 +258,7 @@ class KnowledgeAssistant:
     """The MLflow experiment ID."""
 
     id: Optional[str] = None
-    """The universally unique identifier (UUID) of the Knowledge Assistant."""
+    """Deprecated: use knowledge_assistant_id instead."""
 
     instructions: Optional[str] = None
     """Additional global instructions on how the agent should generate answers. Optional on create and
@@ -495,7 +573,6 @@ class KnowledgeAssistantPermissionsDescription:
 
 
 class KnowledgeAssistantState(Enum):
-
     ACTIVE = "ACTIVE"
     CREATING = "CREATING"
     FAILED = "FAILED"
@@ -614,10 +691,41 @@ class KnowledgeSource:
 
 
 class KnowledgeSourceState(Enum):
-
     FAILED_UPDATE = "FAILED_UPDATE"
     UPDATED = "UPDATED"
     UPDATING = "UPDATING"
+
+
+@dataclass
+class ListExamplesResponse:
+    """A list of Knowledge Assistant examples."""
+
+    examples: Optional[List[Example]] = None
+
+    next_page_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListExamplesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.examples:
+            body["examples"] = [v.as_dict() for v in self.examples]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListExamplesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.examples:
+            body["examples"] = self.examples
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListExamplesResponse:
+        """Deserializes the ListExamplesResponse from a dictionary."""
+        return cls(examples=_repeated_dict(d, "examples", Example), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -627,7 +735,7 @@ class ListKnowledgeAssistantsResponse:
     knowledge_assistants: Optional[List[KnowledgeAssistant]] = None
 
     next_page_token: Optional[str] = None
-    """A token that can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    """A token that can be sent as ``page_token`` to retrieve the next page. If this field is omitted,
     there are no subsequent pages."""
 
     def as_dict(self) -> dict:
@@ -696,6 +804,32 @@ class KnowledgeAssistantsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def create_example(self, parent: str, example: Example) -> Example:
+        """Creates an example for a Knowledge Assistant.
+
+        :param parent: str
+          Parent resource where this example will be created. Format:
+          knowledge-assistants/{knowledge_assistant_id}
+        :param example: :class:`Example`
+          The example to create under the parent Knowledge Assistant.
+
+        :returns: :class:`Example`
+        """
+
+        body = example.as_dict()
+        query = {}
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.1/{parent}/examples", body=body, headers=headers)
+        return Example.from_dict(res)
+
     def create_knowledge_assistant(self, knowledge_assistant: KnowledgeAssistant) -> KnowledgeAssistant:
         """Creates a Knowledge Assistant.
 
@@ -706,6 +840,7 @@ class KnowledgeAssistantsAPI:
         """
 
         body = knowledge_assistant.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -713,7 +848,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/knowledge-assistants", body=body, headers=headers)
         return KnowledgeAssistant.from_dict(res)
@@ -730,6 +865,7 @@ class KnowledgeAssistantsAPI:
         """
 
         body = knowledge_source.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -737,10 +873,30 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.1/{parent}/knowledge-sources", body=body, headers=headers)
         return KnowledgeSource.from_dict(res)
+
+    def delete_example(self, name: str):
+        """Deletes an example from a Knowledge Assistant.
+
+        :param name: str
+          The resource name of the example to delete. Format:
+          knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.1/{name}", headers=headers)
 
     def delete_knowledge_assistant(self, name: str):
         """Deletes a Knowledge Assistant.
@@ -758,7 +914,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/{name}", headers=headers)
 
@@ -778,9 +934,30 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/{name}", headers=headers)
+
+    def get_example(self, name: str) -> Example:
+        """Gets an example from a Knowledge Assistant.
+
+        :param name: str
+          The resource name of the example. Format:
+          knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
+
+        :returns: :class:`Example`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.1/{name}", headers=headers)
+        return Example.from_dict(res)
 
     def get_knowledge_assistant(self, name: str) -> KnowledgeAssistant:
         """Gets a Knowledge Assistant.
@@ -797,7 +974,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/{name}", headers=headers)
         return KnowledgeAssistant.from_dict(res)
@@ -818,7 +995,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/{name}", headers=headers)
         return KnowledgeSource.from_dict(res)
@@ -838,7 +1015,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -863,12 +1040,51 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/knowledge-assistants/{knowledge_assistant_id}", headers=headers
         )
         return KnowledgeAssistantPermissions.from_dict(res)
+
+    def list_examples(
+        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[Example]:
+        """Lists examples under a Knowledge Assistant.
+
+        :param parent: str
+          Parent resource to list from. Format: knowledge-assistants/{knowledge_assistant_id}
+        :param page_size: int (optional)
+          The maximum number of examples to return. If unspecified, at most 100 examples will be returned. The
+          maximum value is 100; values above 100 will be coerced to 100.
+        :param page_token: str (optional)
+          A page token, received from a previous ``ListExamples`` call. Provide this to retrieve the
+          subsequent page. If unspecified, the first page will be returned.
+
+        :returns: Iterator over :class:`Example`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", f"/api/2.1/{parent}/examples", query=query, headers=headers)
+            if "examples" in json:
+                for v in json["examples"]:
+                    yield Example.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def list_knowledge_assistants(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -879,8 +1095,8 @@ class KnowledgeAssistantsAPI:
           The maximum number of knowledge assistants to return. If unspecified, at most 100 knowledge
           assistants will be returned. The maximum value is 100; values above 100 will be coerced to 100.
         :param page_token: str (optional)
-          A page token, received from a previous `ListKnowledgeAssistants` call. Provide this to retrieve the
-          subsequent page. If unspecified, the first page will be returned.
+          A page token, received from a previous ``ListKnowledgeAssistants`` call. Provide this to retrieve
+          the subsequent page. If unspecified, the first page will be returned.
 
         :returns: Iterator over :class:`KnowledgeAssistant`
         """
@@ -896,7 +1112,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/knowledge-assistants", query=query, headers=headers)
@@ -931,7 +1147,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", f"/api/2.1/{parent}/knowledge-sources", query=query, headers=headers)
@@ -968,7 +1184,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/permissions/knowledge-assistants/{knowledge_assistant_id}", body=body, headers=headers
@@ -984,6 +1200,7 @@ class KnowledgeAssistantsAPI:
 
         """
 
+        body = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -991,9 +1208,42 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        self._api.do("POST", f"/api/2.1/{name}/knowledge-sources:sync", headers=headers)
+        self._api.do("POST", f"/api/2.1/{name}/knowledge-sources:sync", body=body, headers=headers)
+
+    def update_example(self, name: str, example: Example, update_mask: FieldMask) -> Example:
+        """Updates an example in a Knowledge Assistant.
+
+        :param name: str
+          The resource name of the example to update. Format:
+          knowledge-assistants/{knowledge_assistant_id}/examples/{example_id}
+        :param example: :class:`Example`
+        :param update_mask: FieldMask
+          Comma-delimited list of fields to update on the example. Allowed values: ``question``,
+          ``guidelines``. Examples:
+
+          - ``question``
+          - ``question,guidelines``
+
+        :returns: :class:`Example`
+        """
+
+        body = example.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.1/{name}", query=query, body=body, headers=headers)
+        return Example.from_dict(res)
 
     def update_knowledge_assistant(
         self, name: str, knowledge_assistant: KnowledgeAssistant, update_mask: FieldMask
@@ -1007,8 +1257,11 @@ class KnowledgeAssistantsAPI:
           annotations on Knowledge Assistant fields describe create-time requirements and do not mean all
           those fields are required for update.
         :param update_mask: FieldMask
-          Comma-delimited list of fields to update on the Knowledge Assistant. Allowed values: `display_name`,
-          `description`, `instructions`. Examples: - `display_name` - `description,instructions`
+          Comma-delimited list of fields to update on the Knowledge Assistant. Allowed values:
+          ``display_name``, ``description``, ``instructions``. Examples:
+
+          - ``display_name``
+          - ``description,instructions``
 
         :returns: :class:`KnowledgeAssistant`
         """
@@ -1024,7 +1277,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/{name}", query=query, body=body, headers=headers)
         return KnowledgeAssistant.from_dict(res)
@@ -1042,8 +1295,11 @@ class KnowledgeAssistantsAPI:
           annotations on Knowledge Source fields describe create-time requirements and do not mean all those
           fields are required for update.
         :param update_mask: FieldMask
-          Comma-delimited list of fields to update on the Knowledge Source. Allowed values: `display_name`,
-          `description`. Examples: - `display_name` - `display_name,description`
+          Comma-delimited list of fields to update on the Knowledge Source. Allowed values: ``display_name``,
+          ``description``. Examples:
+
+          - ``display_name``
+          - ``display_name,description``
 
         :returns: :class:`KnowledgeSource`
         """
@@ -1059,7 +1315,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/{name}", query=query, body=body, headers=headers)
         return KnowledgeSource.from_dict(res)
@@ -1090,7 +1346,7 @@ class KnowledgeAssistantsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/knowledge-assistants/{knowledge_assistant_id}", body=body, headers=headers

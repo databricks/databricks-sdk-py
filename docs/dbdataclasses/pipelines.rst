@@ -23,6 +23,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ConfluenceConnectorOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: ConnectionParameters
    :members:
    :undoc-members:
@@ -88,7 +92,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: DeploymentKind
 
-   The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a Databricks Asset Bundle.
+   The deployment method that manages the pipeline:
+   - BUNDLE: The pipeline is managed by a Databricks Asset Bundle.
 
    .. py:attribute:: BUNDLE
       :value: "BUNDLE"
@@ -208,6 +213,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GoogleAdsCustomReportOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: GoogleAdsOptions
    :members:
    :undoc-members:
@@ -256,6 +265,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
 
+   .. py:attribute:: CONFLUENCE
+      :value: "CONFLUENCE"
+
    .. py:attribute:: DYNAMICS365
       :value: "DYNAMICS365"
 
@@ -268,8 +280,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GOOGLE_DRIVE
       :value: "GOOGLE_DRIVE"
 
+   .. py:attribute:: JIRA
+      :value: "JIRA"
+
    .. py:attribute:: MANAGED_POSTGRESQL
       :value: "MANAGED_POSTGRESQL"
+
+   .. py:attribute:: META_MARKETING
+      :value: "META_MARKETING"
 
    .. py:attribute:: MYSQL
       :value: "MYSQL"
@@ -301,7 +319,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
 
+   .. py:attribute:: ZENDESK
+      :value: "ZENDESK"
+
 .. autoclass:: JiraConnectorOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: JsonTransformerOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: KafkaOptions
    :members:
    :undoc-members:
 
@@ -333,6 +362,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: STABLE
       :value: "STABLE"
+
+.. autoclass:: MetaMarketingOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetaMarketingOptionsMetaMarketingCustomReportOptions
+   :members:
+   :undoc-members:
 
 .. autoclass:: NotebookLibrary
    :members:
@@ -402,7 +439,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PipelineClusterAutoscaleMode
 
-   Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating cluster resources based on workload volume, with minimal impact to the data processing latency of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy autoscaling feature is used for `maintenance` clusters.
+   Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating cluster resources based on workload volume, with minimal impact to the data processing latency of your pipelines. Enhanced Autoscaling is available for ``updates`` clusters only. The legacy autoscaling feature is used for ``maintenance`` clusters.
 
    .. py:attribute:: ENHANCED
       :value: "ENHANCED"
@@ -524,6 +561,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: LEGACY_PUBLISHING_MODE
       :value: "LEGACY_PUBLISHING_MODE"
+
+.. autoclass:: RedditAdsOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: RedditAdsOptionsRedditAdsCustomReportOptions
+   :members:
+   :undoc-members:
 
 .. autoclass:: ReplaceWhereOverride
    :members:
@@ -653,6 +698,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: TikTokAdsOptionsTikTokAdsCustomReportOptions
+   :members:
+   :undoc-members:
+
 .. py:class:: TikTokAdsOptionsTikTokDataLevel
 
    Data level for TikTok Ads report aggregation.
@@ -690,6 +739,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: PLAYABLE_AD
       :value: "PLAYABLE_AD"
+
+.. autoclass:: Transformer
+   :members:
+   :undoc-members:
+
+.. py:class:: TransformerFormat
+
+   .. py:attribute:: JSON
+      :value: "JSON"
+
+   .. py:attribute:: STRING
+      :value: "STRING"
 
 .. autoclass:: Truncation
    :members:
@@ -805,3 +866,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WAITING_FOR_RESOURCES
       :value: "WAITING_FOR_RESOURCES"
+
+.. autoclass:: ZendeskSupportOptions
+   :members:
+   :undoc-members:

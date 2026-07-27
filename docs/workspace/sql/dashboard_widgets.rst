@@ -18,9 +18,9 @@
           Width of a widget
         :param text: str (optional)
           If this is a textbox widget, the application displays this text. This field is ignored if the widget
-          contains a visualization in the `visualization` field.
+          contains a visualization in the ``visualization`` field.
         :param visualization_id: str (optional)
-          Query Vizualization ID returned by :method:queryvisualizations/create.
+          Query Visualization ID returned by :method:queryvisualizations/create.
 
         :returns: :class:`Widget`
         
@@ -48,9 +48,9 @@
           Width of a widget
         :param text: str (optional)
           If this is a textbox widget, the application displays this text. This field is ignored if the widget
-          contains a visualization in the `visualization` field.
+          contains a visualization in the ``visualization`` field.
         :param visualization_id: str (optional)
-          Query Vizualization ID returned by :method:queryvisualizations/create.
+          Query Visualization ID returned by :method:queryvisualizations/create.
 
         :returns: :class:`Widget`
         

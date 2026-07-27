@@ -41,7 +41,7 @@
         :param comment: str (optional)
           Description about the provider.
         :param recipient_profile_str: str (optional)
-          This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
+          This field is required when the **authentication_type** is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.
 
         :returns: :class:`ProviderInfo`
@@ -130,13 +130,16 @@
           If not provided, all providers will be returned. If no providers exist with this ID, no results will
           be returned.
         :param max_results: int (optional)
-          Maximum number of providers to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid providers are returned (not recommended). - Note: The
-          number of returned providers might be less than the specified max_results size, even zero. The only
-          definitive indication that no further providers can be fetched is when the next_page_token is unset
-          from the response.
+          Maximum number of providers to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid providers are returned (not recommended).
+          - Note: The number of returned providers might be less than the specified max_results size, even
+            zero. The only definitive indication that no further providers can be fetched is when the
+            next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -193,18 +196,22 @@
 
         Gets an array of a specified provider's shares within the metastore where:
 
-        * the caller is a metastore admin, or * the caller is the owner.
+        - the caller is a metastore admin, or
+        - the caller is the owner.
 
         :param name: str
           Name of the provider in which to list shares.
         :param max_results: int (optional)
-          Maximum number of shares to return. - when set to 0, the page length is set to a server configured
-          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
-          value and a server configured value; - when set to a value less than 0, an invalid parameter error
-          is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of
-          returned shares might be less than the specified max_results size, even zero. The only definitive
-          indication that no further shares can be fetched is when the next_page_token is unset from the
-          response.
+          Maximum number of shares to return.
+
+          - when set to 0, the page length is set to a server configured value (recommended);
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+            configured value;
+          - when set to a value less than 0, an invalid parameter error is returned;
+          - If not set, all valid shares are returned (not recommended).
+          - Note: The number of returned shares might be less than the specified max_results size, even zero.
+            The only definitive indication that no further shares can be fetched is when the next_page_token
+            is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -251,7 +258,7 @@
         :param owner: str (optional)
           Username of Provider owner.
         :param recipient_profile_str: str (optional)
-          This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
+          This field is required when the **authentication_type** is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.
 
         :returns: :class:`ProviderInfo`

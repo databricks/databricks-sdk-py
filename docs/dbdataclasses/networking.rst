@@ -4,6 +4,10 @@ Networking
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.networking`` module.
 
 .. py:currentmodule:: databricks.sdk.service.networking
+.. autoclass:: AwsVpcEndpointInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: AzurePrivateEndpointInfo
    :members:
    :undoc-members:
@@ -30,6 +34,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SERVICE_DIRECT
       :value: "SERVICE_DIRECT"
+
+.. autoclass:: GcpPscEndpointInfo
+   :members:
+   :undoc-members:
 
 .. autoclass:: ListEndpointsResponse
    :members:

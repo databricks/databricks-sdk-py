@@ -161,6 +161,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ITAR_EAR
       :value: "ITAR_EAR"
 
+   .. py:attribute:: KSA_ECC_CCC_DCC
+      :value: "KSA_ECC_CCC_DCC"
+
    .. py:attribute:: K_FSI
       :value: "K_FSI"
 
@@ -206,6 +209,28 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CustomerFacingIngressNetworkPolicyAccountApiDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAccountDatabricksOneDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyAccountUiDestination
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyApiScopeQualifier
+
+   Qualifies the breadth of API access permitted by an ingress network policy rule. API_SCOPE_QUALIFIER_READ narrows matching to read-only variants of the listed scopes; API_SCOPE_QUALIFIER_ALL matches any scope. When unset, scopes match exactly as listed.
+
+   .. py:attribute:: API_SCOPE_QUALIFIER_ALL
+      :value: "API_SCOPE_QUALIFIER_ALL"
+
+   .. py:attribute:: API_SCOPE_QUALIFIER_READ
+      :value: "API_SCOPE_QUALIFIER_READ"
+
 .. autoclass:: CustomerFacingIngressNetworkPolicyAppsRuntimeDestination
    :members:
    :undoc-members:
@@ -237,11 +262,57 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: IDENTITY_TYPE_SELECTED_IDENTITIES
       :value: "IDENTITY_TYPE_SELECTED_IDENTITIES"
 
+.. autoclass:: CustomerFacingIngressNetworkPolicyCrossWorkspaceAccess
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyCrossWorkspaceAccessRestrictionMode
+
+   .. py:attribute:: FULL_ACCESS
+      :value: "FULL_ACCESS"
+
+   .. py:attribute:: RESTRICTED_ACCESS
+      :value: "RESTRICTED_ACCESS"
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyCrossWorkspaceIngressRule
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyCrossWorkspaceRequestOrigin
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyEndpoints
+   :members:
+   :undoc-members:
+
 .. autoclass:: CustomerFacingIngressNetworkPolicyIpRanges
    :members:
    :undoc-members:
 
 .. autoclass:: CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPrivateAccess
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingIngressNetworkPolicyPrivateAccessRestrictionMode
+
+   The restriction mode for private access. In ALLOW_ALL_REGISTERED_ENDPOINTS mode, requests arriving through any endpoint registered to the account are allowed, and deny rules and allow rules cannot be set. In RESTRICTED_ACCESS mode, access is restricted based on deny rules and allow rules; requests that do not match any allow rule are denied.
+
+   .. py:attribute:: ALLOW_ALL_REGISTERED_ENDPOINTS
+      :value: "ALLOW_ALL_REGISTERED_ENDPOINTS"
+
+   .. py:attribute:: RESTRICTED_ACCESS
+      :value: "RESTRICTED_ACCESS"
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPrivateIngressRule
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyPrivateRequestOrigin
    :members:
    :undoc-members:
 
@@ -270,6 +341,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CustomerFacingIngressNetworkPolicyWorkspaceApiDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomerFacingIngressNetworkPolicyWorkspaceIdList
    :members:
    :undoc-members:
 
@@ -478,6 +553,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EgressNetworkPolicyNetworkAccessPolicyDatabricksDestination
+   :members:
+   :undoc-members:
+
 .. autoclass:: EgressNetworkPolicyNetworkAccessPolicyInternetDestination
    :members:
    :undoc-members:
@@ -652,7 +731,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: ListType
 
    Type of IP access list. Valid values are as follows and are case-sensitive:
-   * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or range. IP addresses in the block list are excluded even if they are included in an allow list.
+   - ``ALLOW``: An allow list. Include this IP or range. - ``BLOCK``: A block list. Exclude this IP or range. IP addresses in the block list are excluded even if they are included in an allow list.
 
    .. py:attribute:: ALLOW
       :value: "ALLOW"
@@ -860,7 +939,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TokenType
 
-   The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported.
+   The type of token request. As of now, only ``AZURE_ACTIVE_DIRECTORY_TOKEN`` is supported.
 
    .. py:attribute:: ARCLIGHT_AZURE_EXCHANGE_TOKEN
       :value: "ARCLIGHT_AZURE_EXCHANGE_TOKEN"

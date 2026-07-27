@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -11,8 +14,13 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import catalog, jobs, settings, sharing
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    Wait,
+    _enum,
+    _from_dict,
+    _repeated_dict,
+    _repeated_enum,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -23,22 +31,25 @@ _LOG = logging.getLogger("databricks.sdk")
 @dataclass
 class CleanRoom:
     access_restricted: Optional[CleanRoomAccessRestricted] = None
-    """Whether clean room access is restricted due to [CSP]
-    
-    [CSP]: https://docs.databricks.com/en/security/privacy/security-profile.html"""
+    """Whether clean room access is restricted due to `CSP
+    <https://docs.databricks.com/en/security/privacy/security-profile.html>`__"""
 
     comment: Optional[str] = None
 
     created_at: Optional[int] = None
     """When the clean room was created, in epoch milliseconds."""
 
+    enable_shared_output: Optional[bool] = None
+    """Whether allow task to write to shared output schema. When enabled, clean room task runs
+    triggered by the current collaborator can write to the run-scoped shared output schema which is
+    accessible by all collaborators."""
+
     local_collaborator_alias: Optional[str] = None
     """The alias of the collaborator tied to the local clean room."""
 
     name: Optional[str] = None
-    """The name of the clean room. It should follow [UC securable naming requirements].
-    
-    [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements"""
+    """The name of the clean room. It should follow `UC securable naming requirements
+    <https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements>`__."""
 
     output_catalog: Optional[CleanRoomOutputCatalog] = None
     """Output catalog of the clean room. It is an output only field. Output catalog is manipulated
@@ -67,6 +78,8 @@ class CleanRoom:
             body["comment"] = self.comment
         if self.created_at is not None:
             body["created_at"] = self.created_at
+        if self.enable_shared_output is not None:
+            body["enable_shared_output"] = self.enable_shared_output
         if self.local_collaborator_alias is not None:
             body["local_collaborator_alias"] = self.local_collaborator_alias
         if self.name is not None:
@@ -92,6 +105,8 @@ class CleanRoom:
             body["comment"] = self.comment
         if self.created_at is not None:
             body["created_at"] = self.created_at
+        if self.enable_shared_output is not None:
+            body["enable_shared_output"] = self.enable_shared_output
         if self.local_collaborator_alias is not None:
             body["local_collaborator_alias"] = self.local_collaborator_alias
         if self.name is not None:
@@ -115,6 +130,7 @@ class CleanRoom:
             access_restricted=_enum(d, "access_restricted", CleanRoomAccessRestricted),
             comment=d.get("comment", None),
             created_at=d.get("created_at", None),
+            enable_shared_output=d.get("enable_shared_output", None),
             local_collaborator_alias=d.get("local_collaborator_alias", None),
             name=d.get("name", None),
             output_catalog=_from_dict(d, "output_catalog", CleanRoomOutputCatalog),
@@ -126,7 +142,6 @@ class CleanRoom:
 
 
 class CleanRoomAccessRestricted(Enum):
-
     CSP_MISMATCH = "CSP_MISMATCH"
     NO_RESTRICTION = "NO_RESTRICTION"
 
@@ -162,6 +177,10 @@ class CleanRoomAsset:
     foreign_table_local_details: Optional[CleanRoomAssetForeignTableLocalDetails] = None
     """Local details for a foreign that are only available to its owner. Present if and only if
     **asset_type** is **FOREIGN_TABLE**"""
+
+    jar_analysis: Optional[CleanRoomAssetJarAnalysis] = None
+    """Jar analysis details available to all collaborators of the clean room. Present if and only if
+    **asset_type** is **JAR_ANALYSIS**"""
 
     notebook: Optional[CleanRoomAssetNotebook] = None
     """Notebook details available to all collaborators of the clean room. Present if and only if
@@ -206,6 +225,8 @@ class CleanRoomAsset:
             body["foreign_table"] = self.foreign_table.as_dict()
         if self.foreign_table_local_details:
             body["foreign_table_local_details"] = self.foreign_table_local_details.as_dict()
+        if self.jar_analysis:
+            body["jar_analysis"] = self.jar_analysis.as_dict()
         if self.name is not None:
             body["name"] = self.name
         if self.notebook:
@@ -239,6 +260,8 @@ class CleanRoomAsset:
             body["foreign_table"] = self.foreign_table
         if self.foreign_table_local_details:
             body["foreign_table_local_details"] = self.foreign_table_local_details
+        if self.jar_analysis:
+            body["jar_analysis"] = self.jar_analysis
         if self.name is not None:
             body["name"] = self.name
         if self.notebook:
@@ -270,6 +293,7 @@ class CleanRoomAsset:
             foreign_table_local_details=_from_dict(
                 d, "foreign_table_local_details", CleanRoomAssetForeignTableLocalDetails
             ),
+            jar_analysis=_from_dict(d, "jar_analysis", CleanRoomAssetJarAnalysis),
             name=d.get("name", None),
             notebook=_from_dict(d, "notebook", CleanRoomAssetNotebook),
             owner_collaborator_alias=d.get("owner_collaborator_alias", None),
@@ -283,8 +307,8 @@ class CleanRoomAsset:
 
 
 class CleanRoomAssetAssetType(Enum):
-
     FOREIGN_TABLE = "FOREIGN_TABLE"
+    JAR_ANALYSIS = "JAR_ANALYSIS"
     NOTEBOOK_FILE = "NOTEBOOK_FILE"
     TABLE = "TABLE"
     VIEW = "VIEW"
@@ -343,10 +367,105 @@ class CleanRoomAssetForeignTableLocalDetails:
 
 
 @dataclass
+class CleanRoomAssetJarAnalysis:
+    central_jar_file_paths: Optional[List[str]] = None
+    """The full paths in central to the jar files that are added to the library during execution (e.g.
+    /Volumes/creator/schema/volume/folder/my_jar_file.jar) Only returned for the owner collaborator."""
+
+    description: Optional[str] = None
+    """Optional description of the jar analysis shown to all collaborators."""
+
+    environment_version: Optional[str] = None
+    """The serverless environment version used to execute the JAR analysis (e.g. "4"). Defaults to
+    "4-scala-preview" if not specified."""
+
+    etag: Optional[str] = None
+    """Server generated etag that represents the jar analysis version."""
+
+    main_class_name: Optional[str] = None
+    """The full name of the class containing the main method to be executed. This class must be
+    contained in a JAR provided as a library The code must use ``SparkContext.getOrCreate`` to
+    obtain a Spark context; otherwise, runs of the job fail"""
+
+    review_state: Optional[CleanRoomJarAnalysisReviewJarAnalysisReviewState] = None
+    """Top-level status derived from all reviews."""
+
+    reviews: Optional[List[CleanRoomJarAnalysisReview]] = None
+    """All existing approvals or rejections."""
+
+    runner_collaborator_aliases: Optional[List[str]] = None
+    """Collaborators that can run the jar."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomAssetJarAnalysis into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.central_jar_file_paths:
+            body["central_jar_file_paths"] = [v for v in self.central_jar_file_paths]
+        if self.description is not None:
+            body["description"] = self.description
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.main_class_name is not None:
+            body["main_class_name"] = self.main_class_name
+        if self.review_state is not None:
+            body["review_state"] = self.review_state.value
+        if self.reviews:
+            body["reviews"] = [v.as_dict() for v in self.reviews]
+        if self.runner_collaborator_aliases:
+            body["runner_collaborator_aliases"] = [v for v in self.runner_collaborator_aliases]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomAssetJarAnalysis into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.central_jar_file_paths:
+            body["central_jar_file_paths"] = self.central_jar_file_paths
+        if self.description is not None:
+            body["description"] = self.description
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.main_class_name is not None:
+            body["main_class_name"] = self.main_class_name
+        if self.review_state is not None:
+            body["review_state"] = self.review_state
+        if self.reviews:
+            body["reviews"] = self.reviews
+        if self.runner_collaborator_aliases:
+            body["runner_collaborator_aliases"] = self.runner_collaborator_aliases
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetJarAnalysis:
+        """Deserializes the CleanRoomAssetJarAnalysis from a dictionary."""
+        return cls(
+            central_jar_file_paths=d.get("central_jar_file_paths", None),
+            description=d.get("description", None),
+            environment_version=d.get("environment_version", None),
+            etag=d.get("etag", None),
+            main_class_name=d.get("main_class_name", None),
+            review_state=_enum(d, "review_state", CleanRoomJarAnalysisReviewJarAnalysisReviewState),
+            reviews=_repeated_dict(d, "reviews", CleanRoomJarAnalysisReview),
+            runner_collaborator_aliases=d.get("runner_collaborator_aliases", None),
+        )
+
+
+@dataclass
 class CleanRoomAssetNotebook:
     notebook_content: str
     """Base 64 representation of the notebook contents. This is the same format as returned by
-    :method:workspace/export with the format of **HTML**."""
+    `workspace/export <https://docs.databricks.com/api/workspace/workspace/export>`__ with the
+    format of **HTML**."""
+
+    description: Optional[str] = None
+    """Optional description of the notebook shown to all collaborators."""
+
+    environment_version: Optional[str] = None
+    """The serverless environment version used to execute the notebook (e.g. "4"). Defaults to "2" if
+    not specified."""
 
     etag: Optional[str] = None
     """Server generated etag that represents the notebook version."""
@@ -363,6 +482,10 @@ class CleanRoomAssetNotebook:
     def as_dict(self) -> dict:
         """Serializes the CleanRoomAssetNotebook into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         if self.etag is not None:
             body["etag"] = self.etag
         if self.notebook_content is not None:
@@ -378,6 +501,10 @@ class CleanRoomAssetNotebook:
     def as_shallow_dict(self) -> dict:
         """Serializes the CleanRoomAssetNotebook into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         if self.etag is not None:
             body["etag"] = self.etag
         if self.notebook_content is not None:
@@ -394,6 +521,8 @@ class CleanRoomAssetNotebook:
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetNotebook:
         """Deserializes the CleanRoomAssetNotebook from a dictionary."""
         return cls(
+            description=d.get("description", None),
+            environment_version=d.get("environment_version", None),
             etag=d.get("etag", None),
             notebook_content=d.get("notebook_content", None),
             review_state=_enum(d, "review_state", CleanRoomNotebookReviewNotebookReviewState),
@@ -403,7 +532,6 @@ class CleanRoomAssetNotebook:
 
 
 class CleanRoomAssetStatusEnum(Enum):
-
     ACTIVE = "ACTIVE"
     PENDING = "PENDING"
     PERMISSION_DENIED = "PERMISSION_DENIED"
@@ -547,12 +675,12 @@ class CleanRoomAssetVolumeLocalDetails:
 @dataclass
 class CleanRoomAutoApprovalRule:
     author_collaborator_alias: Optional[str] = None
-    """Collaborator alias of the author covered by the rule. Only one of `author_collaborator_alias`
-    and `author_scope` can be set."""
+    """Collaborator alias of the author covered by the rule. Only one of ``author_collaborator_alias``
+    and ``author_scope`` can be set."""
 
     author_scope: Optional[CleanRoomAutoApprovalRuleAuthorScope] = None
-    """Scope of authors covered by the rule. Only one of `author_collaborator_alias` and `author_scope`
-    can be set."""
+    """Scope of authors covered by the rule. Only one of ``author_collaborator_alias`` and
+    ``author_scope`` can be set."""
 
     clean_room_name: Optional[str] = None
     """The name of the clean room this auto-approval rule belongs to."""
@@ -622,7 +750,6 @@ class CleanRoomAutoApprovalRule:
 
 
 class CleanRoomAutoApprovalRuleAuthorScope(Enum):
-
     ANY_AUTHOR = "ANY_AUTHOR"
 
 
@@ -633,9 +760,8 @@ class CleanRoomCollaborator:
     collaborator_alias: str
     """Collaborator alias specified by the clean room creator. It is unique across all collaborators of
     this clean room, and used to derive multiple values internally such as catalog alias and clean
-    room name for single metastore clean rooms. It should follow [UC securable naming requirements].
-    
-    [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements"""
+    room name for single metastore clean rooms. It should follow `UC securable naming requirements
+    <https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements>`__."""
 
     display_name: Optional[str] = None
     """Generated display name for the collaborator. In the case of a single metastore clean room, it is
@@ -708,6 +834,77 @@ class CleanRoomCollaborator:
 
 
 @dataclass
+class CleanRoomJarAnalysisReview:
+    """This only applies to a JAR Analysis as a first-class asset in the Clean Room, and not to Volumes"""
+
+    comment: Optional[str] = None
+    """review comment"""
+
+    created_at_millis: Optional[int] = None
+    """timestamp of when the review was submitted"""
+
+    review_state: Optional[CleanRoomJarAnalysisReviewJarAnalysisReviewState] = None
+    """review outcome"""
+
+    review_sub_reason: Optional[CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason] = None
+    """specified when the review was not explicitly made by a user"""
+
+    reviewer_collaborator_alias: Optional[str] = None
+    """collaborator alias of the reviewer"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomJarAnalysisReview into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at_millis is not None:
+            body["created_at_millis"] = self.created_at_millis
+        if self.review_state is not None:
+            body["review_state"] = self.review_state.value
+        if self.review_sub_reason is not None:
+            body["review_sub_reason"] = self.review_sub_reason.value
+        if self.reviewer_collaborator_alias is not None:
+            body["reviewer_collaborator_alias"] = self.reviewer_collaborator_alias
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomJarAnalysisReview into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at_millis is not None:
+            body["created_at_millis"] = self.created_at_millis
+        if self.review_state is not None:
+            body["review_state"] = self.review_state
+        if self.review_sub_reason is not None:
+            body["review_sub_reason"] = self.review_sub_reason
+        if self.reviewer_collaborator_alias is not None:
+            body["reviewer_collaborator_alias"] = self.reviewer_collaborator_alias
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomJarAnalysisReview:
+        """Deserializes the CleanRoomJarAnalysisReview from a dictionary."""
+        return cls(
+            comment=d.get("comment", None),
+            created_at_millis=d.get("created_at_millis", None),
+            review_state=_enum(d, "review_state", CleanRoomJarAnalysisReviewJarAnalysisReviewState),
+            review_sub_reason=_enum(d, "review_sub_reason", CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason),
+            reviewer_collaborator_alias=d.get("reviewer_collaborator_alias", None),
+        )
+
+
+class CleanRoomJarAnalysisReviewJarAnalysisReviewState(Enum):
+    APPROVED = "APPROVED"
+    PENDING = "PENDING"
+    REJECTED = "REJECTED"
+
+
+class CleanRoomJarAnalysisReviewJarAnalysisReviewSubReason(Enum):
+    AUTO_APPROVED = "AUTO_APPROVED"
+
+
+@dataclass
 class CleanRoomNotebookReview:
     comment: Optional[str] = None
     """Review comment"""
@@ -767,14 +964,12 @@ class CleanRoomNotebookReview:
 
 
 class CleanRoomNotebookReviewNotebookReviewState(Enum):
-
     APPROVED = "APPROVED"
     PENDING = "PENDING"
     REJECTED = "REJECTED"
 
 
 class CleanRoomNotebookReviewNotebookReviewSubReason(Enum):
-
     AUTO_APPROVED = "AUTO_APPROVED"
     BACKFILLED = "BACKFILLED"
 
@@ -809,6 +1004,13 @@ class CleanRoomNotebookTaskRun:
     run_duration: Optional[int] = None
     """Duration of the task run, in milliseconds."""
 
+    shared_output_schema_expiration_time: Optional[int] = None
+    """Expiration time of the shared output schema of the task run (if any), in epoch milliseconds."""
+
+    shared_output_schema_name: Optional[str] = None
+    """Name of the shared output schema associated with the clean rooms notebook task run. This schema
+    is accessible by all collaborators when enable_shared_output is true."""
+
     start_time: Optional[int] = None
     """When the task run started, in epoch milliseconds."""
 
@@ -831,6 +1033,10 @@ class CleanRoomNotebookTaskRun:
             body["output_schema_name"] = self.output_schema_name
         if self.run_duration is not None:
             body["run_duration"] = self.run_duration
+        if self.shared_output_schema_expiration_time is not None:
+            body["shared_output_schema_expiration_time"] = self.shared_output_schema_expiration_time
+        if self.shared_output_schema_name is not None:
+            body["shared_output_schema_name"] = self.shared_output_schema_name
         if self.start_time is not None:
             body["start_time"] = self.start_time
         return body
@@ -854,6 +1060,10 @@ class CleanRoomNotebookTaskRun:
             body["output_schema_name"] = self.output_schema_name
         if self.run_duration is not None:
             body["run_duration"] = self.run_duration
+        if self.shared_output_schema_expiration_time is not None:
+            body["shared_output_schema_expiration_time"] = self.shared_output_schema_expiration_time
+        if self.shared_output_schema_name is not None:
+            body["shared_output_schema_name"] = self.shared_output_schema_name
         if self.start_time is not None:
             body["start_time"] = self.start_time
         return body
@@ -870,6 +1080,8 @@ class CleanRoomNotebookTaskRun:
             output_schema_expiration_time=d.get("output_schema_expiration_time", None),
             output_schema_name=d.get("output_schema_name", None),
             run_duration=d.get("run_duration", None),
+            shared_output_schema_expiration_time=d.get("shared_output_schema_expiration_time", None),
+            shared_output_schema_name=d.get("shared_output_schema_name", None),
             start_time=d.get("start_time", None),
         )
 
@@ -877,10 +1089,9 @@ class CleanRoomNotebookTaskRun:
 @dataclass
 class CleanRoomOutputCatalog:
     catalog_name: Optional[str] = None
-    """The name of the output catalog in UC. It should follow [UC securable naming requirements]. The
-    field will always exist if status is CREATED.
-    
-    [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements"""
+    """The name of the output catalog in UC. It should follow `UC securable naming requirements
+    <https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements>`__.
+    The field will always exist if status is CREATED."""
 
     status: Optional[CleanRoomOutputCatalogOutputCatalogStatus] = None
 
@@ -912,7 +1123,6 @@ class CleanRoomOutputCatalog:
 
 
 class CleanRoomOutputCatalogOutputCatalogStatus(Enum):
-
     CREATED = "CREATED"
     NOT_CREATED = "NOT_CREATED"
     NOT_ELIGIBLE = "NOT_ELIGIBLE"
@@ -933,7 +1143,6 @@ class CleanRoomRemoteDetail:
     that satisfies the owner condition:
     
     1. It has the creator's global_metastore_id (determined by caller of CreateCleanRoom).
-    
     2. Its invite_recipient_email is empty."""
 
     compliance_security_profile: Optional[ComplianceSecurityProfile] = None
@@ -943,6 +1152,15 @@ class CleanRoomRemoteDetail:
 
     egress_network_policy: Optional[settings.EgressNetworkPolicy] = None
     """Egress network policy to apply to the central clean room workspace."""
+
+    enable_shared_output: Optional[bool] = None
+    """Whether to enable shared output for the central clean room. When enabled, clean room task runs
+    can write to the run-scoped shared output schema which is accessible by all collaborators."""
+
+    package_provider_collaborator_alias: Optional[str] = None
+    """Alias of the provider collaborator. If set, packaged clean rooms mode is enabled. The consumer's
+    experience is restricted: they can view notebook names and READMEs, add their own data assets,
+    and trigger runs, but cannot view notebook code, provider data assets, or notebook run output."""
 
     region: Optional[str] = None
     """Region of the central clean room."""
@@ -962,6 +1180,10 @@ class CleanRoomRemoteDetail:
             body["creator"] = self.creator.as_dict()
         if self.egress_network_policy:
             body["egress_network_policy"] = self.egress_network_policy.as_dict()
+        if self.enable_shared_output is not None:
+            body["enable_shared_output"] = self.enable_shared_output
+        if self.package_provider_collaborator_alias is not None:
+            body["package_provider_collaborator_alias"] = self.package_provider_collaborator_alias
         if self.region is not None:
             body["region"] = self.region
         return body
@@ -981,6 +1203,10 @@ class CleanRoomRemoteDetail:
             body["creator"] = self.creator
         if self.egress_network_policy:
             body["egress_network_policy"] = self.egress_network_policy
+        if self.enable_shared_output is not None:
+            body["enable_shared_output"] = self.enable_shared_output
+        if self.package_provider_collaborator_alias is not None:
+            body["package_provider_collaborator_alias"] = self.package_provider_collaborator_alias
         if self.region is not None:
             body["region"] = self.region
         return body
@@ -995,16 +1221,185 @@ class CleanRoomRemoteDetail:
             compliance_security_profile=_from_dict(d, "compliance_security_profile", ComplianceSecurityProfile),
             creator=_from_dict(d, "creator", CleanRoomCollaborator),
             egress_network_policy=_from_dict(d, "egress_network_policy", settings.EgressNetworkPolicy),
+            enable_shared_output=d.get("enable_shared_output", None),
+            package_provider_collaborator_alias=d.get("package_provider_collaborator_alias", None),
             region=d.get("region", None),
         )
 
 
 class CleanRoomStatusEnum(Enum):
-
     ACTIVE = "ACTIVE"
     DELETED = "DELETED"
     FAILED = "FAILED"
     PROVISIONING = "PROVISIONING"
+
+
+@dataclass
+class CleanRoomTaskRun:
+    """Stores information about a single task run."""
+
+    analysis_details: Optional[CleanRoomTaskRunCleanRoomTaskAnalysisDetails] = None
+    """Information about the analysis run (etag, updated at)"""
+
+    collaborator_job_run_info: Optional[CollaboratorJobRunInfo] = None
+    """Job run info of the task in the runner's local workspace. This field is only included in the
+    LIST API if the task was run within the same workspace the API is being called. If the task run
+    was in a different workspace under the same metastore, only the workspace_id is included."""
+
+    name: Optional[str] = None
+    """Name of the executable."""
+
+    output_info: Optional[CleanRoomTaskRunOutputInfo] = None
+    """Information about run output"""
+
+    run_duration: Optional[int] = None
+    """Duration of the task run, in milliseconds."""
+
+    shared_output_info: Optional[CleanRoomTaskRunOutputInfo] = None
+    """Information about shared output accessible by all collaborators. This field is only populated
+    when enable_shared_output is true."""
+
+    start_time: Optional[int] = None
+    """When the task run started, in epoch milliseconds."""
+
+    task_run_state: Optional[jobs.CleanRoomTaskRunState] = None
+    """State of the task run."""
+
+    task_type: Optional[CleanRoomTaskType] = None
+    """The type of Clean Room task."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomTaskRun into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.analysis_details:
+            body["analysis_details"] = self.analysis_details.as_dict()
+        if self.collaborator_job_run_info:
+            body["collaborator_job_run_info"] = self.collaborator_job_run_info.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.output_info:
+            body["output_info"] = self.output_info.as_dict()
+        if self.run_duration is not None:
+            body["run_duration"] = self.run_duration
+        if self.shared_output_info:
+            body["shared_output_info"] = self.shared_output_info.as_dict()
+        if self.start_time is not None:
+            body["start_time"] = self.start_time
+        if self.task_run_state:
+            body["task_run_state"] = self.task_run_state.as_dict()
+        if self.task_type is not None:
+            body["task_type"] = self.task_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomTaskRun into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.analysis_details:
+            body["analysis_details"] = self.analysis_details
+        if self.collaborator_job_run_info:
+            body["collaborator_job_run_info"] = self.collaborator_job_run_info
+        if self.name is not None:
+            body["name"] = self.name
+        if self.output_info:
+            body["output_info"] = self.output_info
+        if self.run_duration is not None:
+            body["run_duration"] = self.run_duration
+        if self.shared_output_info:
+            body["shared_output_info"] = self.shared_output_info
+        if self.start_time is not None:
+            body["start_time"] = self.start_time
+        if self.task_run_state:
+            body["task_run_state"] = self.task_run_state
+        if self.task_type is not None:
+            body["task_type"] = self.task_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomTaskRun:
+        """Deserializes the CleanRoomTaskRun from a dictionary."""
+        return cls(
+            analysis_details=_from_dict(d, "analysis_details", CleanRoomTaskRunCleanRoomTaskAnalysisDetails),
+            collaborator_job_run_info=_from_dict(d, "collaborator_job_run_info", CollaboratorJobRunInfo),
+            name=d.get("name", None),
+            output_info=_from_dict(d, "output_info", CleanRoomTaskRunOutputInfo),
+            run_duration=d.get("run_duration", None),
+            shared_output_info=_from_dict(d, "shared_output_info", CleanRoomTaskRunOutputInfo),
+            start_time=d.get("start_time", None),
+            task_run_state=_from_dict(d, "task_run_state", jobs.CleanRoomTaskRunState),
+            task_type=_enum(d, "task_type", CleanRoomTaskType),
+        )
+
+
+@dataclass
+class CleanRoomTaskRunCleanRoomTaskAnalysisDetails:
+    etag: Optional[str] = None
+    """Etag of the asset executed in this task run, used to identify the asset version."""
+
+    updated_at: Optional[int] = None
+    """The timestamp of when the asset was last updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomTaskRunCleanRoomTaskAnalysisDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomTaskRunCleanRoomTaskAnalysisDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomTaskRunCleanRoomTaskAnalysisDetails:
+        """Deserializes the CleanRoomTaskRunCleanRoomTaskAnalysisDetails from a dictionary."""
+        return cls(etag=d.get("etag", None), updated_at=d.get("updated_at", None))
+
+
+@dataclass
+class CleanRoomTaskRunOutputInfo:
+    output_schema_expiration_time: Optional[int] = None
+    """Expiration time of the output schema of the task run (if any), in epoch milliseconds."""
+
+    output_schema_name: Optional[str] = None
+    """Name of the output schema associated with the clean room task run."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomTaskRunOutputInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.output_schema_expiration_time is not None:
+            body["output_schema_expiration_time"] = self.output_schema_expiration_time
+        if self.output_schema_name is not None:
+            body["output_schema_name"] = self.output_schema_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomTaskRunOutputInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.output_schema_expiration_time is not None:
+            body["output_schema_expiration_time"] = self.output_schema_expiration_time
+        if self.output_schema_name is not None:
+            body["output_schema_name"] = self.output_schema_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomTaskRunOutputInfo:
+        """Deserializes the CleanRoomTaskRunOutputInfo from a dictionary."""
+        return cls(
+            output_schema_expiration_time=d.get("output_schema_expiration_time", None),
+            output_schema_name=d.get("output_schema_name", None),
+        )
+
+
+class CleanRoomTaskType(Enum):
+    JAR = "JAR"
+    NOTEBOOK = "NOTEBOOK"
 
 
 @dataclass
@@ -1105,6 +1500,12 @@ class ComplianceSecurityProfile:
 
 @dataclass
 class CreateCleanRoomAssetReviewResponse:
+    jar_analysis_review_state: Optional[CleanRoomJarAnalysisReviewJarAnalysisReviewState] = None
+    """top-level status derived from all reviews"""
+
+    jar_analysis_reviews: Optional[List[CleanRoomJarAnalysisReview]] = None
+    """All existing jar analysis approvals or rejections"""
+
     notebook_review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
     """Top-level status derived from all reviews"""
 
@@ -1114,6 +1515,10 @@ class CreateCleanRoomAssetReviewResponse:
     def as_dict(self) -> dict:
         """Serializes the CreateCleanRoomAssetReviewResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.jar_analysis_review_state is not None:
+            body["jar_analysis_review_state"] = self.jar_analysis_review_state.value
+        if self.jar_analysis_reviews:
+            body["jar_analysis_reviews"] = [v.as_dict() for v in self.jar_analysis_reviews]
         if self.notebook_review_state is not None:
             body["notebook_review_state"] = self.notebook_review_state.value
         if self.notebook_reviews:
@@ -1123,6 +1528,10 @@ class CreateCleanRoomAssetReviewResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateCleanRoomAssetReviewResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.jar_analysis_review_state is not None:
+            body["jar_analysis_review_state"] = self.jar_analysis_review_state
+        if self.jar_analysis_reviews:
+            body["jar_analysis_reviews"] = self.jar_analysis_reviews
         if self.notebook_review_state is not None:
             body["notebook_review_state"] = self.notebook_review_state
         if self.notebook_reviews:
@@ -1133,6 +1542,10 @@ class CreateCleanRoomAssetReviewResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreateCleanRoomAssetReviewResponse:
         """Deserializes the CreateCleanRoomAssetReviewResponse from a dictionary."""
         return cls(
+            jar_analysis_review_state=_enum(
+                d, "jar_analysis_review_state", CleanRoomJarAnalysisReviewJarAnalysisReviewState
+            ),
+            jar_analysis_reviews=_repeated_dict(d, "jar_analysis_reviews", CleanRoomJarAnalysisReview),
             notebook_review_state=_enum(d, "notebook_review_state", CleanRoomNotebookReviewNotebookReviewState),
             notebook_reviews=_repeated_dict(d, "notebook_reviews", CleanRoomNotebookReview),
         )
@@ -1181,6 +1594,50 @@ class DeleteCleanRoomAssetResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeleteCleanRoomAssetResponse:
         """Deserializes the DeleteCleanRoomAssetResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class JarAnalysisVersionReview:
+    etag: str
+    """Etag identifying the jar analysis version, with its value being a hash of an
+    internally-generated UUID"""
+
+    review_state: CleanRoomJarAnalysisReviewJarAnalysisReviewState
+    """Review outcome"""
+
+    comment: Optional[str] = None
+    """Review comment"""
+
+    def as_dict(self) -> dict:
+        """Serializes the JarAnalysisVersionReview into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.review_state is not None:
+            body["review_state"] = self.review_state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JarAnalysisVersionReview into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.review_state is not None:
+            body["review_state"] = self.review_state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JarAnalysisVersionReview:
+        """Deserializes the JarAnalysisVersionReview from a dictionary."""
+        return cls(
+            comment=d.get("comment", None),
+            etag=d.get("etag", None),
+            review_state=_enum(d, "review_state", CleanRoomJarAnalysisReviewJarAnalysisReviewState),
+        )
 
 
 @dataclass
@@ -1318,6 +1775,39 @@ class ListCleanRoomNotebookTaskRunsResponse:
 
 
 @dataclass
+class ListCleanRoomTaskRunsResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages. page_token
+    should be set to this value for the next request (for the next page of results)."""
+
+    runs: Optional[List[CleanRoomTaskRun]] = None
+    """Task runs in the clean room."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListCleanRoomTaskRunsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.runs:
+            body["runs"] = [v.as_dict() for v in self.runs]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListCleanRoomTaskRunsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.runs:
+            body["runs"] = self.runs
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListCleanRoomTaskRunsResponse:
+        """Deserializes the ListCleanRoomTaskRunsResponse from a dictionary."""
+        return cls(next_page_token=d.get("next_page_token", None), runs=_repeated_dict(d, "runs", CleanRoomTaskRun))
+
+
+@dataclass
 class ListCleanRoomsResponse:
     clean_rooms: Optional[List[CleanRoom]] = None
 
@@ -1421,7 +1911,7 @@ class CleanRoomAssetRevisionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -1466,7 +1956,7 @@ class CleanRoomAssetRevisionsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -1505,6 +1995,7 @@ class CleanRoomAssetsAPI:
         """
 
         body = asset.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1512,7 +2003,7 @@ class CleanRoomAssetsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/clean-rooms/{clean_room_name}/assets", body=body, headers=headers)
         return CleanRoomAsset.from_dict(res)
@@ -1523,6 +2014,7 @@ class CleanRoomAssetsAPI:
         asset_type: CleanRoomAssetAssetType,
         name: str,
         *,
+        jar_analysis_review: Optional[JarAnalysisVersionReview] = None,
         notebook_review: Optional[NotebookVersionReview] = None,
     ) -> CreateCleanRoomAssetReviewResponse:
         """Submit an asset review
@@ -1533,12 +2025,15 @@ class CleanRoomAssetsAPI:
           Asset type. Can either be NOTEBOOK_FILE or JAR_ANALYSIS.
         :param name: str
           Name of the asset
+        :param jar_analysis_review: :class:`JarAnalysisVersionReview` (optional)
         :param notebook_review: :class:`NotebookVersionReview` (optional)
 
         :returns: :class:`CreateCleanRoomAssetReviewResponse`
         """
 
         body = {}
+        if jar_analysis_review is not None:
+            body["jar_analysis_review"] = jar_analysis_review.as_dict()
         if notebook_review is not None:
             body["notebook_review"] = notebook_review.as_dict()
         headers = {
@@ -1548,7 +2043,7 @@ class CleanRoomAssetsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -1577,7 +2072,7 @@ class CleanRoomAssetsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE", f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}", headers=headers
@@ -1602,7 +2097,7 @@ class CleanRoomAssetsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}", headers=headers
@@ -1629,7 +2124,7 @@ class CleanRoomAssetsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", f"/api/2.0/clean-rooms/{clean_room_name}/assets", query=query, headers=headers)
@@ -1660,13 +2155,14 @@ class CleanRoomAssetsAPI:
           For notebooks, the name is the notebook file name. For jar analyses, the name is the jar analysis
           name.
         :param asset: :class:`CleanRoomAsset`
-          The asset to update. The asset's `name` and `asset_type` fields are used to identify the asset to
-          update.
+          The asset to update. The asset's ``name`` and ``asset_type`` fields are used to identify the asset
+          to update.
 
         :returns: :class:`CleanRoomAsset`
         """
 
         body = asset.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1674,7 +2170,7 @@ class CleanRoomAssetsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -1712,7 +2208,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules", body=body, headers=headers
@@ -1734,7 +2230,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}", headers=headers)
 
@@ -1753,7 +2249,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}", headers=headers
@@ -1785,7 +2281,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -1814,6 +2310,7 @@ class CleanRoomAutoApprovalRulesAPI:
         """
 
         body = auto_approval_rule.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1821,7 +2318,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}", body=body, headers=headers
@@ -1830,7 +2327,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
 
 class CleanRoomTaskRunsAPI:
-    """Clean room task runs are the executions of notebooks in a clean room."""
+    """Clean room task runs are the executions of notebooks and JAR analyses in a clean room."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1870,13 +2367,66 @@ class CleanRoomTaskRunsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", f"/api/2.0/clean-rooms/{clean_room_name}/runs", query=query, headers=headers)
             if "runs" in json:
                 for v in json["runs"]:
                     yield CleanRoomNotebookTaskRun.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_clean_room_task_runs_handler(
+        self,
+        clean_room_name: str,
+        *,
+        name: Optional[str] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        task_type: Optional[CleanRoomTaskType] = None,
+    ) -> Iterator[CleanRoomTaskRun]:
+        """List all the historical task runs in a clean room.
+
+        :param clean_room_name: str
+          Name of the clean room.
+        :param name: str (optional)
+          Executable name.
+        :param page_size: int (optional)
+          The maximum number of task runs to return. Maximum value of 100.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+        :param task_type: :class:`CleanRoomTaskType` (optional)
+          Filter by the type of Clean Room task.
+
+        :returns: Iterator over :class:`CleanRoomTaskRun`
+        """
+
+        query = {}
+        if name is not None:
+            query["name"] = name
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if task_type is not None:
+            query["task_type"] = task_type.value
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/clean-rooms/{clean_room_name}/task-runs", query=query, headers=headers
+            )
+            if "runs" in json:
+                for v in json["runs"]:
+                    yield CleanRoomTaskRun.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -1918,9 +2468,9 @@ class CleanRoomsAPI:
     def create(self, clean_room: CleanRoom) -> Wait[CleanRoom]:
         """Create a new clean room with the specified collaborators. This method is asynchronous; the returned
         name field inside the clean_room field can be used to poll the clean room status, using the
-        :method:cleanrooms/get method. When this method returns, the clean room will be in a PROVISIONING
-        state, with only name, owner, comment, created_at and status populated. The clean room will be usable
-        once it enters an ACTIVE state.
+        `cleanrooms/get <https://docs.databricks.com/api/workspace/cleanrooms/get>`__ method. When this method
+        returns, the clean room will be in a PROVISIONING state, with only name, owner, comment, created_at
+        and status populated. The clean room will be usable once it enters an ACTIVE state.
 
         The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM** privilege on the metastore.
 
@@ -1932,6 +2482,7 @@ class CleanRoomsAPI:
         """
 
         body = clean_room.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1939,7 +2490,7 @@ class CleanRoomsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.0/clean-rooms", body=body, headers=headers)
         return Wait(
@@ -1962,6 +2513,7 @@ class CleanRoomsAPI:
         """
 
         body = output_catalog.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1969,7 +2521,7 @@ class CleanRoomsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", f"/api/2.0/clean-rooms/{clean_room_name}/output-catalogs", body=body, headers=headers
@@ -1993,7 +2545,7 @@ class CleanRoomsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/clean-rooms/{name}", headers=headers)
 
@@ -2011,7 +2563,7 @@ class CleanRoomsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/clean-rooms/{name}", headers=headers)
         return CleanRoom.from_dict(res)
@@ -2039,7 +2591,7 @@ class CleanRoomsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/clean-rooms", query=query, headers=headers)
@@ -2054,7 +2606,7 @@ class CleanRoomsAPI:
         """Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**
         privilege, or be metastore admin.
 
-        When the caller is a metastore admin, only the __owner__ field can be updated.
+        When the caller is a metastore admin, only the **owner** field can be updated.
 
         :param name: str
           Name of the clean room.
@@ -2073,7 +2625,7 @@ class CleanRoomsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/clean-rooms/{name}", body=body, headers=headers)
         return CleanRoom.from_dict(res)

@@ -1,4 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+# ruff: noqa: F811, F841
+# F401 is intentionally NOT covered: `make fmt` uses `ruff check --fix-only`
+# to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
 
@@ -6,7 +9,9 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Iterator, List, Optional
 
-from databricks.sdk.service._internal import _repeated_dict
+from databricks.sdk.service._internal import (
+    _repeated_dict,
+)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -222,23 +227,20 @@ class Value:
 
 class TagPoliciesAPI:
     """The Tag Policy API allows you to manage policies for governed tags in Databricks. For Terraform usage, see
-    the [Tag Policy Terraform documentation]. Permissions for tag policies can be managed using the [Account
-    Access Control Proxy API].
-
-    [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
-    [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
-    """
+    the `Tag Policy Terraform documentation
+    <https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy>`__.
+    Permissions for tag policies can be managed using the `Account Access Control Proxy API
+    <https://docs.databricks.com/api/workspace/accountaccesscontrolproxy>`__."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create_tag_policy(self, tag_policy: TagPolicy) -> TagPolicy:
-        """Creates a new tag policy, making the associated tag key governed. For Terraform usage, see the [Tag
-        Policy Terraform documentation]. To manage permissions for tag policies, use the [Account Access
-        Control Proxy API].
-
-        [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
-        [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
+        """Creates a new tag policy, making the associated tag key governed. For Terraform usage, see the `Tag
+        Policy Terraform documentation
+        <https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy>`__.
+        To manage permissions for tag policies, use the `Account Access Control Proxy API
+        <https://docs.databricks.com/api/workspace/accountaccesscontrolproxy>`__.
 
         :param tag_policy: :class:`TagPolicy`
 
@@ -246,6 +248,7 @@ class TagPoliciesAPI:
         """
 
         body = tag_policy.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -253,16 +256,15 @@ class TagPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/tag-policies", body=body, headers=headers)
         return TagPolicy.from_dict(res)
 
     def delete_tag_policy(self, tag_key: str):
         """Deletes a tag policy by its associated governed tag's key, leaving that tag key ungoverned. For
-        Terraform usage, see the [Tag Policy Terraform documentation].
-
-        [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
+        Terraform usage, see the `Tag Policy Terraform documentation
+        <https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy>`__.
 
         :param tag_key: str
 
@@ -275,17 +277,16 @@ class TagPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/tag-policies/{tag_key}", headers=headers)
 
     def get_tag_policy(self, tag_key: str) -> TagPolicy:
-        """Gets a single tag policy by its associated governed tag's key. For Terraform usage, see the [Tag
-        Policy Terraform documentation]. To list granted permissions for tag policies, use the [Account Access
-        Control Proxy API].
-
-        [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
-        [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policy
+        """Gets a single tag policy by its associated governed tag's key. For Terraform usage, see the `Tag
+        Policy Terraform documentation
+        <https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policy>`__.
+        To list granted permissions for tag policies, use the `Account Access Control Proxy API
+        <https://docs.databricks.com/api/workspace/accountaccesscontrolproxy>`__.
 
         :param tag_key: str
 
@@ -298,7 +299,7 @@ class TagPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/tag-policies/{tag_key}", headers=headers)
         return TagPolicy.from_dict(res)
@@ -306,12 +307,11 @@ class TagPoliciesAPI:
     def list_tag_policies(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[TagPolicy]:
-        """Lists the tag policies for all governed tags in the account. For Terraform usage, see the [Tag Policy
-        Terraform documentation]. To list granted permissions for tag policies, use the [Account Access
-        Control Proxy API].
-
-        [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
-        [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policies
+        """Lists the tag policies for all governed tags in the account. For Terraform usage, see the `Tag Policy
+        Terraform documentation
+        <https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policies>`__.
+        To list granted permissions for tag policies, use the `Account Access Control Proxy API
+        <https://docs.databricks.com/api/workspace/accountaccesscontrolproxy>`__.
 
         :param page_size: int (optional)
           The maximum number of results to return in this request. Fewer results may be returned than
@@ -334,7 +334,7 @@ class TagPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/tag-policies", query=query, headers=headers)
@@ -346,25 +346,24 @@ class TagPoliciesAPI:
             query["page_token"] = json["next_page_token"]
 
     def update_tag_policy(self, tag_key: str, tag_policy: TagPolicy, update_mask: str) -> TagPolicy:
-        """Updates an existing tag policy for a single governed tag. For Terraform usage, see the [Tag Policy
-        Terraform documentation]. To manage permissions for tag policies, use the [Account Access Control
-        Proxy API].
-
-        [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
-        [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
+        """Updates an existing tag policy for a single governed tag. For Terraform usage, see the `Tag Policy
+        Terraform documentation
+        <https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy>`__.
+        To manage permissions for tag policies, use the `Account Access Control Proxy API
+        <https://docs.databricks.com/api/workspace/accountaccesscontrolproxy>`__.
 
         :param tag_key: str
         :param tag_policy: :class:`TagPolicy`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`TagPolicy`
         """
@@ -380,7 +379,7 @@ class TagPoliciesAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/tag-policies/{tag_key}", query=query, body=body, headers=headers)
         return TagPolicy.from_dict(res)
@@ -401,6 +400,7 @@ class WorkspaceEntityTagAssignmentsAPI:
         """
 
         body = tag_assignment.as_dict()
+        query = {}
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -408,7 +408,7 @@ class WorkspaceEntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/entity-tag-assignments", body=body, headers=headers)
         return TagAssignment.from_dict(res)
@@ -433,7 +433,7 @@ class WorkspaceEntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE", f"/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags/{tag_key}", headers=headers
@@ -459,7 +459,7 @@ class WorkspaceEntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags/{tag_key}", headers=headers
@@ -495,7 +495,7 @@ class WorkspaceEntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -523,14 +523,14 @@ class WorkspaceEntityTagAssignmentsAPI:
         :param tag_assignment: :class:`TagAssignment`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          field path is relative to the resource object, using a dot (``.``) to navigate sub-fields (e.g.,
+          ``author.given_name``). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          A field mask of ``*`` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using ``*`` wildcards, as it can lead to unintended results if the
+          API changes in the future.
 
         :returns: :class:`TagAssignment`
         """
@@ -546,7 +546,7 @@ class WorkspaceEntityTagAssignmentsAPI:
 
         cfg = self._api._cfg
         if cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",

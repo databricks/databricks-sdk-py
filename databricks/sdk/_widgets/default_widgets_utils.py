@@ -4,7 +4,6 @@ from . import WidgetUtils
 
 
 class DefaultValueOnlyWidgetUtils(WidgetUtils):
-
     def __init__(self) -> None:
         self._widgets: typing.Dict[str, str] = {}
 
