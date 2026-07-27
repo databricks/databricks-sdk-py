@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest as pytest
 
 from databricks.sdk.dbutils import FileInfo as DBUtilsFileInfo
@@ -144,7 +146,7 @@ def dbutils_proxy(mocker):
         return_value=Wait(lambda **kwargs: Created("y")),
     )
 
-    def inner(results_data: any, expect_command: str):
+    def inner(results_data: Any, expect_command: str):
         import json
 
         command_execute = mocker.patch(

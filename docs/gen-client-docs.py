@@ -457,7 +457,7 @@ Dataclasses
 if __name__ == '__main__':
 
     @credentials_strategy('noop', [])
-    def noop_credentials(_: any):
+    def noop_credentials(_: Any):
         return lambda: {}
 
     gen = Generator()

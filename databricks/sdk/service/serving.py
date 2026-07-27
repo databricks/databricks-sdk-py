@@ -2357,7 +2357,7 @@ class QueryEndpointResponse:
     """The type of object returned by the **external/foundation model** serving endpoint, one of
     [text_completion, chat.completion, list (of embeddings)]."""
 
-    outputs: Optional[List[any]] = None
+    outputs: Optional[List[Any]] = None
     """The outputs of the feature serving endpoint."""
 
     predictions: Optional[List[Any]] = None

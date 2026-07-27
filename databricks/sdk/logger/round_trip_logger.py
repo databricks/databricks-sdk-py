@@ -55,7 +55,7 @@ class RoundTrip:
         return "\n".join(sb)
 
     @staticmethod
-    def _mask(m: Dict[str, any]):
+    def _mask(m: Dict[str, Any]):
         for k in m:
             if k in {
                 "bytes_value",
@@ -67,7 +67,7 @@ class RoundTrip:
                 m[k] = "**REDACTED**"
 
     @staticmethod
-    def _map_keys(m: Dict[str, any]) -> List[str]:
+    def _map_keys(m: Dict[str, Any]) -> List[str]:
         keys = list(m.keys())
         keys.sort()
         return keys

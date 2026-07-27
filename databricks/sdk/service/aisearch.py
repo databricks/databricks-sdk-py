@@ -702,7 +702,7 @@ class EndpointType(Enum):
 class FacetResultData:
     """Facet aggregation rows returned by a query."""
 
-    facet_array: Optional[List[List[any]]] = None
+    facet_array: Optional[List[List[Any]]] = None
     """Facet rows; each row is ``[facet_column_name, value_or_range, count]``."""
 
     facet_row_count: Optional[int] = None
@@ -1161,7 +1161,7 @@ class RerankerConfigRerankerParameters:
 class ResultData:
     """The rows of a query result set."""
 
-    data_array: Optional[List[List[any]]] = None
+    data_array: Optional[List[List[Any]]] = None
     """Result rows; each row is a list of column values aligned with the manifest columns."""
 
     row_count: Optional[int] = None
@@ -1256,7 +1256,7 @@ class ScalingChangeState(Enum):
 class ScanIndexResponse:
     """Response for ScanIndex carrying a page of rows and an optional continuation token."""
 
-    data: Optional[List[Dict[str, any]]] = None
+    data: Optional[List[Dict[str, Any]]] = None
     """The rows in this page, each a struct of column name to value."""
 
     next_page_token: Optional[str] = None
