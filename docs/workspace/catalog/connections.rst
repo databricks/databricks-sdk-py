@@ -12,7 +12,7 @@
     on cloud storage. You can create different types of connections, and each connection has a unique set of
     configuration options to support credential management and other settings.
 
-    .. py:method:: create(name: str, connection_type: ConnectionType, options: Dict[str, str] [, comment: Optional[str], environment_settings: Optional[EnvironmentSettings], parent: Optional[str], properties: Optional[Dict[str, str]], read_only: Optional[bool]]) -> ConnectionInfo
+    .. py:method:: create(name: str, connection_type: ConnectionType, options: Dict[str, str] [, comment: Optional[str], environment_settings: Optional[EnvironmentSettings], parent: Optional[str], properties: Optional[Dict[str, str]], read_only: Optional[bool], secrets: Optional[Dict[str, str]]]) -> ConnectionInfo
 
 
         Usage:
@@ -62,6 +62,9 @@
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
           If the connection is read only.
+        :param secrets: Dict[str,str] (optional)
+          A map of option names to UC Secret references. Keys are connection option names (same as in
+          OptionsKVPairs) and values are UC Secret fully qualified names.
 
         :returns: :class:`ConnectionInfo`
         
@@ -163,7 +166,7 @@
         :returns: Iterator over :class:`ConnectionInfo`
         
 
-    .. py:method:: update(name: str, options: Dict[str, str] [, environment_settings: Optional[EnvironmentSettings], new_name: Optional[str], owner: Optional[str]]) -> ConnectionInfo
+    .. py:method:: update(name: str, options: Dict[str, str] [, environment_settings: Optional[EnvironmentSettings], new_name: Optional[str], owner: Optional[str], secrets: Optional[Dict[str, str]]]) -> ConnectionInfo
 
 
         Usage:
@@ -212,6 +215,9 @@
           New name for the connection.
         :param owner: str (optional)
           Username of current owner of the connection.
+        :param secrets: Dict[str,str] (optional)
+          A map of option names to UC Secret references. Keys are connection option names (same as in
+          OptionsKVPairs) and values are UC Secret fully qualified names.
 
         :returns: :class:`ConnectionInfo`
         

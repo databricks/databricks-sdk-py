@@ -229,3 +229,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: UpsertDataResponse
    :members:
    :undoc-members:
+
+.. autoclass:: Warning
+   :members:
+   :undoc-members:
+
+.. py:class:: WarningStatusCode
+
+   Status code categorizing an advisory warning surfaced on an AI Search endpoint.
+
+   .. py:attribute:: ENDPOINT_HAS_INDEX_WITHOUT_OPTIMIZED_ROUTE
+      :value: "ENDPOINT_HAS_INDEX_WITHOUT_OPTIMIZED_ROUTE"
+
+   .. py:attribute:: ENDPOINT_HAS_MANAGED_INDEX
+      :value: "ENDPOINT_HAS_MANAGED_INDEX"
+
+   .. py:attribute:: RERANKER_TEMPORARILY_UNAVAILABLE
+      :value: "RERANKER_TEMPORARILY_UNAVAILABLE"

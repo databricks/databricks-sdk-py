@@ -4,11 +4,13 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
+from dataclasses import dataclass
+from typing import Dict, Any, Optional
+
 
 import logging
 import uuid
-from dataclasses import dataclass
-from typing import Any, Dict, Optional
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
