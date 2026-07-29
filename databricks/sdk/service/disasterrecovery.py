@@ -4,26 +4,129 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from databricks.sdk.common.types.fieldmask import FieldMask
+import logging
+
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
     _repeated_dict,
     _timestamp,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
 
 # all definitions in this file are in alphabetical order
+
+
+@dataclass
+class AssetReplicationConfig:
+    """Per-asset-type control over which workspace assets are replicated for a workspace set. Applies
+    only when replicate_workspace_assets is true. Each toggle enables replication of one asset type
+    (or, for the workspace tree, one sub-type). Folders and permissions are always replicated for a
+    coherent recovery copy and therefore have no toggle.
+
+    This message is all-or-nothing: if it is provided, every toggle must be set (a partial config is
+    rejected). Omitting the containing asset_replication_config field entirely selects the default
+    of replicating every asset type; sending the message means the caller opts into explicit
+    per-type control and must therefore state each type."""
+
+    enable_jobs: bool
+    """Whether to replicate jobs."""
+
+    enable_clusters: bool
+    """Whether to replicate clusters (including cluster policies, instance profiles, global init
+    scripts, and worker environment overlays)."""
+
+    enable_warehouse: bool
+    """Whether to replicate SQL warehouses."""
+
+    enable_sql_workspace: bool
+    """Whether to replicate the SQL workspace."""
+
+    enable_libraries: bool
+    """Whether to replicate libraries."""
+
+    enable_notebooks: bool
+    """Whether to replicate notebooks."""
+
+    enable_files: bool
+    """Whether to replicate workspace files."""
+
+    enable_queries: bool
+    """Whether to replicate SQL queries."""
+
+    enable_dashboards: bool
+    """Whether to replicate dashboards."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AssetReplicationConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enable_clusters is not None:
+            body["enable_clusters"] = self.enable_clusters
+        if self.enable_dashboards is not None:
+            body["enable_dashboards"] = self.enable_dashboards
+        if self.enable_files is not None:
+            body["enable_files"] = self.enable_files
+        if self.enable_jobs is not None:
+            body["enable_jobs"] = self.enable_jobs
+        if self.enable_libraries is not None:
+            body["enable_libraries"] = self.enable_libraries
+        if self.enable_notebooks is not None:
+            body["enable_notebooks"] = self.enable_notebooks
+        if self.enable_queries is not None:
+            body["enable_queries"] = self.enable_queries
+        if self.enable_sql_workspace is not None:
+            body["enable_sql_workspace"] = self.enable_sql_workspace
+        if self.enable_warehouse is not None:
+            body["enable_warehouse"] = self.enable_warehouse
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AssetReplicationConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enable_clusters is not None:
+            body["enable_clusters"] = self.enable_clusters
+        if self.enable_dashboards is not None:
+            body["enable_dashboards"] = self.enable_dashboards
+        if self.enable_files is not None:
+            body["enable_files"] = self.enable_files
+        if self.enable_jobs is not None:
+            body["enable_jobs"] = self.enable_jobs
+        if self.enable_libraries is not None:
+            body["enable_libraries"] = self.enable_libraries
+        if self.enable_notebooks is not None:
+            body["enable_notebooks"] = self.enable_notebooks
+        if self.enable_queries is not None:
+            body["enable_queries"] = self.enable_queries
+        if self.enable_sql_workspace is not None:
+            body["enable_sql_workspace"] = self.enable_sql_workspace
+        if self.enable_warehouse is not None:
+            body["enable_warehouse"] = self.enable_warehouse
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AssetReplicationConfig:
+        """Deserializes the AssetReplicationConfig from a dictionary."""
+        return cls(
+            enable_clusters=d.get("enable_clusters", None),
+            enable_dashboards=d.get("enable_dashboards", None),
+            enable_files=d.get("enable_files", None),
+            enable_jobs=d.get("enable_jobs", None),
+            enable_libraries=d.get("enable_libraries", None),
+            enable_notebooks=d.get("enable_notebooks", None),
+            enable_queries=d.get("enable_queries", None),
+            enable_sql_workspace=d.get("enable_sql_workspace", None),
+            enable_warehouse=d.get("enable_warehouse", None),
+        )
 
 
 class FailoverFailoverGroupRequestFailoverType(Enum):
@@ -468,6 +571,11 @@ class WorkspaceSet:
     """Workspace IDs in this set. The system derives and validates regions. All workspaces must be in
     the Mission Critical tier."""
 
+    asset_replication_config: Optional[AssetReplicationConfig] = None
+    """Per-asset-type control over which workspace assets are replicated. Applies only when
+    replicate_workspace_assets is true. When omitted while control plane DR is enabled, every asset
+    type is replicated."""
+
     replicate_workspace_assets: Optional[bool] = None
     """Whether to enable control plane DR (notebooks, jobs, clusters, etc.) for this set. Defaults to
     false."""
@@ -480,6 +588,8 @@ class WorkspaceSet:
     def as_dict(self) -> dict:
         """Serializes the WorkspaceSet into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.asset_replication_config:
+            body["asset_replication_config"] = self.asset_replication_config.as_dict()
         if self.name is not None:
             body["name"] = self.name
         if self.replicate_workspace_assets is not None:
@@ -493,6 +603,8 @@ class WorkspaceSet:
     def as_shallow_dict(self) -> dict:
         """Serializes the WorkspaceSet into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.asset_replication_config:
+            body["asset_replication_config"] = self.asset_replication_config
         if self.name is not None:
             body["name"] = self.name
         if self.replicate_workspace_assets is not None:
@@ -507,6 +619,7 @@ class WorkspaceSet:
     def from_dict(cls, d: Dict[str, Any]) -> WorkspaceSet:
         """Deserializes the WorkspaceSet from a dictionary."""
         return cls(
+            asset_replication_config=_from_dict(d, "asset_replication_config", AssetReplicationConfig),
             name=d.get("name", None),
             replicate_workspace_assets=d.get("replicate_workspace_assets", None),
             stable_url_names=d.get("stable_url_names", None),

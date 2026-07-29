@@ -1,10 +1,10 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 # ruff: noqa: F403, F405
 
-import re
-
 from .base import _ErrorOverride
 from .platform import *
+import re
+
 
 _ALL_OVERRIDES = [
     _ErrorOverride(

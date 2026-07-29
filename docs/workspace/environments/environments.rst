@@ -10,6 +10,18 @@
     workspace-level base environments that define the environment version and dependencies to be used in
     serverless notebooks and jobs.
 
+    .. py:method:: batch_get_workspace_base_environments(names: List[str]) -> BatchGetWorkspaceBaseEnvironmentsResponse
+
+        Retrieves multiple WorkspaceBaseEnvironments by name in a single call. The operation is atomic: it
+        either returns all of the requested environments or fails.
+
+        :param names: List[str]
+          Required. The names of the workspace base environments to retrieve. Format:
+          workspace-base-environments/{workspace_base_environment}
+
+        :returns: :class:`BatchGetWorkspaceBaseEnvironmentsResponse`
+        
+
     .. py:method:: create_workspace_base_environment(workspace_base_environment: WorkspaceBaseEnvironment [, request_id: Optional[str], workspace_base_environment_id: Optional[str]]) -> CreateWorkspaceBaseEnvironmentOperation
 
         Creates a new WorkspaceBaseEnvironment. This is a long-running operation. The operation will

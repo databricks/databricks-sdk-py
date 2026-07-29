@@ -4,25 +4,26 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Callable, Optional
 
-from databricks.sdk.common.types.fieldmask import FieldMask
+
+import time
+import random
+import logging
+
+from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    Wait,
     _enum,
     _from_dict,
     _repeated_dict,
     _repeated_enum,
+    Wait,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
 
-from ..errors import OperationFailed
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -642,6 +643,54 @@ class AlertState(Enum):
 
 
 @dataclass
+class AlertStatementParameter:
+    """Redash-owned copy of the internal StatementParameter for the external AlertV2 API. The internal
+    ``ordinal`` and ``args`` fields are intentionally omitted: the public API supports only flat,
+    named scalar parameters; complex types (ARRAY, MAP, STRUCT) are not supported. This mirrors
+    SEA's public StatementParameter schema, see:
+    cmdexec/sql-exec-api/proto/sql_exec_api_service.proto:763-779"""
+
+    name: str
+    """The name of the parameter, referenced in the query as ``:name``."""
+
+    type: Optional[str] = None
+    """The SQL data type of the parameter, e.g. STRING, INT, or DATE. Defaults to STRING. This is a
+    string rather than an enum because scalar subtypes such as DECIMAL(10, 4) cannot be enumerated.
+    Complex types such as ARRAY, MAP, and STRUCT are not supported."""
+
+    value: Optional[str] = None
+    """The bound value for the parameter, given as a string. If omitted, the value is interpreted as
+    NULL."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertStatementParameter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.type is not None:
+            body["type"] = self.type
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertStatementParameter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.type is not None:
+            body["type"] = self.type
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertStatementParameter:
+        """Deserializes the AlertStatementParameter from a dictionary."""
+        return cls(name=d.get("name", None), type=d.get("type", None), value=d.get("value", None))
+
+
+@dataclass
 class AlertV2:
     display_name: str
     """The display name of the alert."""
@@ -665,6 +714,9 @@ class AlertV2:
     custom_summary: Optional[str] = None
     """Custom summary for the alert. support mustache template."""
 
+    effective_parent_path: Optional[str] = None
+    """The actual workspace path of the folder containing the alert. This is an output-only field."""
+
     effective_run_as: Optional[AlertV2RunAs] = None
     """The actual identity that will be used to execute the alert. This is an output-only field that
     shows the resolved run-as identity after applying permissions and defaults."""
@@ -677,6 +729,10 @@ class AlertV2:
 
     owner_user_name: Optional[str] = None
     """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
+
+    parameters: Optional[List[AlertStatementParameter]] = None
+    """Query parameters bound when executing the alert query, referenced in the query text with
+    ``:name`` syntax. Static values only."""
 
     parent_path: Optional[str] = None
     """The workspace path of the folder containing the alert. Can only be set on create, and cannot be
@@ -711,6 +767,8 @@ class AlertV2:
             body["custom_summary"] = self.custom_summary
         if self.display_name is not None:
             body["display_name"] = self.display_name
+        if self.effective_parent_path is not None:
+            body["effective_parent_path"] = self.effective_parent_path
         if self.effective_run_as:
             body["effective_run_as"] = self.effective_run_as.as_dict()
         if self.evaluation:
@@ -721,6 +779,8 @@ class AlertV2:
             body["lifecycle_state"] = self.lifecycle_state.value
         if self.owner_user_name is not None:
             body["owner_user_name"] = self.owner_user_name
+        if self.parameters:
+            body["parameters"] = [v.as_dict() for v in self.parameters]
         if self.parent_path is not None:
             body["parent_path"] = self.parent_path
         if self.query_text is not None:
@@ -748,6 +808,8 @@ class AlertV2:
             body["custom_summary"] = self.custom_summary
         if self.display_name is not None:
             body["display_name"] = self.display_name
+        if self.effective_parent_path is not None:
+            body["effective_parent_path"] = self.effective_parent_path
         if self.effective_run_as:
             body["effective_run_as"] = self.effective_run_as
         if self.evaluation:
@@ -758,6 +820,8 @@ class AlertV2:
             body["lifecycle_state"] = self.lifecycle_state
         if self.owner_user_name is not None:
             body["owner_user_name"] = self.owner_user_name
+        if self.parameters:
+            body["parameters"] = self.parameters
         if self.parent_path is not None:
             body["parent_path"] = self.parent_path
         if self.query_text is not None:
@@ -782,11 +846,13 @@ class AlertV2:
             custom_description=d.get("custom_description", None),
             custom_summary=d.get("custom_summary", None),
             display_name=d.get("display_name", None),
+            effective_parent_path=d.get("effective_parent_path", None),
             effective_run_as=_from_dict(d, "effective_run_as", AlertV2RunAs),
             evaluation=_from_dict(d, "evaluation", AlertV2Evaluation),
             id=d.get("id", None),
             lifecycle_state=_enum(d, "lifecycle_state", AlertLifecycleState),
             owner_user_name=d.get("owner_user_name", None),
+            parameters=_repeated_dict(d, "parameters", AlertStatementParameter),
             parent_path=d.get("parent_path", None),
             query_text=d.get("query_text", None),
             run_as=_from_dict(d, "run_as", AlertV2RunAs),
@@ -1679,6 +1745,8 @@ class CreateVisualizationRequestVisualization:
 class CreateWarehouseRequestWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
+    REALTIME = "REALTIME"
+    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -1720,12 +1788,17 @@ class CronSchedule:
     https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
     for details."""
 
+    effective_pause_status: Optional[SchedulePauseStatus] = None
+    """The actual pause status of the schedule. This is an output-only field."""
+
     pause_status: Optional[SchedulePauseStatus] = None
     """Indicate whether this schedule is paused or not."""
 
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.effective_pause_status is not None:
+            body["effective_pause_status"] = self.effective_pause_status.value
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status.value
         if self.quartz_cron_schedule is not None:
@@ -1737,6 +1810,8 @@ class CronSchedule:
     def as_shallow_dict(self) -> dict:
         """Serializes the CronSchedule into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.effective_pause_status is not None:
+            body["effective_pause_status"] = self.effective_pause_status
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status
         if self.quartz_cron_schedule is not None:
@@ -1749,6 +1824,7 @@ class CronSchedule:
     def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
         return cls(
+            effective_pause_status=_enum(d, "effective_pause_status", SchedulePauseStatus),
             pause_status=_enum(d, "pause_status", SchedulePauseStatus),
             quartz_cron_schedule=d.get("quartz_cron_schedule", None),
             timezone_id=d.get("timezone_id", None),
@@ -2300,6 +2376,8 @@ class Disposition(Enum):
 class EditWarehouseRequestWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
+    REALTIME = "REALTIME"
+    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -2667,6 +2745,8 @@ class EndpointInfo:
 class EndpointInfoWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
+    REALTIME = "REALTIME"
+    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -3306,6 +3386,8 @@ class GetWarehouseResponse:
 class GetWarehouseResponseWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
+    REALTIME = "REALTIME"
+    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
@@ -5625,6 +5707,7 @@ class QueryParameter:
 class QueryStatementType(Enum):
     ALTER = "ALTER"
     ANALYZE = "ANALYZE"
+    CALL = "CALL"
     COPY = "COPY"
     CREATE = "CREATE"
     DELETE = "DELETE"
@@ -6473,6 +6556,7 @@ class TerminationReasonCode(Enum):
     BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG = "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG"
     BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED = "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED"
     BUDGET_POLICY_RESOLUTION_FAILURE = "BUDGET_POLICY_RESOLUTION_FAILURE"
+    CERT_ROTATION = "CERT_ROTATION"
     CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED = "CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED"
     CLOUD_ACCOUNT_SETUP_FAILURE = "CLOUD_ACCOUNT_SETUP_FAILURE"
     CLOUD_OPERATION_CANCELLED = "CLOUD_OPERATION_CANCELLED"
@@ -6491,6 +6575,7 @@ class TerminationReasonCode(Enum):
     CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG"
     CONTROL_PLANE_REQUEST_FAILURE = "CONTROL_PLANE_REQUEST_FAILURE"
     CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG"
+    COST_CONTROL_ENTITLEMENT_DENIED = "COST_CONTROL_ENTITLEMENT_DENIED"
     DATABASE_CONNECTION_FAILURE = "DATABASE_CONNECTION_FAILURE"
     DATA_ACCESS_CONFIG_CHANGED = "DATA_ACCESS_CONFIG_CHANGED"
     DBFS_COMPONENT_UNHEALTHY = "DBFS_COMPONENT_UNHEALTHY"
@@ -6501,6 +6586,7 @@ class TerminationReasonCode(Enum):
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
     DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
     DOCKER_INVALID_OS_EXCEPTION = "DOCKER_INVALID_OS_EXCEPTION"
+    DRIVER_DNS_RESOLUTION_FAILURE = "DRIVER_DNS_RESOLUTION_FAILURE"
     DRIVER_EVICTION = "DRIVER_EVICTION"
     DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
     DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
@@ -6581,6 +6667,8 @@ class TerminationReasonCode(Enum):
     NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
+    NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
+    NO_ACTIVATED_K8S_TESTING_TAG = "NO_ACTIVATED_K8S_TESTING_TAG"
     NO_MATCHED_K8S = "NO_MATCHED_K8S"
     NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
@@ -6591,9 +6679,11 @@ class TerminationReasonCode(Enum):
     REQUEST_REJECTED = "REQUEST_REJECTED"
     REQUEST_THROTTLED = "REQUEST_THROTTLED"
     RESOURCE_USAGE_BLOCKED = "RESOURCE_USAGE_BLOCKED"
+    SECRET_CREATION_ACCESS_DENIED = "SECRET_CREATION_ACCESS_DENIED"
     SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
     SECRET_PERMISSION_DENIED = "SECRET_PERMISSION_DENIED"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
+    SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION = "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
     SERVERLESS_LONG_RUNNING_TERMINATED = "SERVERLESS_LONG_RUNNING_TERMINATED"
@@ -6625,6 +6715,7 @@ class TerminationReasonCode(Enum):
     WORKER_SETUP_FAILURE = "WORKER_SETUP_FAILURE"
     WORKSPACE_CANCELLED_ERROR = "WORKSPACE_CANCELLED_ERROR"
     WORKSPACE_CONFIGURATION_ERROR = "WORKSPACE_CONFIGURATION_ERROR"
+    WORKSPACE_DELEGATION_KEY_MISCONFIGURED = "WORKSPACE_DELEGATION_KEY_MISCONFIGURED"
     WORKSPACE_UPDATE = "WORKSPACE_UPDATE"
 
 
@@ -7375,6 +7466,8 @@ class WarehouseTypePair:
 class WarehouseTypePairWarehouseType(Enum):
     CLASSIC = "CLASSIC"
     PRO = "PRO"
+    REALTIME = "REALTIME"
+    REYDEN = "REYDEN"
     TYPE_UNSPECIFIED = "TYPE_UNSPECIFIED"
 
 
