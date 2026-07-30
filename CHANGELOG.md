@@ -1,5 +1,36 @@
 # Version changelog
 
+## Release v0.123.0 (2026-07-30)
+
+### API Changes
+* Add [w.ai_gateway](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/ai_gateway.html) workspace-level service.
+* Add `update_operation()` method for [w.bundle_deployments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/bundledeployments/bundle_deployments.html) workspace-level service.
+* Add `patch_telemetry_config()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving/serving_endpoints.html) workspace-level service.
+* Add `last_successful_version_id` and `updated_by` fields for `databricks.sdk.service.bundledeployments.Deployment`.
+* Add `dashboard_metadata`, `sequence_id` and `update_time` fields for `databricks.sdk.service.bundledeployments.Operation`.
+* Add `dashboard_metadata` field for `databricks.sdk.service.bundledeployments.Resource`.
+* Add `previous_version_id` field for `databricks.sdk.service.bundledeployments.Version`.
+* Add `dependency_mode` field for `databricks.sdk.service.compute.ClusterAttributes`.
+* Add `dependency_mode` field for `databricks.sdk.service.compute.ClusterDetails`.
+* Add `dependency_mode` field for `databricks.sdk.service.compute.ClusterSpec`.
+* Add `dependency_mode` field for `databricks.sdk.service.compute.CreateCluster`.
+* Add `dependency_mode` field for `databricks.sdk.service.compute.EditCluster`.
+* Add `dependency_mode` field for `databricks.sdk.service.compute.EnforcePolicyComplianceForClusterResponseClusterSettings`.
+* Add `dependency_mode` field for `databricks.sdk.service.compute.UpdateClusterResource`.
+* Add `effective_entitlements` field for `databricks.sdk.service.iamv2.WorkspaceAssignmentDetail`.
+* Add `code_source_path` field for `databricks.sdk.service.jobs.AiRuntimeTask`.
+* Add `serverless_compute_id` field for `databricks.sdk.service.jobs.JobCluster`.
+* Add `pause_status` field for `databricks.sdk.service.jobs.TriggerStateProto`.
+* Add `schema_registry_config` field for `databricks.sdk.service.ml.StreamSchemaConfig`.
+* Add `fanout_options` field for `databricks.sdk.service.pipelines.SchemaSpec`.
+* Add `extra_columns` field for `databricks.sdk.service.postgres.SyncedTableSyncedTableSpec`.
+* Add `parameters` field for `databricks.sdk.service.sql.AlertV2`.
+* Add `directory_info` field for `databricks.sdk.service.workspace.ObjectInfo`.
+* Add `special_destination_schema_owner`, `special_destination_table_owner`, `special_destination_volume_owner`, `special_destination_function_owner` and `special_destination_registered_model_owner` enum values for `databricks.sdk.service.catalog.SpecialDestination`.
+* [Breaking] Change `create_deployment()` method for [w.bundle_deployments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/bundledeployments/bundle_deployments.html) workspace-level service with new required argument order.
+* [Breaking] Remove `deployment_id` field for `databricks.sdk.service.bundledeployments.CreateDeploymentRequest`.
+* [Breaking] Remove `lifetime` field for `databricks.sdk.service.ml.TimeWindow`.
+
 ## Release v0.122.0 (2026-07-21)
 
 ### API Changes

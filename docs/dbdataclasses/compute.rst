@@ -51,6 +51,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SPOT_WITH_FALLBACK_AZURE
       :value: "SPOT_WITH_FALLBACK_AZURE"
 
+.. py:class:: BaseEnvironmentType
+
+   If changed, also update estore/namespaces/defaultbaseenvironments/latest.proto
+
+   .. py:attribute:: CPU
+      :value: "CPU"
+
+   .. py:attribute:: GPU
+      :value: "GPU"
+
 .. autoclass:: CancelPendingClusterEnforcementResponse
    :members:
    :undoc-members:
@@ -62,6 +72,40 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ChangeClusterOwnerResponse
    :members:
    :undoc-members:
+
+.. py:class:: CheckId
+
+   Identifies the specific diagnostic check the user will see. Each value maps to one row in the cluster's Diagnostics tab.
+
+   .. py:attribute:: CHECK_ID_NETWORK_BIFROST
+      :value: "CHECK_ID_NETWORK_BIFROST"
+
+   .. py:attribute:: CHECK_ID_NETWORK_CONTROL_PLANE
+      :value: "CHECK_ID_NETWORK_CONTROL_PLANE"
+
+   .. py:attribute:: CHECK_ID_NETWORK_CP_MTLS
+      :value: "CHECK_ID_NETWORK_CP_MTLS"
+
+   .. py:attribute:: CHECK_ID_NETWORK_DNS_SERVER
+      :value: "CHECK_ID_NETWORK_DNS_SERVER"
+
+   .. py:attribute:: CHECK_ID_NETWORK_INTERNET
+      :value: "CHECK_ID_NETWORK_INTERNET"
+
+   .. py:attribute:: CHECK_ID_NETWORK_LOG_ARTIFACT_BUCKET
+      :value: "CHECK_ID_NETWORK_LOG_ARTIFACT_BUCKET"
+
+   .. py:attribute:: CHECK_ID_NETWORK_METADATA_ENDPOINT
+      :value: "CHECK_ID_NETWORK_METADATA_ENDPOINT"
+
+   .. py:attribute:: CHECK_ID_NETWORK_NIC
+      :value: "CHECK_ID_NETWORK_NIC"
+
+   .. py:attribute:: CHECK_ID_NETWORK_SCC_TUNNEL
+      :value: "CHECK_ID_NETWORK_SCC_TUNNEL"
+
+   .. py:attribute:: CHECK_ID_NETWORK_STORAGE_BUCKET
+      :value: "CHECK_ID_NETWORK_STORAGE_BUCKET"
 
 .. autoclass:: ClientsTypes
    :members:
@@ -332,6 +376,34 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DefaultBaseEnvironment
+   :members:
+   :undoc-members:
+
+.. autoclass:: DefaultBaseEnvironmentCache
+   :members:
+   :undoc-members:
+
+.. py:class:: DefaultBaseEnvironmentCacheStatus
+
+   .. py:attribute:: CREATED
+      :value: "CREATED"
+
+   .. py:attribute:: EXPIRED
+      :value: "EXPIRED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: INVALID
+      :value: "INVALID"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: REFRESHING
+      :value: "REFRESHING"
+
 .. autoclass:: DeleteClusterResponse
    :members:
    :undoc-members:
@@ -348,9 +420,78 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: DependencyMode
+
+   Controls dependency configuration for the cluster.
+   - ``DEPENDENCY_MODE_AUTO``: Databricks will choose the most appropriate dependency mode based on your compute configuration. - ``DEPENDENCY_MODE_ENVIRONMENTS``: Enables a unified dependency management experience across classic and serverless, resulting in increased stability and performance. Supported only on DBR 19+ in Standard access mode. - ``DEPENDENCY_MODE_CLUSTER_LIBRARIES``: Legacy mode: dependencies come from cluster libraries and init scripts.
+
+   .. py:attribute:: DEPENDENCY_MODE_AUTO
+      :value: "DEPENDENCY_MODE_AUTO"
+
+   .. py:attribute:: DEPENDENCY_MODE_CLUSTER_LIBRARIES
+      :value: "DEPENDENCY_MODE_CLUSTER_LIBRARIES"
+
+   .. py:attribute:: DEPENDENCY_MODE_ENVIRONMENTS
+      :value: "DEPENDENCY_MODE_ENVIRONMENTS"
+
 .. autoclass:: DestroyResponse
    :members:
    :undoc-members:
+
+.. autoclass:: Diagnostic
+   :members:
+   :undoc-members:
+
+.. autoclass:: DiagnosticCheck
+   :members:
+   :undoc-members:
+
+.. py:class:: DiagnosticsErrorReason
+
+   Diagnostic error reason for a failed check, identifying the first failing network layer (DNS -> TCP -> TLS -> HTTP). Set on Check.reason only when check_status = FAILED.
+
+   .. py:attribute:: ERROR_REASON_CERT_SAN_MISMATCH
+      :value: "ERROR_REASON_CERT_SAN_MISMATCH"
+
+   .. py:attribute:: ERROR_REASON_DNS_RESOLVE_FAIL
+      :value: "ERROR_REASON_DNS_RESOLVE_FAIL"
+
+   .. py:attribute:: ERROR_REASON_HTTP_3XX
+      :value: "ERROR_REASON_HTTP_3XX"
+
+   .. py:attribute:: ERROR_REASON_HTTP_4XX
+      :value: "ERROR_REASON_HTTP_4XX"
+
+   .. py:attribute:: ERROR_REASON_HTTP_5XX
+      :value: "ERROR_REASON_HTTP_5XX"
+
+   .. py:attribute:: ERROR_REASON_HTTP_TIMEOUT
+      :value: "ERROR_REASON_HTTP_TIMEOUT"
+
+   .. py:attribute:: ERROR_REASON_NOT_RUN
+      :value: "ERROR_REASON_NOT_RUN"
+
+   .. py:attribute:: ERROR_REASON_TCP_REFUSED
+      :value: "ERROR_REASON_TCP_REFUSED"
+
+   .. py:attribute:: ERROR_REASON_TCP_TIMEOUT
+      :value: "ERROR_REASON_TCP_TIMEOUT"
+
+   .. py:attribute:: ERROR_REASON_TLS_HANDSHAKE_FAIL
+      :value: "ERROR_REASON_TLS_HANDSHAKE_FAIL"
+
+.. py:class:: DiagnosticsStatus
+
+   Overall status of a cluster diagnostics run, and of each individual check within it.
+
+   .. py:attribute:: DIAGNOSTICS_STATUS_FAILED
+      :value: "DIAGNOSTICS_STATUS_FAILED"
+
+   .. py:attribute:: DIAGNOSTICS_STATUS_NOT_RUN
+      :value: "DIAGNOSTICS_STATUS_NOT_RUN"
+
+   .. py:attribute:: DIAGNOSTICS_STATUS_PASSED
+      :value: "DIAGNOSTICS_STATUS_PASSED"
 
 .. autoclass:: DiskSpec
    :members:
@@ -654,6 +795,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GPU_1X_A10
       :value: "GPU_1X_A10"
 
+   .. py:attribute:: GPU_1X_H100
+      :value: "GPU_1X_H100"
+
+   .. py:attribute:: GPU_8X_B300
+      :value: "GPU_8X_B300"
+
    .. py:attribute:: GPU_8X_H100
       :value: "GPU_8X_H100"
 
@@ -891,6 +1038,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DEFAULT
       :value: "DEFAULT"
 
+.. autoclass:: ListDefaultBaseEnvironmentsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListGlobalInitScriptsResponse
    :members:
    :undoc-members:
@@ -943,6 +1094,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MaterializedEnvironment
+   :members:
+   :undoc-members:
+
 .. autoclass:: MavenLibrary
    :members:
    :undoc-members:
@@ -987,15 +1142,60 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PolicyAutoEnforcementConfig
+   :members:
+   :undoc-members:
+
+.. py:class:: PolicyAutoEnforcementConfigPolicyAutoEnforcementEnforceMode
+
+   Behavior for running clusters when auto-enforcement is applied. Mirrors ``enforce_mode`` on the enforce compliance API.
+
+   .. py:attribute:: ENFORCE_IMMEDIATELY
+      :value: "ENFORCE_IMMEDIATELY"
+
+   .. py:attribute:: WAIT_FOR_TERMINATION
+      :value: "WAIT_FOR_TERMINATION"
+
+.. autoclass:: PolicyBackgroundEnforcement
+   :members:
+   :undoc-members:
+
+.. py:class:: PolicyBackgroundEnforcementPolicyBackgroundEnforcementStatus
+
+   The status of a background policy enforcement operation.
+
+   .. py:attribute:: ABORTED
+      :value: "ABORTED"
+
+   .. py:attribute:: COMPLETED
+      :value: "COMPLETED"
+
+   .. py:attribute:: IN_PROGRESS
+      :value: "IN_PROGRESS"
+
 .. autoclass:: PolicyFamily
    :members:
    :undoc-members:
+
+.. py:class:: PolicyView
+
+   Controls which fields are returned when reading a policy.
+
+   .. py:attribute:: POLICY_VIEW_BASIC
+      :value: "POLICY_VIEW_BASIC"
+
+   .. py:attribute:: POLICY_VIEW_FULL
+      :value: "POLICY_VIEW_FULL"
 
 .. autoclass:: PythonPyPiLibrary
    :members:
    :undoc-members:
 
 .. autoclass:: RCranLibrary
+   :members:
+   :undoc-members:
+
+.. autoclass:: RefreshDefaultBaseEnvironmentsResponse
    :members:
    :undoc-members:
 
@@ -1214,6 +1414,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BUDGET_POLICY_RESOLUTION_FAILURE
       :value: "BUDGET_POLICY_RESOLUTION_FAILURE"
 
+   .. py:attribute:: CERT_ROTATION
+      :value: "CERT_ROTATION"
+
    .. py:attribute:: CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED
       :value: "CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED"
 
@@ -1268,6 +1471,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG
       :value: "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG"
 
+   .. py:attribute:: COST_CONTROL_ENTITLEMENT_DENIED
+      :value: "COST_CONTROL_ENTITLEMENT_DENIED"
+
    .. py:attribute:: DATABASE_CONNECTION_FAILURE
       :value: "DATABASE_CONNECTION_FAILURE"
 
@@ -1297,6 +1503,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DOCKER_INVALID_OS_EXCEPTION
       :value: "DOCKER_INVALID_OS_EXCEPTION"
+
+   .. py:attribute:: DRIVER_DNS_RESOLUTION_FAILURE
+      :value: "DRIVER_DNS_RESOLUTION_FAILURE"
 
    .. py:attribute:: DRIVER_EVICTION
       :value: "DRIVER_EVICTION"
@@ -1526,6 +1735,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NFS_MOUNT_FAILURE
       :value: "NFS_MOUNT_FAILURE"
 
+   .. py:attribute:: NO_ACTIVATED_K8S
+      :value: "NO_ACTIVATED_K8S"
+
+   .. py:attribute:: NO_ACTIVATED_K8S_TESTING_TAG
+      :value: "NO_ACTIVATED_K8S_TESTING_TAG"
+
    .. py:attribute:: NO_MATCHED_K8S
       :value: "NO_MATCHED_K8S"
 
@@ -1556,6 +1771,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: RESOURCE_USAGE_BLOCKED
       :value: "RESOURCE_USAGE_BLOCKED"
 
+   .. py:attribute:: SECRET_CREATION_ACCESS_DENIED
+      :value: "SECRET_CREATION_ACCESS_DENIED"
+
    .. py:attribute:: SECRET_CREATION_FAILURE
       :value: "SECRET_CREATION_FAILURE"
 
@@ -1564,6 +1782,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SECRET_RESOLUTION_ERROR
       :value: "SECRET_RESOLUTION_ERROR"
+
+   .. py:attribute:: SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION
+      :value: "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
 
    .. py:attribute:: SECURITY_DAEMON_REGISTRATION_EXCEPTION
       :value: "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
@@ -1657,6 +1878,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WORKSPACE_CONFIGURATION_ERROR
       :value: "WORKSPACE_CONFIGURATION_ERROR"
+
+   .. py:attribute:: WORKSPACE_DELEGATION_KEY_MISCONFIGURED
+      :value: "WORKSPACE_DELEGATION_KEY_MISCONFIGURED"
 
    .. py:attribute:: WORKSPACE_UPDATE
       :value: "WORKSPACE_UPDATE"

@@ -273,6 +273,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: IS_OWNER
       :value: "IS_OWNER"
 
+   .. py:attribute:: UNSPECIFIED
+      :value: "UNSPECIFIED"
+
 .. autoclass:: PermissionOutput
    :members:
    :undoc-members:

@@ -27,7 +27,7 @@
         :returns: :class:`BuildLogsResponse`
         
 
-    .. py:method:: create(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], description: Optional[str], email_notifications: Optional[EmailNotifications], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], telemetry_config: Optional[TelemetryConfig]]) -> Wait[ServingEndpointDetailed]
+    .. py:method:: create(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], description: Optional[str], email_notifications: Optional[EmailNotifications], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], telemetry_config: Optional[TelemetryConfig], uc_system_metrics_export_state: Optional[FirstPartyExportSetting]]) -> Wait[ServingEndpointDetailed]
 
         Create a new serving endpoint.
 
@@ -54,16 +54,19 @@
           Tags to be attached to the serving endpoint and automatically propagated to billing logs.
         :param telemetry_config: :class:`TelemetryConfig` (optional)
           Configuration for persisting endpoint telemetry (logs, traces, and metrics) to Unity Catalog tables.
+        :param uc_system_metrics_export_state: :class:`FirstPartyExportSetting` (optional)
+          Whether this endpoint's system metrics are exported to the system.telemetry.otel_metrics Unity
+          Catalog table. Endpoint-level property (not part of the per-version config).
 
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         
 
-    .. py:method:: create_and_wait(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], description: Optional[str], email_notifications: Optional[EmailNotifications], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], telemetry_config: Optional[TelemetryConfig], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
+    .. py:method:: create_and_wait(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], description: Optional[str], email_notifications: Optional[EmailNotifications], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], telemetry_config: Optional[TelemetryConfig], uc_system_metrics_export_state: Optional[FirstPartyExportSetting], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
 
-    .. py:method:: create_provisioned_throughput_endpoint(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], email_notifications: Optional[EmailNotifications], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
+    .. py:method:: create_provisioned_throughput_endpoint(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], email_notifications: Optional[EmailNotifications], relocate_pt_commitment: Optional[PtCommitmentRelocation], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
 
         Create a new PT serving endpoint.
 
@@ -78,6 +81,9 @@
           The budget policy associated with the endpoint.
         :param email_notifications: :class:`EmailNotifications` (optional)
           Email notification settings.
+        :param relocate_pt_commitment: :class:`PtCommitmentRelocation` (optional)
+          Relocate ("upgrade") an existing reserved commitment into this newly created endpoint, whose served
+          model must be a same-line upgrade of the commitment's current model.
         :param tags: List[:class:`EndpointTag`] (optional)
           Tags to be attached to the serving endpoint and automatically propagated to billing logs.
 
@@ -86,7 +92,7 @@
           See :method:wait_get_serving_endpoint_not_updating for more details.
         
 
-    .. py:method:: create_provisioned_throughput_endpoint_and_wait(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], email_notifications: Optional[EmailNotifications], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
+    .. py:method:: create_provisioned_throughput_endpoint_and_wait(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], email_notifications: Optional[EmailNotifications], relocate_pt_commitment: Optional[PtCommitmentRelocation], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
 
     .. py:method:: delete(name: str)
@@ -257,6 +263,37 @@
         :returns: :class:`EndpointTags`
         
 
+    .. py:method:: patch_system_metrics_export_state(name: str [, uc_system_metrics_export_state: Optional[FirstPartyExportSetting]]) -> ServingEndpointDetailed
+
+        Updates the system-metrics-export state of a serving endpoint, independently of the endpoint config
+        (does not trigger a config-version change or redeployment).
+
+        :param name: str
+          The name of the serving endpoint whose system-metrics-export state is being updated. This field is
+          required.
+        :param uc_system_metrics_export_state: :class:`FirstPartyExportSetting` (optional)
+          Whether this endpoint's system metrics are exported to the system.telemetry.otel_metrics Unity
+          Catalog table. Endpoint-level property (not part of the per-version config).
+
+        :returns: :class:`ServingEndpointDetailed`
+        
+
+    .. py:method:: patch_telemetry_config(name: str [, telemetry_config: Optional[TelemetryConfig]]) -> ServingEndpointDetailed
+
+        Updates the telemetry configuration of a serving endpoint.
+
+        :param name: str
+          The name of the serving endpoint whose telemetry configuration is being updated. This field is
+          required.
+        :param telemetry_config: :class:`TelemetryConfig` (optional)
+          The telemetry configuration to be applied to the serving endpoint. Can specify either a
+          telemetry_profile_id to use an existing profile, or table_names to create a new profile with the
+          specified Unity Catalog tables. If not provided, the telemetry configuration will be removed from
+          the endpoint.
+
+        :returns: :class:`ServingEndpointDetailed`
+        
+
     .. py:method:: put(name: str [, rate_limits: Optional[List[RateLimit]]]) -> PutResponse
 
         Deprecated: Please use AI Gateway to manage rate limits instead.
@@ -414,7 +451,7 @@
         :returns: :class:`ServingEndpointPermissions`
         
 
-    .. py:method:: update_provisioned_throughput_endpoint_config(name: str, config: PtEndpointCoreConfig) -> Wait[ServingEndpointDetailed]
+    .. py:method:: update_provisioned_throughput_endpoint_config(name: str, config: PtEndpointCoreConfig [, pt_commitment_auto_renew: Optional[PtCommitmentAutoRenew], relocate_pt_commitment: Optional[PtCommitmentRelocation]]) -> Wait[ServingEndpointDetailed]
 
         Updates any combination of the pt endpoint's served entities, the compute configuration of those
         served entities, and the endpoint's traffic config. Updates are instantaneous and endpoint should be
@@ -423,13 +460,19 @@
         :param name: str
           The name of the pt endpoint to update. This field is required.
         :param config: :class:`PtEndpointCoreConfig`
+        :param pt_commitment_auto_renew: :class:`PtCommitmentAutoRenew` (optional)
+          When set, updates the referenced commitment's auto-renew flag as part of this config update.
+        :param relocate_pt_commitment: :class:`PtCommitmentRelocation` (optional)
+          Relocate ("upgrade") an existing commitment onto this endpoint, whose served model must be a
+          same-line upgrade of the commitment's current model. Mutually exclusive with a pt_term scale-up and
+          with pt_commitment_auto_renew.
 
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         
 
-    .. py:method:: update_provisioned_throughput_endpoint_config_and_wait(name: str, config: PtEndpointCoreConfig, timeout: datetime.timedelta = 0:20:00) -> ServingEndpointDetailed
+    .. py:method:: update_provisioned_throughput_endpoint_config_and_wait(name: str, config: PtEndpointCoreConfig [, pt_commitment_auto_renew: Optional[PtCommitmentAutoRenew], relocate_pt_commitment: Optional[PtCommitmentRelocation], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
 
     .. py:method:: wait_get_serving_endpoint_not_updating(name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[ServingEndpointDetailed], None]]) -> ServingEndpointDetailed

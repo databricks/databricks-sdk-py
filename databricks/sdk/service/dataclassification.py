@@ -4,18 +4,20 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Any, Optional
 
-from databricks.sdk.common.types.fieldmask import FieldMask
+
+import logging
+
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
     _repeated_dict,
 )
+from databricks.sdk.common.types.fieldmask import FieldMask
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -35,6 +37,10 @@ class AutoTaggingConfig:
     auto_tagging_mode: AutoTaggingConfigAutoTaggingMode
     """Whether auto-tagging is enabled or disabled for this classification tag."""
 
+    classification_tag_value: Optional[str] = None
+    """Governance tag value paired with ``classification_tag`` for a custom class. Omit this field for
+    built-in classes, which use only the system tag key."""
+
     def as_dict(self) -> dict:
         """Serializes the AutoTaggingConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -42,6 +48,8 @@ class AutoTaggingConfig:
             body["auto_tagging_mode"] = self.auto_tagging_mode.value
         if self.classification_tag is not None:
             body["classification_tag"] = self.classification_tag
+        if self.classification_tag_value is not None:
+            body["classification_tag_value"] = self.classification_tag_value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -51,6 +59,8 @@ class AutoTaggingConfig:
             body["auto_tagging_mode"] = self.auto_tagging_mode
         if self.classification_tag is not None:
             body["classification_tag"] = self.classification_tag
+        if self.classification_tag_value is not None:
+            body["classification_tag_value"] = self.classification_tag_value
         return body
 
     @classmethod
@@ -59,6 +69,7 @@ class AutoTaggingConfig:
         return cls(
             auto_tagging_mode=_enum(d, "auto_tagging_mode", AutoTaggingConfigAutoTaggingMode),
             classification_tag=d.get("classification_tag", None),
+            classification_tag_value=d.get("classification_tag_value", None),
         )
 
 
@@ -81,6 +92,10 @@ class CatalogConfig:
     """List of auto-tagging configurations for this catalog. Empty list means no auto-tagging is
     enabled."""
 
+    effective_auto_tag_configs: Optional[List[AutoTaggingConfig]] = None
+    """The effective list of auto-tagging configurations for this catalog. Computed from
+    auto_tag_configs on this catalog and those inherited from the metastore."""
+
     excluded_schemas: Optional[CatalogConfigSchemaNames] = None
     """Schemas to exclude from the scan, each named relative to the parent catalog. If specified, all
     schemas except the specified ones will be scanned. Mutually exclusive with ``included_schemas``:
@@ -101,6 +116,8 @@ class CatalogConfig:
         body = {}
         if self.auto_tag_configs:
             body["auto_tag_configs"] = [v.as_dict() for v in self.auto_tag_configs]
+        if self.effective_auto_tag_configs:
+            body["effective_auto_tag_configs"] = [v.as_dict() for v in self.effective_auto_tag_configs]
         if self.excluded_schemas:
             body["excluded_schemas"] = self.excluded_schemas.as_dict()
         if self.included_schemas:
@@ -114,6 +131,8 @@ class CatalogConfig:
         body = {}
         if self.auto_tag_configs:
             body["auto_tag_configs"] = self.auto_tag_configs
+        if self.effective_auto_tag_configs:
+            body["effective_auto_tag_configs"] = self.effective_auto_tag_configs
         if self.excluded_schemas:
             body["excluded_schemas"] = self.excluded_schemas
         if self.included_schemas:
@@ -127,6 +146,7 @@ class CatalogConfig:
         """Deserializes the CatalogConfig from a dictionary."""
         return cls(
             auto_tag_configs=_repeated_dict(d, "auto_tag_configs", AutoTaggingConfig),
+            effective_auto_tag_configs=_repeated_dict(d, "effective_auto_tag_configs", AutoTaggingConfig),
             excluded_schemas=_from_dict(d, "excluded_schemas", CatalogConfigSchemaNames),
             included_schemas=_from_dict(d, "included_schemas", CatalogConfigSchemaNames),
             name=d.get("name", None),

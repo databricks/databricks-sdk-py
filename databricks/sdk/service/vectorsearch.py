@@ -4,28 +4,190 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Callable, Optional
 
+
+import time
+import random
+import logging
+
+from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    Wait,
     _enum,
     _from_dict,
     _repeated_dict,
+    Wait,
 )
 
-from ..errors import OperationFailed
 
 _LOG = logging.getLogger("databricks.sdk")
 
 
 # all definitions in this file are in alphabetical order
+
+
+@dataclass
+class AdjustedThroughputRequest:
+    """Adjusted throughput request parameters"""
+
+    concurrency: Optional[float] = None
+    """Adjusted concurrency (total CPU) for the endpoint"""
+
+    maximum_concurrency_allowed: Optional[float] = None
+    """Adjusted maximum concurrency allowed for the endpoint"""
+
+    minimal_concurrency_allowed: Optional[float] = None
+    """Adjusted minimum concurrency allowed for the endpoint"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AdjustedThroughputRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.concurrency is not None:
+            body["concurrency"] = self.concurrency
+        if self.maximum_concurrency_allowed is not None:
+            body["maximum_concurrency_allowed"] = self.maximum_concurrency_allowed
+        if self.minimal_concurrency_allowed is not None:
+            body["minimal_concurrency_allowed"] = self.minimal_concurrency_allowed
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AdjustedThroughputRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.concurrency is not None:
+            body["concurrency"] = self.concurrency
+        if self.maximum_concurrency_allowed is not None:
+            body["maximum_concurrency_allowed"] = self.maximum_concurrency_allowed
+        if self.minimal_concurrency_allowed is not None:
+            body["minimal_concurrency_allowed"] = self.minimal_concurrency_allowed
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AdjustedThroughputRequest:
+        """Deserializes the AdjustedThroughputRequest from a dictionary."""
+        return cls(
+            concurrency=d.get("concurrency", None),
+            maximum_concurrency_allowed=d.get("maximum_concurrency_allowed", None),
+            minimal_concurrency_allowed=d.get("minimal_concurrency_allowed", None),
+        )
+
+
+class AutoEvalDisplayStatus(Enum):
+    AUTO_EVAL_DISPLAY_STATUS_FAILED = "AUTO_EVAL_DISPLAY_STATUS_FAILED"
+    AUTO_EVAL_DISPLAY_STATUS_PENDING = "AUTO_EVAL_DISPLAY_STATUS_PENDING"
+    AUTO_EVAL_DISPLAY_STATUS_RUNNING = "AUTO_EVAL_DISPLAY_STATUS_RUNNING"
+    AUTO_EVAL_DISPLAY_STATUS_SUCCEEDED = "AUTO_EVAL_DISPLAY_STATUS_SUCCEEDED"
+
+
+@dataclass
+class AutoEvalJob:
+    """State of the most recent autoeval Databricks Jobs background-compute run for an index. The UI
+    uses this to render the staged progress bar."""
+
+    current_stage: Optional[AutoEvalStage] = None
+    """Pipeline stage currently in progress."""
+
+    dashboard_url: Optional[str] = None
+    """Lakeview dashboard URL for the latest run's results."""
+
+    metrics_table_full_name: Optional[str] = None
+    """Fully qualified Delta table name where per-run metrics are persisted
+    (``autoeval_metrics_<index>``)."""
+
+    mlflow_experiment_id: Optional[str] = None
+    """MLflow experiment_id used by the autoeval wheel. Stable per index. The UI uses this to construct
+    an "Open in MLflow" deep link without an additional MLflow tag fetch."""
+
+    mlflow_run_id: Optional[str] = None
+    """MLflow run_id of the latest autoeval run. Per-run, latest only."""
+
+    overall_progress: Optional[float] = None
+    """Overall progress across all stages, in the range [0.0, 1.0]. Capped at 0.99 while the run is
+    RUNNING — the bar only reaches 1.0 when status flips to AUTO_EVAL_DISPLAY_STATUS_SUCCEEDED."""
+
+    progress_on_current_stage: Optional[int] = None
+    """Items completed within the current stage (e.g., queries generated, (query_type, reranker, phase)
+    tuples evaluated, results saved)."""
+
+    results_table_full_name: Optional[str] = None
+    """Fully qualified Delta table name where per-query results are persisted
+    (``autoeval_results_<index>``)."""
+
+    total_for_current_stage: Optional[int] = None
+    """Total items expected within the current stage."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AutoEvalJob into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.current_stage is not None:
+            body["current_stage"] = self.current_stage.value
+        if self.dashboard_url is not None:
+            body["dashboard_url"] = self.dashboard_url
+        if self.metrics_table_full_name is not None:
+            body["metrics_table_full_name"] = self.metrics_table_full_name
+        if self.mlflow_experiment_id is not None:
+            body["mlflow_experiment_id"] = self.mlflow_experiment_id
+        if self.mlflow_run_id is not None:
+            body["mlflow_run_id"] = self.mlflow_run_id
+        if self.overall_progress is not None:
+            body["overall_progress"] = self.overall_progress
+        if self.progress_on_current_stage is not None:
+            body["progress_on_current_stage"] = self.progress_on_current_stage
+        if self.results_table_full_name is not None:
+            body["results_table_full_name"] = self.results_table_full_name
+        if self.total_for_current_stage is not None:
+            body["total_for_current_stage"] = self.total_for_current_stage
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AutoEvalJob into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.current_stage is not None:
+            body["current_stage"] = self.current_stage
+        if self.dashboard_url is not None:
+            body["dashboard_url"] = self.dashboard_url
+        if self.metrics_table_full_name is not None:
+            body["metrics_table_full_name"] = self.metrics_table_full_name
+        if self.mlflow_experiment_id is not None:
+            body["mlflow_experiment_id"] = self.mlflow_experiment_id
+        if self.mlflow_run_id is not None:
+            body["mlflow_run_id"] = self.mlflow_run_id
+        if self.overall_progress is not None:
+            body["overall_progress"] = self.overall_progress
+        if self.progress_on_current_stage is not None:
+            body["progress_on_current_stage"] = self.progress_on_current_stage
+        if self.results_table_full_name is not None:
+            body["results_table_full_name"] = self.results_table_full_name
+        if self.total_for_current_stage is not None:
+            body["total_for_current_stage"] = self.total_for_current_stage
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AutoEvalJob:
+        """Deserializes the AutoEvalJob from a dictionary."""
+        return cls(
+            current_stage=_enum(d, "current_stage", AutoEvalStage),
+            dashboard_url=d.get("dashboard_url", None),
+            metrics_table_full_name=d.get("metrics_table_full_name", None),
+            mlflow_experiment_id=d.get("mlflow_experiment_id", None),
+            mlflow_run_id=d.get("mlflow_run_id", None),
+            overall_progress=d.get("overall_progress", None),
+            progress_on_current_stage=d.get("progress_on_current_stage", None),
+            results_table_full_name=d.get("results_table_full_name", None),
+            total_for_current_stage=d.get("total_for_current_stage", None),
+        )
+
+
+class AutoEvalStage(Enum):
+    """Pipeline stages within a single autoeval run, in execution order. Used together with AutoEvalJob
+    to drive a staged progress bar in the UI."""
+
+    AUTO_EVAL_STAGE_FEW_SHOT_QUERIES = "AUTO_EVAL_STAGE_FEW_SHOT_QUERIES"
+    AUTO_EVAL_STAGE_GENERATE_QUERIES = "AUTO_EVAL_STAGE_GENERATE_QUERIES"
+    AUTO_EVAL_STAGE_GENERATE_RESULTS = "AUTO_EVAL_STAGE_GENERATE_RESULTS"
+    AUTO_EVAL_STAGE_METRICS_COMPUTATION = "AUTO_EVAL_STAGE_METRICS_COMPUTATION"
 
 
 @dataclass
@@ -213,6 +375,11 @@ class DeltaSyncVectorIndexSpecRequest:
     columns from the source table are synced with the index. The primary key column and embedding
     source column or embedding vector column are always synced."""
 
+    effective_budget_policy_id: Optional[str] = None
+    """The budget policy id applied to the AI Search index"""
+
+    effective_usage_policy_id: Optional[str] = None
+
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
 
@@ -241,6 +408,10 @@ class DeltaSyncVectorIndexSpecRequest:
             body["columns_to_index"] = [v for v in self.columns_to_index]
         if self.columns_to_sync:
             body["columns_to_sync"] = [v for v in self.columns_to_sync]
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -260,6 +431,10 @@ class DeltaSyncVectorIndexSpecRequest:
             body["columns_to_index"] = self.columns_to_index
         if self.columns_to_sync:
             body["columns_to_sync"] = self.columns_to_sync
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
@@ -278,6 +453,8 @@ class DeltaSyncVectorIndexSpecRequest:
         return cls(
             columns_to_index=d.get("columns_to_index", None),
             columns_to_sync=d.get("columns_to_sync", None),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
             embedding_writeback_table=d.get("embedding_writeback_table", None),
@@ -298,6 +475,11 @@ class DeltaSyncVectorIndexSpecResponse:
     """[Optional] Select the columns to sync with the vector index. If you leave this field blank, all
     columns from the source table are synced with the index. The primary key column and embedding
     source column or embedding vector column are always synced."""
+
+    effective_budget_policy_id: Optional[str] = None
+    """The budget policy id applied to the AI Search index"""
+
+    effective_usage_policy_id: Optional[str] = None
 
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
@@ -330,6 +512,10 @@ class DeltaSyncVectorIndexSpecResponse:
             body["columns_to_index"] = [v for v in self.columns_to_index]
         if self.columns_to_sync:
             body["columns_to_sync"] = [v for v in self.columns_to_sync]
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -351,6 +537,10 @@ class DeltaSyncVectorIndexSpecResponse:
             body["columns_to_index"] = self.columns_to_index
         if self.columns_to_sync:
             body["columns_to_sync"] = self.columns_to_sync
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
@@ -371,6 +561,8 @@ class DeltaSyncVectorIndexSpecResponse:
         return cls(
             columns_to_index=d.get("columns_to_index", None),
             columns_to_sync=d.get("columns_to_sync", None),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
             embedding_writeback_table=d.get("embedding_writeback_table", None),
@@ -388,6 +580,11 @@ class DirectAccessVectorIndexSpec:
     embedding_vector_columns: Optional[List[EmbeddingVectorColumn]] = None
     """The columns that contain the embedding vectors. The format should be array[double]."""
 
+    requested_schema_json: Optional[str] = None
+    """The index schema exactly as the user supplied it on create, preserving the original type
+    spellings (e.g. ``integer``) rather than Unity Catalog's canonical names (e.g. ``int``) that
+    ``schema_json`` returns."""
+
     schema_json: Optional[str] = None
     """The schema of the index in JSON format. Supported types are ``integer``, ``long``, ``float``,
     ``double``, ``boolean``, ``string``, ``date``, ``timestamp``. Supported types for vector column:
@@ -400,6 +597,8 @@ class DirectAccessVectorIndexSpec:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
             body["embedding_vector_columns"] = [v.as_dict() for v in self.embedding_vector_columns]
+        if self.requested_schema_json is not None:
+            body["requested_schema_json"] = self.requested_schema_json
         if self.schema_json is not None:
             body["schema_json"] = self.schema_json
         return body
@@ -411,6 +610,8 @@ class DirectAccessVectorIndexSpec:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
             body["embedding_vector_columns"] = self.embedding_vector_columns
+        if self.requested_schema_json is not None:
+            body["requested_schema_json"] = self.requested_schema_json
         if self.schema_json is not None:
             body["schema_json"] = self.schema_json
         return body
@@ -421,6 +622,7 @@ class DirectAccessVectorIndexSpec:
         return cls(
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
+            requested_schema_json=d.get("requested_schema_json", None),
             schema_json=d.get("schema_json", None),
         )
 
@@ -541,6 +743,9 @@ class EndpointInfo:
     scaling_info: Optional[EndpointScalingInfo] = None
     """Scaling information for the endpoint"""
 
+    throughput_info: Optional[EndpointThroughputInfo] = None
+    """Throughput information for the endpoint"""
+
     def as_dict(self) -> dict:
         """Serializes the EndpointInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -570,6 +775,8 @@ class EndpointInfo:
             body["num_indexes"] = self.num_indexes
         if self.scaling_info:
             body["scaling_info"] = self.scaling_info.as_dict()
+        if self.throughput_info:
+            body["throughput_info"] = self.throughput_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -601,6 +808,8 @@ class EndpointInfo:
             body["num_indexes"] = self.num_indexes
         if self.scaling_info:
             body["scaling_info"] = self.scaling_info
+        if self.throughput_info:
+            body["throughput_info"] = self.throughput_info
         return body
 
     @classmethod
@@ -620,6 +829,7 @@ class EndpointInfo:
             name=d.get("name", None),
             num_indexes=d.get("num_indexes", None),
             scaling_info=_from_dict(d, "scaling_info", EndpointScalingInfo),
+            throughput_info=_from_dict(d, "throughput_info", EndpointThroughputInfo),
         )
 
 
@@ -703,6 +913,99 @@ class EndpointStatusState(Enum):
     YELLOW_STATE = "YELLOW_STATE"
 
 
+@dataclass
+class EndpointThroughputInfo:
+    """Throughput information for an endpoint"""
+
+    change_request_message: Optional[str] = None
+    """Additional information about the throughput change request"""
+
+    change_request_state: Optional[ThroughputChangeRequestState] = None
+    """The state of the most recent throughput change request"""
+
+    current_concurrency: Optional[float] = None
+    """The current concurrency (total CPU) allocated to the endpoint"""
+
+    current_concurrency_utilization_percentage: Optional[float] = None
+    """The current utilization of concurrency as a percentage (0-100)"""
+
+    current_num_replicas: Optional[int] = None
+    """The current number of replicas allocated to the endpoint"""
+
+    maximum_concurrency_allowed: Optional[float] = None
+    """The maximum concurrency allowed for this endpoint"""
+
+    minimal_concurrency_allowed: Optional[float] = None
+    """The minimum concurrency allowed for this endpoint"""
+
+    requested_concurrency: Optional[float] = None
+    """The requested concurrency (total CPU) for the endpoint"""
+
+    requested_num_replicas: Optional[int] = None
+    """The requested number of replicas for the endpoint"""
+
+    def as_dict(self) -> dict:
+        """Serializes the EndpointThroughputInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.change_request_message is not None:
+            body["change_request_message"] = self.change_request_message
+        if self.change_request_state is not None:
+            body["change_request_state"] = self.change_request_state.value
+        if self.current_concurrency is not None:
+            body["current_concurrency"] = self.current_concurrency
+        if self.current_concurrency_utilization_percentage is not None:
+            body["current_concurrency_utilization_percentage"] = self.current_concurrency_utilization_percentage
+        if self.current_num_replicas is not None:
+            body["current_num_replicas"] = self.current_num_replicas
+        if self.maximum_concurrency_allowed is not None:
+            body["maximum_concurrency_allowed"] = self.maximum_concurrency_allowed
+        if self.minimal_concurrency_allowed is not None:
+            body["minimal_concurrency_allowed"] = self.minimal_concurrency_allowed
+        if self.requested_concurrency is not None:
+            body["requested_concurrency"] = self.requested_concurrency
+        if self.requested_num_replicas is not None:
+            body["requested_num_replicas"] = self.requested_num_replicas
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointThroughputInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.change_request_message is not None:
+            body["change_request_message"] = self.change_request_message
+        if self.change_request_state is not None:
+            body["change_request_state"] = self.change_request_state
+        if self.current_concurrency is not None:
+            body["current_concurrency"] = self.current_concurrency
+        if self.current_concurrency_utilization_percentage is not None:
+            body["current_concurrency_utilization_percentage"] = self.current_concurrency_utilization_percentage
+        if self.current_num_replicas is not None:
+            body["current_num_replicas"] = self.current_num_replicas
+        if self.maximum_concurrency_allowed is not None:
+            body["maximum_concurrency_allowed"] = self.maximum_concurrency_allowed
+        if self.minimal_concurrency_allowed is not None:
+            body["minimal_concurrency_allowed"] = self.minimal_concurrency_allowed
+        if self.requested_concurrency is not None:
+            body["requested_concurrency"] = self.requested_concurrency
+        if self.requested_num_replicas is not None:
+            body["requested_num_replicas"] = self.requested_num_replicas
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointThroughputInfo:
+        """Deserializes the EndpointThroughputInfo from a dictionary."""
+        return cls(
+            change_request_message=d.get("change_request_message", None),
+            change_request_state=_enum(d, "change_request_state", ThroughputChangeRequestState),
+            current_concurrency=d.get("current_concurrency", None),
+            current_concurrency_utilization_percentage=d.get("current_concurrency_utilization_percentage", None),
+            current_num_replicas=d.get("current_num_replicas", None),
+            maximum_concurrency_allowed=d.get("maximum_concurrency_allowed", None),
+            minimal_concurrency_allowed=d.get("minimal_concurrency_allowed", None),
+            requested_concurrency=d.get("requested_concurrency", None),
+            requested_num_replicas=d.get("requested_num_replicas", None),
+        )
+
+
 class EndpointType(Enum):
     """Type of endpoint."""
 
@@ -742,6 +1045,80 @@ class FacetResultData:
     def from_dict(cls, d: Dict[str, Any]) -> FacetResultData:
         """Deserializes the FacetResultData from a dictionary."""
         return cls(facet_array=d.get("facet_array", None), facet_row_count=d.get("facet_row_count", None))
+
+
+@dataclass
+class GetAutoEvalStatusResponse:
+    end_time_ms: Optional[int] = None
+    """Wall-clock end time of the latest run, in milliseconds since epoch. Unset until the run reaches
+    a terminal state."""
+
+    job_id: Optional[str] = None
+    """Databricks Jobs job_id of the autoeval background-compute job for this index, so the UI can
+    surface a link to the job. Unset when no autoeval job exists for the index yet."""
+
+    latest_run: Optional[AutoEvalJob] = None
+    """State of the latest autoeval run, including stage progress. Populated only while status is
+    AUTO_EVAL_DISPLAY_STATUS_RUNNING and the running wheel has reported at least one stage update.
+    Absent for terminal states."""
+
+    run_as_user: Optional[str] = None
+    """The user the latest job run was created as. Used by the UI to construct the per-run MLflow
+    dashboard URL."""
+
+    state_message: Optional[str] = None
+    """Free-form failure copy from the underlying job. Populated only when status is
+    AUTO_EVAL_DISPLAY_STATUS_FAILED. Capped server-side to bound payload size when the job emits
+    long stack traces."""
+
+    status: Optional[AutoEvalDisplayStatus] = None
+    """Current display status of the latest autoeval run."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetAutoEvalStatusResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.end_time_ms is not None:
+            body["end_time_ms"] = self.end_time_ms
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.latest_run:
+            body["latest_run"] = self.latest_run.as_dict()
+        if self.run_as_user is not None:
+            body["run_as_user"] = self.run_as_user
+        if self.state_message is not None:
+            body["state_message"] = self.state_message
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetAutoEvalStatusResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.end_time_ms is not None:
+            body["end_time_ms"] = self.end_time_ms
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.latest_run:
+            body["latest_run"] = self.latest_run
+        if self.run_as_user is not None:
+            body["run_as_user"] = self.run_as_user
+        if self.state_message is not None:
+            body["state_message"] = self.state_message
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetAutoEvalStatusResponse:
+        """Deserializes the GetAutoEvalStatusResponse from a dictionary."""
+        return cls(
+            end_time_ms=d.get("end_time_ms", None),
+            job_id=d.get("job_id", None),
+            latest_run=_from_dict(d, "latest_run", AutoEvalJob),
+            run_as_user=d.get("run_as_user", None),
+            state_message=d.get("state_message", None),
+            status=_enum(d, "status", AutoEvalDisplayStatus),
+        )
 
 
 @dataclass
@@ -1165,6 +1542,50 @@ class PatchEndpointBudgetPolicyResponse:
         )
 
 
+@dataclass
+class PatchEndpointThroughputResponse:
+    adjusted_request: Optional[AdjustedThroughputRequest] = None
+    """The adjusted request if the original request could not be fully fulfilled. This is only
+    populated when the request was adjusted."""
+
+    message: Optional[str] = None
+    """Message explaining the status or any adjustments made"""
+
+    status: Optional[ThroughputPatchStatus] = None
+    """The status of the throughput change request"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PatchEndpointThroughputResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.adjusted_request:
+            body["adjusted_request"] = self.adjusted_request.as_dict()
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PatchEndpointThroughputResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.adjusted_request:
+            body["adjusted_request"] = self.adjusted_request
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PatchEndpointThroughputResponse:
+        """Deserializes the PatchEndpointThroughputResponse from a dictionary."""
+        return cls(
+            adjusted_request=_from_dict(d, "adjusted_request", AdjustedThroughputRequest),
+            message=d.get("message", None),
+            status=_enum(d, "status", ThroughputPatchStatus),
+        )
+
+
 class PipelineType(Enum):
     """Pipeline execution mode.
 
@@ -1239,6 +1660,11 @@ class RerankerConfig:
     - When model_type=BASE/UNSPECIFIED: must be "databricks_reranker".
     - When model_type=FINETUNED: the Model Serving endpoint name hosting a finetuned reranker."""
 
+    model_type: Optional[RerankerConfigModelType] = None
+    """EXPERIMENTAL. Discriminator for how the ``model`` field is interpreted: BASE/UNSPECIFIED expects
+    the literal "databricks_reranker"; FINETUNED treats ``model`` as a Model Serving endpoint name
+    in the caller's workspace. See the doc comment on ``model`` for the per-case contract."""
+
     parameters: Optional[RerankerConfigRerankerParameters] = None
     """Parameters that control how the reranker processes the query results."""
 
@@ -1247,6 +1673,8 @@ class RerankerConfig:
         body = {}
         if self.model is not None:
             body["model"] = self.model
+        if self.model_type is not None:
+            body["model_type"] = self.model_type.value
         if self.parameters:
             body["parameters"] = self.parameters.as_dict()
         return body
@@ -1256,6 +1684,8 @@ class RerankerConfig:
         body = {}
         if self.model is not None:
             body["model"] = self.model
+        if self.model_type is not None:
+            body["model_type"] = self.model_type
         if self.parameters:
             body["parameters"] = self.parameters
         return body
@@ -1263,7 +1693,18 @@ class RerankerConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RerankerConfig:
         """Deserializes the RerankerConfig from a dictionary."""
-        return cls(model=d.get("model", None), parameters=_from_dict(d, "parameters", RerankerConfigRerankerParameters))
+        return cls(
+            model=d.get("model", None),
+            model_type=_enum(d, "model_type", RerankerConfigModelType),
+            parameters=_from_dict(d, "parameters", RerankerConfigRerankerParameters),
+        )
+
+
+class RerankerConfigModelType(Enum):
+    """EXPERIMENTAL. Selects how ``model`` is interpreted."""
+
+    MODEL_TYPE_BASE = "MODEL_TYPE_BASE"
+    MODEL_TYPE_FINETUNED = "MODEL_TYPE_FINETUNED"
 
 
 @dataclass
@@ -1415,6 +1856,42 @@ class RetrieveUserVisibleMetricsResponse:
         )
 
 
+@dataclass
+class RunAutoEvalResponse:
+    def as_dict(self) -> dict:
+        """Serializes the RunAutoEvalResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunAutoEvalResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RunAutoEvalResponse:
+        """Deserializes the RunAutoEvalResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class RunRerankerFinetuningResponse:
+    def as_dict(self) -> dict:
+        """Serializes the RunRerankerFinetuningResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunRerankerFinetuningResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RunRerankerFinetuningResponse:
+        """Deserializes the RunRerankerFinetuningResponse from a dictionary."""
+        return cls()
+
+
 class ScalingChangeState(Enum):
     SCALING_CHANGE_APPLIED = "SCALING_CHANGE_APPLIED"
     SCALING_CHANGE_IN_PROGRESS = "SCALING_CHANGE_IN_PROGRESS"
@@ -1498,6 +1975,25 @@ class SyncIndexResponse:
         return cls()
 
 
+class ThroughputChangeRequestState(Enum):
+    """Throughput change request state"""
+
+    CHANGE_ADJUSTED = "CHANGE_ADJUSTED"
+    CHANGE_FAILED = "CHANGE_FAILED"
+    CHANGE_IN_PROGRESS = "CHANGE_IN_PROGRESS"
+    CHANGE_REACHED_MAXIMUM = "CHANGE_REACHED_MAXIMUM"
+    CHANGE_REACHED_MINIMUM = "CHANGE_REACHED_MINIMUM"
+    CHANGE_SUCCESS = "CHANGE_SUCCESS"
+
+
+class ThroughputPatchStatus(Enum):
+    """Response status for throughput change requests"""
+
+    PATCH_ACCEPTED = "PATCH_ACCEPTED"
+    PATCH_FAILED = "PATCH_FAILED"
+    PATCH_REJECTED = "PATCH_REJECTED"
+
+
 @dataclass
 class UpdateEndpointCustomTagsResponse:
     custom_tags: Optional[List[CustomTag]] = None
@@ -1528,6 +2024,41 @@ class UpdateEndpointCustomTagsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateEndpointCustomTagsResponse:
         """Deserializes the UpdateEndpointCustomTagsResponse from a dictionary."""
         return cls(custom_tags=_repeated_dict(d, "custom_tags", CustomTag), name=d.get("name", None))
+
+
+@dataclass
+class UpdateVectorIndexUsagePolicyResponse:
+    effective_usage_policy_id: Optional[str] = None
+    """The effective usage policy id applied to the AI Search index"""
+
+    usage_policy_id: Optional[str] = None
+    """The updated usage policy id"""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateVectorIndexUsagePolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateVectorIndexUsagePolicyResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateVectorIndexUsagePolicyResponse:
+        """Deserializes the UpdateVectorIndexUsagePolicyResponse from a dictionary."""
+        return cls(
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
+            usage_policy_id=d.get("usage_policy_id", None),
+        )
 
 
 @dataclass
@@ -2090,6 +2621,7 @@ class VectorSearchEndpointsAPI:
         endpoint_type: EndpointType,
         *,
         budget_policy_id: Optional[str] = None,
+        num_replicas: Optional[int] = None,
         target_qps: Optional[int] = None,
         usage_policy_id: Optional[str] = None,
     ) -> Wait[EndpointInfo]:
@@ -2101,6 +2633,8 @@ class VectorSearchEndpointsAPI:
           Type of endpoint
         :param budget_policy_id: str (optional)
           The budget policy id to be applied
+        :param num_replicas: int (optional)
+          Initial number of replicas for the endpoint. If not specified, defaults to 1.
         :param target_qps: int (optional)
           Target QPS for the endpoint. Mutually exclusive with num_replicas. The actual replica count is
           calculated at index creation/sync time based on this value. Best-effort target; the system does not
@@ -2120,6 +2654,8 @@ class VectorSearchEndpointsAPI:
             body["endpoint_type"] = endpoint_type.value
         if name is not None:
             body["name"] = name
+        if num_replicas is not None:
+            body["num_replicas"] = num_replicas
         if target_qps is not None:
             body["target_qps"] = target_qps
         if usage_policy_id is not None:
@@ -2146,6 +2682,7 @@ class VectorSearchEndpointsAPI:
         endpoint_type: EndpointType,
         *,
         budget_policy_id: Optional[str] = None,
+        num_replicas: Optional[int] = None,
         target_qps: Optional[int] = None,
         usage_policy_id: Optional[str] = None,
         timeout=timedelta(minutes=20),
@@ -2154,6 +2691,7 @@ class VectorSearchEndpointsAPI:
             budget_policy_id=budget_policy_id,
             endpoint_type=endpoint_type,
             name=name,
+            num_replicas=num_replicas,
             target_qps=target_qps,
             usage_policy_id=usage_policy_id,
         ).result(timeout=timeout)
@@ -2269,11 +2807,19 @@ class VectorSearchEndpointsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def patch_endpoint(self, endpoint_name: str, *, target_qps: Optional[int] = None) -> EndpointInfo:
+    def patch_endpoint(
+        self, endpoint_name: str, *, replication_factor: Optional[int] = None, target_qps: Optional[int] = None
+    ) -> EndpointInfo:
         """Update an endpoint
 
         :param endpoint_name: str
           Name of the AI Search endpoint
+        :param replication_factor: int (optional)
+          OpenSearch replication factor. Directly sets userThroughputSettings.replicationFactor. Mutually
+          exclusive with target_qps (and the deprecated min_qps alias). Must be non-negative (0 = no
+          replication). The autoscaler caps the effective value based on endpoint scaling settings. Note: This
+          is the raw replication factor, not "total data copies". For the user-facing replica count (which
+          uses total-copies semantics), see PatchEndpointThroughputRequest.num_replicas.
         :param target_qps: int (optional)
           Target QPS for the endpoint. Best-effort; the system does not guarantee this QPS will be achieved.
 
@@ -2281,6 +2827,8 @@ class VectorSearchEndpointsAPI:
         """
 
         body = {}
+        if replication_factor is not None:
+            body["replication_factor"] = replication_factor
         if target_qps is not None:
             body["target_qps"] = target_qps
         headers = {
@@ -2294,6 +2842,63 @@ class VectorSearchEndpointsAPI:
 
         res = self._api.do("PATCH", f"/api/2.0/vector-search/endpoints/{endpoint_name}", body=body, headers=headers)
         return EndpointInfo.from_dict(res)
+
+    def patch_endpoint_throughput(
+        self,
+        endpoint_name: str,
+        *,
+        all_or_nothing: Optional[bool] = None,
+        concurrency: Optional[float] = None,
+        maximum_concurrency_allowed: Optional[float] = None,
+        minimal_concurrency_allowed: Optional[float] = None,
+        num_replicas: Optional[int] = None,
+    ) -> PatchEndpointThroughputResponse:
+        """Update the throughput (concurrency) of an endpoint
+
+        :param endpoint_name: str
+          Name of the AI Search endpoint
+        :param all_or_nothing: bool (optional)
+          If true, the request will fail if the requested concurrency or limits cannot be exactly met. If
+          false, the request will be adjusted to the closest possible value.
+        :param concurrency: float (optional)
+          Requested concurrency (total CPU) for the endpoint. If not specified, the current concurrency is
+          maintained.
+        :param maximum_concurrency_allowed: float (optional)
+          Maximum concurrency allowed for the endpoint. If not specified, the current maximum is maintained.
+        :param minimal_concurrency_allowed: float (optional)
+          Minimum concurrency allowed for the endpoint. If not specified, the current minimum is maintained.
+        :param num_replicas: int (optional)
+          Requested number of data copies for the endpoint (including primary). For example: num_replicas=2
+          means 2 total copies of the data (1 primary + 1 replica). If not specified, the current replication
+          factor is maintained. Valid range: 1-6 (where 1 = no replication, 6 = 1 primary + 5 replicas).
+
+        :returns: :class:`PatchEndpointThroughputResponse`
+        """
+
+        body = {}
+        if all_or_nothing is not None:
+            body["all_or_nothing"] = all_or_nothing
+        if concurrency is not None:
+            body["concurrency"] = concurrency
+        if maximum_concurrency_allowed is not None:
+            body["maximum_concurrency_allowed"] = maximum_concurrency_allowed
+        if minimal_concurrency_allowed is not None:
+            body["minimal_concurrency_allowed"] = minimal_concurrency_allowed
+        if num_replicas is not None:
+            body["num_replicas"] = num_replicas
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/vector-search/endpoints/{endpoint_name}/throughput", body=body, headers=headers
+        )
+        return PatchEndpointThroughputResponse.from_dict(res)
 
     def retrieve_user_visible_metrics(
         self,
@@ -2584,6 +3189,26 @@ class VectorSearchIndexesAPI:
 
         self._api.do("DELETE", f"/api/2.0/vector-search/indexes/{index_name}", headers=headers)
 
+    def get_auto_eval_status(self, name: str) -> GetAutoEvalStatusResponse:
+        """Returns the status of the latest autoeval run for a vector index.
+
+        :param name: str
+          Fully qualified index name (catalog.schema.index).
+
+        :returns: :class:`GetAutoEvalStatusResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/vector-search/indexes/{name}/autoeval", headers=headers)
+        return GetAutoEvalStatusResponse.from_dict(res)
+
     def get_index(self, index_name: str, *, ensure_reranker_compatible: Optional[bool] = None) -> VectorIndex:
         """Get an index.
 
@@ -2782,6 +3407,127 @@ class VectorSearchIndexesAPI:
         )
         return QueryVectorIndexResponse.from_dict(res)
 
+    def run_auto_eval(
+        self,
+        name: str,
+        *,
+        num_queries: Optional[int] = None,
+        num_results: Optional[int] = None,
+        query_types: Optional[List[str]] = None,
+        queryset_query_column: Optional[str] = None,
+        queryset_relevant_docs_column: Optional[str] = None,
+        queryset_table: Optional[str] = None,
+    ) -> RunAutoEvalResponse:
+        """Triggers an autoeval quality evaluation for a vector index.
+
+        :param name: str
+          Fully qualified index name (catalog.schema.index).
+        :param num_queries: int (optional)
+          Number of queries to generate for evaluation (default: 50).
+        :param num_results: int (optional)
+          Number of results to fetch per query (default: 10).
+        :param query_types: List[str] (optional)
+          Query types to evaluate (default: FULL_TEXT, ANN, HYBRID).
+        :param queryset_query_column: str (optional)
+          Column in ``queryset_table`` holding the query text. Required when ``queryset_table`` is set;
+          ignored otherwise.
+        :param queryset_relevant_docs_column: str (optional)
+          Optional column in ``queryset_table`` holding the ground-truth relevant document IDs for each query
+          (STRING or ARRAY<STRING>). When set, recall@k is reported against these labels; when unset,
+          evaluation falls back to LLM-judged metrics only. Ignored when ``queryset_table`` is unset.
+        :param queryset_table: str (optional)
+          Fully qualified Unity Catalog table (catalog.schema.table) of evaluation queries to run against the
+          index. When set, queries are read from this table and synthetic query generation is skipped. The
+          table takes precedence over any automatically detected query source.
+
+        :returns: :class:`RunAutoEvalResponse`
+        """
+
+        body = {}
+        if num_queries is not None:
+            body["num_queries"] = num_queries
+        if num_results is not None:
+            body["num_results"] = num_results
+        if query_types is not None:
+            body["query_types"] = [v for v in query_types]
+        if queryset_query_column is not None:
+            body["queryset_query_column"] = queryset_query_column
+        if queryset_relevant_docs_column is not None:
+            body["queryset_relevant_docs_column"] = queryset_relevant_docs_column
+        if queryset_table is not None:
+            body["queryset_table"] = queryset_table
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/vector-search/indexes/{name}/autoeval", body=body, headers=headers)
+        return RunAutoEvalResponse.from_dict(res)
+
+    def run_reranker_finetuning(
+        self,
+        name: str,
+        *,
+        embedding_model: Optional[str] = None,
+        model_name: Optional[str] = None,
+        num_queries: Optional[int] = None,
+        query_column: Optional[str] = None,
+        query_table: Optional[str] = None,
+    ) -> RunRerankerFinetuningResponse:
+        """Triggers reranker finetuning for a vector index.
+
+        :param name: str
+          Fully qualified index name (catalog.schema.index).
+        :param embedding_model: str (optional)
+          Model-serving endpoint name. Reranker finetuning only supports managed Delta Sync indices
+          (Databricks-computed embeddings), so this field is informational — it is auto-derived from the
+          index and not used to embed training queries locally.
+        :param model_name: str (optional)
+          Fully qualified UC name for the registered finetuned model (catalog.schema.model). When unset, the
+          handler derives a default of ``<catalog>.<schema>.reranker_<index_short_name>`` from ``name``.
+        :param num_queries: int (optional)
+          Cap on the number of queries sampled from ``query_table`` (or generated when ``query_table`` is
+          unset). Use -1 to process all queries (the data-gen default). Lower values cut LLM-judge cost and
+          run time.
+        :param query_column: str (optional)
+          Column in ``query_table`` containing the query text. Ignored when ``query_table`` is unset. Defaults
+          to "query_text" when omitted.
+        :param query_table: str (optional)
+          Optional fully qualified UC Delta table holding training queries (catalog.schema.table). When unset,
+          the data-gen job synthesises queries from the index corpus via an LLM.
+
+        :returns: :class:`RunRerankerFinetuningResponse`
+        """
+
+        body = {}
+        if embedding_model is not None:
+            body["embedding_model"] = embedding_model
+        if model_name is not None:
+            body["model_name"] = model_name
+        if num_queries is not None:
+            body["num_queries"] = num_queries
+        if query_column is not None:
+            body["query_column"] = query_column
+        if query_table is not None:
+            body["query_table"] = query_table
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST", f"/api/2.0/vector-search/indexes/{name}/reranker-finetuning", body=body, headers=headers
+        )
+        return RunRerankerFinetuningResponse.from_dict(res)
+
     def scan_index(
         self, index_name: str, *, last_primary_key: Optional[str] = None, num_results: Optional[int] = None
     ) -> ScanVectorIndexResponse:
@@ -2835,6 +3581,36 @@ class VectorSearchIndexesAPI:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", body=body, headers=headers)
+
+    def update_index_budget_policy(
+        self, index_name: str, *, usage_policy_id: Optional[str] = None
+    ) -> UpdateVectorIndexUsagePolicyResponse:
+        """Update the budget policy of an index
+
+        :param index_name: str
+          Name of the AI Search index
+        :param usage_policy_id: str (optional)
+          The usage policy id to be applied
+
+        :returns: :class:`UpdateVectorIndexUsagePolicyResponse`
+        """
+
+        body = {}
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/vector-search/indexes/{index_name}/usage-policy", body=body, headers=headers
+        )
+        return UpdateVectorIndexUsagePolicyResponse.from_dict(res)
 
     def upsert_data_vector_index(self, index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
         """Handles the upserting of data into a specified vector index.

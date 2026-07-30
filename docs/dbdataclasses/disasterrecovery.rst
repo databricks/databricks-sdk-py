@@ -4,6 +4,10 @@ Disaster Recovery
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.disasterrecovery`` module.
 
 .. py:currentmodule:: databricks.sdk.service.disasterrecovery
+.. autoclass:: AssetReplicationConfig
+   :members:
+   :undoc-members:
+
 .. py:class:: FailoverFailoverGroupRequestFailoverType
 
    The type of failover to perform.
