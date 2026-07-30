@@ -4,32 +4,26 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
+
+import logging
+import random
+import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Dict, List, Any, Iterator, Callable, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from google.protobuf.duration_pb2 import Duration
 
-import time
-import random
-import logging
-
+from databricks.sdk.service import catalog, jobs, settings, sharing
 from databricks.sdk.service._internal import (
+    Wait,
     _duration,
     _enum,
     _from_dict,
     _repeated_dict,
     _repeated_enum,
-    Wait,
 )
-
-
-from databricks.sdk.service import catalog
-from databricks.sdk.service import jobs
-from databricks.sdk.service import settings
-from databricks.sdk.service import sharing
-
 
 _LOG = logging.getLogger("databricks.sdk")
 

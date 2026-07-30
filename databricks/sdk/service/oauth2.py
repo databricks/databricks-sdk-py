@@ -4,19 +4,18 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import Dict, List, Any, Iterator, Optional
-
-from google.protobuf.timestamp_pb2 import Timestamp
 
 import logging
+from dataclasses import dataclass
+from typing import Any, Dict, Iterator, List, Optional
+
+from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.service._internal import (
     _from_dict,
     _repeated_dict,
     _timestamp,
 )
-
 
 _LOG = logging.getLogger("databricks.sdk")
 

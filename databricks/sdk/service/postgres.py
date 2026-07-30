@@ -4,16 +4,19 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
+
+import logging
+import uuid
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Any, Iterator, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
-import logging
-import uuid
-
+from databricks.sdk.common import lro
+from databricks.sdk.common.types.fieldmask import FieldMask
+from databricks.sdk.retries import RetryError, poll
 from databricks.sdk.service._internal import (
     _duration,
     _enum,
@@ -22,10 +25,6 @@ from databricks.sdk.service._internal import (
     _repeated_enum,
     _timestamp,
 )
-from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.common import lro
-from databricks.sdk.retries import RetryError, poll
-
 
 _LOG = logging.getLogger("databricks.sdk")
 
