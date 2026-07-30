@@ -37,6 +37,37 @@ class BaseEnvironmentType(Enum):
 
 
 @dataclass
+class BatchGetWorkspaceBaseEnvironmentsResponse:
+    """Response message for BatchGetWorkspaceBaseEnvironments."""
+
+    workspace_base_environments: Optional[List[WorkspaceBaseEnvironment]] = None
+    """The workspace base environments requested. Names that refer to the same environment are
+    de-duplicated, so each environment is returned at most once, in the order its name first appears
+    in the request."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BatchGetWorkspaceBaseEnvironmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.workspace_base_environments:
+            body["workspace_base_environments"] = [v.as_dict() for v in self.workspace_base_environments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BatchGetWorkspaceBaseEnvironmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.workspace_base_environments:
+            body["workspace_base_environments"] = self.workspace_base_environments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BatchGetWorkspaceBaseEnvironmentsResponse:
+        """Deserializes the BatchGetWorkspaceBaseEnvironmentsResponse from a dictionary."""
+        return cls(
+            workspace_base_environments=_repeated_dict(d, "workspace_base_environments", WorkspaceBaseEnvironment)
+        )
+
+
+@dataclass
 class DatabricksServiceExceptionWithDetailsProto:
     """Databricks Error that is returned by all Databricks APIs."""
 
@@ -371,6 +402,9 @@ class WorkspaceBaseEnvironment:
     display_name: str
     """Human-readable display name for the workspace base environment."""
 
+    base_environment_provider: Optional[WorkspaceBaseEnvironmentProvider] = None
+    """The provider of this workspace base environment."""
+
     base_environment_type: Optional[BaseEnvironmentType] = None
     """The type of base environment (CPU or GPU)."""
 
@@ -408,6 +442,8 @@ class WorkspaceBaseEnvironment:
     def as_dict(self) -> dict:
         """Serializes the WorkspaceBaseEnvironment into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.base_environment_provider is not None:
+            body["base_environment_provider"] = self.base_environment_provider.value
         if self.base_environment_type is not None:
             body["base_environment_type"] = self.base_environment_type.value
         if self.create_time is not None:
@@ -437,6 +473,8 @@ class WorkspaceBaseEnvironment:
     def as_shallow_dict(self) -> dict:
         """Serializes the WorkspaceBaseEnvironment into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.base_environment_provider is not None:
+            body["base_environment_provider"] = self.base_environment_provider
         if self.base_environment_type is not None:
             body["base_environment_type"] = self.base_environment_type
         if self.create_time is not None:
@@ -467,6 +505,7 @@ class WorkspaceBaseEnvironment:
     def from_dict(cls, d: Dict[str, Any]) -> WorkspaceBaseEnvironment:
         """Deserializes the WorkspaceBaseEnvironment from a dictionary."""
         return cls(
+            base_environment_provider=_enum(d, "base_environment_provider", WorkspaceBaseEnvironmentProvider),
             base_environment_type=_enum(d, "base_environment_type", BaseEnvironmentType),
             create_time=_timestamp(d, "create_time"),
             creator_user_id=d.get("creator_user_id", None),
@@ -514,6 +553,13 @@ class WorkspaceBaseEnvironmentOperationMetadata:
         return cls()
 
 
+class WorkspaceBaseEnvironmentProvider(Enum):
+    """Identifies who provides and manages a WorkspaceBaseEnvironment."""
+
+    ADMIN = "ADMIN"
+    DATABRICKS = "DATABRICKS"
+
+
 class EnvironmentsAPI:
     """APIs to manage environment resources.
 
@@ -523,6 +569,33 @@ class EnvironmentsAPI:
 
     def __init__(self, api_client):
         self._api = api_client
+
+    def batch_get_workspace_base_environments(self, names: List[str]) -> BatchGetWorkspaceBaseEnvironmentsResponse:
+        """Retrieves multiple WorkspaceBaseEnvironments by name in a single call. The operation is atomic: it
+        either returns all of the requested environments or fails.
+
+        :param names: List[str]
+          Required. The names of the workspace base environments to retrieve. Format:
+          workspace-base-environments/{workspace_base_environment}
+
+        :returns: :class:`BatchGetWorkspaceBaseEnvironmentsResponse`
+        """
+
+        query = {}
+        if names is not None:
+            query["names"] = [v for v in names]
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "GET", "/api/environments/v1/workspace-base-environments:batchGet", query=query, headers=headers
+        )
+        return BatchGetWorkspaceBaseEnvironmentsResponse.from_dict(res)
 
     def create_workspace_base_environment(
         self,

@@ -211,7 +211,7 @@ class DownloadResponse:
 @dataclass
 class FileInfo:
     file_size: Optional[int] = None
-    """The length of the file in bytes. This field is omitted for directories."""
+    """The length of the file in bytes. Set to 0 for directories."""
 
     is_dir: Optional[bool] = None
     """True if the path is a directory."""

@@ -66,7 +66,7 @@
         :return:         file-like `io.BinaryIO` of the `path` contents.
         
 
-    .. py:method:: export(path: str [, format: Optional[ExportFormat]]) -> ExportResponse
+    .. py:method:: export(path: str [, format: Optional[ExportFormat], outputs: Optional[ExportOutputs]]) -> ExportResponse
 
 
         Usage:
@@ -108,6 +108,11 @@
           - ``R_MARKDOWN``: The notebook is exported to R Markdown format.
           - ``AUTO``: The object or directory is exported depending on the objects type. Directory exports
             will include notebooks and workspace files.
+        :param outputs: :class:`ExportOutputs` (optional)
+          This specifies which cell outputs should be included in the export (if the export format allows it).
+          If not specified, the behavior is determined by the format. For JUPYTER format, the default is to
+          include all outputs. This is a public endpoint, but only ALL or NONE is documented publically,
+          DATABRICKS is internal only
 
         :returns: :class:`ExportResponse`
         
@@ -188,7 +193,7 @@
                 content=base64.b64encode(("CREATE LIVE TABLE dlt_sample AS SELECT 1").encode()).decode(),
                 format=workspace.ImportFormat.SOURCE,
                 language=workspace.Language.SQL,
-                overwrite=true_,
+                overwrite=True,
                 path=notebook_path,
             )
 
@@ -235,16 +240,14 @@
 
         .. code-block::
 
-            import os
-            import time
-            
             from databricks.sdk import WorkspaceClient
             
             w = WorkspaceClient()
             
-            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
-            
-            objects = w.workspace.list(path=os.path.dirname(notebook))
+            names = []
+            for i in w.workspace.list(f"/Users/{w.current_user.me().user_name}", recursive=True):
+                names.append(i.path)
+            assert len(names) > 0
 
         List workspace objects
 

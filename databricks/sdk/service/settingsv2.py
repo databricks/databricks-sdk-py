@@ -385,6 +385,44 @@ class CollaborationPlatformConnectivityMessageConnectivity(Enum):
 
 
 @dataclass
+class GenieChatSharePolicy:
+    """Workspace controls that restrict which Genie space chat sharing modes are available to end
+    users. When disable_make_chat_private is true, users cannot make a Genie chat private. When
+    disable_share_with_account_users is true, users cannot share a Genie chat with all account
+    users. Defaults preserve current behavior (both false)."""
+
+    disable_make_chat_private: Optional[bool] = None
+
+    disable_share_with_account_users: Optional[bool] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieChatSharePolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disable_make_chat_private is not None:
+            body["disable_make_chat_private"] = self.disable_make_chat_private
+        if self.disable_share_with_account_users is not None:
+            body["disable_share_with_account_users"] = self.disable_share_with_account_users
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieChatSharePolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disable_make_chat_private is not None:
+            body["disable_make_chat_private"] = self.disable_make_chat_private
+        if self.disable_share_with_account_users is not None:
+            body["disable_share_with_account_users"] = self.disable_share_with_account_users
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieChatSharePolicy:
+        """Deserializes the GenieChatSharePolicy from a dictionary."""
+        return cls(
+            disable_make_chat_private=d.get("disable_make_chat_private", None),
+            disable_share_with_account_users=d.get("disable_share_with_account_users", None),
+        )
+
+
+@dataclass
 class IntegerMessage:
     value: Optional[int] = None
 
@@ -679,6 +717,10 @@ class Setting:
     """Effective setting value for collaboration_platform_connectivity setting. This is the final
     effective value of setting. To set a value use collaboration_platform_connectivity."""
 
+    effective_genie_chat_share_policy: Optional[GenieChatSharePolicy] = None
+    """Effective setting value for genie_chat_share_policy setting. This is the final effective value
+    of setting. To set a value use genie_chat_share_policy."""
+
     effective_integer_val: Optional[IntegerMessage] = None
     """Effective setting value for integer type setting. This is the final effective value of setting.
     To set a value use integer_val."""
@@ -698,6 +740,10 @@ class Setting:
     effective_string_val: Optional[StringMessage] = None
     """Effective setting value for string type setting. This is the final effective value of setting.
     To set a value use string_val."""
+
+    genie_chat_share_policy: Optional[GenieChatSharePolicy] = None
+    """Setting value for genie_chat_share_policy setting. This is the setting value set by consumers,
+    check effective_genie_chat_share_policy for final setting value."""
 
     integer_val: Optional[IntegerMessage] = None
     """Setting value for integer type setting. This is the setting value set by consumers, check
@@ -757,6 +803,8 @@ class Setting:
             body["effective_collaboration_platform_connectivity"] = (
                 self.effective_collaboration_platform_connectivity.as_dict()
             )
+        if self.effective_genie_chat_share_policy:
+            body["effective_genie_chat_share_policy"] = self.effective_genie_chat_share_policy.as_dict()
         if self.effective_integer_val:
             body["effective_integer_val"] = self.effective_integer_val.as_dict()
         if self.effective_operational_email_custom_recipient:
@@ -769,6 +817,8 @@ class Setting:
             body["effective_restrict_workspace_admins"] = self.effective_restrict_workspace_admins.as_dict()
         if self.effective_string_val:
             body["effective_string_val"] = self.effective_string_val.as_dict()
+        if self.genie_chat_share_policy:
+            body["genie_chat_share_policy"] = self.genie_chat_share_policy.as_dict()
         if self.integer_val:
             body["integer_val"] = self.integer_val.as_dict()
         if self.name is not None:
@@ -814,6 +864,8 @@ class Setting:
             body["effective_boolean_val"] = self.effective_boolean_val
         if self.effective_collaboration_platform_connectivity:
             body["effective_collaboration_platform_connectivity"] = self.effective_collaboration_platform_connectivity
+        if self.effective_genie_chat_share_policy:
+            body["effective_genie_chat_share_policy"] = self.effective_genie_chat_share_policy
         if self.effective_integer_val:
             body["effective_integer_val"] = self.effective_integer_val
         if self.effective_operational_email_custom_recipient:
@@ -824,6 +876,8 @@ class Setting:
             body["effective_restrict_workspace_admins"] = self.effective_restrict_workspace_admins
         if self.effective_string_val:
             body["effective_string_val"] = self.effective_string_val
+        if self.genie_chat_share_policy:
+            body["genie_chat_share_policy"] = self.genie_chat_share_policy
         if self.integer_val:
             body["integer_val"] = self.integer_val
         if self.name is not None:
@@ -872,6 +926,7 @@ class Setting:
             effective_collaboration_platform_connectivity=_from_dict(
                 d, "effective_collaboration_platform_connectivity", CollaborationPlatformConnectivityMessage
             ),
+            effective_genie_chat_share_policy=_from_dict(d, "effective_genie_chat_share_policy", GenieChatSharePolicy),
             effective_integer_val=_from_dict(d, "effective_integer_val", IntegerMessage),
             effective_operational_email_custom_recipient=_from_dict(
                 d, "effective_operational_email_custom_recipient", OperationalEmailCustomRecipientMessage
@@ -881,6 +936,7 @@ class Setting:
                 d, "effective_restrict_workspace_admins", RestrictWorkspaceAdminsMessage
             ),
             effective_string_val=_from_dict(d, "effective_string_val", StringMessage),
+            genie_chat_share_policy=_from_dict(d, "genie_chat_share_policy", GenieChatSharePolicy),
             integer_val=_from_dict(d, "integer_val", IntegerMessage),
             name=d.get("name", None),
             operational_email_custom_recipient=_from_dict(

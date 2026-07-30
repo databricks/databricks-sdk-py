@@ -1045,6 +1045,44 @@ class CronSchedule:
 
 
 @dataclass
+class CustomUdf:
+    """A CustomUdf function applies a registered Unity Catalog function row-wise to source columns,
+    producing a single output column per row."""
+
+    function_path: str
+    """Fully qualified 3-part Unity Catalog path of the function to apply."""
+
+    input_bindings: Optional[List[InputBinding]] = None
+    """Binds each UC function parameter to a source column. May be empty for zero-argument functions
+    (e.g. a timestamp generator)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomUdf into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.function_path is not None:
+            body["function_path"] = self.function_path
+        if self.input_bindings:
+            body["input_bindings"] = [v.as_dict() for v in self.input_bindings]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomUdf into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.function_path is not None:
+            body["function_path"] = self.function_path
+        if self.input_bindings:
+            body["input_bindings"] = self.input_bindings
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomUdf:
+        """Deserializes the CustomUdf from a dictionary."""
+        return cls(
+            function_path=d.get("function_path", None), input_bindings=_repeated_dict(d, "input_bindings", InputBinding)
+        )
+
+
+@dataclass
 class DataSource:
     """Specifies the data source backing a feature. Exactly one source type must be set."""
 
@@ -1568,7 +1606,7 @@ class DirectMtlsConfig:
 @dataclass
 class DirectSchemas:
     """Schema definitions provided directly on the Stream, as opposed to referencing a schema registry.
-    In a future milestone, we will support schema registries through a UC Connection."""
+    To resolve schemas from a registry instead, use SchemaRegistryConfig."""
 
     key_schema: Optional[SchemaConfig] = None
     """Schema for the message key. This is only used for Kafka streams. For Kafka, at least one of
@@ -2636,6 +2674,9 @@ class Function:
     column_selection: Optional[ColumnSelection] = None
     """Selects the latest value of a single column in a data source"""
 
+    custom_udf: Optional[CustomUdf] = None
+    """Applies a registered Unity Catalog function row-wise to source columns."""
+
     extra_parameters: Optional[List[FunctionExtraParameter]] = None
     """Deprecated: Use the function oneof with AggregationFunction instead. Kept for backwards
     compatibility. Extra parameters for parameterized functions."""
@@ -2651,6 +2692,8 @@ class Function:
             body["aggregation_function"] = self.aggregation_function.as_dict()
         if self.column_selection:
             body["column_selection"] = self.column_selection.as_dict()
+        if self.custom_udf:
+            body["custom_udf"] = self.custom_udf.as_dict()
         if self.extra_parameters:
             body["extra_parameters"] = [v.as_dict() for v in self.extra_parameters]
         if self.function_type is not None:
@@ -2664,6 +2707,8 @@ class Function:
             body["aggregation_function"] = self.aggregation_function
         if self.column_selection:
             body["column_selection"] = self.column_selection
+        if self.custom_udf:
+            body["custom_udf"] = self.custom_udf
         if self.extra_parameters:
             body["extra_parameters"] = self.extra_parameters
         if self.function_type is not None:
@@ -2676,6 +2721,7 @@ class Function:
         return cls(
             aggregation_function=_from_dict(d, "aggregation_function", AggregationFunction),
             column_selection=_from_dict(d, "column_selection", ColumnSelection),
+            custom_udf=_from_dict(d, "custom_udf", CustomUdf),
             extra_parameters=_repeated_dict(d, "extra_parameters", FunctionExtraParameter),
             function_type=_enum(d, "function_type", FunctionFunctionType),
         )
@@ -2860,6 +2906,31 @@ class GetLoggedModelResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelResponse:
         """Deserializes the GetLoggedModelResponse from a dictionary."""
         return cls(model=_from_dict(d, "model", LoggedModel))
+
+
+@dataclass
+class GetLoggedModelsRequestResponse:
+    models: Optional[List[LoggedModel]] = None
+    """The retrieved logged models."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetLoggedModelsRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.models:
+            body["models"] = [v.as_dict() for v in self.models]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetLoggedModelsRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.models:
+            body["models"] = self.models
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelsRequestResponse:
+        """Deserializes the GetLoggedModelsRequestResponse from a dictionary."""
+        return cls(models=_repeated_dict(d, "models", LoggedModel))
 
 
 @dataclass
@@ -3222,6 +3293,40 @@ class IngestionDestination:
 
 
 @dataclass
+class InputBinding:
+    """Binds a single UC function parameter to a source column."""
+
+    parameter: str
+    """Name of the UC function parameter."""
+
+    column: str
+    """Source column whose value is passed for this parameter at execution time."""
+
+    def as_dict(self) -> dict:
+        """Serializes the InputBinding into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column is not None:
+            body["column"] = self.column
+        if self.parameter is not None:
+            body["parameter"] = self.parameter
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InputBinding into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column is not None:
+            body["column"] = self.column
+        if self.parameter is not None:
+            body["parameter"] = self.parameter
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InputBinding:
+        """Deserializes the InputBinding from a dictionary."""
+        return cls(column=d.get("column", None), parameter=d.get("parameter", None))
+
+
+@dataclass
 class InputTag:
     """Tag for a dataset input."""
 
@@ -3469,6 +3574,10 @@ class KafkaSource:
     """Name of the Kafka source, used to identify it. This is used to look up the corresponding
     KafkaConfig object. Can be distinct from topic name."""
 
+    dataframe_schema: Optional[str] = None
+    """Schema of the resulting dataframe after transformations, in Spark StructType JSON format (from
+    df.schema.json()). Any subsequent functions operate against this dataframe."""
+
     entity_column_identifiers: Optional[List[ColumnIdentifier]] = None
     """Deprecated: Use Feature.entity instead. Kept for backwards compatibility. The entity column
     identifiers of the Kafka source."""
@@ -3480,9 +3589,15 @@ class KafkaSource:
     """Deprecated: Use Feature.timeseries_column instead. Kept for backwards compatibility. The
     timeseries column identifier of the Kafka source."""
 
+    transformation_sql: Optional[str] = None
+    """The pipeline runs these SQL statements immediately after conversion into the schema specified on
+    the KafkaConfig object."""
+
     def as_dict(self) -> dict:
         """Serializes the KafkaSource into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
         if self.entity_column_identifiers:
             body["entity_column_identifiers"] = [v.as_dict() for v in self.entity_column_identifiers]
         if self.filter_condition is not None:
@@ -3491,11 +3606,15 @@ class KafkaSource:
             body["name"] = self.name
         if self.timeseries_column_identifier:
             body["timeseries_column_identifier"] = self.timeseries_column_identifier.as_dict()
+        if self.transformation_sql is not None:
+            body["transformation_sql"] = self.transformation_sql
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the KafkaSource into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.dataframe_schema is not None:
+            body["dataframe_schema"] = self.dataframe_schema
         if self.entity_column_identifiers:
             body["entity_column_identifiers"] = self.entity_column_identifiers
         if self.filter_condition is not None:
@@ -3504,16 +3623,20 @@ class KafkaSource:
             body["name"] = self.name
         if self.timeseries_column_identifier:
             body["timeseries_column_identifier"] = self.timeseries_column_identifier
+        if self.transformation_sql is not None:
+            body["transformation_sql"] = self.transformation_sql
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> KafkaSource:
         """Deserializes the KafkaSource from a dictionary."""
         return cls(
+            dataframe_schema=d.get("dataframe_schema", None),
             entity_column_identifiers=_repeated_dict(d, "entity_column_identifiers", ColumnIdentifier),
             filter_condition=d.get("filter_condition", None),
             name=d.get("name", None),
             timeseries_column_identifier=_from_dict(d, "timeseries_column_identifier", ColumnIdentifier),
+            transformation_sql=d.get("transformation_sql", None),
         )
 
 
@@ -3615,6 +3738,54 @@ class KafkaSubscriptionMode:
 
 
 @dataclass
+class KinesisStreamConfig:
+    """Kinesis-specific configuration for a Stream. For the underlying connector and its source
+    options, see the Databricks documentation on connecting to Amazon Kinesis
+    (https://docs.databricks.com/aws/en/connect/streaming/kinesis)."""
+
+    extra_options: Optional[Dict[str, str]] = None
+    """Optional Kinesis source options, validated against a server-side allowlist at request time. Auth
+    and connection details belong on the parent Stream's ``connection_config``, not here."""
+
+    stream_arns: Optional[StreamArnList] = None
+    """Kinesis stream ARNs to read from."""
+
+    stream_names: Optional[StreamNameList] = None
+    """Kinesis stream names to read from."""
+
+    def as_dict(self) -> dict:
+        """Serializes the KinesisStreamConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.extra_options:
+            body["extra_options"] = self.extra_options
+        if self.stream_arns:
+            body["stream_arns"] = self.stream_arns.as_dict()
+        if self.stream_names:
+            body["stream_names"] = self.stream_names.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the KinesisStreamConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.extra_options:
+            body["extra_options"] = self.extra_options
+        if self.stream_arns:
+            body["stream_arns"] = self.stream_arns
+        if self.stream_names:
+            body["stream_names"] = self.stream_names
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> KinesisStreamConfig:
+        """Deserializes the KinesisStreamConfig from a dictionary."""
+        return cls(
+            extra_options=d.get("extra_options", None),
+            stream_arns=_from_dict(d, "stream_arns", StreamArnList),
+            stream_names=_from_dict(d, "stream_names", StreamNameList),
+        )
+
+
+@dataclass
 class LastDistinctFunction:
     """Returns the last N distinct values, ordered by the feature's timeseries column."""
 
@@ -3707,37 +3878,6 @@ class LastNFunction:
     def from_dict(cls, d: Dict[str, Any]) -> LastNFunction:
         """Deserializes the LastNFunction from a dictionary."""
         return cls(input=d.get("input", None), n=d.get("n", None))
-
-
-@dataclass
-class LifetimeWindow:
-    """A window that spans the entire lifetime of a data source, accumulating from the source's start
-    rather than over a bounded duration. All fields are optional; an empty message denotes the
-    continuous, fully-accurate variant."""
-
-    slide_duration: Optional[Duration] = None
-    """The slide duration for the discrete (offline) variant: the value updates only at these
-    boundaries. Must be positive when set. When absent, the window is continuous (the value is as
-    fresh as the pipeline delivers)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the LifetimeWindow into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.slide_duration is not None:
-            body["slide_duration"] = self.slide_duration.ToJsonString()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the LifetimeWindow into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.slide_duration is not None:
-            body["slide_duration"] = self.slide_duration
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> LifetimeWindow:
-        """Deserializes the LifetimeWindow from a dictionary."""
-        return cls(slide_duration=_duration(d, "slide_duration"))
 
 
 @dataclass
@@ -5833,9 +5973,16 @@ class PublishSpec:
     publish_mode: PublishSpecPublishMode
     """The publish mode of the pipeline that syncs the online table with the source table."""
 
+    full_feature_name: Optional[str] = None
+    """Full Unity Catalog name of one of the features materialized in the source table, used to derive
+    the synced online table's entity and timeseries columns. Required for view sources without a UC
+    PrimaryKeyConstraint; ignored when the source already has one."""
+
     def as_dict(self) -> dict:
         """Serializes the PublishSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.full_feature_name is not None:
+            body["full_feature_name"] = self.full_feature_name
         if self.online_store is not None:
             body["online_store"] = self.online_store
         if self.online_table_name is not None:
@@ -5847,6 +5994,8 @@ class PublishSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the PublishSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.full_feature_name is not None:
+            body["full_feature_name"] = self.full_feature_name
         if self.online_store is not None:
             body["online_store"] = self.online_store
         if self.online_table_name is not None:
@@ -5859,6 +6008,7 @@ class PublishSpec:
     def from_dict(cls, d: Dict[str, Any]) -> PublishSpec:
         """Deserializes the PublishSpec from a dictionary."""
         return cls(
+            full_feature_name=d.get("full_feature_name", None),
             online_store=d.get("online_store", None),
             online_table_name=d.get("online_table_name", None),
             publish_mode=_enum(d, "publish_mode", PublishSpecPublishMode),
@@ -6839,6 +6989,142 @@ class SchemaConfig:
 
 
 @dataclass
+class SchemaLocator:
+    """Schema locator for one side (payload or key) of a message. Identifies which schema to use in the
+    schema registry and the serialization format."""
+
+    format: SchemaLocatorFormat
+    """Serialization format for this schema."""
+
+    confluent_schema: Optional[SchemaLocatorConfluentSchema] = None
+    """Confluent Schema Registry schema locator."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SchemaLocator into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.confluent_schema:
+            body["confluent_schema"] = self.confluent_schema.as_dict()
+        if self.format is not None:
+            body["format"] = self.format.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SchemaLocator into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.confluent_schema:
+            body["confluent_schema"] = self.confluent_schema
+        if self.format is not None:
+            body["format"] = self.format
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SchemaLocator:
+        """Deserializes the SchemaLocator from a dictionary."""
+        return cls(
+            confluent_schema=_from_dict(d, "confluent_schema", SchemaLocatorConfluentSchema),
+            format=_enum(d, "format", SchemaLocatorFormat),
+        )
+
+
+@dataclass
+class SchemaLocatorConfluentSchema:
+    """Confluent Schema Registry schema locator. The value to provide for ``subject`` depends on the
+    naming strategy configured in your registry:
+
+    - TopicNameStrategy (default): "{topic}-key" or "{topic}-value" e.g. for topic "transactions"
+      use "transactions-value" for the payload and "transactions-key" for the key.
+    - RecordNameStrategy: the fully-qualified record name e.g. "com.example.Payment" for Avro, the
+      bare message name (without package) for Protobuf, or the ``title`` field value for JSON.
+    - TopicRecordNameStrategy: "{topic}-{fully-qualified-record-name}" e.g.
+      "transactions-com.example.Payment"."""
+
+    subject: str
+    """The Confluent schema registry subject name."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SchemaLocatorConfluentSchema into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.subject is not None:
+            body["subject"] = self.subject
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SchemaLocatorConfluentSchema into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.subject is not None:
+            body["subject"] = self.subject
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SchemaLocatorConfluentSchema:
+        """Deserializes the SchemaLocatorConfluentSchema from a dictionary."""
+        return cls(subject=d.get("subject", None))
+
+
+class SchemaLocatorFormat(Enum):
+    """Supported serialization formats for a schema registry schema."""
+
+    FORMAT_AVRO = "FORMAT_AVRO"
+    FORMAT_JSON = "FORMAT_JSON"
+    FORMAT_PROTOBUF = "FORMAT_PROTOBUF"
+
+
+@dataclass
+class SchemaRegistryConfig:
+    """Configuration for resolving a Stream's schema from an external schema registry (e.g. Confluent)."""
+
+    api_secret_ref: SecretScopeReference
+    """Reference to the schema registry API secret in a Databricks secret scope."""
+
+    key_schema_locator: Optional[SchemaLocator] = None
+    """Schema locator for the message key. Only used for Kafka streams. At least one of
+    payload_schema_locator or key_schema_locator must be set."""
+
+    payload_schema_locator: Optional[SchemaLocator] = None
+    """Schema locator for the message payload. For Kafka this is the value. At least one of
+    payload_schema_locator or key_schema_locator must be set."""
+
+    uc_connection: Optional[str] = None
+    """A Schema Registry UC Connection object."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SchemaRegistryConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.api_secret_ref:
+            body["api_secret_ref"] = self.api_secret_ref.as_dict()
+        if self.key_schema_locator:
+            body["key_schema_locator"] = self.key_schema_locator.as_dict()
+        if self.payload_schema_locator:
+            body["payload_schema_locator"] = self.payload_schema_locator.as_dict()
+        if self.uc_connection is not None:
+            body["uc_connection"] = self.uc_connection
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SchemaRegistryConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.api_secret_ref:
+            body["api_secret_ref"] = self.api_secret_ref
+        if self.key_schema_locator:
+            body["key_schema_locator"] = self.key_schema_locator
+        if self.payload_schema_locator:
+            body["payload_schema_locator"] = self.payload_schema_locator
+        if self.uc_connection is not None:
+            body["uc_connection"] = self.uc_connection
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SchemaRegistryConfig:
+        """Deserializes the SchemaRegistryConfig from a dictionary."""
+        return cls(
+            api_secret_ref=_from_dict(d, "api_secret_ref", SecretScopeReference),
+            key_schema_locator=_from_dict(d, "key_schema_locator", SchemaLocator),
+            payload_schema_locator=_from_dict(d, "payload_schema_locator", SchemaLocator),
+            uc_connection=d.get("uc_connection", None),
+        )
+
+
+@dataclass
 class SearchExperimentsResponse:
     experiments: Optional[List[Experiment]] = None
     """Experiments that match the search criteria"""
@@ -7337,8 +7623,8 @@ class Stream:
     """Specifies how to connect and authenticate to the stream platform."""
 
     schema_config: StreamSchemaConfig
-    """Schema definitions for the stream. Currently only direct schemas are supported. In a future
-    milestone, we will support schema registries through a UC Connection."""
+    """Schema definitions for the stream, provided either directly on the Stream or resolved from an
+    external schema registry through a UC Connection."""
 
     ingestion_config: IngestionConfig
     """Configuration for streaming data ingestion: the managed table storing an offline copy of forward
@@ -7436,6 +7722,34 @@ class Stream:
 
 
 @dataclass
+class StreamArnList:
+    """A list of Kinesis stream ARNs to read from."""
+
+    arns: Optional[List[str]] = None
+    """Kinesis stream ARNs to read from. For example,
+    'arn:aws:kinesis:us-west-2:111122223333:stream/stream-a'."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamArnList into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.arns:
+            body["arns"] = [v for v in self.arns]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamArnList into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.arns:
+            body["arns"] = self.arns
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamArnList:
+        """Deserializes the StreamArnList from a dictionary."""
+        return cls(arns=d.get("arns", None))
+
+
+@dataclass
 class StreamConnectionConfig:
     """Specifies how to connect and authenticate to the stream platform."""
 
@@ -7446,7 +7760,8 @@ class StreamConnectionConfig:
 
     uc_connection_name: Optional[str] = None
     """Name of an existing UC Connection for stream platform access. Must be the correct type for the
-    streaming platform (e.g. a Kafka Connection for a Kafka Stream)."""
+    streaming platform (e.g. a Kafka Connection for a Kafka Stream, or a Kinesis Connection for a
+    Kinesis Stream)."""
 
     def as_dict(self) -> dict:
         """Serializes the StreamConnectionConfig into a dictionary suitable for use as a JSON request body."""
@@ -7476,18 +7791,50 @@ class StreamConnectionConfig:
 
 
 @dataclass
+class StreamNameList:
+    """A list of Kinesis stream names to read from."""
+
+    names: Optional[List[str]] = None
+    """Kinesis stream names to read from."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StreamNameList into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.names:
+            body["names"] = [v for v in self.names]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StreamNameList into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.names:
+            body["names"] = self.names
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StreamNameList:
+        """Deserializes the StreamNameList from a dictionary."""
+        return cls(names=d.get("names", None))
+
+
+@dataclass
 class StreamSchemaConfig:
-    """Schema definitions for the stream. Currently only direct schemas are supported. In a future
-    milestone, we will support schema registries through a UC Connection."""
+    """Schema definitions for the stream. Feature store supports both direct schemas and schema
+    registries."""
 
     direct_schemas: Optional[DirectSchemas] = None
     """Schema definitions provided directly on the Stream."""
+
+    schema_registry_config: Optional[SchemaRegistryConfig] = None
+    """Resolve schemas from an external schema registry."""
 
     def as_dict(self) -> dict:
         """Serializes the StreamSchemaConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.direct_schemas:
             body["direct_schemas"] = self.direct_schemas.as_dict()
+        if self.schema_registry_config:
+            body["schema_registry_config"] = self.schema_registry_config.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7495,12 +7842,17 @@ class StreamSchemaConfig:
         body = {}
         if self.direct_schemas:
             body["direct_schemas"] = self.direct_schemas
+        if self.schema_registry_config:
+            body["schema_registry_config"] = self.schema_registry_config
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StreamSchemaConfig:
         """Deserializes the StreamSchemaConfig from a dictionary."""
-        return cls(direct_schemas=_from_dict(d, "direct_schemas", DirectSchemas))
+        return cls(
+            direct_schemas=_from_dict(d, "direct_schemas", DirectSchemas),
+            schema_registry_config=_from_dict(d, "schema_registry_config", SchemaRegistryConfig),
+        )
 
 
 @dataclass
@@ -7565,11 +7917,16 @@ class StreamSourceConfig:
     kafka_stream_config: Optional[KafkaStreamConfig] = None
     """Configuration for Apache Kafka streams."""
 
+    kinesis_stream_config: Optional[KinesisStreamConfig] = None
+    """Configuration for AWS Kinesis Data Streams."""
+
     def as_dict(self) -> dict:
         """Serializes the StreamSourceConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.kafka_stream_config:
             body["kafka_stream_config"] = self.kafka_stream_config.as_dict()
+        if self.kinesis_stream_config:
+            body["kinesis_stream_config"] = self.kinesis_stream_config.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7577,12 +7934,17 @@ class StreamSourceConfig:
         body = {}
         if self.kafka_stream_config:
             body["kafka_stream_config"] = self.kafka_stream_config
+        if self.kinesis_stream_config:
+            body["kinesis_stream_config"] = self.kinesis_stream_config
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StreamSourceConfig:
         """Deserializes the StreamSourceConfig from a dictionary."""
-        return cls(kafka_stream_config=_from_dict(d, "kafka_stream_config", KafkaStreamConfig))
+        return cls(
+            kafka_stream_config=_from_dict(d, "kafka_stream_config", KafkaStreamConfig),
+            kinesis_stream_config=_from_dict(d, "kinesis_stream_config", KinesisStreamConfig),
+        )
 
 
 @dataclass
@@ -7760,9 +8122,6 @@ class TestRegistryWebhookResponse:
 class TimeWindow:
     continuous: Optional[ContinuousWindow] = None
 
-    lifetime: Optional[LifetimeWindow] = None
-    """A window that spans the entire lifetime of the data source."""
-
     rolling: Optional[RollingWindow] = None
 
     sawtooth: Optional[SawtoothWindow] = None
@@ -7777,8 +8136,6 @@ class TimeWindow:
         body = {}
         if self.continuous:
             body["continuous"] = self.continuous.as_dict()
-        if self.lifetime:
-            body["lifetime"] = self.lifetime.as_dict()
         if self.rolling:
             body["rolling"] = self.rolling.as_dict()
         if self.sawtooth:
@@ -7794,8 +8151,6 @@ class TimeWindow:
         body = {}
         if self.continuous:
             body["continuous"] = self.continuous
-        if self.lifetime:
-            body["lifetime"] = self.lifetime
         if self.rolling:
             body["rolling"] = self.rolling
         if self.sawtooth:
@@ -7811,7 +8166,6 @@ class TimeWindow:
         """Deserializes the TimeWindow from a dictionary."""
         return cls(
             continuous=_from_dict(d, "continuous", ContinuousWindow),
-            lifetime=_from_dict(d, "lifetime", LifetimeWindow),
             rolling=_from_dict(d, "rolling", RollingWindow),
             sawtooth=_from_dict(d, "sawtooth", SawtoothWindow),
             sliding=_from_dict(d, "sliding", SlidingWindow),
@@ -8713,6 +9067,29 @@ class ExperimentsAPI:
 
         res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
         return GetLoggedModelResponse.from_dict(res)
+
+    def get_logged_models(self, *, model_ids: Optional[List[str]] = None) -> GetLoggedModelsRequestResponse:
+        """Batch endpoint for getting logged models from a list of model IDs
+
+        :param model_ids: List[str] (optional)
+          The IDs of the logged models to retrieve. Max threshold is 100.
+
+        :returns: :class:`GetLoggedModelsRequestResponse`
+        """
+
+        query = {}
+        if model_ids is not None:
+            query["model_ids"] = [v for v in model_ids]
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", "/api/2.0/mlflow/logged-models:batchGet", query=query, headers=headers)
+        return GetLoggedModelsRequestResponse.from_dict(res)
 
     def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.

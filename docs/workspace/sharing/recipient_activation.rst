@@ -12,22 +12,28 @@
     Note that you can download the credential file only once. Recipients should treat the downloaded
     credential as a secret and must not share it outside of their organization.
 
-    .. py:method:: get_activation_url_info(activation_url: str)
+    .. py:method:: get_activation_url_info(activation_url: str [, metastore_id: Optional[str]])
 
         Gets an activation URL for a share.
 
         :param activation_url: str
           The one time activation url. It also accepts activation token.
+        :param metastore_id: str (optional)
+          The provider metastore ID. Optional for now; used as a routing hint when present and principal
+          context
 
 
         
 
-    .. py:method:: retrieve_token(activation_url: str) -> RetrieveTokenResponse
+    .. py:method:: retrieve_token(activation_url: str [, metastore_id: Optional[str]]) -> RetrieveTokenResponse
 
         Retrieve access token with an activation url. This is a public API without any authentication.
 
         :param activation_url: str
           The one time activation url. It also accepts activation token.
+        :param metastore_id: str (optional)
+          The provider metastore ID. Optional for now; used as a routing hint when present and principal
+          context
 
         :returns: :class:`RetrieveTokenResponse`
         

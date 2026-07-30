@@ -95,6 +95,16 @@ unfixable = []
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
+[tool.ruff.lint.isort]
+# Classify `databricks` as first-party explicitly. In this repo (full package on
+# disk) ruff auto-detects it, so this is a no-op for `make fmt`. It matters for the
+# Universe build-time SDK generator, which formats each generated file in isolation
+# (no surrounding package) — without this, isort can't tell `databricks.*` from
+# third-party and orders imports differently than this repo's fmt, so the generated
+# surface would fail the fmt check. Pinning it makes isolated generation produce
+# byte-identical ordering to a full-package `make fmt`.
+known-first-party = ["databricks"]
+
 [tool.pyright]
 include = ["."]
 exclude = ["**/node_modules", "**/__pycache__"]

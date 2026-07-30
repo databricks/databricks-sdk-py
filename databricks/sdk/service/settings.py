@@ -690,6 +690,7 @@ class ComplianceStandard(Enum):
     """Compliance standard for SHIELD customers. See README.md for how instructions of how to add new
     standards."""
 
+    ARC_AMPE = "ARC_AMPE"
     CANADA_PROTECTED_B = "CANADA_PROTECTED_B"
     CYBER_ESSENTIAL_PLUS = "CYBER_ESSENTIAL_PLUS"
     FEDRAMP_HIGH = "FEDRAMP_HIGH"
@@ -1117,6 +1118,13 @@ class CustomerFacingIngressNetworkPolicy:
 class CustomerFacingIngressNetworkPolicyAccountApiDestination:
     """Matches account-level Databricks API endpoints for an ingress network policy rule."""
 
+    excluded_scopes: Optional[List[str]] = None
+    """Inverse of ``scopes``: matches every API scope EXCEPT those listed here ("allow all except").
+    Mutually exclusive with ``scopes`` — a single destination may set at most one of the two."""
+
+    scope_constraint: Optional[CustomerFacingIngressNetworkPolicyApiScopeConstraint] = None
+    """Deprecated: Use scope_qualifier instead."""
+
     scope_qualifier: Optional[CustomerFacingIngressNetworkPolicyApiScopeQualifier] = None
     """Qualifies the breadth of API access for the listed scopes. See ApiScopeQualifier."""
 
@@ -1126,6 +1134,10 @@ class CustomerFacingIngressNetworkPolicyAccountApiDestination:
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyAccountApiDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.excluded_scopes:
+            body["excluded_scopes"] = [v for v in self.excluded_scopes]
+        if self.scope_constraint is not None:
+            body["scope_constraint"] = self.scope_constraint.value
         if self.scope_qualifier is not None:
             body["scope_qualifier"] = self.scope_qualifier.value
         if self.scopes:
@@ -1135,6 +1147,10 @@ class CustomerFacingIngressNetworkPolicyAccountApiDestination:
     def as_shallow_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyAccountApiDestination into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.excluded_scopes:
+            body["excluded_scopes"] = self.excluded_scopes
+        if self.scope_constraint is not None:
+            body["scope_constraint"] = self.scope_constraint
         if self.scope_qualifier is not None:
             body["scope_qualifier"] = self.scope_qualifier
         if self.scopes:
@@ -1145,6 +1161,8 @@ class CustomerFacingIngressNetworkPolicyAccountApiDestination:
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAccountApiDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyAccountApiDestination from a dictionary."""
         return cls(
+            excluded_scopes=d.get("excluded_scopes", None),
+            scope_constraint=_enum(d, "scope_constraint", CustomerFacingIngressNetworkPolicyApiScopeConstraint),
             scope_qualifier=_enum(d, "scope_qualifier", CustomerFacingIngressNetworkPolicyApiScopeQualifier),
             scopes=d.get("scopes", None),
         )
@@ -1200,6 +1218,13 @@ class CustomerFacingIngressNetworkPolicyAccountUiDestination:
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyAccountUiDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyAccountUiDestination from a dictionary."""
         return cls(all_destinations=d.get("all_destinations", None))
+
+
+class CustomerFacingIngressNetworkPolicyApiScopeConstraint(Enum):
+    """Deprecated: Use ApiScopeQualifier instead."""
+
+    ALL = "ALL"
+    READ = "READ"
 
 
 class CustomerFacingIngressNetworkPolicyApiScopeQualifier(Enum):
@@ -1524,6 +1549,44 @@ class CustomerFacingIngressNetworkPolicyLakebaseRuntimeDestination:
 
 
 @dataclass
+class CustomerFacingIngressNetworkPolicyManagedIpRange:
+    """A Databricks-managed IP range identified by name (e.g., "powerbi", "dbt"), optionally scoped to
+    specific partner regions. Customers reference a name instead of raw CIDRs; Databricks keeps the
+    underlying IP list current."""
+
+    name: Optional[str] = None
+    """Name of the managed IP range, e.g., "powerbi"."""
+
+    regions: Optional[List[str]] = None
+    """Partner regions to allow, e.g., ["EastUS", "WestEurope"]. Each region must belong to the partner
+    named in ``name``. Empty list means all regions of the partner. Region casing matches the
+    partner's source (e.g., Microsoft uses "EastUS"), so values are stored verbatim, not lowercased."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyManagedIpRange into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.regions:
+            body["regions"] = [v for v in self.regions]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingIngressNetworkPolicyManagedIpRange into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.regions:
+            body["regions"] = self.regions
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyManagedIpRange:
+        """Deserializes the CustomerFacingIngressNetworkPolicyManagedIpRange from a dictionary."""
+        return cls(name=d.get("name", None), regions=d.get("regions", None))
+
+
+@dataclass
 class CustomerFacingIngressNetworkPolicyPrivateAccess:
     """Configures how requests arriving over private connectivity, such as registered endpoints, are
     allowed or denied access."""
@@ -1812,6 +1875,10 @@ class CustomerFacingIngressNetworkPolicyPublicRequestOrigin:
     included_ip_ranges: Optional[CustomerFacingIngressNetworkPolicyIpRanges] = None
     """Will not allow IP ranges with private IPs."""
 
+    managed_ip_range: Optional[CustomerFacingIngressNetworkPolicyManagedIpRange] = None
+    """A single Databricks-maintained IP range for a well-known partner (e.g., Power BI, dbt),
+    optionally scoped to specific partner regions. Customers create one rule per partner."""
+
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyPublicRequestOrigin into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1821,6 +1888,8 @@ class CustomerFacingIngressNetworkPolicyPublicRequestOrigin:
             body["excluded_ip_ranges"] = self.excluded_ip_ranges.as_dict()
         if self.included_ip_ranges:
             body["included_ip_ranges"] = self.included_ip_ranges.as_dict()
+        if self.managed_ip_range:
+            body["managed_ip_range"] = self.managed_ip_range.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1832,6 +1901,8 @@ class CustomerFacingIngressNetworkPolicyPublicRequestOrigin:
             body["excluded_ip_ranges"] = self.excluded_ip_ranges
         if self.included_ip_ranges:
             body["included_ip_ranges"] = self.included_ip_ranges
+        if self.managed_ip_range:
+            body["managed_ip_range"] = self.managed_ip_range
         return body
 
     @classmethod
@@ -1841,6 +1912,7 @@ class CustomerFacingIngressNetworkPolicyPublicRequestOrigin:
             all_ip_ranges=d.get("all_ip_ranges", None),
             excluded_ip_ranges=_from_dict(d, "excluded_ip_ranges", CustomerFacingIngressNetworkPolicyIpRanges),
             included_ip_ranges=_from_dict(d, "included_ip_ranges", CustomerFacingIngressNetworkPolicyIpRanges),
+            managed_ip_range=_from_dict(d, "managed_ip_range", CustomerFacingIngressNetworkPolicyManagedIpRange),
         )
 
 
@@ -1933,6 +2005,13 @@ class CustomerFacingIngressNetworkPolicyRequestDestination:
 class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     """Matches workspace-level Databricks API endpoints for an ingress network policy rule."""
 
+    excluded_scopes: Optional[List[str]] = None
+    """Inverse of ``scopes``: matches every API scope EXCEPT those listed here ("allow all except").
+    Mutually exclusive with ``scopes`` — a single destination may set at most one of the two."""
+
+    scope_constraint: Optional[CustomerFacingIngressNetworkPolicyApiScopeConstraint] = None
+    """Deprecated: Use scope_qualifier instead."""
+
     scope_qualifier: Optional[CustomerFacingIngressNetworkPolicyApiScopeQualifier] = None
     """Qualifies the breadth of API access for the listed scopes. See ApiScopeQualifier."""
 
@@ -1941,6 +2020,10 @@ class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.excluded_scopes:
+            body["excluded_scopes"] = [v for v in self.excluded_scopes]
+        if self.scope_constraint is not None:
+            body["scope_constraint"] = self.scope_constraint.value
         if self.scope_qualifier is not None:
             body["scope_qualifier"] = self.scope_qualifier.value
         if self.scopes:
@@ -1950,6 +2033,10 @@ class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     def as_shallow_dict(self) -> dict:
         """Serializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.excluded_scopes:
+            body["excluded_scopes"] = self.excluded_scopes
+        if self.scope_constraint is not None:
+            body["scope_constraint"] = self.scope_constraint
         if self.scope_qualifier is not None:
             body["scope_qualifier"] = self.scope_qualifier
         if self.scopes:
@@ -1960,6 +2047,8 @@ class CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
     def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingIngressNetworkPolicyWorkspaceApiDestination:
         """Deserializes the CustomerFacingIngressNetworkPolicyWorkspaceApiDestination from a dictionary."""
         return cls(
+            excluded_scopes=d.get("excluded_scopes", None),
+            scope_constraint=_enum(d, "scope_constraint", CustomerFacingIngressNetworkPolicyApiScopeConstraint),
             scope_qualifier=_enum(d, "scope_qualifier", CustomerFacingIngressNetworkPolicyApiScopeQualifier),
             scopes=d.get("scopes", None),
         )
@@ -3926,6 +4015,12 @@ class FetchIpAccessListResponse:
 
 @dataclass
 class GcpEndpoint:
+    all_vpc_sc_services: Optional[bool] = None
+    """All Google APIs that support VPC Service Controls (a subset of all Google APIs)."""
+
+    google_api_endpoints: Optional[GoogleApiEndpoints] = None
+    """Selected Google API hostnames, e.g. "storage.googleapis.com", "bigquery.googleapis.com"."""
+
     psc_endpoint_uri: Optional[str] = None
     """Output only. The URI of the created PSC endpoint."""
 
@@ -3936,6 +4031,10 @@ class GcpEndpoint:
     def as_dict(self) -> dict:
         """Serializes the GcpEndpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.all_vpc_sc_services is not None:
+            body["all_vpc_sc_services"] = self.all_vpc_sc_services
+        if self.google_api_endpoints:
+            body["google_api_endpoints"] = self.google_api_endpoints.as_dict()
         if self.psc_endpoint_uri is not None:
             body["psc_endpoint_uri"] = self.psc_endpoint_uri
         if self.service_attachment is not None:
@@ -3945,6 +4044,10 @@ class GcpEndpoint:
     def as_shallow_dict(self) -> dict:
         """Serializes the GcpEndpoint into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.all_vpc_sc_services is not None:
+            body["all_vpc_sc_services"] = self.all_vpc_sc_services
+        if self.google_api_endpoints:
+            body["google_api_endpoints"] = self.google_api_endpoints
         if self.psc_endpoint_uri is not None:
             body["psc_endpoint_uri"] = self.psc_endpoint_uri
         if self.service_attachment is not None:
@@ -3955,12 +4058,45 @@ class GcpEndpoint:
     def from_dict(cls, d: Dict[str, Any]) -> GcpEndpoint:
         """Deserializes the GcpEndpoint from a dictionary."""
         return cls(
-            psc_endpoint_uri=d.get("psc_endpoint_uri", None), service_attachment=d.get("service_attachment", None)
+            all_vpc_sc_services=d.get("all_vpc_sc_services", None),
+            google_api_endpoints=_from_dict(d, "google_api_endpoints", GoogleApiEndpoints),
+            psc_endpoint_uri=d.get("psc_endpoint_uri", None),
+            service_attachment=d.get("service_attachment", None),
         )
 
 
 @dataclass
 class GenericWebhookConfig:
+    oauth_audience: Optional[str] = None
+    """[Input-Only][Optional] OAuth2 audience parameter (required by some IdPs, e.g. Auth0)."""
+
+    oauth_audience_set: Optional[bool] = None
+    """[Output-Only] Whether OAuth2 audience is set."""
+
+    oauth_client_id: Optional[str] = None
+    """[Input-Only][Optional] OAuth2 client ID for the client_credentials grant."""
+
+    oauth_client_id_set: Optional[bool] = None
+    """[Output-Only] Whether OAuth2 client ID is set."""
+
+    oauth_client_secret: Optional[str] = None
+    """[Input-Only][Optional] OAuth2 client secret for the client_credentials grant."""
+
+    oauth_client_secret_set: Optional[bool] = None
+    """[Output-Only] Whether OAuth2 client secret is set."""
+
+    oauth_scopes: Optional[List[str]] = None
+    """[Input-Only][Optional] OAuth2 scopes requested at token mint (required by some IdPs)."""
+
+    oauth_scopes_set: Optional[bool] = None
+    """[Output-Only] Whether OAuth2 scopes are set."""
+
+    oauth_token_url: Optional[str] = None
+    """[Input-Only][Optional] OAuth2 token endpoint URL (customer IdP) where access tokens are minted."""
+
+    oauth_token_url_set: Optional[bool] = None
+    """[Output-Only] Whether OAuth2 token URL is set."""
+
     password: Optional[str] = None
     """[Input-Only][Optional] Password for webhook."""
 
@@ -3982,6 +4118,26 @@ class GenericWebhookConfig:
     def as_dict(self) -> dict:
         """Serializes the GenericWebhookConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.oauth_audience is not None:
+            body["oauth_audience"] = self.oauth_audience
+        if self.oauth_audience_set is not None:
+            body["oauth_audience_set"] = self.oauth_audience_set
+        if self.oauth_client_id is not None:
+            body["oauth_client_id"] = self.oauth_client_id
+        if self.oauth_client_id_set is not None:
+            body["oauth_client_id_set"] = self.oauth_client_id_set
+        if self.oauth_client_secret is not None:
+            body["oauth_client_secret"] = self.oauth_client_secret
+        if self.oauth_client_secret_set is not None:
+            body["oauth_client_secret_set"] = self.oauth_client_secret_set
+        if self.oauth_scopes:
+            body["oauth_scopes"] = [v for v in self.oauth_scopes]
+        if self.oauth_scopes_set is not None:
+            body["oauth_scopes_set"] = self.oauth_scopes_set
+        if self.oauth_token_url is not None:
+            body["oauth_token_url"] = self.oauth_token_url
+        if self.oauth_token_url_set is not None:
+            body["oauth_token_url_set"] = self.oauth_token_url_set
         if self.password is not None:
             body["password"] = self.password
         if self.password_set is not None:
@@ -3999,6 +4155,26 @@ class GenericWebhookConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the GenericWebhookConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.oauth_audience is not None:
+            body["oauth_audience"] = self.oauth_audience
+        if self.oauth_audience_set is not None:
+            body["oauth_audience_set"] = self.oauth_audience_set
+        if self.oauth_client_id is not None:
+            body["oauth_client_id"] = self.oauth_client_id
+        if self.oauth_client_id_set is not None:
+            body["oauth_client_id_set"] = self.oauth_client_id_set
+        if self.oauth_client_secret is not None:
+            body["oauth_client_secret"] = self.oauth_client_secret
+        if self.oauth_client_secret_set is not None:
+            body["oauth_client_secret_set"] = self.oauth_client_secret_set
+        if self.oauth_scopes:
+            body["oauth_scopes"] = self.oauth_scopes
+        if self.oauth_scopes_set is not None:
+            body["oauth_scopes_set"] = self.oauth_scopes_set
+        if self.oauth_token_url is not None:
+            body["oauth_token_url"] = self.oauth_token_url
+        if self.oauth_token_url_set is not None:
+            body["oauth_token_url_set"] = self.oauth_token_url_set
         if self.password is not None:
             body["password"] = self.password
         if self.password_set is not None:
@@ -4017,6 +4193,16 @@ class GenericWebhookConfig:
     def from_dict(cls, d: Dict[str, Any]) -> GenericWebhookConfig:
         """Deserializes the GenericWebhookConfig from a dictionary."""
         return cls(
+            oauth_audience=d.get("oauth_audience", None),
+            oauth_audience_set=d.get("oauth_audience_set", None),
+            oauth_client_id=d.get("oauth_client_id", None),
+            oauth_client_id_set=d.get("oauth_client_id_set", None),
+            oauth_client_secret=d.get("oauth_client_secret", None),
+            oauth_client_secret_set=d.get("oauth_client_secret_set", None),
+            oauth_scopes=d.get("oauth_scopes", None),
+            oauth_scopes_set=d.get("oauth_scopes_set", None),
+            oauth_token_url=d.get("oauth_token_url", None),
+            oauth_token_url_set=d.get("oauth_token_url_set", None),
             password=d.get("password", None),
             password_set=d.get("password_set", None),
             url=d.get("url", None),
@@ -4125,6 +4311,35 @@ class GetTokenResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetTokenResponse:
         """Deserializes the GetTokenResponse from a dictionary."""
         return cls(token_info=_from_dict(d, "token_info", TokenInfo))
+
+
+@dataclass
+class GoogleApiEndpoints:
+    """Wrapper for a list of Google API hostnames. Wrapped in a message because proto3 oneof does not
+    support repeated fields directly."""
+
+    endpoints: Optional[List[str]] = None
+    """Google API hostnames, e.g. "storage.googleapis.com", "bigquery.googleapis.com". Use
+    "googleapis.com" to cover all Google APIs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GoogleApiEndpoints into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.endpoints:
+            body["endpoints"] = [v for v in self.endpoints]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GoogleApiEndpoints into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.endpoints:
+            body["endpoints"] = self.endpoints
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GoogleApiEndpoints:
+        """Deserializes the GoogleApiEndpoints from a dictionary."""
+        return cls(endpoints=d.get("endpoints", None))
 
 
 @dataclass
@@ -5017,6 +5232,8 @@ class NccEgressDefaultRules:
 
     azure_service_endpoint_rule: Optional[NccAzureServiceEndpointRule] = None
 
+    gcp_project_id_rule: Optional[NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule] = None
+
     def as_dict(self) -> dict:
         """Serializes the NccEgressDefaultRules into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -5024,6 +5241,8 @@ class NccEgressDefaultRules:
             body["aws_stable_ip_rule"] = self.aws_stable_ip_rule.as_dict()
         if self.azure_service_endpoint_rule:
             body["azure_service_endpoint_rule"] = self.azure_service_endpoint_rule.as_dict()
+        if self.gcp_project_id_rule:
+            body["gcp_project_id_rule"] = self.gcp_project_id_rule.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5033,6 +5252,8 @@ class NccEgressDefaultRules:
             body["aws_stable_ip_rule"] = self.aws_stable_ip_rule
         if self.azure_service_endpoint_rule:
             body["azure_service_endpoint_rule"] = self.azure_service_endpoint_rule
+        if self.gcp_project_id_rule:
+            body["gcp_project_id_rule"] = self.gcp_project_id_rule
         return body
 
     @classmethod
@@ -5041,6 +5262,9 @@ class NccEgressDefaultRules:
         return cls(
             aws_stable_ip_rule=_from_dict(d, "aws_stable_ip_rule", NccAwsStableIpRule),
             azure_service_endpoint_rule=_from_dict(d, "azure_service_endpoint_rule", NccAzureServiceEndpointRule),
+            gcp_project_id_rule=_from_dict(
+                d, "gcp_project_id_rule", NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule
+            ),
         )
 
 
@@ -5281,6 +5505,32 @@ class NccPrivateEndpointRulePrivateLinkConnectionState(Enum):
     EXPIRED = "EXPIRED"
     PENDING = "PENDING"
     REJECTED = "REJECTED"
+
+
+@dataclass
+class NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule:
+    project_ids: Optional[List[str]] = None
+    """A list of Databricks internal project IDs from where network access originates for serverless
+    DBSQL, This list is stable and will not change once the NCC object is created."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.project_ids:
+            body["project_ids"] = [v for v in self.project_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.project_ids:
+            body["project_ids"] = self.project_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule:
+        """Deserializes the NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule from a dictionary."""
+        return cls(project_ids=d.get("project_ids", None))
 
 
 @dataclass
@@ -5609,6 +5859,9 @@ class PublicTokenInfo:
     inferred_scopes: Optional[List[str]] = None
     """Output only. Inferred API path scopes collected for this token when autoscope is enabled."""
 
+    last_accessed_time: Optional[int] = None
+    """Server time (in epoch milliseconds) when the token was accessed most recently."""
+
     scopes: Optional[List[str]] = None
     """Scope of the token was created with, if applicable."""
 
@@ -5630,6 +5883,8 @@ class PublicTokenInfo:
             body["expiry_time"] = self.expiry_time
         if self.inferred_scopes:
             body["inferred_scopes"] = [v for v in self.inferred_scopes]
+        if self.last_accessed_time is not None:
+            body["last_accessed_time"] = self.last_accessed_time
         if self.scopes:
             body["scopes"] = [v for v in self.scopes]
         if self.token_id is not None:
@@ -5651,6 +5906,8 @@ class PublicTokenInfo:
             body["expiry_time"] = self.expiry_time
         if self.inferred_scopes:
             body["inferred_scopes"] = self.inferred_scopes
+        if self.last_accessed_time is not None:
+            body["last_accessed_time"] = self.last_accessed_time
         if self.scopes:
             body["scopes"] = self.scopes
         if self.token_id is not None:
@@ -5667,6 +5924,7 @@ class PublicTokenInfo:
             creation_time=d.get("creation_time", None),
             expiry_time=d.get("expiry_time", None),
             inferred_scopes=d.get("inferred_scopes", None),
+            last_accessed_time=d.get("last_accessed_time", None),
             scopes=d.get("scopes", None),
             token_id=d.get("token_id", None),
         )
@@ -9077,12 +9335,13 @@ class NetworkConnectivityAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_private_endpoint_rules(
-        self, network_connectivity_config_id: str, *, page_token: Optional[str] = None
+        self, network_connectivity_config_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[NccPrivateEndpointRule]:
         """Gets an array of private endpoint rules.
 
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
+        :param page_size: int (optional)
         :param page_token: str (optional)
           Pagination token to go to next page based on previous query.
 
@@ -9090,6 +9349,8 @@ class NetworkConnectivityAPI:
         """
 
         query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
