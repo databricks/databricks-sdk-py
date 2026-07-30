@@ -598,6 +598,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FOLLOW_UP_QUESTION
       :value: "FOLLOW_UP_QUESTION"
 
+   .. py:attribute:: TEXT_ATTACHMENT_PURPOSE_ANSWER
+      :value: "TEXT_ATTACHMENT_PURPOSE_ANSWER"
+
 .. autoclass:: Thought
    :members:
    :undoc-members:
