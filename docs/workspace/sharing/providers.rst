@@ -7,7 +7,7 @@
     A data provider is an object representing the organization in the real world who shares the data. A
     provider contains shares which further contain the shared data.
 
-    .. py:method:: create(name: str, authentication_type: AuthenticationType [, comment: Optional[str], recipient_profile_str: Optional[str]]) -> ProviderInfo
+    .. py:method:: create(name: str, authentication_type: AuthenticationType [, comment: Optional[str], email_recipient_id: Optional[str], recipient_profile_str: Optional[str]]) -> ProviderInfo
 
 
         Usage:
@@ -40,6 +40,9 @@
         :param authentication_type: :class:`AuthenticationType`
         :param comment: str (optional)
           Description about the provider.
+        :param email_recipient_id: str (optional)
+          The ID of the email recipient this provider is being created to accept. Only valid on DATABRICKS
+          CreateProvider when accepting an email invite.
         :param recipient_profile_str: str (optional)
           This field is required when the **authentication_type** is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.

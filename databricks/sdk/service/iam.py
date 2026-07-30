@@ -4,11 +4,12 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
+
+
+import logging
 
 from databricks.sdk.service._internal import (
     _enum,
@@ -16,6 +17,7 @@ from databricks.sdk.service._internal import (
     _repeated_dict,
     _repeated_enum,
 )
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -292,7 +294,8 @@ class AccountUser:
     """String that represents a concatenation of given and family names. For example ``John Smith``."""
 
     emails: Optional[List[ComplexValue]] = None
-    """All the emails associated with the Databricks user."""
+    """All the emails associated with the Databricks user. This attribute cannot be updated through the
+    SCIM PATCH or PUT APIs; any supplied change is ignored."""
 
     external_id: Optional[str] = None
     """External ID is not currently supported. It is reserved for future use."""
@@ -306,7 +309,8 @@ class AccountUser:
     """Indicates if the group has the admin role."""
 
     user_name: Optional[str] = None
-    """Email address of the Databricks user."""
+    """Email address of the Databricks user. This attribute cannot be updated through the SCIM PATCH or
+    PUT APIs; any supplied change is ignored."""
 
     def as_dict(self) -> dict:
         """Serializes the AccountUser into a dictionary suitable for use as a JSON request body."""
@@ -1559,27 +1563,45 @@ class PermissionAssignment:
 
 @dataclass
 class PermissionAssignments:
+    next_page_token: Optional[str] = None
+    """Token to retrieve the next page of results."""
+
     permission_assignments: Optional[List[PermissionAssignment]] = None
     """Array of permissions assignments defined for a workspace."""
+
+    prev_page_token: Optional[str] = None
+    """Token to retrieve the previous page of results."""
 
     def as_dict(self) -> dict:
         """Serializes the PermissionAssignments into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
         if self.permission_assignments:
             body["permission_assignments"] = [v.as_dict() for v in self.permission_assignments]
+        if self.prev_page_token is not None:
+            body["prev_page_token"] = self.prev_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PermissionAssignments into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
         if self.permission_assignments:
             body["permission_assignments"] = self.permission_assignments
+        if self.prev_page_token is not None:
+            body["prev_page_token"] = self.prev_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionAssignments:
         """Deserializes the PermissionAssignments from a dictionary."""
-        return cls(permission_assignments=_repeated_dict(d, "permission_assignments", PermissionAssignment))
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            permission_assignments=_repeated_dict(d, "permission_assignments", PermissionAssignment),
+            prev_page_token=d.get("prev_page_token", None),
+        )
 
 
 class PermissionLevel(Enum):
@@ -1605,6 +1627,7 @@ class PermissionLevel(Enum):
     CAN_VIEW = "CAN_VIEW"
     CAN_VIEW_METADATA = "CAN_VIEW_METADATA"
     IS_OWNER = "IS_OWNER"
+    UNSPECIFIED = "UNSPECIFIED"
 
 
 @dataclass
@@ -2035,7 +2058,8 @@ class User:
     Use Account SCIM APIs to update ``displayName``."""
 
     emails: Optional[List[ComplexValue]] = None
-    """All the emails associated with the Databricks user."""
+    """All the emails associated with the Databricks user. This attribute cannot be updated through the
+    SCIM PATCH or PUT APIs; any supplied change is ignored."""
 
     entitlements: Optional[List[ComplexValue]] = None
     """Entitlements assigned to the user. See `assigning entitlements
@@ -2059,7 +2083,8 @@ class User:
     """The schema of the user."""
 
     user_name: Optional[str] = None
-    """Email address of the Databricks user."""
+    """Email address of the Databricks user. This attribute cannot be updated through the SCIM PATCH or
+    PUT APIs; any supplied change is ignored."""
 
     def as_dict(self) -> dict:
         """Serializes the User into a dictionary suitable for use as a JSON request body."""
@@ -3153,7 +3178,9 @@ class AccountUsersV2API:
             query["startIndex"] += len(json["Resources"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
-        """Partially updates a user resource by applying the supplied operations on specific user attributes.
+        """Partially updates a user resource by applying the supplied operations on specific user attributes. The
+        ``userName`` and ``emails`` attributes cannot be updated through this API; any supplied changes to
+        them are ignored (no-op).
 
         :param id: str
           Unique ID in the Databricks workspace.
@@ -4335,7 +4362,9 @@ class UsersV2API:
             query["startIndex"] += len(json["Resources"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
-        """Partially updates a user resource by applying the supplied operations on specific user attributes.
+        """Partially updates a user resource by applying the supplied operations on specific user attributes. The
+        ``userName`` and ``emails`` attributes cannot be updated through this API; any supplied changes to
+        them are ignored (no-op).
 
         :param id: str
           Unique ID in the Databricks workspace.
@@ -4541,15 +4570,35 @@ class WorkspaceAssignmentAPI:
         )
         return WorkspacePermissions.from_dict(res)
 
-    def list(self, workspace_id: int) -> Iterator[PermissionAssignment]:
+    def list(
+        self,
+        workspace_id: int,
+        *,
+        filter: Optional[str] = None,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> Iterator[PermissionAssignment]:
         """Get the permission assignments for the specified Databricks account and Databricks workspace.
 
         :param workspace_id: int
           The workspace ID for the account.
+        :param filter: str (optional)
+          Filter string to search principals.
+        :param max_results: int (optional)
+          Maximum number of permission assignments to return.
+        :param page_token: str (optional)
+          Page token returned by previous call to retrieve the next page of results.
 
         :returns: Iterator over :class:`PermissionAssignment`
         """
 
+        query = {}
+        if filter is not None:
+            query["filter"] = filter
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
         headers = {
             "Accept": "application/json",
         }
@@ -4557,6 +4606,7 @@ class WorkspaceAssignmentAPI:
         json = self._api.do(
             "GET",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments",
+            query=query,
             headers=headers,
         )
         parsed = PermissionAssignments.from_dict(json).permission_assignments

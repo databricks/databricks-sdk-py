@@ -6,13 +6,14 @@
 
     Installations are entities that allow consumers to interact with Databricks Marketplace listings.
 
-    .. py:method:: create(listing_id: str [, accepted_consumer_terms: Optional[ConsumerTerms], catalog_name: Optional[str], recipient_type: Optional[DeltaSharingRecipientType], repo_detail: Optional[RepoInstallation], share_name: Optional[str]]) -> Installation
+    .. py:method:: create(listing_id: str [, accepted_consumer_terms: Optional[ConsumerTerms], catalog_name: Optional[str], mcp_connection_detail: Optional[InstallListingMcpConnectionDetail], recipient_type: Optional[DeltaSharingRecipientType], repo_detail: Optional[RepoInstallation], share_name: Optional[str]]) -> Installation
 
         Install payload associated with a Databricks Marketplace listing.
 
         :param listing_id: str
         :param accepted_consumer_terms: :class:`ConsumerTerms` (optional)
         :param catalog_name: str (optional)
+        :param mcp_connection_detail: :class:`InstallListingMcpConnectionDetail` (optional)
         :param recipient_type: :class:`DeltaSharingRecipientType` (optional)
         :param repo_detail: :class:`RepoInstallation` (optional)
           for git repo installations

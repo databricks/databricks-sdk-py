@@ -6,7 +6,7 @@
 
     **Endpoint**: Represents the compute resources to host AI Search indexes.
 
-    .. py:method:: create_endpoint(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str], target_qps: Optional[int], usage_policy_id: Optional[str]]) -> Wait[EndpointInfo]
+    .. py:method:: create_endpoint(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str], num_replicas: Optional[int], target_qps: Optional[int], usage_policy_id: Optional[str]]) -> Wait[EndpointInfo]
 
         Create a new endpoint.
 
@@ -16,6 +16,8 @@
           Type of endpoint
         :param budget_policy_id: str (optional)
           The budget policy id to be applied
+        :param num_replicas: int (optional)
+          Initial number of replicas for the endpoint. If not specified, defaults to 1.
         :param target_qps: int (optional)
           Target QPS for the endpoint. Mutually exclusive with num_replicas. The actual replica count is
           calculated at index creation/sync time based on this value. Best-effort target; the system does not
@@ -28,7 +30,7 @@
           See :method:wait_get_endpoint_vector_search_endpoint_online for more details.
         
 
-    .. py:method:: create_endpoint_and_wait(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str], target_qps: Optional[int], usage_policy_id: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> EndpointInfo
+    .. py:method:: create_endpoint_and_wait(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str], num_replicas: Optional[int], target_qps: Optional[int], usage_policy_id: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> EndpointInfo
 
 
     .. py:method:: delete_endpoint(endpoint_name: str)
@@ -82,16 +84,46 @@
         :returns: Iterator over :class:`EndpointInfo`
         
 
-    .. py:method:: patch_endpoint(endpoint_name: str [, target_qps: Optional[int]]) -> EndpointInfo
+    .. py:method:: patch_endpoint(endpoint_name: str [, replication_factor: Optional[int], target_qps: Optional[int]]) -> EndpointInfo
 
         Update an endpoint
 
         :param endpoint_name: str
           Name of the AI Search endpoint
+        :param replication_factor: int (optional)
+          OpenSearch replication factor. Directly sets userThroughputSettings.replicationFactor. Mutually
+          exclusive with target_qps (and the deprecated min_qps alias). Must be non-negative (0 = no
+          replication). The autoscaler caps the effective value based on endpoint scaling settings. Note: This
+          is the raw replication factor, not "total data copies". For the user-facing replica count (which
+          uses total-copies semantics), see PatchEndpointThroughputRequest.num_replicas.
         :param target_qps: int (optional)
           Target QPS for the endpoint. Best-effort; the system does not guarantee this QPS will be achieved.
 
         :returns: :class:`EndpointInfo`
+        
+
+    .. py:method:: patch_endpoint_throughput(endpoint_name: str [, all_or_nothing: Optional[bool], concurrency: Optional[float], maximum_concurrency_allowed: Optional[float], minimal_concurrency_allowed: Optional[float], num_replicas: Optional[int]]) -> PatchEndpointThroughputResponse
+
+        Update the throughput (concurrency) of an endpoint
+
+        :param endpoint_name: str
+          Name of the AI Search endpoint
+        :param all_or_nothing: bool (optional)
+          If true, the request will fail if the requested concurrency or limits cannot be exactly met. If
+          false, the request will be adjusted to the closest possible value.
+        :param concurrency: float (optional)
+          Requested concurrency (total CPU) for the endpoint. If not specified, the current concurrency is
+          maintained.
+        :param maximum_concurrency_allowed: float (optional)
+          Maximum concurrency allowed for the endpoint. If not specified, the current maximum is maintained.
+        :param minimal_concurrency_allowed: float (optional)
+          Minimum concurrency allowed for the endpoint. If not specified, the current minimum is maintained.
+        :param num_replicas: int (optional)
+          Requested number of data copies for the endpoint (including primary). For example: num_replicas=2
+          means 2 total copies of the data (1 primary + 1 replica). If not specified, the current replication
+          factor is maintained. Valid range: 1-6 (where 1 = no replication, 6 = 1 primary + 5 replicas).
+
+        :returns: :class:`PatchEndpointThroughputResponse`
         
 
     .. py:method:: retrieve_user_visible_metrics(name: str [, end_time: Optional[str], granularity_in_seconds: Optional[int], metrics: Optional[List[Metric]], page_token: Optional[str], start_time: Optional[str]]) -> RetrieveUserVisibleMetricsResponse

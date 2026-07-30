@@ -176,6 +176,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CustomUdf
+   :members:
+   :undoc-members:
+
 .. autoclass:: DataSource
    :members:
    :undoc-members:
@@ -449,6 +453,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GetLoggedModelsRequestResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetMetricHistoryResponse
    :members:
    :undoc-members:
@@ -489,6 +497,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: InputBinding
+   :members:
+   :undoc-members:
+
 .. autoclass:: InputTag
    :members:
    :undoc-members:
@@ -521,6 +533,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: KinesisStreamConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: LastDistinctFunction
    :members:
    :undoc-members:
@@ -530,10 +546,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: LastNFunction
-   :members:
-   :undoc-members:
-
-.. autoclass:: LifetimeWindow
    :members:
    :undoc-members:
 
@@ -1032,6 +1044,31 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SchemaLocator
+   :members:
+   :undoc-members:
+
+.. autoclass:: SchemaLocatorConfluentSchema
+   :members:
+   :undoc-members:
+
+.. py:class:: SchemaLocatorFormat
+
+   Supported serialization formats for a schema registry schema.
+
+   .. py:attribute:: FORMAT_AVRO
+      :value: "FORMAT_AVRO"
+
+   .. py:attribute:: FORMAT_JSON
+      :value: "FORMAT_JSON"
+
+   .. py:attribute:: FORMAT_PROTOBUF
+      :value: "FORMAT_PROTOBUF"
+
+.. autoclass:: SchemaRegistryConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: SearchExperimentsResponse
    :members:
    :undoc-members:
@@ -1114,7 +1151,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: StreamArnList
+   :members:
+   :undoc-members:
+
 .. autoclass:: StreamConnectionConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: StreamNameList
    :members:
    :undoc-members:
 

@@ -8,6 +8,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Catalog
+   :members:
+   :undoc-members:
+
 .. autoclass:: Example
    :members:
    :undoc-members:
@@ -24,6 +28,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: LakeviewDashboard
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListExamplesResponse
    :members:
    :undoc-members:
@@ -33,6 +41,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListToolsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: Schema
+   :members:
+   :undoc-members:
+
+.. autoclass:: ServingEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: Skill
    :members:
    :undoc-members:
 
@@ -70,6 +90,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SupervisorAgentTool
+   :members:
+   :undoc-members:
+
 .. autoclass:: Tool
    :members:
    :undoc-members:
@@ -82,6 +106,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UcMcpService
+   :members:
+   :undoc-members:
+
+.. autoclass:: UcTable
+   :members:
+   :undoc-members:
+
+.. autoclass:: VectorSearchIndex
+   :members:
+   :undoc-members:
+
 .. autoclass:: Volume
+   :members:
+   :undoc-members:
+
+.. autoclass:: WebSearch
    :members:
    :undoc-members:
