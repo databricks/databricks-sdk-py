@@ -26,7 +26,7 @@
         :returns: :class:`ApplyEnvironmentRequestResponse`
         
 
-    .. py:method:: clone(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clone_mode: Optional[CloneMode], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], schema: Optional[str], serverless: Optional[bool], serverless_compute_id: Optional[str], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]]) -> ClonePipelineResponse
+    .. py:method:: clone(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clone_mode: Optional[CloneMode], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], rewind_generation_interval: Optional[PeriodicTrigger], root_path: Optional[str], schema: Optional[str], serverless: Optional[bool], serverless_compute_id: Optional[str], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]]) -> ClonePipelineResponse
 
         Creates a new pipeline using Unity Catalog from a pipeline using Hive Metastore. This method returns
         the ID of the newly created clone. Additionally, this method starts an update for the newly created
@@ -85,6 +85,8 @@
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
           Restart window of this pipeline.
+        :param rewind_generation_interval: :class:`PeriodicTrigger` (optional)
+          Interval at which rewind points are generated during pipeline execution.
         :param root_path: str (optional)
           Root path for this pipeline. This is used as the root directory when editing the pipeline in the
           Databricks user interface and it is added to sys.path when executing Python sources during pipeline
@@ -112,7 +114,7 @@
         :returns: :class:`ClonePipelineResponse`
         
 
-    .. py:method:: create( [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], parameters: Optional[Dict[str, str]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], serverless_compute_id: Optional[str], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]]) -> CreatePipelineResponse
+    .. py:method:: create( [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], parameters: Optional[Dict[str, str]], photon: Optional[bool], restart_window: Optional[RestartWindow], rewind_generation_interval: Optional[PeriodicTrigger], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], serverless_compute_id: Optional[str], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]]) -> CreatePipelineResponse
 
 
         Usage:
@@ -201,6 +203,8 @@
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
           Restart window of this pipeline.
+        :param rewind_generation_interval: :class:`PeriodicTrigger` (optional)
+          Interval at which rewind points are generated during pipeline execution.
         :param root_path: str (optional)
           Root path for this pipeline. This is used as the root directory when editing the pipeline in the
           Databricks user interface and it is added to sys.path when executing Python sources during pipeline
@@ -229,7 +233,7 @@
         :returns: :class:`CreatePipelineResponse`
         
 
-    .. py:method:: delete(pipeline_id: str [, cascade: Optional[bool], force: Optional[bool]])
+    .. py:method:: delete(pipeline_id: str [, cascade: Optional[bool], delete_datasets: Optional[bool], force: Optional[bool]])
 
         Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletion will cascade to all
         pipeline tables. Please reach out to Databricks support for assistance to undo this action.
@@ -238,6 +242,8 @@
         :param cascade: bool (optional)
           If false, pipeline deletion will not cascade to its datasets (MVs, STs, Views). By default, this
           parameter will be true and all tables will be deleted with the pipeline.
+        :param delete_datasets: bool (optional)
+          Deprecated: Use ``cascade`` instead.
         :param force: bool (optional)
           If true, deletion will proceed even if resource cleanup fails. By default, deletion will fail if
           resources cleanup is required but fails.
@@ -444,6 +450,17 @@
         :returns: :class:`ListUpdatesResponse`
         
 
+    .. py:method:: restore_pipeline(pipeline_id: str) -> RestorePipelineRequestResponse
+
+        Restores a pipeline that was previously deleted, if within the restoration window. All tables deleted
+        at pipeline deletion will be undropped as well.
+
+        :param pipeline_id: str
+          The ID of the pipeline to restore
+
+        :returns: :class:`RestorePipelineRequestResponse`
+        
+
     .. py:method:: set_permissions(pipeline_id: str [, access_control_list: Optional[List[PipelineAccessControlRequest]]]) -> PipelinePermissions
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
@@ -456,7 +473,7 @@
         :returns: :class:`PipelinePermissions`
         
 
-    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], parameters: Optional[Dict[str, str]], refresh_selection: Optional[List[str]], replace_where_overrides: Optional[List[ReplaceWhereOverride]], reset_checkpoint_selection: Optional[List[str]], rewind_spec: Optional[RewindSpec], validate_only: Optional[bool]]) -> StartUpdateResponse
+    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], parameters: Optional[Dict[str, str]], refresh_flow_selection: Optional[List[str]], refresh_selection: Optional[List[str]], replace_where_overrides: Optional[List[ReplaceWhereOverride]], reset_checkpoint_selection: Optional[List[str]], rewind_spec: Optional[RewindSpec], validate_only: Optional[bool]]) -> StartUpdateResponse
 
         Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
@@ -471,6 +488,9 @@
           will be reset before the refresh.
         :param parameters: Dict[str,str] (optional)
           Key/value map of parameters to pass to the pipeline execution
+        :param refresh_flow_selection: List[str] (optional)
+          Flow names to selectively refresh. These are unioned with other selective refresh options
+          (refresh_selection, full_refresh_selection, etc.) to determine the final set of flows to refresh.
         :param refresh_selection: List[str] (optional)
           A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
@@ -506,7 +526,7 @@
     .. py:method:: stop_and_wait(pipeline_id: str, timeout: datetime.timedelta = 0:20:00) -> GetPipelineResponse
 
 
-    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], parameters: Optional[Dict[str, str]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], serverless_compute_id: Optional[str], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]])
+    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], parameters: Optional[Dict[str, str]], photon: Optional[bool], restart_window: Optional[RestartWindow], rewind_generation_interval: Optional[PeriodicTrigger], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], serverless_compute_id: Optional[str], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]])
 
 
         Usage:
@@ -614,6 +634,8 @@
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
           Restart window of this pipeline.
+        :param rewind_generation_interval: :class:`PeriodicTrigger` (optional)
+          Interval at which rewind points are generated during pipeline execution.
         :param root_path: str (optional)
           Root path for this pipeline. This is used as the root directory when editing the pipeline in the
           Databricks user interface and it is added to sys.path when executing Python sources during pipeline

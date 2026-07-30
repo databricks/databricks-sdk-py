@@ -28,7 +28,7 @@
     If no policies exist in the workspace, the Policy drop-down doesn't appear. Only admin users can create,
     edit, and delete policies. Admin users also have access to all policies.
 
-    .. py:method:: create( [, definition: Optional[str], description: Optional[str], libraries: Optional[List[Library]], max_clusters_per_user: Optional[int], name: Optional[str], policy_family_definition_overrides: Optional[str], policy_family_id: Optional[str]]) -> CreatePolicyResponse
+    .. py:method:: create( [, auto_enforcement_config: Optional[PolicyAutoEnforcementConfig], definition: Optional[str], description: Optional[str], libraries: Optional[List[Library]], max_clusters_per_user: Optional[int], name: Optional[str], policy_family_definition_overrides: Optional[str], policy_family_id: Optional[str]]) -> CreatePolicyResponse
 
 
         Usage:
@@ -57,6 +57,21 @@
 
         Creates a new policy with prescribed settings.
 
+        :param auto_enforcement_config: :class:`PolicyAutoEnforcementConfig` (optional)
+          If present, auto enforcement is enabled for the policy. After the policy is edited, a background
+          operation may be scheduled to scan and edit all clusters and jobs using this policy to be in
+          compliance with the policy.
+
+          The background operation is created when a policy edit does one of the following:
+
+          - Changes the policy definition, or
+          - Changes auto enforcement from disabled to enabled Additionally, changes to the policy definition
+            or auto enforcement configuration may cause an in-progress operation to be restarted.
+
+          To cancel an in-progress operation, edit the policy to delete this auto enforcement configuration.
+
+          The background operation status is reported via the ``background_enforcement`` field when reading
+          the policy.
         :param definition: str (optional)
           Policy definition document expressed in `Databricks Cluster Policy Definition Language
           <https://docs.databricks.com/administration-guide/clusters/policy-definition.html>`__.
@@ -98,7 +113,7 @@
 
         
 
-    .. py:method:: edit(policy_id: str [, definition: Optional[str], description: Optional[str], libraries: Optional[List[Library]], max_clusters_per_user: Optional[int], name: Optional[str], policy_family_definition_overrides: Optional[str], policy_family_id: Optional[str]])
+    .. py:method:: edit(policy_id: str [, auto_enforcement_config: Optional[PolicyAutoEnforcementConfig], definition: Optional[str], description: Optional[str], libraries: Optional[List[Library]], max_clusters_per_user: Optional[int], name: Optional[str], policy_family_definition_overrides: Optional[str], policy_family_id: Optional[str]])
 
 
         Usage:
@@ -144,6 +159,21 @@
 
         :param policy_id: str
           The ID of the policy to update.
+        :param auto_enforcement_config: :class:`PolicyAutoEnforcementConfig` (optional)
+          If present, auto enforcement is enabled for the policy. After the policy is edited, a background
+          operation may be scheduled to scan and edit all clusters and jobs using this policy to be in
+          compliance with the policy.
+
+          The background operation is created when a policy edit does one of the following:
+
+          - Changes the policy definition, or
+          - Changes auto enforcement from disabled to enabled Additionally, changes to the policy definition
+            or auto enforcement configuration may cause an in-progress operation to be restarted.
+
+          To cancel an in-progress operation, edit the policy to delete this auto enforcement configuration.
+
+          The background operation status is reported via the ``background_enforcement`` field when reading
+          the policy.
         :param definition: str (optional)
           Policy definition document expressed in `Databricks Cluster Policy Definition Language
           <https://docs.databricks.com/administration-guide/clusters/policy-definition.html>`__.
@@ -175,7 +205,7 @@
 
         
 
-    .. py:method:: get(policy_id: str) -> Policy
+    .. py:method:: get(policy_id: str [, policy_view: Optional[PolicyView]]) -> Policy
 
 
         Usage:
@@ -208,6 +238,8 @@
 
         :param policy_id: str
           Canonical unique identifier for the Cluster Policy.
+        :param policy_view: :class:`PolicyView` (optional)
+          Controls which fields are returned.
 
         :returns: :class:`Policy`
         

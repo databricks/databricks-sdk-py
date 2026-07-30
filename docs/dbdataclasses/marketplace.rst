@@ -86,6 +86,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MEDIA
       :value: "MEDIA"
 
+   .. py:attribute:: OPEN_SOURCE
+      :value: "OPEN_SOURCE"
+
    .. py:attribute:: OTHER
       :value: "OTHER"
 
@@ -253,6 +256,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: FileStatus
 
+   .. py:attribute:: FILE_STATUS_COMMIT_DRAWDOWN
+      :value: "FILE_STATUS_COMMIT_DRAWDOWN"
+
    .. py:attribute:: FILE_STATUS_PUBLISHED
       :value: "FILE_STATUS_PUBLISHED"
 
@@ -302,6 +308,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GetProviderResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: InstallListingMcpConnectionDetail
+   :members:
+   :undoc-members:
+
+.. autoclass:: InstallListingMcpConnectionDetailOauthCredentials
    :members:
    :undoc-members:
 
@@ -438,11 +452,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: APP
       :value: "APP"
 
+   .. py:attribute:: COMMIT_DRAWDOWN_REQUEST_ATTACHMENT
+      :value: "COMMIT_DRAWDOWN_REQUEST_ATTACHMENT"
+
+   .. py:attribute:: EMBEDDED_MARKDOWN
+      :value: "EMBEDDED_MARKDOWN"
+
    .. py:attribute:: EMBEDDED_NOTEBOOK
       :value: "EMBEDDED_NOTEBOOK"
 
    .. py:attribute:: PROVIDER_ICON
       :value: "PROVIDER_ICON"
+
+   .. py:attribute:: SCREENSHOT
+      :value: "SCREENSHOT"
 
 .. autoclass:: PersonalizationRequest
    :members:

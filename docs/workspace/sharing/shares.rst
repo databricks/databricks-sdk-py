@@ -9,7 +9,7 @@
     register data assets under their original name, qualified by their original schema, or provide alternate
     exposed names.
 
-    .. py:method:: create(name: str [, comment: Optional[str], storage_root: Optional[str]]) -> ShareInfo
+    .. py:method:: create(name: str [, comment: Optional[str], replication_config: Optional[ReplicationConfig], serverless_budget_policy_id: Optional[str], storage_root: Optional[str]]) -> ShareInfo
 
 
         Usage:
@@ -34,6 +34,11 @@
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param replication_config: :class:`ReplicationConfig` (optional)
+          Configuration for share replication.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
 
@@ -81,7 +86,7 @@
         :returns: :class:`ShareInfo`
         
 
-    .. py:method:: list_shares( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ShareInfo]
+    .. py:method:: list_shares( [, filter_by_genie_space_id: Optional[str], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ShareInfo]
 
 
         Usage:
@@ -99,6 +104,11 @@
         the metastore, all shares are returned. Otherwise, only shares owned by the caller are returned. There
         is no guarantee of a specific ordering of the elements in the array.
 
+        :param filter_by_genie_space_id: str (optional)
+          When set, only shares that contain the Genie space with this id are returned. The filter is applied
+          at the data-sharing layer after MC returns the page, so the resulting page may be smaller than
+          ``max_results``. Intended for the provider Genie space page's "Shared with N recipients" lookup; not
+          optimized for providers with many shares.
         :param max_results: int (optional)
           Maximum number of shares to return.
 
@@ -140,7 +150,7 @@
         :returns: :class:`GetSharePermissionsResponse`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str], storage_root: Optional[str], updates: Optional[List[SharedDataObjectUpdate]]]) -> ShareInfo
+    .. py:method:: update(name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str], serverless_budget_policy_id: Optional[str], storage_root: Optional[str], updates: Optional[List[SharedDataObjectUpdate]]]) -> ShareInfo
 
 
         Usage:
@@ -216,6 +226,9 @@
           New name for the share.
         :param owner: str (optional)
           Username of current owner of share.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)

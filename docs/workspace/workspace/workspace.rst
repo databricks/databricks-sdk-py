@@ -66,7 +66,7 @@
         :return:         file-like `io.BinaryIO` of the `path` contents.
         
 
-    .. py:method:: export(path: str [, format: Optional[ExportFormat]]) -> ExportResponse
+    .. py:method:: export(path: str [, format: Optional[ExportFormat], outputs: Optional[ExportOutputs]]) -> ExportResponse
 
 
         Usage:
@@ -108,6 +108,11 @@
           - ``R_MARKDOWN``: The notebook is exported to R Markdown format.
           - ``AUTO``: The object or directory is exported depending on the objects type. Directory exports
             will include notebooks and workspace files.
+        :param outputs: :class:`ExportOutputs` (optional)
+          This specifies which cell outputs should be included in the export (if the export format allows it).
+          If not specified, the behavior is determined by the format. For JUPYTER format, the default is to
+          include all outputs. This is a public endpoint, but only ALL or NONE is documented publically,
+          DATABRICKS is internal only
 
         :returns: :class:`ExportResponse`
         
@@ -154,9 +159,9 @@
             
             w = WorkspaceClient()
             
-            notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
+            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            obj = w.workspace.get_status(path=notebook_path)
+            get_status_response = w.workspace.get_status(path=notebook)
 
         Gets the status of an object or a directory. If ``path`` does not exist, this call returns an error
         ``RESOURCE_DOES_NOT_EXIST``.
@@ -185,11 +190,18 @@
             notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
             w.workspace.import_(
-                content=base64.b64encode(("CREATE LIVE TABLE dlt_sample AS SELECT 1").encode()).decode(),
-                format=workspace.ImportFormat.SOURCE,
-                language=workspace.Language.SQL,
-                overwrite=true_,
                 path=notebook_path,
+                overwrite=true_,
+                format=workspace.ImportFormat.SOURCE,
+                language=workspace.Language.PYTHON,
+                content=base64.b64encode(
+                    (
+                        """import time
+            time.sleep(10)
+            dbutils.notebook.exit('hello')
+            """
+                    ).encode()
+                ).decode(),
             )
 
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
@@ -235,16 +247,14 @@
 
         .. code-block::
 
-            import os
-            import time
-            
             from databricks.sdk import WorkspaceClient
             
             w = WorkspaceClient()
             
-            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
-            
-            objects = w.workspace.list(path=os.path.dirname(notebook))
+            names = []
+            for i in w.workspace.list(f"/Users/{w.current_user.me().user_name}", recursive=True):
+                names.append(i.path)
+            assert len(names) > 0
 
         List workspace objects
 
