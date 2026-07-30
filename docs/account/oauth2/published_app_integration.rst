@@ -42,12 +42,15 @@
         :returns: :class:`GetPublishedAppIntegrationOutput`
         
 
-    .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[GetPublishedAppIntegrationOutput]
+    .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str], search_keyword: Optional[str]]) -> Iterator[GetPublishedAppIntegrationOutput]
 
         Get the list of published OAuth app integrations for the specified Databricks account
 
         :param page_size: int (optional)
         :param page_token: str (optional)
+        :param search_keyword: str (optional)
+          Search term to filter app integrations (case-insensitive substring match). Matches if the display
+          name, the OAuth client_id, or the integration id contains the term.
 
         :returns: Iterator over :class:`GetPublishedAppIntegrationOutput`
         

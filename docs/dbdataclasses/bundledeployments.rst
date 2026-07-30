@@ -4,6 +4,10 @@ Bundle Deployments
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.bundledeployments`` module.
 
 .. py:currentmodule:: databricks.sdk.service.bundledeployments
+.. autoclass:: DashboardMetadata
+   :members:
+   :undoc-members:
+
 .. autoclass:: Deployment
    :members:
    :undoc-members:

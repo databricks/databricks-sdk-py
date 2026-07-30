@@ -15,7 +15,7 @@
     authenticate with the service principal. For more information, see `Databricks Terraform Provider
     <https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal>`__.
 
-    .. py:method:: create(service_principal_id: str [, lifetime: Optional[str]]) -> CreateServicePrincipalSecretResponse
+    .. py:method:: create(service_principal_id: str [, lifetime: Optional[str], scopes: Optional[List[str]]]) -> CreateServicePrincipalSecretResponse
 
         Create a secret for the given service principal.
 
@@ -24,6 +24,9 @@
         :param lifetime: str (optional)
           The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a
           default lifetime of 730 days (63072000s).
+        :param scopes: List[str] (optional)
+          OAuth API scopes to bind to the secret; a minted token cannot exceed them. Empty = unrestricted
+          (all-apis). E.g. all-apis, sql, iam.groups:read.
 
         :returns: :class:`CreateServicePrincipalSecretResponse`
         

@@ -4,24 +4,25 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Callable, Optional
 
+
+import time
+import random
+import logging
+
+from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    Wait,
     _enum,
     _from_dict,
     _repeated_dict,
     _repeated_enum,
+    Wait,
 )
 
-from ..errors import OperationFailed
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -122,6 +123,9 @@ class AzureKeyInfo:
     key_vault_uri: Optional[str] = None
     """The base URI of the KeyVault."""
 
+    subscription_id: Optional[str] = None
+    """The Azure subscription ID to use for Key Vault access validation during CMK creation."""
+
     tenant_id: Optional[str] = None
     """The tenant id where the KeyVault lives."""
 
@@ -139,6 +143,8 @@ class AzureKeyInfo:
             body["key_name"] = self.key_name
         if self.key_vault_uri is not None:
             body["key_vault_uri"] = self.key_vault_uri
+        if self.subscription_id is not None:
+            body["subscription_id"] = self.subscription_id
         if self.tenant_id is not None:
             body["tenant_id"] = self.tenant_id
         if self.version is not None:
@@ -156,6 +162,8 @@ class AzureKeyInfo:
             body["key_name"] = self.key_name
         if self.key_vault_uri is not None:
             body["key_vault_uri"] = self.key_vault_uri
+        if self.subscription_id is not None:
+            body["subscription_id"] = self.subscription_id
         if self.tenant_id is not None:
             body["tenant_id"] = self.tenant_id
         if self.version is not None:
@@ -170,6 +178,7 @@ class AzureKeyInfo:
             key_access_configuration=_from_dict(d, "key_access_configuration", KeyAccessConfiguration),
             key_name=d.get("key_name", None),
             key_vault_uri=d.get("key_vault_uri", None),
+            subscription_id=d.get("subscription_id", None),
             tenant_id=d.get("tenant_id", None),
             version=d.get("version", None),
         )
@@ -300,6 +309,9 @@ class CreateAzureKeyInfo:
     key_vault_uri: Optional[str] = None
     """The base URI of the KeyVault."""
 
+    subscription_id: Optional[str] = None
+    """The Azure subscription ID to use for Key Vault access validation during CMK creation."""
+
     tenant_id: Optional[str] = None
     """The tenant id where the KeyVault lives."""
 
@@ -317,6 +329,8 @@ class CreateAzureKeyInfo:
             body["key_name"] = self.key_name
         if self.key_vault_uri is not None:
             body["key_vault_uri"] = self.key_vault_uri
+        if self.subscription_id is not None:
+            body["subscription_id"] = self.subscription_id
         if self.tenant_id is not None:
             body["tenant_id"] = self.tenant_id
         if self.version is not None:
@@ -334,6 +348,8 @@ class CreateAzureKeyInfo:
             body["key_name"] = self.key_name
         if self.key_vault_uri is not None:
             body["key_vault_uri"] = self.key_vault_uri
+        if self.subscription_id is not None:
+            body["subscription_id"] = self.subscription_id
         if self.tenant_id is not None:
             body["tenant_id"] = self.tenant_id
         if self.version is not None:
@@ -348,6 +364,7 @@ class CreateAzureKeyInfo:
             key_access_configuration=_from_dict(d, "key_access_configuration", KeyAccessConfiguration),
             key_name=d.get("key_name", None),
             key_vault_uri=d.get("key_vault_uri", None),
+            subscription_id=d.get("subscription_id", None),
             tenant_id=d.get("tenant_id", None),
             version=d.get("version", None),
         )
@@ -2618,6 +2635,7 @@ class WorkspacesAPI:
         self,
         *,
         aws_region: Optional[str] = None,
+        azure_workspace_info: Optional[AzureWorkspaceInfo] = None,
         cloud: Optional[str] = None,
         cloud_resource_container: Optional[CloudResourceContainer] = None,
         compute_mode: Optional[CustomerFacingComputeMode] = None,
@@ -2666,6 +2684,7 @@ class WorkspacesAPI:
         custom plan that allows multiple workspaces per account.
 
         :param aws_region: str (optional)
+        :param azure_workspace_info: :class:`AzureWorkspaceInfo` (optional)
         :param cloud: str (optional)
           DEPRECATED: This field is being ignored by the server and will be removed in the future. The cloud
           name. This field always has the value ``gcp``.
@@ -2738,6 +2757,8 @@ class WorkspacesAPI:
         body = {}
         if aws_region is not None:
             body["aws_region"] = aws_region
+        if azure_workspace_info is not None:
+            body["azure_workspace_info"] = azure_workspace_info.as_dict()
         if cloud is not None:
             body["cloud"] = cloud
         if cloud_resource_container is not None:
@@ -2790,6 +2811,7 @@ class WorkspacesAPI:
         self,
         *,
         aws_region: Optional[str] = None,
+        azure_workspace_info: Optional[AzureWorkspaceInfo] = None,
         cloud: Optional[str] = None,
         cloud_resource_container: Optional[CloudResourceContainer] = None,
         compute_mode: Optional[CustomerFacingComputeMode] = None,
@@ -2811,6 +2833,7 @@ class WorkspacesAPI:
     ) -> Workspace:
         return self.create(
             aws_region=aws_region,
+            azure_workspace_info=azure_workspace_info,
             cloud=cloud,
             cloud_resource_container=cloud_resource_container,
             compute_mode=compute_mode,

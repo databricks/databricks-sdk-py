@@ -18,7 +18,7 @@
       to establish a secure connection to receive the shared data. This sharing mode is called **open
       sharing**.
 
-    .. py:method:: create(name: str, authentication_type: AuthenticationType [, comment: Optional[str], data_recipient_global_metastore_id: Optional[str], expiration_time: Optional[int], id: Optional[str], ip_access_list: Optional[IpAccessList], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs], sharing_code: Optional[str]]) -> RecipientInfo
+    .. py:method:: create(name: str, authentication_type: AuthenticationType [, allowed_acceptance_types: Optional[List[AuthenticationType]], allowed_data_recipient_global_metastore_ids: Optional[List[str]], comment: Optional[str], data_recipient_global_metastore_id: Optional[str], email: Optional[str], expiration_time: Optional[int], id: Optional[str], ip_access_list: Optional[IpAccessList], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs], sharing_code: Optional[str]]) -> RecipientInfo
 
 
         Usage:
@@ -42,12 +42,24 @@
         :param name: str
           Name of Recipient.
         :param authentication_type: :class:`AuthenticationType`
+        :param allowed_acceptance_types: List[:class:`AuthenticationType`] (optional)
+          Authentication types the invitee may choose from when activating. Each value must be TOKEN or
+          DATABRICKS. Empty means all supported types are allowed. This field is only present when the
+          **authentication_type** is **EMAIL**.
+        :param allowed_data_recipient_global_metastore_ids: List[str] (optional)
+          Optional allowlist of the data recipient's global metastore IDs permitted to accept the invite with
+          the DATABRICKS acceptance type. Each ID is of the form **cloud**:**region**:**metastore-uuid**.
+          Empty means any metastore is allowed. If non-empty, **allowed_acceptance_types** must include
+          **DATABRICKS**. This field is only present when the **authentication_type** is **EMAIL**.
         :param comment: str (optional)
           Description about the recipient.
         :param data_recipient_global_metastore_id: str (optional)
           The global Unity Catalog metastore id provided by the data recipient. This field is only present
           when the **authentication_type** is **DATABRICKS**. The identifier is of format
           **cloud**:**region**:**metastore-uuid**.
+        :param email: str (optional)
+          The invited email address. This field is only present when the **authentication_type** is **EMAIL**.
+          The 320-character cap follows RFC 5321 (64-octet local-part + ``@`` + 255-octet domain).
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
         :param id: str (optional)
@@ -109,7 +121,7 @@
         :returns: :class:`RecipientInfo`
         
 
-    .. py:method:: list( [, data_recipient_global_metastore_id: Optional[str], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[RecipientInfo]
+    .. py:method:: list( [, data_recipient_global_metastore_id: Optional[str], max_results: Optional[int], page_token: Optional[str], parent_recipient_name: Optional[str]]) -> Iterator[RecipientInfo]
 
 
         Usage:
@@ -144,6 +156,10 @@
             next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
+        :param parent_recipient_name: str (optional)
+          If set, the response is scoped to the child recipients of the named parent recipient. Child
+          recipients are otherwise hidden from the default list response. Only applicable to email recipient
+          parents — non-email recipients have no children to scope to.
 
         :returns: Iterator over :class:`RecipientInfo`
         
@@ -223,7 +239,7 @@
         :returns: :class:`GetRecipientSharePermissionsResponse`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], expiration_time: Optional[int], id: Optional[str], ip_access_list: Optional[IpAccessList], new_name: Optional[str], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs]]) -> RecipientInfo
+    .. py:method:: update(name: str [, allowed_acceptance_types: Optional[List[AuthenticationType]], allowed_data_recipient_global_metastore_ids: Optional[List[str]], comment: Optional[str], email: Optional[str], expiration_time: Optional[int], id: Optional[str], ip_access_list: Optional[IpAccessList], new_name: Optional[str], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs]]) -> RecipientInfo
 
 
         Usage:
@@ -249,8 +265,20 @@
 
         :param name: str
           Name of the recipient.
+        :param allowed_acceptance_types: List[:class:`AuthenticationType`] (optional)
+          Authentication types the invitee may choose from when activating. Each value must be TOKEN or
+          DATABRICKS. Empty means all supported types are allowed. This field is only present when the
+          **authentication_type** is **EMAIL**.
+        :param allowed_data_recipient_global_metastore_ids: List[str] (optional)
+          Optional allowlist of the data recipient's global metastore IDs permitted to accept the invite with
+          the DATABRICKS acceptance type. Each ID is of the form **cloud**:**region**:**metastore-uuid**.
+          Empty means any metastore is allowed. If non-empty, **allowed_acceptance_types** must include
+          **DATABRICKS**. This field is only present when the **authentication_type** is **EMAIL**.
         :param comment: str (optional)
           Description about the recipient.
+        :param email: str (optional)
+          The invited email address. This field is only present when the **authentication_type** is **EMAIL**.
+          The 320-character cap follows RFC 5321 (64-octet local-part + ``@`` + 255-octet domain).
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
         :param id: str (optional)

@@ -66,12 +66,16 @@
 
         
 
-    .. py:method:: get_endpoint(name: str) -> Endpoint
+    .. py:method:: get_endpoint(name: str [, debug_level: Optional[int]]) -> Endpoint
 
         Get details for a single AI Search endpoint.
 
         :param name: str
           Full resource name of the endpoint. Format: ``workspaces/{workspace_id}/endpoints/{endpoint_id}``
+        :param debug_level: int (optional)
+          Opt-in debug level. When set to 1 or higher, the backend computes and returns advisory high-QPS
+          warnings (subject to the existing target_qps + Standard gate). When unset (0), no warnings are
+          computed or returned. Matches the ``debug_level`` convention on the query path.
 
         :returns: :class:`Endpoint`
         
@@ -103,13 +107,18 @@
         :returns: Iterator over :class:`Endpoint`
         
 
-    .. py:method:: list_indexes(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Index]
+    .. py:method:: list_indexes(parent: str [, debug_level: Optional[int], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Index]
 
         List AI Search indexes on an endpoint.
 
         :param parent: str
           The Endpoint that owns this collection of indexes. Format:
           ``workspaces/{workspace_id}/endpoints/{endpoint_id}``
+        :param debug_level: int (optional)
+          Opt-in debug level. When set to 1 or higher, the backend computes per-index routing eligibility and
+          populates ``can_use_optimized_route`` on each returned index. When unset (0), that field is left
+          unpopulated and the eligibility computation is skipped. Matches the ``debug_level`` convention on
+          the query path.
         :param page_size: int (optional)
           Best-effort upper bound on the number of results to return. Honored as an upper bound by the shim:
           ``page_size`` only narrows the legacy backend's response, never widens it, so the practical cap is

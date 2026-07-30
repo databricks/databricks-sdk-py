@@ -4,19 +4,25 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
 
-from databricks.sdk.service import catalog
+from google.protobuf.duration_pb2 import Duration
+
+import logging
+
 from databricks.sdk.service._internal import (
+    _duration,
     _enum,
     _from_dict,
     _repeated_dict,
     _repeated_enum,
 )
+
+
+from databricks.sdk.service import catalog
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -28,6 +34,7 @@ class AuthenticationType(Enum):
     """The delta sharing authentication type."""
 
     DATABRICKS = "DATABRICKS"
+    EMAIL = "EMAIL"
     OAUTH_CLIENT_CREDENTIALS = "OAUTH_CLIENT_CREDENTIALS"
     OIDC_FEDERATION = "OIDC_FEDERATION"
     TOKEN = "TOKEN"
@@ -46,6 +53,8 @@ class ColumnTypeName(Enum):
     DECIMAL = "DECIMAL"
     DOUBLE = "DOUBLE"
     FLOAT = "FLOAT"
+    GEOGRAPHY = "GEOGRAPHY"
+    GEOMETRY = "GEOMETRY"
     INT = "INT"
     INTERVAL = "INTERVAL"
     LONG = "LONG"
@@ -647,6 +656,45 @@ class GetSharePermissionsResponse:
 
 
 @dataclass
+class GlobalDistributionStatus:
+    """Status of Global Distribution for a shared asset."""
+
+    eligible: Optional[bool] = None
+    """Whether this asset meets the structural requirements for global distribution (e.g. asset type,
+    history sharing mode, storage scheme)."""
+
+    status: Optional[GlobalDistributionStatusStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the GlobalDistributionStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.eligible is not None:
+            body["eligible"] = self.eligible
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GlobalDistributionStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.eligible is not None:
+            body["eligible"] = self.eligible
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GlobalDistributionStatus:
+        """Deserializes the GlobalDistributionStatus from a dictionary."""
+        return cls(eligible=d.get("eligible", None), status=_enum(d, "status", GlobalDistributionStatusStatus))
+
+
+class GlobalDistributionStatusStatus(Enum):
+    DISABLED = "DISABLED"
+    ENABLED = "ENABLED"
+
+
+@dataclass
 class IpAccessList:
     allowed_ip_addresses: Optional[List[str]] = None
     """Allowed IP Addresses in CIDR notation. Limit of 100."""
@@ -1141,6 +1189,15 @@ class PermissionsChange:
     """The principal whose privileges we are changing. Only one of principal or principal_id should be
     specified, never both at the same time."""
 
+    principal_id: Optional[int] = None
+    """An opaque internal ID that identifies the principal whose privileges should be removed.
+    
+    This field is intended for removing privileges associated with a deleted user. When set, only
+    the entries specified in the remove field are processed; any entries in the add field will be
+    rejected.
+    
+    Only one of principal or principal_id should be specified, never both at the same time."""
+
     remove: Optional[List[str]] = None
     """The set of privileges to remove."""
 
@@ -1151,6 +1208,8 @@ class PermissionsChange:
             body["add"] = [v for v in self.add]
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = [v for v in self.remove]
         return body
@@ -1162,6 +1221,8 @@ class PermissionsChange:
             body["add"] = self.add
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = self.remove
         return body
@@ -1169,7 +1230,12 @@ class PermissionsChange:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionsChange:
         """Deserializes the PermissionsChange from a dictionary."""
-        return cls(add=d.get("add", None), principal=d.get("principal", None), remove=d.get("remove", None))
+        return cls(
+            add=d.get("add", None),
+            principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
+            remove=d.get("remove", None),
+        )
 
 
 class Privilege(Enum):
@@ -1226,6 +1292,10 @@ class PrivilegeAssignment:
     """The principal (user email address or group name). For deleted principals, ``principal`` is empty
     while ``principal_id`` is populated."""
 
+    principal_id: Optional[int] = None
+    """Unique identifier of the principal. For active principals, both ``principal`` and
+    ``principal_id`` are present."""
+
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
 
@@ -1234,6 +1304,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = [v.value for v in self.privileges]
         return body
@@ -1243,6 +1315,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = self.privileges
         return body
@@ -1250,7 +1324,11 @@ class PrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
-        return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
+        return cls(
+            principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
+            privileges=_repeated_enum(d, "privileges", Privilege),
+        )
 
 
 @dataclass
@@ -1274,6 +1352,10 @@ class ProviderInfo:
     """The global UC metastore id of the data provider. This field is only present when the
     **authentication_type** is **DATABRICKS**. The identifier is of format
     **cloud**:**region**:**metastore-uuid**."""
+
+    email_recipient_id: Optional[str] = None
+    """The ID of the email recipient this provider is being created to accept. Only valid on DATABRICKS
+    CreateProvider when accepting an email invite."""
 
     metastore_id: Optional[str] = None
     """UUID of the provider's UC metastore. This field is only present when the **authentication_type**
@@ -1318,6 +1400,8 @@ class ProviderInfo:
             body["created_by"] = self.created_by
         if self.data_provider_global_metastore_id is not None:
             body["data_provider_global_metastore_id"] = self.data_provider_global_metastore_id
+        if self.email_recipient_id is not None:
+            body["email_recipient_id"] = self.email_recipient_id
         if self.metastore_id is not None:
             body["metastore_id"] = self.metastore_id
         if self.name is not None:
@@ -1351,6 +1435,8 @@ class ProviderInfo:
             body["created_by"] = self.created_by
         if self.data_provider_global_metastore_id is not None:
             body["data_provider_global_metastore_id"] = self.data_provider_global_metastore_id
+        if self.email_recipient_id is not None:
+            body["email_recipient_id"] = self.email_recipient_id
         if self.metastore_id is not None:
             body["metastore_id"] = self.metastore_id
         if self.name is not None:
@@ -1379,6 +1465,7 @@ class ProviderInfo:
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             data_provider_global_metastore_id=d.get("data_provider_global_metastore_id", None),
+            email_recipient_id=d.get("email_recipient_id", None),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
             owner=d.get("owner", None),
@@ -1424,6 +1511,18 @@ class RecipientInfo:
     """Full activation url to retrieve the access token. It will be empty if the token is already
     retrieved."""
 
+    allowed_acceptance_types: Optional[List[AuthenticationType]] = None
+    """Authentication types the invitee may choose from when activating. Each value must be TOKEN or
+    DATABRICKS. Empty means all supported types are allowed. This field is only present when the
+    **authentication_type** is **EMAIL**."""
+
+    allowed_data_recipient_global_metastore_ids: Optional[List[str]] = None
+    """Optional allowlist of the data recipient's global metastore IDs permitted to accept the invite
+    with the DATABRICKS acceptance type. Each ID is of the form
+    **cloud**:**region**:**metastore-uuid**. Empty means any metastore is allowed. If non-empty,
+    **allowed_acceptance_types** must include **DATABRICKS**. This field is only present when the
+    **authentication_type** is **EMAIL**."""
+
     authentication_type: Optional[AuthenticationType] = None
 
     cloud: Optional[str] = None
@@ -1443,6 +1542,11 @@ class RecipientInfo:
     """The global Unity Catalog metastore id provided by the data recipient. This field is only present
     when the **authentication_type** is **DATABRICKS**. The identifier is of format
     **cloud**:**region**:**metastore-uuid**."""
+
+    email: Optional[str] = None
+    """The invited email address. This field is only present when the **authentication_type** is
+    **EMAIL**. The 320-character cap follows RFC 5321 (64-octet local-part + ``@`` + 255-octet
+    domain)."""
 
     expiration_time: Optional[int] = None
     """Expiration timestamp of the token, in epoch milliseconds."""
@@ -1492,6 +1596,12 @@ class RecipientInfo:
             body["activated"] = self.activated
         if self.activation_url is not None:
             body["activation_url"] = self.activation_url
+        if self.allowed_acceptance_types:
+            body["allowed_acceptance_types"] = [v.value for v in self.allowed_acceptance_types]
+        if self.allowed_data_recipient_global_metastore_ids:
+            body["allowed_data_recipient_global_metastore_ids"] = [
+                v for v in self.allowed_data_recipient_global_metastore_ids
+            ]
         if self.authentication_type is not None:
             body["authentication_type"] = self.authentication_type.value
         if self.cloud is not None:
@@ -1504,6 +1614,8 @@ class RecipientInfo:
             body["created_by"] = self.created_by
         if self.data_recipient_global_metastore_id is not None:
             body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
+        if self.email is not None:
+            body["email"] = self.email
         if self.expiration_time is not None:
             body["expiration_time"] = self.expiration_time
         if self.id is not None:
@@ -1537,6 +1649,10 @@ class RecipientInfo:
             body["activated"] = self.activated
         if self.activation_url is not None:
             body["activation_url"] = self.activation_url
+        if self.allowed_acceptance_types:
+            body["allowed_acceptance_types"] = self.allowed_acceptance_types
+        if self.allowed_data_recipient_global_metastore_ids:
+            body["allowed_data_recipient_global_metastore_ids"] = self.allowed_data_recipient_global_metastore_ids
         if self.authentication_type is not None:
             body["authentication_type"] = self.authentication_type
         if self.cloud is not None:
@@ -1549,6 +1665,8 @@ class RecipientInfo:
             body["created_by"] = self.created_by
         if self.data_recipient_global_metastore_id is not None:
             body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
+        if self.email is not None:
+            body["email"] = self.email
         if self.expiration_time is not None:
             body["expiration_time"] = self.expiration_time
         if self.id is not None:
@@ -1581,12 +1699,15 @@ class RecipientInfo:
         return cls(
             activated=d.get("activated", None),
             activation_url=d.get("activation_url", None),
+            allowed_acceptance_types=_repeated_enum(d, "allowed_acceptance_types", AuthenticationType),
+            allowed_data_recipient_global_metastore_ids=d.get("allowed_data_recipient_global_metastore_ids", None),
             authentication_type=_enum(d, "authentication_type", AuthenticationType),
             cloud=d.get("cloud", None),
             comment=d.get("comment", None),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             data_recipient_global_metastore_id=d.get("data_recipient_global_metastore_id", None),
+            email=d.get("email", None),
             expiration_time=d.get("expiration_time", None),
             id=d.get("id", None),
             ip_access_list=_from_dict(d, "ip_access_list", IpAccessList),
@@ -1754,6 +1875,100 @@ class RegisteredModelAlias:
 
 
 @dataclass
+class ReplicationConfig:
+    """Configuration for Delta Sharing replication on a share. When enabled, the share's data is copied
+    into each recipient's region so recipients can query the share locally."""
+
+    enabled: Optional[bool] = None
+    """Whether replication is enabled for the share."""
+
+    schedule: Optional[ReplicationSchedule] = None
+    """Optional schedule describing how often replication runs for this share. When unset, replication
+    runs on a service-default schedule."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplicationConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.schedule:
+            body["schedule"] = self.schedule.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplicationConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.schedule:
+            body["schedule"] = self.schedule
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ReplicationConfig:
+        """Deserializes the ReplicationConfig from a dictionary."""
+        return cls(enabled=d.get("enabled", None), schedule=_from_dict(d, "schedule", ReplicationSchedule))
+
+
+@dataclass
+class ReplicationInterval:
+    """Fixed-interval replication schedule variant. The duration must be between 30 minutes and 24
+    hours; values outside that range are rejected at the API boundary."""
+
+    duration: Optional[Duration] = None
+    """How often the share's data should be replicated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplicationInterval into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.duration is not None:
+            body["duration"] = self.duration.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplicationInterval into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.duration is not None:
+            body["duration"] = self.duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ReplicationInterval:
+        """Deserializes the ReplicationInterval from a dictionary."""
+        return cls(duration=_duration(d, "duration"))
+
+
+@dataclass
+class ReplicationSchedule:
+    """Schedule for share replication. Today only a fixed ``interval`` variant is supported; the
+    ``variant`` oneof leaves room for future variants (e.g. cron) without API churn. Each arm is
+    wrapped in a sub-message so variant-specific metadata (e.g. jitter, drift tolerance, timezone)
+    can be added later without breaking the wire format."""
+
+    interval: Optional[ReplicationInterval] = None
+    """Fixed-interval replication schedule."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplicationSchedule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.interval:
+            body["interval"] = self.interval.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplicationSchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.interval:
+            body["interval"] = self.interval
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ReplicationSchedule:
+        """Deserializes the ReplicationSchedule from a dictionary."""
+        return cls(interval=_from_dict(d, "interval", ReplicationInterval))
+
+
+@dataclass
 class RetrieveTokenResponse:
     bearer_token: Optional[str] = None
     """The token used to authorize the recipient."""
@@ -1881,6 +2096,13 @@ class ShareInfo:
     owner: Optional[str] = None
     """Username of current owner of share."""
 
+    replication_config: Optional[ReplicationConfig] = None
+    """Configuration for share replication."""
+
+    serverless_budget_policy_id: Optional[str] = None
+    """Serverless budget policy id (can only be created/updated when calling data-sharing service)
+    [Create,Update:IGN]"""
+
     storage_location: Optional[str] = None
     """Storage Location URL (full path) for the share."""
 
@@ -1908,6 +2130,10 @@ class ShareInfo:
             body["objects"] = [v.as_dict() for v in self.objects]
         if self.owner is not None:
             body["owner"] = self.owner
+        if self.replication_config:
+            body["replication_config"] = self.replication_config.as_dict()
+        if self.serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = self.serverless_budget_policy_id
         if self.storage_location is not None:
             body["storage_location"] = self.storage_location
         if self.storage_root is not None:
@@ -1933,6 +2159,10 @@ class ShareInfo:
             body["objects"] = self.objects
         if self.owner is not None:
             body["owner"] = self.owner
+        if self.replication_config:
+            body["replication_config"] = self.replication_config
+        if self.serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = self.serverless_budget_policy_id
         if self.storage_location is not None:
             body["storage_location"] = self.storage_location
         if self.storage_root is not None:
@@ -1953,6 +2183,8 @@ class ShareInfo:
             name=d.get("name", None),
             objects=_repeated_dict(d, "objects", SharedDataObject),
             owner=d.get("owner", None),
+            replication_config=_from_dict(d, "replication_config", ReplicationConfig),
+            serverless_budget_policy_id=d.get("serverless_budget_policy_id", None),
             storage_location=d.get("storage_location", None),
             storage_root=d.get("storage_root", None),
             updated_at=d.get("updated_at", None),
@@ -2020,6 +2252,10 @@ class SharedDataObject:
 
     data_object_type: Optional[SharedDataObjectDataObjectType] = None
     """The type of the data object."""
+
+    global_distribution_status: Optional[GlobalDistributionStatus] = None
+    """Global Distribution status for the shared asset. Output only. Only set for TABLE objects; absent
+    for all other data object types."""
 
     history_data_sharing_status: Optional[SharedDataObjectHistoryDataSharingStatus] = None
     """Whether to enable or disable sharing of data history. If not specified, the default is
@@ -2118,6 +2354,8 @@ class SharedDataObject:
             body["content"] = self.content
         if self.data_object_type is not None:
             body["data_object_type"] = self.data_object_type.value
+        if self.global_distribution_status:
+            body["global_distribution_status"] = self.global_distribution_status.as_dict()
         if self.history_data_sharing_status is not None:
             body["history_data_sharing_status"] = self.history_data_sharing_status.value
         if self.name is not None:
@@ -2149,6 +2387,8 @@ class SharedDataObject:
             body["content"] = self.content
         if self.data_object_type is not None:
             body["data_object_type"] = self.data_object_type
+        if self.global_distribution_status:
+            body["global_distribution_status"] = self.global_distribution_status
         if self.history_data_sharing_status is not None:
             body["history_data_sharing_status"] = self.history_data_sharing_status
         if self.name is not None:
@@ -2175,6 +2415,7 @@ class SharedDataObject:
             comment=d.get("comment", None),
             content=d.get("content", None),
             data_object_type=_enum(d, "data_object_type", SharedDataObjectDataObjectType),
+            global_distribution_status=_from_dict(d, "global_distribution_status", GlobalDistributionStatus),
             history_data_sharing_status=_enum(
                 d, "history_data_sharing_status", SharedDataObjectHistoryDataSharingStatus
             ),
@@ -2263,11 +2504,18 @@ class SharedSecurableKind(Enum):
 
 @dataclass
 class Table:
+    access_modes: Optional[List[str]] = None
+    """The access modes supported for this table (e.g., "url", "dir"). Used for open sharing to
+    indicate how the table can be accessed."""
+
     comment: Optional[str] = None
     """The comment of the table."""
 
     id: Optional[str] = None
     """The id of the table."""
+
+    location: Optional[str] = None
+    """The cloud storage location of the table for open sharing."""
 
     materialization_namespace: Optional[str] = None
     """The catalog and schema of the materialized table"""
@@ -2293,10 +2541,14 @@ class Table:
     def as_dict(self) -> dict:
         """Serializes the Table into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.access_modes:
+            body["accessModes"] = [v for v in self.access_modes]
         if self.comment is not None:
             body["comment"] = self.comment
         if self.id is not None:
             body["id"] = self.id
+        if self.location is not None:
+            body["location"] = self.location
         if self.materialization_namespace is not None:
             body["materialization_namespace"] = self.materialization_namespace
         if self.materialized_table_name is not None:
@@ -2316,10 +2568,14 @@ class Table:
     def as_shallow_dict(self) -> dict:
         """Serializes the Table into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.access_modes:
+            body["accessModes"] = self.access_modes
         if self.comment is not None:
             body["comment"] = self.comment
         if self.id is not None:
             body["id"] = self.id
+        if self.location is not None:
+            body["location"] = self.location
         if self.materialization_namespace is not None:
             body["materialization_namespace"] = self.materialization_namespace
         if self.materialized_table_name is not None:
@@ -2340,8 +2596,10 @@ class Table:
     def from_dict(cls, d: Dict[str, Any]) -> Table:
         """Deserializes the Table from a dictionary."""
         return cls(
+            access_modes=d.get("accessModes", None),
             comment=d.get("comment", None),
             id=d.get("id", None),
+            location=d.get("location", None),
             materialization_namespace=d.get("materialization_namespace", None),
             materialized_table_name=d.get("materialized_table_name", None),
             name=d.get("name", None),
@@ -2466,6 +2724,7 @@ class ProvidersAPI:
         authentication_type: AuthenticationType,
         *,
         comment: Optional[str] = None,
+        email_recipient_id: Optional[str] = None,
         recipient_profile_str: Optional[str] = None,
     ) -> ProviderInfo:
         """Creates a new authentication provider minimally based on a name and authentication type. The caller
@@ -2476,6 +2735,9 @@ class ProvidersAPI:
         :param authentication_type: :class:`AuthenticationType`
         :param comment: str (optional)
           Description about the provider.
+        :param email_recipient_id: str (optional)
+          The ID of the email recipient this provider is being created to accept. Only valid on DATABRICKS
+          CreateProvider when accepting an email invite.
         :param recipient_profile_str: str (optional)
           This field is required when the **authentication_type** is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.
@@ -2488,6 +2750,8 @@ class ProvidersAPI:
             body["authentication_type"] = authentication_type.value
         if comment is not None:
             body["comment"] = comment
+        if email_recipient_id is not None:
+            body["email_recipient_id"] = email_recipient_id
         if name is not None:
             body["name"] = name
         if recipient_profile_str is not None:
@@ -2765,15 +3029,21 @@ class RecipientActivationAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get_activation_url_info(self, activation_url: str):
+    def get_activation_url_info(self, activation_url: str, *, metastore_id: Optional[str] = None):
         """Gets an activation URL for a share.
 
         :param activation_url: str
           The one time activation url. It also accepts activation token.
+        :param metastore_id: str (optional)
+          The provider metastore ID. Optional for now; used as a routing hint when present and principal
+          context
 
 
         """
 
+        query = {}
+        if metastore_id is not None:
+            query["metastore_id"] = metastore_id
         headers = {
             "Accept": "application/json",
         }
@@ -2783,18 +3053,27 @@ class RecipientActivationAPI:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         self._api.do(
-            "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}", headers=headers
+            "GET",
+            f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}",
+            query=query,
+            headers=headers,
         )
 
-    def retrieve_token(self, activation_url: str) -> RetrieveTokenResponse:
+    def retrieve_token(self, activation_url: str, *, metastore_id: Optional[str] = None) -> RetrieveTokenResponse:
         """Retrieve access token with an activation url. This is a public API without any authentication.
 
         :param activation_url: str
           The one time activation url. It also accepts activation token.
+        :param metastore_id: str (optional)
+          The provider metastore ID. Optional for now; used as a routing hint when present and principal
+          context
 
         :returns: :class:`RetrieveTokenResponse`
         """
 
+        query = {}
+        if metastore_id is not None:
+            query["metastore_id"] = metastore_id
         headers = {
             "Accept": "application/json",
         }
@@ -2804,7 +3083,10 @@ class RecipientActivationAPI:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
         res = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}", headers=headers
+            "GET",
+            f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}",
+            query=query,
+            headers=headers,
         )
         return RetrieveTokenResponse.from_dict(res)
 
@@ -2979,6 +3261,49 @@ class RecipientFederationPoliciesAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def update(
+        self, recipient_name: str, name: str, policy: FederationPolicy, *, update_mask: Optional[str] = None
+    ) -> FederationPolicy:
+        """Updates an existing federation policy for an OIDC_RECIPIENT. The caller must be the owner of the
+        recipient.
+
+        :param recipient_name: str
+          Name of the recipient. This is the name of the recipient for which the policy is being updated.
+        :param name: str
+          Name of the policy. This is the name of the current name of the policy.
+        :param policy: :class:`FederationPolicy`
+        :param update_mask: str (optional)
+          The field mask specifies which fields of the policy to update. To specify multiple fields in the
+          field mask, use comma as the separator (no space). The special value '*' indicates that all fields
+          should be updated (full replacement). If unspecified, all fields that are set in the policy provided
+          in the update request will overwrite the corresponding fields in the existing policy. Example value:
+          'comment,oidc_policy.audiences'.
+
+        :returns: :class:`FederationPolicy`
+        """
+
+        body = policy.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return FederationPolicy.from_dict(res)
+
 
 class RecipientsAPI:
     """A recipient is an object you create using :method:recipients/create to represent an organization which you
@@ -3003,8 +3328,11 @@ class RecipientsAPI:
         name: str,
         authentication_type: AuthenticationType,
         *,
+        allowed_acceptance_types: Optional[List[AuthenticationType]] = None,
+        allowed_data_recipient_global_metastore_ids: Optional[List[str]] = None,
         comment: Optional[str] = None,
         data_recipient_global_metastore_id: Optional[str] = None,
+        email: Optional[str] = None,
         expiration_time: Optional[int] = None,
         id: Optional[str] = None,
         ip_access_list: Optional[IpAccessList] = None,
@@ -3018,12 +3346,24 @@ class RecipientsAPI:
         :param name: str
           Name of Recipient.
         :param authentication_type: :class:`AuthenticationType`
+        :param allowed_acceptance_types: List[:class:`AuthenticationType`] (optional)
+          Authentication types the invitee may choose from when activating. Each value must be TOKEN or
+          DATABRICKS. Empty means all supported types are allowed. This field is only present when the
+          **authentication_type** is **EMAIL**.
+        :param allowed_data_recipient_global_metastore_ids: List[str] (optional)
+          Optional allowlist of the data recipient's global metastore IDs permitted to accept the invite with
+          the DATABRICKS acceptance type. Each ID is of the form **cloud**:**region**:**metastore-uuid**.
+          Empty means any metastore is allowed. If non-empty, **allowed_acceptance_types** must include
+          **DATABRICKS**. This field is only present when the **authentication_type** is **EMAIL**.
         :param comment: str (optional)
           Description about the recipient.
         :param data_recipient_global_metastore_id: str (optional)
           The global Unity Catalog metastore id provided by the data recipient. This field is only present
           when the **authentication_type** is **DATABRICKS**. The identifier is of format
           **cloud**:**region**:**metastore-uuid**.
+        :param email: str (optional)
+          The invited email address. This field is only present when the **authentication_type** is **EMAIL**.
+          The 320-character cap follows RFC 5321 (64-octet local-part + ``@`` + 255-octet domain).
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
         :param id: str (optional)
@@ -3044,12 +3384,20 @@ class RecipientsAPI:
         """
 
         body = {}
+        if allowed_acceptance_types is not None:
+            body["allowed_acceptance_types"] = [v.value for v in allowed_acceptance_types]
+        if allowed_data_recipient_global_metastore_ids is not None:
+            body["allowed_data_recipient_global_metastore_ids"] = [
+                v for v in allowed_data_recipient_global_metastore_ids
+            ]
         if authentication_type is not None:
             body["authentication_type"] = authentication_type.value
         if comment is not None:
             body["comment"] = comment
         if data_recipient_global_metastore_id is not None:
             body["data_recipient_global_metastore_id"] = data_recipient_global_metastore_id
+        if email is not None:
+            body["email"] = email
         if expiration_time is not None:
             body["expiration_time"] = expiration_time
         if id is not None:
@@ -3123,6 +3471,7 @@ class RecipientsAPI:
         data_recipient_global_metastore_id: Optional[str] = None,
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
+        parent_recipient_name: Optional[str] = None,
     ) -> Iterator[RecipientInfo]:
         """Gets an array of all share recipients within the current metastore where:
 
@@ -3145,6 +3494,10 @@ class RecipientsAPI:
             next_page_token is unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
+        :param parent_recipient_name: str (optional)
+          If set, the response is scoped to the child recipients of the named parent recipient. Child
+          recipients are otherwise hidden from the default list response. Only applicable to email recipient
+          parents — non-email recipients have no children to scope to.
 
         :returns: Iterator over :class:`RecipientInfo`
         """
@@ -3156,6 +3509,8 @@ class RecipientsAPI:
             query["max_results"] = max_results
         if page_token is not None:
             query["page_token"] = page_token
+        if parent_recipient_name is not None:
+            query["parent_recipient_name"] = parent_recipient_name
         headers = {
             "Accept": "application/json",
         }
@@ -3251,7 +3606,10 @@ class RecipientsAPI:
         self,
         name: str,
         *,
+        allowed_acceptance_types: Optional[List[AuthenticationType]] = None,
+        allowed_data_recipient_global_metastore_ids: Optional[List[str]] = None,
         comment: Optional[str] = None,
+        email: Optional[str] = None,
         expiration_time: Optional[int] = None,
         id: Optional[str] = None,
         ip_access_list: Optional[IpAccessList] = None,
@@ -3265,8 +3623,20 @@ class RecipientsAPI:
 
         :param name: str
           Name of the recipient.
+        :param allowed_acceptance_types: List[:class:`AuthenticationType`] (optional)
+          Authentication types the invitee may choose from when activating. Each value must be TOKEN or
+          DATABRICKS. Empty means all supported types are allowed. This field is only present when the
+          **authentication_type** is **EMAIL**.
+        :param allowed_data_recipient_global_metastore_ids: List[str] (optional)
+          Optional allowlist of the data recipient's global metastore IDs permitted to accept the invite with
+          the DATABRICKS acceptance type. Each ID is of the form **cloud**:**region**:**metastore-uuid**.
+          Empty means any metastore is allowed. If non-empty, **allowed_acceptance_types** must include
+          **DATABRICKS**. This field is only present when the **authentication_type** is **EMAIL**.
         :param comment: str (optional)
           Description about the recipient.
+        :param email: str (optional)
+          The invited email address. This field is only present when the **authentication_type** is **EMAIL**.
+          The 320-character cap follows RFC 5321 (64-octet local-part + ``@`` + 255-octet domain).
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
         :param id: str (optional)
@@ -3286,8 +3656,16 @@ class RecipientsAPI:
         """
 
         body = {}
+        if allowed_acceptance_types is not None:
+            body["allowed_acceptance_types"] = [v.value for v in allowed_acceptance_types]
+        if allowed_data_recipient_global_metastore_ids is not None:
+            body["allowed_data_recipient_global_metastore_ids"] = [
+                v for v in allowed_data_recipient_global_metastore_ids
+            ]
         if comment is not None:
             body["comment"] = comment
+        if email is not None:
+            body["email"] = email
         if expiration_time is not None:
             body["expiration_time"] = expiration_time
         if id is not None:
@@ -3322,7 +3700,15 @@ class SharesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, name: str, *, comment: Optional[str] = None, storage_root: Optional[str] = None) -> ShareInfo:
+    def create(
+        self,
+        name: str,
+        *,
+        comment: Optional[str] = None,
+        replication_config: Optional[ReplicationConfig] = None,
+        serverless_budget_policy_id: Optional[str] = None,
+        storage_root: Optional[str] = None,
+    ) -> ShareInfo:
         """Creates a new share for data objects. Data objects can be added after creation with **update**. The
         caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.
 
@@ -3330,6 +3716,11 @@ class SharesAPI:
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param replication_config: :class:`ReplicationConfig` (optional)
+          Configuration for share replication.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
 
@@ -3341,6 +3732,10 @@ class SharesAPI:
             body["comment"] = comment
         if name is not None:
             body["name"] = name
+        if replication_config is not None:
+            body["replication_config"] = replication_config.as_dict()
+        if serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = serverless_budget_policy_id
         if storage_root is not None:
             body["storage_root"] = storage_root
         headers = {
@@ -3399,12 +3794,21 @@ class SharesAPI:
         return ShareInfo.from_dict(res)
 
     def list_shares(
-        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
+        self,
+        *,
+        filter_by_genie_space_id: Optional[str] = None,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
     ) -> Iterator[ShareInfo]:
         """Gets an array of data object shares from the metastore. If the caller has the USE_SHARE privilege on
         the metastore, all shares are returned. Otherwise, only shares owned by the caller are returned. There
         is no guarantee of a specific ordering of the elements in the array.
 
+        :param filter_by_genie_space_id: str (optional)
+          When set, only shares that contain the Genie space with this id are returned. The filter is applied
+          at the data-sharing layer after MC returns the page, so the resulting page may be smaller than
+          ``max_results``. Intended for the provider Genie space page's "Shared with N recipients" lookup; not
+          optimized for providers with many shares.
         :param max_results: int (optional)
           Maximum number of shares to return.
 
@@ -3423,6 +3827,8 @@ class SharesAPI:
         """
 
         query = {}
+        if filter_by_genie_space_id is not None:
+            query["filter_by_genie_space_id"] = filter_by_genie_space_id
         if max_results is not None:
             query["max_results"] = max_results
         if page_token is not None:
@@ -3494,6 +3900,7 @@ class SharesAPI:
         comment: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
+        serverless_budget_policy_id: Optional[str] = None,
         storage_root: Optional[str] = None,
         updates: Optional[List[SharedDataObjectUpdate]] = None,
     ) -> ShareInfo:
@@ -3521,6 +3928,9 @@ class SharesAPI:
           New name for the share.
         :param owner: str (optional)
           Username of current owner of share.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)
@@ -3536,6 +3946,8 @@ class SharesAPI:
             body["new_name"] = new_name
         if owner is not None:
             body["owner"] = owner
+        if serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = serverless_budget_policy_id
         if storage_root is not None:
             body["storage_root"] = storage_root
         if updates is not None:

@@ -4,17 +4,19 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
+
+
+import logging
 
 from databricks.sdk.service._internal import (
     _enum,
     _from_dict,
     _repeated_dict,
 )
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -397,6 +399,42 @@ class DeleteSecretResponse:
         return cls()
 
 
+@dataclass
+class DirectoryInfo:
+    """Additional metadata about a directory."""
+
+    is_git_folder: Optional[bool] = None
+    """Whether the directory is a Git folder, whose contents are version-controlled by a remote Git
+    repository. How a Git folder is represented depends on whether it has Git CLI access:
+    
+    - A Git folder with Git CLI access has an object type of ``DIRECTORY``, with this field set to
+      ``true``.
+    - A standard Git folder, which does not have Git CLI access, has an object type of ``REPO`` and
+      does not include this field.
+    - A directory that is not Git-backed has this field set to ``false``.
+    
+    Use this field together with ``object_type`` to identify every Git folder in a workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DirectoryInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_git_folder is not None:
+            body["is_git_folder"] = self.is_git_folder
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DirectoryInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.is_git_folder is not None:
+            body["is_git_folder"] = self.is_git_folder
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DirectoryInfo:
+        """Deserializes the DirectoryInfo from a dictionary."""
+        return cls(is_git_folder=d.get("is_git_folder", None))
+
+
 class ExportFormat(Enum):
     """The format for workspace import and export."""
 
@@ -407,6 +445,11 @@ class ExportFormat(Enum):
     RAW = "RAW"
     R_MARKDOWN = "R_MARKDOWN"
     SOURCE = "SOURCE"
+
+
+class ExportOutputs(Enum):
+    ALL = "ALL"
+    NONE = "NONE"
 
 
 @dataclass
@@ -908,6 +951,9 @@ class ObjectInfo:
     created_at: Optional[int] = None
     """Only applicable to files. The creation UTC timestamp."""
 
+    directory_info: Optional[DirectoryInfo] = None
+    """Additional metadata about the directory. Only set for objects of type ``DIRECTORY``."""
+
     language: Optional[Language] = None
     """The language of the object. This value is set only if the object type is ``NOTEBOOK``. For
     Jupyter (.ipynb) notebooks, this is always ``PYTHON``."""
@@ -942,6 +988,8 @@ class ObjectInfo:
         body = {}
         if self.created_at is not None:
             body["created_at"] = self.created_at
+        if self.directory_info:
+            body["directory_info"] = self.directory_info.as_dict()
         if self.language is not None:
             body["language"] = self.language.value
         if self.modified_at is not None:
@@ -963,6 +1011,8 @@ class ObjectInfo:
         body = {}
         if self.created_at is not None:
             body["created_at"] = self.created_at
+        if self.directory_info:
+            body["directory_info"] = self.directory_info
         if self.language is not None:
             body["language"] = self.language
         if self.modified_at is not None:
@@ -984,6 +1034,7 @@ class ObjectInfo:
         """Deserializes the ObjectInfo from a dictionary."""
         return cls(
             created_at=d.get("created_at", None),
+            directory_info=_from_dict(d, "directory_info", DirectoryInfo),
             language=_enum(d, "language", Language),
             modified_at=d.get("modified_at", None),
             object_id=d.get("object_id", None),
@@ -2817,7 +2868,9 @@ class WorkspaceAPI:
 
         self._api.do("POST", "/api/2.0/workspace/delete", body=body, headers=headers)
 
-    def export(self, path: str, *, format: Optional[ExportFormat] = None) -> ExportResponse:
+    def export(
+        self, path: str, *, format: Optional[ExportFormat] = None, outputs: Optional[ExportOutputs] = None
+    ) -> ExportResponse:
         """Exports an object or the contents of an entire directory.
 
         If ``path`` does not exist, this call returns an error ``RESOURCE_DOES_NOT_EXIST``.
@@ -2842,6 +2895,11 @@ class WorkspaceAPI:
           - ``R_MARKDOWN``: The notebook is exported to R Markdown format.
           - ``AUTO``: The object or directory is exported depending on the objects type. Directory exports
             will include notebooks and workspace files.
+        :param outputs: :class:`ExportOutputs` (optional)
+          This specifies which cell outputs should be included in the export (if the export format allows it).
+          If not specified, the behavior is determined by the format. For JUPYTER format, the default is to
+          include all outputs. This is a public endpoint, but only ALL or NONE is documented publically,
+          DATABRICKS is internal only
 
         :returns: :class:`ExportResponse`
         """
@@ -2849,6 +2907,8 @@ class WorkspaceAPI:
         query = {}
         if format is not None:
             query["format"] = format.value
+        if outputs is not None:
+            query["outputs"] = outputs.value
         if path is not None:
             query["path"] = path
         headers = {

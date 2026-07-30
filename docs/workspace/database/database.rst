@@ -118,6 +118,17 @@
 
         
 
+    .. py:method:: failover_database_instance(name: str [, failover_target_database_instance_name: Optional[str]]) -> DatabaseInstance
+
+        Failover the primary node of a Database Instance to a secondary.
+
+        :param name: str
+          Name of the instance to failover.
+        :param failover_target_database_instance_name: str (optional)
+
+        :returns: :class:`DatabaseInstance`
+        
+
     .. py:method:: find_database_instance_by_uid( [, uid: Optional[str]]) -> DatabaseInstance
 
         Find a Database Instance by uid.
@@ -275,6 +286,19 @@
         :returns: :class:`DatabaseInstance`
         
 
+    .. py:method:: update_database_instance_role(instance_name: str, name: str, database_instance_role: DatabaseInstanceRole [, database_instance_name: Optional[str]]) -> DatabaseInstanceRole
+
+        Update a role for a Database Instance.
+
+        :param instance_name: str
+        :param name: str
+          The name of the role. This is the unique identifier for the role in an instance.
+        :param database_instance_role: :class:`DatabaseInstanceRole`
+        :param database_instance_name: str (optional)
+
+        :returns: :class:`DatabaseInstanceRole`
+        
+
     .. py:method:: update_synced_database_table(name: str, synced_table: SyncedDatabaseTable, update_mask: str) -> SyncedDatabaseTable
 
         This API is currently unimplemented, but exposed for Terraform support.
@@ -287,6 +311,16 @@
           The list of fields to update. Setting this field is not yet supported.
 
         :returns: :class:`SyncedDatabaseTable`
+        
+
+    .. py:method:: upgrade_instance_to_autoscaling(name: str)
+
+        Upgrade a Database Instance to Autoscaling.
+
+        :param name: str
+          Name of the instance to upgrade.
+
+
         
 
     .. py:method:: wait_get_database_instance_database_available(name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[DatabaseInstance], None]]) -> DatabaseInstance

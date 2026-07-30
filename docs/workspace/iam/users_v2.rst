@@ -133,7 +133,9 @@
 
     .. py:method:: patch(id: str [, operations: Optional[List[Patch]], schemas: Optional[List[PatchSchema]]])
 
-        Partially updates a user resource by applying the supplied operations on specific user attributes.
+        Partially updates a user resource by applying the supplied operations on specific user attributes. The
+        ``userName`` and ``emails`` attributes cannot be updated through this API; any supplied changes to
+        them are ignored (no-op).
 
         :param id: str
           Unique ID in the Databricks workspace.

@@ -8,6 +8,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: AnomalyDetectionJobType
+
+   .. py:attribute:: ANOMALY_DETECTION_JOB_TYPE_BACKGROUND_COMPUTE_WORKER
+      :value: "ANOMALY_DETECTION_JOB_TYPE_BACKGROUND_COMPUTE_WORKER"
+
+   .. py:attribute:: ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN
+      :value: "ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN"
+
+   .. py:attribute:: ANOMALY_DETECTION_JOB_TYPE_NORMAL
+      :value: "ANOMALY_DETECTION_JOB_TYPE_NORMAL"
+
 .. py:class:: AnomalyDetectionRunStatus
 
    Status of Anomaly Detection Job Run
@@ -36,6 +47,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ANOMALY_DETECTION_RUN_STATUS_WORKSPACE_MISMATCH_ERROR
       :value: "ANOMALY_DETECTION_RUN_STATUS_WORKSPACE_MISMATCH_ERROR"
 
+.. autoclass:: ColumnMatcher
+   :members:
+   :undoc-members:
+
+.. autoclass:: ColumnSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomCheckConfiguration
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomCheckThresholds
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomScalarCheck
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListQualityMonitorResponse
    :members:
    :undoc-members:
@@ -51,6 +82,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: RangeValidityCheck
    :members:
    :undoc-members:
+
+.. autoclass:: SliceSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: SlicingConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: Threshold
+   :members:
+   :undoc-members:
+
+.. py:class:: ThresholdType
+
+   .. py:attribute:: THRESHOLD_TYPE_AUTO
+      :value: "THRESHOLD_TYPE_AUTO"
+
+   .. py:attribute:: THRESHOLD_TYPE_MANUAL
+      :value: "THRESHOLD_TYPE_MANUAL"
+
+   .. py:attribute:: THRESHOLD_TYPE_UNBOUNDED
+      :value: "THRESHOLD_TYPE_UNBOUNDED"
 
 .. autoclass:: UniquenessValidityCheck
    :members:
