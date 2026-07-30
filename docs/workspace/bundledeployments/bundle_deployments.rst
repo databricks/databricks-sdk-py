@@ -29,19 +29,13 @@
         :returns: :class:`Version`
         
 
-    .. py:method:: create_deployment(deployment: Deployment, deployment_id: str) -> Deployment
+    .. py:method:: create_deployment(deployment: Deployment) -> Deployment
 
         Creates a new deployment in the workspace.
 
-        The caller must provide a ``deployment_id`` which becomes the final component of the deployment's
-        resource name. If a deployment with the same ID already exists, the server returns ``ALREADY_EXISTS``.
-
         :param deployment: :class:`Deployment`
-          The deployment to create. Caller must set ``initial_parent_path``; every other field is populated by
-          the service.
-        :param deployment_id: str
-          The ID to use for the deployment, which will become the final component of the deployment's resource
-          name (i.e. ``deployments/{deployment_id}``).
+          The deployment to create. The caller must set ``initial_parent_path``. Other fields are ignored on
+          input and populated by the service.
 
         :returns: :class:`Deployment`
         
@@ -96,10 +90,6 @@
     .. py:method:: delete_deployment(name: str)
 
         Deletes a deployment.
-
-        The deployment is marked as deleted. It and all its children (versions and their operations) will be
-        permanently deleted after the retention policy expires. If the deployment has an in-progress version,
-        the server returns ``RESOURCE_CONFLICT``.
 
         :param name: str
           Resource name of the deployment to delete. Format: deployments/{deployment_id}
@@ -162,14 +152,34 @@
         :returns: :class:`HeartbeatResponse`
         
 
-    .. py:method:: list_deployments( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Deployment]
+    .. py:method:: list_deployments( [, filter: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Deployment]
 
         Lists deployments in the workspace.
 
+        :param filter: str (optional)
+          A filter expression restricting which deployments are returned, in the style of AIP-160
+          (https://google.aip.dev/160). The expression is a conjunction of one or more ``field operator
+          value`` terms joined by ``AND`` (case-insensitive); a deployment is returned only when it matches
+          every term. Whitespace around terms is ignored, and a value containing spaces must be wrapped in
+          double quotes. An unset or empty filter returns all deployments. Filtering applies only to live
+          deployments; deleted deployments are never returned regardless of the filter.
+
+          Supported terms:
+
+          - ``status = <STATUS>``: exact match on the deployment status. The value is a ``DeploymentStatus``
+            enum value, with or without the ``DEPLOYMENT_STATUS_`` prefix and case-insensitive (e.g. ``status
+            = ACTIVE``).
+          - ``deployment_mode = <MODE>``: exact match on the deployment mode. The value is a
+            ``DeploymentMode`` enum value, with or without the ``DEPLOYMENT_MODE_`` prefix and
+            case-insensitive (e.g. ``deployment_mode = DEVELOPMENT``).
+          - ``display_name = "<name>"``: exact match on the display name.
+          - ``display_name : "<substring>"``: case-insensitive substring match on the display name.
+
+          For example: ``status = ACTIVE AND display_name : "etl"``.
         :param page_size: int (optional)
           The maximum number of deployments to return. The service may return fewer than this value. If
-          unspecified, at most 50 deployments will be returned. The maximum value is 1000; values above 1000
-          will be coerced to 1000.
+          unspecified, at most 20 deployments will be returned. The maximum value is 100; values above 100
+          will be coerced to 100.
         :param page_token: str (optional)
           A page token, received from a previous ``ListDeployments`` call. Provide this to retrieve the
           subsequent page.
@@ -219,11 +229,39 @@
           The parent deployment. Format: deployments/{deployment_id}
         :param page_size: int (optional)
           The maximum number of versions to return. The service may return fewer than this value. If
-          unspecified, at most 50 versions will be returned. The maximum value is 1000; values above 1000 will
-          be coerced to 1000.
+          unspecified, at most 20 versions will be returned. The maximum value is 100; values above 100 will
+          be coerced to 100.
         :param page_token: str (optional)
           A page token, received from a previous ``ListVersions`` call. Provide this to retrieve the
           subsequent page.
 
         :returns: Iterator over :class:`Version`
+        
+
+    .. py:method:: update_operation(name: str, operation: Operation, update_mask: FieldMask) -> Operation
+
+        Updates a resource operation's mutable fields.
+
+        ``state``, ``error_message``, ``resource_id``, and ``status`` may be updated, independently;
+        ``update_mask`` must contain only those paths. All other fields are immutable. The update is guarded
+        by an optimistic-concurrency check: the caller sets ``operation.sequence_id`` to the value it last
+        observed, and the server rejects the update with ``ABORTED`` if the operation has been modified since.
+        On success the server increments ``sequence_id``; updates to ``state`` and ``resource_id`` are
+        mirrored onto the corresponding deployment-level Resource projection. The parent version must be in
+        progress, delete operations cannot be updated, and after the update is applied a succeeded operation
+        cannot carry an ``error_message``.
+
+        :param name: str
+          Resource name of the operation. Format:
+          deployments/{deployment_id}/versions/{version_id}/operations/{resource_key}
+        :param operation: :class:`Operation`
+          The operation to update. Its ``name`` selects the operation; the fields named in ``update_mask``
+          carry the new values; and ``sequence_id`` carries the optimistic-concurrency precondition (see the
+          field docs on Operation). All other fields are ignored.
+        :param update_mask: FieldMask
+          The set of fields to update. Required; supported paths are ``state``, ``error_message``,
+          ``resource_id``, and ``status``. An empty mask or any other path is rejected with
+          INVALID_PARAMETER_VALUE.
+
+        :returns: :class:`Operation`
         

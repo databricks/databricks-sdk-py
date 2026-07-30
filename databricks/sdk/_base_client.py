@@ -1,8 +1,10 @@
 import io
+import json
 import logging
 import urllib.parse
 from abc import ABC, abstractmethod
-from datetime import timedelta
+from datetime import date, datetime, timedelta
+from enum import Enum
 from types import TracebackType
 from typing import Any, BinaryIO, Callable, Dict, Iterable, Iterator, List, Optional, Type, Union
 
@@ -17,6 +19,27 @@ from .logger import RoundTrip
 from .retries import retried
 
 logger = logging.getLogger("databricks.sdk")
+
+
+def _json_default(o: Any) -> Any:
+    """``json.dumps`` ``default`` hook coercing SDK values into their wire form.
+
+    Lets an open ``Any`` body field accept an SDK response passed straight into
+    the next call (function chaining), which is otherwise not JSON serializable.
+    """
+    as_dict = getattr(o, "as_dict", None)
+    if callable(as_dict):
+        return as_dict()
+    to_json_string = getattr(o, "ToJsonString", None)  # protobuf Timestamp/Duration, FieldMask
+    if callable(to_json_string):
+        return to_json_string()
+    if isinstance(o, (datetime, date)):
+        return o.isoformat()
+    if isinstance(o, timedelta):
+        return f"{o.total_seconds()}s"
+    if isinstance(o, Enum):
+        return o.value
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
 
 
 def _fix_host_if_needed(host: Optional[str]) -> Optional[str]:
@@ -281,14 +304,18 @@ class _BaseClient:
         data=None,
         auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,
     ):
+        json_data = None
+        if body is not None and data is None and files is None:
+            json_data = json.dumps(body, allow_nan=False, default=_json_default)
+            headers = {"Content-Type": "application/json", **(headers or {})}
         response = self._session.request(
             method,
             url,
             params=self._fix_query_string(query),
-            json=body,
+            json=None if json_data is not None else body,
             headers=headers,
             files=files,
-            data=data,
+            data=json_data if json_data is not None else data,
             auth=auth,
             stream=raw,
             timeout=self._http_timeout_seconds,

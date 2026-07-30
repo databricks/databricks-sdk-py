@@ -1711,6 +1711,24 @@ class GenieVizAttachment:
 
 
 @dataclass
+class GetPublishedDashboardEmbeddedResponse:
+    def as_dict(self) -> dict:
+        """Serializes the GetPublishedDashboardEmbeddedResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetPublishedDashboardEmbeddedResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetPublishedDashboardEmbeddedResponse:
+        """Deserializes the GetPublishedDashboardEmbeddedResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class GetPublishedDashboardTokenInfoResponse:
     authorization_details: Optional[List[AuthorizationDetails]] = None
     """Authorization constraints for accessing the published dashboard. Currently includes
@@ -1894,6 +1912,8 @@ class MessageError:
 
 class MessageErrorType(Enum):
     BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION = "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION"
+    BUDGET_EXCEEDED_EXCEPTION = "BUDGET_EXCEEDED_EXCEPTION"
+    CERTIFIED_ANSWERS_MISSING_EXCEPTION = "CERTIFIED_ANSWERS_MISSING_EXCEPTION"
     CHAT_COMPLETION_CLIENT_EXCEPTION = "CHAT_COMPLETION_CLIENT_EXCEPTION"
     CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION = "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION"
     CHAT_COMPLETION_NETWORK_EXCEPTION = "CHAT_COMPLETION_NETWORK_EXCEPTION"
@@ -1902,6 +1922,8 @@ class MessageErrorType(Enum):
     COULD_NOT_GET_DASHBOARD_SCHEMA_EXCEPTION = "COULD_NOT_GET_DASHBOARD_SCHEMA_EXCEPTION"
     COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION = "COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION"
     COULD_NOT_GET_UC_SCHEMA_EXCEPTION = "COULD_NOT_GET_UC_SCHEMA_EXCEPTION"
+    DASHBOARD_PERMISSION_DENIED_EXCEPTION = "DASHBOARD_PERMISSION_DENIED_EXCEPTION"
+    DELEGATION_NOT_FOUND_EXCEPTION = "DELEGATION_NOT_FOUND_EXCEPTION"
     DEPLOYMENT_NOT_FOUND_EXCEPTION = "DEPLOYMENT_NOT_FOUND_EXCEPTION"
     DESCRIBE_QUERY_INVALID_SQL_ERROR = "DESCRIBE_QUERY_INVALID_SQL_ERROR"
     DESCRIBE_QUERY_TIMEOUT = "DESCRIBE_QUERY_TIMEOUT"
@@ -1924,6 +1946,7 @@ class MessageErrorType(Enum):
     INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION = "INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION = "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION = "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION"
+    INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION = "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION"
     INVALID_CHAT_COMPLETION_JSON_EXCEPTION = "INVALID_CHAT_COMPLETION_JSON_EXCEPTION"
     INVALID_COMPLETION_REQUEST_EXCEPTION = "INVALID_COMPLETION_REQUEST_EXCEPTION"
     INVALID_FUNCTION_CALL_EXCEPTION = "INVALID_FUNCTION_CALL_EXCEPTION"
@@ -1940,6 +1963,7 @@ class MessageErrorType(Enum):
     NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE = "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE"
     NO_QUERY_TO_VISUALIZE_EXCEPTION = "NO_QUERY_TO_VISUALIZE_EXCEPTION"
     NO_TABLES_TO_QUERY_EXCEPTION = "NO_TABLES_TO_QUERY_EXCEPTION"
+    PAY_PER_TOKEN_DISABLED_EXCEPTION = "PAY_PER_TOKEN_DISABLED_EXCEPTION"
     RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION = "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION"
     RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION = "RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION"
     REPLY_PROCESS_TIMEOUT_EXCEPTION = "REPLY_PROCESS_TIMEOUT_EXCEPTION"
@@ -2072,6 +2096,11 @@ class QueryAttachmentParameter:
     def from_dict(cls, d: Dict[str, Any]) -> QueryAttachmentParameter:
         """Deserializes the QueryAttachmentParameter from a dictionary."""
         return cls(keyword=d.get("keyword", None), sql_type=d.get("sql_type", None), value=d.get("value", None))
+
+
+class ResponsePhase(Enum):
+    RESPONSE_PHASE_THINKING = "RESPONSE_PHASE_THINKING"
+    RESPONSE_PHASE_VERIFYING = "RESPONSE_PHASE_VERIFYING"
 
 
 @dataclass
@@ -2279,6 +2308,7 @@ class ScoreReason(Enum):
     RESULT_MISSING_COLUMNS = "RESULT_MISSING_COLUMNS"
     RESULT_MISSING_ROWS = "RESULT_MISSING_ROWS"
     SINGLE_CELL_DIFFERENCE = "SINGLE_CELL_DIFFERENCE"
+    TRANSIENT_ERROR = "TRANSIENT_ERROR"
 
 
 @dataclass
@@ -2469,8 +2499,13 @@ class TextAttachment:
 
     id: Optional[str] = None
 
+    phase: Optional[ResponsePhase] = None
+
     purpose: Optional[TextAttachmentPurpose] = None
     """Purpose/intent of this text attachment"""
+
+    verification_metadata: Optional[VerificationMetadata] = None
+    """Metadata for verification phase attachments. Only set when phase = RESPONSE_PHASE_VERIFYING."""
 
     def as_dict(self) -> dict:
         """Serializes the TextAttachment into a dictionary suitable for use as a JSON request body."""
@@ -2479,8 +2514,12 @@ class TextAttachment:
             body["content"] = self.content
         if self.id is not None:
             body["id"] = self.id
+        if self.phase is not None:
+            body["phase"] = self.phase.value
         if self.purpose is not None:
             body["purpose"] = self.purpose.value
+        if self.verification_metadata:
+            body["verification_metadata"] = self.verification_metadata.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2490,15 +2529,23 @@ class TextAttachment:
             body["content"] = self.content
         if self.id is not None:
             body["id"] = self.id
+        if self.phase is not None:
+            body["phase"] = self.phase
         if self.purpose is not None:
             body["purpose"] = self.purpose
+        if self.verification_metadata:
+            body["verification_metadata"] = self.verification_metadata
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TextAttachment:
         """Deserializes the TextAttachment from a dictionary."""
         return cls(
-            content=d.get("content", None), id=d.get("id", None), purpose=_enum(d, "purpose", TextAttachmentPurpose)
+            content=d.get("content", None),
+            id=d.get("id", None),
+            phase=_enum(d, "phase", ResponsePhase),
+            purpose=_enum(d, "purpose", TextAttachmentPurpose),
+            verification_metadata=_from_dict(d, "verification_metadata", VerificationMetadata),
         )
 
 
@@ -2600,6 +2647,49 @@ class UnpublishDashboardResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UnpublishDashboardResponse:
         """Deserializes the UnpublishDashboardResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class VerificationMetadata:
+    """Metadata for verification phase attachments"""
+
+    index: Optional[int] = None
+    """Optional index to help order attachments within the same section"""
+
+    section: Optional[VerificationSection] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the VerificationMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.index is not None:
+            body["index"] = self.index
+        if self.section is not None:
+            body["section"] = self.section.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VerificationMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.index is not None:
+            body["index"] = self.index
+        if self.section is not None:
+            body["section"] = self.section
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VerificationMetadata:
+        """Deserializes the VerificationMetadata from a dictionary."""
+        return cls(index=d.get("index", None), section=_enum(d, "section", VerificationSection))
+
+
+class VerificationSection(Enum):
+    """Verification workflow section - indicates which stage of verification this attachment belongs to
+    These sections are used for grouping and ordering attachments in the frontend UI"""
+
+    VERIFICATION_SECTION_FINAL_DECISION = "VERIFICATION_SECTION_FINAL_DECISION"
+    VERIFICATION_SECTION_PROPOSED_IMPROVEMENT = "VERIFICATION_SECTION_PROPOSED_IMPROVEMENT"
+    VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION = "VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION"
+    VERIFICATION_SECTION_VERIFICATION_QUERIES = "VERIFICATION_SECTION_VERIFICATION_QUERIES"
 
 
 class GenieAPI:
@@ -4328,6 +4418,25 @@ class LakeviewEmbeddedAPI:
 
     def __init__(self, api_client):
         self._api = api_client
+
+    def get_published_dashboard_embedded(self, dashboard_id: str):
+        """Get the current published dashboard within an embedded context.
+
+        :param dashboard_id: str
+          UUID identifying the published dashboard.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.workspace_id:
+            headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
+
+        self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/embedded", headers=headers)
 
     def get_published_dashboard_token_info(
         self, dashboard_id: str, *, external_value: Optional[str] = None, external_viewer_id: Optional[str] = None

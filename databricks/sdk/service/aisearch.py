@@ -233,6 +233,11 @@ class DirectAccessIndexSpec:
     embedding_vector_columns: Optional[List[EmbeddingVectorColumn]] = None
     """The columns that contain the embedding vectors."""
 
+    requested_schema_json: Optional[str] = None
+    """The index schema exactly as the user supplied it on create, preserving the original type
+    spellings (e.g. ``integer``) rather than Unity Catalog's canonical names (e.g. ``int``) that
+    ``schema_json`` returns."""
+
     schema_json: Optional[str] = None
     """The schema of the index in JSON format. Supported types are ``integer``, ``long``, ``float``,
     ``double``, ``boolean``, ``string``, ``date``, ``timestamp``. Supported types for vector
@@ -245,6 +250,8 @@ class DirectAccessIndexSpec:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
             body["embedding_vector_columns"] = [v.as_dict() for v in self.embedding_vector_columns]
+        if self.requested_schema_json is not None:
+            body["requested_schema_json"] = self.requested_schema_json
         if self.schema_json is not None:
             body["schema_json"] = self.schema_json
         return body
@@ -256,6 +263,8 @@ class DirectAccessIndexSpec:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
             body["embedding_vector_columns"] = self.embedding_vector_columns
+        if self.requested_schema_json is not None:
+            body["requested_schema_json"] = self.requested_schema_json
         if self.schema_json is not None:
             body["schema_json"] = self.schema_json
         return body
@@ -266,6 +275,7 @@ class DirectAccessIndexSpec:
         return cls(
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
+            requested_schema_json=d.get("requested_schema_json", None),
             schema_json=d.get("schema_json", None),
         )
 
@@ -411,6 +421,9 @@ class Endpoint:
     usage_policy_id: Optional[str] = None
     """The usage policy id applied to the endpoint."""
 
+    warnings: Optional[List[Warning]] = None
+    """Advisory warnings surfaced when target_qps is set on a Standard endpoint."""
+
     def as_dict(self) -> dict:
         """Serializes the Endpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -448,6 +461,8 @@ class Endpoint:
             body["update_time"] = self.update_time.ToJsonString()
         if self.usage_policy_id is not None:
             body["usage_policy_id"] = self.usage_policy_id
+        if self.warnings:
+            body["warnings"] = [v.as_dict() for v in self.warnings]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -487,6 +502,8 @@ class Endpoint:
             body["update_time"] = self.update_time
         if self.usage_policy_id is not None:
             body["usage_policy_id"] = self.usage_policy_id
+        if self.warnings:
+            body["warnings"] = self.warnings
         return body
 
     @classmethod
@@ -510,6 +527,7 @@ class Endpoint:
             throughput_info=_from_dict(d, "throughput_info", EndpointThroughputInfo),
             update_time=_timestamp(d, "update_time"),
             usage_policy_id=d.get("usage_policy_id", None),
+            warnings=_repeated_dict(d, "warnings", Warning),
         )
 
 
@@ -1355,6 +1373,61 @@ class UpsertDataResponse:
         )
 
 
+@dataclass
+class Warning:
+    """Advisory warning surfaced on an AI Search endpoint — a non-fatal condition the customer should
+    be aware of (for example, a temporarily unavailable reranker or an index without an optimized
+    query route)."""
+
+    index_names: Optional[List[str]] = None
+    """Indexes affected by this warning."""
+
+    message: Optional[str] = None
+    """Human-readable detail about the warning."""
+
+    status_code: Optional[WarningStatusCode] = None
+    """Status code categorizing the warning."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Warning into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.index_names:
+            body["index_names"] = [v for v in self.index_names]
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status_code is not None:
+            body["status_code"] = self.status_code.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Warning into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.index_names:
+            body["index_names"] = self.index_names
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status_code is not None:
+            body["status_code"] = self.status_code
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Warning:
+        """Deserializes the Warning from a dictionary."""
+        return cls(
+            index_names=d.get("index_names", None),
+            message=d.get("message", None),
+            status_code=_enum(d, "status_code", WarningStatusCode),
+        )
+
+
+class WarningStatusCode(Enum):
+    """Status code categorizing an advisory warning surfaced on an AI Search endpoint."""
+
+    ENDPOINT_HAS_INDEX_WITHOUT_OPTIMIZED_ROUTE = "ENDPOINT_HAS_INDEX_WITHOUT_OPTIMIZED_ROUTE"
+    ENDPOINT_HAS_MANAGED_INDEX = "ENDPOINT_HAS_MANAGED_INDEX"
+    RERANKER_TEMPORARILY_UNAVAILABLE = "RERANKER_TEMPORARILY_UNAVAILABLE"
+
+
 class AiSearchAPI:
     """**AI Search Endpoint**: Represents the compute resources to host AI Search indexes. AIP-conformant
     replacement for the legacy VectorSearchEndpoints API; functionally equivalent."""
@@ -1469,15 +1542,22 @@ class AiSearchAPI:
 
         self._api.do("DELETE", f"/api/2.0/ai-search/{name}", headers=headers)
 
-    def get_endpoint(self, name: str) -> Endpoint:
+    def get_endpoint(self, name: str, *, debug_level: Optional[int] = None) -> Endpoint:
         """Get details for a single AI Search endpoint.
 
         :param name: str
           Full resource name of the endpoint. Format: ``workspaces/{workspace_id}/endpoints/{endpoint_id}``
+        :param debug_level: int (optional)
+          Opt-in debug level. When set to 1 or higher, the backend computes and returns advisory high-QPS
+          warnings (subject to the existing target_qps + Standard gate). When unset (0), no warnings are
+          computed or returned. Matches the ``debug_level`` convention on the query path.
 
         :returns: :class:`Endpoint`
         """
 
+        query = {}
+        if debug_level is not None:
+            query["debug_level"] = debug_level
         headers = {
             "Accept": "application/json",
         }
@@ -1486,7 +1566,7 @@ class AiSearchAPI:
         if cfg.workspace_id:
             headers["X-Databricks-Workspace-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.0/ai-search/{name}", headers=headers)
+        res = self._api.do("GET", f"/api/2.0/ai-search/{name}", query=query, headers=headers)
         return Endpoint.from_dict(res)
 
     def get_index(self, name: str) -> Index:
@@ -1550,13 +1630,23 @@ class AiSearchAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_indexes(
-        self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+        self,
+        parent: str,
+        *,
+        debug_level: Optional[int] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
     ) -> Iterator[Index]:
         """List AI Search indexes on an endpoint.
 
         :param parent: str
           The Endpoint that owns this collection of indexes. Format:
           ``workspaces/{workspace_id}/endpoints/{endpoint_id}``
+        :param debug_level: int (optional)
+          Opt-in debug level. When set to 1 or higher, the backend computes per-index routing eligibility and
+          populates ``can_use_optimized_route`` on each returned index. When unset (0), that field is left
+          unpopulated and the eligibility computation is skipped. Matches the ``debug_level`` convention on
+          the query path.
         :param page_size: int (optional)
           Best-effort upper bound on the number of results to return. Honored as an upper bound by the shim:
           ``page_size`` only narrows the legacy backend's response, never widens it, so the practical cap is
@@ -1568,6 +1658,8 @@ class AiSearchAPI:
         """
 
         query = {}
+        if debug_level is not None:
+            query["debug_level"] = debug_level
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:

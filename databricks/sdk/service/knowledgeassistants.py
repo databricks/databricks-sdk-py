@@ -264,6 +264,9 @@ class KnowledgeAssistant:
     """Additional global instructions on how the agent should generate answers. Optional on create and
     update. When updating a Knowledge Assistant, include this field in update_mask to modify it."""
 
+    knowledge_assistant_id: Optional[str] = None
+    """The universally unique identifier (UUID) of the Knowledge Assistant."""
+
     name: Optional[str] = None
     """The resource name of the Knowledge Assistant. Format:
     knowledge-assistants/{knowledge_assistant_id}"""
@@ -292,6 +295,8 @@ class KnowledgeAssistant:
             body["id"] = self.id
         if self.instructions is not None:
             body["instructions"] = self.instructions
+        if self.knowledge_assistant_id is not None:
+            body["knowledge_assistant_id"] = self.knowledge_assistant_id
         if self.name is not None:
             body["name"] = self.name
         if self.state is not None:
@@ -319,6 +324,8 @@ class KnowledgeAssistant:
             body["id"] = self.id
         if self.instructions is not None:
             body["instructions"] = self.instructions
+        if self.knowledge_assistant_id is not None:
+            body["knowledge_assistant_id"] = self.knowledge_assistant_id
         if self.name is not None:
             body["name"] = self.name
         if self.state is not None:
@@ -338,6 +345,7 @@ class KnowledgeAssistant:
             experiment_id=d.get("experiment_id", None),
             id=d.get("id", None),
             instructions=d.get("instructions", None),
+            knowledge_assistant_id=d.get("knowledge_assistant_id", None),
             name=d.get("name", None),
             state=_enum(d, "state", KnowledgeAssistantState),
         )

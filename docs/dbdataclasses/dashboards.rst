@@ -185,6 +185,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GetPublishedDashboardEmbeddedResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetPublishedDashboardTokenInfoResponse
    :members:
    :undoc-members:
@@ -218,6 +222,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION
       :value: "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION"
 
+   .. py:attribute:: BUDGET_EXCEEDED_EXCEPTION
+      :value: "BUDGET_EXCEEDED_EXCEPTION"
+
+   .. py:attribute:: CERTIFIED_ANSWERS_MISSING_EXCEPTION
+      :value: "CERTIFIED_ANSWERS_MISSING_EXCEPTION"
+
    .. py:attribute:: CHAT_COMPLETION_CLIENT_EXCEPTION
       :value: "CHAT_COMPLETION_CLIENT_EXCEPTION"
 
@@ -241,6 +251,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: COULD_NOT_GET_UC_SCHEMA_EXCEPTION
       :value: "COULD_NOT_GET_UC_SCHEMA_EXCEPTION"
+
+   .. py:attribute:: DASHBOARD_PERMISSION_DENIED_EXCEPTION
+      :value: "DASHBOARD_PERMISSION_DENIED_EXCEPTION"
+
+   .. py:attribute:: DELEGATION_NOT_FOUND_EXCEPTION
+      :value: "DELEGATION_NOT_FOUND_EXCEPTION"
 
    .. py:attribute:: DEPLOYMENT_NOT_FOUND_EXCEPTION
       :value: "DEPLOYMENT_NOT_FOUND_EXCEPTION"
@@ -308,6 +324,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION
       :value: "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION"
 
+   .. py:attribute:: INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION
+      :value: "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION"
+
    .. py:attribute:: INVALID_CHAT_COMPLETION_JSON_EXCEPTION
       :value: "INVALID_CHAT_COMPLETION_JSON_EXCEPTION"
 
@@ -355,6 +374,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: NO_TABLES_TO_QUERY_EXCEPTION
       :value: "NO_TABLES_TO_QUERY_EXCEPTION"
+
+   .. py:attribute:: PAY_PER_TOKEN_DISABLED_EXCEPTION
+      :value: "PAY_PER_TOKEN_DISABLED_EXCEPTION"
 
    .. py:attribute:: RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION
       :value: "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION"
@@ -440,6 +462,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: QueryAttachmentParameter
    :members:
    :undoc-members:
+
+.. py:class:: ResponsePhase
+
+   .. py:attribute:: RESPONSE_PHASE_THINKING
+      :value: "RESPONSE_PHASE_THINKING"
+
+   .. py:attribute:: RESPONSE_PHASE_VERIFYING
+      :value: "RESPONSE_PHASE_VERIFYING"
 
 .. autoclass:: Result
    :members:
@@ -538,6 +568,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SINGLE_CELL_DIFFERENCE
       :value: "SINGLE_CELL_DIFFERENCE"
 
+   .. py:attribute:: TRANSIENT_ERROR
+      :value: "TRANSIENT_ERROR"
+
 .. autoclass:: Subscriber
    :members:
    :undoc-members:
@@ -596,3 +629,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: UnpublishDashboardResponse
    :members:
    :undoc-members:
+
+.. autoclass:: VerificationMetadata
+   :members:
+   :undoc-members:
+
+.. py:class:: VerificationSection
+
+   Verification workflow section - indicates which stage of verification this attachment belongs to These sections are used for grouping and ordering attachments in the frontend UI
+
+   .. py:attribute:: VERIFICATION_SECTION_FINAL_DECISION
+      :value: "VERIFICATION_SECTION_FINAL_DECISION"
+
+   .. py:attribute:: VERIFICATION_SECTION_PROPOSED_IMPROVEMENT
+      :value: "VERIFICATION_SECTION_PROPOSED_IMPROVEMENT"
+
+   .. py:attribute:: VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION
+      :value: "VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION"
+
+   .. py:attribute:: VERIFICATION_SECTION_VERIFICATION_QUERIES
+      :value: "VERIFICATION_SECTION_VERIFICATION_QUERIES"

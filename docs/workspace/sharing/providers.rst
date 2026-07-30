@@ -7,7 +7,7 @@
     A data provider is an object representing the organization in the real world who shares the data. A
     provider contains shares which further contain the shared data.
 
-    .. py:method:: create(name: str, authentication_type: AuthenticationType [, comment: Optional[str], recipient_profile_str: Optional[str]]) -> ProviderInfo
+    .. py:method:: create(name: str, authentication_type: AuthenticationType [, comment: Optional[str], email_recipient_id: Optional[str], recipient_profile_str: Optional[str]]) -> ProviderInfo
 
 
         Usage:
@@ -40,6 +40,9 @@
         :param authentication_type: :class:`AuthenticationType`
         :param comment: str (optional)
           Description about the provider.
+        :param email_recipient_id: str (optional)
+          The ID of the email recipient this provider is being created to accept. Only valid on DATABRICKS
+          CreateProvider when accepting an email invite.
         :param recipient_profile_str: str (optional)
           This field is required when the **authentication_type** is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.
@@ -101,25 +104,12 @@
 
         .. code-block::
 
-            import time
-            
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import sharing
             
             w = WorkspaceClient()
             
-            public_share_recipient = """{
-                    "shareCredentialsVersion":1,
-                    "bearerToken":"dapiabcdefghijklmonpqrstuvwxyz",
-                    "endpoint":"https://sharing.delta.io/delta-sharing/"
-                }
-            """
-            
-            created = w.providers.create(name=f"sdk-{time.time_ns()}", recipient_profile_str=public_share_recipient)
-            
-            shares = w.providers.list_shares(name=created.name)
-            
-            # cleanup
-            w.providers.delete(name=created.name)
+            all = w.providers.list(sharing.ListProvidersRequest())
 
         Gets an array of available authentication providers. The caller must either be a metastore admin, have
         the **USE_PROVIDER** privilege on the providers, or be the owner of the providers. Providers not owned

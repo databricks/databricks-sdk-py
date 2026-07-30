@@ -57,6 +57,16 @@
 
         
 
+    .. py:method:: get_auto_eval_status(name: str) -> GetAutoEvalStatusResponse
+
+        Returns the status of the latest autoeval run for a vector index.
+
+        :param name: str
+          Fully qualified index name (catalog.schema.index).
+
+        :returns: :class:`GetAutoEvalStatusResponse`
+        
+
     .. py:method:: get_index(index_name: str [, ensure_reranker_compatible: Optional[bool]]) -> VectorIndex
 
         Get an index.
@@ -149,6 +159,60 @@
         :returns: :class:`QueryVectorIndexResponse`
         
 
+    .. py:method:: run_auto_eval(name: str [, num_queries: Optional[int], num_results: Optional[int], query_types: Optional[List[str]], queryset_query_column: Optional[str], queryset_relevant_docs_column: Optional[str], queryset_table: Optional[str]]) -> RunAutoEvalResponse
+
+        Triggers an autoeval quality evaluation for a vector index.
+
+        :param name: str
+          Fully qualified index name (catalog.schema.index).
+        :param num_queries: int (optional)
+          Number of queries to generate for evaluation (default: 50).
+        :param num_results: int (optional)
+          Number of results to fetch per query (default: 10).
+        :param query_types: List[str] (optional)
+          Query types to evaluate (default: FULL_TEXT, ANN, HYBRID).
+        :param queryset_query_column: str (optional)
+          Column in ``queryset_table`` holding the query text. Required when ``queryset_table`` is set;
+          ignored otherwise.
+        :param queryset_relevant_docs_column: str (optional)
+          Optional column in ``queryset_table`` holding the ground-truth relevant document IDs for each query
+          (STRING or ARRAY<STRING>). When set, recall@k is reported against these labels; when unset,
+          evaluation falls back to LLM-judged metrics only. Ignored when ``queryset_table`` is unset.
+        :param queryset_table: str (optional)
+          Fully qualified Unity Catalog table (catalog.schema.table) of evaluation queries to run against the
+          index. When set, queries are read from this table and synthetic query generation is skipped. The
+          table takes precedence over any automatically detected query source.
+
+        :returns: :class:`RunAutoEvalResponse`
+        
+
+    .. py:method:: run_reranker_finetuning(name: str [, embedding_model: Optional[str], model_name: Optional[str], num_queries: Optional[int], query_column: Optional[str], query_table: Optional[str]]) -> RunRerankerFinetuningResponse
+
+        Triggers reranker finetuning for a vector index.
+
+        :param name: str
+          Fully qualified index name (catalog.schema.index).
+        :param embedding_model: str (optional)
+          Model-serving endpoint name. Reranker finetuning only supports managed Delta Sync indices
+          (Databricks-computed embeddings), so this field is informational — it is auto-derived from the
+          index and not used to embed training queries locally.
+        :param model_name: str (optional)
+          Fully qualified UC name for the registered finetuned model (catalog.schema.model). When unset, the
+          handler derives a default of ``<catalog>.<schema>.reranker_<index_short_name>`` from ``name``.
+        :param num_queries: int (optional)
+          Cap on the number of queries sampled from ``query_table`` (or generated when ``query_table`` is
+          unset). Use -1 to process all queries (the data-gen default). Lower values cut LLM-judge cost and
+          run time.
+        :param query_column: str (optional)
+          Column in ``query_table`` containing the query text. Ignored when ``query_table`` is unset. Defaults
+          to "query_text" when omitted.
+        :param query_table: str (optional)
+          Optional fully qualified UC Delta table holding training queries (catalog.schema.table). When unset,
+          the data-gen job synthesises queries from the index corpus via an LLM.
+
+        :returns: :class:`RunRerankerFinetuningResponse`
+        
+
     .. py:method:: scan_index(index_name: str [, last_primary_key: Optional[str], num_results: Optional[int]]) -> ScanVectorIndexResponse
 
         Scan the specified vector index and return the first ``num_results`` entries after the exclusive
@@ -172,6 +236,18 @@
           Name of the vector index to synchronize. Must be a Delta Sync Index.
 
 
+        
+
+    .. py:method:: update_index_budget_policy(index_name: str [, usage_policy_id: Optional[str]]) -> UpdateVectorIndexUsagePolicyResponse
+
+        Update the budget policy of an index
+
+        :param index_name: str
+          Name of the AI Search index
+        :param usage_policy_id: str (optional)
+          The usage policy id to be applied
+
+        :returns: :class:`UpdateVectorIndexUsagePolicyResponse`
         
 
     .. py:method:: upsert_data_vector_index(index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse

@@ -1,0 +1,46 @@
+{
+  "mode": "py_v0",
+  "api_changelog": false,
+  "version": {
+    "databricks/sdk/version.py": "__version__ = \"$VERSION\""
+  },
+  "sync": {
+    "skip_from_genkit": [
+      ".github/workflows/next-changelog.yml",
+      "tagging.py",
+      "tagging.py.lock"
+    ],
+    "skip_from_source": [
+      "BUILD.bazel",
+      "CLAUDE.md",
+      "OWNERS",
+      "README.md",
+      "changelog.json",
+      "releases.jsonl",
+      ".cursor",
+      ".cursorrules",
+      ".nextchanges",
+      "changelog_validate",
+      "next-changelog.yml",
+      "tagging.py"
+    ],
+    "rename_on_sync": {
+      "README.public.md": "README.md"
+    }
+  },
+  "toolchain": {
+    "required": ["python3.12", "uv"],
+    "pre_setup": [
+      "python3.12 -m venv .databricks"
+    ],
+    "prepend_path": ".databricks/bin",
+    "setup": [
+      "pip install '.[dev]'"
+    ],
+    "post_generate": [
+      "make fmt",
+      "pip install .",
+      "python3.12 docs/gen-client-docs.py"
+    ]
+  }
+}

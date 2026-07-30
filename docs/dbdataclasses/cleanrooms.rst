@@ -25,6 +25,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FOREIGN_TABLE
       :value: "FOREIGN_TABLE"
 
+   .. py:attribute:: GENIE_SPACE
+      :value: "GENIE_SPACE"
+
    .. py:attribute:: JAR_ANALYSIS
       :value: "JAR_ANALYSIS"
 
@@ -45,6 +48,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CleanRoomAssetForeignTableLocalDetails
+   :members:
+   :undoc-members:
+
+.. autoclass:: CleanRoomAssetGenieSpace
    :members:
    :undoc-members:
 
@@ -249,5 +256,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: NotebookVersionReview
+   :members:
+   :undoc-members:
+
+.. autoclass:: ReplicationConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: ReplicationInterval
+   :members:
+   :undoc-members:
+
+.. autoclass:: ReplicationSchedule
    :members:
    :undoc-members:

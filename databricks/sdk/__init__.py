@@ -62,12 +62,14 @@ from databricks.sdk.service.billing import (
     BudgetsAPI,
     LogDeliveryAPI,
     UsageDashboardsAPI,
+    UsagePolicyAPI,
 )
 from databricks.sdk.service.bundledeployments import BundleDeploymentsAPI
 from databricks.sdk.service.catalog import (
     AccountMetastoreAssignmentsAPI,
     AccountMetastoresAPI,
     AccountStorageCredentialsAPI,
+    AiGatewayAPI,
     ArtifactAllowlistsAPI,
     CatalogsAPI,
     ConnectionsAPI,
@@ -365,6 +367,7 @@ class WorkspaceClient:
         self._access_control = pkg_iam.AccessControlAPI(self._api_client)
         self._account_access_control_proxy = pkg_iam.AccountAccessControlProxyAPI(self._api_client)
         self._agent_bricks = pkg_agentbricks.AgentBricksAPI(self._api_client)
+        self._ai_gateway = pkg_catalog.AiGatewayAPI(self._api_client)
         self._ai_search = pkg_aisearch.AiSearchAPI(self._api_client)
         self._alerts = pkg_sql.AlertsAPI(self._api_client)
         self._alerts_legacy = pkg_sql.AlertsLegacyAPI(self._api_client)
@@ -532,6 +535,11 @@ class WorkspaceClient:
     def agent_bricks(self) -> pkg_agentbricks.AgentBricksAPI:
         """The Custom LLMs service manages state and powers the UI for the Custom LLM product."""
         return self._agent_bricks
+
+    @property
+    def ai_gateway(self) -> pkg_catalog.AiGatewayAPI:
+        """Govern AI workloads in Unity Catalog."""
+        return self._ai_gateway
 
     @property
     def ai_search(self) -> pkg_aisearch.AiSearchAPI:
@@ -1298,6 +1306,7 @@ class AccountClient:
         self._storage = pkg_provisioning.StorageAPI(self._api_client)
         self._storage_credentials = pkg_catalog.AccountStorageCredentialsAPI(self._api_client)
         self._usage_dashboards = pkg_billing.UsageDashboardsAPI(self._api_client)
+        self._usage_policy = pkg_billing.UsagePolicyAPI(self._api_client)
         self._users_v2 = pkg_iam.AccountUsersV2API(self._api_client)
         self._vpc_endpoints = pkg_provisioning.VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = pkg_iam.WorkspaceAssignmentAPI(self._api_client)
@@ -1464,6 +1473,11 @@ class AccountClient:
     def usage_dashboards(self) -> pkg_billing.UsageDashboardsAPI:
         """These APIs manage usage dashboards for this account."""
         return self._usage_dashboards
+
+    @property
+    def usage_policy(self) -> pkg_billing.UsagePolicyAPI:
+        """A service serves REST API about Usage policies."""
+        return self._usage_policy
 
     @property
     def users_v2(self) -> pkg_iam.AccountUsersV2API:

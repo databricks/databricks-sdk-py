@@ -84,6 +84,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: COHERE
       :value: "COHERE"
 
+   .. py:attribute:: GROK
+      :value: "GROK"
+
 .. autoclass:: AnthropicConfig
    :members:
    :undoc-members:
@@ -132,6 +135,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: CohereConfig
    :members:
    :undoc-members:
+
+.. py:class:: CommitmentStatus
+
+   The lifecycle status of a Provisioned Throughput commitment.
+
+   .. py:attribute:: ACTIVE
+      :value: "ACTIVE"
+
+   .. py:attribute:: EXPIRED
+      :value: "EXPIRED"
+
+.. py:class:: CommitmentTerm
+
+   The commitment term length for a Provisioned Throughput pool.
+
+   .. py:attribute:: COMMITMENT_TERM_1_MONTH
+      :value: "COMMITMENT_TERM_1_MONTH"
+
+   .. py:attribute:: COMMITMENT_TERM_3_MONTHS
+      :value: "COMMITMENT_TERM_3_MONTHS"
 
 .. autoclass:: CustomProviderConfig
    :members:
@@ -276,6 +299,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: FirstPartyExportSetting
+
+   Whether first-party system-metrics export (to system.telemetry.otel_metrics) is enabled for an endpoint. Scoped to first-party only for now; third-party (e.g. Datadog) export is deferred.
+
+   .. py:attribute:: FIRST_PARTY_EXPORT_DISABLED
+      :value: "FIRST_PARTY_EXPORT_DISABLED"
+
+   .. py:attribute:: FIRST_PARTY_EXPORT_ENABLED
+      :value: "FIRST_PARTY_EXPORT_ENABLED"
+
 .. autoclass:: FoundationModel
    :members:
    :undoc-members:
@@ -316,11 +349,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PtCommitment
+   :members:
+   :undoc-members:
+
+.. autoclass:: PtCommitmentAutoRenew
+   :members:
+   :undoc-members:
+
+.. autoclass:: PtCommitmentRelocation
+   :members:
+   :undoc-members:
+
 .. autoclass:: PtEndpointCoreConfig
    :members:
    :undoc-members:
 
 .. autoclass:: PtServedModel
+   :members:
+   :undoc-members:
+
+.. autoclass:: PtState
    :members:
    :undoc-members:
 
@@ -410,6 +459,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: GPU_XLARGE
       :value: "GPU_XLARGE"
+
+   .. py:attribute:: GPU_XLARGE_8
+      :value: "GPU_XLARGE_8"
 
    .. py:attribute:: MULTIGPU_MEDIUM
       :value: "MULTIGPU_MEDIUM"
@@ -523,6 +575,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: GPU_XLARGE
       :value: "GPU_XLARGE"
+
+   .. py:attribute:: GPU_XLARGE_8
+      :value: "GPU_XLARGE_8"
 
    .. py:attribute:: MULTIGPU_MEDIUM
       :value: "MULTIGPU_MEDIUM"
