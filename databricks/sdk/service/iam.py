@@ -4,11 +4,12 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Optional
+
+
+import logging
 
 from databricks.sdk.service._internal import (
     _enum,
@@ -16,6 +17,7 @@ from databricks.sdk.service._internal import (
     _repeated_dict,
     _repeated_enum,
 )
+
 
 _LOG = logging.getLogger("databricks.sdk")
 

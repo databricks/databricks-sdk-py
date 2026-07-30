@@ -4,25 +4,28 @@
 # to strip the fat-import header below; ignoring F401 would defeat that.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
+from typing import Dict, List, Any, Iterator, Callable, Optional, BinaryIO
 
-from databricks.sdk.service import sql
+
+import time
+import random
+import logging
+
+from ..errors import OperationFailed
 from databricks.sdk.service._internal import (
-    Wait,
     _enum,
     _from_dict,
     _repeated_dict,
     _repeated_enum,
+    Wait,
 )
 
-from ..errors import OperationFailed
+
+from databricks.sdk.service import sql
+
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -2494,6 +2497,9 @@ class SubscriptionSubscriberUser:
 
 @dataclass
 class TextAttachment:
+    """A text response on a conversation message: the answer, the final summary, or a clarifying
+    follow-up question, along with optional phase and verification metadata."""
+
     content: Optional[str] = None
     """AI generated message"""
 
@@ -2502,7 +2508,10 @@ class TextAttachment:
     phase: Optional[ResponsePhase] = None
 
     purpose: Optional[TextAttachmentPurpose] = None
-    """Purpose/intent of this text attachment"""
+    """Purpose of this text attachment. A completed message may contain more than one text attachment
+    (for example a clarifying follow-up question alongside the final answer); use this field to tell
+    them apart. ``TEXT_ATTACHMENT_PURPOSE_ANSWER`` marks the final answer/summary and
+    ``FOLLOW_UP_QUESTION`` marks a clarifying question."""
 
     verification_metadata: Optional[VerificationMetadata] = None
     """Metadata for verification phase attachments. Only set when phase = RESPONSE_PHASE_VERIFYING."""
@@ -2553,6 +2562,7 @@ class TextAttachmentPurpose(Enum):
     """Purpose/intent of a text attachment"""
 
     FOLLOW_UP_QUESTION = "FOLLOW_UP_QUESTION"
+    TEXT_ATTACHMENT_PURPOSE_ANSWER = "TEXT_ATTACHMENT_PURPOSE_ANSWER"
 
 
 @dataclass
